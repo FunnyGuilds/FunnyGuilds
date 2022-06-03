@@ -27,27 +27,27 @@ public final class LeaveCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsMember User user, Guild guild) {
-        when(user.isOwner(), this.messages.leaveIsOwner);
+    public void execute(Player player, @IsMember User member, Guild guild) {
+        when(member.isOwner(), this.messages.leaveIsOwner);
 
-        if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
+        if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, member, guild, member))) {
             return;
         }
 
-        guild.removeMember(user);
-        user.removeGuild();
+        guild.removeMember(member);
+        member.removeGuild();
 
         this.concurrencyManager.postRequests(
-                new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, user.getName()),
+                new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, member.getName()),
                 new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player)
         );
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", user.getName());
+                .register("{PLAYER}", member.getName());
 
-        sendMessage(player, formatter.format(this.messages.leaveToUser));
+        member.sendMessage(formatter.format(this.messages.leaveToUser));
         broadcastMessage(formatter.format(this.messages.broadcastLeave));
     }
 

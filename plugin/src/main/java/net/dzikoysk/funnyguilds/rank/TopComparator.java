@@ -11,7 +11,7 @@ public interface TopComparator<T> extends Comparator<T> {
         return new ReverseTopComparator<>(this);
     }
 
-    class ReverseTopComparator<T> implements TopComparator<T> {
+    final class ReverseTopComparator<T> implements TopComparator<T> {
 
         private final TopComparator<T> comparator;
 

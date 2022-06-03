@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -28,7 +27,7 @@ public final class WarCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
         when(args.length < 1, this.messages.enemyCorrectUse);
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
@@ -43,7 +42,7 @@ public final class WarCommand extends AbstractFunnyCommand {
         when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, formatter.format(this.messages.enemyMaxAmount));
 
         if (enemyGuild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds) {
-            sendMessage(player, formatter.format(this.messages.enemyMaxTargetAmount));
+            owner.sendMessage(formatter.format(this.messages.enemyMaxTargetAmount));
             return;
         }
 
@@ -57,7 +56,7 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        sendMessage(player, enemyFormatter.format(this.messages.enemyDone));
+        owner.sendMessage(enemyFormatter.format(this.messages.enemyDone));
         enemyGuild.getOwner().sendMessage(enemyIFormatter.format(this.messages.enemyIDone));
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();

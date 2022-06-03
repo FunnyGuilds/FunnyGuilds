@@ -42,18 +42,15 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             sendMessage(sender, this.messages.deputyRemove);
             userToMove.sendMessage(this.messages.deputyMember);
 
-            String message = formatter.format(this.messages.deputyNoLongerMembers);
-            guild.getOnlineMembers().forEach(member -> member.sendMessage(message));
-
+            guild.broadcast(formatter.format(this.messages.deputyNoLongerMembers));
             return;
         }
 
         guild.addDeputy(userToMove);
+
         sendMessage(sender, this.messages.deputySet);
         userToMove.sendMessage(this.messages.deputyOwner);
-
-        String message = formatter.format(this.messages.deputyMembers);
-        guild.getOnlineMembers().forEach(member -> member.sendMessage(message));
+        guild.broadcast(formatter.format(this.messages.deputyMembers));
     }
 
 }

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -96,11 +97,11 @@ public class GuildManager {
      * @return the guild
      */
     public Option<Guild> findByName(String name, boolean ignoreCase) {
-        return PandaStream.of(this.guildsMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getName().equalsIgnoreCase(name)
-                        : entry.getValue().getName().equals(name))
-                .map(Map.Entry::getValue);
+        if (ignoreCase) {
+            return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getName().equalsIgnoreCase(name));
+        }
+
+        return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getName().equals(name));
     }
 
     /**
@@ -121,11 +122,11 @@ public class GuildManager {
      * @return the guild
      */
     public Option<Guild> findByTag(String tag, boolean ignoreCase) {
-        return PandaStream.of(this.guildsMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getTag().equalsIgnoreCase(tag)
-                        : entry.getValue().getTag().equals(tag))
-                .map(Map.Entry::getValue);
+        if (ignoreCase) {
+            return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getTag().equalsIgnoreCase(tag));
+        }
+
+        return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getTag().equals(tag));
     }
 
     /**
@@ -264,7 +265,7 @@ public class GuildManager {
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
-            dataModel.getGuildFile(guild).peek(file -> file.delete());
+            dataModel.getGuildFile(guild).peek(File::delete);
         }
         else if (plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete((SQLDataModel) plugin.getDataModel(), guild);

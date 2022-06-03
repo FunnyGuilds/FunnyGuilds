@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -29,13 +28,13 @@ public final class DeleteCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild) {
+    public void execute(@IsOwner User owner, Guild guild) {
         when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
                 guild.getMembers()), this.messages.deleteSomeoneIsNear);
-        ConfirmationList.add(user.getUUID());
+        ConfirmationList.add(owner.getUUID());
 
         when(this.config.commands.confirm.enabled, this.messages.deleteConfirm);
-        this.confirmExecutor.execute(player, user, guild);
+        this.confirmExecutor.execute(owner, guild);
     }
 
 }

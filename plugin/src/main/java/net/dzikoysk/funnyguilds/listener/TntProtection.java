@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -15,15 +16,15 @@ public class TntProtection extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
-        if (!config.tntProtection.time.enabled && !config.tntProtection.time.enabledGlobal) {
+        if (!this.config.tntProtection.time.enabled && !this.config.tntProtection.time.enabledGlobal) {
             return;
         }
 
         LocalTime now = LocalTime.now();
-        LocalTime start = config.tntProtection.time.startTime.getTime();
-        LocalTime end = config.tntProtection.time.endTime.getTime();
+        LocalTime start = this.config.tntProtection.time.startTime.getTime();
+        LocalTime end = this.config.tntProtection.time.endTime.getTime();
 
-        boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
+        boolean isWithinTimeframe = this.config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
@@ -31,12 +32,12 @@ public class TntProtection extends AbstractFunnyListener {
             return;
         }
 
-        if (config.tntProtection.time.enabledGlobal) {
+        if (this.config.tntProtection.time.enabledGlobal) {
             event.setCancelled(true);
             return;
         }
 
-        if (config.tntProtection.time.enabled) {
+        if (this.config.tntProtection.time.enabled) {
             if (this.regionManager.findRegionAtLocation(event.getLocation()).isPresent()) {
                 event.setCancelled(true);
                 return;
@@ -50,11 +51,12 @@ public class TntProtection extends AbstractFunnyListener {
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
         this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)
-                .filterNot(guild -> config.regionExplodeExcludeEntities.contains(event.getEntityType()))
-                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli()))
+                .filterNot(guild -> this.config.regionExplodeExcludeEntities.contains(event.getEntityType()))
+                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(this.config.regionExplode).toEpochMilli()))
                 .toStream(guild -> guild.getMembers().stream())
-                .filterNot(user -> informationMessageCooldowns.cooldown(user.getUUID(), config.infoPlayerCooldown))
-                .forEach(user -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
+                .filterNot(user -> this.informationMessageCooldowns.cooldown(user.getUUID(), this.config.infoPlayerCooldown))
+                .forEach(user -> user.sendMessage(FunnyFormatter.formatOnce(this.messages.regionExplode, "{TIME}",
+                        this.config.regionExplode)));
     }
 
 }

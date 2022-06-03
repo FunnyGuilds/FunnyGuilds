@@ -26,7 +26,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
             permission = "funnyguilds.enlarge",
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild) {
+    public void execute(Player player, @CanManage User deputy, Guild guild) {
         when(!this.config.regionsEnabled, this.messages.regionsDisabled);
 
         Region region = when(guild.getRegion(), this.messages.regionsDisabled);
@@ -39,7 +39,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
                 "{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
         when(this.regionManager.isNearRegion(region.getCenter()), this.messages.enlargeIsNear);
 
-        if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, guild))) {
+        if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, deputy, guild))) {
             return;
         }
 

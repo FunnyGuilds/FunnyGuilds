@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import panda.std.stream.PandaStream;
 import panda.utilities.StringUtils;
 
 public final class ChatUtils {
@@ -19,16 +20,11 @@ public final class ChatUtils {
     public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
 
     public static String colored(String message) {
-        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
+        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : "";
     }
 
     public static List<String> colored(List<String> messages) {
-        List<String> colored = new ArrayList<>();
-        for (String message : messages) {
-            colored.add(colored(message));
-        }
-
-        return colored;
+        return PandaStream.of(messages).map(ChatUtils::colored).toList();
     }
 
     public static String decolor(String coloredString) {
@@ -74,8 +70,7 @@ public final class ChatUtils {
             return list;
         }
 
-        list = Arrays.asList(s.split(","));
-        return list;
+        return Arrays.asList(s.split(","));
     }
 
     public static String appendDigit(int number) {

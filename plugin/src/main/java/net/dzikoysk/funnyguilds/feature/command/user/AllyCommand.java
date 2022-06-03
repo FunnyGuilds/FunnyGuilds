@@ -20,7 +20,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.stream.PandaStream;
 
@@ -41,7 +40,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
         Set<AllyInvitation> invitations = this.allyInvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
@@ -49,7 +48,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String guildNames = ChatUtils.toString(this.allyInvitationList.getInvitationGuildNames(guild), false);
 
             FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
-            this.messages.allyInvitationList.forEach(line -> sendMessage(player, formatter.format(line)));
+            PandaStream.of(this.messages.allyInvitationList).forEach(line -> owner.sendMessage(formatter.format(line)));
 
             return;
         }
@@ -71,7 +70,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{GUILD}", guild.getName())
                     .register("{TAG}", guild.getTag());
 
-            sendMessage(player, allyFormatter.format(this.messages.enemyEnd));
+            owner.sendMessage(allyFormatter.format(this.messages.enemyEnd));
             invitedOwner.sendMessage(allyIFormatter.format(this.messages.enemyIEnd));
         }
 
@@ -84,12 +83,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{TAG}", invitedGuild.getTag())
                     .register("{AMOUNT}", this.config.maxAlliesBetweenGuilds);
 
-            sendMessage(player, formatter.format(this.messages.inviteAllyTargetAmount));
+            owner.sendMessage(formatter.format(this.messages.inviteAllyTargetAmount));
             return;
         }
 
         if (this.allyInvitationList.hasInvitation(invitedGuild, guild)) {
-            if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+            if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
                 return;
             }
 
@@ -106,7 +105,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{GUILD}", guild.getName())
                     .register("{TAG}", guild.getTag());
 
-            sendMessage(player, allyFormatter.format(this.messages.allyDone));
+            owner.sendMessage(allyFormatter.format(this.messages.allyDone));
             invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
 
             ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
@@ -124,7 +123,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
         }
 
         if (this.allyInvitationList.hasInvitation(guild, invitedGuild)) {
-            if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+            if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
                 return;
             }
 
@@ -138,13 +137,13 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{GUILD}", guild.getName())
                     .register("{TAG}", guild.getTag());
 
-            sendMessage(player, allyFormatter.format(this.messages.allyReturn));
+            owner.sendMessage(allyFormatter.format(this.messages.allyReturn));
             invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIReturn));
 
             return;
         }
 
-        if (!SimpleEventHandler.handle(new GuildSendAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+        if (!SimpleEventHandler.handle(new GuildSendAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
             return;
         }
 
@@ -158,7 +157,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        sendMessage(player, allyFormatter.format(this.messages.allyInviteDone));
+        owner.sendMessage(allyFormatter.format(this.messages.allyInviteDone));
         invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyToInvited));
     }
 

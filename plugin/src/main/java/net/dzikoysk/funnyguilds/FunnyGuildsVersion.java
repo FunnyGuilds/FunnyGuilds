@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.command.CommandSender;
+import panda.std.stream.PandaStream;
 
 public final class FunnyGuildsVersion {
 
@@ -42,7 +43,7 @@ public final class FunnyGuildsVersion {
         }
 
         this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
-            if (funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
+            if (this.funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
                 try {
                     String ghResponse = FunnyIOUtils.getContent(GH_COMMITS_URL);
                     JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
@@ -57,8 +58,8 @@ public final class FunnyGuildsVersion {
 
                     String latestNightly = latestNightlyVersion + "-" + latestCommitHash;
 
-                    if (!commitHash.equalsIgnoreCase(latestCommitHash)) {
-                        printNewVersionAvailable(sender, latestNightly, true);
+                    if (!this.commitHash.equalsIgnoreCase(latestCommitHash)) {
+                        this.printNewVersionAvailable(sender, latestNightly, true);
                     }
                 }
                 catch (Throwable th) {
@@ -68,8 +69,7 @@ public final class FunnyGuildsVersion {
             }
             else {
                 String latestRelease = FunnyIOUtils.getContent(VERSION_FILE_URL);
-
-                if (latestRelease == null) {
+                if (latestRelease.isEmpty()) {
                     return;
                 }
 
@@ -78,8 +78,8 @@ public final class FunnyGuildsVersion {
                     return;
                 }
 
-                if (!mainVersion.equalsIgnoreCase(latestRelease)) {
-                    printNewVersionAvailable(sender, latestRelease, false);
+                if (!this.mainVersion.equalsIgnoreCase(latestRelease)) {
+                    this.printNewVersionAvailable(sender, latestRelease, false);
                 }
             }
         });
@@ -93,7 +93,7 @@ public final class FunnyGuildsVersion {
                 .register("{GITHUB_LINK}", GITHUB_URL)
                 .register("{DISCORD_LINK}", DISCORD_URL);
 
-        FunnyGuilds.getInstance().getMessageConfiguration().newVersionAvailable.forEach(line -> {
+        PandaStream.of(FunnyGuilds.getInstance().getMessageConfiguration().newVersionAvailable).forEach(line -> {
             sender.sendMessage(formatter.format(line));
         });
     }
@@ -107,7 +107,7 @@ public final class FunnyGuildsVersion {
     }
 
     public String getCommitHash() {
-        return commitHash;
+        return this.commitHash;
     }
 
 }

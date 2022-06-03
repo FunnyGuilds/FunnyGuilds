@@ -18,16 +18,15 @@ public final class DescriptionChanger {
         }
 
         try {
-            Field field = Reflections.getPrivateField(descriptionFile.getClass(), "name");
-
+            Field field = Reflections.getPrivateField(this.descriptionFile.getClass(), "name");
             if (field == null) {
                 return;
             }
 
-            field.set(descriptionFile, pluginName);
+            field.set(this.descriptionFile, pluginName);
         }
-        catch (Exception ex) {
-            FunnyGuilds.getPluginLogger().error("Could not change description file", ex);
+        catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not change description file", exception);
         }
     }
 

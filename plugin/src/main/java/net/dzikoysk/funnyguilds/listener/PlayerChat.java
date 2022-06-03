@@ -30,8 +30,8 @@ public class PlayerChat extends AbstractFunnyListener {
         if (userOption.isEmpty()) {
             return;
         }
-        User user = userOption.get();
 
+        User user = userOption.get();
         boolean isGuildChat = user.getGuild()
                 .map(guild -> this.sendGuildMessage(player, guild, event.getMessage()))
                 .orElseGet(false);
@@ -47,7 +47,6 @@ public class PlayerChat extends AbstractFunnyListener {
         }
 
         int points = user.getRank().getPoints();
-
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{RANK}", this.config.chatRank.getValue())
                 .register("{RANK}", user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))
@@ -92,7 +91,8 @@ public class PlayerChat extends AbstractFunnyListener {
     }
 
     private boolean sendMessageToGuildMembers(Player player, Guild guild, String message) {
-        return this.sendMessageToGuilds(player, guild, this.config.chatPrivDesign.getValue(), this.config.chatPriv, message, Collections.singletonList(guild));
+        return this.sendMessageToGuilds(player, guild, this.config.chatPrivDesign.getValue(), this.config.chatPriv,
+                message, Collections.singletonList(guild));
     }
 
     private boolean sendMessageToGuildAllies(Player player, Guild guild, String message) {
@@ -103,10 +103,12 @@ public class PlayerChat extends AbstractFunnyListener {
     }
 
     private boolean sendMessageToAllGuilds(Player player, Guild guild, String message) {
-        return this.sendMessageToGuilds(player, guild, this.config.chatGlobalDesign.getValue(), this.config.chatGlobal, message, this.guildManager.getGuilds());
+        return this.sendMessageToGuilds(player, guild, this.config.chatGlobalDesign.getValue(), this.config.chatGlobal,
+                message, this.guildManager.getGuilds());
     }
 
-    private boolean sendMessageToGuilds(Player player, Guild playerGuild, String chatDesign, String prefix, String message, Collection<Guild> receivers) {
+    private boolean sendMessageToGuilds(Player player, Guild playerGuild, String chatDesign, String prefix, String message,
+                                        Collection<Guild> receivers) {
         int prefixLength = prefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
@@ -114,7 +116,7 @@ public class PlayerChat extends AbstractFunnyListener {
             String resultMessage = this.formatChatDesign(player, playerGuild, chatDesign, subMessage);
 
             this.spy(player, playerGuild, subMessage);
-            receivers.forEach(guild -> this.sendMessageToGuild(guild, resultMessage));
+            receivers.forEach(guild -> sendMessageToGuild(guild, resultMessage));
 
             return true;
         }
@@ -122,7 +124,7 @@ public class PlayerChat extends AbstractFunnyListener {
         return false;
     }
 
-    private void sendMessageToGuild(Guild guild, String message) {
+    private static void sendMessageToGuild(Guild guild, String message) {
         PandaStream.of(guild.getMembers())
                 .filterNot(member -> member.getCache().isSpy())
                 .forEach(member -> member.sendMessage(message));

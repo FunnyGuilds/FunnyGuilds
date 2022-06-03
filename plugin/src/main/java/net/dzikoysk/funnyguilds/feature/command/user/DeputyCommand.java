@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -26,7 +25,7 @@ public final class DeputyCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
         when(args.length < 1, this.messages.generalNoNickGiven);
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
@@ -39,13 +38,13 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
-            sendMessage(player, this.messages.deputyRemove);
+            owner.sendMessage(this.messages.deputyRemove);
             deputyUser.sendMessage(this.messages.deputyMember);
             return;
         }
 
         guild.addDeputy(deputyUser);
-        sendMessage(player, this.messages.deputySet);
+        owner.sendMessage(this.messages.deputySet);
         deputyUser.sendMessage(this.messages.deputyOwner);
     }
 

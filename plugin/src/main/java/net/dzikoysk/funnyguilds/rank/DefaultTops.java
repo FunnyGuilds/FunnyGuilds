@@ -35,6 +35,9 @@ public final class DefaultTops {
     public static final String GUILD_AVG_ASSISTS_TOP = "avg_assists";
     public static final String GUILD_AVG_LOGOUTS_TOP = "avg_logouts";
 
+    private DefaultTops() {
+    }
+
     public static Map<String, UserTop> defaultUserTops(PluginConfiguration pluginConfiguration, UserManager userManager) {
         UserRecalculation recalculation = new UserRecalculation(pluginConfiguration, userManager);
         return ImmutableMap.<String, UserTop>builder()
@@ -63,9 +66,6 @@ public final class DefaultTops {
                 .put(GUILD_AVG_ASSISTS_TOP, new GuildTop(GuildComparator.AVG_ASSISTS_COMPARATOR, recalculation))
                 .put(GUILD_AVG_LOGOUTS_TOP, new GuildTop(GuildComparator.AVG_LOGOUTS_COMPARATOR, recalculation))
                 .build();
-    }
-
-    private DefaultTops() {
     }
 
 }

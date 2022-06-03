@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
@@ -22,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -64,13 +64,11 @@ public class RegionManager {
      * @return the guild
      */
     public Option<Region> findByName(String name, boolean ignoreCase) {
+        if (ignoreCase) {
+            return PandaStream.of(this.regionsMap.values()).find(region -> region.getName().equalsIgnoreCase(name));
+        }
 
-
-        return PandaStream.of(this.regionsMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getName().equalsIgnoreCase(name)
-                        : entry.getValue().getName().equals(name))
-                .map(Map.Entry::getValue);
+        return PandaStream.of(this.regionsMap.values()).find(region -> region.getName().equals(name));
     }
 
     /**
@@ -90,9 +88,7 @@ public class RegionManager {
      * @return the region
      */
     public Option<Region> findRegionAtLocation(Location location) {
-        return PandaStream.of(this.regionsMap.entrySet())
-                .find(entry -> entry.getValue().isIn(location))
-                .map(Map.Entry::getValue);
+        return PandaStream.of(this.regionsMap.values()).find(region -> region.isIn(location));
     }
 
     /**
@@ -111,20 +107,10 @@ public class RegionManager {
         }
 
         FunnyBox box = region.toBox();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (ignoredUuids.contains(player.getUniqueId())) {
-                continue;
-            }
-
-            if (!box.contains(player.getLocation())) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
+        return PandaStream.of(Bukkit.getOnlinePlayers())
+                .filter(player -> !ignoredUuids.contains(player.getUniqueId()))
+                .find(player -> box.contains(player.getLocation()))
+                .isPresent();
     }
 
     public boolean isAnyPlayerInRegion(Region region) {
@@ -132,14 +118,13 @@ public class RegionManager {
     }
 
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
-        return this.isAnyPlayerInRegion(region, ignoredUsers.stream()
+        return this.isAnyPlayerInRegion(region, PandaStream.of(ignoredUsers)
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
 
     public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
-        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers))
-                .orElseGet(false);
+        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers)).orElseGet(false);
     }
 
     /**
@@ -154,13 +139,11 @@ public class RegionManager {
         }
 
         int size = this.pluginConfiguration.regionSize;
-
         if (this.pluginConfiguration.enlargeItems != null) {
             size += (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
         }
 
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
-
         return PandaStream.of(this.regionsMap.values())
                 .map(Region::getCenter)
                 .filterNot(regionCenter -> regionCenter.equals(center))
@@ -170,8 +153,7 @@ public class RegionManager {
     }
 
     public boolean isNearRegion(Option<Location> center) {
-        return center.map(this::isNearRegion)
-                .orElseGet(false);
+        return center.map(this::isNearRegion).orElseGet(false);
     }
 
     /**
@@ -224,11 +206,11 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
 
         if (dataModel instanceof FlatDataModel) {
-            ((FlatDataModel) dataModel).getRegionFile(region).delete();
+            ((FlatDataModel) dataModel).getRegionFile(region).peek(File::delete);
         }
 
         if (dataModel instanceof SQLDataModel) {
-            DatabaseRegionSerializer.delete(region);
+            DatabaseRegionSerializer.delete((SQLDataModel) dataModel, region);
         }
 
         this.removeRegion(region);

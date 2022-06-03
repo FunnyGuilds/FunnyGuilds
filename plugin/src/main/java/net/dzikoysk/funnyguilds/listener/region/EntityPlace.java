@@ -12,7 +12,6 @@ public class EntityPlace extends AbstractFunnyListener {
     @EventHandler
     public void onSpawn(EntityPlaceEvent event) {
         Entity entity = event.getEntity();
-
         if (!(entity instanceof EnderCrystal)) {
             return;
         }

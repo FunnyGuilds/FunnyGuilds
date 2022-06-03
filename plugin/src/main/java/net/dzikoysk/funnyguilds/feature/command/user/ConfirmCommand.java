@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -26,14 +25,14 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild) {
+    public void execute(@IsOwner User owner, Guild guild) {
         when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
                 guild.getMembers()), this.messages.deleteSomeoneIsNear);
-        when(!ConfirmationList.contains(user.getUUID()), this.messages.deleteToConfirm);
+        when(!ConfirmationList.contains(owner.getUUID()), this.messages.deleteToConfirm);
 
-        ConfirmationList.remove(user.getUUID());
+        ConfirmationList.remove(owner.getUUID());
 
-        if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.USER, user, guild))) {
+        if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.USER, owner, guild))) {
             return;
         }
 
@@ -42,9 +41,9 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", player.getName());
+                .register("{PLAYER}", owner.getName());
 
-        sendMessage(player, formatter.format(this.messages.deleteSuccessful));
+        owner.sendMessage(formatter.format(this.messages.deleteSuccessful));
         broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 

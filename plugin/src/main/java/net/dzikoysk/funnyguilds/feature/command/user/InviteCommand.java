@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -33,10 +32,10 @@ public final class InviteCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+    public void execute(@CanManage User deputy, Guild guild, String[] args) {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{AMOUNT}", this.config.maxMembersInGuild)
-                .register("{OWNER}", player.getName())
+                .register("{OWNER}", deputy.getName())
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
@@ -46,11 +45,11 @@ public final class InviteCommand extends AbstractFunnyCommand {
         User invitedUser = UserValidation.requireUserByName(args[0]);
 
         if (this.guildInvitationList.hasInvitation(guild, invitedUser)) {
-            if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, user, guild, invitedUser))) {
+            if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, deputy, guild, invitedUser))) {
                 return;
             }
 
-            sendMessage(player, this.messages.inviteCancelled);
+            deputy.sendMessage(this.messages.inviteCancelled);
             invitedUser.sendMessage(formatter.format(this.messages.inviteCancelledToInvited));
 
             this.guildInvitationList.expireInvitation(guild, invitedUser);
@@ -59,13 +58,13 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
         when(invitedUser.hasGuild(), this.messages.generalUserHasGuild);
 
-        if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, user, guild, invitedUser))) {
+        if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, deputy, guild, invitedUser))) {
             return;
         }
 
         this.guildInvitationList.createInvitation(guild, invitedUser);
 
-        sendMessage(player, FunnyFormatter.formatOnce(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
+        deputy.sendMessage(FunnyFormatter.formatOnce(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
         invitedUser.sendMessage(formatter.format(this.messages.inviteToInvited));
     }
 

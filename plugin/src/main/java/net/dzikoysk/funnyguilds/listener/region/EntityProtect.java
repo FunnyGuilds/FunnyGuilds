@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Entity;
@@ -11,21 +11,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class EntityProtect extends AbstractFunnyListener {
 
-    private static final Set<EntityType> IS_NOT_MOB = new HashSet<>();
-
-    static {
-        IS_NOT_MOB.add(EntityType.ARMOR_STAND);
-        IS_NOT_MOB.add(EntityType.PLAYER);
-    }
+    private static final Set<EntityType> IS_NOT_MOB = EnumSet.of(EntityType.ARMOR_STAND, EntityType.PLAYER);
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-
-        if (!config.explodeShouldAffectOnlyGuild) {
+        if (!this.config.explodeShouldAffectOnlyGuild) {
             return;
         }
 
+        Entity entity = event.getEntity();
         if (!(entity instanceof LivingEntity && !IS_NOT_MOB.contains(entity.getType()))) {
             return;
         }

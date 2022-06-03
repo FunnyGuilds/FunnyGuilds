@@ -30,52 +30,50 @@ public class PlayerJoin extends AbstractFunnyListener {
                 })
                 .orElseGet(() -> {
                     UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.server);
-                    return userManager.create(player.getUniqueId(), player.getName(), profile);
+                    return this.userManager.create(player.getUniqueId(), player.getName(), profile);
                 });
 
         String playerName = player.getName();
-
         if (!user.getName().equals(playerName)) {
             this.userManager.updateUsername(user, playerName);
         }
 
-        user.updateReference(player);
         UserCache cache = user.getCache();
 
         if (this.tablistConfig.playerListEnable) {
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
-                    tablistConfig.playerList,
-                    tablistConfig.playerListHeader, tablistConfig.playerListFooter,
-                    tablistConfig.playerListAnimated, tablistConfig.pages,
-                    tablistConfig.heads.textures,
-                    tablistConfig.playerListPing,
-                    tablistConfig.playerListFillCells,
-                    config.top.enableLegacyPlaceholders
+                    this.tablistConfig.playerList,
+                    this.tablistConfig.playerListHeader, this.tablistConfig.playerListFooter,
+                    this.tablistConfig.playerListAnimated, this.tablistConfig.pages,
+                    this.tablistConfig.heads.textures,
+                    this.tablistConfig.playerListPing,
+                    this.tablistConfig.playerListFillCells,
+                    this.config.top.enableLegacyPlaceholders
             );
+
             individualPlayerList.send();
             cache.setPlayerList(individualPlayerList);
         }
 
         cache.updateScoreboardIfNull(player);
 
-        if (config.guildTagEnabled && cache.getIndividualPrefix().isEmpty()) {
+        if (this.config.guildTagEnabled && cache.getIndividualPrefix().isEmpty()) {
             IndividualPrefix prefix = new IndividualPrefix(user);
             prefix.initialize();
-
             cache.setIndividualPrefix(prefix);
         }
 
         this.concurrencyManager.postRequests(
-                new PrefixGlobalUpdatePlayer(individualPrefixManager, player),
+                new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player),
                 new DummyGlobalUpdateUserRequest(user)
         );
 
-        final FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
-        inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
+        FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
+        inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(this.plugin, user));
 
-        final FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+        FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
         outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {

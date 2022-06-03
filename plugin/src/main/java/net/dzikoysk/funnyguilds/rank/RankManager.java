@@ -10,7 +10,6 @@ import panda.std.Option;
 public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
 
     protected final PluginConfiguration pluginConfiguration;
-
     protected final Map<String, T> topMap = new HashMap<>();
 
     protected RankManager(PluginConfiguration pluginConfiguration) {

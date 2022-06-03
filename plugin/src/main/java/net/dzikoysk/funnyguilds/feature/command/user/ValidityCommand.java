@@ -31,7 +31,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild) {
+    public void execute(Player player, @CanManage User deputy, Guild guild) {
         if (!this.config.validityWhen.isZero()) {
             long validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
@@ -46,7 +46,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         }
 
         long validityTime = this.config.validityTime.toMillis();
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, validityTime))) {
+        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, deputy, guild, validityTime))) {
             return;
         }
 
@@ -61,7 +61,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         guild.setValidity(validity);
 
         String formattedValidity = this.messages.dateFormat.format(validity);
-        sendMessage(player, FunnyFormatter.formatOnce(this.messages.validityDone, "{DATE}", formattedValidity));
+        deputy.sendMessage(FunnyFormatter.formatOnce(this.messages.validityDone, "{DATE}", formattedValidity));
     }
 
 }

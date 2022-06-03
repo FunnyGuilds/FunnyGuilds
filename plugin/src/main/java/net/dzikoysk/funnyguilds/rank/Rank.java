@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.rank;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
 import org.jetbrains.annotations.ApiStatus;
@@ -72,8 +73,7 @@ public abstract class Rank<T extends MutableEntity> {
             return false;
         }
 
-        final Rank rank = (Rank) o;
-
+        Rank<?> rank = (Rank<?>) o;
         if (rank.getType() != this.getType()) {
             return false;
         }
@@ -83,9 +83,7 @@ public abstract class Rank<T extends MutableEntity> {
 
     @Override
     public int hashCode() {
-        int result = this.getType().hashCode();
-        result = 31 * result + this.getIdentityName().hashCode();
-        return result;
+        return Objects.hash(this.getType(), this.getIdentityName());
     }
 
     @Override

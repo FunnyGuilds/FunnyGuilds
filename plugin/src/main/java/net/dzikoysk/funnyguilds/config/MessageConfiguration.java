@@ -674,6 +674,9 @@ public class MessageConfiguration extends OkaeriConfig {
     public String reloadReloading = "&7Przeladowywanie...";
     public String saveallSaving = "&7Zapisywanie...";
     public String saveallSaved = "&7Zapisano (&b{TIME}s&7)!";
+    public String loginNickTooShort = "&cNick jest za krotki!";
+    public String loginNickTooLong = "&cNick jest za dlugi!";
+    public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
 
     @Override
     public OkaeriConfig load() throws OkaeriException {

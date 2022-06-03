@@ -29,7 +29,7 @@ public final class KickCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+    public void execute(Player player, @CanManage User deputy, Guild guild, String[] args) {
         when(args.length < 1, this.messages.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
@@ -37,7 +37,7 @@ public final class KickCommand extends AbstractFunnyCommand {
         when(!guild.equals(formerUser.getGuild().get()), this.messages.kickOtherGuild);
         when(formerUser.isOwner(), this.messages.kickOwner);
 
-        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
+        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, deputy, guild, formerUser))) {
             return;
         }
 
@@ -55,9 +55,8 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        sendMessage(player, formatter.format(this.messages.kickToOwner));
+        deputy.sendMessage(formatter.format(this.messages.kickToOwner));
         broadcastMessage(formatter.format(this.messages.broadcastKick));
-
         formerUser.sendMessage(formatter.format(this.messages.kickToPlayer));
     }
 

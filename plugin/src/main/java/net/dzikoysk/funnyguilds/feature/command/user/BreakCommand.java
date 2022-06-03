@@ -16,7 +16,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -33,12 +32,12 @@ public final class BreakCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
         when(!guild.hasAllies(), this.messages.breakHasNotAllies);
 
         if (args.length < 1) {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", ChatUtils.toString(Entity.names(guild.getAllies()), true));
-            this.messages.breakAlliesList.forEach(line -> sendMessage(player, formatter.format(line)));
+            PandaStream.of(this.messages.breakAlliesList).forEach(line -> owner.sendMessage(formatter.format(line)));
             return;
         }
 
@@ -49,7 +48,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         when(!guild.isAlly(oppositeGuild), () -> formatter.format(this.messages.breakAllyExists));
 
-        if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
+        if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, owner, guild, oppositeGuild))) {
             return;
         }
 
@@ -77,7 +76,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        sendMessage(player, breakFormatter.format(this.messages.breakDone));
+        owner.sendMessage(breakFormatter.format(this.messages.breakDone));
         oppositeGuild.getOwner().sendMessage(breakIFormatter.format(this.messages.breakIDone));
     }
 

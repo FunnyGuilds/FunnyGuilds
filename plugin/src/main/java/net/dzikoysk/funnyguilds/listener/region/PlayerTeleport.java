@@ -20,7 +20,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
                 .filterNot(user -> user.hasPermission("funnyguilds.admin"))
                 .filterNot(user -> this.isTeleportationToRegionAllowed(event.getTo(), user))
                 .peek(user -> {
-                    user.sendMessage(messages.regionTeleport);
+                    user.sendMessage(this.messages.regionTeleport);
                     event.setCancelled(true);
                 });
     }
@@ -42,15 +42,15 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationOnNeutralRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.neutral || !guild.isNeutral(userGuild);
+        return !this.config.blockTeleportOnRegion.neutral || !guild.isNeutral(userGuild);
     }
 
     private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.enemy || !guild.isEnemy(userGuild);
+        return !this.config.blockTeleportOnRegion.enemy || !guild.isEnemy(userGuild);
     }
 
     private boolean isTeleportationOnAllyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.ally || !guild.isAlly(userGuild);
+        return !this.config.blockTeleportOnRegion.ally || !guild.isAlly(userGuild);
     }
 
 }

@@ -24,7 +24,6 @@ class DynamicListenerRegistration {
 
     public void reload() {
         boolean requiredState = this.predicate.get();
-
         if (requiredState == this.currentState) {
             return;
         }
@@ -38,7 +37,7 @@ class DynamicListenerRegistration {
     }
 
     public void forceRegister() {
-        this.listeners.forEach(listener -> plugin.getServer().getPluginManager().registerEvents(listener, this.plugin));
+        this.listeners.forEach(listener -> this.plugin.getServer().getPluginManager().registerEvents(listener, this.plugin));
         this.currentState = true;
     }
 

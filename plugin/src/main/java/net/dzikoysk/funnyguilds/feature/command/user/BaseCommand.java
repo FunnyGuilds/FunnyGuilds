@@ -32,10 +32,10 @@ public final class BaseCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsMember User user, Guild guild) {
+    public void execute(Player player, @IsMember User member, Guild guild) {
         when(!this.config.regionsEnabled, this.messages.regionsDisabled);
         when(!this.config.baseEnable, this.messages.baseTeleportationDisabled);
-        when(user.getCache().getTeleportation() != null, this.messages.baseIsTeleportation);
+        when(member.getCache().getTeleportation() != null, this.messages.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()
@@ -50,7 +50,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
         if (this.config.baseDelay.isZero()) {
             guild.teleportHome(player);
-            sendMessage(player, this.messages.baseTeleport);
+            member.sendMessage(this.messages.baseTeleport);
             return;
         }
 
@@ -60,7 +60,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
         Location before = player.getLocation();
         Instant teleportStart = Instant.now();
-        UserCache cache = user.getCache();
+        UserCache cache = member.getCache();
 
         cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
             if (!player.isOnline()) {
@@ -71,7 +71,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                sendMessage(player, this.messages.baseMove);
+                member.sendMessage(this.messages.baseMove);
                 cache.setTeleportation(null);
                 player.getInventory().addItem(items);
                 return;
@@ -79,13 +79,13 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
-                sendMessage(player, this.messages.baseTeleport);
+                member.sendMessage(this.messages.baseTeleport);
                 guild.teleportHome(player);
                 cache.setTeleportation(null);
             }
         }, 0L, 10L));
 
-        sendMessage(player, FunnyFormatter.formatOnce(this.messages.baseDontMove, "{TIME}", time.getSeconds()));
+        member.sendMessage(FunnyFormatter.formatOnce(this.messages.baseDontMove, "{TIME}", time.getSeconds()));
     }
 
 }

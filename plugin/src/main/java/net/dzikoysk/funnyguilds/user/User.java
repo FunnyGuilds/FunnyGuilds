@@ -102,7 +102,7 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean canManage() {
-        return isOwner() || isDeputy();
+        return this.isOwner() || this.isDeputy();
     }
 
     public boolean isOwner() {

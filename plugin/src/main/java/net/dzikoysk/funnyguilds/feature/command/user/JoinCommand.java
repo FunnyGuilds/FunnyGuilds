@@ -21,6 +21,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.panda_lang.utilities.inject.annotations.Inject;
+import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -49,7 +50,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             String guildNames = ChatUtils.toString(this.guildInvitationList.getInvitationGuildNames(user), false);
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", guildNames);
 
-            this.messages.joinInvitationList.forEach(line -> sendMessage(player, formatter.format(line)));
+            PandaStream.of(this.messages.joinInvitationList).forEach(line -> user.sendMessage(formatter.format(line)));
             return;
         }
 
@@ -85,7 +86,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        sendMessage(player, formatter.format(this.messages.joinToMember));
+        user.sendMessage(formatter.format(this.messages.joinToMember));
         broadcastMessage(formatter.format(this.messages.broadcastJoin));
 
         guild.getOwner().sendMessage(formatter.format(this.messages.joinToOwner));

@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -24,7 +23,7 @@ public final class PvPCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+    public void execute(@CanManage User deputy, Guild guild, String[] args) {
         if (args.length > 0) {
             when(!this.config.damageAlly, this.messages.generalAllyPvpDisabled);
 
@@ -33,13 +32,13 @@ public final class PvPCommand extends AbstractFunnyCommand {
             when(!guild.isAlly(targetAlliedGuild), guildTagFormatter.format(this.messages.allyDoesntExist));
 
             boolean newPvpValue = guild.toggleAllyPvP(targetAlliedGuild);
-            sendMessage(player, guildTagFormatter.format(newPvpValue ? this.messages.pvpAllyOn : this.messages.pvpAllyOff));
+            deputy.sendMessage(guildTagFormatter.format(newPvpValue ? this.messages.pvpAllyOn : this.messages.pvpAllyOff));
 
             return;
         }
 
         boolean newPvpValue = guild.togglePvP();
-        sendMessage(player, newPvpValue ? this.messages.pvpOn : this.messages.pvpOff);
+        deputy.sendMessage(newPvpValue ? this.messages.pvpOn : this.messages.pvpOff);
     }
 
 }

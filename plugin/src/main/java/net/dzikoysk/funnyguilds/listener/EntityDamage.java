@@ -20,7 +20,6 @@ public class EntityDamage extends AbstractFunnyListener {
     public void onDamage(EntityDamageByEntityEvent event) {
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
             Option<User> attackerUserOption = this.userManager.findByPlayer(attacker);
-
             if (attackerUserOption.isEmpty()) {
                 return;
             }
@@ -28,13 +27,12 @@ public class EntityDamage extends AbstractFunnyListener {
             User attackerUser = attackerUserOption.get();
             Entity victim = event.getEntity();
 
-            if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
+            if (this.config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
                 this.regionManager.findRegionAtLocation(victim.getLocation())
                         .map(Region::getGuild)
-                        .filterNot(guild ->
-                                attackerUser.getGuild()
-                                        .map(it -> it.equals(guild))
-                                        .orElseGet(false))
+                        .filterNot(guild -> attackerUser.getGuild()
+                                .map(it -> it.equals(guild))
+                                .orElseGet(false))
                         .peek(guild -> event.setCancelled(true));
 
                 return;
@@ -65,7 +63,7 @@ public class EntityDamage extends AbstractFunnyListener {
                 }
 
                 if (victimGuild.isAlly(attackerGuild)) {
-                    if (!config.damageAlly) {
+                    if (!this.config.damageAlly) {
                         event.setCancelled(true);
                         return;
                     }
@@ -81,7 +79,7 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            if (!config.assistEnable || event.isCancelled()) {
+            if (!this.config.assistEnable || event.isCancelled()) {
                 return;
             }
 

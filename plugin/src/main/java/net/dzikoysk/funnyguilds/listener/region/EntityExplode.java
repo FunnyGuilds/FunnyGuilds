@@ -20,40 +20,37 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class EntityExplode extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
+        Entity explosionEntity = event.getEntity();
+
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        Map<Material, Double> explosiveMaterials = config.explodeMaterials;
-
+        Map<Material, Double> explosiveMaterials = this.config.explodeMaterials;
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
                 explodeLocation,
-                config.explodeRadius,
-                config.explodeRadius,
+                this.config.explodeRadius,
+                this.config.explodeRadius,
                 0,
                 false,
                 true
         );
 
-        Entity explosionEntity = event.getEntity();
-
         explodedBlocks.removeIf(block -> {
             int height = block.getLocation().getBlockY();
-
-            return height < config.tntProtection.explode.minHeight || height > config.tntProtection.explode.maxHeight;
+            return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
         });
 
         blocksInSphere.removeIf(block -> {
             int height = block.getLocation().getBlockY();
-
-            return height < config.tntProtection.explode.minHeight || height > config.tntProtection.explode.maxHeight;
+            return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
         });
 
-        if (config.explodeShouldAffectOnlyGuild) {
+        if (this.config.explodeShouldAffectOnlyGuild) {
             explodedBlocks.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
                     .filterNot(region -> region.getGuild() == null)
                     .filter(region -> block.getType() != Material.TNT)
@@ -64,13 +61,10 @@ public class EntityExplode extends AbstractFunnyListener {
                     .isEmpty());
         }
 
-        Option<Region> regionOption = this.regionManager.findRegionAtLocation(explodeLocation);
-
-        if (regionOption.isPresent()) {
-            Region region = regionOption.get();
+        this.regionManager.findRegionAtLocation(explodeLocation).peek(region -> {
             Guild guild = region.getGuild();
 
-            if (config.warTntProtection && !guild.canBeAttacked()) {
+            if (this.config.warTntProtection && !guild.canBeAttacked()) {
                 event.setCancelled(true);
 
                 if (explosionEntity instanceof TNTPrimed) {
@@ -79,21 +73,20 @@ public class EntityExplode extends AbstractFunnyListener {
 
                     if (explosionSource instanceof Player) {
                         Player explosionPlayer = (Player) explosionSource;
-                        ChatUtils.sendMessage(explosionPlayer, messages.regionExplosionHasProtection);
+                        ChatUtils.sendMessage(explosionPlayer, this.messages.regionExplosionHasProtection);
                     }
                 }
 
                 return;
             }
 
-            region.getHeart()
-                    .peek(heart -> {
-                        explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
-                        blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
-                    });
-        }
+            region.getHeart().peek(heart -> {
+                explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
+                blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
+            });
+        });
 
-        if (config.warTntProtection) {
+        if (this.config.warTntProtection) {
             // Remove block if protected
             boolean anyBlockRemovedInSphere = blocksInSphere.removeIf(block ->
                     this.regionManager.findRegionAtLocation(block.getLocation())
@@ -113,14 +106,13 @@ public class EntityExplode extends AbstractFunnyListener {
 
                     if (explosionSource instanceof Player) {
                         Player explosionPlayer = (Player) explosionSource;
-                        ChatUtils.sendMessage(explosionPlayer, messages.regionExplosionHasProtection);
+                        ChatUtils.sendMessage(explosionPlayer, this.messages.regionExplosionHasProtection);
                     }
                 }
             }
         }
 
         List<Block> additionalExplodedBlocks = new ArrayList<>();
-
         for (Block block : blocksInSphere) {
             if (block.getType() == Material.TNT) {
                 // We want to preserve TNT chain explosions, see GH-1414.
@@ -131,11 +123,11 @@ public class EntityExplode extends AbstractFunnyListener {
             Double explodeChance = explosiveMaterials.get(material);
 
             if (explodeChance == null) {
-                if (!config.allMaterialsAreExplosive) {
+                if (!this.config.allMaterialsAreExplosive) {
                     continue;
                 }
 
-                explodeChance = config.defaultExplodeChance;
+                explodeChance = this.config.defaultExplodeChance;
             }
 
             if (SpaceUtils.chance(explodeChance)) {
@@ -148,8 +140,9 @@ public class EntityExplode extends AbstractFunnyListener {
             return;
         }
 
-        additionalExplodedBlocks.stream()
+        PandaStream.of(additionalExplodedBlocks)
                 .filter(block -> !explodedBlocks.contains(block))
                 .forEach(explodedBlocks::add);
     }
+
 }

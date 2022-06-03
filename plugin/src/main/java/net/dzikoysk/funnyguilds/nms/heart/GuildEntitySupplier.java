@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.nms.heart;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketSuppliers;
+import panda.std.stream.PandaStream;
 
 public class GuildEntitySupplier implements PacketSuppliers {
 
@@ -15,11 +15,10 @@ public class GuildEntitySupplier implements PacketSuppliers {
 
     @Override
     public Collection<FakeEntity> supplyFakeEntities(int chunkX, int chunkZ) {
-        return this.helper.getGuildEntities().values()
-                .stream()
+        return PandaStream.of(this.helper.getGuildEntities().values())
                 .filter(entity -> entity.getChunkX() == chunkX)
                 .filter(entity -> entity.getChunkZ() == chunkZ)
-                .collect(Collectors.toSet());
+                .toSet();
     }
 
 }

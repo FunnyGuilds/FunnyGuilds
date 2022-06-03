@@ -57,14 +57,12 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                 .register("{Z}", playerLocation.getBlockZ());
 
         if (time >= 1) {
-            sendMessage(player, formatter.format(this.messages.escapeStartedUser));
+            user.sendMessage(formatter.format(this.messages.escapeStartedUser));
             region.getGuild().broadcast(formatter.format(this.messages.escapeStartedOpponents));
         }
 
         guild.getHome().peek(home -> this.scheduleTeleportation(player, user, home, time, () -> {
-            region.getGuild().getMembers().forEach(member -> {
-                member.sendMessage(formatter.format(this.messages.escapeSuccessfulOpponents));
-            });
+            region.getGuild().broadcast(formatter.format(this.messages.escapeSuccessfulOpponents));
         }));
     }
 
@@ -82,7 +80,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                sendMessage(player, this.messages.escapeCancelled);
+                user.sendMessage(this.messages.escapeCancelled);
                 cache.setTeleportation(null);
                 return;
             }
@@ -90,7 +88,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             if (timeCounter.getAndIncrement() > time) {
                 cache.getTeleportation().cancel();
                 player.teleport(destination);
-                sendMessage(player, this.messages.escapeSuccessfulUser);
+                user.sendMessage(this.messages.escapeSuccessfulUser);
                 onSuccess.run();
                 cache.setTeleportation(null);
             }

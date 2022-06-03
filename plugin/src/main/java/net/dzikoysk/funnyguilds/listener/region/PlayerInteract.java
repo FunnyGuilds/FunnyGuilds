@@ -49,22 +49,23 @@ public class PlayerInteract extends AbstractFunnyListener {
         if (regionOption.isEmpty()) {
             return;
         }
-        Region region = regionOption.get();
 
+        Region region = regionOption.get();
         boolean returnMethod = region.getHeartBlock()
                 .filter(heart -> heart.equals(clicked))
                 .peek(heart -> {
                     event.setCancelled(true);
 
-                    Guild guild = region.getGuild();
-
                     Option<User> userOption = this.userManager.findByPlayer(player);
                     if (userOption.isEmpty()) {
                         return;
                     }
+
+                    Guild guild = region.getGuild();
                     User user = userOption.get();
 
-                    GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
+                    GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild,
+                            eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
                     SimpleEventHandler.handle(interactEvent);
 
                     if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
@@ -80,12 +81,12 @@ public class PlayerInteract extends AbstractFunnyListener {
                         return;
                     }
 
-                    if (config.informationMessageCooldowns.cooldown(player, config.infoPlayerCooldown)) {
+                    if (this.config.informationMessageCooldowns.cooldown(player, this.config.infoPlayerCooldown)) {
                         return;
                     }
 
                     try {
-                        infoExecutor.execute(player, new String[] {guild.getTag()});
+                        this.infoExecutor.execute(player, new String[] {guild.getTag()});
                     }
                     catch (ValidationException validatorException) {
                         validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
@@ -101,10 +102,10 @@ public class PlayerInteract extends AbstractFunnyListener {
             Guild guild = region.getGuild();
 
             this.userManager.findByPlayer(player).peek(user -> {
-                boolean blocked = config.blockedInteract.contains(clicked.getType());
+                boolean blocked = this.config.blockedInteract.contains(clicked.getType());
 
                 if (guild.isMember(user)) {
-                    event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
+                    event.setCancelled(blocked && this.config.regionExplodeBlockInteractions && !guild.canBuild());
                 }
                 else {
                     event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));

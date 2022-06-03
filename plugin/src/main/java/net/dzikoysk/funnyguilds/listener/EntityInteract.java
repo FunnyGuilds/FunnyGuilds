@@ -29,28 +29,29 @@ public class EntityInteract extends AbstractFunnyListener {
         if (clickedEntity instanceof Player) {
             Player clickedPlayer = (Player) clickedEntity;
 
-            if (!config.infoPlayerEnabled ||
-                    (config.infoPlayerSneaking && !eventCaller.isSneaking()) ||
-                    informationMessageCooldowns.cooldown(eventCaller, config.infoPlayerCooldown)) {
+            if (!this.config.infoPlayerEnabled ||
+                    (this.config.infoPlayerSneaking && !eventCaller.isSneaking()) ||
+                    this.informationMessageCooldowns.cooldown(eventCaller, this.config.infoPlayerCooldown)) {
 
                 return;
             }
 
-            if (config.infoPlayerCommand) {
+            if (this.config.infoPlayerCommand) {
                 try {
-                    playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
+                    this.playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
                 }
                 catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(eventCaller, message));
                 }
             }
             else {
-                this.userManager.findByPlayer(clickedPlayer)
-                        .peek(user -> playerExecutor.sendInfoMessage(messages.playerRightClickInfo, user, eventCaller));
+                this.userManager.findByPlayer(clickedPlayer).peek(user -> {
+                    this.playerExecutor.sendInfoMessage(this.messages.playerRightClickInfo, user, eventCaller);
+                });
             }
         }
 
-        if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
+        if (this.config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
             this.userManager.findByPlayer(eventCaller)
                     //.filter(user -> user.hasGuild() && !user.getGuild().get().canBuild())
                     .filter(user -> user.getGuild().map(Guild::canBuild).isEmpty())

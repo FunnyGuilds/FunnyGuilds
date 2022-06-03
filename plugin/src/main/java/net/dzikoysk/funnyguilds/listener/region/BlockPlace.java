@@ -26,11 +26,11 @@ public class BlockPlace extends AbstractFunnyListener {
         Location blockLocation = block.getLocation();
 
         if (type == Material.TNT) {
-            if (blockLocation.getBlockY() < config.tntProtection.build.minHeight) {
+            if (blockLocation.getBlockY() < this.config.tntProtection.build.minHeight) {
                 event.setCancelled(true);
             }
 
-            if (blockLocation.getBlockY() > config.tntProtection.build.maxHeight) {
+            if (blockLocation.getBlockY() > this.config.tntProtection.build.maxHeight) {
                 event.setCancelled(true);
             }
         }
@@ -43,7 +43,7 @@ public class BlockPlace extends AbstractFunnyListener {
             return;
         }
 
-        if (config.placingBlocksBypassOnRegion.contains(type)) {
+        if (this.config.placingBlocksBypassOnRegion.contains(type)) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class BlockPlace extends AbstractFunnyListener {
         event.setCancelled(true);
 
         // disabled bugged-blocks or blacklisted item
-        if (!config.buggedBlocks || config.buggedBlocksExclude.contains(type)) {
+        if (!this.config.buggedBlocks || this.config.buggedBlocksExclude.contains(type)) {
             return;
         }
 
@@ -81,6 +81,7 @@ public class BlockPlace extends AbstractFunnyListener {
         boolean sameColumn = (playerLocation.getBlockX() == blockLocation.getBlockX()) && (playerLocation.getBlockZ() == blockLocation.getBlockZ());
         double distanceUp = (playerLocation.getY() - blockLocation.getBlockY());
         boolean upToTwoBlocks = (distanceUp > 0) && (distanceUp <= 2);
+
         if (sameColumn && upToTwoBlocks) {
             player.setVelocity(ANTI_GLITCH_VELOCITY);
         }
@@ -94,13 +95,15 @@ public class BlockPlace extends AbstractFunnyListener {
             // start timer and return the item to the player if specified to do so
             Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                 event.getBlockReplacedState().update(true);
+
                 if (!player.isOnline()) {
                     return;
                 }
-                if (config.buggedBlocksReturn) {
+
+                if (this.config.buggedBlocksReturn) {
                     player.getInventory().addItem(returnItem);
                 }
-            }, config.buggedBlocksTimer);
+            }, this.config.buggedBlocksTimer);
 
         });
     }

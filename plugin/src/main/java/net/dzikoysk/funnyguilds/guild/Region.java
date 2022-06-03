@@ -64,8 +64,8 @@ public class Region extends AbstractMutableEntity {
             Vector l = new Vector(lx, LocationUtils.getMinHeight(this.world), lz);
             Vector p = new Vector(px, this.world.getMaxHeight(), pz);
 
-            this.firstCorner = l.toLocation(world);
-            this.secondCorner = p.toLocation(world);
+            this.firstCorner = l.toLocation(this.world);
+            this.secondCorner = p.toLocation(this.world);
         }
     }
 
@@ -123,7 +123,7 @@ public class Region extends AbstractMutableEntity {
     }
 
     public Option<Block> getHeartBlock() {
-        return Option.of(this.getCenter())
+        return Option.of(this.center)
                 .map(Location::getBlock)
                 .map(block -> block.getRelative(BlockFace.DOWN));
     }
@@ -153,27 +153,27 @@ public class Region extends AbstractMutableEntity {
     }
 
     public int getUpperX() {
-        return compareCoordinates(true, firstCorner.getBlockX(), secondCorner.getBlockX());
+        return compareCoordinates(true, this.firstCorner.getBlockX(), this.secondCorner.getBlockX());
     }
 
     public int getUpperY() {
-        return compareCoordinates(true, firstCorner.getBlockY(), secondCorner.getBlockY());
+        return compareCoordinates(true, this.firstCorner.getBlockY(), this.secondCorner.getBlockY());
     }
 
     public int getUpperZ() {
-        return compareCoordinates(true, firstCorner.getBlockZ(), secondCorner.getBlockZ());
+        return compareCoordinates(true, this.firstCorner.getBlockZ(), this.secondCorner.getBlockZ());
     }
 
     public int getLowerX() {
-        return compareCoordinates(false, firstCorner.getBlockX(), secondCorner.getBlockX());
+        return compareCoordinates(false, this.firstCorner.getBlockX(), this.secondCorner.getBlockX());
     }
 
     public int getLowerY() {
-        return compareCoordinates(false, firstCorner.getBlockY(), secondCorner.getBlockY());
+        return compareCoordinates(false, this.firstCorner.getBlockY(), this.secondCorner.getBlockY());
     }
 
     public int getLowerZ() {
-        return compareCoordinates(false, firstCorner.getBlockZ(), secondCorner.getBlockZ());
+        return compareCoordinates(false, this.firstCorner.getBlockZ(), this.secondCorner.getBlockZ());
     }
 
     public Location getUpperCorner() {
@@ -192,7 +192,7 @@ public class Region extends AbstractMutableEntity {
         return this.secondCorner;
     }
 
-    private int compareCoordinates(boolean upper, int a, int b) {
+    private static int compareCoordinates(boolean upper, int a, int b) {
         if (upper) {
             return Math.max(b, a);
         }
@@ -202,7 +202,7 @@ public class Region extends AbstractMutableEntity {
     }
 
     public FunnyBox toBox() {
-        return FunnyBox.of(firstCorner, secondCorner);
+        return FunnyBox.of(this.firstCorner, this.secondCorner);
     }
 
     @Override

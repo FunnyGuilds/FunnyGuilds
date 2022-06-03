@@ -65,14 +65,12 @@ public class BukkitUserProfile implements UserProfile {
     public boolean hasPermission(String permission) {
         return this.getPlayer()
                 .map(player -> player.hasPermission(permission))
-                .orElseGet(offlinePlayer.isOp() || (VaultHook.isPermissionHooked() && VaultHook.hasPermission(offlinePlayer, permission)));
+                .orElseGet(this.offlinePlayer.isOp() || (VaultHook.isPermissionHooked() && VaultHook.hasPermission(this.offlinePlayer, permission)));
     }
 
     @Override
     public int getPing() {
-        return getPlayer()
-                .map(PingUtils::getPing)
-                .orElseGet(0);
+        return this.getPlayer().map(PingUtils::getPing).orElseGet(0);
     }
 
     @Override //TODO: MiniMessage support
@@ -81,7 +79,7 @@ public class BukkitUserProfile implements UserProfile {
             return;
         }
 
-        this.getPlayer().peek(player -> player.sendMessage(ChatUtils.colored(message)));
+        this.getPlayer().peek(player -> ChatUtils.sendMessage(player, message));
     }
 
     @Override
