@@ -21,7 +21,6 @@ public class V1_16R3StatisticsAccessor implements StatisticsAccessor {
 
     public int getPlayerPing(Player player) {
         Preconditions.checkNotNull(player, "player can't be null!");
-
         return ((CraftPlayer) player).getHandle().ping;
     }
 

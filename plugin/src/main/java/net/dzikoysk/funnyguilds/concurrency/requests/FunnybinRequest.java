@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -40,7 +39,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
     @Override
     public void execute() throws Exception {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        List<FunnybinResponse> sentPastes = new ArrayList<>();
+        List<Option<FunnybinResponse>> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < this.files.size(); i++) {
             String fileName = this.files.get(i);
@@ -105,7 +104,12 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         }
 
         if (sentPastes.size() == 1) {
-            String message = FunnyFormatter.formatOnce(messages.funnybinFileSent, "{LINK}", sentPastes.get(0).getShortUrl());
+            Option<FunnybinResponse> paste = sentPastes.get(0);
+            if (paste.isEmpty()) {
+                return;
+            }
+
+            String message = FunnyFormatter.format(messages.funnybinFileSent, "{LINK}", paste.get().getShortUrl());
             ChatUtils.sendMessage(this.sender, message);
             return;
         }
@@ -113,16 +117,18 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         ChatUtils.sendMessage(this.sender, messages.funnybinBuildingBundle);
 
         try {
-            FunnybinResponse response = FunnyTelemetry.createBundle(PandaStream.of(sentPastes)
+            Option<FunnybinResponse> response = FunnyTelemetry.createBundle(PandaStream.of(sentPastes)
+                    .filter(Option::isPresent)
+                    .map(Option::get)
                     .map(FunnybinResponse::getUuid)
-                    .collect(Collectors.toList())
+                    .toList()
             );
 
-            if (response == null) {
+            if (response.isEmpty()) {
                 throw new IOException("Response for FunnyTelemetry bundle is null");
             }
 
-            String message = FunnyFormatter.formatOnce(messages.funnybinBundleSent, "{LINK}", response.getShortUrl());
+            String message = FunnyFormatter.format(messages.funnybinBundleSent, "{LINK}", response.get().getShortUrl());
             ChatUtils.sendMessage(this.sender, message);
         }
         catch (IOException exception) {

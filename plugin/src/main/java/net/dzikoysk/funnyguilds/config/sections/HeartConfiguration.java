@@ -67,7 +67,7 @@ public class HeartConfiguration extends OkaeriConfig {
     public void loadProcessedProperties() {
         try {
 
-            this.createEntityType = EntityType.valueOf(FunnyFormatter.formatOnce(this.createType.toUpperCase(), " ", "_"));
+            this.createEntityType = EntityType.valueOf(FunnyFormatter.format(this.createType.toUpperCase(), " ", "_"));
         }
         catch (IllegalArgumentException materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);

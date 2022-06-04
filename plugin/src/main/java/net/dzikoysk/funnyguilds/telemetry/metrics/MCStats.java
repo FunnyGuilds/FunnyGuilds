@@ -25,6 +25,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
+import panda.std.stream.PandaStream;
 
 public class MCStats {
 
@@ -39,7 +40,7 @@ public class MCStats {
     private final String guid;
     private final boolean debug;
     private final Object optOutLock = new Object();
-    private volatile BukkitTask task = null;
+    private volatile BukkitTask task;
 
     public MCStats(Plugin plugin) throws IOException {
         if (plugin == null) {
@@ -49,39 +50,39 @@ public class MCStats {
         this.plugin = plugin;
 
         // load the config
-        configurationFile = getConfigFile();
-        configuration = YamlConfiguration.loadConfiguration(configurationFile);
+        this.configurationFile = this.getConfigFile();
+        this.configuration = YamlConfiguration.loadConfiguration(this.configurationFile);
 
         // add some defaults
-        configuration.addDefault("opt-out", false);
-        configuration.addDefault("guid", UUID.randomUUID().toString());
-        configuration.addDefault("debug", false);
+        this.configuration.addDefault("opt-out", false);
+        this.configuration.addDefault("guid", UUID.randomUUID().toString());
+        this.configuration.addDefault("debug", false);
 
         // Do we need to create the file?
-        if (configuration.get("guid", null) == null) {
-            configuration.options().header("http://mcstats.org").copyDefaults(true);
-            configuration.save(configurationFile);
+        if (this.configuration.get("guid", null) == null) {
+            this.configuration.options().header("http://mcstats.org").copyDefaults(true);
+            this.configuration.save(this.configurationFile);
         }
 
         // Load the guid then
-        guid = configuration.getString("guid");
-        debug = configuration.getBoolean("debug", false);
+        this.guid = this.configuration.getString("guid");
+        this.debug = this.configuration.getBoolean("debug", false);
     }
 
     public static byte[] gzip(String input) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        try (GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
-            gzos.write(input.getBytes(StandardCharsets.UTF_8));
+        try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream)) {
+            gzipOutputStream.write(input.getBytes(StandardCharsets.UTF_8));
         }
         catch (IOException exception) {
             FunnyGuilds.getPluginLogger().error("MCStats error", exception);
         }
 
-        return baos.toByteArray();
+        return byteArrayOutputStream.toByteArray();
     }
 
-    private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
+    private static void appendJSONPair(StringBuilder json, String key, String value) {
         boolean isValueNumeric = false;
 
         try {
@@ -142,84 +143,83 @@ public class MCStats {
                     else {
                         builder.append(chr);
                     }
+
                     break;
             }
         }
-        builder.append('"');
 
+        builder.append('"');
         return builder.toString();
     }
 
-    private static String urlEncode(final String text) throws UnsupportedEncodingException {
+    private static String urlEncode(String text) throws UnsupportedEncodingException {
         return URLEncoder.encode(text, "UTF-8");
     }
 
-    public Graph createGraph(final String name) {
+    public Graph createGraph(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Graph name cannot be null");
         }
 
         // Construct the graph object
-        final Graph graph = new Graph(name);
+        Graph graph = new Graph(name);
 
         // Now we can add our graph
-        graphs.add(graph);
+        this.graphs.add(graph);
 
-        // and return back
+        // and return
         return graph;
     }
 
-    public void addGraph(final Graph graph) {
+    public void addGraph(Graph graph) {
         if (graph == null) {
             throw new IllegalArgumentException("Graph cannot be null");
         }
 
-        graphs.add(graph);
+        this.graphs.add(graph);
     }
 
     public boolean start() {
-        synchronized (optOutLock) {
+        synchronized (this.optOutLock) {
             // Did we opt out?
-            if (isOptOut()) {
+            if (this.isOptOut()) {
                 return false;
             }
 
             // Is metrics already running?
-            if (task != null) {
+            if (this.task != null) {
                 return true;
             }
 
             // Begin hitting the server with glorious data
-            task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
-
+            this.task = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, new Runnable() {
                 private boolean firstPost = true;
 
                 public void run() {
                     try {
-                        // This has to be synchronized or it can collide with the disable method.
-                        synchronized (optOutLock) {
+                        // This has to be synchronized, or it can collide with the disable method
+                        synchronized (MCStats.this.optOutLock) {
                             // Disable Task, if it is running and the server owner decided to opt-out
-                            if (isOptOut() && task != null) {
-                                task.cancel();
-                                task = null;
-                                // Tell all plotters to stop gathering information.
-                                for (Graph graph : graphs) {
-                                    graph.onOptOut();
-                                }
+                            if (MCStats.this.isOptOut() && MCStats.this.task != null) {
+                                MCStats.this.task.cancel();
+                                MCStats.this.task = null;
+
+                                // Tell all plotters to stop gathering information
+                                PandaStream.of(MCStats.this.graphs).forEach(Graph::onOptOut);
                             }
                         }
 
                         // We use the inverse of firstPost because if it is the first time we are posting,
-                        // it is not a interval ping, so it evaluates to FALSE
-                        // Each time thereafter it will evaluate to TRUE, i.e PING!
-                        postPlugin(!firstPost);
+                        // it is not an interval ping, so it evaluates to FALSE
+                        // Each time thereafter it will evaluate to TRUE, i.e. PING!
+                        MCStats.this.postPlugin(!this.firstPost);
 
                         // After the first post we set firstPost to false
                         // Each post thereafter will be a ping
-                        firstPost = false;
+                        this.firstPost = false;
                     }
                     catch (IOException e) {
-                        if (debug) {
+                        if (MCStats.this.debug) {
                             Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
                         }
                     }
@@ -231,39 +231,39 @@ public class MCStats {
     }
 
     public void enable() throws IOException {
-        // This has to be synchronized or it can collide with the check in the task.
-        synchronized (optOutLock) {
+        // This has to be synchronized, or it can collide with the check in the task.
+        synchronized (this.optOutLock) {
             // Check if the server owner has already set opt-out, if not, set it.
-            if (isOptOut()) {
-                configuration.set("opt-out", false);
-                configuration.save(configurationFile);
+            if (this.isOptOut()) {
+                this.configuration.set("opt-out", false);
+                this.configuration.save(this.configurationFile);
             }
 
             // Enable Task, if it is not running
-            if (task == null) {
-                start();
+            if (this.task == null) {
+                this.start();
             }
         }
     }
 
     public void disable() throws IOException {
-        // This has to be synchronized or it can collide with the check in the task.
-        synchronized (optOutLock) {
+        // This has to be synchronized, or it can collide with the check in the task.
+        synchronized (this.optOutLock) {
             // Check if the server owner has already set opt-out, if not, set it.
-            if (!isOptOut()) {
-                configuration.set("opt-out", true);
-                configuration.save(configurationFile);
+            if (!this.isOptOut()) {
+                this.configuration.set("opt-out", true);
+                this.configuration.save(this.configurationFile);
             }
 
             // Disable Task, if it is running
-            if (task != null) {
-                task.cancel();
-                task = null;
+            if (this.task != null) {
+                this.task.cancel();
+                this.task = null;
             }
         }
     }
 
-    private void postPlugin(final boolean isPing) throws IOException {
+    private void postPlugin(boolean isPing) throws IOException {
         // Server software specific section
         String pluginName = "FunnyGuilds";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
@@ -271,14 +271,14 @@ public class MCStats {
         String serverVersion = Bukkit.getVersion();
         int playersOnline = Bukkit.getServer().getOnlinePlayers().size();
 
-        // END server software specific section -- all code below does not use any code outside of this class / Java
+        // END server software specific section -- all code below does not use any code outside this class / Java
 
         // Construct the post data
         StringBuilder json = new StringBuilder(1024);
         json.append('{');
 
-        // The plugin's description file containg all of the plugin data such as name, version, author, etc
-        appendJSONPair(json, "guid", guid);
+        // The plugin's description file containing all the plugin data such as name, version, author, etc
+        appendJSONPair(json, "guid", this.guid);
         appendJSONPair(json, "plugin_version", pluginVersion);
         appendJSONPair(json, "server_version", serverVersion);
         appendJSONPair(json, "players_online", Integer.toString(playersOnline));
@@ -307,8 +307,8 @@ public class MCStats {
             appendJSONPair(json, "ping", "1");
         }
 
-        if (graphs.size() > 0) {
-            synchronized (graphs) {
+        if (!this.graphs.isEmpty()) {
+            synchronized (this.graphs) {
                 json.append(',');
                 json.append('"');
                 json.append("graphs");
@@ -318,7 +318,7 @@ public class MCStats {
 
                 boolean firstGraph = true;
 
-                for (Graph graph : graphs) {
+                for (Graph graph : this.graphs) {
                     StringBuilder graphJson = new StringBuilder();
                     graphJson.append('{');
 
@@ -353,7 +353,7 @@ public class MCStats {
         URLConnection connection;
 
         // Mineshafter creates a socks proxy, so we can safely bypass it
-        // It does not reroute POST requests so we need to go around it
+        // It does not reroute POST requests, so we need to go around it
         if (isMineshafterPresent()) {
             connection = url.openConnection(Proxy.NO_PROXY);
         }
@@ -375,8 +375,9 @@ public class MCStats {
 
         connection.setDoOutput(true);
 
-        if (debug) {
-            System.out.println("[Metrics] Prepared request for " + pluginName + " uncompressed=" + uncompressed.length + " compressed=" + compressed.length);
+        if (this.debug) {
+            System.out.println("[Metrics] Prepared request for " + pluginName + " uncompressed=" +
+                    uncompressed.length + " compressed=" + compressed.length);
         }
 
         // Write the data
@@ -385,7 +386,7 @@ public class MCStats {
         os.flush();
 
         // Now read the response
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String response = reader.readLine();
 
         // close resources
@@ -405,9 +406,9 @@ public class MCStats {
         else {
             // Is this the first update this hour?
             if (response.equals("1") || response.contains("This is your first update this hour")) {
-                synchronized (graphs) {
+                synchronized (this.graphs) {
 
-                    for (Graph graph : graphs) {
+                    for (Graph graph : this.graphs) {
                         for (Plotter plotter : graph.getPlotters()) {
                             plotter.reset();
                         }
@@ -418,18 +419,18 @@ public class MCStats {
     }
 
     public boolean isOptOut() {
-        synchronized (optOutLock) {
+        synchronized (this.optOutLock) {
             try {
                 // Reload the metrics file
-                configuration.load(getConfigFile());
+                this.configuration.load(this.getConfigFile());
             }
             catch (IOException | InvalidConfigurationException ex) {
-                if (debug) {
+                if (this.debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
                 return true;
             }
-            return configuration.getBoolean("opt-out", false);
+            return this.configuration.getBoolean("opt-out", false);
         }
     }
 
@@ -439,13 +440,13 @@ public class MCStats {
         // plugin.getDataFolder() => base/plugins/PluginA/
         // pluginsFolder => base/plugins/
         // The base is not necessarily relative to the startup directory.
-        File pluginsFolder = plugin.getDataFolder().getParentFile();
+        File pluginsFolder = this.plugin.getDataFolder().getParentFile();
 
         // return => base/plugins/PluginMetrics/config.yml
         return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
     }
 
-    private boolean isMineshafterPresent() {
+    private static boolean isMineshafterPresent() {
         try {
             Class.forName("mineshafter.MineServer");
             return true;
@@ -455,47 +456,47 @@ public class MCStats {
         }
     }
 
-    public static class Graph {
+    public static final class Graph {
 
         private final String name;
         private final Set<Plotter> plotters = new LinkedHashSet<>();
 
-        private Graph(final String name) {
+        private Graph(String name) {
             this.name = name;
         }
 
-        public void addPlotter(final Plotter plotter) {
-            plotters.add(plotter);
+        public void addPlotter(Plotter plotter) {
+            this.plotters.add(plotter);
         }
 
-        public void removePlotter(final Plotter plotter) {
-            plotters.remove(plotter);
+        public void removePlotter(Plotter plotter) {
+            this.plotters.remove(plotter);
         }
 
-        protected void onOptOut() {
+        private void onOptOut() {
         }
 
         public String getName() {
-            return name;
+            return this.name;
         }
 
         public Set<Plotter> getPlotters() {
-            return Collections.unmodifiableSet(plotters);
+            return Collections.unmodifiableSet(this.plotters);
         }
 
         @Override
         public int hashCode() {
-            return name.hashCode();
+            return this.name.hashCode();
         }
 
         @Override
-        public boolean equals(final Object object) {
+        public boolean equals(Object object) {
             if (!(object instanceof Graph)) {
                 return false;
             }
 
-            final Graph graph = (Graph) object;
-            return graph.name.equals(name);
+            Graph graph = (Graph) object;
+            return graph.name.equals(this.name);
         }
 
     }
@@ -508,7 +509,7 @@ public class MCStats {
             this("Default");
         }
 
-        public Plotter(final String name) {
+        public Plotter(String name) {
             this.name = name;
         }
 
@@ -518,22 +519,22 @@ public class MCStats {
         public abstract int getValue();
 
         public String getColumnName() {
-            return name;
+            return this.name;
         }
 
         @Override
         public int hashCode() {
-            return getColumnName().hashCode();
+            return this.name.hashCode();
         }
 
         @Override
-        public boolean equals(final Object object) {
+        public boolean equals(Object object) {
             if (!(object instanceof Plotter)) {
                 return false;
             }
 
-            final Plotter plotter = (Plotter) object;
-            return plotter.name.equals(name) && plotter.getValue() == getValue();
+            Plotter plotter = (Plotter) object;
+            return plotter.name.equals(this.name) && plotter.getValue() == this.getValue();
         }
 
     }

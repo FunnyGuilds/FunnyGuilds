@@ -48,7 +48,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 this.messages.funnyguildsHelp.forEach(line -> sendMessage(sender, line));
                 break;
             default:
-                sendMessage(sender, FunnyFormatter.formatOnce(this.messages.funnyguildsVersion, "{VERSION}",
+                sendMessage(sender, FunnyFormatter.format(this.messages.funnyguildsVersion, "{VERSION}",
                         this.plugin.getVersion().getFullVersion()));
                 break;
         }
@@ -79,7 +79,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         }
 
         String time = String.format("%.2f", (System.currentTimeMillis() - currentTime) / 1000.0D);
-        sendMessage(sender, FunnyFormatter.formatOnce(this.messages.saveallSaved, "{TIME}", time));
+        sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
     }
 
     private void post(CommandSender sender, String[] args) {

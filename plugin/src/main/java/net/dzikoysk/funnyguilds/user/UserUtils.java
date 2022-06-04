@@ -108,7 +108,6 @@ public final class UserUtils {
      */
     public static Set<String> getOnlineNames(Collection<User> users) {
         Set<String> set = new HashSet<>();
-
         for (User user : users) {
             set.add(user.isOnline() ? "<online>" + user.getName() + "</online>" : user.getName());
         }

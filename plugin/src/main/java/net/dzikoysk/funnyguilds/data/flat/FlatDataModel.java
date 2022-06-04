@@ -125,16 +125,14 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        PandaStream<User> correctUsers = PandaStream.of(users)
-                .filter(user -> user.getUUID() != null)
-                .filter(user -> user.getName() != null);
-
-        long serializationErrors = correctUsers
+        AtomicInteger incorrectUsersCount = new AtomicInteger();
+        long serializationErrors = PandaStream.of(users)
+                .filter(user -> checkUser(user, incorrectUsersCount))
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
                 .filter(user -> !FlatUserSerializer.serialize(this, user))
                 .count();
 
-        long errors = serializationErrors + (users.size() - correctUsers.count());
+        long errors = serializationErrors + incorrectUsersCount.get();
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Users save errors " + errors);
         }
@@ -150,18 +148,22 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        PandaStream<Guild> correctlyLoaded = PandaStream.of(guildFiles)
+        AtomicInteger incorrectGuildsCount = new AtomicInteger();
+        long ownerlessGuilds = PandaStream.of(guildFiles)
                 .map(FlatGuildSerializer::deserialize)
+                .forEach(guildOption -> {
+                    if (guildOption.isEmpty()) {
+                        incorrectGuildsCount.incrementAndGet();
+                    }
+                })
                 .filter(Option::isPresent)
-                .map(Option::get);
-
-        long ownerlessGuilds = correctlyLoaded
+                .map(Option::get)
                 .forEach(Guild::wasChanged)
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!"))
                 .count();
 
-        long errors = ownerlessGuilds + (guildFiles.length - correctlyLoaded.count());
+        long errors = ownerlessGuilds + incorrectGuildsCount.get();
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
         }
@@ -238,6 +240,15 @@ public class FlatDataModel implements DataModel {
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Regions save errors: " + errors);
         }
+    }
+
+    private static boolean checkUser(User user, AtomicInteger errorCounter) {
+        if (user.getUUID() == null || user.getName() == null) {
+            errorCounter.incrementAndGet();
+            return false;
+        }
+
+        return true;
     }
 
 }

@@ -70,7 +70,7 @@ public final class ProtectionSystem {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         long time = TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis());
 
-        ChatUtils.sendMessage(player, FunnyFormatter.formatOnce(messages.regionExplodeInteract, "{TIME}", time));
+        ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time));
     }
 
     public enum ProtectionType {

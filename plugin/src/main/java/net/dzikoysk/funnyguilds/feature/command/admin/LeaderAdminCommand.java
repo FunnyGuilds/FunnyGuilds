@@ -40,7 +40,7 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
 
         sendMessage(sender, this.messages.leaderSet);
         user.sendMessage(this.messages.leaderOwner);
-        guild.broadcast(FunnyFormatter.formatOnce(this.messages.leaderMembers, "{PLAYER}", user.getName()));
+        guild.broadcast(FunnyFormatter.format(this.messages.leaderMembers, "{PLAYER}", user.getName()));
     }
 
 }

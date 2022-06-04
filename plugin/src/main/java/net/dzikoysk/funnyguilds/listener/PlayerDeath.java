@@ -25,16 +25,17 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -202,7 +203,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     FunnyFormatter formatter = new FunnyFormatter()
                             .register("{PLAYER}", assistUser.getName())
                             .register("{+}", addedPoints)
-                            .register("{SHARE}", ChatUtils.getPercent(assistFraction));
+                            .register("{SHARE}", FunnyStringUtils.getPercent(assistFraction));
 
                     assistEntries.add(formatter.format(this.messages.rankAssistEntry));
 
@@ -227,7 +228,6 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
 
             attackerCache.registerVictim(victim);
-
             victimPointsBeforeChange = victim.getRank().getPoints();
 
             victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getPointsChange());
@@ -241,7 +241,6 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-
         if (this.config.dataModel == DataModel.MYSQL) {
             victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
             attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
@@ -274,13 +273,13 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", (int) (playerAttacker.getHealth() / 2))
                 .register("{VTAG}", victim.getGuild()
-                        .map(guild -> StringUtils.replace(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
                 .register("{ATAG}", attacker.getGuild()
-                        .map(guild -> StringUtils.replace(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
                 .register("{ASSISTS}", this.config.assistEnable && !assistEntries.isEmpty()
-                        ? StringUtils.replace(this.messages.rankAssistMessage, "{ASSISTS}", String.join(this.messages.rankAssistDelimiter, assistEntries))
+                        ? FunnyFormatter.format(this.messages.rankAssistMessage, "{ASSISTS}", String.join(this.messages.rankAssistDelimiter, assistEntries))
                         : "");
 
         if (this.config.displayTitleNotificationForKiller) {
@@ -299,10 +298,10 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         if (this.config.broadcastDeathMessage) {
             if (this.config.ignoreDisabledDeathMessages) {
-                for (Player player : event.getEntity().getWorld().getPlayers()) {
+                PandaStream.of(event.getEntity().getWorld().getPlayers()).forEach(player -> {
                     event.setDeathMessage(null);
                     ChatUtils.sendMessage(player, deathMessage);
-                }
+                });
             }
             else {
                 event.setDeathMessage(deathMessage);
@@ -310,10 +309,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
         else {
             event.setDeathMessage(null);
-
-            for (User fighter : messageReceivers) {
-                fighter.sendMessage(deathMessage);
-            }
+            PandaStream.of(messageReceivers).forEach(fighter -> fighter.sendMessage(deathMessage));
         }
 
     }

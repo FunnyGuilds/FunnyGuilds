@@ -6,13 +6,11 @@ public class SkinTexture {
 
     private final String value;
     private final String signature;
-
     private final Property property;
 
     public SkinTexture(String value, String signature) {
         this.value = value;
         this.signature = signature;
-
         this.property = new Property("textures", this.value, this.signature);
     }
 
@@ -27,4 +25,5 @@ public class SkinTexture {
     public Property getProperty() {
         return this.property;
     }
+
 }

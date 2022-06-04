@@ -10,21 +10,21 @@ public class PlayerInfoDataHelper {
     private final Object gameMode;
 
     public PlayerInfoDataHelper(Class<?> packetPlayOutPlayerInfoClass, Object gameMode) {
-        Class<?> playerInfoDataClass = this.findPlayerInfoDataClass(packetPlayOutPlayerInfoClass);
+        Class<?> playerInfoDataClass = findPlayerInfoDataClass(packetPlayOutPlayerInfoClass);
         this.playerInfoDataConstructor = playerInfoDataClass.getDeclaredConstructors()[0];
         this.gameMode = gameMode;
     }
 
     public Object createPlayerInfoData(Object packetPlayOutPlayerInfo, GameProfile gameProfile, int ping, Object displayName) {
         try {
-            return this.playerInfoDataConstructor.newInstance(packetPlayOutPlayerInfo, gameProfile, ping, gameMode, displayName);
+            return this.playerInfoDataConstructor.newInstance(packetPlayOutPlayerInfo, gameProfile, ping, this.gameMode, displayName);
         }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to create PlayerInfoData instance", e);
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+            throw new RuntimeException("Failed to create PlayerInfoData instance", exception);
         }
     }
 
-    private Class<?> findPlayerInfoDataClass(Class<?> packetPlayOutPlayerInfoClass) {
+    private static Class<?> findPlayerInfoDataClass(Class<?> packetPlayOutPlayerInfoClass) {
         for (Class<?> candidate : packetPlayOutPlayerInfoClass.getDeclaredClasses()) {
             if (candidate.getSimpleName().equals("PlayerInfoData")) {
                 return candidate;
@@ -33,4 +33,5 @@ public class PlayerInfoDataHelper {
 
         throw new IllegalStateException("Can't find PlayerInfoData in PacketPlayOutPlayerInfo");
     }
+
 }

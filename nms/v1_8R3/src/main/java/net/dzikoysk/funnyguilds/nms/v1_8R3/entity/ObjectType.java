@@ -38,12 +38,13 @@ public enum ObjectType {
     }
 
     public static int getIdFor(EntityType type) {
-        for (ObjectType ot : ObjectType.values()) {
+        for (ObjectType ot : values()) {
             if (ot.toString().equals(type.toString())) {
                 return ot.id;
             }
         }
 
-        return ObjectType.ENDER_CRYSTAL.id;
+        return ENDER_CRYSTAL.id;
     }
+
 }

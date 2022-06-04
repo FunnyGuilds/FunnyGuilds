@@ -21,7 +21,7 @@ public class RawString {
     }
 
     public String replace(String from, String to) {
-        return FunnyFormatter.formatOnce(this.value, from, to);
+        return FunnyFormatter.format(this.value, from, to);
     }
 
     @Override

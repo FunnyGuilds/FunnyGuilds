@@ -85,7 +85,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             }
         }, 0L, 10L));
 
-        member.sendMessage(FunnyFormatter.formatOnce(this.messages.baseDontMove, "{TIME}", time.getSeconds()));
+        member.sendMessage(FunnyFormatter.format(this.messages.baseDontMove, "{TIME}", time.getSeconds()));
     }
 
 }

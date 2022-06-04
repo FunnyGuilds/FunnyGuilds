@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.nms.v1_16R3.playerlist.V1_16R3PlayerListAccessor
 import net.dzikoysk.funnyguilds.nms.v1_16R3.statistics.V1_16R3StatisticsAccessor;
 
 public class V1_16R3NmsAccessor implements NmsAccessor {
+
     @Override
     public PacketAccessor getPacketAccessor() {
         return new V1_16R3PacketAccessor();
@@ -37,4 +38,5 @@ public class V1_16R3NmsAccessor implements NmsAccessor {
     public MessageAccessor getMessageAccessor() {
         return new V1_16R3MessageAccessor();
     }
+
 }

@@ -35,7 +35,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         when(enlarge > this.config.enlargeItems.size() - 1, this.messages.enlargeMaxSize);
 
         ItemStack need = this.config.enlargeItems.get(enlarge);
-        when(!player.getInventory().containsAtLeast(need, need.getAmount()), FunnyFormatter.formatOnce(this.messages.enlargeItem,
+        when(!player.getInventory().containsAtLeast(need, need.getAmount()), FunnyFormatter.format(this.messages.enlargeItem,
                 "{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
         when(this.regionManager.isNearRegion(region.getCenter()), this.messages.enlargeIsNear);
 

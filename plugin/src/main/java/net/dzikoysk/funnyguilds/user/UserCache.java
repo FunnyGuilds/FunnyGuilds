@@ -28,7 +28,7 @@ public class UserCache {
 
     private final Map<User, DamageCache> damageCaches = new HashMap<>();
 
-    private DamageCache lastOldDamageCache = null;
+    private DamageCache lastOldDamageCache;
 
     private final Cache<UUID, Instant> killerCache = CacheBuilder
             .newBuilder()
@@ -55,13 +55,12 @@ public class UserCache {
     }
 
     public void addDamage(User user, double damage, Instant lastTime) {
-        if (!damageCaches.containsKey(user)) {
-            damageCaches.put(user, new DamageCache(user, damage, lastTime));
+        if (!this.damageCaches.containsKey(user)) {
+            this.damageCaches.put(user, new DamageCache(user, damage, lastTime));
             return;
         }
 
-        DamageCache damageCache = damageCaches.get(user);
-
+        DamageCache damageCache = this.damageCaches.get(user);
         damageCache.addDamage(damage);
         damageCache.setLastTime(lastTime);
     }
@@ -71,8 +70,7 @@ public class UserCache {
             return 0.0D;
         }
 
-        DamageCache damageCache = damageCaches.remove(user);
-
+        DamageCache damageCache = this.damageCaches.remove(user);
         if (damageCache == null) {
             return 0.0D;
         }
@@ -136,7 +134,7 @@ public class UserCache {
     public DamageCache getLastAttackerDamageCache() {
         DamageCache last = null;
 
-        for (DamageCache damageCache : damageCaches.values()) {
+        for (DamageCache damageCache : this.damageCaches.values()) {
             if (last == null) {
                 last = damageCache;
                 continue;
@@ -148,7 +146,7 @@ public class UserCache {
         }
 
         if (last == null) {
-            return lastOldDamageCache != null ? lastOldDamageCache : null;
+            return this.lastOldDamageCache != null ? this.lastOldDamageCache : null;
         }
 
         return last;
@@ -169,17 +167,16 @@ public class UserCache {
     }
 
     public boolean isSpy() {
-        return spy;
+        return this.spy;
     }
 
     public BukkitTask getTeleportation() {
-        return teleportation;
+        return this.teleportation;
     }
 
     public Map<User, Double> getDamage() {
         Map<User, Double> damage = new HashMap<>();
-
-        for (DamageCache damageCache : damageCaches.values()) {
+        for (DamageCache damageCache : this.damageCaches.values()) {
             damage.put(damageCache.getAttacker(), damageCache.getDamage());
         }
 
@@ -187,12 +184,10 @@ public class UserCache {
     }
 
     public Double getTotalDamage() {
-        double dmg = 0.0D;
-        for (DamageCache damageCache : this.damageCaches.values()) {
-            dmg += damageCache.getDamage();
-        }
-
-        return dmg;
+        return PandaStream.of(this.damageCaches.values())
+                .toStream()
+                .mapToDouble(DamageCache::getDamage)
+                .sum();
     }
 
     public boolean isAssisted() {
@@ -237,7 +232,7 @@ public class UserCache {
 
     public Dummy getDummy() {
         if (this.dummy == null) {
-            this.dummy = new Dummy(user);
+            this.dummy = new Dummy(this.user);
         }
 
         return this.dummy;

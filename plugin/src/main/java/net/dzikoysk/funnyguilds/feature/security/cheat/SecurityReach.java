@@ -6,8 +6,7 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -29,8 +28,8 @@ public final class SecurityReach {
         PluginConfiguration config = funnyGuilds.getPluginConfiguration();
         UserManager userManager = funnyGuilds.getUserManager();
 
-        double ping = PingUtils.getPing(player);
-        double tpsDelayMs = (1000.0 / MinecraftServerUtils.getTpsInLastMinute() - 50.0);
+        double ping = NmsUtils.getPing(player);
+        double tpsDelayMs = (1000.0 / NmsUtils.getTpsInLastMinute() - 50.0);
         double compensation = player.getGameMode() == GameMode.CREATIVE ? CREATIVE_REACH : SURVIVAL_REACH;
 
         compensation += config.reachCompensation;
@@ -41,7 +40,7 @@ public final class SecurityReach {
             return;
         }
 
-        String message = FunnyFormatter.formatOnce(messages.securitySystemReach, "{DISTANCE}", FORMAT.format(distance));
+        String message = FunnyFormatter.format(messages.securitySystemReach, "{DISTANCE}", FORMAT.format(distance));
 
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
         SecurityUtils.sendToOperator(player, "Reach", message);

@@ -15,7 +15,7 @@ import java.util.*
 @ExtendWith(MockitoExtension::class)
 open class BukkitSpec {
 
-    protected lateinit var mockedBukkit: MockedStatic<Bukkit>
+    private lateinit var mockedBukkit: MockedStatic<Bukkit>
 
     @BeforeEach
     fun openMockedBukkit() {

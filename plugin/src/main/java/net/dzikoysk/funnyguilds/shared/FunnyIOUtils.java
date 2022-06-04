@@ -32,7 +32,8 @@ public final class FunnyIOUtils {
                     return file;
                 }
 
-                if (!file.getParentFile().mkdirs()) {
+                File parentFile = file.getParentFile();
+                if (!parentFile.exists() && !parentFile.mkdirs()) {
                     throw new IOException("Could not create parent directories");
                 }
 

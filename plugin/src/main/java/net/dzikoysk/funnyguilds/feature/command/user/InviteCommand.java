@@ -64,7 +64,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
         this.guildInvitationList.createInvitation(guild, invitedUser);
 
-        deputy.sendMessage(FunnyFormatter.formatOnce(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
+        deputy.sendMessage(FunnyFormatter.format(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
         invitedUser.sendMessage(formatter.format(this.messages.inviteToInvited));
     }
 

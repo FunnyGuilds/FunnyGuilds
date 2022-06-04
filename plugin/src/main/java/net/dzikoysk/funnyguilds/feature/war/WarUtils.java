@@ -24,13 +24,13 @@ public final class WarUtils {
                 message = messages.warAlly;
                 break;
             case WAIT:
-                message = FunnyFormatter.formatOnce(messages.warWait, "{TIME}", TimeUtils.getDurationBreakdown((long) values[0]));
+                message = FunnyFormatter.format(messages.warWait, "{TIME}", TimeUtils.getDurationBreakdown((long) values[0]));
                 break;
             case ATTACKER:
-                message = FunnyFormatter.formatOnce(messages.warAttacker, "{ATTACKED}", ((Guild) values[0]).getTag());
+                message = FunnyFormatter.format(messages.warAttacker, "{ATTACKED}", ((Guild) values[0]).getTag());
                 break;
             case ATTACKED:
-                message = FunnyFormatter.formatOnce(messages.warAttacked, "{ATTACKER}", ((Guild) values[0]).getTag());
+                message = FunnyFormatter.format(messages.warAttacked, "{ATTACKER}", ((Guild) values[0]).getTag());
                 break;
             case DISABLED:
                 message = messages.warDisabled;

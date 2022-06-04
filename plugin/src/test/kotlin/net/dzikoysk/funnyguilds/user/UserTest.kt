@@ -37,7 +37,6 @@ class UserTest : FunnyGuildsSpec() {
         val name = "name"
 
         val user = userManager.create(uuid, name, FakeUserProfile.offline())
-
         userManager.updateUsername(user, "changed")
 
         val result = userManager.findByName("changed")

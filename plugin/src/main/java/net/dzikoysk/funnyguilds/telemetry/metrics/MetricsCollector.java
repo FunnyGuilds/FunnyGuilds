@@ -12,7 +12,6 @@ import org.bstats.charts.SingleLineChart;
 public class MetricsCollector implements Runnable {
 
     private final FunnyGuilds plugin;
-
     private final UserManager userManager;
     private final GuildManager guildManager;
 
@@ -25,19 +24,19 @@ public class MetricsCollector implements Runnable {
         this.guildManager = plugin.getGuildManager();
 
         try {
-            mcstats = new MCStats(plugin);
+            this.mcstats = new MCStats(plugin);
         }
-        catch (Exception ex) {
+        catch (Exception exception) {
             this.mcstats = null;
-            FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", ex);
+            FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", exception);
         }
 
         try {
             this.bstats = new Metrics(plugin, 677);
         }
-        catch (Exception ex) {
+        catch (Exception exception) {
             this.bstats = null;
-            FunnyGuilds.getPluginLogger().error("Could not initialize bstats", ex);
+            FunnyGuilds.getPluginLogger().error("Could not initialize bstats", exception);
         }
     }
 
@@ -55,14 +54,14 @@ public class MetricsCollector implements Runnable {
             global.addPlotter(new MCStats.Plotter("Users") {
                 @Override
                 public int getValue() {
-                    return userManager.countUsers();
+                    return MetricsCollector.this.userManager.countUsers();
                 }
             });
 
             global.addPlotter(new MCStats.Plotter("Guilds") {
                 @Override
                 public int getValue() {
-                    return guildManager.countGuilds();
+                    return MetricsCollector.this.guildManager.countGuilds();
                 }
             });
 
@@ -72,18 +71,17 @@ public class MetricsCollector implements Runnable {
         // bStats
         Metrics bstats = this.bstats;
         if (bstats != null) {
-            bstats.addCustomChart(new SingleLineChart("users", userManager::countUsers));
-
-            bstats.addCustomChart(new SingleLineChart("guilds", guildManager::countGuilds));
-
+            bstats.addCustomChart(new SingleLineChart("users", this.userManager::countUsers));
+            bstats.addCustomChart(new SingleLineChart("guilds", this.guildManager::countGuilds));
             bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
 
-                valueMap.put("users", userManager.countUsers());
-                valueMap.put("guilds", guildManager.countGuilds());
+                valueMap.put("users", this.userManager.countUsers());
+                valueMap.put("guilds", this.guildManager.countGuilds());
 
                 return valueMap;
             }));
         }
     }
+
 }

@@ -11,8 +11,6 @@ import net.minecraft.server.v1_15_R1.PacketPlayOutMapChunk;
 
 public class V1_15R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHandlerAdapter implements FunnyGuildsOutboundChannelHandler {
 
-    private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
-
     private static final Field CHUNK_X_FIELD;
     private static final Field CHUNK_Z_FIELD;
 
@@ -23,29 +21,32 @@ public class V1_15R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
             CHUNK_Z_FIELD = PacketPlayOutMapChunk.class.getDeclaredField("b");
             CHUNK_Z_FIELD.setAccessible(true);
         }
-        catch (NoSuchFieldException ex) {
-            throw new RuntimeException("Failed to initialise V1_15R1FunnyGuildsOutboundChannelHandler", ex);
+        catch (NoSuchFieldException exception) {
+            throw new RuntimeException("Failed to initialise V1_15R1FunnyGuildsOutboundChannelHandler", exception);
         }
     }
 
+    private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
+
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
             int chunkX = (int) CHUNK_X_FIELD.get(chunkPacket);
             int chunkZ = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkX, chunkZ)) {
+            for (FakeEntity fakeEntity : this.packetSuppliersRegistry.supplyFakeEntities(chunkX, chunkZ)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
+
         super.write(ctx, msg, promise);
     }
 
     @Override
     public PacketSuppliersRegistry getPacketSuppliersRegistry() {
-        return packetSuppliersRegistry;
+        return this.packetSuppliersRegistry;
     }
 
 }

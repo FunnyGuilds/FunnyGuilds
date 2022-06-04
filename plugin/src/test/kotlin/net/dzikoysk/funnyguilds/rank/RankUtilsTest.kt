@@ -23,7 +23,7 @@ class RankUtilsTest : FunnyGuildsSpec() {
         rankRecalculationTask.run()
 
         config.gtopPoints = RawString(" {POINTS-FORMAT}")
-        config.pointsFormat = ArrayList(Arrays.asList(RangeFormatting(0, Int.MAX_VALUE, "{POINTS}")))
+        config.pointsFormat = ArrayList(listOf(RangeFormatting(0, Int.MAX_VALUE, "{POINTS}")))
 
         // when: the GTOP placeholder is requested to parse
         val rank = rankPlaceholdersService.formatRank("{GTOP-1}", user)

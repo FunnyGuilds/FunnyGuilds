@@ -2,7 +2,8 @@ package net.dzikoysk.funnyguilds.nms.api.message;
 
 import com.google.common.base.Preconditions;
 
-public class TitleMessage {
+public final class TitleMessage {
+
     private final String text;
     private final String subText;
     private final int fadeInDuration;
@@ -41,7 +42,8 @@ public class TitleMessage {
         return new Builder();
     }
 
-    public static class Builder {
+    public static final class Builder {
+
         private String text;
         private String subText;
         private int fadeInDuration = -1;
@@ -101,5 +103,7 @@ public class TitleMessage {
         public TitleMessage build() {
             return new TitleMessage(this.text, this.subText, this.fadeInDuration, this.stayDuration, this.fadeOutDuration);
         }
+
     }
+
 }

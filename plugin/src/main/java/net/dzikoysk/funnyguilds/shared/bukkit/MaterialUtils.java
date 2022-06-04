@@ -29,7 +29,7 @@ public final class MaterialUtils {
             return allowNullReturn ? null : Material.AIR;
         }
 
-        String materialName = FunnyFormatter.formatOnce(materialString.toUpperCase(Locale.ROOT), " ", "_");
+        String materialName = FunnyFormatter.format(materialString.toUpperCase(Locale.ROOT), " ", "_");
         Material material = matchMaterial(materialName);
 
         if (material == null) {
@@ -89,7 +89,7 @@ public final class MaterialUtils {
             return ChatUtils.colored(config.translatedMaterials.get(material));
         }
 
-        return FunnyFormatter.formatOnce(material.toString().toLowerCase(Locale.ROOT), "_", " ");
+        return FunnyFormatter.format(material.toString().toLowerCase(Locale.ROOT), "_", " ");
     }
 
     public static String getItemCustomName(ItemStack itemStack) {

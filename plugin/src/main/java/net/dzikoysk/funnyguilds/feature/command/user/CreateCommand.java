@@ -69,13 +69,13 @@ public final class CreateCommand extends AbstractFunnyCommand {
         World world = player.getWorld();
 
         when(tag.length() > this.config.createTagLength,
-                FunnyFormatter.formatOnce(this.messages.createTagLength, "{LENGTH}", this.config.createTagLength));
+                FunnyFormatter.format(this.messages.createTagLength, "{LENGTH}", this.config.createTagLength));
         when(tag.length() < this.config.createTagMinLength,
-                FunnyFormatter.formatOnce(this.messages.createTagMinLength, "{LENGTH}", this.config.createTagMinLength));
+                FunnyFormatter.format(this.messages.createTagMinLength, "{LENGTH}", this.config.createTagMinLength));
         when(name.length() > this.config.createNameLength,
-                FunnyFormatter.formatOnce(this.messages.createNameLength, "{LENGTH}", this.config.createNameLength));
+                FunnyFormatter.format(this.messages.createNameLength, "{LENGTH}", this.config.createNameLength));
         when(name.length() < this.config.createNameMinLength,
-                FunnyFormatter.formatOnce(this.messages.createNameMinLength, "{LENGTH}", this.config.createNameMinLength));
+                FunnyFormatter.format(this.messages.createNameMinLength, "{LENGTH}", this.config.createNameMinLength));
 
         when(!tag.matches(this.config.tagRegex.getPattern()), this.messages.createOLTag);
         when(!name.matches(this.config.nameRegex.getPattern()), this.messages.createOLName);
@@ -108,7 +108,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
             when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation),
-                    FunnyFormatter.formatOnce(this.messages.createSpawn, "{DISTANCE}", distance));
+                    FunnyFormatter.format(this.messages.createSpawn, "{DISTANCE}", distance));
         }
 
         if (this.config.rankCreateEnable) {
@@ -139,12 +139,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 : this.config.requiredMoney;
 
         if (player.getTotalExperience() < requiredExperience) {
-            user.sendMessage(FunnyFormatter.formatOnce(this.messages.createExperience, "{EXP}", requiredExperience));
+            user.sendMessage(FunnyFormatter.format(this.messages.createExperience, "{EXP}", requiredExperience));
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-            user.sendMessage(FunnyFormatter.formatOnce(this.messages.createMoney, "{MONEY}", requiredMoney));
+            user.sendMessage(FunnyFormatter.format(this.messages.createMoney, "{MONEY}", requiredMoney));
             return;
         }
 
@@ -180,7 +180,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {
-                user.sendMessage(FunnyFormatter.formatOnce(this.messages.createNotEnoughDistanceFromBorder,
+                user.sendMessage(FunnyFormatter.format(this.messages.createNotEnoughDistanceFromBorder,
                         "{BORDER-MIN-DISTANCE}", this.config.createMinDistanceFromBorder));
                 return;
             }
@@ -197,7 +197,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, requiredMoney);
 
             if (!withdrawResult.transactionSuccess()) {
-                user.sendMessage(FunnyFormatter.formatOnce(this.messages.withdrawError, "{ERROR}", withdrawResult.errorMessage));
+                user.sendMessage(FunnyFormatter.format(this.messages.withdrawError, "{ERROR}", withdrawResult.errorMessage));
                 return;
             }
         }

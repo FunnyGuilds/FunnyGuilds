@@ -52,7 +52,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                FunnyFormatter.formatOnce(this.messages.createSpawn, "{DISTANCE}", distance));
+                FunnyFormatter.format(this.messages.createSpawn, "{DISTANCE}", distance));
         when(this.regionManager.isNearRegion(location), this.messages.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {

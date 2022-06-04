@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
 
 public interface NmsAccessor {
+
     PacketAccessor getPacketAccessor();
 
     PlayerListAccessor getPlayerListAccessor();
@@ -16,4 +17,5 @@ public interface NmsAccessor {
     EntityAccessor getEntityAccessor();
 
     MessageAccessor getMessageAccessor();
+
 }

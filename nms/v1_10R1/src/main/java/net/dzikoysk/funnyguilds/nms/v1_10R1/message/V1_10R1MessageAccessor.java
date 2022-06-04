@@ -14,12 +14,12 @@ import org.bukkit.entity.Player;
 public class V1_10R1MessageAccessor implements MessageAccessor {
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
-        PacketPlayOutTitle titlePacket =
-                new PacketPlayOutTitle(EnumTitleAction.TITLE, CraftChatMessage.fromString(titleMessage.getText(), false)[0]);
-        PacketPlayOutTitle subtitlePacket =
-                new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, CraftChatMessage.fromString(titleMessage.getSubText(), false)[0]);
-        PacketPlayOutTitle timesPacket =
-                new PacketPlayOutTitle(titleMessage.getFadeInDuration(), titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE,
+                CraftChatMessage.fromString(titleMessage.getText(), false)[0]);
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE,
+                CraftChatMessage.fromString(titleMessage.getSubText(), false)[0]);
+        PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(titleMessage.getFadeInDuration(),
+                titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
@@ -46,4 +46,5 @@ public class V1_10R1MessageAccessor implements MessageAccessor {
     public void sendActionBarMessage(String text, Collection<? extends Player> players) {
         this.sendActionBarMessage(text, players.toArray(new Player[0]));
     }
+
 }

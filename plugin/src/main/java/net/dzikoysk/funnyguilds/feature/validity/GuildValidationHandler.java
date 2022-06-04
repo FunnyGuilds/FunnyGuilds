@@ -34,7 +34,7 @@ public class GuildValidationHandler implements Runnable {
 
     private void validateGuildLifetime() {
         PandaStream.of(this.guildManager.getGuilds())
-                .filter(Guild::isValid)
+                .filterNot(Guild::isValid)
                 .filter(guild -> SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild)))
                 .forEach(guild -> {
                     ValidityUtils.broadcast(guild);
@@ -46,7 +46,7 @@ public class GuildValidationHandler implements Runnable {
 
     private void validateGuildBans() {
         PandaStream.of(this.guildManager.getGuilds())
-                .filter(guild -> guild.getBan() <= System.currentTimeMillis())
+                .filterNot(guild -> guild.getBan() > System.currentTimeMillis())
                 .forEach(guild -> guild.setBan(0));
 
         this.banGuildsCounter = 0;

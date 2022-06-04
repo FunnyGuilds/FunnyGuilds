@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -53,45 +54,7 @@ public class PlayerInteract extends AbstractFunnyListener {
         Region region = regionOption.get();
         boolean returnMethod = region.getHeartBlock()
                 .filter(heart -> heart.equals(clicked))
-                .peek(heart -> {
-                    event.setCancelled(true);
-
-                    Option<User> userOption = this.userManager.findByPlayer(player);
-                    if (userOption.isEmpty()) {
-                        return;
-                    }
-
-                    Guild guild = region.getGuild();
-                    User user = userOption.get();
-
-                    GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild,
-                            eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
-                    SimpleEventHandler.handle(interactEvent);
-
-                    if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
-                        return;
-                    }
-
-                    if (eventAction == Action.LEFT_CLICK_BLOCK) {
-                        if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
-                            return;
-                        }
-
-                        WarSystem.getInstance().attack(player, guild);
-                        return;
-                    }
-
-                    if (this.config.informationMessageCooldowns.cooldown(player, this.config.infoPlayerCooldown)) {
-                        return;
-                    }
-
-                    try {
-                        this.infoExecutor.execute(player, new String[] {guild.getTag()});
-                    }
-                    catch (ValidationException validatorException) {
-                        validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
-                    }
-                })
+                .peek(heart -> this.handleHeartClick(player, eventAction, region, event))
                 .isPresent();
 
         if (returnMethod) {
@@ -112,7 +75,46 @@ public class PlayerInteract extends AbstractFunnyListener {
                 }
             });
         }
+    }
 
+    private void handleHeartClick(Player player, Action eventAction, Region region, Cancellable event) {
+        event.setCancelled(true);
+
+        Option<User> userOption = this.userManager.findByPlayer(player);
+        if (userOption.isEmpty()) {
+            return;
+        }
+
+        Guild guild = region.getGuild();
+        User user = userOption.get();
+
+        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild,
+                eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
+        SimpleEventHandler.handle(interactEvent);
+
+        if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
+            return;
+        }
+
+        if (eventAction == Action.LEFT_CLICK_BLOCK) {
+            if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
+                return;
+            }
+
+            WarSystem.getInstance().attack(player, guild);
+            return;
+        }
+
+        if (this.config.informationMessageCooldowns.cooldown(player, this.config.infoPlayerCooldown)) {
+            return;
+        }
+
+        try {
+            this.infoExecutor.execute(player, new String[] {guild.getTag()});
+        }
+        catch (ValidationException validatorException) {
+            validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
+        }
     }
 
 }

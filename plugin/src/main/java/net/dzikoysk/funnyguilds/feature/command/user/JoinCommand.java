@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         when(invitations.isEmpty(), this.messages.joinHasNotInvitation);
 
         if (args.length < 1) {
-            String guildNames = ChatUtils.toString(this.guildInvitationList.getInvitationGuildNames(user), false);
+            String guildNames = FunnyStringUtils.join(this.guildInvitationList.getInvitationGuildNames(user), true);
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", guildNames);
 
             PandaStream.of(this.messages.joinInvitationList).forEach(line -> user.sendMessage(formatter.format(line)));
@@ -62,7 +62,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             return;
         }
 
-        when(guild.getMembers().size() >= this.config.maxMembersInGuild, FunnyFormatter.formatOnce(this.messages.inviteAmountJoin,
+        when(guild.getMembers().size() >= this.config.maxMembersInGuild, FunnyFormatter.format(this.messages.inviteAmountJoin,
                 "{AMOUNT}", this.config.maxMembersInGuild));
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {

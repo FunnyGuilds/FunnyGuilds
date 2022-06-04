@@ -18,7 +18,7 @@ import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.stream.PandaStream;
@@ -45,7 +45,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             when(invitations.isEmpty(), this.messages.allyHasNotInvitation);
-            String guildNames = ChatUtils.toString(this.allyInvitationList.getInvitationGuildNames(guild), false);
+            String guildNames = FunnyStringUtils.join(this.allyInvitationList.getInvitationGuildNames(guild), true);
 
             FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
             PandaStream.of(this.messages.allyInvitationList).forEach(line -> owner.sendMessage(formatter.format(line)));
@@ -60,22 +60,11 @@ public final class AllyCommand extends AbstractFunnyCommand {
         when(guild.isAlly(invitedGuild), this.messages.allyAlly);
 
         if (guild.isEnemy(invitedGuild)) {
-            guild.removeEnemy(invitedGuild);
-
-            FunnyFormatter allyFormatter = new FunnyFormatter()
-                    .register("{GUILD}", invitedGuild.getName())
-                    .register("{TAG}", invitedGuild.getTag());
-
-            FunnyFormatter allyIFormatter = new FunnyFormatter()
-                    .register("{GUILD}", guild.getName())
-                    .register("{TAG}", guild.getTag());
-
-            owner.sendMessage(allyFormatter.format(this.messages.enemyEnd));
-            invitedOwner.sendMessage(allyIFormatter.format(this.messages.enemyIEnd));
+            this.endWar(owner, invitedOwner, guild, invitedGuild);
         }
 
         when(guild.getAllies().size() >= this.config.maxAlliesBetweenGuilds,
-                FunnyFormatter.formatOnce(this.messages.inviteAllyAmount, "{AMOUNT}", this.config.maxAlliesBetweenGuilds));
+                FunnyFormatter.format(this.messages.inviteAllyAmount, "{AMOUNT}", this.config.maxAlliesBetweenGuilds));
 
         if (invitedGuild.getAllies().size() >= this.config.maxAlliesBetweenGuilds) {
             FunnyFormatter formatter = new FunnyFormatter()
@@ -88,61 +77,87 @@ public final class AllyCommand extends AbstractFunnyCommand {
         }
 
         if (this.allyInvitationList.hasInvitation(invitedGuild, guild)) {
-            if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
-                return;
-            }
-
-            this.allyInvitationList.expireInvitation(invitedGuild, guild);
-
-            guild.addAlly(invitedGuild);
-            invitedGuild.addAlly(guild);
-
-            FunnyFormatter allyFormatter = new FunnyFormatter()
-                    .register("{GUILD}", invitedGuild.getName())
-                    .register("{TAG}", invitedGuild.getTag());
-
-            FunnyFormatter allyIFormatter = new FunnyFormatter()
-                    .register("{GUILD}", guild.getName())
-                    .register("{TAG}", guild.getTag());
-
-            owner.sendMessage(allyFormatter.format(this.messages.allyDone));
-            invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
-
-            ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-
-            PandaStream.of(guild.getMembers()).forEach(member -> {
-                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
-            });
-
-            PandaStream.of(invitedGuild.getMembers()).forEach(member -> {
-                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
-            });
-
-            this.concurrencyManager.postTask(taskBuilder.build());
+            this.acceptInvitation(owner, invitedOwner, guild, invitedGuild);
             return;
         }
 
         if (this.allyInvitationList.hasInvitation(guild, invitedGuild)) {
-            if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
-                return;
-            }
-
-            this.allyInvitationList.expireInvitation(guild, invitedGuild);
-
-            FunnyFormatter allyFormatter = new FunnyFormatter()
-                    .register("{GUILD}", invitedGuild.getName())
-                    .register("{TAG}", invitedGuild.getTag());
-
-            FunnyFormatter allyIFormatter = new FunnyFormatter()
-                    .register("{GUILD}", guild.getName())
-                    .register("{TAG}", guild.getTag());
-
-            owner.sendMessage(allyFormatter.format(this.messages.allyReturn));
-            invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIReturn));
-
+            this.revokeInvitation(owner, invitedOwner, guild, invitedGuild);
             return;
         }
 
+        this.invite(owner, invitedOwner, guild, invitedGuild);
+    }
+
+    private void endWar(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        guild.removeEnemy(invitedGuild);
+
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.enemyEnd));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.enemyIEnd));
+    }
+
+    private void acceptInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
+            return;
+        }
+
+        this.allyInvitationList.expireInvitation(invitedGuild, guild);
+
+        guild.addAlly(invitedGuild);
+        invitedGuild.addAlly(guild);
+
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.allyDone));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
+
+        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
+
+        PandaStream.of(guild.getMembers()).forEach(member -> {
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
+        });
+
+        PandaStream.of(invitedGuild.getMembers()).forEach(member -> {
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
+        });
+
+        this.concurrencyManager.postTask(taskBuilder.build());
+    }
+
+    private void revokeInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
+            return;
+        }
+
+        this.allyInvitationList.expireInvitation(guild, invitedGuild);
+
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.allyReturn));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIReturn));
+    }
+
+    private void invite(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
         if (!SimpleEventHandler.handle(new GuildSendAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
             return;
         }

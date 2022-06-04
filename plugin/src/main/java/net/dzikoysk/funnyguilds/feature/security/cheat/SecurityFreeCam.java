@@ -48,7 +48,7 @@ public final class SecurityFreeCam {
         }
 
         String blocksString = Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString();
-        String message = FunnyFormatter.formatOnce(messages.securitySystemFreeCam, "{BLOCKS}", blocksString);
+        String message = FunnyFormatter.format(messages.securitySystemFreeCam, "{BLOCKS}", blocksString);
 
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
         SecurityUtils.sendToOperator(player, "FreeCam", message);

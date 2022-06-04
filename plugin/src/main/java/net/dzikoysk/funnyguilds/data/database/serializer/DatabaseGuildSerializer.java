@@ -17,7 +17,7 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -74,12 +74,12 @@ public final class DatabaseGuildSerializer {
 
             Set<User> deputies = new HashSet<>();
             if (dp != null && !dp.isEmpty()) {
-                deputies = userManager.findByNames(ChatUtils.fromString(dp));
+                deputies = userManager.findByNames(FunnyStringUtils.fromString(dp));
             }
 
             Set<User> members = new HashSet<>();
             if (membersString != null && !membersString.isEmpty()) {
-                members = userManager.findByNames(ChatUtils.fromString(membersString));
+                members = userManager.findByNames(FunnyStringUtils.fromString(membersString));
             }
 
             if (born == 0) {
@@ -124,10 +124,10 @@ public final class DatabaseGuildSerializer {
     public static void serialize(SQLDataModel dataModel, Guild guild) {
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getUsersTable());
 
-        String members = ChatUtils.toString(Entity.names(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(Entity.names(guild.getDeputies()), false);
-        String allies = ChatUtils.toString(Entity.names(guild.getAllies()), false);
-        String enemies = ChatUtils.toString(Entity.names(guild.getEnemies()), false);
+        String members = FunnyStringUtils.join(Entity.names(guild.getMembers()));
+        String deputies = FunnyStringUtils.join(Entity.names(guild.getDeputies()));
+        String allies = FunnyStringUtils.join(Entity.names(guild.getAllies()));
+        String enemies = FunnyStringUtils.join(Entity.names(guild.getEnemies()));
 
         statement.set("uuid", guild.getUUID().toString());
         statement.set("name", guild.getName());

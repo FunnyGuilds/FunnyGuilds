@@ -9,7 +9,6 @@ import net.minecraft.server.v1_13_R2.EnumHand;
 import net.minecraft.server.v1_13_R2.PacketPlayInUseEntity;
 
 public class V1_13R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
-    private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     private static final Field ENTITY_ID;
 
@@ -19,24 +18,25 @@ public class V1_13R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
             ENTITY_ID.setAccessible(true);
 
         }
-        catch (final NoSuchFieldException e) {
-            throw new RuntimeException("Failed to initialise V1_13R2FunnyGuildsChannelHandler", e);
+        catch (NoSuchFieldException exception) {
+            throw new RuntimeException("Failed to initialise V1_13R2FunnyGuildsChannelHandler", exception);
         }
     }
 
+    private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
+
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof PacketPlayInUseEntity) {
-            final PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) msg;
+            PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) msg;
+            int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
 
-            final int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
-
-            final PacketPlayInUseEntity.EnumEntityUseAction action = packetPlayInUseEntity.b();
+            PacketPlayInUseEntity.EnumEntityUseAction action = packetPlayInUseEntity.b();
             if (action == PacketPlayInUseEntity.EnumEntityUseAction.ATTACK) {
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
             }
             else if (action == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT_AT) {
-                final boolean isMainHand = packetPlayInUseEntity.c() == EnumHand.MAIN_HAND;
+                boolean isMainHand = packetPlayInUseEntity.c() == EnumHand.MAIN_HAND;
                 this.packetCallbacksRegistry.handleRightClickEntity(entityId, isMainHand);
             }
         }
@@ -48,4 +48,5 @@ public class V1_13R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
     public PacketCallbacksRegistry getPacketCallbacksRegistry() {
         return this.packetCallbacksRegistry;
     }
+
 }

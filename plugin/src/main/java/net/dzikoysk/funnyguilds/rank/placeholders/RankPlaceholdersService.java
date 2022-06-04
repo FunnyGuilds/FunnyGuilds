@@ -105,14 +105,14 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             Option<UserTop> userTopOption = this.userRankManager.getTop(comparatorType);
             if (userTopOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.ptopNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.ptopNoValue);
             }
 
             UserTop userTop = userTopOption.get();
 
             Option<User> userOption = userTop.getUser(index);
             if (userOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.ptopNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.ptopNoValue);
             }
 
             User user = userOption.get();
@@ -138,14 +138,14 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             Option<GuildTop> guildTopOption = this.guildRankManager.getTop(comparatorType);
             if (guildTopOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.gtopNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.gtopNoValue);
             }
 
             GuildTop guildTop = guildTopOption.get();
 
             Option<Guild> guildOption = guildTop.getGuild(index);
             if (guildOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.gtopNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.gtopNoValue);
             }
 
             Guild guild = guildOption.get();
@@ -195,31 +195,31 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
         if (positionType.equalsIgnoreCase("POSITION")) {
             if (targetUser == null) {
-                return FunnyFormatter.formatOnce(text, "{POSITION}", 0);
+                return FunnyFormatter.format(text, "{POSITION}", 0);
             }
 
             int position = targetUser.getRank().getPosition(comparatorType);
-            return FunnyFormatter.formatOnce(text, "{POSITION-" + comparatorType + "}", position);
+            return FunnyFormatter.format(text, "{POSITION-" + comparatorType + "}", position);
         }
 
         if (positionType.equalsIgnoreCase("G-POSITION")) {
             if (targetUser == null) {
-                return FunnyFormatter.formatOnce(text, "{G-POSITION}", this.messages.minMembersToIncludeNoValue);
+                return FunnyFormatter.format(text, "{G-POSITION}", this.messages.minMembersToIncludeNoValue);
             }
 
             String placeholder = "{G-POSITION-" + comparatorType + "}";
 
             Option<Guild> guildOption = targetUser.getGuild();
             if (guildOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.minMembersToIncludeNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.minMembersToIncludeNoValue);
             }
 
             Guild guild = guildOption.get();
             if (!this.guildRankManager.isRankedGuild(guild)) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.minMembersToIncludeNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.minMembersToIncludeNoValue);
             }
 
-            return FunnyFormatter.formatOnce(text, placeholder, guild.getRank().getPosition(comparatorType));
+            return FunnyFormatter.format(text, placeholder, guild.getRank().getPosition(comparatorType));
         }
 
         return text;
@@ -270,7 +270,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             Option<User> userOption = this.userRankManager.getUser(DefaultTops.USER_POINTS_TOP, index);
             if (userOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.ptopNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.ptopNoValue);
             }
 
             User user = userOption.get();
@@ -293,7 +293,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             Option<Guild> guildOption = this.guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, index);
             if (guildOption.isEmpty()) {
-                return FunnyFormatter.formatOnce(text, placeholder, this.messages.gtopNoValue);
+                return FunnyFormatter.format(text, placeholder, this.messages.gtopNoValue);
             }
 
             Guild guild = guildOption.get();
@@ -321,7 +321,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         }
 
         RawString onlineColor = online ? this.config.ptopOnline : this.config.ptopOffline;
-        return FunnyFormatter.formatOnce(text, placeholder, onlineColor + user.getName() + topFormat);
+        return FunnyFormatter.format(text, placeholder, onlineColor + user.getName() + topFormat);
     }
 
     private String formatGuildRank(String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
@@ -345,8 +345,8 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             }
         }
 
-        String formattedPrefix = FunnyFormatter.formatOnce(prefix.getValue(), "{TAG}", guild.getTag());
-        return FunnyFormatter.formatOnce(text, placeholder, formattedPrefix + topFormat);
+        String formattedPrefix = FunnyFormatter.format(prefix.getValue(), "{TAG}", guild.getTag());
+        return FunnyFormatter.format(text, placeholder, formattedPrefix + topFormat);
     }
 
 }

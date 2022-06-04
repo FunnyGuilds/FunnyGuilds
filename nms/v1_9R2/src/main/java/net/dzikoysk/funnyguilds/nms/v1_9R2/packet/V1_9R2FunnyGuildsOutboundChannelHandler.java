@@ -11,8 +11,6 @@ import net.minecraft.server.v1_9_R2.PacketPlayOutMapChunk;
 
 public class V1_9R2FunnyGuildsOutboundChannelHandler extends ChannelOutboundHandlerAdapter implements FunnyGuildsOutboundChannelHandler {
 
-    private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
-
     private static final Field CHUNK_X_FIELD;
     private static final Field CHUNK_Z_FIELD;
 
@@ -28,24 +26,27 @@ public class V1_9R2FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
         }
     }
 
+    private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
+
     @Override
-    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
             int chunkX = (int) CHUNK_X_FIELD.get(chunkPacket);
             int chunkZ = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkX, chunkZ)) {
+            for (FakeEntity fakeEntity : this.packetSuppliersRegistry.supplyFakeEntities(chunkX, chunkZ)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
+
         super.write(ctx, msg, promise);
     }
 
     @Override
     public PacketSuppliersRegistry getPacketSuppliersRegistry() {
-        return packetSuppliersRegistry;
+        return this.packetSuppliersRegistry;
     }
 
 }

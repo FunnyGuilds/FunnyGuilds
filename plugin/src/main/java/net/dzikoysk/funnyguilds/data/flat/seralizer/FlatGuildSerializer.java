@@ -20,7 +20,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -104,7 +104,7 @@ public final class FlatGuildSerializer {
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
         if (deputyName != null && !deputyName.isEmpty()) {
-            deputies = userManager.findByNames(ChatUtils.fromString(deputyName));
+            deputies = userManager.findByNames(FunnyStringUtils.fromString(deputyName));
         }
 
         Location home = null;
@@ -197,7 +197,7 @@ public final class FlatGuildSerializer {
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
         wrapper.set("pvp", guild.hasPvPEnabled());
-        wrapper.set("deputy", ChatUtils.toString(Entity.names(guild.getDeputies()), false));
+        wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 
         wrapper.save();
         return true;

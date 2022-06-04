@@ -16,7 +16,7 @@ public final class GuildValidation {
         MessageConfiguration messages = plugin.getMessageConfiguration();
 
         return plugin.getGuildManager().findByTag(tag, true).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.formatOnce(messages.generalGuildNotExists, "{TAG}", tag));
+            return new ValidationException(FunnyFormatter.format(messages.generalGuildNotExists, "{TAG}", tag));
         });
     }
 

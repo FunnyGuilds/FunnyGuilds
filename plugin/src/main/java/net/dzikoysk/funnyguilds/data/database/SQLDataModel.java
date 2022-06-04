@@ -15,8 +15,8 @@ import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -132,11 +132,11 @@ public class SQLDataModel implements DataModel {
                 String enemiesList = result.getString("enemies");
 
                 if (alliesList != null && !alliesList.isEmpty()) {
-                    guild.setAllies(guildManager.findByNames(ChatUtils.fromString(alliesList)));
+                    guild.setAllies(guildManager.findByNames(FunnyStringUtils.fromString(alliesList)));
                 }
 
                 if (enemiesList != null && !enemiesList.isEmpty()) {
-                    guild.setEnemies(guildManager.findByNames(ChatUtils.fromString(enemiesList)));
+                    guild.setEnemies(guildManager.findByNames(FunnyStringUtils.fromString(enemiesList)));
                 }
             }
         });

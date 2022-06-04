@@ -128,9 +128,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("avg-points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points-format",
-                        (guild, rank) -> FunnyFormatter.formatOnce(NumberRange.inRangeToString(rank.getAveragePoints(),
+                        (guild, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getAveragePoints(),
                                 config.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
-                        () -> FunnyFormatter.formatOnce(NumberRange.inRangeToString(0, config.pointsFormat), "{POINTS}", 0))
+                        () -> FunnyFormatter.format(NumberRange.inRangeToString(0, config.pointsFormat), "{POINTS}", 0))
                 .property("kills", (guild, rank) -> rank.getKills(), () -> 0)
                 .property("avg-kills", (guild, rank) -> rank.getAverageKills(), () -> 0)
                 .property("deaths", (guild, rank) -> rank.getDeaths(), () -> 0)

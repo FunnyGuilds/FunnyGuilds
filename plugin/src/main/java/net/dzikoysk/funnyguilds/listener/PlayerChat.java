@@ -135,7 +135,8 @@ public class PlayerChat extends AbstractFunnyListener {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())
-                .register("{POS}", this.config.chatPosition.replace("{POS}", UserUtils.getUserPosition(this.config, user)))
+                .register("{POS}", this.config.chatPosition)
+                .register("{POS}", UserUtils.getUserPosition(this.config, user))
                 .register("{MESSAGE}", message);
 
         return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));

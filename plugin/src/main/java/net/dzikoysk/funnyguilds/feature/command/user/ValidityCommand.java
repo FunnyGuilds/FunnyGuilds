@@ -36,7 +36,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             long validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
 
-            when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.formatOnce(this.messages.validityWhen, "{TIME}",
+            when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.format(this.messages.validityWhen, "{TIME}",
                     TimeUtils.getDurationBreakdown(delta.minus(this.config.validityWhen).toMillis())));
         }
 
@@ -61,7 +61,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         guild.setValidity(validity);
 
         String formattedValidity = this.messages.dateFormat.format(validity);
-        deputy.sendMessage(FunnyFormatter.formatOnce(this.messages.validityDone, "{DATE}", formattedValidity));
+        deputy.sendMessage(FunnyFormatter.format(this.messages.validityDone, "{DATE}", formattedValidity));
     }
 
 }

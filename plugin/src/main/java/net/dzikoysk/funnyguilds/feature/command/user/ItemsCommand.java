@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,11 +59,11 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 FunnyFormatter formatter = new FunnyFormatter()
                         .register("{REQ-AMOUNT}", requiredAmount)
                         .register("{PINV-AMOUNT}", inventoryAmount)
-                        .register("{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount))
+                        .register("{PINV-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount, requiredAmount))
                         .register("{EC-AMOUNT}", enderChestAmount)
-                        .register("{EC-PERCENT}", ChatUtils.getPercent(enderChestAmount, requiredAmount))
+                        .register("{EC-PERCENT}", FunnyStringUtils.getPercent(enderChestAmount, requiredAmount))
                         .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
-                        .register("{ALL-PERCENT}", ChatUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
+                        .register("{ALL-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
 
                 lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
 

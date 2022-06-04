@@ -13,16 +13,17 @@ import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 public class V1_16R3MessageAccessor implements MessageAccessor {
+
     private static final UUID SENDER_ALWAYS_DISPLAY = new UUID(0L, 0L);
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
-        PacketPlayOutTitle titlePacket =
-                new PacketPlayOutTitle(EnumTitleAction.TITLE, CraftChatMessage.fromStringOrNull(titleMessage.getText(), false));
-        PacketPlayOutTitle subtitlePacket =
-                new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false));
-        PacketPlayOutTitle timesPacket =
-                new PacketPlayOutTitle(titleMessage.getFadeInDuration(), titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE,
+                CraftChatMessage.fromStringOrNull(titleMessage.getText(), false));
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE,
+                CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false));
+        PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(titleMessage.getFadeInDuration(),
+                titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
@@ -38,8 +39,8 @@ public class V1_16R3MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket =
-                new PacketPlayOutChat(CraftChatMessage.fromStringOrNull(text, true), ChatMessageType.GAME_INFO, SENDER_ALWAYS_DISPLAY);
+        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(CraftChatMessage.fromStringOrNull(text, true),
+                ChatMessageType.GAME_INFO, SENDER_ALWAYS_DISPLAY);
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(actionBarPacket);
@@ -50,4 +51,5 @@ public class V1_16R3MessageAccessor implements MessageAccessor {
     public void sendActionBarMessage(String text, Collection<? extends Player> players) {
         this.sendActionBarMessage(text, players.toArray(new Player[0]));
     }
+
 }

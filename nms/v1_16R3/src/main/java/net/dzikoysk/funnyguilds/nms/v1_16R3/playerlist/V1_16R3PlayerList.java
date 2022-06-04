@@ -25,7 +25,6 @@ public class V1_16R3PlayerList implements PlayerList {
 
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.ChatSerializer.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
     private static final PlayerInfoDataHelper PLAYER_INFO_DATA_HELPER = new PlayerInfoDataHelper(PacketPlayOutPlayerInfo.class, EnumGamemode.SURVIVAL);
-
     private static final Field PLAYER_INFO_DATA_ACCESSOR;
 
     static {
@@ -33,15 +32,13 @@ public class V1_16R3PlayerList implements PlayerList {
             PLAYER_INFO_DATA_ACCESSOR = PacketPlayOutPlayerInfo.class.getDeclaredField("b");
             PLAYER_INFO_DATA_ACCESSOR.setAccessible(true);
         }
-        catch (NoSuchFieldException ex) {
-            throw new RuntimeException(String.format("Could not initialize '%s'", V1_16R3PlayerList.class.getName()), ex);
+        catch (NoSuchFieldException exception) {
+            throw new RuntimeException("Could not initialize V1_16R3PlayerList", exception);
         }
     }
 
     private final int cellCount;
-
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
-
     private boolean firstPacket = true;
 
     public V1_16R3PlayerList(int cellCount) {
@@ -49,10 +46,11 @@ public class V1_16R3PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping, Set<Integer> forceUpdateSlots) {
-        final List<Packet<?>> packets = Lists.newArrayList();
-        final List<Object> addPlayerList = Lists.newArrayList();
-        final List<Object> updatePlayerList = Lists.newArrayList();
+    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures,
+                     int ping, Set<Integer> forceUpdateSlots) {
+        List<Packet<?>> packets = Lists.newArrayList();
+        List<Object> addPlayerList = Lists.newArrayList();
+        List<Object> updatePlayerList = Lists.newArrayList();
 
         try {
             PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER);
@@ -127,8 +125,9 @@ public class V1_16R3PlayerList implements PlayerList {
                 ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
             }
         }
-        catch (Exception ex) {
-            throw new RuntimeException(String.format("Failed to send PlayerList for player '%s'", player.getName()), ex);
+        catch (Exception exception) {
+            throw new RuntimeException("Failed to send PlayerList for player " + player.getName(), exception);
         }
     }
+
 }

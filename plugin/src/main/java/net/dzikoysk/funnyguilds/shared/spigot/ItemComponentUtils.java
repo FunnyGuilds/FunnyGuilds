@@ -14,6 +14,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.inventory.ItemStack;
+import panda.std.stream.PandaStream;
 
 public final class ItemComponentUtils {
 
@@ -38,10 +39,11 @@ public final class ItemComponentUtils {
 
     public static TextComponent translateComponentPlaceholder(String message, List<ItemStack> items, ItemStack item) {
         TextComponent translatedMessage = new TextComponent();
-        StringBuilder messagePart = new StringBuilder();
-        String messageColor = "";
-        char[] messageChars = message.toCharArray();
 
+        StringBuilder messagePart = new StringBuilder();
+        StringBuilder messageColor = new StringBuilder();
+
+        char[] messageChars = message.toCharArray();
         for (int index = 0; index < messageChars.length; index++) {
             char symbol = messageChars[index];
 
@@ -49,14 +51,14 @@ public final class ItemComponentUtils {
                 messagePart.append(symbol);
 
                 if (symbol == ChatColor.COLOR_CHAR) {
-                    messageColor += symbol;
+                    messageColor.append(symbol);
 
                     if (index + 1 >= messageChars.length) {
                         FunnyGuilds.getPluginLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
                         continue;
                     }
 
-                    messageColor += messageChars[index + 1];
+                    messageColor.append(messageChars[index + 1]);
                 }
 
                 continue;
@@ -65,32 +67,30 @@ public final class ItemComponentUtils {
             String subItem = message.substring(index, Math.min(message.length(), index + 6));
 
             if (subItem.equals("{ITEM}")) {
-                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
-                    translatedMessage.addExtra(extra);
-                }
+                BaseComponent[] extra = TextComponent.fromLegacyText(messagePart.toString());
+                PandaStream.of(extra).forEach(translatedMessage::addExtra);
 
-                messagePart = new StringBuilder();
-                translatedMessage.addExtra(getItemComponent(item, messageColor));
+                messagePart.setLength(0);
+                translatedMessage.addExtra(getItemComponent(item, messageColor.toString()));
                 index += 5;
+
                 continue;
             }
 
             String subItems = message.substring(index, Math.min(message.length(), index + 7));
 
             if (subItems.equals("{ITEMS}")) {
-                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
-                    translatedMessage.addExtra(extra);
-                }
+                BaseComponent[] extra = TextComponent.fromLegacyText(messagePart.toString());
+                PandaStream.of(extra).forEach(translatedMessage::addExtra);
 
-                messagePart = new StringBuilder();
+                messagePart.setLength(0);
 
                 for (int itemNum = 0; itemNum < items.size(); itemNum++) {
-                    translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor));
+                    translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor.toString()));
 
                     if (itemNum != items.size() - 1) {
-                        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + ", ")) {
-                            translatedMessage.addExtra(extra);
-                        }
+                        BaseComponent[] delimiter = TextComponent.fromLegacyText(messageColor + ", ");
+                        PandaStream.of(delimiter).forEach(translatedMessage::addExtra);
                     }
                 }
 
@@ -101,9 +101,8 @@ public final class ItemComponentUtils {
             messagePart.append(symbol);
         }
 
-        for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
-            translatedMessage.addExtra(extra);
-        }
+        BaseComponent[] extra = TextComponent.fromLegacyText(messagePart.toString());
+        PandaStream.of(extra).forEach(translatedMessage::addExtra);
 
         return translatedMessage;
     }
@@ -112,11 +111,11 @@ public final class ItemComponentUtils {
         TextComponent itemComponent = new TextComponent();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        BaseComponent[] extras = TextComponent.fromLegacyText(messageColor + item.getAmount() + config.itemAmountSuffix +
-                " " + MaterialUtils.getMaterialName(item.getType()));
-        for (BaseComponent extra : extras) {
-            itemComponent.addExtra(extra);
-        }
+        String amount = item.getAmount() + config.itemAmountSuffix.getValue();
+        String material = MaterialUtils.getMaterialName(item.getType());
+
+        BaseComponent[] extra = TextComponent.fromLegacyText(messageColor + amount + " " + material);
+        PandaStream.of(extra).forEach(itemComponent::addExtra);
 
         try {
             String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
