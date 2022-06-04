@@ -5,7 +5,7 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
@@ -70,7 +70,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public int getPing() {
-        return this.getPlayer().map(PingUtils::getPing).orElseGet(0);
+        return this.getPlayer().map(NmsUtils::getPing).orElseGet(0);
     }
 
     @Override //TODO: MiniMessage support

@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import panda.std.Option;
@@ -53,9 +54,7 @@ public class InvitationPersistenceHandler {
     }
 
     public void saveInvitations() {
-        if (!this.invitationsFile.delete()) {
-            FunnyGuilds.getPluginLogger().error("Failed to delete old invitations file!");
-        }
+        FunnyIOUtils.deleteFile(this.invitationsFile);
 
         YamlWrapper yaml = new YamlWrapper(this.invitationsFile);
         PandaStream.of(this.guildManager.getGuilds()).forEach(guild -> {

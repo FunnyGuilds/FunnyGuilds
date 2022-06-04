@@ -46,12 +46,13 @@ public class FunnybinResponse {
         if (this == o) {
             return true;
         }
+
         if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
+
         FunnybinResponse that = (FunnybinResponse) o;
-        return Objects.equals(this.fullUrl, that.fullUrl) &&
-                Objects.equals(this.shortUrl, that.shortUrl) &&
+        return Objects.equals(this.fullUrl, that.fullUrl) && Objects.equals(this.shortUrl, that.shortUrl) &&
                 Objects.equals(this.uuid, that.uuid);
     }
 
@@ -60,13 +61,9 @@ public class FunnybinResponse {
         return Objects.hash(this.fullUrl, this.shortUrl, this.uuid);
     }
 
-
     @Override
     public String toString() {
-        return "FunnybinResponse{" +
-                "fullUrl='" + this.fullUrl + '\'' +
-                ", shortUrl='" + this.shortUrl + '\'' +
-                ", uuid='" + this.uuid + '\'' +
-                '}';
+        return "FunnybinResponse{fullUrl='" + this.fullUrl + "', shortUrl='" + this.shortUrl +  "', uuid='" + this.uuid + "'}";
     }
+
 }

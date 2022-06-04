@@ -5,7 +5,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import org.bukkit.Bukkit;
 import panda.std.stream.PandaStream;
 
@@ -94,7 +94,7 @@ public class FunnyGuildsLogger {
             this.error("  Java: " + System.getProperty("java.version"));
             this.error("  Thread: " + Thread.currentThread());
             this.error("  Loaded plugins: " + loadedPlugins);
-            this.error("  Reload count: " + MinecraftServerUtils.getReloadCount());
+            this.error("  Reload count: " + NmsUtils.getReloadCount());
             this.error("");
         }
 

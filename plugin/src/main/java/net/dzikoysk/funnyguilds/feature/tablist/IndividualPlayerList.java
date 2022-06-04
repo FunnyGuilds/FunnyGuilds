@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
-import net.dzikoysk.funnyguilds.shared.MapUtil;
+import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +61,7 @@ public class IndividualPlayerList {
         this.enableLegacyPlaceholders = enableLegacyPlaceholders;
 
         if (!fillCells) {
-            Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(unformattedCells);
+            Entry<Integer, String> entry = MapUtils.findTheMaximumEntryByKey(unformattedCells);
             if (entry != null) {
                 this.cellCount = entry.getKey();
             }

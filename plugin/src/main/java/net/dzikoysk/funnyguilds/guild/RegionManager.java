@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,6 +13,7 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -206,7 +206,7 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
 
         if (dataModel instanceof FlatDataModel) {
-            ((FlatDataModel) dataModel).getRegionFile(region).peek(File::delete);
+            ((FlatDataModel) dataModel).getRegionFile(region).peek(FunnyIOUtils::deleteFile);
         }
 
         if (dataModel instanceof SQLDataModel) {

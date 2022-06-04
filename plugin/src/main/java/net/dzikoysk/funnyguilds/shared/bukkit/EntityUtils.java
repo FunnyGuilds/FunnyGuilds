@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -33,6 +34,7 @@ public final class EntityUtils {
         return Option.none();
     }
 
+    @Nullable
     public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn) {
         if (stringEntity == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown entity: null");

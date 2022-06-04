@@ -14,15 +14,15 @@ public class FunnyServer {
     }
 
     public Server getServer() {
-        return server;
+        return this.server;
     }
 
     public Option<Player> getPlayer(String name) {
-        return Option.of(server.getPlayer(name));
+        return Option.of(this.server.getPlayer(name));
     }
 
     public Option<Player> getPlayer(UUID uuid) {
-        return Option.of(server.getPlayer(uuid));
+        return Option.of(this.server.getPlayer(uuid));
     }
 
 }

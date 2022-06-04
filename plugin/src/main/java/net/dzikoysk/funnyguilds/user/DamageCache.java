@@ -16,11 +16,11 @@ public class DamageCache {
     }
 
     public User getAttacker() {
-        return attacker;
+        return this.attacker;
     }
 
     public double getDamage() {
-        return damage;
+        return this.damage;
     }
 
     public void setDamage(double damage) {
@@ -32,7 +32,7 @@ public class DamageCache {
     }
 
     public Instant getLastTime() {
-        return lastTime;
+        return this.lastTime;
     }
 
     public void setLastTime(Instant lastTime) {

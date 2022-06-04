@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,11 +10,12 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -265,7 +265,7 @@ public class GuildManager {
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
-            dataModel.getGuildFile(guild).peek(File::delete);
+            dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
         }
         else if (plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete((SQLDataModel) plugin.getDataModel(), guild);

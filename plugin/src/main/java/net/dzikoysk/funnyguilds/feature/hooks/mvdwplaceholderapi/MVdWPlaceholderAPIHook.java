@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
-import panda.utilities.StringUtils;
 
 public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
@@ -38,7 +37,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
                 PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_" + key.toLowerCase(), event -> {
                     OfflinePlayer target = event.getOfflinePlayer();
                     if (target == null) {
-                        return StringUtils.EMPTY;
+                        return "";
                     }
 
                     return userManager.findByUuid(target.getUniqueId())

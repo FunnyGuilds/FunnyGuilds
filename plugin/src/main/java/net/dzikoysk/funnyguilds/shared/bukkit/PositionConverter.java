@@ -5,7 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class PositionConverter {
+public final class PositionConverter {
+
+    private PositionConverter() {
+    }
 
     public static Position adapt(Location location) {
         World world = location.getWorld();
@@ -15,10 +18,7 @@ public class PositionConverter {
     }
 
     public static Location adapt(Position position) {
-        World world = position.getWorld()
-                .map(Bukkit::getWorld)
-                .orNull();
-
+        World world = position.getWorld().map(Bukkit::getWorld).orNull();
         return new Location(world, position.getX(), position.getY(), position.getZ(), position.getYaw(), position.getPitch());
     }
 

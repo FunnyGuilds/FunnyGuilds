@@ -24,16 +24,16 @@ public final class FunnyIOUtils {
     public static File createFile(File file, boolean isDirectory) {
         if (!file.exists()) {
             try {
-                if (!file.getParentFile().mkdirs()) {
-                    throw new IOException("Could not create parent directories");
-                }
-
                 if (isDirectory) {
-                    if (file.mkdirs()) {
-                        return file;
+                    if (!file.mkdirs()) {
+                        throw new IOException("Could not create directory");
                     }
 
-                    throw new IOException("Could not create directory");
+                    return file;
+                }
+
+                if (!file.getParentFile().mkdirs()) {
+                    throw new IOException("Could not create parent directories");
                 }
 
                 if (!file.createNewFile()) {

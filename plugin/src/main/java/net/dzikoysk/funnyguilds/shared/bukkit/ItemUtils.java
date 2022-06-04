@@ -7,11 +7,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import panda.std.Option;
 import panda.std.Pair;
+import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 public final class ItemUtils {
@@ -53,23 +54,22 @@ public final class ItemUtils {
     }
 
     public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, String message) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        boolean enableItemComponent = FunnyGuilds.getInstance().getPluginConfiguration().enableItemComponent;
 
         for (ItemStack requiredItem : requiredItems) {
             if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                 continue;
             }
 
-            if (messages.createItems.isEmpty()) {
+            if (message.isEmpty()) {
                 return false;
             }
 
-            if (config.enableItemComponent) {
+            if (enableItemComponent) {
                 player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(message, requiredItems, requiredItem));
             }
             else {
-                player.sendMessage(ItemUtils.translateTextPlaceholder(message, requiredItems, requiredItem));
+                player.sendMessage(translateTextPlaceholder(message, requiredItems, requiredItem));
             }
 
             return false;
@@ -88,10 +88,12 @@ public final class ItemUtils {
         }
 
         if (message.contains("{ITEMS}")) {
-            formatter.register("{ITEMS}", ChatUtils.toString(items.stream()
-                    .map(itemStack -> itemStack.getAmount() + config.itemAmountSuffix.getValue() + " " +
-                            MaterialUtils.getMaterialName(itemStack.getType()))
-                    .collect(Collectors.toList()), true));
+            formatter.register("{ITEMS}", FunnyStringUtils.join(
+                    PandaStream.of(items)
+                            .map(itemStack -> itemStack.getAmount() + config.itemAmountSuffix.getValue() + " " +
+                                    MaterialUtils.getMaterialName(itemStack.getType()))
+                            .collect(Collectors.toList()), true)
+            );
         }
 
         if (message.contains("{ITEM-NO-AMOUNT}")) {

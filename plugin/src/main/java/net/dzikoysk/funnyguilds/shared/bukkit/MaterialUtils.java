@@ -17,24 +17,26 @@ import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
 
-    private static final Method MATCH_MATERIAL_METHOD =
-            Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
+    private static final Method MATCH_MATERIAL_METHOD = Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
 
     private MaterialUtils() {
     }
 
+    @Nullable
     public static Material parseMaterial(String materialString, boolean allowNullReturn) {
         if (materialString == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
         }
-        String materialName = materialString.toUpperCase().replaceAll(" ", "_");
 
+        String materialName = FunnyFormatter.formatOnce(materialString.toUpperCase(Locale.ROOT), " ", "_");
         Material material = matchMaterial(materialName);
+
         if (material == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: " + materialString);
             return allowNullReturn ? null : Material.AIR;
         }
+
         return material;
     }
 
@@ -44,6 +46,7 @@ public final class MaterialUtils {
                 .toSet();
     }
 
+    @Nullable
     public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material data: null");
@@ -118,7 +121,6 @@ public final class MaterialUtils {
             }
 
             Material material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, false);
-
             if (material == null) {
                 material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, true);
             }

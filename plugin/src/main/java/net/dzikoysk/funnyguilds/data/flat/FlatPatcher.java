@@ -42,11 +42,11 @@ public final class FlatPatcher {
             regionsList = regions.listFiles();
 
             if (guildsList == null || guildsList.length == 0) {
-                FunnyIOUtils.delete(guilds);
+                FunnyIOUtils.deleteFile(guilds);
             }
 
             if (regionsList == null || regionsList.length == 0) {
-                FunnyIOUtils.delete(regions);
+                FunnyIOUtils.deleteFile(regions);
             }
 
             FunnyGuilds.getPluginLogger().update("Done!");

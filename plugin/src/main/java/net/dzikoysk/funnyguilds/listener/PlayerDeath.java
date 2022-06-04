@@ -25,7 +25,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.MapUtil;
+import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -167,7 +167,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 double totalDamage = victimCache.getTotalDamage() + attackerDamage;
                 int givenPoints = 0;
 
-                Map<User, Double> damage = MapUtil.sortByValue(victimCache.getDamage());
+                Map<User, Double> damage = MapUtils.sortByValue(victimCache.getDamage());
                 int assists = 0;
 
                 for (Entry<User, Double> assist : damage.entrySet()) {

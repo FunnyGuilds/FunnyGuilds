@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 public final class LocationUtils {
@@ -21,27 +22,26 @@ public final class LocationUtils {
 
     public static boolean checkWorld(Player player) {
         List<String> blockedWorlds = FunnyGuilds.getInstance().getPluginConfiguration().blockedWorlds;
-        return blockedWorlds != null && blockedWorlds.size() > 0 && blockedWorlds.contains(player.getWorld().getName());
+        return blockedWorlds != null && !blockedWorlds.isEmpty() && blockedWorlds.contains(player.getWorld().getName());
     }
 
+    @Nullable
     public static Location parseLocation(String string) {
         if (string == null) {
             return null;
         }
 
-        String[] shs = string.split(",");
-
-        if (shs.length < 4) {
+        String[] split = string.split(",");
+        if (split.length < 4) {
             return null;
         }
 
-        World world = Bukkit.getWorld(shs[0]);
-
+        World world = Bukkit.getWorld(split[0]);
         if (world == null) {
             world = Bukkit.getWorlds().get(0);
         }
 
-        return new Location(world, Float.parseFloat(shs[1]), Float.parseFloat(shs[2]), Float.parseFloat(shs[3]));
+        return new Location(world, Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3]));
     }
 
     public static boolean equals(Location location, Location to) {
@@ -54,27 +54,27 @@ public final class LocationUtils {
 
     public static String toString(Location location) {
         if (location == null) {
-            return null;
+            return "";
         }
 
-        return location.getWorld().getName() +
-                "," +
-                (float) location.getX() +
-                "," +
-                (float) location.getY() +
-                "," +
-                (float) location.getZ();
+        World world = location.getWorld();
+        if (world == null) {
+            return "";
+        }
+
+        return location.getWorld().getName() + "," + (float) location.getX() + "," + (float) location.getY() +
+                "," + (float) location.getZ();
     }
 
     public static String toString(Option<Location> location) {
-        return toString(location.getOrNull());
+        return toString(location.orNull());
     }
 
     public static int getMinHeight(World world) {
         try {
             return world.getMinHeight();
         }
-        catch (NoSuchMethodError ex) {
+        catch (NoSuchMethodError exception) {
             return LEGACY_MIN_HEIGHT;
         }
     }

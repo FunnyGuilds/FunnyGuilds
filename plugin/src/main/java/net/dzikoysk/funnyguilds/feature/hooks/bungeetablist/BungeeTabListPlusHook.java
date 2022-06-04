@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.entity.Player;
-import panda.utilities.StringUtils;
 
 public class BungeeTabListPlusHook extends AbstractPluginHook {
 
@@ -38,7 +37,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
                 BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable("funnyguilds_" + key.toLowerCase(), player ->
                         userManager.findByPlayer(player)
                                 .map(user -> tablistPlaceholdersService.formatIdentifier(key, user))
-                                .orElseGet(StringUtils.EMPTY))));
+                                .orElseGet(""))));
 
         Set<String> userTopIds = userRankManager.getTopIds();
         Set<String> guildTopIds = guildRankManager.getTopIds();
