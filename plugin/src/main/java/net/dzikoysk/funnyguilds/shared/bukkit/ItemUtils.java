@@ -92,8 +92,8 @@ public final class ItemUtils {
                     PandaStream.of(items)
                             .map(itemStack -> itemStack.getAmount() + config.itemAmountSuffix.getValue() + " " +
                                     MaterialUtils.getMaterialName(itemStack.getType()))
-                            .toList()
-                    , true)
+                            .toList(),
+                    true)
             );
         }
 
