@@ -105,7 +105,7 @@ public class PlayerInteract extends AbstractFunnyListener {
             return;
         }
 
-        if (this.config.informationMessageCooldowns.cooldown(player, this.config.infoPlayerCooldown)) {
+        if (this.config.informationMessageCooldowns.cooldown(player.getUniqueId(), this.config.infoPlayerCooldown)) {
             return;
         }
 

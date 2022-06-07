@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -49,7 +50,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import panda.std.Option;
 
@@ -71,7 +71,7 @@ import panda.std.Option;
 public class PluginConfiguration extends OkaeriConfig {
 
     @Exclude
-    public final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+    public final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
 
     @Comment("Wyswietlana nazwa pluginu")
     public String pluginName = "FunnyGuilds";
