@@ -25,7 +25,8 @@ public class BukkitUserProfile implements UserProfile {
         this.uuid = uuid;
         this.server = server;
 
-        this.refresh();
+        this.offlinePlayerRef = new WeakReference<>(server.getOfflinePlayer(uuid));
+        this.playerRef = new WeakReference<>(server.getPlayer(uuid));
     }
 
     //TODO: change visibility to private after removing deprecated methods from User
@@ -41,7 +42,7 @@ public class BukkitUserProfile implements UserProfile {
     }
 
     private void refreshOfflinePlayerRef() {
-        if (this.offlinePlayerRef == null) {
+        if (this.offlinePlayerRef.get() == null) {
             this.offlinePlayerRef = new WeakReference<>(this.server.getOfflinePlayer(this.uuid));
         }
     }
