@@ -137,15 +137,10 @@ public class User extends AbstractMutableEntity {
         return Option.none();
     }
 
-    /**
-     * @deprecated for removal in the future, in favour of {@link BukkitUserProfile#updateReference(Player)}
-     */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public void updateReference(Player player) {
-        if (this.profile instanceof BukkitUserProfile) {
-            ((BukkitUserProfile) this.profile).updateReference(player);
-        }
+        this.profile.refresh();
     }
 
     @Override

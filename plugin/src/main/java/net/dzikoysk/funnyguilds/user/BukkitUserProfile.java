@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -41,10 +40,10 @@ public class BukkitUserProfile implements UserProfile {
         return Option.of(player);
     }
 
-    //TODO: remove after changes in User
-    public void updateReference(Player player) {
-        Validate.notNull(player, "you can't update reference with null player!");
-        this.playerRef = new WeakReference<>(player);
+    private void refreshOfflinePlayerRef() {
+        if (this.offlinePlayerRef == null) {
+            this.offlinePlayerRef = new WeakReference<>(this.server.getOfflinePlayer(this.uuid));
+        }
     }
 
     @Override
@@ -68,11 +67,8 @@ public class BukkitUserProfile implements UserProfile {
             return player.hasPermission(permission);
         }
 
+        this.refreshOfflinePlayerRef();
         OfflinePlayer offlinePlayer = this.offlinePlayerRef.get();
-        if (offlinePlayer == null) {
-            this.refresh();
-            offlinePlayer = this.offlinePlayerRef.get();
-        }
 
         return offlinePlayer.isOp() || VaultHook.hasPermission(offlinePlayer, permission);
     }
@@ -103,13 +99,14 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public void refresh() {
-        if (this.offlinePlayerRef.get() == null) {
-            this.offlinePlayerRef = new WeakReference<>(this.server.getOfflinePlayer(this.uuid));
+        Player player = this.server.getPlayer(this.uuid);
+        if (player == null) {
+            this.playerRef = new WeakReference<>(null);
+            return;
         }
 
-        if (this.playerRef == null) {
-            this.playerRef = new WeakReference<>(this.server.getPlayer(this.uuid));
-        }
+        this.playerRef = new WeakReference<>(player);
+        this.offlinePlayerRef = new WeakReference<>(player);
     }
 
     @Override
