@@ -25,7 +25,6 @@ public class PlayerJoin extends AbstractFunnyListener {
         User user = this.userManager.findByPlayer(player)
                 .peek(userPeek -> {
                     UserProfile profile = userPeek.getProfile();
-
                     if (profile instanceof BukkitUserProfile) {
                         ((BukkitUserProfile) profile).updateReference(player);
                     }
