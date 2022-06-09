@@ -29,6 +29,9 @@ public interface UserProfile {
     default void teleport(Position position) {
     }
 
+    default void refresh() {
+    }
+
     default Position getPosition() {
         return Position.ZERO;
     }

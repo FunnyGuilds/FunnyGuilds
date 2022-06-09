@@ -48,10 +48,6 @@ public class VaultHook extends AbstractPluginHook {
         return economyHook != null;
     }
 
-    public static boolean isPermissionHooked() {
-        return permissionHook != null;
-    }
-
     public static double accountBalance(Player player) {
         Validate.notNull(player, "Player can not be null!");
         return economyHook.getBalance(player);
@@ -68,7 +64,7 @@ public class VaultHook extends AbstractPluginHook {
     }
 
     public static boolean hasPermission(OfflinePlayer player, String permission) {
-        return permissionHook.playerHas(null, player, permission);
+        return permissionHook != null && permissionHook.playerHas(null, player, permission);
     }
 
 }

@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -17,37 +18,38 @@ public class BukkitUserProfile implements UserProfile {
 
     private final UUID uuid;
     private final Server server;
-    private final OfflinePlayer offlinePlayer;
+
+    private WeakReference<OfflinePlayer> offlinePlayerRef;
     private WeakReference<Player> playerRef;
 
     public BukkitUserProfile(UUID uuid, Server server) {
         this.uuid = uuid;
         this.server = server;
-        this.playerRef = new WeakReference<>(server.getPlayer(this.uuid));
-        this.offlinePlayer = server.getOfflinePlayer(this.uuid);
+
+        this.refresh();
     }
 
-    private Option<Player> getPlayer() {
+    //TODO: change visibility to private after removing deprecated methods from User
+    Option<Player> getPlayer() {
         Player player = this.playerRef.get();
 
         if (player == null) {
-            player = this.server.getPlayer(this.uuid);
-
-            if (player != null) {
-                this.playerRef = new WeakReference<>(player);
-            }
+            this.refresh();
+            player = this.playerRef.get();
         }
 
         return Option.of(player);
     }
 
+    //TODO: remove after changes in User
     public void updateReference(Player player) {
+        Validate.notNull(player, "you can't update reference with null player!");
         this.playerRef = new WeakReference<>(player);
     }
 
     @Override
     public boolean isOnline() {
-        return this.getPlayer().isPresent();
+        return this.getPlayer().is(Player::isOnline);
     }
 
     @Override
@@ -61,9 +63,18 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public boolean hasPermission(String permission) {
-        return this.getPlayer()
-                .map(player -> player.hasPermission(permission))
-                .orElseGet(this.offlinePlayer.isOp() || (VaultHook.isPermissionHooked() && VaultHook.hasPermission(this.offlinePlayer, permission)));
+        Player player = this.playerRef.get();
+        if (player != null) {
+            return player.hasPermission(permission);
+        }
+
+        OfflinePlayer offlinePlayer = this.offlinePlayerRef.get();
+        if (offlinePlayer == null) {
+            this.refresh();
+            offlinePlayer = this.offlinePlayerRef.get();
+        }
+
+        return offlinePlayer.isOp() || VaultHook.hasPermission(offlinePlayer, permission);
     }
 
     @Override
@@ -88,6 +99,17 @@ public class BukkitUserProfile implements UserProfile {
     @Override
     public void teleport(Position position) {
         this.getPlayer().peek(player -> player.teleport(PositionConverter.adapt(position)));
+    }
+
+    @Override
+    public void refresh() {
+        if (this.offlinePlayerRef.get() == null) {
+            this.offlinePlayerRef = new WeakReference<>(this.server.getOfflinePlayer(this.uuid));
+        }
+
+        if (this.playerRef == null) {
+            this.playerRef = new WeakReference<>(this.server.getPlayer(this.uuid));
+        }
     }
 
     @Override
