@@ -122,7 +122,7 @@ public final class DatabaseGuildSerializer {
     }
 
     public static void serialize(SQLDataModel dataModel, Guild guild) {
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getUsersTable());
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getGuildsTable());
 
         String members = FunnyStringUtils.join(Entity.names(guild.getMembers()));
         String deputies = FunnyStringUtils.join(Entity.names(guild.getDeputies()));
