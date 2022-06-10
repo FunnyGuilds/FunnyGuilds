@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -100,7 +101,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
     }
 
     public FunnyFormatter toVariablesFormatter(T data) {
-        return this.toCustomFormatter(data, "{", "}", String::toUpperCase);
+        return this.toCustomFormatter(data, "{", "}", name -> name.toUpperCase(Locale.ROOT));
     }
 
     /**

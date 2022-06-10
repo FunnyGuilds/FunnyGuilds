@@ -126,7 +126,7 @@ public final class ItemUtils {
             String attributeName = itemAttributes[0];
             String attributeValue = itemAttributes[1];
 
-            switch (attributeName.toLowerCase()) {
+            switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
                     item.setName(formatter.format(attributeName), true);
@@ -219,7 +219,7 @@ public final class ItemUtils {
     }
 
     public static String toString(ItemStack item) {
-        String material = item.getType().toString().toLowerCase();
+        String material = item.getType().toString().toLowerCase(Locale.ROOT);
         short durability = item.getDurability();
         int amount = item.getAmount();
 
@@ -246,7 +246,7 @@ public final class ItemUtils {
 
         if (meta.hasEnchants()) {
             List<String> enchants = PandaStream.of(meta.getEnchants().entrySet().stream())
-                    .map(entry -> getEnchantName(entry.getKey()).toLowerCase() + ":" + entry.getValue())
+                    .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
                     .toList();
 
             itemString.append(" enchants:").append(Joiner.on(",").join(enchants));
@@ -255,7 +255,7 @@ public final class ItemUtils {
         if (!meta.getItemFlags().isEmpty()) {
             List<String> flags = PandaStream.of(meta.getItemFlags())
                     .map(ItemFlag::name)
-                    .map(String::toLowerCase)
+                    .map(name -> name.toLowerCase(Locale.ROOT))
                     .toList();
 
             itemString.append(" flags:").append(Joiner.on(",").join(flags));
@@ -279,7 +279,7 @@ public final class ItemUtils {
         if (EggTypeChanger.needsSpawnEggMeta()) {
             if (meta instanceof SpawnEggMeta) {
                 SpawnEggMeta eggMeta = (SpawnEggMeta) meta;
-                String entityType = eggMeta.getSpawnedType().name().toLowerCase();
+                String entityType = eggMeta.getSpawnedType().name().toLowerCase(Locale.ROOT);
                 itemString.append(" eggtype:").append(entityType);
             }
         }
@@ -290,7 +290,7 @@ public final class ItemUtils {
     private static Enchantment matchEnchant(String enchantName) {
         if (BY_IN_GAME_NAME_ENCHANT != null && CREATE_NAMESPACED_KEY != null) {
             try {
-                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase());
+                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase(Locale.ROOT));
                 Object enchantment = BY_IN_GAME_NAME_ENCHANT.invoke(null, namespacedKey);
 
                 if (enchantment != null) {
@@ -301,7 +301,7 @@ public final class ItemUtils {
             }
         }
 
-        return Enchantment.getByName(enchantName.toUpperCase());
+        return Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
     }
 
     private static String getEnchantName(Enchantment enchantment) {

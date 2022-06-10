@@ -16,12 +16,19 @@ public class V1_12R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
-        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE,
-                CraftChatMessage.fromString(titleMessage.getText(), false)[0]);
-        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE,
-                CraftChatMessage.fromString(titleMessage.getSubText(), false)[0]);
-        PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(titleMessage.getFadeInDuration(),
-                titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(
+                EnumTitleAction.TITLE,
+                CraftChatMessage.fromString(titleMessage.getText(), false)[0]
+        );
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(
+                EnumTitleAction.SUBTITLE,
+                CraftChatMessage.fromString(titleMessage.getSubText(), false)[0]
+        );
+        PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(
+                titleMessage.getFadeInDuration(),
+                titleMessage.getStayDuration(),
+                titleMessage.getFadeOutDuration()
+        );
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
@@ -37,7 +44,10 @@ public class V1_12R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(ChatSerializer.a("{\"text\":\"" + text + "\"}"), ChatMessageType.GAME_INFO);
+        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(
+                ChatSerializer.a("{\"text\":\"" + text + "\"}"),
+                ChatMessageType.GAME_INFO
+        );
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(actionBarPacket);

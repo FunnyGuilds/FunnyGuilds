@@ -18,13 +18,13 @@ import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
+import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public class RegionManager {
@@ -64,11 +64,15 @@ public class RegionManager {
      * @return the guild
      */
     public Option<Region> findByName(String name, boolean ignoreCase) {
-        if (ignoreCase) {
-            return PandaStream.of(this.regionsMap.values()).find(region -> region.getName().equalsIgnoreCase(name));
+        Region foundRegion = this.regionsMap.get(name);
+
+        if (foundRegion == null && ignoreCase) {
+            foundRegion = PandaStream.of(this.regionsMap.values())
+                    .find(region -> region.getName().equalsIgnoreCase(name))
+                    .orNull();
         }
 
-        return PandaStream.of(this.regionsMap.values()).find(region -> region.getName().equals(name));
+        return Option.of(foundRegion);
     }
 
     /**
@@ -164,7 +168,7 @@ public class RegionManager {
      */
     public boolean isGuildHeart(Block block) {
         Pair<Material, Byte> md = this.pluginConfiguration.heart.createMaterial;
-        if (md == null || block.getType() != md.getLeft()) {
+        if (md == null || block.getType() != md.getFirst()) {
             return false;
         }
 

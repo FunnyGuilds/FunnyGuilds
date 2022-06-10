@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +29,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
      * @param placeholders placeholders set
      */
     public void register(JavaPlugin plugin, String name, P placeholders) {
-        this.placeholders.put(plugin.getName().toLowerCase() + "_" + name.toLowerCase(), placeholders);
+        this.placeholders.put(plugin.getName().toLowerCase(Locale.ROOT) + "_" + name.toLowerCase(Locale.ROOT), placeholders);
     }
 
     /**

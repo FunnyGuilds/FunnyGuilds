@@ -44,7 +44,10 @@ public class GuildHeartInteractEvent extends GuildEvent {
     }
 
     public enum Click {
-        LEFT, RIGHT;
+
+        LEFT,
+        RIGHT
+
     }
 
 }

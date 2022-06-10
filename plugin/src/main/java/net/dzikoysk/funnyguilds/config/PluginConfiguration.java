@@ -83,11 +83,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean updateInfo = true;
 
     @Comment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
-    @Comment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
+    @Comment("Ta opcja dziala tylko wtedy, gdy takze jest wlaczona opcja 'update-info'")
     public boolean updateNightlyInfo = true;
 
-    @Comment("Czas w godzinach. o który ma zostać przesunięty czas w np. placeholderach. Przyjmuje zarówno wartości dodatnie jak i ujemne")
-    @Comment("Opcja przydatna, kiedy strefa czasowa ustawiona na serwerze jest inna niz w kraju docelowym (np. serwer ma ustawiona strefe czasowa \"Europe/London\", a gracze są z Polski - wystąpi wtedy godzina różnicy czasu)")
+    @Comment("Czas w godzinach, o ktory ma zostac przesuniety czas w np. placeholderach. Przyjmuje zarowno wartosci dodatnie jak i ujemne")
+    @Comment("Opcja przydatna, kiedy strefa czasowa ustawiona na serwerze jest inna niz w kraju docelowym (np. serwer ma ustawiona strefe czasowa \"Europe/London\", a gracze sa z Polski - wystapi wtedy godzina roznicy czasu)")
     public int timeOffset = 0;
 
     @Comment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
@@ -100,12 +100,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
     public boolean regionsEnabled = true;
 
-    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem")
+    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest sie jej czlonkiem")
     @Comment("Zostaw puste, aby wylaczyc")
     @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     public Set<Material> placingBlocksBypassOnRegion = Collections.emptySet();
 
-    @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
+    @Comment("Zablokuj rozlewanie sie wody i lawy poza terenem gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
     @CustomKey("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
@@ -255,7 +255,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public RawString guiItemsVipTitle = new RawString("&5&lPrzedmioty na gildie (VIP)");
 
     @Comment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
-    @Comment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
+    @Comment("Jesli nie chcesz uzywac tej funkcji, to pozostaw gui-items-name: \"\"")
     @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
     @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
     public RawString guiItemsName = new RawString("&7>> &a{ITEM-NO-AMOUNT} &7<<");
@@ -296,7 +296,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
-    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
     public long buggedBlocksTimer = 20L;
 
     @Comment("Bloki, ktorych nie mozna 'bugowac'")
@@ -439,7 +439,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
     @Comment("<material>: <szansa (w %)")
-    @Comment("Jeżeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
+    @Comment("Jezeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
     @CustomKey("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
@@ -458,7 +458,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
     public boolean explodeShouldAffectOnlyGuild = false;
 
-    @Comment("Możliwość podbijania gildii")
+    @Comment("Mozliwosc podbijania gildii")
     public boolean warEnabled = true;
 
     @Min(1)
@@ -542,7 +542,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
     @Min(1)
-    @Comment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
+    @Comment("Co ile tickow ranking graczy oraz gildii powinien zostac odswiezony")
     public int rankingUpdateInterval = 40;
 
     @Comment("Czy system asyst ma byc wlaczony")
@@ -853,7 +853,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("restricted-guild-names")
     public List<String> restrictedGuildNames = Collections.singletonList("Administracja");
 
-    @Comment("Blacklista tagów przy zakladaniu gildii")
+    @Comment("Blacklista tagow przy zakladaniu gildii")
     @Comment("Zamienia sie w whiteliste jesli 'whitelist' jest ustawione na true")
     @CustomKey("restricted-guild-tags")
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
@@ -873,21 +873,21 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("Jak dlugo title/subtitle powinien sie pojawiac")
-    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
     @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-fade-in")
     public int notificationTitleFadeIn = 10;
 
     @Min(1)
     @Comment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
-    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
     @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-stay")
     public int notificationTitleStay = 10;
 
     @Min(1)
     @Comment("Jak dlugo title/subtitle powinien znikac")
-    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
     @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-fade-out")
     public int notificationTitleFadeOut = 10;
@@ -944,17 +944,17 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean systemSecurityEnable = true;
 
     @DecimalMin("0")
-    @Comment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
-    @Comment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
+    @Comment("Margines sprawdzania jak daleko uderzyl gracz serce gildii")
+    @Comment("Jesli dostajesz falszywe alarmy od Security zwieksz te wartosc do okolo 0.50 lub wiecej")
     public double reachCompensation = 0.26;
 
     @Min(0)
-    @Comment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
+    @Comment("Margines sprawdzania przez ile blokow uderzyl gracz w serce gildii")
     @CustomKey("freecam-compensation")
     public int freeCamCompensation = 0;
 
     @Min(1)
-    @Comment("Ilość wątków używanych przez ConcurrencyManager")
+    @Comment("Ilosc watkow uzywanych przez ConcurrencyManager")
     public int concurrencyThreads = 1;
 
     @Min(1)
@@ -1052,7 +1052,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
-        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getLeft())) {
+        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
             this.eventPhysics = true;
         }
 
@@ -1111,7 +1111,10 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public enum DataModel {
-        FLAT, MYSQL
+
+        FLAT,
+        MYSQL
+
     }
 
 }

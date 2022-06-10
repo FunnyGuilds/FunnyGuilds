@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -27,7 +28,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        String parameter = args.length > 0 ? args[0].toLowerCase() : "";
+        String parameter = args.length > 0 ? args[0].toLowerCase(Locale.ROOT) : "";
 
         switch (parameter) {
             case "reload":

@@ -41,7 +41,11 @@ public final class RankSystem {
     }
 
     public enum Type {
-        ELO, PERCENT, STATIC,
+
+        ELO,
+        PERCENT,
+        STATIC
+
     }
 
     public static class RankResult {

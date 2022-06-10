@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.hooks.placeholderapi;
 
+import java.util.Locale;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
@@ -61,13 +62,13 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             User user = userOption.get();
-            String lowerIdentifier = identifier.toLowerCase();
+            String lowerIdentifier = identifier.toLowerCase(Locale.ROOT);
 
             if (lowerIdentifier.contains("position-")) {
-                return this.rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
+                return this.rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
             }
             else if (lowerIdentifier.contains("top-")) {
-                String temp = this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
+                String temp = this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
                     temp = this.rankPlaceholdersService.formatRank(temp, user);
                 }

@@ -9,12 +9,12 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.std.Pair;
+import panda.std.Triple;
 
 public final class ProtectionSystem {
 
@@ -51,18 +51,18 @@ public final class ProtectionSystem {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             Pair<Material, Byte> heartMaterial = config.heart.createMaterial;
 
-            return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
         return Option.none();
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
-        if (result.getRight() == ProtectionType.LOCKED) {
-            ProtectionSystem.sendRegionExplodeMessage(result.getLeft(), result.getMiddle());
+        if (result.getThird() == ProtectionType.LOCKED) {
+            ProtectionSystem.sendRegionExplodeMessage(result.getFirst(), result.getSecond());
         }
         else {
-            ChatUtils.sendMessage(result.getLeft(), FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
+            ChatUtils.sendMessage(result.getFirst(), FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 
@@ -74,7 +74,11 @@ public final class ProtectionSystem {
     }
 
     public enum ProtectionType {
-        UNAUTHORIZED, LOCKED, HEART
+
+        UNAUTHORIZED,
+        LOCKED,
+        HEART
+
     }
 
 }

@@ -51,8 +51,8 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                         .forEach(member -> FlatUserSerializer.serialize(flatDataModel, member));
             }
         }
-        catch (Throwable throwable) {
-            FunnyGuilds.getPluginLogger().error("Could not update guild", throwable);
+        catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not update guild", exception);
         }
     }
 

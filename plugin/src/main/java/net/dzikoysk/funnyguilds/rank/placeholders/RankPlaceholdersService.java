@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.rank.placeholders;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -120,7 +121,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             String topFormat = this.config.top.format.ptop.getValue();
 
             if (!topFormat.isEmpty()) {
-                List<RangeFormatting> formats = this.config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase());
+                List<RangeFormatting> formats = this.config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT));
                 String valueFormat = formats == null ? topValue.toString() : NumberRange.inRangeToString(topValue, formats);
 
                 FunnyFormatter formatter = new FunnyFormatter()
@@ -153,7 +154,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             String topFormat = this.config.top.format.gtop.getValue();
 
             if (!topFormat.isEmpty()) {
-                List<RangeFormatting> formats = this.config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase());
+                List<RangeFormatting> formats = this.config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT));
                 String valueFormat = formats == null ? topValue.toString() : NumberRange.inRangeToString(topValue, formats);
 
                 FunnyFormatter formatter = new FunnyFormatter()

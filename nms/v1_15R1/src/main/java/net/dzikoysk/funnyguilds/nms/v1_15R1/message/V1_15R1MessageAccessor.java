@@ -15,12 +15,19 @@ public class V1_15R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
-        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(EnumTitleAction.TITLE,
-                CraftChatMessage.fromStringOrNull(titleMessage.getText(), false));
-        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE,
-                CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false));
-        PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(titleMessage.getFadeInDuration(),
-                titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
+        PacketPlayOutTitle titlePacket = new PacketPlayOutTitle(
+                EnumTitleAction.TITLE,
+                CraftChatMessage.fromStringOrNull(titleMessage.getText(), false)
+        );
+        PacketPlayOutTitle subtitlePacket = new PacketPlayOutTitle(
+                EnumTitleAction.SUBTITLE,
+                CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false)
+        );
+        PacketPlayOutTitle timesPacket = new PacketPlayOutTitle(
+                titleMessage.getFadeInDuration(),
+                titleMessage.getStayDuration(),
+                titleMessage.getFadeOutDuration()
+        );
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(titlePacket);
@@ -36,7 +43,10 @@ public class V1_15R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(CraftChatMessage.fromStringOrNull(text, true), ChatMessageType.GAME_INFO);
+        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(
+                CraftChatMessage.fromStringOrNull(text, true),
+                ChatMessageType.GAME_INFO
+        );
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(actionBarPacket);

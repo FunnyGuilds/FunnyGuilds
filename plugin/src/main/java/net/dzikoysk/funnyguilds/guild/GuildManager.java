@@ -241,7 +241,7 @@ public class GuildManager {
                             plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                         }
                         else if (this.pluginConfiguration.heart.createMaterial != null &&
-                                this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+                                this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR) {
                             Location center = region.getCenter().clone();
 
                             Bukkit.getScheduler().runTask(plugin, () -> {
@@ -300,12 +300,12 @@ public class GuildManager {
      * @param guild the guild for which heart should be spawned
      */
     public void spawnHeart(GuildEntityHelper guildEntityHelper, Guild guild) {
-        if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+        if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR) {
             guild.getRegion()
                     .flatMap(Region::getHeartBlock)
                     .peek(heart -> {
-                        heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
-                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
+                        heart.setType(this.pluginConfiguration.heart.createMaterial.getFirst());
+                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getSecond());
                     });
             return;
         }

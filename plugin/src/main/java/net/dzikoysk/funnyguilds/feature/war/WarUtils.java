@@ -44,7 +44,14 @@ public final class WarUtils {
 
     @Deprecated // TODO: to remove
     public enum Message {
-        NO_HAS_GUILD, ALLY, WAIT, ATTACKER, ATTACKED, DISABLED
+
+        NO_HAS_GUILD,
+        ALLY,
+        WAIT,
+        ATTACKER,
+        ATTACKED,
+        DISABLED
+
     }
 
     public static String getWinMessage(Guild conqueror, Guild loser) {

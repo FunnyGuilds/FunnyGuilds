@@ -19,7 +19,7 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
         public boolean enabled = false;
 
-        @Comment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
+        @Comment("Czy wlaczyc ochrone przed TNT na calym serwerze w podanych godzinach")
         public boolean enabledGlobal = false;
 
         @Comment("O ktorej godzinie ma sie zaczac ochrona przed TNT w gildii")

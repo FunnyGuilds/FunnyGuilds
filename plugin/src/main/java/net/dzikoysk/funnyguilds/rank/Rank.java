@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
@@ -32,11 +33,11 @@ public abstract class Rank<T extends MutableEntity> {
      * @return position in which the player is in the top, return 0 if the player is not in the top
      */
     public int getPosition(String top) {
-        return this.position.getOrDefault(top.toLowerCase(), 0);
+        return this.position.getOrDefault(top.toLowerCase(Locale.ROOT), 0);
     }
 
     public void setPosition(String top, int position) {
-        this.position.put(top.toLowerCase(), position);
+        this.position.put(top.toLowerCase(Locale.ROOT), position);
     }
 
     /**

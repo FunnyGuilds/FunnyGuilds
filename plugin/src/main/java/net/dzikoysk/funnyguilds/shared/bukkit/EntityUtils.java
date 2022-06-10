@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -41,7 +41,10 @@ public final class EntityUtils {
             return allowNullReturn ? null : EntityType.UNKNOWN;
         }
 
-        EntityType entityType = EnumUtils.getEnum(EntityType.class, stringEntity.toUpperCase());
+        EntityType entityType = Option.attempt(IllegalArgumentException.class, () -> {
+            return EntityType.valueOf(stringEntity.toUpperCase(Locale.ROOT));
+        }).orNull();
+
         if (entityType != null) {
             return entityType;
         }

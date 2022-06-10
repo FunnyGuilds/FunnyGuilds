@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.util;
 
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -56,8 +57,8 @@ public final class DeserializationUtils {
         String guildTag = pluginConfiguration.guildTagKeepCase
                 ? rawGuildTag
                 : pluginConfiguration.guildTagUppercase
-                ? rawGuildTag.toUpperCase()
-                : rawGuildTag.toLowerCase();
+                ? rawGuildTag.toUpperCase(Locale.ROOT)
+                : rawGuildTag.toLowerCase(Locale.ROOT);
 
         Guild guild = guildManager.findByUuid(guildUuid).orElseGet(() -> {
             Guild newGuild = new Guild(guildUuid, guildName, guildTag);

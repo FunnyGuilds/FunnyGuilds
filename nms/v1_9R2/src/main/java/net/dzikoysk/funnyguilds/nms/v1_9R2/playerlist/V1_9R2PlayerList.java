@@ -16,7 +16,7 @@ import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_9_R2.WorldSettings.EnumGamemode;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_9_R2.util.CraftChatMessage;
 import org.bukkit.entity.Player;

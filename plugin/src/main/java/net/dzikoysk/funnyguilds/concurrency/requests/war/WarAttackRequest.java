@@ -24,7 +24,7 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
     private final User user;
     private final int entityId;
 
-    public WarAttackRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, final int entityId) {
+    public WarAttackRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, int entityId) {
         this.plugin = plugin;
         this.guildEntityHelper = guildEntityHelper;
         this.user = user;
@@ -43,10 +43,15 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
     }
 
     private void attackGuild(Player player, Guild guild) {
-        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, this.user, guild, Click.LEFT,
-                !SecuritySystem.onHitCrystal(player, guild));
-        SimpleEventHandler.handle(interactEvent);
+        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(
+                EventCause.USER,
+                this.user,
+                guild,
+                Click.LEFT,
+                !SecuritySystem.onHitCrystal(player, guild)
+        );
 
+        SimpleEventHandler.handle(interactEvent);
         if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
             return;
         }

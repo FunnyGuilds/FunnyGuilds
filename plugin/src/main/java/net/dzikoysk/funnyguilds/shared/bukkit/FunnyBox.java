@@ -67,7 +67,10 @@ public class FunnyBox {
         Validate.notNull(corner1, "corner1 cannot be null");
         Validate.notNull(corner2, "corner2 cannot be null");
 
-        return new FunnyBox(corner1.getX(), corner1.getY(), corner1.getZ(), corner2.getX(), corner2.getY(), corner2.getZ());
+        return new FunnyBox(
+                corner1.getX(), corner1.getY(), corner1.getZ(),
+                corner2.getX(), corner2.getY(), corner2.getZ()
+        );
     }
 
     public static FunnyBox of(Location corner1, Location corner2) {
@@ -75,21 +78,33 @@ public class FunnyBox {
         Validate.notNull(corner2, "corner2 cannot be null");
         Validate.isTrue(Objects.equals(corner1.getWorld(), corner2.getWorld()), "Locations from different worlds!");
 
-        return new FunnyBox(corner1.getX(), corner1.getY(), corner1.getZ(), corner2.getX(), corner2.getY(), corner2.getZ());
+        return new FunnyBox(
+                corner1.getX(), corner1.getY(), corner1.getZ(),
+                corner2.getX(), corner2.getY(), corner2.getZ()
+        );
     }
 
     public static FunnyBox of(Vector center, double x, double y, double z) {
         Validate.notNull(center, "center cannot be null");
-        return new FunnyBox(center.getX() - x, center.getY() - y, center.getZ() - z, center.getX() + x, center.getY() + y, center.getZ() + z);
+        return new FunnyBox(
+                center.getX() - x, center.getY() - y, center.getZ() - z,
+                center.getX() + x, center.getY() + y, center.getZ() + z
+        );
     }
 
     public static FunnyBox of(Location center, double x, double y, double z) {
         Validate.notNull(center, "center cannot be null");
-        return new FunnyBox(center.getX() - x, center.getY() - y, center.getZ() - z, center.getX() + x, center.getY() + y, center.getZ() + z);
+        return new FunnyBox(
+                center.getX() - x, center.getY() - y, center.getZ() - z,
+                center.getX() + x, center.getY() + y, center.getZ() + z
+        );
     }
 
     private static FunnyBox ofBlock(Block block) {
-        return new FunnyBox(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1, block.getZ() + 1);
+        return new FunnyBox(
+                block.getX(), block.getY(), block.getZ(),
+                block.getX() + 1, block.getY() + 1, block.getZ() + 1
+        );
     }
 
     private double minX;
@@ -194,7 +209,8 @@ public class FunnyBox {
     }
 
     public FunnyBox expand(double negativeX, double negativeY, double negativeZ, double positiveX, double positiveY, double positiveZ) {
-        if ((negativeX == 0.0d) && (negativeY == 0.0d) && (negativeZ == 0.0d) && (positiveX == 0.0d) && (positiveY == 0.0d) && (positiveZ == 0.0d)) {
+        if ((negativeX == 0.0d) && (negativeY == 0.0d) && (negativeZ == 0.0d) &&
+                (positiveX == 0.0d) && (positiveY == 0.0d) && (positiveZ == 0.0d)) {
             return this;
         }
 
@@ -322,8 +338,8 @@ public class FunnyBox {
         double newMaxY = Math.max(this.maxY, posY);
         double newMaxZ = Math.max(this.maxZ, posZ);
 
-        if ((newMinX == this.minX) && (newMinY == this.minY) && (newMinZ == this.minZ) && (newMaxX == this.maxX) &&
-                (newMaxY == this.maxY) && (newMaxZ == this.maxZ)) {
+        if ((newMinX == this.minX) && (newMinY == this.minY) && (newMinZ == this.minZ) &&
+                (newMaxX == this.maxX) && (newMaxY == this.maxY) && (newMaxZ == this.maxZ)) {
             return this;
         }
 
@@ -375,8 +391,10 @@ public class FunnyBox {
             return this;
         }
 
-        return this.resize(this.minX + shiftX, this.minY + shiftY, this.minZ + shiftZ, this.maxX + shiftX,
-                this.maxY + shiftY, this.maxZ + shiftZ);
+        return this.resize(
+                this.minX + shiftX, this.minY + shiftY, this.minZ + shiftZ,
+                this.maxX + shiftX, this.maxY + shiftY, this.maxZ + shiftZ
+        );
     }
 
     public FunnyBox shift(Vector shift) {
@@ -390,7 +408,8 @@ public class FunnyBox {
     }
 
     private boolean overlaps(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return (this.minX < maxX) && (this.maxX > minX) && (this.minY < maxY) && (this.maxY > minY) &&
+        return (this.minX < maxX) && (this.maxX > minX) &&
+                (this.minY < maxY) && (this.maxY > minY) &&
                 (this.minZ < maxZ) && (this.maxZ > minZ);
     }
 
@@ -410,13 +429,16 @@ public class FunnyBox {
         double y2 = max.getY();
         double z2 = max.getZ();
 
-        return this.overlaps(Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2), Math.max(x1, x2), Math.max(y1, y2),
-                Math.max(z1, z2));
+        return this.overlaps(
+                Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
+                Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)
+        );
     }
 
     public boolean contains(double x, double y, double z) {
-        return (x >= this.minX) && (x < this.maxX) && (y >= this.minY) && (y < this.maxY) && (z >= this.minZ) &&
-                (z < this.maxZ);
+        return (x >= this.minX) && (x < this.maxX) &&
+                (y >= this.minY) && (y < this.maxY) &&
+                (z >= this.minZ) && (z < this.maxZ);
     }
 
     public boolean contains(Vector position) {
@@ -430,7 +452,8 @@ public class FunnyBox {
     }
 
     private boolean contains(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return (this.minX <= minX) && (this.maxX >= maxX) && (this.minY <= minY) && (this.maxY >= maxY) &&
+        return (this.minX <= minX) && (this.maxX >= maxX) &&
+                (this.minY <= minY) && (this.maxY >= maxY) &&
                 (this.minZ <= minZ) && (this.maxZ >= maxZ);
     }
 
@@ -450,8 +473,10 @@ public class FunnyBox {
         double y2 = max.getY();
         double z2 = max.getZ();
 
-        return this.contains(Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2), Math.max(x1, x2), Math.max(y1, y2),
-                Math.max(z1, z2));
+        return this.contains(
+                Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
+                Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)
+        );
     }
 
     @Nullable

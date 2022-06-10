@@ -8,12 +8,13 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.io.File;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import panda.std.Pair;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
@@ -53,7 +54,7 @@ public class HeartConfiguration extends OkaeriConfig {
 
     @Comment("Nazwa pliku ze schematem poczatkowym gildii")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @Comment("Schemat musi znajdować się w folderze FunnyGuilds")
+    @Comment("Schemat musi znajdowac sie w folderze FunnyGuilds")
     public String guildSchematicFileName = "funnyguilds.schematic";
 
     @Comment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
@@ -67,7 +68,7 @@ public class HeartConfiguration extends OkaeriConfig {
     public void loadProcessedProperties() {
         try {
 
-            this.createEntityType = EntityType.valueOf(FunnyFormatter.format(this.createType.toUpperCase(), " ", "_"));
+            this.createEntityType = EntityType.valueOf(FunnyFormatter.format(this.createType.toUpperCase(Locale.ROOT), " ", "_"));
         }
         catch (IllegalArgumentException materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);

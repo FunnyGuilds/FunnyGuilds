@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.feature.tablist;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
@@ -33,13 +34,13 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
         text = this.basicPlaceholdersService.format(text, null);
         text = this.timePlaceholdersService.format(text, OffsetDateTime.now());
         text = this.userPlaceholdersService.format(text, user);
-        text = this.guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", String::toUpperCase);
+        text = this.guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", name -> name.toUpperCase(Locale.ROOT));
 
         return text;
     }
 
     public String formatIdentifier(String identifier, User user) {
-        return this.format("{" + identifier.toUpperCase() + "}", user);
+        return this.format("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
     }
 
     public Set<String> getPlaceholdersKeys() {

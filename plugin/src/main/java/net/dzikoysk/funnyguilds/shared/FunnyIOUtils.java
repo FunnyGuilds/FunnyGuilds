@@ -87,9 +87,9 @@ public final class FunnyIOUtils {
                 throw conversion.getError();
             }
         }
-        catch (Exception ex) {
+        catch (Exception exception) {
             FunnyGuilds.getPluginLogger().update("Connection to the server (" + urlString + ") failed!");
-            FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(ex));
+            FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(exception));
         }
 
         return "";

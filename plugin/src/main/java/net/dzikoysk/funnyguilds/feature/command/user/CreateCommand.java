@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Locale;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -61,7 +62,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         String tag = args[0];
         if (!this.config.guildTagKeepCase) {
-            tag = this.config.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
+            tag = this.config.guildTagUppercase ? tag.toUpperCase(Locale.ROOT) : tag.toLowerCase(Locale.ROOT);
         }
 
         String name = args[1];

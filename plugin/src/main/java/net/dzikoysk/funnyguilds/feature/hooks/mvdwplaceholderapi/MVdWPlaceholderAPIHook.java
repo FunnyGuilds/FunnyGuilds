@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
+import java.util.Locale;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -34,7 +35,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         TablistPlaceholdersService tablistPlaceholdersService = this.plugin.getTablistPlaceholdersService();
 
         tablistPlaceholdersService.getPlaceholdersKeys().forEach(key ->
-                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_" + key.toLowerCase(), event -> {
+                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_" + key.toLowerCase(Locale.ROOT), event -> {
                     OfflinePlayer target = event.getOfflinePlayer();
                     if (target == null) {
                         return "";
@@ -55,7 +56,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             PandaStream.of(userTopIds).forEach(id ->
                     PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_ptop-" + id + "-" + position, event -> {
                         User user = userManager.findByPlayer(event.getPlayer()).orNull();
-                        return rankPlaceholdersService.formatTop("{PTOP-" + id.toUpperCase() + "-" + position + "}", user);
+                        return rankPlaceholdersService.formatTop("{PTOP-" + id.toUpperCase(Locale.ROOT) + "-" + position + "}", user);
                     }));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
@@ -73,7 +74,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             PandaStream.of(guildTopIds).forEach(id ->
                     PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_gtop-" + id + "-" + position, event -> {
                         User user = userManager.findByPlayer(event.getPlayer()).orNull();
-                        return rankPlaceholdersService.formatTop("{GTOP-" + id.toUpperCase() + "-" + position + "}", user);
+                        return rankPlaceholdersService.formatTop("{GTOP-" + id.toUpperCase(Locale.ROOT) + "-" + position + "}", user);
                     }));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
@@ -87,13 +88,13 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         PandaStream.of(userTopIds).forEach(id ->
                 PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_position-" + id, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
-                    return rankPlaceholdersService.formatTopPosition("{POSITION-" + id.toUpperCase() + "}", user);
+                    return rankPlaceholdersService.formatTopPosition("{POSITION-" + id.toUpperCase(Locale.ROOT) + "}", user);
                 }));
 
         PandaStream.of(guildTopIds).forEach(id ->
                 PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_g-position-" + id, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
-                    return rankPlaceholdersService.formatTopPosition("{G-POSITION-" + id.toUpperCase() + "}", user);
+                    return rankPlaceholdersService.formatTopPosition("{G-POSITION-" + id.toUpperCase(Locale.ROOT) + "}", user);
                 }));
 
         return HookInitResult.SUCCESS;

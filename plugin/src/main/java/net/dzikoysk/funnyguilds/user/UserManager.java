@@ -90,13 +90,16 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByName(String nickname, boolean ignoreCase) {
-        if (ignoreCase) {
-            return PandaStream.of(this.usersByName.entrySet())
+        User foundUser = this.usersByName.get(nickname);
+
+        if (foundUser == null && ignoreCase) {
+            foundUser = PandaStream.of(this.usersByName.entrySet())
                     .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
-                    .map(Map.Entry::getValue);
+                    .map(Map.Entry::getValue)
+                    .orNull();
         }
 
-        return Option.of(this.usersByName.get(nickname));
+        return Option.of(foundUser);
     }
 
     /**

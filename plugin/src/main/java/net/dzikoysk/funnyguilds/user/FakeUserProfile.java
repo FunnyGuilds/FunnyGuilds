@@ -46,6 +46,22 @@ public class FakeUserProfile implements UserProfile {
     }
 
     @Override
+    public void sendMessage(String message) {
+    }
+
+    @Override
+    public void kick(String reason) {
+    }
+
+    @Override
+    public void teleport(Position position) {
+    }
+
+    @Override
+    public void refresh() {
+    }
+
+    @Override
     public boolean hasPermission(String permission) {
         return this.permissions.contains(permission);
     }
