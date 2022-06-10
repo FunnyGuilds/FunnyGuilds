@@ -243,8 +243,19 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
         this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
 
-        this.rankPlaceholdersService = new RankPlaceholdersService(this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
-        this.tablistPlaceholdersService = new TablistPlaceholdersService(this.basicPlaceholdersService, this.timePlaceholdersService, this.userPlaceholdersService, this.guildPlaceholdersService);
+        this.rankPlaceholdersService = new RankPlaceholdersService(
+                this.pluginConfiguration,
+                this.messageConfiguration,
+                this.tablistConfiguration,
+                this.userRankManager,
+                this.guildRankManager
+        );
+        this.tablistPlaceholdersService = new TablistPlaceholdersService(
+                this.basicPlaceholdersService,
+                this.timePlaceholdersService,
+                this.userPlaceholdersService,
+                this.guildPlaceholdersService
+        );
 
         this.bossBarService = new BossBarService();
         this.database = new Database();
@@ -355,10 +366,22 @@ public class FunnyGuilds extends JavaPlugin {
                     this.injector.newInstanceWithFields(EntityProtect.class)
             );
 
-            this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventMove, this.injector.newInstanceWithFields(PlayerMove.class));
-            this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventPhysics, this.injector.newInstanceWithFields(BlockPhysics.class));
-            this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.respawnInBase, this.injector.newInstanceWithFields(PlayerRespawn.class));
-            this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventTeleport, this.injector.newInstanceWithFields(PlayerTeleport.class));
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventMove,
+                    this.injector.newInstanceWithFields(PlayerMove.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventPhysics,
+                    this.injector.newInstanceWithFields(BlockPhysics.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.respawnInBase,
+                    this.injector.newInstanceWithFields(PlayerRespawn.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventTeleport,
+                    this.injector.newInstanceWithFields(PlayerTeleport.class)
+            );
 
             this.dynamicListenerManager.reloadAll();
         }
