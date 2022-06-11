@@ -59,174 +59,192 @@ import panda.std.Option;
 @Header("         4.10.1 Snowdrop        #")
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
-@Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
+@Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderów znajduje się tutaj:")
 @Header("https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#funnyguilds")
 @Header(" ")
-@Header("FunnyGuilds wspiera takze placeholdery w BungeeTabListPlus i MVdWPlaceholderAPI")
-@Header("Placeholdery sa dokladnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiscie)")
+@Header("FunnyGuilds wspiera także placeholdery w BungeeTabListPlus i MVdWPlaceholderAPI")
+@Header("Placeholdery są dokładnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiście)")
 @Header(" ")
-@Header("Jezeli chcesz, aby dana wiadomosc byla pusta, zamiast wiadomosci umiesc: ''")
-@Header(" ")
+@Header("Jeżeli chcesz, aby dana wiadomość była pusta, zamiast wiadomości umieść: ''")
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class PluginConfiguration extends OkaeriConfig {
 
     @Exclude
     public final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
 
-    @Comment("Wyswietlana nazwa pluginu")
+    @Comment("")
+    @Comment("Wyświetlana nazwa pluginu")
     public String pluginName = "FunnyGuilds";
 
-    @Comment("Czy plugin ma dzialac w trybie debug. Sluzy on do wysylania dodatkowych wiadomosci w celu zdiagnozowania bledow itp.")
+    @Comment("")
+    @Comment("Czy plugin ma działać w trybie debug - służy on do wysyłania dodatkowych wiadomości, w celu diagnozowania błędów")
     public boolean debugMode = false;
 
-    @Comment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
+    @Comment("")
+    @Comment("Czy informacje o aktualizacji mają być widoczne podczas wejścia na serwer")
     public boolean updateInfo = true;
 
-    @Comment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
-    @Comment("Ta opcja dziala tylko wtedy, gdy takze jest wlaczona opcja 'update-info'")
+    @Comment("")
+    @Comment("Czy informacje o aktualizacji wersji nightly mają być widoczne podczas wejścia na serwer")
+    @Comment("Ta opcja działa tylko wtedy, gdy włączona jest opcja 'update-info'")
     public boolean updateNightlyInfo = true;
 
-    @Comment("Czas w godzinach, o ktory ma zostac przesuniety czas w np. placeholderach. Przyjmuje zarowno wartosci dodatnie jak i ujemne")
-    @Comment("Opcja przydatna, kiedy strefa czasowa ustawiona na serwerze jest inna niz w kraju docelowym (np. serwer ma ustawiona strefe czasowa \"Europe/London\", a gracze sa z Polski - wystapi wtedy godzina roznicy czasu)")
-    public int timeOffset = 0;
-
-    @Comment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
+    @Comment("")
+    @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
     public boolean guildsEnabled = true;
 
-    @Comment("Czy tworzenie regionow gildii, oraz inne zwiazane z nimi rzeczy, maja byc wlaczone")
-    @Comment("UWAGA - dobrze przemysl decyzje o wylaczeniu regionow!")
-    @Comment("Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
-    @Comment("Jesli regiony mialyby byc znowu wlaczone - bedzie trzeba wykasowac WSZYSTKIE dane pluginu")
-    @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
+    @Comment("")
+    @Comment("Czy tworzenie regionów gildii, oraz inne związane z nimi rzeczy, mają byc włączone")
+    @Comment("UWAGA - dobrze przemyśl decyzję o wyłączeniu regionów!")
+    @Comment("Gildie nie będą miały w sobie żadnych informacji o regionach, a jeśli regiony są włączone - te informacje muszą byc obecne")
+    @Comment("Jeśli regiony miałyby być znowu włączone - będzie trzeba wykasować WSZYSTKIE dane pluginu")
+    @Comment("Wyłączenie tej opcji nie powinno spowodować żadnych błędów, jeśli już są utworzone regiony gildii")
     public boolean regionsEnabled = true;
 
-    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest sie jej czlonkiem")
-    @Comment("Zostaw puste, aby wylaczyc")
-    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
+    @Comment("")
+    @Comment("Bloki, które można stawiać na terenie gildii, niezależnie od tego, czy jest się jej członkiem")
+    @Comment("Zostaw puste, aby wyłączyć")
+    @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     public Set<Material> placingBlocksBypassOnRegion = Collections.emptySet();
 
-    @Comment("Zablokuj rozlewanie sie wody i lawy poza terenem gildii")
-    @Comment("Dziala tylko jesli regiony sa wlaczone")
+    @Comment("")
+    @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
+    @Comment("Działa tylko jeśli regiony są włączone")
     @CustomKey("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
 
-    @Comment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
-    @Comment("Dziala tylko jesli regiony sa wlaczone")
+    @Comment("")
+    @Comment("Czy gracz po śmierci ma się pojawiać w bazie swojej gildii")
+    @Comment("Działa tylko jeśli regiony są włączone")
     public boolean respawnInBase = true;
 
     @Min(1)
-    @Comment("Maksymalna dlugosc nazwy gildii")
+    @Comment("")
+    @Comment("Maksymalna długość nazwy gildii")
     @CustomKey("name-length")
     public int createNameLength = 22;
 
     @Min(1)
-    @Comment("Minimalna dlugosc nazwy gildii")
+    @Comment("")
+    @Comment("Minimalna długość nazwy gildii")
     @CustomKey("name-min-length")
     public int createNameMinLength = 4;
 
     @Min(1)
-    @Comment("Maksymalna dlugosc tagu gildii")
+    @Comment("")
+    @Comment("Maksymalna długość tagu gildii")
     @CustomKey("tag-length")
     public int createTagLength = 4;
 
     @Min(1)
-    @Comment("Minimalna dlugosc tagu gildii")
+    @Comment("")
+    @Comment("Minimalna długość tagu gildii")
     @CustomKey("tag-min-length")
     public int createTagMinLength = 2;
 
+    @Comment("")
     @Comment("Zasada sprawdzania nazwy gildii przy jej tworzeniu")
     @Comment("Dostepne zasady:")
-    @Comment("LOWERCASE - umozliwia uzycie tylko malych liter")
-    @Comment("UPPERCASE - umozliwia uzycie tylko duzych liter")
-    @Comment("DIGITS - umozliwia uzycie tylko cyfr")
-    @Comment("LOWERCASE_DIGITS - umozliwia uzycie malych liter i cyfr")
-    @Comment("UPPERCASE_DIGITS - umozliwia uzycie duzych liter i cyfr")
-    @Comment("LETTERS - umozliwia uzycie malych i duzych liter")
-    @Comment("LETTERS_DIGITS - umozliwia uzycie malych i duzych liter oraz cyrf")
-    @Comment("LETTERS_DIGITS_UNDERSCORE - umozliwia uzycie malych i duzych liter, cyrf oraz podkreslnika")
+    @Comment("LOWERCASE - umożliwia użycie tylko małych liter")
+    @Comment("UPPERCASE - umożliwia użycie tylko wielkich liter")
+    @Comment("DIGITS - umożliwia użycie tylko cyfr")
+    @Comment("LOWERCASE_DIGITS - umożliwia użycie małych liter i cyfr")
+    @Comment("UPPERCASE_DIGITS - umożliwia użycie wielkich liter i cyfr")
+    @Comment("LETTERS - umożliwia użycie małych i wielkich liter")
+    @Comment("LETTERS_DIGITS - umożliwia użycie małych i wielkich liter oraz cyfr")
+    @Comment("LETTERS_DIGITS_UNDERSCORE - umożliwia użycie małych i wielkich liter, cyfr oraz podkreślnika")
     @CustomKey("name-regex")
     public GuildRegex nameRegex = GuildRegex.LETTERS;
 
+    @Comment("")
     @Comment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
-    @Comment("Mozliwe zasady sa takie same jak w przypadku name-regex")
+    @Comment("Możliwe zasady są takie same jak w przypadku name-regex")
     public GuildRegex tagRegex = GuildRegex.LETTERS;
 
     @Min(0)
-    @Comment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
+    @Comment("")
+    @Comment("Minimalna liczba graczy w gildii, aby zaliczała się ona do rankingu")
     @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
 
-    @Comment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
-    @Comment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
-    @Comment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
+    @Comment("")
+    @Comment("Czy wiadomości o braku potrzebnych przedmiotów maja zawierać elementy, na które można najechać")
+    @Comment("Takie elementy pokazują informacje o przedmiocie, np. jego typ, nazwę czy opis")
+    @Comment("Funkcja jest obecnie trochę niedopracowana i może powodować problemy na niektórych wersjach MC, np. 1.8.8")
     public boolean enableItemComponent = false;
 
-    @Comment("Przedmioty wymagane do zalozenia gildii")
-    @Comment("Tylko wartosci ujete w <> sa wymagane, reszta, ujeta w [], jest opcjonalna")
-    @Comment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchants:eggtype:skullowner:armorcolor:flags]")
-    @Comment("Przyklad: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
+    @Comment("")
+    @Comment("Przedmioty wymagane do założenia gildii")
+    @Comment("Tylko wartości ujęte w <> są wymagane - reszta, ujeta w [], jest opcjonalna")
+    @Comment("Wzór: <ilosc> <przedmiot>:[metadata] [name:lore:enchants:eggtype:skullowner:armorcolor:flags]")
+    @Comment("Przykład: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
     @Comment(" ")
-    @Comment("Zamiast spacji wstawiaj podkreslnik: _")
-    @Comment("Aby zrobic nowa linie lore wstaw hash: #")
-    @Comment("Aby w lore uzyc znaku # wstaw {HASH}")
+    @Comment("Zamiast spacji wstawiaj podkreślnik: _")
+    @Comment("Aby zrobić nową linię lore wstaw hash: #")
+    @Comment("Aby w lore użyć znaku # wstaw {HASH}")
     @Comment(" ")
-    @Comment("eggtype to typ jajka do spawnu moba, uzywane tylko gdy typem przedmiotu jest MONSTER_EGG")
-    @Comment("skullowner to nick gracza, ktorego glowa jest tworzona, uzywane tylko gdy typem przedmiotu jest SKULL_ITEM")
-    @Comment("armorcolor to kolor, w ktorym bedzie przedmiot, uzywane tylko gdy przedmiot jest czescia zbroi skorzanej")
-    @Comment("flags to flagi, ktore maja byc nalozone na przedmiot. Dostepne flagi: HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_DESTROYS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS")
+    @Comment("eggtype to typ jajka do spawnu moba, używane tylko gdy typem przedmiotu jest MONSTER_EGG")
+    @Comment("skullowner to nick gracza, którego głowa jest tworzona, używane tylko gdy typem przedmiotu jest SKULL_ITEM")
+    @Comment("armorcolor to kolor, w którym będzie przedmiot, używane tylko gdy przedmiot jest częścią zbroi skórzanej")
+    @Comment("flags to flagi, które maja byc nałożone na przedmiot. Dostepne flagi: HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_DESTROYS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS")
     @Comment("Kolor musi byc podany w postaci: \"R_G_B\"")
     @Comment(" ")
-    @Comment(
-            "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    @Comment(
-            "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
+    @Comment("UWAGA: Nazwy przedmiotów musza pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
+    @Comment("UWAGA: Typ jajka musi pasować do typów entity podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
     @CustomKey("items")
     public List<ItemStack> createItems = ItemUtils.parseItems("5 stone", "5 dirt", "5 tnt");
 
     @Min(0)
-    @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
+    @Comment("")
+    @Comment("Ilość doświadczenia wymagana do założenia gildii")
     public int requiredExperience = 0;
 
     @Min(0)
-    @Comment("Wymagana ilosc pieniedzy do zalozenia gildii")
-    @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
+    @Comment("")
+    @Comment("Ilość pieniędzy wymagana do założenia gildii")
+    @Comment("UWAGA: Aby ta opcja mogła działać - na serwerze musi być plugin Vault oraz plugin dodający ekonomię")
     public double requiredMoney = 0;
 
-    @Comment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @Comment("")
+    @Comment("Przedmioty wymagane do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
     @CustomKey("items-vip")
     public List<ItemStack> createItemsVip = ItemUtils.parseItems("1 gold_ingot");
 
     @Min(0)
-    @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @Comment("")
+    @Comment("Ilość doświadczenia wymagana do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
     public int requiredExperienceVip = 0;
 
     @Min(0)
-    @Comment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
+    @Comment("")
+    @Comment("Ilość pieniędzy wymagana do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
+    @Comment("UWAGA: Aby ta opcja mogła działać - na serwerze musi być plugin Vault oraz plugin dodający ekonomię")
     public double requiredMoneyVip = 0;
 
-    @Comment("Czy opcja wymaganego rankingu do zalozenia gildii ma byc wlaczona?")
+    @Comment("")
+    @Comment("Czy opcja wymaganego rankingu do założenia gildii ma byc włączona")
     public boolean rankCreateEnable = true;
 
-    @Comment("Minimalny ranking wymagany do zalozenia gildii")
+    @Comment("")
+    @Comment("Minimalny ranking wymagany do założenia gildii")
     public int rankCreate = 1000;
 
-    @Comment("Minimalny ranking wymagany do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.rank")
+    @Comment("")
+    @Comment("Minimalny ranking wymagany do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.rank")
     public int rankCreateVip = 800;
 
-    @Comment("Czy GUI z przedmiotami na gildie ma byc wspolne dla wszystkich?")
-    @Comment(
-            "Jesli wlaczone - wszyscy gracze beda widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip bedzie ignorowane")
+    @Comment("")
+    @Comment("Czy GUI z przedmiotami na gildię ma być wspólne dla wszystkich")
+    @Comment("Jeśli włączone - wszyscy gracze będą widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip będzie ignorowane")
     public boolean useCommonGUI = false;
 
-    @Comment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
-    @Comment("Jesli wlaczone jest use-common-gui - ponizsze GUI jest uzywane takze dla osob z uprawnieniem funnyguilds.vip.items")
-    @Comment(
-            "Kazda linijka listy oznacza jeden slot, liczba slotow powinna byc wielokrotnoscia liczby 9 i nie powinna byc wieksza niz 54")
-    @Comment(
-            "Aby uzyc przedmiotu stworzonego w jednym slocie w innym mozna uzyc {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, ktory jest w pierwszym slocie")
-    @Comment("Aby wstawic przedmiot na gildie nalezy uzyc {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildie")
-    @Comment("Aby wstawic przedmiot na gildie z listy vip nalezy uzyc {VIPITEM-nr}")
+    @Comment("")
+    @Comment("GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
+    @Comment("Jeśli włączone jest use-common-gui - poniższe GUI jest używane także dla osób z uprawnieniem funnyguilds.vip.items")
+    @Comment("Każda linijka listy oznacza jeden slot, liczba slotów powinna byc wielokrotnością liczby 9 i nie powinna byc większa niz 54")
+    @Comment("Aby użyć przedmiotu, stworzonego w jednym slocie, w innym - można użyć {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, który jest w pierwszym slocie")
+    @Comment("Aby wstawić przedmiot na gildię należy użyć {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildię")
+    @Comment("Aby wstawić przedmiot na gildię z listy vip należy użyć {VIPITEM-nr}")
     @CustomKey("gui-items")
     public List<String> guiItems_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
             "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
@@ -235,13 +253,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public List<ItemStack> guiItems;
 
-    @Comment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
-    @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
+    @Comment("")
+    @Comment("Nazwa GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
+    @Comment("Nazwa może zawierać max. 32 znaki, wliczając w to kody kolorów")
     public RawString guiItemsTitle = new RawString("&5&lPrzedmioty na gildie");
 
-    @Comment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
+    @Comment("")
+    @Comment("GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
     @Comment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
-    @Comment("Ponizsze GUI bedzie ignorowane jesli wlaczone jest use-common-gui")
+    @Comment("Poniższe GUI będzie ignorowane, jeśli wlaczone jest use-common-gui")
     @CustomKey("gui-items-vip")
     public List<String> guiItemsVip_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
             "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
@@ -250,57 +270,68 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public List<ItemStack> guiItemsVip;
 
-    @Comment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
-    @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
+    @Comment("")
+    @Comment("Nazwa GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
+    @Comment("Nazwa może zawierać max. 32 znaki, wliczając w to kody kolorów")
     public RawString guiItemsVipTitle = new RawString("&5&lPrzedmioty na gildie (VIP)");
 
-    @Comment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
-    @Comment("Jesli nie chcesz uzywac tej funkcji, to pozostaw gui-items-name: \"\"")
+    @Comment("")
+    @Comment("Zmiana nazwy i koloru przedmiotów na gildię (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
+    @Comment("Jeśli nie chcesz używac tej funkcji - to pozostaw gui-items-name: \"\"")
     @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
-    @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
+    @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby (np. golden_apple)")
     public RawString guiItemsName = new RawString("&7>> &a{ITEM-NO-AMOUNT} &7<<");
 
-    @Comment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
-    @Comment("Linie te mozna ustawic ponizej")
+    @Comment("")
+    @Comment("Czy do przedmiotów na gildię, które są w GUI, mają być dodawane dodatkowe linie opisu")
+    @Comment("Linie te można ustawić poniżej")
     public boolean addLoreLines = true;
 
-    @Comment("Dodatkowe linie opisu, dodawane do kazdego przedmiotu, ktory jest jednoczesnie przedmiotem na gildie")
-    @Comment("Dodawane linie nie zaleza od otwieranego GUI - sa wspolne dla zwyklego i VIP")
-    @Comment("Mozliwe do uzycia zmienne:")
-    @Comment("{REQ-AMOUNT} - calkowita wymagana ilosc przedmiotu")
-    @Comment("{PINV-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie")
-    @Comment("{PINV-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie")
-    @Comment("{EC-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma w enderchescie")
-    @Comment("{EC-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma w enderchescie")
-    @Comment("{ALL-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie i w enderchescie")
-    @Comment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
+    @Comment("")
+    @Comment("Dodatkowe linie opisu, dodawane do każdego przedmiotu, który jest jednocześnie przedmiotem na gildię")
+    @Comment("Dodawane linie nie zależą od otwieranego GUI - są wspólne dla zwykłego i VIP")
+    @Comment("Możliwe do użycia zmienne:")
+    @Comment("{REQ-AMOUNT} - całkowita wymagana liczba przedmiotów")
+    @Comment("{PINV-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie")
+    @Comment("{PINV-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie")
+    @Comment("{EC-AMOUNT} - liczba danego przedmiotu, jaką gracz ma w enderchescie")
+    @Comment("{EC-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma w enderchescie")
+    @Comment("{ALL-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie i w enderchescie")
+    @Comment("{ALL-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
+    public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
             "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
 
-    @Comment("Minimalna odleglosc od spawnu")
+    @Comment("")
+    @Comment("Minimalna odległość od spawnu")
     public int createDistance = 100;
 
-    @Comment("Minimalna odleglosc od regionu gildii do granicy mapy")
+    @Comment("")
+    @Comment("Minimalna odległość regionu gildii od granicy mapy")
     @CustomKey("create-guild-min-distance")
     public double createMinDistanceFromBorder = 50;
 
-    @Comment("Konfiguracja serca")
+    @Comment("")
+    @Comment("Konfiguracja serca gildii")
     @CustomKey("heart-configuration")
     public HeartConfiguration heart = new HeartConfiguration();
 
-    @Comment("Typy blokow, z ktorymi osoba spoza gildii NIE moze prowadzic interakcji na terenie innej gildii")
+    @Comment("")
+    @Comment("Typy bloków, z którymi osoba spoza gildii NIE może prowadzić interakcji na terenie innej gildii")
     public List<Material> blockedInteract = Arrays.asList(Material.CHEST, Material.TRAPPED_CHEST);
 
-    @Comment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
+    @Comment("")
+    @Comment("Czy funkcja efektu 'zbugowanych' klocków ma byc włączona (działa tylko na terenie wrogiej gildii)")
     public boolean buggedBlocks = false;
 
     @Min(0)
-    @Comment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
+    @Comment("")
+    @Comment("Czas po którym 'zbugowane' klocki maja zostać usunięte")
+    @Comment("Czas podawany w tickach (20 ticków = 1 sekunda)")
     public long buggedBlocksTimer = 20L;
 
-    @Comment("Bloki, ktorych nie mozna 'bugowac'")
-    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
+    @Comment("")
+    @Comment("Bloki, których nie można 'bugować'")
+    @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
             // Ban basic
             "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
@@ -319,94 +350,120 @@ public class PluginConfiguration extends OkaeriConfig {
             "TRAPPED_CHEST", "CHEST"
     );
 
-    @Comment("Czy klocki po 'zbugowaniu' maja zostac oddane")
+    @Comment("")
+    @Comment("Czy klocki po 'zbugowaniu' mają zostać oddane")
     public boolean buggedBlocksReturn = false;
 
     @Min(1)
-    @Comment("Maksymalna liczba czlonkow w gildii")
+    @Comment("")
+    @Comment("Maksymalna liczba członków w gildii")
     @CustomKey("max-members")
     public int maxMembersInGuild = 15;
 
     @Min(0)
-    @Comment("Maksymalna liczba sojuszy miedzy gildiami")
+    @Comment("")
+    @Comment("Maksymalna liczba sojuszy między gildiami")
     @CustomKey("max-allies")
     public int maxAlliesBetweenGuilds = 15;
 
     @Min(0)
-    @Comment("Maksymalna liczba wojen miedzy gildiami")
+    @Comment("")
+    @Comment("Maksymalna liczba wojen między gildiami")
     @CustomKey("max-enemies")
     public int maxEnemiesBetweenGuilds = 15;
 
-    @Comment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
+    @Comment("")
+    @Comment("Lista nazw światów, na których możliwość utworzenia gildii ma być zablokowana")
     public List<String> blockedWorlds = Collections.singletonList("some_world");
 
-    @Comment("Mozliwosc ucieczki z terenu innej gildii")
-    @Comment("Funkcja niedostepna jesli mozliwosc teleportacji do gildii jest wylaczona")
+    @Comment("")
+    @Comment("Możliwość ucieczki z terenu innej gildii")
+    @Comment("Funkcja niedostępna, jeśli możliwość teleportacji do gildii jest wyłączona")
     public boolean escapeEnable = true;
 
     @Min(0)
-    @Comment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
+    @Comment("")
+    @Comment("Czas w sekundach, jaki musi upłynąć od włączenia ucieczki do teleportacji")
     public int escapeDelay = 120;
 
-    @Comment("Mozliwosc ucieczki na spawn dla graczy bez gildii")
+    @Comment("")
+    @Comment("Możliwość ucieczki na spawn dla graczy bez gildii")
     public boolean escapeSpawn = true;
 
-    @Comment("Mozliwosc teleportacji do gildii")
+    @Comment("")
+    @Comment("Możliwość teleportacji do gildii")
     public boolean baseEnable = true;
 
     @PositiveOrZero
-    @Comment("Czas oczekiwania na teleportacje, w sekundach")
+    @Comment("")
+    @Comment("Czas oczekiwania na teleportację, w sekundach")
     public Duration baseDelay = Duration.ofSeconds(5);
 
     @PositiveOrZero
-    @Comment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
+    @Comment("")
+    @Comment("Czas oczekiwania na teleportację, w sekundach, dla graczy posiadających uprawnienie funnyguilds.vip.baseTeleportTime")
     public Duration baseDelayVip = Duration.ofSeconds(3);
 
-    @Comment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
+    @Comment("")
+    @Comment("Koszt teleportacji do gildii, jeżeli teleportacja ma byc darmowa - wystarczy wpisac: base-items: []")
     public List<ItemStack> baseItems = ItemUtils.parseItems("1 diamond", "1 emerald");
 
-    @Comment("Koszt dolaczenia do gildii. Jezeli dolaczenie ma byc darmowe, wystarczy wpisac: join-items: []")
+    @Comment("")
+    @Comment("Koszt dołączenia do gildii, jeżeli dołączenie ma byc darmowe - wystarczy wpisac: join-items: []")
     public List<ItemStack> joinItems = ItemUtils.parseItems("1 diamond");
 
-    @Comment("Mozliwosc powiekszania gildii")
+    @Comment("")
+    @Comment("Możliwość powiększania gildii")
     public boolean enlargeEnable = true;
 
-    @Comment("O ile powieksza teren gildii 1 poziom")
+    @Comment("")
+    @Comment("O ile powiększany jest teren gildii przy zwiększeniu poziomu")
     public int enlargeSize = 5;
 
-    @Comment("Koszt powiekszania gildii")
-    @Comment("- kazdy myslnik, to 1 poziom gildii")
+    @Comment("")
+    @Comment("Koszt powiększania gildii")
+    @Comment("Każdy myślnik to 1 poziom powiększenia")
     public List<ItemStack> enlargeItems = ItemUtils.parseItems("8 diamond", "16 diamond", "24 diamond", "32 diamond", "40 diamond", "48 diamond", "56 diamond", "64 diamond", "72 diamond", "80 diamond");
 
     @Min(1)
-    @Comment("Wielkosc regionu gildii")
+    @Comment("")
+    @Comment("Wielkość regionu gildii")
     public int regionSize = 50;
 
     @Min(0)
-    @Comment("Minimalna odleglosc miedzy terenami gildii")
+    @Comment("")
+    @Comment("Minimalna odległość między terenami gildii")
     public int regionMinDistance = 10;
 
     @Positive
-    @Comment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
+    @Comment("")
+    @Comment("Czas wyświetlania powiadomienia na pasku powiadomień, w sekundach")
     public Duration regionNotificationTime = Duration.ofSeconds(15);
 
     @Min(1)
-    @Comment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
+    @Comment("")
+    @Comment("Co ile może byc wywoływany pasek powiadomień przez jednego gracza, w sekundach")
     public int regionNotificationCooldown = 60;
 
-    @Comment("Blokowane komendy dla graczy spoza gildii na jej terenie")
+    @Comment("")
+    @Comment("Komendy zablokowane na terenie gildii, dla graczy niebędących członkami")
     @CustomKey("region-commands")
     public List<String> regionCommands = Collections.singletonList("sethome");
 
+    @Comment("")
     public BlockTeleportOnRegion blockTeleportOnRegion = new BlockTeleportOnRegion();
 
     public static class BlockTeleportOnRegion extends OkaeriConfig {
 
-        @Comment("Czy ma byc blokowana teleportacja na teren neutralnej gildii")
+        @Comment("Czy ma być blokowana teleportacja na teren neutralnej gildii")
         public boolean neutral = true;
-        @Comment("Czy ma byc blokowana teleportacja na teren wrogiej gildii")
+
+        @Comment("")
+        @Comment("Czy ma być blokowana teleportacja na teren wrogiej gildii")
         public boolean enemy = true;
-        @Comment("Czy ma byc blokowana teleportacja na teren sojuszniczej gildii")
+
+        @Comment("")
+        @Comment("Czy ma być blokowana teleportacja na teren sojuszniczej gildii")
         public boolean ally = false;
 
     }
@@ -414,32 +471,40 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public boolean eventTeleport = false;
 
-    @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
+    @Comment("")
+    @Comment("Czy proces usunięcia gildii powinien zostać przerwany, jezeli ktoś spoza gildii jest na jej terenie")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
+    @Comment("")
     public TntProtectionConfiguration tntProtection = new TntProtectionConfiguration();
 
     @Min(0)
-    @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
+    @Comment("")
+    @Comment("Przez ile sekund po wybuchu nie można budować na terenie gildii")
     public int regionExplode = 120;
 
-    @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokady budowania na terenie gildii")
-    @Comment("Nazwy entity musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchaja)")
+    @Comment("")
+    @Comment("Lista entity, których wybuch nie powoduje blokady budowania na terenie gildii")
+    @Comment("Nazwy entity muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchają)")
     public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
 
-    @Comment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")
+    @Comment("")
+    @Comment("Czy blokada po wybuchu ma obejmować rownież niszczenie bloków")
     public boolean regionExplodeBlockBreaking = false;
 
-    @Comment("Czy blokada po wybuchu ma obejmowac rowniez interakcje z blocked-interact")
+    @Comment("")
+    @Comment("Czy blokada po wybuchu ma obejmować rownież interakcje z blocked-interact")
     public boolean regionExplodeBlockInteractions = false;
 
     @Min(0)
-    @Comment("Zasieg pobieranych przedmiotow po wybuchu. Jezeli chcesz wylaczyc, wpisz 0")
+    @Comment("")
+    @Comment("Zasięg pobieranych przedmiotów po wybuchu, jeżeli chcesz wyłączyć - wpisz 0")
     public int explodeRadius = 3;
 
-    @Comment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
-    @Comment("<material>: <szansa (w %)")
-    @Comment("Jezeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
+    @Comment("")
+    @Comment("Jakie materiały, i z jaka szansą, maja byc niszczone po wybuchu")
+    @Comment("<material>: <szansa (w %)>")
+    @Comment("Jeżeli wszystkie materiały mają mieć określony % na wybuch - uzyj specjalnego znaku '*'")
     @CustomKey("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
@@ -448,6 +513,7 @@ public class PluginConfiguration extends OkaeriConfig {
             "water", 33.0,
             "lava", 33.0
     );
+
     @Exclude
     public Map<Material, Double> explodeMaterials;
     @Exclude
@@ -455,132 +521,158 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public double defaultExplodeChance = -1.0;
 
-    @Comment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
+    @Comment("")
+    @Comment("Czy powstałe wybuchy powinny niszczyć bloki wyłącznie na terenach gildii")
     public boolean explodeShouldAffectOnlyGuild = false;
 
-    @Comment("Mozliwosc podbijania gildii")
+    @Comment("")
+    @Comment("Możliwość podbijania gildii")
     public boolean warEnabled = true;
 
     @Min(1)
-    @Comment("Ile zyc ma gildia")
+    @Comment("")
+    @Comment("Ile żyć ma gildia")
     public int warLives = 3;
 
     @PositiveOrZero
     @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
-    @Comment("Po jakim czasie od zalozenia mozna zaatakowac gildie")
+    @Comment("")
+    @Comment("Po jakim czasie od założenia można zaatakować gildię")
     @CustomKey("war-protection")
     public Duration warProtection = Duration.ofHours(24);
 
     @PositiveOrZero
     @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
-    @Comment("Ile czasu trzeba czekac do nastepnego ataku na gildie")
+    @Comment("")
+    @Comment("Ile czasu trzeba czekać do następnego ataku na gildię")
     @CustomKey("war-wait")
     public Duration warWait = Duration.ofHours(24);
 
-    @Comment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
+    @Comment("")
+    @Comment("Czy gildia podczas okresu ochronnego ma posiadać ochronę przeciw TNT")
     public boolean warTntProtection = true;
 
-    @Comment("Czy zwierzeta na terenie gildii maja byc chronione przed osobami spoza gildii")
+    @Comment("")
+    @Comment("Czy zwierzęta na terenie gildii mają być chronione przed osobami spoza gildii")
     public boolean animalsProtection = false;
 
     @Positive
     @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
-    @Comment("Jaka waznosc ma gildia po jej zalozeniu")
+    @Comment("")
+    @Comment("Jaką ważność ma gildia po jej założeniu")
     @CustomKey("validity-start")
     public Duration validityStart = Duration.ofDays(14);
 
     @Positive
     @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
-    @Comment("Ile czasu dodaje przedluzenie gildii")
+    @Comment("")
+    @Comment("Ile czasu dodaje przedłużenie ważności gildii")
     @CustomKey("validity-time")
     public Duration validityTime = Duration.ofDays(14);
 
     @PositiveOrZero
     @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
-    @Comment("Ile dni przed koncem wygasania mozna przedluzyc gildie. Wpisz 0, jezeli funkcja ma byc wylaczona")
+    @Comment("")
+    @Comment("Ile dni przed końcem wygasania można przedłużyć gildię, wpisz 0 jeżeli funkcja ma byc wylaczona")
     @CustomKey("validity-when")
     public Duration validityWhen = Duration.ofDays(14);
 
-    @Comment("Koszt przedluzenia gildii")
+    @Comment("")
+    @Comment("Koszt przedłużenia gildii")
     public List<ItemStack> validityItems = ItemUtils.parseItems("10 diamond");
 
-    @Comment("Czy wiadomosc o zabiciu gracza powinna byc pokazywana wszystkim")
-    @Comment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
+    @Comment("")
+    @Comment("Czy wiadomość o zabiciu gracza powinna być pokazywana wszystkim")
+    @Comment("Jeśli wyłączone - będzie pokazywana tylko graczom, którzy brali udział w walce")
     public boolean broadcastDeathMessage = true;
 
-    @Comment("Czy wiadomosc o zabiciu gracza powinna byc wyswietlana bez wzgledu na wylaczone wiadomosci o smierci")
+    @Comment("")
+    @Comment("Czy wiadomość o zabiciu gracza powinna być wyświetlana bez względu na wyłączone wiadomości o śmierci")
     @CustomKey("ignore-death-messages-disabled")
     public boolean ignoreDisabledDeathMessages = false;
 
-    @Comment("Ranking od ktorego rozpoczyna gracz")
+    @Comment("")
+    @Comment("Ranking, od którego rozpoczyna gracz")
     public int rankStart = 1000;
 
-    @Comment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
+    @Comment("")
+    @Comment("Czy blokada nabijania rankingu na tych samych osobach powinna byc włączona")
     public boolean rankFarmingProtect = true;
 
-    @Comment("Czy ostatni gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @Comment("")
+    @Comment("Czy ostatnia osoba, która zaatakowała gracza, który zginął, ma być uznawana za jego zabójcę")
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
 
     @PositiveOrZero
-    @Comment("Czas przez gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
-    @Comment("Format: <wartosc><jednostka><wartosc><jednostka><...>")
+    @Comment("")
+    @Comment("Czas przez jaki osoba, która zaatakowała gracza, który zginął, ma być uznawany za jego zabójcę")
+    @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
     @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
-    @Comment("Przyklad: 1m30s")
+    @Comment("Przykład: 1m30s")
     @CustomKey("rank-farming-consideration-timeout")
     public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
 
     @PositiveOrZero
-    @Comment("Czas trwania blokady nabijania rankingu po walce dwoch osob")
+    @Comment("")
+    @Comment("Czas trwania blokady nabijania rankingu po walce dwóch osób")
     public Duration rankFarmingCooldown = Duration.ofHours(2);
 
-    @Comment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
+    @Comment("")
+    @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki mają taki sam adres IP")
     public boolean rankIPProtect = false;
 
-    @Comment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzglednieni przy wyznaczaniu pozycji gracza w rankingu")
+    @Comment("")
+    @Comment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzględnieni przy wyznaczaniu pozycji gracza w rankingu")
     @CustomKey("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
     @Min(1)
-    @Comment("Co ile tickow ranking graczy oraz gildii powinien zostac odswiezony")
+    @Comment("")
+    @Comment("Co ile ticków ranking graczy oraz gildii powinien być odświeżany (20 ticków = 1 sekunda)")
     public int rankingUpdateInterval = 40;
 
-    @Comment("Czy system asyst ma byc wlaczony")
+    @Comment("")
+    @Comment("Czy system asyst ma byc włączony")
     @CustomKey("rank-assist-enable")
     public boolean assistEnable = true;
 
     @Min(-1)
-    @Comment("Limit asyst. Wpisz liczbe ujemna aby wylaczyc")
+    @Comment("")
+    @Comment("Limit asyst, wpisz liczbę ujemną aby wyłączyć")
     @CustomKey("assists-limit")
     public int assistsLimit = -1;
 
     @DecimalMin("0")
     @DecimalMax("1")
-    @Comment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
-    @Comment("1 to caly ranking, 0 to nic")
-    @Comment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
+    @Comment("")
+    @Comment("Jaka część rankingu za zabicie idzie na konto zabójcy")
+    @Comment("1 to cały ranking, 0 to nic")
+    @Comment("Reszta rankingu rozdzielana jest między osoby asystujące, w zaleznosci od zadanych obrażeń")
     @CustomKey("rank-assist-killer-share")
     public double assistKillerShare = 0.5;
 
-    @Comment("Na jakich regionach ma ignorowac nadawanie asyst")
-    @Comment("UWAGA: Wymagany plugin WorldGuard")
+    @Comment("")
+    @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")
+    @Comment("UWAGA: wymagany plugin WorldGuard")
     @CustomKey("assists-regions-ignored")
     public List<String> assistsRegionsIgnored = Collections.singletonList("spawnGuildHeart");
 
-    @Comment("System rankingowy uzywany przez plugin, do wyboru:")
-    @Comment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
-    @Comment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
-    @Comment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
+    @Comment("")
+    @Comment("System rankingowy używany przez plugin, do wyboru:")
+    @Comment(" ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
+    @Comment(" PERCENT - system, który obu graczom zabiera procent rankingu osoby zabitej")
+    @Comment(" STATIC - system, który zawsze zabiera x rankingu zabijającemu i x zabitemu")
     @CustomKey("rank-system")
     public RankSystem.Type rankSystem = RankSystem.Type.ELO;
 
-    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @Comment(
-            "Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
-    @Comment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
-    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank stala\", np.: \"0-1999 32\"")
-    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"2401-* 16\"")
+    @Comment("")
+    @Comment("Sekcja używana TYLKO jeśli wybranym rank-system jest ELO!")
+    @Comment("Lista stałych do obliczeń rankingowych ELO - im mniejsza stała, tym mniejsze zmiany rankingu")
+    @Comment("Stałe określają też o ile maksymalnie może zmienić się ranking pochodzący z danego przedziału")
+    @Comment("Lista powinna być podana od najmniejszych do największych rankingów i zawierać tylko liczby naturalne, z zerem włącznie")
+    @Comment("Elementy listy powinny być postaci: \"minRank-maxRank stała\", np.: \"0-1999 32\"")
+    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w gore, np.: \"2401-* 16\"")
     @CustomKey("elo-constants")
     public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
 
@@ -588,111 +680,134 @@ public class PluginConfiguration extends OkaeriConfig {
     public Map<NumberRange, Integer> eloConstants;
 
     @Positive
-    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @Comment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
-    @Comment("Dzielnik powinien byc liczba dodatnia, niezerowa")
+    @Comment("")
+    @Comment("Sekcja używana TYLKO jeśli wybranym rank-system jest ELO!")
+    @Comment("Dzielnik obliczeń rankingowych ELO - im mniejszy dzielnik, tym większe zmiany rankingu")
+    @Comment("Dzielnik powinien być liczbą dodatnią, niezerową")
     @CustomKey("elo-divider")
     public double eloDivider = 400.0D;
 
     @Positive
-    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @Comment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
-    @Comment("Wykladnik powinien byc liczba dodatnia, niezerowa")
+    @Comment("")
+    @Comment("Sekcja używana TYLKO jeśli wybranym rank-system jest ELO!")
+    @Comment("Wykładnik potęgi obliczeń rankingowych ELO - im mniejszy wykładnik, tym wieksze zmiany rankingu")
+    @Comment("Wykładnik powinien być liczbą dodatnią, niezerową")
     @CustomKey("elo-exponent")
     public double eloExponent = 10.0D;
 
     @DecimalMin("0")
-    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
-    @Comment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
+    @Comment("")
+    @Comment("Sekcja używana TYLKO jeśli wybranym rank-system jest PERCENT!")
+    @Comment("Procent rankingu osoby zabitej, o jaki zmienią się rankingi po walce")
     @CustomKey("percent-rank-change")
     public double percentRankChange = 1.0;
 
     @Min(0)
-    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
-    @Comment("Punkty dawane osobie, ktora wygrywa walke")
+    @Comment("")
+    @Comment("Sekcja używana TYLKO jeśli wybranym rank-system jest STATIC!")
+    @Comment("Punkty dawane osobie, która wygrała walkę")
     @CustomKey("static-attacker-change")
     public int staticAttackerChange = 15;
 
     @Min(0)
-    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
-    @Comment("Punkty zabierane osobie, ktora przegrywa walke")
+    @Comment("")
+    @Comment("Sekcja używana TYLKO jeśli wybranym rank-system jest STATIC!")
+    @Comment("Punkty zabierane osobie, która przegrała walkę")
     @CustomKey("static-victim-change")
     public int staticVictimChange = 10;
 
-    @Comment("Czy pokazywac informacje przy kliknieciu PPM na gracza")
+    @Comment("")
+    @Comment("Czy pokazywać informacje przy kliknięciu PPM na gracza")
     @CustomKey("info-player-enabled")
     public boolean infoPlayerEnabled = true;
 
-    @Comment("Czy pokazac informacje z komendy /gracz przy kliknieciu PPM")
-    @Comment("Jesli wylaczone - pokazywane beda informacje z sekcji \"playerRightClickInfo\" z messages.yml")
+    @Comment("")
+    @Comment("Czy pokazać informacje z komendy /gracz przy kliknięciu PPM")
+    @Comment("Jeśli wyłączone - pokazywane będą informacje z sekcji \"playerRightClickInfo\" z messages.yml")
     @CustomKey("info-player-command")
     public boolean infoPlayerCommand = true;
 
-    @Comment("Cooldown pomiedzy pokazywaniem informacji przez PPM")
+    @Comment("")
+    @Comment("Cooldown pomiędzy pokazywaniem informacji przez PPM")
     @CustomKey("info-player-cooldown")
     public Duration infoPlayerCooldown = Duration.ofSeconds(5);
 
-    @Comment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
+    @Comment("")
+    @Comment("Czy trzeba kucać, aby przy kliknięciu PPM na gracza wyświetliło informacje o nim")
     @CustomKey("info-player-sneaking")
     public boolean infoPlayerSneaking = true;
 
-    @Comment("Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)")
+    @Comment("")
+    @Comment("Czy członkowie gildii mogą sobie zadawać obrażenia (domyślnie)")
     @CustomKey("damage-guild")
     public boolean damageGuild = false;
 
-    @Comment("Czy sojuszniczy moga sobie zadawac obrazenia")
+    @Comment("")
+    @Comment("Czy sojuszniczy mogą sobie zadawać obrażenia")
     @CustomKey("damage-ally")
     public boolean damageAlly = false;
 
+    @Comment("")
     public LivesRepeatingSymbol livesRepeatingSymbol = new LivesRepeatingSymbol();
 
     public static class LivesRepeatingSymbol extends OkaeriConfig {
 
-        @Comment("Symbol (lub slowo), ktory ma byc powtarzany przy uzyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
+        @Comment("Symbol (lub słowo), który ma być powtarzany przy użyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
         public RawString full = new RawString("&c\u2764");
 
-        @Comment("Symbol (lub slowo), ktory ma byc powtarzany przy uzyciu placeholdera LIVES-SYMBOL")
+        @Comment("")
+        @Comment("Symbol (lub słowo), który ma być powtarzany przy użyciu placeholdera LIVES-SYMBOL")
         public RawString empty = new RawString("&8\u2764");
 
-        @Comment("Symbol (lub slowo), ktory ma byc pokazywany na koncu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
+        @Comment("")
+        @Comment("Symbol (lub słowo), który ma być pokazywany na końcu placeholdera LIVES-SYMBOL, kiedy gildia posiada więcej żyć niz podstawowe (war-lives)")
         public RawString more = new RawString("&a+");
 
     }
 
-    @Comment("Wyglad znaczika {POS} wstawionego w format chatu")
-    @Comment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
+    @Comment("")
+    @Comment("Wygląd znacznika {POS} wstawionego w format chatu")
+    @Comment("Znacznik ten pokazuje czy ktoś jest liderem, zastępcą lub zwykłym członkiem gildii")
     public RawString chatPosition = new RawString("&b{POS} ");
 
+    @Comment("")
     @Comment("Znacznik dla lidera gildii")
     @CustomKey("chat-position-leader")
     public String chatPositionLeader = "**";
 
-    @Comment("Znacznik dla zastepcy gildii")
+    @Comment("")
+    @Comment("Znacznik dla zastępcy gildii")
     @CustomKey("chat-position-deputy")
     public String chatPositionDeputy = "*";
 
-    @Comment("Znacznik dla czlonka gildii")
+    @Comment("")
+    @Comment("Znacznik dla członka gildii")
     @CustomKey("chat-position-member")
     public String chatPositionMember = "";
 
-    @Comment("Wyglad znacznika {TAG} wstawionego w format chatu")
+    @Comment("")
+    @Comment("Wygląd znacznika {TAG} wstawionego w format chatu")
     public RawString chatGuild = new RawString("&b{TAG} ");
 
-    @Comment("Wyglad znacznika {RANK} wstawionego w format chatu")
+    @Comment("")
+    @Comment("Wygląd znacznika {RANK} wstawionego w format chatu")
     public RawString chatRank = new RawString("&b{RANK} ");
 
-    @Comment("Wyglad znacznika {POINTS} wstawionego w format chatu")
-    @Comment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
+    @Comment("")
+    @Comment("Wygląd znacznika {POINTS} wstawionego w format chatu")
+    @Comment("Możesz tu także użyć znacznika {POINTS-FORMAT}")
     public RawString chatPoints = new RawString("&b{POINTS} ");
 
+    @Comment("")
     public TopConfiguration top = new TopConfiguration();
 
-    @Comment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
-    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
-    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
-    @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
-    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
+    @Comment("")
+    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zależności od wartości punktów")
+    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS}, jest używane jedynie na liście graczy")
+    @Comment("Lista powinna być podana od najmniejszych do największych rankingów i zawierać tylko liczby naturalne, z zerem włącznie")
+    @Comment("Elementy listy powinny być postaci: \"minRank-maxRank wygląd\", np.: \"0-750 &4{POINTS}\"")
+    @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
+    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
     public List<RangeFormatting> pointsFormat = Arrays.asList(
             new RangeFormatting(0, 749, "&4{POINTS}"),
             new RangeFormatting(750, 999, "&c{POINTS}"),
@@ -700,31 +815,35 @@ public class PluginConfiguration extends OkaeriConfig {
             new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
     );
 
+    @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
-    @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
+    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam nick - nie podawaj tu nic")
     public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
 
+    @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
-    @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
+    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam tag - nie podawaj tu nic")
     public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
 
-    @Comment("Wyglad znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED) w zaleznosci od wartosci zmiany w rankingu")
-    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @Comment("Elementy listy powinny byc postaci: \"minChange-maxChange wyglad\", np.: \"0-50 &a+{CHANGE}\"")
-    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minChange w gore, np.: \"50-* &2+{CHANGE}\" lub")
-    @Comment("  wszystkie wartosci do danego maxChange w dol, np.: \"*-50 &4-{CHANGE}\"")
+    @Comment("")
+    @Comment("Wygląd znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED}, w zależności od wartości zmiany w rankingu")
+    @Comment("Lista powinna być podana od najmniejszych do największych wartości i zawierać tylko liczby naturalne, z zerem włącznie")
+    @Comment("Elementy listy powinny być postaci: \"minChange-maxChange wygląd\", np.: \"0-50 &a+{CHANGE}\"")
+    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minChange w górę, np.: \"50-* &2+{CHANGE}\"")
+    @Comment("  lub wszystkie wartości do danego maxChange w dół, np.: \"*-50 &4-{CHANGE}\"")
     public List<RangeFormatting> killPointsChangeFormat = Arrays.asList(
             new RangeFormatting(Integer.MIN_VALUE, -1, "&c-{CHANGE}"),
             new RangeFormatting(0, 0, "&7{CHANGE}"),
             new RangeFormatting(1, Integer.MAX_VALUE, "&a+{CHANGE}")
     );
 
-    @Comment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
-    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
-    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
+    @Comment("")
+    @Comment("Wygląd znacznika {PING-FORMAT} w zależności od wartości pingu")
+    @Comment("Lista powinna być podana od najmniejszych do największych wartości i zawierać tylko liczby naturalne, z zerem włącznie")
+    @Comment("Elementy listy powinny być postaci: \"minPing-maxPing wygląd\", np.: \"0-75 &a{PING}\"")
+    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minPing w górę, np.: \"301-* &c{PING}\"")
     public List<RangeFormatting> pingFormat = Arrays.asList(
             new RangeFormatting(0, 75, "&a{PING}"),
             new RangeFormatting(76, 150, "&e{PING}"),
@@ -733,100 +852,122 @@ public class PluginConfiguration extends OkaeriConfig {
     );
 
     @NotBlank
-    @Comment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
+    @Comment("")
+    @Comment("Symbol, od którego zaczyna się wiadomość do gildii")
     @CustomKey("chat-priv")
     public String chatPriv = "!";
 
     @NotBlank
-    @Comment("Symbol od ktorego zaczyna sie wiadomosc do sojusznikow gildii")
+    @Comment("")
+    @Comment("Symbol od którego zaczyna się wiadomość do sojuszników gildii")
     @CustomKey("chat-ally")
     public String chatAlly = "!!";
 
     @NotBlank
-    @Comment("Symbol od ktorego zaczyna sie wiadomosc do wszystkich gildii")
+    @Comment("")
+    @Comment("Symbol od którego zaczyna się wiadomość do wszystkich gildii")
     @CustomKey("chat-global")
     public String chatGlobal = "!!!";
 
-    @Comment("Wyglad wiadomosci wysylanej na czacie gildii")
+    @Comment("")
+    @Comment("Wygląd wiadomości wysyłanej na czacie gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatPrivDesign = new RawString("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
-    @Comment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
+    @Comment("")
+    @Comment("Wygląd wiadomości wysyłanej na czacie dla sojuszników")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatAllyDesign = new RawString("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
-    @Comment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
+    @Comment("")
+    @Comment("Wygląd wiadomości wysyłanej na czacie globalnym gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatGlobalDesign = new RawString("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
-    @Comment("Wyglad wiadomoci wysylanej na czacie gildyjnym/sojuszniczym/globalnym gildii dla osob z wlaczonym /ga spy")
+    @Comment("")
+    @Comment("Wygląd wiadomoci wysyłanej na czacie gildyjnym/sojuszniczym/globalnym gildii, dla osób z włączonym /ga spy")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatSpyDesign = new RawString("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
 
-    @Comment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
+    @Comment("")
+    @Comment("Czy wiadomości z chatów gildyjnych powinny być wyświetlane w logach serwera")
     @CustomKey("log-guild-chat")
     public boolean logGuildChat = false;
 
-    @Comment("Wyglad tagu osob w gildii")
+    @Comment("")
+    @Comment("Wygląd tagu osób w tej samej gildii")
     public RawString prefixOur = new RawString("&a{TAG}&f ");
 
-    @Comment("Wyglad tagu gildii sojuszniczej")
+    @Comment("")
+    @Comment("Wygląd tagu gildii sojuszniczej")
     public RawString prefixAllies = new RawString("&6{TAG}&f ");
 
-    @Comment("Wyglad tagu wrogiej gildii")
+    @Comment("")
+    @Comment("Wygląd tagu wrogiej gildii")
     public RawString prefixEnemies = new RawString("&c{TAG}&f ");
 
-    @Comment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
+    @Comment("")
+    @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
     public RawString prefixOther = new RawString("&7{TAG}&f ");
 
-    @Comment("Czy ptop-online/ptop-offline maja uznawac graczy na vanishu za graczy offline")
-    @Comment("UWAGA: Opcja powinna wspierac pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
-    @Comment("Jesli opcja by nie dzialala z tymi (lub innymi) pluginami prosze stworzyc Issue na GitHub'ie")
+    @Comment("")
+    @Comment("Czy ptop-online/ptop-offline mają uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
     public boolean ptopRespectVanish = true;
 
+    @Comment("")
     @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
-    @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
+    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-offline) pustą")
     public RawString ptopOnline = new RawString("&a");
 
+    @Comment("")
     @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
-    @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
+    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
     public RawString ptopOffline = new RawString("&c");
 
     @CustomKey("use-shared-scoreboard")
-    @Comment("Czy FunnyGuilds powinno korzystac z wspoldzielonego scoreboarda")
-    @Comment("Ta opcja pozwala na dzialanie pluginu FunnyGuilds oraz innych pluginow modyfikujacych scoreboard ze soba")
-    @Comment("UWAGA: Opcja eksperymentalna i moze powodowac bledy przy wyswietlaniu rzeczy zaleznych od scoreboardow!")
+    @Comment("")
+    @Comment("Czy FunnyGuilds powinno korzystać ze wspoldzielonego scoreboarda")
+    @Comment("Ta opcja pozwala na wspólne działanie pluginu FunnyGuilds oraz innych pluginów modyfikujących scoreboard")
+    @Comment("UWAGA: opcja eksperymentalna i może powodować błędy przy wyświetlaniu rzeczy zależnych od scoreboardów!")
     public boolean useSharedScoreboard = false;
 
-    @Comment("Czy wlaczyc dummy z punktami")
-    @Comment(
-            "UWAGA - zalecane jest wylaczenie tej opcji w przypadku konfliktow z BungeeCord'em, wiecej szczegolow tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
+    @Comment("")
+    @Comment("Czy włączyć dummy z punktami")
+    @Comment("UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
     @CustomKey("dummy-enable")
     public boolean dummyEnable = true;
 
-    @Comment("Wyglad nazwy wyswietlanej (suffix, za punktami)")
+    @Comment("")
+    @Comment("Wygląd nazwy wyświetlanej za punktami")
     public RawString dummySuffix = new RawString("pkt");
 
-    @Comment("Czy tagi gildyjne obok nicku gracza maja byc wlaczone")
+    @Comment("")
+    @Comment("Czy tagi gildyjne obok nicku gracza mają byc włączone")
     @CustomKey("guild-tag-enabled")
     public boolean guildTagEnabled = true;
 
-    @Comment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
-    @Comment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
+    @Comment("")
+    @Comment("Czy tag gildii podany przy tworzeniu gildii powinien zachować formę taką, w jakiej został wpisany")
+    @Comment("UWAGA: gdy ta opcja jest włączona, opcja \"guild-tag-uppercase\" nie będzie miała wpływu na tag gildii")
     @CustomKey("guild-tag-keep-case")
     public boolean guildTagKeepCase = true;
 
-    @Comment("Czy tagi gildii powinny byc pokazywane wielka litera")
-    @Comment("Dziala dopiero po zrestartowaniu serwera")
+    @Comment("")
+    @Comment("Czy tagi gildii powinny byc pokazywane wielkimi literami")
+    @Comment("Działa dopiero po zrestartowaniu serwera")
     @CustomKey("guild-tag-uppercase")
     public boolean guildTagUppercase = false;
 
-    @Comment("Czy wlaczyc tlumaczenie nazw przedmiotow?")
+    @Comment("")
+    @Comment("Czy włączyć tłumaczenie nazw przedmiotów?")
     @CustomKey("translated-materials-enable")
     public boolean translatedMaterialsEnable = true;
 
-    @Comment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
-    @Comment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
+    @Comment("")
+    @Comment("Tłumaczenia nazw przedmiotów dla znaczników {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
+    @Comment("Wpisywać w formacie - nazwa_przedmiotu: \"tłumaczona nazwa przedmiotu\"")
     @CustomKey("translated-materials-name")
     public Map<Material, String> translatedMaterials = ImmutableMap.<Material, String>builder()
             .put(Material.DIAMOND_SWORD, "&3diamentowy miecz")
@@ -834,156 +975,181 @@ public class PluginConfiguration extends OkaeriConfig {
             .put(Material.GOLD_INGOT, "&eZloto")
             .build();
 
-    @Comment("Wyglad znacznikow {ITEM} i {ITEMS} (suffix, za iloscia przedmiotu)")
-    @Comment("Dla np. item-amount-suffix: \"szt.\" 1szt. golden_apple")
+    @Comment("")
+    @Comment("Wygląd znaczników {ITEM} i {ITEMS} za liczbą przedmiotu")
+    @Comment("Dla np. item-amount-suffix: \"szt.\" otrzymamy 1szt. golden_apple")
     public RawString itemAmountSuffix = new RawString("x");
 
-    @Comment("Czy blacklista nazw i tagow gildii powinny byc wlaczona")
+    @Comment("")
+    @Comment("Czy sprawdzanie zakazanych nazw i tagów gildii powinno być włączone")
     @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
-    @Comment("Jesli ustawione na false, nazwy i tagi z list 'restricted-guild-names', 'restricted-guild-tags' beda niedozwolone")
-    @Comment("Jesli ustawione na true, 'restricted-guild-names', 'restricted-guild-tags' beda traktowane jako whitelist")
-    @Comment("Przydatne kiedy chcesz ograniczyc tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
+    @Comment("")
+    @Comment("Jeśli ustawione na false - nazwy i tagi z list 'restricted-guild-names', 'restricted-guild-tags' będą niedozwolone")
+    @Comment("Jeśli ustawione na true - jedynie nazwy i tagi z list 'restricted-guild-names', 'restricted-guild-tags' będą dozwolone")
+    @Comment("Przydatne, gdy chcesz ograniczyć tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
     @CustomKey("whitelist")
     public boolean whitelist = false;
 
-    @Comment("Blacklista nazw przy zakladaniu gildii")
-    @Comment("Zamienia sie w whiteliste jesli 'whitelist' jest ustawione na true")
+    @Comment("")
+    @Comment("Wyrażenia zakazane/dozwolone do użycia jako nazwa gildii")
     @CustomKey("restricted-guild-names")
     public List<String> restrictedGuildNames = Collections.singletonList("Administracja");
 
-    @Comment("Blacklista tagow przy zakladaniu gildii")
-    @Comment("Zamienia sie w whiteliste jesli 'whitelist' jest ustawione na true")
+    @Comment("")
+    @Comment("Wyrażenia zakazane/dozwolone do użycia jako tag gildii")
     @CustomKey("restricted-guild-tags")
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
-    @Comment("Czy powiadomienie o zabojstwie gracza powinno sie wyswietlac na title dla zabojcy")
+    @Comment("")
+    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy jako title")
     @CustomKey("display-title-notification-for-killer")
     public boolean displayTitleNotificationForKiller = false;
 
-    @Comment("Czy powiadomienia o wejsciu na teren gildii czlonka gildii powinny byc wyswietlane")
+    @Comment("")
+    @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
     @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;
 
-    @Comment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
-    @Comment("Mozliwe miejsca wyswietlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
+    @Comment("")
+    @Comment("Gdzie mają pojawiać się wiadomości związane z poruszaniem się po terenach gildii")
+    @Comment("Możliwe miejsca wyświetlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
     @CustomKey("region-move-notification-style")
     public List<NotificationStyle> regionEnterNotificationStyle = Arrays.asList(NotificationStyle.ACTIONBAR, NotificationStyle.BOSSBAR);
 
     @Min(1)
-    @Comment("Jak dlugo title/subtitle powinien sie pojawiac")
+    @Comment("")
+    @Comment("Jak długo title/subtitle powinien się pojawiać")
     @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-fade-in")
     public int notificationTitleFadeIn = 10;
 
     @Min(1)
-    @Comment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
+    @Comment("")
+    @Comment("Jak długo title/subtitle powinien pozostać na ekranie gracza")
     @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-stay")
     public int notificationTitleStay = 10;
 
     @Min(1)
-    @Comment("Jak dlugo title/subtitle powinien znikac")
+    @Comment("")
+    @Comment("Jak długo title/subtitle powinien znikać")
     @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-fade-out")
     public int notificationTitleFadeOut = 10;
 
     @Pattern("PINK|BLUE|RED|GREEN|YELLOW|PURPLE|WHITE")
-    @Comment("Jakiego koloru powinien byc boss bar podczas wyswietlania notyfikacji")
-    @Comment("Dostepne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
+    @Comment("")
+    @Comment("Jakiego koloru powinien byc boss bar podczas wyświetlania powiadomienia")
+    @Comment("Dostępne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
     @CustomKey("notification-boss-bar-color")
     public String bossBarColor = "RED";
 
     @Pattern("SOLID|SEGMENTED_6|SEGMENTED_10|SEGMENTED_12|SEGMENTED_20")
-    @Comment("Jakiego stylu powinien byc boss bar podczas wyswietlania notyfikacji")
-    @Comment("Dostepne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
+    @Comment("")
+    @Comment("Jakiego stylu powinien byc boss bar podczas wyświetlania powiadomienia")
+    @Comment("Dostępne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
     @CustomKey("notification-boss-bar-style")
     public String bossBarStyle = "SOLID";
 
-    @Comment("Jakie flagi powinny byc nalozone na byc boss bar podczas wyswietlania notyfikacji")
-    @Comment("Dostepne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
+    @Comment("")
+    @Comment("Jakie flagi powinny być nałożone na byc boss bar podczas wyświetlania powiadomienia")
+    @Comment("Dostępne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
     @CustomKey("notification-boss-bar-flags")
     public List<String> bossBarFlags = Collections.singletonList("CREATE_FOG");
 
     @Exclude
     public BossBarOptions bossBarOptions_;
 
-    @Comment("Czy osoba, ktora zalozyla pierwsza gildie na serwerze powinna dostac nagrode")
+    @Comment("")
+    @Comment("Czy osoba, która założyła pierwszą gildię na serwerze powinna dostać nagrodę")
     @CustomKey("should-give-rewards-for-first-guild")
     public boolean giveRewardsForFirstGuild = false;
 
-    @Comment("Przedmioty, ktore zostana nadane graczowi, ktory pierwszy zalozyl gildie na serwerze")
-    @Comment("Dziala tylko w wypadku, gdy opcja \"should-give-rewards-for-first-guild\" jest wlaczona")
+    @Comment("")
+    @Comment("Przedmioty, które zostaną przyznane graczowi, który pierwszy założył gildię na serwerze")
     @CustomKey("rewards-for-first-guild")
     public List<ItemStack> firstGuildRewards = ItemUtils.parseItems("1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze");
 
-    @Comment("Zbior przedmiotow potrzebnych do resetu rankingu")
+    @Comment("")
+    @Comment("Lista przedmiotów wymaganych do resetu rankingu")
     @CustomKey("rank-reset-needed-items")
     public List<ItemStack> rankResetItems = ItemUtils.parseItems("1 diamond");
 
-    @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkosc znakow")
+    @Comment("")
+    @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkość znaków jego nicku")
     @CustomKey("player-lookup-ignorecase")
     public boolean playerLookupIgnorecase = false;
 
+    @Comment("")
     @Comment("Nazwy komend")
     @CustomKey("commands")
     public CommandsConfiguration commands = new CommandsConfiguration();
 
-    @Comment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
+    @Comment("")
+    @Comment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyświetlanie powiadomień o wejściu na teren gildii)")
     @CustomKey("event-move")
     public boolean eventMove = true;
 
     @Exclude
     public boolean eventPhysics;
 
-    @Comment("Czy System Security ma byc wlaczony?")
+    @Comment("")
+    @Comment("Czy System Security ma byc włączony?")
     public boolean systemSecurityEnable = true;
 
     @DecimalMin("0")
-    @Comment("Margines sprawdzania jak daleko uderzyl gracz serce gildii")
-    @Comment("Jesli dostajesz falszywe alarmy od Security zwieksz te wartosc do okolo 0.50 lub wiecej")
+    @Comment("")
+    @Comment("Margines sprawdzania z jak daleka gracz uderzył serce gildii")
+    @Comment("Jeśli dostajesz fałszywe alarmy od Security - zwiększ tę wartość do około 0.50 lub więcej")
     public double reachCompensation = 0.26;
 
     @Min(0)
-    @Comment("Margines sprawdzania przez ile blokow uderzyl gracz w serce gildii")
+    @Comment("")
+    @Comment("Margines sprawdzania przez ile bloków gracz uderzył serce gildii")
     @CustomKey("freecam-compensation")
     public int freeCamCompensation = 0;
 
     @Min(1)
-    @Comment("Ilosc watkow uzywanych przez ConcurrencyManager")
+    @Comment("")
+    @Comment("Liczba wątków używanych przez ConcurrencyManager")
     public int concurrencyThreads = 1;
 
     @Min(1)
-    @Comment("Co ile minut ma automatycznie zapisywac dane")
+    @Comment("")
+    @Comment("Co ile minut dane są automatycznie zapisywane")
     public int dataInterval = 1;
 
-    @Comment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
+    @Comment("")
+    @Comment("Jak długo plugin powinien czekać na zatrzymanie wszystkich bieżących zadań przy wyłączaniu serwera")
     public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
-    @Comment("Hooki do pluginow, ktore powinny zostac wylaczone. Opcja powinna byc stosowania jedynie w awaryjnych sytuacjach!")
-    @Comment("Lista hookow, ktore mozna wylaczyc: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, LeaderHeads, HolographicDisplays")
-    @Comment("Aby zostawic wszystkie hooki wlaczone wystarczy wpisac: disabled-hooks: [] (opcja domyslna i zalecana)")
+    @Comment("")
+    @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
+    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, LeaderHeads, HolographicDisplays")
+    @Comment("Aby zostawić wszystkie hooki włączone wystarczy wpisać: disabled-hooks: []")
     public Set<String> disabledHooks = new HashSet<>();
 
-    @Comment("Typ zapisu danych")
-    @Comment("FLAT - Lokalne pliki")
-    @Comment("MYSQL - baza danych")
+    @Comment("")
+    @Comment("Typ zapisu danych:")
+    @Comment(" FLAT - lokalne pliki")
+    @Comment(" MYSQL - baza danych, kompatybilna z MySQL")
     public DataModel dataModel = DataModel.FLAT;
 
-    @Comment("Dane wymagane do polaczenia z baza")
+    @Comment("")
+    @Comment("Dane wymagane do połączenia z bazą")
     @Comment("UWAGA: connectionTimeout jest w milisekundach!")
-    @Comment("Sekcja poolSize odpowiada za liczbe zarezerwowanych polaczen, domyslna wartosc 5 powinna wystarczyc")
-    @Comment("Aby umozliwic FG automatyczne zarzadzanie liczba polaczen - ustaw poolSize na -1")
+    @Comment(" ")
+    @Comment("Sekcja poolSize odpowiada za liczbę zarezerwowanych połączeń, domyślna wartość 5 powinna wystarczyć")
+    @Comment("Aby umożliwić FG automatyczne zarządzanie liczbą połączeń - ustaw poolSize na -1")
+    @Comment(" ")
     @Comment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
-    @Comment("Najlepiej zmieniac te nazwy tylko wtedy, gdy jest naprawde taka potrzeba (np. wystepuje konflikt z innym pluginem)")
-    @Comment("Aby zmienic nazwy tabel, gdy masz juz w bazie jakies dane z FG:")
-    @Comment("1. Wylacz serwer")
-    @Comment("2. Zmien dane w configu FG")
-    @Comment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
+    @Comment("Najlepiej zmieniać te nazwy tylko wtedy, gdy np. występuje konflikt z innym pluginem")
+    @Comment("Aby zmienić nazwy tabel, gdy masz juz w bazie jakieś dane z FG:")
+    @Comment("1. Wyłącz serwer")
+    @Comment("2. Zmień dane w configu FG")
+    @Comment("3. Zmień nazwy tabel w bazie używając np. phpMyAdmin")
     public MysqlConfiguration mysql = new MysqlConfiguration("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
 
     private List<ItemStack> loadGUI(List<String> contents) {

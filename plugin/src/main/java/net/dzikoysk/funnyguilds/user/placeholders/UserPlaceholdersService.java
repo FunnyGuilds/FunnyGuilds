@@ -61,7 +61,7 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                 .playerOptionProperty("vault-money", playerOption -> playerOption
                         .filter(player -> HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked())
                         .map(VaultHook::accountBalance)
-                        .map(value -> Double.toString(value))
+                        .map(value -> String.format(Locale.US, "%.2f", value))
                         .orElseGet(""));
     }
 
