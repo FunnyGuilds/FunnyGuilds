@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HologramConfiguration extends OkaeriConfig {
 
-    @Comment("Czy ta hologram nad sercem gildii ma być włączony")
+    @Comment("Czy hologram nad sercem gildii ma być włączony")
     public boolean enabled = true;
 
     @Comment("")
