@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import org.bukkit.ChatColor;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public final class BanUtils {
 
@@ -17,11 +16,10 @@ public final class BanUtils {
 
     public static void ban(Guild guild, long time, String reason) {
         guild.setBan(time + System.currentTimeMillis());
-        PandaStream.of(guild.getMembers())
-                .forEach(member -> {
-                    ban(member, time, reason);
-                    member.getProfile().kick(getBanMessage(member));
-                });
+        guild.getMembers().forEach(member -> {
+            ban(member, time, reason);
+            member.getProfile().kick(getBanMessage(member));
+        });
     }
 
     public static void ban(User user, long time, String reason) {
@@ -30,7 +28,7 @@ public final class BanUtils {
     }
 
     public static void unban(Guild guild) {
-        PandaStream.of(guild.getMembers()).forEach(BanUtils::unban);
+        guild.getMembers().forEach(BanUtils::unban);
     }
 
     public static void unban(User user) {

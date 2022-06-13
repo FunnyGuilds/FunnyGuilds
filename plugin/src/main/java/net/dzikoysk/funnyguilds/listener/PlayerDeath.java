@@ -35,7 +35,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -298,7 +297,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         if (this.config.broadcastDeathMessage) {
             if (this.config.ignoreDisabledDeathMessages) {
-                PandaStream.of(event.getEntity().getWorld().getPlayers()).forEach(player -> {
+                event.getEntity().getWorld().getPlayers().forEach(player -> {
                     event.setDeathMessage(null);
                     ChatUtils.sendMessage(player, deathMessage);
                 });
@@ -309,7 +308,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
         else {
             event.setDeathMessage(null);
-            PandaStream.of(messageReceivers).forEach(fighter -> fighter.sendMessage(deathMessage));
+            messageReceivers.forEach(fighter -> fighter.sendMessage(deathMessage));
         }
 
     }

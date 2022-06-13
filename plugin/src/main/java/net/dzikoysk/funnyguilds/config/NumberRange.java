@@ -86,9 +86,9 @@ public final class NumberRange {
     public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
         return PandaStream.of(rangeEntries)
                 .map(RangeFormatting::new)
-                .toMap(RangeFormatting::getRange, (formatting) -> {
-                            return color ? ChatUtils.colored(formatting.getValue()) : formatting.getValue();
-                        }
+                .toMap(RangeFormatting::getRange, (formatting) -> color
+                        ? ChatUtils.colored(formatting.getValue())
+                        : formatting.getValue()
                 );
     }
 

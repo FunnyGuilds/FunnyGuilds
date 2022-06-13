@@ -201,7 +201,7 @@ public class SQLDataModel implements DataModel {
 
     private static void createTableIfNotExists(SQLTable table) {
         SQLBasicUtils.getCreate(table).executeUpdate();
-        PandaStream.of(table.getSqlElements()).forEach(sqlElement -> SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true));
+        table.getSqlElements().forEach(sqlElement -> SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true));
     }
 
 }

@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-import panda.std.stream.PandaStream;
 
 public class IndividualPrefix {
 
@@ -121,7 +120,7 @@ public class IndividualPrefix {
                 .map(scoreboard -> scoreboard.getTeam(tag))
                 .peek(Team::unregister);
 
-        PandaStream.of(guild.getMembers()).forEach(this::registerSoloTeam);
+        guild.getMembers().forEach(this::registerSoloTeam);
     }
 
     public void initialize() {

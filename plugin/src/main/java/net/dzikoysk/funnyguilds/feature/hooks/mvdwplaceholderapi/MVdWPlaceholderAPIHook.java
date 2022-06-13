@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import panda.std.stream.PandaStream;
 
 public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
@@ -53,7 +52,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         for (int i = 1; i <= 100; i++) {
             int position = i;
 
-            PandaStream.of(userTopIds).forEach(id ->
+            userTopIds.forEach(id ->
                     PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_ptop-" + id + "-" + position, event -> {
                         User user = userManager.findByPlayer(event.getPlayer()).orNull();
                         return rankPlaceholdersService.formatTop("{PTOP-" + id.toUpperCase(Locale.ROOT) + "-" + position + "}", user);
@@ -71,7 +70,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         for (int i = 1; i <= 100; i++) {
             int position = i;
 
-            PandaStream.of(guildTopIds).forEach(id ->
+            guildTopIds.forEach(id ->
                     PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_gtop-" + id + "-" + position, event -> {
                         User user = userManager.findByPlayer(event.getPlayer()).orNull();
                         return rankPlaceholdersService.formatTop("{GTOP-" + id.toUpperCase(Locale.ROOT) + "-" + position + "}", user);
@@ -85,13 +84,13 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             }
         }
 
-        PandaStream.of(userTopIds).forEach(id ->
+        userTopIds.forEach(id ->
                 PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_position-" + id, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
                     return rankPlaceholdersService.formatTopPosition("{POSITION-" + id.toUpperCase(Locale.ROOT) + "}", user);
                 }));
 
-        PandaStream.of(guildTopIds).forEach(id ->
+        guildTopIds.forEach(id ->
                 PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_g-position-" + id, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
                     return rankPlaceholdersService.formatTopPosition("{G-POSITION-" + id.toUpperCase(Locale.ROOT) + "}", user);
@@ -100,7 +99,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public static String replacePlaceholders(Player user, String base) {
+    public String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.replacePlaceholders(user, base);
     }
 

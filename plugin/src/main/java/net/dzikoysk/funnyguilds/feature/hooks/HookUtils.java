@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.hooks;
 
-import net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi.MVdWPlaceholderAPIHook;
-import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
 import org.bukkit.entity.Player;
 
 public final class HookUtils {
@@ -22,9 +20,9 @@ public final class HookUtils {
     private static String replacePlaceholdersWithPlaceholderAPI(Player playerOne, Player playerTwo, String message) {
         return HookManager.PLACEHOLDER_API
                 .map(api -> {
-                    String replaceMessage = PlaceholderAPIHook.replacePlaceholders(playerOne, message);
+                    String replaceMessage = api.replacePlaceholders(playerOne, message);
                     if (playerTwo != null) {
-                        replaceMessage = PlaceholderAPIHook.replacePlaceholders(playerOne, playerTwo, replaceMessage);
+                        replaceMessage = api.replacePlaceholders(playerOne, playerTwo, replaceMessage);
                     }
 
                     return replaceMessage;
@@ -33,7 +31,7 @@ public final class HookUtils {
 
     private static String replacePlaceholdersWithMVdWPlaceholderAPI(Player player, String message) {
         return HookManager.MVDW_PLACEHOLDER_API
-                .map(api -> MVdWPlaceholderAPIHook.replacePlaceholders(player, message))
+                .map(api -> api.replacePlaceholders(player, message))
                 .orElseGet(message);
     }
 

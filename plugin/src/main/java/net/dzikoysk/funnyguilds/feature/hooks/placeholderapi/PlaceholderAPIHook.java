@@ -30,11 +30,11 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public static String replacePlaceholders(Player user, String base) {
+    public String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
 
-    public static String replacePlaceholders(Player userOne, Player userTwo, String base) {
+    public String replacePlaceholders(Player userOne, Player userTwo, String base) {
         return PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base);
     }
 

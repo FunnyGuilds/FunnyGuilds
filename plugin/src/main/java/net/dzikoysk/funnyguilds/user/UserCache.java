@@ -184,8 +184,7 @@ public class UserCache {
     }
 
     public Double getTotalDamage() {
-        return PandaStream.of(this.damageCaches.values())
-                .toStream()
+        return this.damageCaches.values().stream()
                 .mapToDouble(DamageCache::getDamage)
                 .sum();
     }

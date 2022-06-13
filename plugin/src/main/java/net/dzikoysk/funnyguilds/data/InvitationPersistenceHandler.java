@@ -57,7 +57,7 @@ public class InvitationPersistenceHandler {
         FunnyIOUtils.deleteFile(this.invitationsFile);
 
         YamlWrapper yaml = new YamlWrapper(this.invitationsFile);
-        PandaStream.of(this.guildManager.getGuilds()).forEach(guild -> {
+        this.guildManager.getGuilds().forEach(guild -> {
             List<String> guildInvitations = PandaStream.of(this.guildInvitationList.getInvitationsFrom(guild))
                     .map(GuildInvitation::getToUUID)
                     .map(UUID::toString)

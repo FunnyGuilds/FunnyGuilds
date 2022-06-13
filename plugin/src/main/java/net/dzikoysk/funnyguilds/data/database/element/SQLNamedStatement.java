@@ -45,7 +45,7 @@ public class SQLNamedStatement {
                 statement.executeUpdate();
             }
         }
-        catch (SQLException exception) {
+        catch (Exception exception) {
             if (ignoreFails) {
                 FunnyGuilds.getPluginLogger().debug("Could not execute update (ignoreFails)");
                 return;
@@ -71,7 +71,7 @@ public class SQLNamedStatement {
                 }
             }
         }
-        catch (SQLException exception) {
+        catch (Exception exception) {
             if (ignoreFails) {
                 FunnyGuilds.getPluginLogger().debug("Could not execute query (ignoreFails)");
                 return;
@@ -81,13 +81,14 @@ public class SQLNamedStatement {
         }
     }
 
-    private PreparedStatement setPlaceholders(PreparedStatement preparedStatement) {
+    private PreparedStatement setPlaceholders(PreparedStatement preparedStatement) throws RuntimeException {
         this.placeholders.forEach((key, value) -> {
             try {
                 preparedStatement.setObject(this.keyMapIndex.get(key.toLowerCase(Locale.ROOT)), value);
             }
             catch (SQLException exception) {
                 FunnyGuilds.getPluginLogger().error("Could not prepare query", exception);
+                throw new RuntimeException("Query preparation failed");
             }
         });
 

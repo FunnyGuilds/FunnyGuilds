@@ -1,7 +1,8 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
 import java.util.HashMap;
-import panda.std.Option;
+import java.util.stream.Collectors;
+import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 public final class SQLBasicUtils {
@@ -14,16 +15,18 @@ public final class SQLBasicUtils {
             throw new IllegalArgumentException("Given SQLTable is null");
         }
 
-        String query = "INSERT INTO " +
-                table.getNameGraveAccent() +
-                " (" +
-                Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent) +
-                ") VALUES (" +
-                Joiner.on(", ").join(table.getSqlElements(), sqlElement -> "?") +
-                ") ON DUPLICATE KEY UPDATE " +
-                Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment);
+        StringBuilder query = new StringBuilder();
 
-        return new SQLNamedStatement(query, table.getMapElementsKey());
+        query.append("INSERT INTO ");
+        query.append(table.getNameGraveAccent());
+        query.append(" (");
+        query.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent));
+        query.append(") VALUES (");
+        query.append(Joiner.on(", ").join(table.getSqlElements(), sqlElement -> "?"));
+        query.append(") ON DUPLICATE KEY UPDATE ");
+        query.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
+
+        return new SQLNamedStatement(query.toString(), table.getMapElementsKey());
     }
 
     public static SQLNamedStatement getSelect(SQLTable table, String... sqlElements) {
@@ -32,22 +35,21 @@ public final class SQLBasicUtils {
         }
 
         if (sqlElements.length == 0) {
-            throw new IllegalArgumentException("Given String array is empty");
+            throw new IllegalArgumentException("Given sqlElements String array is empty");
         }
 
-        String query = "SELECT " +
-                Joiner.on(", ").join(sqlElements, sqlElement -> {
-                    Option<SQLElement> element = table.getSQLElement(sqlElement);
-                    if (element.isEmpty()) {
-                        return "";
-                    }
+        StringBuilder query = new StringBuilder();
 
-                    return element.get().getKeyGraveAccent();
-                }) +
-                " FROM " +
-                table.getNameGraveAccent();
+        query.append("SELECT ");
+        query.append(PandaStream.of(sqlElements)
+                .mapOpt(table::getSQLElement)
+                .map(SQLElement::getKeyGraveAccent)
+                .collect(Collectors.joining(", "))
+        );
+        query.append(" FROM ");
+        query.append(table.getNameGraveAccent());
 
-        return new SQLNamedStatement(query, new HashMap<>());
+        return new SQLNamedStatement(query.toString(), new HashMap<>());
     }
 
     public static SQLNamedStatement getSelectAll(SQLTable table) {
@@ -69,19 +71,21 @@ public final class SQLBasicUtils {
         }
 
         HashMap<String, Integer> keyMap = new HashMap<>();
-        String query = "UPDATE " +
-                table.getNameGraveAccent() +
-                " SET " +
-                element.getKeyGraveAccent() +
-                " = ?" +
-                " WHERE " +
-                table.getPrimaryKey().getKeyGraveAccent() +
-                " = ?";
+        StringBuilder query = new StringBuilder();
+
+        query.append("UPDATE ");
+        query.append(table.getNameGraveAccent());
+        query.append(" SET ");
+        query.append(element.getKeyGraveAccent());
+        query.append(" = ?");
+        query.append(" WHERE ");
+        query.append(table.getPrimaryKey().getKeyGraveAccent());
+        query.append(" = ?");
 
         keyMap.put(element.getKey(), 1);
         keyMap.put(table.getPrimaryKey().getKey(), 2);
 
-        return new SQLNamedStatement(query, keyMap);
+        return new SQLNamedStatement(query.toString(), keyMap);
     }
 
     public static SQLNamedStatement getCreate(SQLTable table) {
@@ -121,14 +125,16 @@ public final class SQLBasicUtils {
         }
 
         HashMap<String, Integer> keyMap = new HashMap<>();
-        String query = "DELETE FROM " +
-                table.getNameGraveAccent() +
-                " WHERE " +
-                table.getPrimaryKey().getKeyGraveAccent() +
-                " = ?";
+        StringBuilder query = new StringBuilder();
+
+        query.append("DELETE FROM ");
+        query.append(table.getNameGraveAccent());
+        query.append(" WHERE ");
+        query.append(table.getPrimaryKey().getKeyGraveAccent());
+        query.append(" = ?");
 
         keyMap.put(table.getPrimaryKey().getKey(), 1);
-        return new SQLNamedStatement(query, keyMap);
+        return new SQLNamedStatement(query.toString(), keyMap);
     }
 
     public static SQLNamedStatement getAlter(SQLTable table, SQLElement column) {
@@ -140,17 +146,19 @@ public final class SQLBasicUtils {
             throw new IllegalArgumentException("Given SQLElement is null");
         }
 
+        StringBuilder query = new StringBuilder();
         int index = table.getIndexElement(column.getKey());
-        String query = "ALTER TABLE " +
-                table.getNameGraveAccent() +
-                " ADD COLUMN " +
-                column.getKeyGraveAccent() +
-                " " +
-                column.getType() +
-                (index == 0 ? " FIRST" : " AFTER " + table.getSqlElements().get(index - 1).getKeyGraveAccent()) +
-                ";";
 
-        return new SQLNamedStatement(query, new HashMap<>());
+        query.append("ALTER TABLE ");
+        query.append(table.getNameGraveAccent());
+        query.append(" ADD COLUMN ");
+        query.append(column.getKeyGraveAccent());
+        query.append(" ");
+        query.append(column.getType());
+        query.append(index == 0 ? " FIRST" : " AFTER " + table.getSqlElements().get(index - 1).getKeyGraveAccent());
+        query.append(";");
+
+        return new SQLNamedStatement(query.toString(), new HashMap<>());
     }
 
 }

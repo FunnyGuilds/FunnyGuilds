@@ -34,7 +34,7 @@ public final class PacketSender {
 
     public static void sendPacket(Collection<? extends Player> players, Object... packets) {
         List<Object> packetList = Arrays.asList(packets);
-        PandaStream.of(players).forEach(player -> sendPacket(player, packetList));
+        players.forEach(player -> sendPacket(player, packetList));
     }
 
     public static void sendPacket(Player[] players, Object... packets) {
@@ -47,7 +47,7 @@ public final class PacketSender {
     }
 
     public static void sendPacket(List<Object> packets) {
-        PandaStream.of(Bukkit.getOnlinePlayers()).forEach(player -> sendPacket(player, packets));
+        Bukkit.getOnlinePlayers().forEach(player -> sendPacket(player, packets));
     }
 
     public static void sendPacket(Player target, List<Object> packets) {

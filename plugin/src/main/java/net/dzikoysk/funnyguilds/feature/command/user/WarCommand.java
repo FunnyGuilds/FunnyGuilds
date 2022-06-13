@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -61,11 +60,11 @@ public final class WarCommand extends AbstractFunnyCommand {
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
-        PandaStream.of(guild.getMembers()).forEach(member -> {
+        guild.getMembers().forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, enemyGuild));
         });
 
-        PandaStream.of(enemyGuild.getMembers()).forEach(member -> {
+        enemyGuild.getMembers().forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
         });
 

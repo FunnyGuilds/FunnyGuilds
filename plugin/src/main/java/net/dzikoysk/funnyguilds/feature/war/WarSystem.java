@@ -76,7 +76,7 @@ public class WarSystem {
         }
 
         if (guild.getLives() < 1) {
-            conquer(attacker, guild, user);
+            this.conquer(attacker, guild, user);
         }
         else {
             attacker.broadcast(WarUtils.getMessage(Message.ATTACKER, guild));
@@ -84,7 +84,7 @@ public class WarSystem {
         }
     }
 
-    public static void conquer(Guild conqueror, Guild loser, User attacker) {
+    public void conquer(Guild conqueror, Guild loser, User attacker) {
         if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, attacker, loser))) {
             loser.updateLives(lives -> lives + 1);
             return;

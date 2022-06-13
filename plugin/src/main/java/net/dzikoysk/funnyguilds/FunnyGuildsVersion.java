@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.command.CommandSender;
-import panda.std.stream.PandaStream;
 
 public final class FunnyGuildsVersion {
 
@@ -93,7 +92,7 @@ public final class FunnyGuildsVersion {
                 .register("{GITHUB_LINK}", GITHUB_URL)
                 .register("{DISCORD_LINK}", DISCORD_URL);
 
-        PandaStream.of(FunnyGuilds.getInstance().getMessageConfiguration().newVersionAvailable).forEach(line -> {
+        FunnyGuilds.getInstance().getMessageConfiguration().newVersionAvailable.forEach(line -> {
             sender.sendMessage(formatter.format(line));
         });
     }

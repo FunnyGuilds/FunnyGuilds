@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
-import panda.std.stream.PandaStream;
 
 public final class BossBarOptions {
 
@@ -67,7 +66,7 @@ public final class BossBarOptions {
         }
 
         public Builder flags(Collection<? extends String> barFlags) {
-            PandaStream.of(barFlags).forEach(barFlag -> {
+            barFlags.forEach(barFlag -> {
                 try {
                     this.barFlags.add(BarFlag.valueOf(barFlag.toUpperCase(Locale.ROOT)));
                 }
