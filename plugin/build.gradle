@@ -50,12 +50,12 @@ dependencies {
         because "PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason"
         exclude group: "com.google.code.gson", module: "gson"
     }
-    shadow "net.kyori:adventure-api:4.10.1"
+    shadow "net.kyori:adventure-api:4.11.0"
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
     testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.10'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.6.21'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.7.0'
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'com.mojang:authlib:3.2.38'
     testImplementation 'org.mockito:mockito-core:4.6.0'
