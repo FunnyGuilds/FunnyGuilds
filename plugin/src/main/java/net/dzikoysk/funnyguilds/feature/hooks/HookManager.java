@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.bungeetablist.BungeeTabListPlusHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
-import net.dzikoysk.funnyguilds.feature.hooks.leaderheads.LeaderHeadsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
@@ -33,7 +32,6 @@ public class HookManager {
     public static Option<BungeeTabListPlusHook> BUNGEE_TAB_LIST_PLUS = Option.none();
     public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API = Option.none();
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
-    public static Option<LeaderHeadsHook> LEADER_HEADS = Option.none();
     public static Option<HologramsHook> HOLOGRAMS = Option.none();
 
     private final FunnyGuilds plugin;
@@ -91,9 +89,6 @@ public class HookManager {
 
         this.setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, plugin), true)
                 .subscribe(hook -> PLACEHOLDER_API = hook);
-
-        this.setupHook("LeaderHeads", true, pluginName -> new LeaderHeadsHook(pluginName, plugin), true)
-                .subscribe(hook -> LEADER_HEADS = hook);
 
         this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true)
                 .subscribe(hook -> HOLOGRAMS = hook);
