@@ -14,7 +14,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.inventory.ItemStack;
-import panda.std.stream.PandaStream;
+import panda.utilities.ArrayUtils;
 
 public final class ItemComponentUtils {
 
@@ -67,8 +67,7 @@ public final class ItemComponentUtils {
             String subItem = message.substring(index, Math.min(message.length(), index + 6));
 
             if (subItem.equals("{ITEM}")) {
-                BaseComponent[] extra = TextComponent.fromLegacyText(messagePart.toString());
-                PandaStream.of(extra).forEach(translatedMessage::addExtra);
+                addExtra(translatedMessage, messagePart.toString());
 
                 messagePart.setLength(0);
                 translatedMessage.addExtra(getItemComponent(item, messageColor.toString()));
@@ -80,17 +79,14 @@ public final class ItemComponentUtils {
             String subItems = message.substring(index, Math.min(message.length(), index + 7));
 
             if (subItems.equals("{ITEMS}")) {
-                BaseComponent[] extra = TextComponent.fromLegacyText(messagePart.toString());
-                PandaStream.of(extra).forEach(translatedMessage::addExtra);
-
+                addExtra(translatedMessage, messagePart.toString());
                 messagePart.setLength(0);
 
                 for (int itemNum = 0; itemNum < items.size(); itemNum++) {
                     translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor.toString()));
 
                     if (itemNum != items.size() - 1) {
-                        BaseComponent[] delimiter = TextComponent.fromLegacyText(messageColor + ", ");
-                        PandaStream.of(delimiter).forEach(translatedMessage::addExtra);
+                        addExtra(translatedMessage, messageColor + ", ");
                     }
                 }
 
@@ -101,9 +97,7 @@ public final class ItemComponentUtils {
             messagePart.append(symbol);
         }
 
-        BaseComponent[] extra = TextComponent.fromLegacyText(messagePart.toString());
-        PandaStream.of(extra).forEach(translatedMessage::addExtra);
-
+        addExtra(translatedMessage, messagePart.toString());
         return translatedMessage;
     }
 
@@ -114,8 +108,7 @@ public final class ItemComponentUtils {
         String amount = item.getAmount() + config.itemAmountSuffix.getValue();
         String material = MaterialUtils.getMaterialName(item.getType());
 
-        BaseComponent[] extra = TextComponent.fromLegacyText(messageColor + amount + " " + material);
-        PandaStream.of(extra).forEach(itemComponent::addExtra);
+        addExtra(itemComponent, messageColor + amount + " " + material);
 
         try {
             String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
@@ -126,6 +119,11 @@ public final class ItemComponentUtils {
         }
 
         return itemComponent;
+    }
+
+    private static void addExtra(TextComponent message, String extra) {
+        BaseComponent[] extraComponents = TextComponent.fromLegacyText(extra);
+        ArrayUtils.forEach(extraComponents, message::addExtra);
     }
 
 }
