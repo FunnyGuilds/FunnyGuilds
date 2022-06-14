@@ -964,7 +964,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("Hooki do pluginow, ktore powinny zostac wylaczone. Opcja powinna byc stosowania jedynie w awaryjnych sytuacjach!")
-    @Comment("Lista hookow, ktore mozna wylaczyc: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, LeaderHeads, HolographicDisplays")
+    @Comment("Lista hookow, ktore mozna wylaczyc: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, HolographicDisplays")
     @Comment("Aby zostawic wszystkie hooki wlaczone wystarczy wpisac: disabled-hooks: [] (opcja domyslna i zalecana)")
     public Set<String> disabledHooks = new HashSet<>();
 
