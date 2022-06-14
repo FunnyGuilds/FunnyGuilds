@@ -51,7 +51,6 @@ dependencies {
         exclude group: "com.google.code.gson", module: "gson"
     }
     shadow "net.kyori:adventure-api:4.11.0"
-    //shadow "me.robin:leaderheads-api:1.0.0"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
     testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.10'

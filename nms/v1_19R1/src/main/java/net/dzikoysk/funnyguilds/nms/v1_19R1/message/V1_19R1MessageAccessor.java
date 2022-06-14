@@ -40,7 +40,7 @@ public class V1_19R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        //unikaj NMS za wszelką cenę do kurwy nędzy ;)
+        //każde wywołanie NMS to jeden martwy kotek :(
         for (Player p : players) {
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
