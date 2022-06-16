@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.nms.v1_19R1.message;
 
 import java.util.Collection;
-import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.md_5.bungee.api.ChatMessageType;
@@ -14,8 +13,6 @@ import org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 public class V1_19R1MessageAccessor implements MessageAccessor {
-
-    private static final UUID SENDER_ALWAYS_DISPLAY = new UUID(0L, 0L);
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
@@ -41,8 +38,8 @@ public class V1_19R1MessageAccessor implements MessageAccessor {
     @Override
     public void sendActionBarMessage(String text, Player... players) {
         //każde wywołanie NMS to jeden martwy kotek :(
-        for (Player p : players) {
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
+        for (Player player : players) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
     }
 
