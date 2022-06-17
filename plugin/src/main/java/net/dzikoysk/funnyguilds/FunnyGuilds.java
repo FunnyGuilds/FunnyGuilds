@@ -73,8 +73,8 @@ import net.dzikoysk.funnyguilds.nms.v1_14R1.V1_14R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_15R1.V1_15R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_16R3.V1_16R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_18R1.V1_18R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R2.V1_18R2NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_19R1.V1_19R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -631,10 +631,10 @@ public class FunnyGuilds extends JavaPlugin {
                 return new V1_16R3NmsAccessor();
             case "v1_17_R1":
                 return new V1_17R1NmsAccessor();
-            case "v1_18_R1":
-                return new V1_18R1NmsAccessor();
             case "v1_18_R2":
                 return new V1_18R2NmsAccessor();
+            case "v1_19_R1":
+                return new V1_19R1NmsAccessor();
             default:
                 throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
                         Reflections.SERVER_VERSION));

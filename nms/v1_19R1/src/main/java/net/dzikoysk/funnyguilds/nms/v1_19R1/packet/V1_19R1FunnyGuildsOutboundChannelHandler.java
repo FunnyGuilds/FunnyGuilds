@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_18R1.packet;
+package net.dzikoysk.funnyguilds.nms.v1_19R1.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketSuppliersRegistry;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 
-public class V1_18R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHandlerAdapter implements FunnyGuildsOutboundChannelHandler {
+public class V1_19R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHandlerAdapter implements FunnyGuildsOutboundChannelHandler {
 
     private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
 

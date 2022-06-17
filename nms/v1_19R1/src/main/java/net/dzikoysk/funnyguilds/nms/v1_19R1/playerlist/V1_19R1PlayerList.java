@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_18R1.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_19R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
@@ -14,12 +14,12 @@ import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.world.level.EnumGamemode;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-public class V1_18R1PlayerList implements PlayerList {
+public class V1_19R1PlayerList implements PlayerList {
 
     private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
@@ -30,7 +30,7 @@ public class V1_18R1PlayerList implements PlayerList {
 
     private boolean firstPacket = true;
 
-    public V1_18R1PlayerList(int cellCount) {
+    public V1_19R1PlayerList(int cellCount) {
         this.cellCount = cellCount;
     }
 
@@ -65,7 +65,8 @@ public class V1_18R1PlayerList implements PlayerList {
                         gameProfile,
                         ping,
                         DEFAULT_GAME_MODE,
-                        component
+                        component,
+                        null
                 );
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
