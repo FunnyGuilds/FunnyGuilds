@@ -1,13 +1,13 @@
-package net.dzikoysk.funnyguilds.nms.v1_18R1.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_19R1.playerlist;
 
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 
-public class V1_18R1PlayerListAccessor implements PlayerListAccessor {
+public class V1_19R1PlayerListAccessor implements PlayerListAccessor {
 
     @Override
     public PlayerList createPlayerList(int cellCount) {
-        return new V1_18R1PlayerList(cellCount);
+        return new V1_19R1PlayerList(cellCount);
     }
 
 }

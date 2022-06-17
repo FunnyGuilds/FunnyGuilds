@@ -12,9 +12,9 @@ dependencies {
     implementation "net.dzikoysk:funnycommands:0.5.3"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.4"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.4"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.4"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.5"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.5"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.5"
     // okaeri holographicdisplays commons
     implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.17"
 
@@ -42,7 +42,7 @@ dependencies {
     // integrations
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
-    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.5.0"
+    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.5.1"
     shadow("be.maximvdw:MVdWPlaceholderAPI:3.1.1-SNAPSHOT") {
         exclude group: "org.spigotmc", module: "spigot"
     }

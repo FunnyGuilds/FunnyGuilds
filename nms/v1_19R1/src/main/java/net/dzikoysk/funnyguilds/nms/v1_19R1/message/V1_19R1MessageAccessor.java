@@ -1,19 +1,19 @@
-package net.dzikoysk.funnyguilds.nms.v1_18R1.message;
+package net.dzikoysk.funnyguilds.nms.v1_19R1.message;
 
 import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessorConstants;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
-import net.minecraft.network.chat.ChatMessageType;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
-import net.minecraft.network.protocol.game.PacketPlayOutChat;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-public class V1_18R1MessageAccessor implements MessageAccessor {
+public class V1_19R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
@@ -43,14 +43,8 @@ public class V1_18R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(
-                CraftChatMessage.fromStringOrNull(text, true),
-                ChatMessageType.c,
-                MessageAccessorConstants.SENDER_ALWAYS_DISPLAY
-        );
-
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.a(actionBarPacket); // a -> sendPacket
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
     }
 

@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_18R1.packet;
+package net.dzikoysk.funnyguilds.nms.v1_19R1.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.network.protocol.game.PacketPlayInUseEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class V1_18R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
+public class V1_19R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
 
     private static final Field ENTITY_ID;
     private static final Field ACTION_TYPE;
@@ -33,7 +33,7 @@ public class V1_18R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
 
         }
         catch (NoSuchFieldException | NoSuchMethodException e) {
-            throw new RuntimeException("Failed to initialise V1_18R1FunnyGuildsChannelHandler", e);
+            throw new RuntimeException("Failed to initialise V1_19R1FunnyGuildsInboundChannelHandler", e);
         }
     }
 
