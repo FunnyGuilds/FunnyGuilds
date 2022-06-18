@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -42,6 +43,14 @@ public class UserManager {
     }
 
     /**
+     * Deletes all loaded users data
+     */
+    public void clearUsers() {
+        this.usersByUuid.clear();
+        this.usersByName.clear();
+    }
+
+    /**
      * Gets the set of users from collection of strings (names).
      *
      * @param names collection of names
@@ -60,7 +69,7 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByUuid(UUID uuid) {
-        return Option.of(usersByUuid.get(uuid));
+        return Option.of(this.usersByUuid.get(uuid));
     }
 
     /**
@@ -70,7 +79,7 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByName(String nickname) {
-        return findByName(nickname, false);
+        return this.findByName(nickname, false);
     }
 
     /**
@@ -81,13 +90,16 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByName(String nickname, boolean ignoreCase) {
-        if (ignoreCase) {
-            return PandaStream.of(usersByName.entrySet())
+        User foundUser = this.usersByName.get(nickname);
+
+        if (foundUser == null && ignoreCase) {
+            foundUser = PandaStream.of(this.usersByName.entrySet())
                     .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
-                    .map(Map.Entry::getValue);
+                    .map(Map.Entry::getValue)
+                    .orNull();
         }
 
-        return Option.of(usersByName.get(nickname));
+        return Option.of(foundUser);
     }
 
     /**
@@ -100,7 +112,7 @@ public class UserManager {
             return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
         }
 
-        return findByUuid(player.getUniqueId());
+        return this.findByUuid(player.getUniqueId());
     }
 
     /**
@@ -109,15 +121,15 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByPlayer(OfflinePlayer offlinePlayer) {
-        return findByUuid(offlinePlayer.getUniqueId());
+        return this.findByUuid(offlinePlayer.getUniqueId());
     }
 
     public User createFake(UUID uuid, String name) {
-        return create(uuid, name, FakeUserProfile.offline());
+        return this.create(uuid, name, FakeUserProfile.offline());
     }
 
     public User createFake(UUID uuid, String name, FakeUserProfile profile) {
-        return create(uuid, name, profile);
+        return this.create(uuid, name, profile);
     }
 
     /**
@@ -133,7 +145,7 @@ public class UserManager {
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
         Validate.notNull(userProfile, "userProfile can't be null!");
-        Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
+        Validate.isTrue(FunnyValidator.validateUsername(name), "name is not valid!");
 
         User user = new User(uuid, name, userProfile);
         this.addUser(user);
@@ -149,8 +161,8 @@ public class UserManager {
     public void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
-        usersByUuid.put(user.getUUID(), user);
-        usersByName.put(user.getName(), user);
+        this.usersByUuid.put(user.getUUID(), user);
+        this.usersByName.put(user.getName(), user);
     }
 
     /**
@@ -161,8 +173,8 @@ public class UserManager {
     public void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
-        usersByUuid.remove(user.getUUID());
-        usersByName.remove(user.getName());
+        this.usersByUuid.remove(user.getUUID());
+        this.usersByName.remove(user.getName());
     }
 
     /**
@@ -174,8 +186,8 @@ public class UserManager {
     public void updateUsername(User user, String newUsername) {
         Validate.notNull(user, "user can't be null!");
 
-        usersByName.remove(user.getName());
-        usersByName.put(newUsername, user);
+        this.usersByName.remove(user.getName());
+        this.usersByName.put(newUsername, user);
 
         user.setName(newUsername);
     }
@@ -187,7 +199,7 @@ public class UserManager {
      * @return if user with given name have ever played on a server
      */
     public boolean playedBefore(String nickname) {
-        return playedBefore(nickname, false);
+        return this.playedBefore(nickname, false);
     }
 
     /**
@@ -198,7 +210,7 @@ public class UserManager {
      * @return if user with given name have ever played on a server
      */
     public boolean playedBefore(String nickname, boolean ignoreCase) {
-        return findByName(nickname, ignoreCase).isPresent();
+        return this.findByName(nickname, ignoreCase).isPresent();
     }
 
     /**

@@ -9,10 +9,8 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -27,25 +25,26 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild) {
-        when(config.guildDeleteCancelIfSomeoneIsOnRegion && regionManager.isAnyUserInRegion(guild.getRegion().getOrNull(), guild.getMembers()), messages.deleteSomeoneIsNear);
-        when(!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
+    public void execute(@IsOwner User owner, Guild guild) {
+        when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
+                guild.getMembers()), this.messages.deleteSomeoneIsNear);
+        when(!ConfirmationList.contains(owner.getUUID()), this.messages.deleteToConfirm);
 
-        ConfirmationList.remove(user.getUUID());
+        ConfirmationList.remove(owner.getUUID());
 
-        if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.USER, user, guild))) {
+        if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.USER, owner, guild))) {
             return;
         }
 
-        this.guildManager.deleteGuild(plugin, guild);
+        this.guildManager.deleteGuild(this.plugin, guild);
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", player.getName());
+                .register("{PLAYER}", owner.getName());
 
-        user.sendMessage(formatter.format(messages.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
+        owner.sendMessage(formatter.format(this.messages.deleteSuccessful));
+        this.broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 
 }

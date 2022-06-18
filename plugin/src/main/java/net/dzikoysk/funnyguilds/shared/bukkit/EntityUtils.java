@@ -1,14 +1,15 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -33,13 +34,17 @@ public final class EntityUtils {
         return Option.none();
     }
 
+    @Nullable
     public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn) {
         if (stringEntity == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown entity: null");
             return allowNullReturn ? null : EntityType.UNKNOWN;
         }
 
-        EntityType entityType = EnumUtils.getEnum(EntityType.class, stringEntity.toUpperCase());
+        EntityType entityType = Option.attempt(IllegalArgumentException.class, () -> {
+            return EntityType.valueOf(stringEntity.toUpperCase(Locale.ROOT));
+        }).orNull();
+
         if (entityType != null) {
             return entityType;
         }

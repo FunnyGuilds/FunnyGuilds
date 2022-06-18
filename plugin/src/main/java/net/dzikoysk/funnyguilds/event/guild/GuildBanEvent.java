@@ -3,16 +3,16 @@ package net.dzikoysk.funnyguilds.event.guild;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildBanEvent extends GuildEvent {
 
+    private static final HandlerList handlers = new HandlerList();
     private final long time;
     private final String reason;
 
-    private static final HandlerList handlers = new HandlerList();
-
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -22,17 +22,16 @@ public class GuildBanEvent extends GuildEvent {
 
     public GuildBanEvent(EventCause eventCause, User doer, Guild guild, long time, String reason) {
         super(eventCause, doer, guild);
-
         this.time = time;
         this.reason = reason;
     }
 
     public long getTime() {
-        return time;
+        return this.time;
     }
 
     public String getReason() {
-        return reason;
+        return this.reason;
     }
 
     @Override

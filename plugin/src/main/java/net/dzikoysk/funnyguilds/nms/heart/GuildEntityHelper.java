@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class GuildEntityHelper {
 
@@ -25,11 +26,11 @@ public class GuildEntityHelper {
     }
 
     public Map<Guild, FakeEntity> getGuildEntities() {
-        return entityMap;
+        return this.entityMap;
     }
 
     public Option<FakeEntity> getOrCreateGuildEntity(Guild guild) {
-        return Option.of(entityMap.computeIfAbsent(guild, key -> {
+        return Option.of(this.entityMap.computeIfAbsent(guild, key -> {
             if (this.pluginConfiguration.heart.createEntityType == null) {
                 return null;
             }
@@ -39,35 +40,36 @@ public class GuildEntityHelper {
                 return null;
             }
 
-            return nmsAccessor.getEntityAccessor().createFakeEntity(pluginConfiguration.heart.createEntityType, locationOption.get());
+            return this.nmsAccessor.getEntityAccessor().createFakeEntity(this.pluginConfiguration.heart.createEntityType, locationOption.get());
         }));
     }
 
     public void spawnGuildEntity(Guild guild) {
-        this.getOrCreateGuildEntity(guild).peek(entity -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
+        this.getOrCreateGuildEntity(guild)
+                .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
     }
 
     public void spawnGuildEntities(GuildManager guildManager) {
-        guildManager.getGuilds()
-                .forEach(this::spawnGuildEntity);
+        PandaStream.of(guildManager.getGuilds()).forEach(this::spawnGuildEntity);
     }
 
     public void spawnGuildEntity(Guild guild, Player player) {
-        this.getOrCreateGuildEntity(guild).peek(entity -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
+        this.getOrCreateGuildEntity(guild)
+                .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
     }
 
     public void despawnGuildEntity(Guild guild) {
-        FakeEntity guildHeartEntity = entityMap.get(guild);
+        FakeEntity guildHeartEntity = this.entityMap.get(guild);
         if (guildHeartEntity == null) {
             return;
         }
 
-        nmsAccessor.getEntityAccessor().despawnFakeEntityFor(guildHeartEntity, Bukkit.getOnlinePlayers());
-        entityMap.remove(guild);
+        this.nmsAccessor.getEntityAccessor().despawnFakeEntityFor(guildHeartEntity, Bukkit.getOnlinePlayers());
+        this.entityMap.remove(guild);
     }
 
     public void despawnGuildEntities(GuildManager guildManager) {
-        guildManager.getGuilds()
-                .forEach(this::despawnGuildEntity);
+        guildManager.getGuilds().forEach(this::despawnGuildEntity);
     }
+
 }

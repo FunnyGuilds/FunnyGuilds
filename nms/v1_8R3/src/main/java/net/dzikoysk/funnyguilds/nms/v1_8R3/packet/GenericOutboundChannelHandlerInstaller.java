@@ -16,9 +16,10 @@ public class GenericOutboundChannelHandlerInstaller<T extends ChannelHandler & F
     }
 
     public FunnyGuildsOutboundChannelHandler installChannelHandlerOutPipeline(ChannelPipeline pipeline) {
-        final ChannelHandler oldChannelHandler = pipeline.get(FUNNY_GUILDS_OUT_HANDLER_ID);
+        ChannelHandler oldChannelHandler = pipeline.get(FUNNY_GUILDS_OUT_HANDLER_ID);
+
         if (oldChannelHandler == null) {
-            final T newChannelHandler = this.channelHandlerSupplier.get();
+            T newChannelHandler = this.channelHandlerSupplier.get();
             pipeline.addBefore("packet_handler", FUNNY_GUILDS_OUT_HANDLER_ID, newChannelHandler);
 
             return newChannelHandler;
@@ -29,9 +30,10 @@ public class GenericOutboundChannelHandlerInstaller<T extends ChannelHandler & F
         }
 
         // this case handles /reload
-        final T newChannelHandler = this.channelHandlerSupplier.get();
+        T newChannelHandler = this.channelHandlerSupplier.get();
         pipeline.replace(FUNNY_GUILDS_OUT_HANDLER_ID, FUNNY_GUILDS_OUT_HANDLER_ID, newChannelHandler);
 
         return newChannelHandler;
     }
+
 }

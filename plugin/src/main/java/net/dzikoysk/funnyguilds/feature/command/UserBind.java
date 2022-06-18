@@ -21,7 +21,7 @@ final class UserBind implements Bind {
 
     @Override
     public void accept(Resources injectorResources) {
-        injectorResources.on(User.class).assignHandler((property, annotation, args) -> fetchUser(CommandUtils.getContext(args)));
+        injectorResources.on(User.class).assignHandler((property, annotation, args) -> this.fetchUser(CommandUtils.getContext(args)));
     }
 
     public User fetchUser(Context context) {
@@ -31,7 +31,7 @@ final class UserBind implements Bind {
             throw new IllegalStateException("Cannot use user bind in non-player command");
         }
 
-        return this.userManager.findByUuid(((OfflinePlayer) commandSender).getUniqueId()).getOrNull();
+        return this.userManager.findByUuid(((OfflinePlayer) commandSender).getUniqueId()).orNull();
     }
 
 }

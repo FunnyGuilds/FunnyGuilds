@@ -14,11 +14,11 @@ public abstract class Invitation<F, T> {
     }
 
     public F getFrom() {
-        return from;
+        return this.from;
     }
 
     public T getTo() {
-        return to;
+        return this.to;
     }
 
     public abstract UUID getFromUUID();
@@ -30,16 +30,18 @@ public abstract class Invitation<F, T> {
         if (this == o) {
             return true;
         }
+
         if (!(o instanceof Invitation)) {
             return false;
         }
+
         Invitation<?, ?> that = (Invitation<?, ?>) o;
-        return from.equals(that.from) && to.equals(that.to);
+        return this.from.equals(that.from) && this.to.equals(that.to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to);
+        return Objects.hash(this.from, this.to);
     }
 
 }

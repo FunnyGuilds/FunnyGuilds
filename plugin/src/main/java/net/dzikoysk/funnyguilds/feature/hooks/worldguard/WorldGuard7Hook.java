@@ -7,11 +7,13 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.bukkit.Location;
+import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class WorldGuard7Hook extends WorldGuardHook {
 
@@ -25,91 +27,86 @@ public class WorldGuard7Hook extends WorldGuardHook {
 
     @Override
     public HookInitResult earlyInit() {
-        worldGuard = WorldGuard.getInstance();
-        noPointsFlag = new StateFlag("fg-no-points", false);
-        noGuildsFlag = new StateFlag("fg-no-guilds", false);
+        this.worldGuard = WorldGuard.getInstance();
+        this.noPointsFlag = new StateFlag("fg-no-points", false);
+        this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
 
-        worldGuard.getFlagRegistry().register(noPointsFlag);
-        worldGuard.getFlagRegistry().register(noGuildsFlag);
+        this.worldGuard.getFlagRegistry().register(this.noPointsFlag);
+        this.worldGuard.getFlagRegistry().register(this.noGuildsFlag);
         return HookInitResult.SUCCESS;
     }
 
     @Override
     public boolean isInNonPointsRegion(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        for (ProtectedRegion region : regionSet) {
-            if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
-                return true;
-            }
-        }
-
-        return false;
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> region.getFlag(this.noPointsFlag) == StateFlag.State.ALLOW)
+                .isPresent();
     }
 
     @Override
     public boolean isInNonGuildsRegion(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        for (ProtectedRegion region : regionSet) {
-            if (region.getFlag(noGuildsFlag) == StateFlag.State.ALLOW) {
-                return true;
-            }
-        }
-
-        return false;
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
+                .isPresent();
     }
 
     @Override
     public boolean isInIgnoredRegion(Location location) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        return regionSet.getRegions()
-                .stream()
-                .anyMatch(region -> config.assistsRegionsIgnored.contains(region.getId()));
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> config.assistsRegionsIgnored.contains(region.getId()))
+                .isPresent();
     }
 
     @Override
     public boolean isInRegion(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        return regionSet.size() != 0;
+        return regionSet.get().size() != 0;
     }
 
     @Override
-    public ApplicableRegionSet getRegionSet(Location location) {
-        if (location == null || worldGuard == null) {
-            return null;
+    public Option<ApplicableRegionSet> getRegionSet(Location location) {
+        if (location == null || this.worldGuard == null) {
+            return Option.none();
         }
 
-        RegionManager regionManager = worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(location.getWorld()));
+        RegionManager regionManager = this.worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(location.getWorld()));
         if (regionManager == null) {
-            return null;
+            return Option.none();
         }
 
-        return regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ()));
+        return Option.of(regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ())));
     }
 
     @Override
     public List<String> getRegionNames(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        return regionSet == null ? null : regionSet.getRegions().stream()
+        return PandaStream.of(regionSet.get().getRegions())
                 .map(ProtectedRegion::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

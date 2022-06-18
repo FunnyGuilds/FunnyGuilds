@@ -13,18 +13,21 @@ import org.bukkit.util.Vector;
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HologramConfiguration extends OkaeriConfig {
 
-    @Comment("Czy ta sekcja ma być włączona?")
+    @Comment("Czy hologram nad sercem gildii ma być włączony")
     public boolean enabled = true;
 
-    @Comment("Co ile tick'ów ma być aktualizowany hologram? (20 tick = 1 sekunda)")
+    @Comment("")
+    @Comment("Co ile ticków ma być aktualizowany hologram (20 ticków = 1 sekunda)")
     public long updateInterval = 400L;
 
-    @Comment("Item ozdobny nad hologramem.")
-    @Comment("Jeśli ustawiony na AIR to opcja jest wyłączona.")
+    @Comment("")
+    @Comment("Przedmiot ozdobny nad hologramem")
+    @Comment("Jeśli ustawiony na AIR - opcja jest wyłączona")
     public Material item = Material.AIR;
 
+    @Comment("")
     @Comment("Tekst wyświetlany przez hologram")
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> displayedLines = new ImmutableList.Builder<String>()
             .add("&7&m-------------------")
             .add("&7- &bFunnyGuilds &7-")
@@ -35,7 +38,8 @@ public class HologramConfiguration extends OkaeriConfig {
             .add("&7&m-------------------")
             .build();
 
-    @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
+    @Comment("")
+    @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji")
     public Vector locationCorrection = new Vector(0.5, 2.5, 0.5);
 
 }

@@ -28,13 +28,14 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild) {
-        when(!config.regionsEnabled, messages.regionsDisabled);
-        Region region = this.regionManager.findByName(guild.getName()).getOrNull();
-        Location location = player.getLocation();
-        when(region == null || !region.isIn(location), messages.setbaseOutside);
+    public void execute(Player player, @CanManage User deputy, Guild guild) {
+        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
 
-        if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, location))) {
+        Region region = this.regionManager.findByName(guild.getName()).orNull();
+        Location location = player.getLocation();
+        when(region == null || !region.isIn(location), this.messages.setbaseOutside);
+
+        if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, deputy, guild, location))) {
             return;
         }
 
@@ -50,7 +51,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             }
         }
 
-        user.sendMessage(messages.setbaseDone);
+        deputy.sendMessage(this.messages.setbaseDone);
     }
 
 }

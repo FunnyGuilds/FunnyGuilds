@@ -12,9 +12,7 @@ public final class MainCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        for (String line : messages.adminHelpList) {
-            sendMessage(sender, (line));
-        }
+        this.messages.adminHelpList.forEach(line -> this.sendMessage(sender, line));
     }
 
 }

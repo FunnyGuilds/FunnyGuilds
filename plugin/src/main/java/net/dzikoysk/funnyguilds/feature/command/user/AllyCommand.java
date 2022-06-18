@@ -17,12 +17,10 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.StringUtils;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -41,16 +39,15 @@ public final class AllyCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        Set<AllyInvitation> invitations = allyInvitationList.getInvitationsFor(guild);
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
+        Set<AllyInvitation> invitations = this.allyInvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when(invitations.size() == 0, messages.allyHasNotInvitation);
-            String guildNames = ChatUtils.toString(allyInvitationList.getInvitationGuildNames(guild), false);
+            when(invitations.isEmpty(), this.messages.allyHasNotInvitation);
+            String guildNames = FunnyStringUtils.join(this.allyInvitationList.getInvitationGuildNames(guild), true);
 
-            for (String msg : messages.allyInvitationList) {
-                user.sendMessage(msg.replace("{GUILDS}", guildNames));
-            }
+            FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
+            this.messages.allyInvitationList.forEach(line -> owner.sendMessage(formatter.format(line)));
 
             return;
         }
@@ -58,104 +55,124 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
         User invitedOwner = invitedGuild.getOwner();
 
-        when(guild.equals(invitedGuild), messages.allySame);
-        when(guild.isAlly(invitedGuild), messages.allyAlly);
+        when(guild.equals(invitedGuild), this.messages.allySame);
+        when(guild.isAlly(invitedGuild), this.messages.allyAlly);
 
         if (guild.isEnemy(invitedGuild)) {
-            guild.removeEnemy(invitedGuild);
-
-            String allyDoneMessage = messages.enemyEnd;
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
-            user.sendMessage(allyDoneMessage);
-
-            String allyIDoneMessage = messages.enemyIEnd;
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
-            invitedOwner.sendMessage(allyIDoneMessage);
+            this.endWar(owner, invitedOwner, guild, invitedGuild);
         }
 
-        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
+        when(guild.getAllies().size() >= this.config.maxAlliesBetweenGuilds,
+                FunnyFormatter.format(this.messages.inviteAllyAmount, "{AMOUNT}", this.config.maxAlliesBetweenGuilds));
 
-        if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
-            Formatter formatter = new Formatter()
+        if (invitedGuild.getAllies().size() >= this.config.maxAlliesBetweenGuilds) {
+            FunnyFormatter formatter = new FunnyFormatter()
                     .register("{GUILD}", invitedGuild.getName())
                     .register("{TAG}", invitedGuild.getTag())
-                    .register("{AMOUNT}", config.maxAlliesBetweenGuilds);
+                    .register("{AMOUNT}", this.config.maxAlliesBetweenGuilds);
 
-            user.sendMessage(formatter.format(messages.inviteAllyTargetAmount));
+            owner.sendMessage(formatter.format(this.messages.inviteAllyTargetAmount));
             return;
         }
 
-        if (allyInvitationList.hasInvitation(invitedGuild, guild)) {
-            if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
-                return;
-            }
-
-            allyInvitationList.expireInvitation(invitedGuild, guild);
-
-            guild.addAlly(invitedGuild);
-            invitedGuild.addAlly(guild);
-
-            String allyDoneMessage = messages.allyDone;
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
-            user.sendMessage(allyDoneMessage);
-
-            String allyIDoneMessage = messages.allyIDone;
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
-            invitedOwner.sendMessage(allyIDoneMessage);
-
-            ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-
-            for (User member : guild.getMembers()) {
-                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
-            }
-
-            for (User member : invitedGuild.getMembers()) {
-                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
-            }
-
-            this.concurrencyManager.postTask(taskBuilder.build());
+        if (this.allyInvitationList.hasInvitation(invitedGuild, guild)) {
+            this.acceptInvitation(owner, invitedOwner, guild, invitedGuild);
             return;
         }
 
-        if (allyInvitationList.hasInvitation(guild, invitedGuild)) {
-            if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
-                return;
-            }
-
-            allyInvitationList.expireInvitation(guild, invitedGuild);
-
-            String allyReturnMessage = messages.allyReturn;
-            allyReturnMessage = StringUtils.replace(allyReturnMessage, "{GUILD}", invitedGuild.getName());
-            allyReturnMessage = StringUtils.replace(allyReturnMessage, "{TAG}", invitedGuild.getTag());
-            user.sendMessage(allyReturnMessage);
-
-            String allyIReturnMessage = messages.allyIReturn;
-            allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
-            allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{TAG}", guild.getTag());
-            invitedOwner.sendMessage(allyIReturnMessage);
-
+        if (this.allyInvitationList.hasInvitation(guild, invitedGuild)) {
+            this.revokeInvitation(owner, invitedOwner, guild, invitedGuild);
             return;
         }
 
-        if (!SimpleEventHandler.handle(new GuildSendAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+        this.invite(owner, invitedOwner, guild, invitedGuild);
+    }
+
+    private void endWar(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        guild.removeEnemy(invitedGuild);
+
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.enemyEnd));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.enemyIEnd));
+    }
+
+    private void acceptInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
             return;
         }
 
-        allyInvitationList.createInvitation(guild, invitedGuild);
+        this.allyInvitationList.expireInvitation(invitedGuild, guild);
 
-        String allyInviteDoneMessage = messages.allyInviteDone;
-        allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{GUILD}", invitedGuild.getName());
-        allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{TAG}", invitedGuild.getTag());
-        user.sendMessage(allyInviteDoneMessage);
+        guild.addAlly(invitedGuild);
+        invitedGuild.addAlly(guild);
 
-        String allyToInvitedMessage = messages.allyToInvited;
-        allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());
-        allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{TAG}", guild.getTag());
-        invitedOwner.sendMessage(allyToInvitedMessage);
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.allyDone));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
+
+        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
+
+        guild.getMembers().forEach(member -> {
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
+        });
+
+        invitedGuild.getMembers().forEach(member -> {
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
+        });
+
+        this.concurrencyManager.postTask(taskBuilder.build());
+    }
+
+    private void revokeInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
+            return;
+        }
+
+        this.allyInvitationList.expireInvitation(guild, invitedGuild);
+
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.allyReturn));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIReturn));
+    }
+
+    private void invite(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
+        if (!SimpleEventHandler.handle(new GuildSendAllyInvitationEvent(EventCause.USER, owner, guild, invitedGuild))) {
+            return;
+        }
+
+        this.allyInvitationList.createInvitation(guild, invitedGuild);
+
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
+
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        owner.sendMessage(allyFormatter.format(this.messages.allyInviteDone));
+        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyToInvited));
     }
 
 }

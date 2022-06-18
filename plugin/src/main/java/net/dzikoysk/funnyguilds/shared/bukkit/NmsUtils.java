@@ -2,12 +2,13 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.bukkit.entity.Player;
 
-public final class MinecraftServerUtils {
+public final class NmsUtils {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
-    private MinecraftServerUtils() {
+    private NmsUtils() {
     }
 
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
@@ -21,6 +22,10 @@ public final class MinecraftServerUtils {
 
     public static int getReloadCount() {
         return FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getReloadCount();
+    }
+
+    public static int getPing(Player player) {
+        return Math.max(0, FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getPlayerPing(player));
     }
 
 }

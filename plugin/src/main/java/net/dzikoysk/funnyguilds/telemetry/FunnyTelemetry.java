@@ -9,12 +9,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
-import net.dzikoysk.funnyguilds.shared.IOUtils;
+import panda.std.Option;
+import panda.utilities.IOUtils;
 
 /**
  * TODO: Move this to a separate library.
  */
-public class FunnyTelemetry {
+public final class FunnyTelemetry {
 
     private FunnyTelemetry() {
     }
@@ -28,9 +29,9 @@ public class FunnyTelemetry {
         return sendPost(FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag), paste, FunnybinResponse.class);
     }
 
-    public static FunnybinResponse createBundle(List<String> pastes) throws IOException {
+    public static Option<FunnybinResponse> createBundle(List<String> pastes) throws IOException {
         if (pastes.isEmpty()) {
-            return null;
+            return Option.none();
         }
 
         Iterator<String> iterator = pastes.iterator();
@@ -41,7 +42,7 @@ public class FunnyTelemetry {
             addQueryElement("paste", iterator.next(), url);
         }
 
-        return sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class);
+        return Option.of(sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class));
     }
 
     private static <T> T sendPost(String url, String body, Class<T> response) throws IOException {
@@ -57,15 +58,18 @@ public class FunnyTelemetry {
         connection.addRequestProperty("User-Agent", "FunnyGuilds");
         connection.addRequestProperty("Content-Type", "text/plain");
         connection.setRequestProperty("Content-Length", String.valueOf(bodyBytes.length));
-
         connection.getOutputStream().write(bodyBytes);
-        return gson.fromJson(IOUtils.toString(connection.getInputStream(), "UTF-8"), response);
+
+        return IOUtils.convertStreamToString(connection.getInputStream(), StandardCharsets.UTF_8)
+                .map(input -> gson.fromJson(input, response))
+                .orThrow(exception -> exception);
     }
 
     private static String encodeUTF8(String str) throws UnsupportedEncodingException {
         if (str == null) {
             return "";
         }
+
         return URLEncoder.encode(str, "UTF-8");
     }
 
@@ -74,15 +78,17 @@ public class FunnyTelemetry {
         if (value != null) {
             result += "=" + encodeUTF8(value);
         }
+
         return result;
     }
 
-    private static StringBuilder addQueryElement(String key, String value, StringBuilder builder) throws UnsupportedEncodingException {
+    private static void addQueryElement(String key, String value, StringBuilder builder) throws UnsupportedEncodingException {
         builder.append(encodeUTF8(key));
+
         if (value != null) {
             builder.append('=');
             builder.append(encodeUTF8(value));
         }
-        return builder;
     }
+
 }

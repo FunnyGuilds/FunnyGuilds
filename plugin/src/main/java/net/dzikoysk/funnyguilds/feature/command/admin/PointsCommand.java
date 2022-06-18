@@ -1,14 +1,17 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
+import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -21,17 +24,12 @@ public final class PointsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
-        when(args.length < 2, messages.adminNoPointsGiven);
+        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 2, this.messages.adminNoPointsGiven);
 
-        int points;
-        try {
-            points = Integer.parseInt(args[1]);
-        }
-        catch (NumberFormatException numberFormatException) {
-            sendMessage(sender, (messages.adminErrorInNumber.replace("{ERROR}", args[1])));
-            return;
-        }
+        int points = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
+            return new ValidationException(FunnyFormatter.format(this.messages.adminErrorInNumber, "{ERROR}", args[1]));
+        });
 
         User user = UserValidation.requireUserByName(args[0]);
         UserRank userRank = user.getRank();
@@ -43,16 +41,16 @@ public final class PointsCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(pointsChangeEvent)) {
             return;
         }
-        change = pointsChangeEvent.getPointsChange();
 
-        int finalPoints = user.getRank().getPoints() + change;
+        int finalPoints = user.getRank().getPoints() + pointsChangeEvent.getPointsChange();
         user.getRank().setPoints(finalPoints);
 
-        String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
-        message = message.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, config.pointsFormat));
-        message = message.replace("{POINTS}", String.valueOf(finalPoints));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{PLAYER}", user.getName())
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, this.config.pointsFormat))
+                .register("{POINTS}", finalPoints);
 
-        sendMessage(sender, (message));
+        this.sendMessage(sender, formatter.format(this.messages.adminPointsChanged));
     }
 
 }

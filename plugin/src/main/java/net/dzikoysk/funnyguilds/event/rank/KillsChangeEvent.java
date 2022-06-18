@@ -2,15 +2,15 @@ package net.dzikoysk.funnyguilds.event.rank;
 
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class KillsChangeEvent extends AbstractRankEvent {
 
     private static final HandlerList handlers = new HandlerList();
-
     private int killsChange;
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -20,12 +20,11 @@ public class KillsChangeEvent extends AbstractRankEvent {
 
     public KillsChangeEvent(EventCause eventCause, User doer, User affected, int killsChange) {
         super(eventCause, doer, affected);
-
         this.killsChange = killsChange;
     }
 
     public int getKillsChange() {
-        return killsChange;
+        return this.killsChange;
     }
 
     public void setKillsChange(int killsChange) {

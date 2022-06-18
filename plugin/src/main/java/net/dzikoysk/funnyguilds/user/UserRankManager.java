@@ -14,17 +14,13 @@ public class UserRankManager extends RankManager<UserTop, UserRank> {
     }
 
     public Option<User> getUser(String topId, int place) {
-        return this.getTop(topId)
-                .flatMap(top -> top.getUser(place));
+        return this.getTop(topId).flatMap(top -> top.getUser(place));
     }
 
     public void register(String id, UserTop userTop) {
-        if (PandaStream.of(this.pluginConfiguration.top.enabledUserTops)
-                .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
-                .isEmpty()) {
-            return;
-        }
-        this.addTop(id, userTop);
+        PandaStream.of(this.pluginConfiguration.top.enabledUserTops)
+                .find(top -> top.equalsIgnoreCase(id))
+                .peek(enabledTop -> this.addTop(id, userTop));
     }
 
     public void register(Map<String, UserTop> topsToRegister) {

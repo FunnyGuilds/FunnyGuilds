@@ -21,7 +21,6 @@ public class V1_19R1EntityAccessor implements EntityAccessor {
         Preconditions.checkArgument(entityType.isSpawnable(), "entity type is not spawnable!");
 
         CraftWorld world = ((CraftWorld) location.getWorld());
-
         if (world == null) {
             throw new IllegalStateException("location's world is null!");
         }
@@ -49,4 +48,5 @@ public class V1_19R1EntityAccessor implements EntityAccessor {
             ((CraftPlayer) player).getHandle().b.a(destroyEntityPacket); // sendPacket -> a
         }
     }
+
 }

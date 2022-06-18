@@ -26,12 +26,13 @@ public final class UserComparator implements TopComparator<UserRank> {
         if (result == 0) {
             result = Rank.compareName(o1, o2);
         }
+
         return result;
     }
 
     @Override
     public Number getValue(UserRank rank) {
-        return valueFunction.apply(rank);
+        return this.valueFunction.apply(rank);
     }
 
 }

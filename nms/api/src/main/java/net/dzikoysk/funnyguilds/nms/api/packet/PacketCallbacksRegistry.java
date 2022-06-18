@@ -24,4 +24,5 @@ public class PacketCallbacksRegistry implements PacketCallbacks {
             packetCallback.handleAttackEntity(entityId, isMainHand);
         }
     }
+
 }

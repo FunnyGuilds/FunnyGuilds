@@ -2,8 +2,9 @@ package net.dzikoysk.funnyguilds.feature.command;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import org.apache.commons.lang3.StringUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 
 public final class GuildValidation {
 
@@ -11,8 +12,11 @@ public final class GuildValidation {
     }
 
     public static Guild requireGuildByTag(String tag) {
-        return FunnyGuilds.getInstance().getGuildManager().findByTag(tag, true).orThrow(() -> {
-            throw new ValidationException(StringUtils.replace(FunnyGuilds.getInstance().getMessageConfiguration().generalGuildNotExists, "{TAG}", tag));
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+
+        return plugin.getGuildManager().findByTag(tag, true).orThrow(() -> {
+            return new ValidationException(FunnyFormatter.format(messages.generalGuildNotExists, "{TAG}", tag));
         });
     }
 

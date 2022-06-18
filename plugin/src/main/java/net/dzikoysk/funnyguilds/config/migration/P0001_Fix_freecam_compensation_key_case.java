@@ -16,4 +16,5 @@ public class P0001_Fix_freecam_compensation_key_case extends NamedMigration {
                 move("freeCam-compensation", "freecam-compensation")
         );
     }
+
 }

@@ -5,51 +5,52 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
+import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import panda.std.Option;
+import panda.utilities.StringUtils;
 
 public class BukkitUserProfile implements UserProfile {
 
     private final UUID uuid;
-    private final Server server;
-    private final OfflinePlayer offlinePlayer;
+    private final FunnyServer funnyServer;
+
+    private WeakReference<OfflinePlayer> offlinePlayerRef;
     private WeakReference<Player> playerRef;
 
-    public BukkitUserProfile(UUID uuid, Server server) {
+    public BukkitUserProfile(UUID uuid, FunnyServer funnyServer) {
         this.uuid = uuid;
-        this.server = server;
-        this.playerRef = new WeakReference<>(server.getPlayer(this.uuid));
-        this.offlinePlayer = server.getOfflinePlayer(this.uuid);
+        this.funnyServer = funnyServer;
+
+        this.offlinePlayerRef = new WeakReference<>(funnyServer.getOfflinePlayer(uuid));
+        this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orNull());
     }
 
-    private Option<Player> getPlayer() {
+    //TODO: change visibility to private after removing deprecated methods from User
+    Option<Player> getPlayer() {
         Player player = this.playerRef.get();
 
         if (player == null) {
-            player = this.server.getPlayer(this.uuid);
-
-            if (player != null) {
-                this.playerRef = new WeakReference<>(player);
-            }
+            this.refresh();
+            player = this.playerRef.get();
         }
 
         return Option.of(player);
     }
 
-    public void updateReference(Player player) {
-        Validate.notNull(player, "you can't update reference with null player!");
-        this.playerRef = new WeakReference<>(player);
+    private void refreshOfflinePlayerRef() {
+        if (this.offlinePlayerRef.get() == null) {
+            this.offlinePlayerRef = new WeakReference<>(this.funnyServer.getOfflinePlayer(this.uuid));
+        }
     }
 
     @Override
     public boolean isOnline() {
-        return this.getPlayer().isPresent();
+        return this.getPlayer().is(Player::isOnline);
     }
 
     @Override
@@ -63,25 +64,29 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public boolean hasPermission(String permission) {
-        return this.getPlayer()
-                .map(player -> player.hasPermission(permission))
-                .orElseGet(offlinePlayer.isOp() || (VaultHook.isPermissionHooked() && VaultHook.hasPermission(offlinePlayer, permission)));
+        Player player = this.playerRef.get();
+        if (player != null) {
+            return player.hasPermission(permission);
+        }
+
+        this.refreshOfflinePlayerRef();
+        OfflinePlayer offlinePlayer = this.offlinePlayerRef.get();
+
+        return offlinePlayer.isOp() || VaultHook.hasPermission(offlinePlayer, permission);
     }
 
     @Override
     public int getPing() {
-        return getPlayer()
-                .map(PingUtils::getPing)
-                .orElseGet(0);
+        return this.getPlayer().map(NmsUtils::getPing).orElseGet(0);
     }
 
     @Override //TODO: MiniMessage support
     public void sendMessage(String message) {
-        if (message == null || message.isEmpty()) {
+        if (StringUtils.isEmpty(message)) {
             return;
         }
 
-        this.getPlayer().peek(player -> player.sendMessage(ChatUtils.colored(message)));
+        this.getPlayer().peek(player -> ChatUtils.sendMessage(player, message));
     }
 
     @Override
@@ -92,6 +97,16 @@ public class BukkitUserProfile implements UserProfile {
     @Override
     public void teleport(Position position) {
         this.getPlayer().peek(player -> player.teleport(PositionConverter.adapt(position)));
+    }
+
+    @Override
+    public void refresh() {
+        this.funnyServer.getPlayer(this.uuid).peek(player -> {
+            this.playerRef = new WeakReference<>(player);
+            this.offlinePlayerRef = new WeakReference<>(player);
+        }).onEmpty(() -> {
+            this.playerRef = new WeakReference<>(null);
+        });
     }
 
     @Override

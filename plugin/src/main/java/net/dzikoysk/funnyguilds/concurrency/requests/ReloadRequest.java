@@ -5,16 +5,16 @@ import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import panda.std.stream.PandaStream;
 
 public final class ReloadRequest extends DefaultConcurrencyRequest {
 
     private final FunnyGuilds plugin;
-
     private final CommandSender sender;
     private final long startTime;
 
@@ -38,8 +38,10 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
             PandaStream.of(Bukkit.getOnlinePlayers())
                     .flatMap(userManager::findByPlayer)
                     .forEach(user -> {
-                        IndividualPlayerList playerList = new IndividualPlayerList(user,
-                                plugin.getNmsAccessor().getPlayerListAccessor(),
+                        IndividualPlayerList playerList = new IndividualPlayerList(
+                                user,
+                                this.plugin.getNmsAccessor().getPlayerListAccessor(),
+                                this.plugin.getFunnyServer(),
                                 tablistConfig.playerList,
                                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                                 tablistConfig.playerListAnimated, tablistConfig.pages,
@@ -54,9 +56,10 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
         }
 
         long endTime = System.currentTimeMillis();
-        String diff = String.format("%.2f", ((endTime - startTime) / 1000.0));
+        String diff = String.format("%.2f", (endTime - this.startTime) / 1000.0D);
 
-        sender.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano! (" + ChatColor.AQUA + diff + "s" + ChatColor.GRAY + ")");
+        String message = FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", diff);
+        ChatUtils.sendMessage(this.sender, message);
     }
 
 }

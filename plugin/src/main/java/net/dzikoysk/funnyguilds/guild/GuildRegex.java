@@ -22,4 +22,5 @@ public enum GuildRegex {
     public String getPattern() {
         return this.pattern;
     }
+
 }

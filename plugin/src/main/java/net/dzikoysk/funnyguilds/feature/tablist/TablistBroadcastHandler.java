@@ -16,8 +16,8 @@ public class TablistBroadcastHandler implements Runnable {
 
     @Override
     public void run() {
-        UserManager userManager = plugin.getUserManager();
-        TablistConfiguration tablistConfig = plugin.getTablistConfiguration();
+        UserManager userManager = this.plugin.getUserManager();
+        TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
 
         if (!tablistConfig.playerListEnable) {
             return;

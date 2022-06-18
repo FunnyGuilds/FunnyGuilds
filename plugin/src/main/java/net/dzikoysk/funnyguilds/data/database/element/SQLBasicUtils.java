@@ -1,123 +1,164 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
-public class SQLBasicUtils {
+public final class SQLBasicUtils {
 
     private SQLBasicUtils() {
     }
 
     public static SQLNamedStatement getInsert(SQLTable table) {
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
 
-        sb.append("INSERT INTO ");
-        sb.append(table.getNameGraveAccent());
-        sb.append(" (");
-        sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent));
-        sb.append(") VALUES (");
-        sb.append(Joiner.on(", ").join(table.getSqlElements(), sqlElement -> "?"));
-        sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
+        StringBuilder query = new StringBuilder();
 
-        return new SQLNamedStatement(sb.toString(), table.getMapElementsKey());
+        query.append("INSERT INTO ");
+        query.append(table.getNameGraveAccent());
+        query.append(" (");
+        query.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent));
+        query.append(") VALUES (");
+        query.append(Joiner.on(", ").join(table.getSqlElements(), sqlElement -> "?"));
+        query.append(") ON DUPLICATE KEY UPDATE ");
+        query.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
+
+        return new SQLNamedStatement(query.toString(), table.getMapElementsKey());
     }
 
     public static SQLNamedStatement getSelect(SQLTable table, String... sqlElements) {
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
 
-        sb.append("SELECT ");
-        sb.append(Joiner.on(", ").join(sqlElements, sqlElement -> table.getSQLElement(sqlElement).getKeyGraveAccent()));
-        sb.append(" FROM ");
-        sb.append(table.getNameGraveAccent());
+        if (sqlElements.length == 0) {
+            throw new IllegalArgumentException("Given sqlElements String array is empty");
+        }
 
-        return new SQLNamedStatement(sb.toString(), new HashMap<>());
+        StringBuilder query = new StringBuilder();
+
+        query.append("SELECT ");
+        query.append(PandaStream.of(sqlElements)
+                .mapOpt(table::getSQLElement)
+                .map(SQLElement::getKeyGraveAccent)
+                .collect(Collectors.joining(", "))
+        );
+        query.append(" FROM ");
+        query.append(table.getNameGraveAccent());
+
+        return new SQLNamedStatement(query.toString(), new HashMap<>());
     }
 
     public static SQLNamedStatement getSelectAll(SQLTable table) {
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
 
-        sb.append("SELECT * FROM ");
-        sb.append(table.getNameGraveAccent());
-
-        return new SQLNamedStatement(sb.toString(), new HashMap<>());
+        String query = "SELECT * FROM " + table.getNameGraveAccent();
+        return new SQLNamedStatement(query, new HashMap<>());
     }
 
     public static SQLNamedStatement getUpdate(SQLTable table, SQLElement element) {
-        HashMap<String, Integer> keyMap = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
 
-        sb.append("UPDATE ");
-        sb.append(table.getNameGraveAccent());
-        sb.append(" SET ");
-        sb.append(element.getKeyGraveAccent());
-        sb.append(" = ?");
-        sb.append(" WHERE ");
-        sb.append(table.getPrimaryKey().getKeyGraveAccent());
-        sb.append(" = ?");
+        if (element == null) {
+            throw new IllegalArgumentException("Given SQLElement is null");
+        }
+
+        HashMap<String, Integer> keyMap = new HashMap<>();
+        StringBuilder query = new StringBuilder();
+
+        query.append("UPDATE ");
+        query.append(table.getNameGraveAccent());
+        query.append(" SET ");
+        query.append(element.getKeyGraveAccent());
+        query.append(" = ?");
+        query.append(" WHERE ");
+        query.append(table.getPrimaryKey().getKeyGraveAccent());
+        query.append(" = ?");
 
         keyMap.put(element.getKey(), 1);
         keyMap.put(table.getPrimaryKey().getKey(), 2);
 
-        return new SQLNamedStatement(sb.toString(), keyMap);
+        return new SQLNamedStatement(query.toString(), keyMap);
     }
 
     public static SQLNamedStatement getCreate(SQLTable table) {
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
 
-        sb.append("CREATE TABLE IF NOT EXISTS ");
-        sb.append(table.getNameGraveAccent());
-        sb.append(" (");
-        sb.append(Joiner.on(", ").join(table.getSqlElements(), sqlElement -> {
-            StringBuilder element = new StringBuilder();
+        StringBuilder queryBuilder = new StringBuilder();
 
-            element.append(sqlElement.getKeyGraveAccent());
-            element.append(" ");
-            element.append(sqlElement.getType());
+        queryBuilder.append("CREATE TABLE IF NOT EXISTS ");
+        queryBuilder.append(table.getNameGraveAccent());
+        queryBuilder.append(" (");
+        queryBuilder.append(Joiner.on(", ").join(table.getSqlElements(), sqlElement -> {
+            StringBuilder elementBuilder = new StringBuilder();
+
+            elementBuilder.append(sqlElement.getKeyGraveAccent());
+            elementBuilder.append(" ");
+            elementBuilder.append(sqlElement.getType());
 
             if (sqlElement.isNotNull()) {
-                element.append(" NOT NULL");
+                elementBuilder.append(" NOT NULL");
             }
 
-            return element.toString();
+            return elementBuilder.toString();
         }));
 
-        sb.append(", PRIMARY KEY (");
-        sb.append(table.getPrimaryKey().getKey());
-        sb.append("));");
+        queryBuilder.append(", PRIMARY KEY (");
+        queryBuilder.append(table.getPrimaryKey().getKey());
+        queryBuilder.append("));");
 
-        return new SQLNamedStatement(sb.toString(), new HashMap<>());
+        return new SQLNamedStatement(queryBuilder.toString(), new HashMap<>());
     }
 
     public static SQLNamedStatement getDelete(SQLTable table) {
-        HashMap<String, Integer> keyMap = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
 
-        sb.append("DELETE FROM ");
-        sb.append(table.getNameGraveAccent());
-        sb.append(" WHERE ");
-        sb.append(table.getPrimaryKey().getKeyGraveAccent());
-        sb.append(" = ?");
+        HashMap<String, Integer> keyMap = new HashMap<>();
+        StringBuilder query = new StringBuilder();
+
+        query.append("DELETE FROM ");
+        query.append(table.getNameGraveAccent());
+        query.append(" WHERE ");
+        query.append(table.getPrimaryKey().getKeyGraveAccent());
+        query.append(" = ?");
 
         keyMap.put(table.getPrimaryKey().getKey(), 1);
-
-        return new SQLNamedStatement(sb.toString(), keyMap);
+        return new SQLNamedStatement(query.toString(), keyMap);
     }
 
     public static SQLNamedStatement getAlter(SQLTable table, SQLElement column) {
-        StringBuilder sb = new StringBuilder();
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
+
+        if (column == null) {
+            throw new IllegalArgumentException("Given SQLElement is null");
+        }
+
+        StringBuilder query = new StringBuilder();
         int index = table.getIndexElement(column.getKey());
 
-        sb.append("ALTER TABLE ");
-        sb.append(table.getNameGraveAccent());
-        sb.append(" ADD COLUMN ");
-        sb.append(column.getKeyGraveAccent());
-        sb.append(" ");
-        sb.append(column.getType());
-        sb.append(index == 0 ? " FIRST" : " AFTER " + table.getSqlElements().get(index - 1).getKeyGraveAccent());
-        sb.append(";");
+        query.append("ALTER TABLE ");
+        query.append(table.getNameGraveAccent());
+        query.append(" ADD COLUMN ");
+        query.append(column.getKeyGraveAccent());
+        query.append(" ");
+        query.append(column.getType());
+        query.append(index == 0 ? " FIRST" : " AFTER " + table.getSqlElements().get(index - 1).getKeyGraveAccent());
+        query.append(";");
 
-        return new SQLNamedStatement(sb.toString(), new HashMap<>());
+        return new SQLNamedStatement(query.toString(), new HashMap<>());
     }
 
 }

@@ -10,7 +10,6 @@ public abstract class GuildMemberEvent extends GuildEvent {
 
     public GuildMemberEvent(EventCause eventCause, User doer, Guild guild, User member) {
         super(eventCause, doer, guild);
-
         this.member = member;
     }
 

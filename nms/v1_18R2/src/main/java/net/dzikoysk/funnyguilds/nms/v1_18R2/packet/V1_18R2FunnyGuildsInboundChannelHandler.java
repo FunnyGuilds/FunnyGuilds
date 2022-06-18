@@ -7,10 +7,9 @@ import java.lang.reflect.Method;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.network.protocol.game.PacketPlayInUseEntity;
+import org.jetbrains.annotations.NotNull;
 
 public class V1_18R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
-
-    private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     private static final Field ENTITY_ID;
     private static final Field ACTION_TYPE;
@@ -25,7 +24,7 @@ public class V1_18R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
             ACTION_TYPE = PacketPlayInUseEntity.class.getDeclaredField("b");
             ACTION_TYPE.setAccessible(true);
 
-            final Class<?> ACTION_INTERFACE = ACTION_TYPE.getType();
+            Class<?> ACTION_INTERFACE = ACTION_TYPE.getType();
             GET_ACTION_ENUM = ACTION_INTERFACE.getDeclaredMethod("a");
             GET_ACTION_ENUM.setAccessible(true);
 
@@ -33,20 +32,21 @@ public class V1_18R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
             HAND_TYPE_FIELD.setAccessible(true);
 
         }
-        catch (final NoSuchFieldException | NoSuchMethodException e) {
-            throw new RuntimeException("Failed to initialise V1_17R1FunnyGuildsChannelHandler", e);
+        catch (NoSuchFieldException | NoSuchMethodException exception) {
+            throw new RuntimeException("Failed to initialise V1_18R2FunnyGuildsChannelHandler", exception);
         }
     }
 
+    private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
+
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
         if (msg instanceof PacketPlayInUseEntity) {
-            final PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) msg;
+            PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) msg;
+            int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
 
-            final int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
-
-            final Object actionType = ACTION_TYPE.get(packetPlayInUseEntity);
-            final Enum<?> actionTypeEnum = (Enum<?>) GET_ACTION_ENUM.invoke(actionType);
+            Object actionType = ACTION_TYPE.get(packetPlayInUseEntity);
+            Enum<?> actionTypeEnum = (Enum<?>) GET_ACTION_ENUM.invoke(actionType);
 
             if (actionTypeEnum.ordinal() == 1) {
                 //attack
@@ -54,9 +54,9 @@ public class V1_18R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
             }
             else if (actionTypeEnum.ordinal() == 2) {
                 // interact_at
-                final Enum<?> handTypeEnum = (Enum<?>) HAND_TYPE_FIELD.get(actionType);
+                Enum<?> handTypeEnum = (Enum<?>) HAND_TYPE_FIELD.get(actionType);
 
-                final boolean isMainHand = handTypeEnum.ordinal() == 0;
+                boolean isMainHand = handTypeEnum.ordinal() == 0;
                 this.packetCallbacksRegistry.handleRightClickEntity(entityId, isMainHand);
             }
         }
@@ -78,4 +78,5 @@ public class V1_18R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
 
         throw new IllegalStateException("Can't find InteractionAtLocationAction class");
     }
+
 }

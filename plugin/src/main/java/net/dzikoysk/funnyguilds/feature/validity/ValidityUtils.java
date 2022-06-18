@@ -1,14 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.validity;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
-public class ValidityUtils {
+public final class ValidityUtils {
 
     private ValidityUtils() {
     }
@@ -18,27 +20,27 @@ public class ValidityUtils {
             return;
         }
 
-        String message = FunnyGuilds.getInstance().getMessageConfiguration().broadcastValidity
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag())
-                .replace("{GUILD}", guild.getName());
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{GUILD}", guild.getName());
 
         Option<Region> regionOption = guild.getRegion();
-        if (guild.hasRegion() && regionOption.get().getCenter() != null) {
+        if (regionOption.isPresent() && regionOption.get().getCenter() != null) {
             Location center = regionOption.get().getCenter();
-            message = message
-                    .replace("{X}", Integer.toString(center.getBlockX()))
-                    .replace("{Y}", Integer.toString(center.getBlockY()))
-                    .replace("{Z}", Integer.toString(center.getBlockZ()));
+
+            formatter.register("{X}", center.getBlockX());
+            formatter.register("{Y}", center.getBlockY());
+            formatter.register("{Z}", center.getBlockZ());
         }
         else {
-            message = message
-                    .replace("{X}", "Brak informacji")
-                    .replace("{Y}", "Brak informacji")
-                    .replace("{Z}", "Brak informacji");
+            formatter.register("{X}", messages.noInformation);
+            formatter.register("{Y}", messages.noInformation);
+            formatter.register("{Z}", messages.noInformation);
         }
 
-        Bukkit.broadcastMessage(message);
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastValidity));
     }
 
 }

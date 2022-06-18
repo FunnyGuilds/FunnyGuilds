@@ -3,15 +3,16 @@ package net.dzikoysk.funnyguilds.event.guild;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildPreRenameEvent extends GuildEvent {
 
+    private static final HandlerList handlers = new HandlerList();
     private final String oldName;
     private final String newName;
-    private static final HandlerList handlers = new HandlerList();
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -21,7 +22,6 @@ public class GuildPreRenameEvent extends GuildEvent {
 
     public GuildPreRenameEvent(EventCause eventCause, User doer, Guild guild, String oldName, String newName) {
         super(eventCause, doer, guild);
-
         this.oldName = oldName;
         this.newName = newName;
     }

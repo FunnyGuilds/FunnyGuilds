@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -26,7 +25,7 @@ public final class SecuritySystem {
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, SecurityType.GUILD, guild);
-        return SecurityUtils.isBlocked(UserUtils.get(player.getUniqueId()));
+        return SecurityUtils.isBlocked(FunnyGuilds.getInstance().getUserManager().findByPlayer(player).orNull());
     }
 
     private static void scan(Player player, SecurityType securityType, Object... values) {
@@ -41,7 +40,6 @@ public final class SecuritySystem {
         }
 
         Guild guild = null;
-
         for (Object value : values) {
             if (value instanceof Guild) {
                 guild = (Guild) value;
@@ -56,6 +54,7 @@ public final class SecuritySystem {
             if (!guild.hasRegion()) {
                 return;
             }
+
             Region region = guild.getRegion().get();
             Location center = region.getCenter();
 
@@ -81,13 +80,15 @@ public final class SecuritySystem {
 
             SecurityFreeCam.on(player, origin, hitPoint, distance);
             SecurityReach.on(player, distance);
+
             return;
         }
 
         throw new IllegalArgumentException("unknown securityType: " + securityType);
     }
 
-    protected static Map<User, Integer> getPlayersViolationLevel() {
+    static Map<User, Integer> getPlayersViolationLevel() {
         return PLAYERS_VIOLATION_LEVEL;
     }
+
 }

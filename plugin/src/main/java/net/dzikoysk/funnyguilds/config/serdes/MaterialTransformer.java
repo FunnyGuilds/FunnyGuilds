@@ -5,6 +5,7 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 public class MaterialTransformer extends BidirectionalTransformer<String, Material> {
 
@@ -14,12 +15,12 @@ public class MaterialTransformer extends BidirectionalTransformer<String, Materi
     }
 
     @Override
-    public Material leftToRight(String data, SerdesContext serdesContext) {
+    public Material leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
         return MaterialUtils.parseMaterial(data, false);
     }
 
     @Override
-    public String rightToLeft(Material data, SerdesContext serdesContext) {
+    public String rightToLeft(Material data, @NotNull SerdesContext serdesContext) {
         return data.name();
     }
 

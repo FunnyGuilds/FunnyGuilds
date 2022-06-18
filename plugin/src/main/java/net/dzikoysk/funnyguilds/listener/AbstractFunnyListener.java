@@ -14,9 +14,9 @@ import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
-import org.bukkit.Server;
 import org.bukkit.event.Listener;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
@@ -28,7 +28,7 @@ public abstract class AbstractFunnyListener implements Listener {
     public FunnyGuildsLogger logger;
 
     @Inject
-    public Server server;
+    public FunnyServer funnyServer;
 
     @Inject
     public PluginConfiguration config;

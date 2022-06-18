@@ -6,9 +6,8 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -24,21 +23,22 @@ public final class PvPCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+    public void execute(@CanManage User deputy, Guild guild, String[] args) {
         if (args.length > 0) {
-            when(!config.damageAlly, messages.generalAllyPvpDisabled);
+            when(!this.config.damageAlly, this.messages.generalAllyPvpDisabled);
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
-            Formatter guildTagFormatter = new Formatter().register("{TAG}", targetAlliedGuild.getTag());
-            when(!guild.isAlly(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
+            FunnyFormatter guildTagFormatter = FunnyFormatter.of("{TAG}", targetAlliedGuild.getTag());
+            when(!guild.isAlly(targetAlliedGuild), guildTagFormatter.format(this.messages.allyDoesntExist));
 
-            guild.setPvP(targetAlliedGuild, !guild.getPvP(targetAlliedGuild));
-            user.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));
+            boolean newPvpValue = guild.toggleAllyPvP(targetAlliedGuild);
+            deputy.sendMessage(guildTagFormatter.format(newPvpValue ? this.messages.pvpAllyOn : this.messages.pvpAllyOff));
+
             return;
         }
 
-        guild.setPvP(!guild.getPvP());
-        user.sendMessage(guild.getPvP() ? messages.pvpOn : messages.pvpOff);
+        boolean newPvpValue = guild.togglePvP();
+        deputy.sendMessage(newPvpValue ? this.messages.pvpOn : this.messages.pvpOff);
     }
 
 }

@@ -56,7 +56,7 @@ public class HookManager {
             }
         }, true).subscribe(hook -> WORLD_GUARD = hook);
 
-        this.setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, plugin), false)
+        this.setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, this.plugin), false)
                 .subscribe(hook -> FUNNY_TAB = hook);
     }
 
@@ -74,7 +74,7 @@ public class HookManager {
         this.setupHook("BungeeTabListPlus", true, pluginName -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
-                return new BungeeTabListPlusHook(pluginName, plugin);
+                return new BungeeTabListPlusHook(pluginName, this.plugin);
             }
             catch (ClassNotFoundException exception) {
                 return null;
@@ -84,13 +84,13 @@ public class HookManager {
         this.setupHook("Vault", true, VaultHook::new, true)
                 .subscribe(hook -> VAULT = hook);
 
-        this.setupHook("MVdWPlaceholderAPI", true, pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin), true)
+        this.setupHook("MVdWPlaceholderAPI", true, pluginName -> new MVdWPlaceholderAPIHook(pluginName, this.plugin), true)
                 .subscribe(hook -> MVDW_PLACEHOLDER_API = hook);
 
-        this.setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, plugin), true)
+        this.setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, this.plugin), true)
                 .subscribe(hook -> PLACEHOLDER_API = hook);
 
-        this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true)
+        this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, this.plugin), true)
                 .subscribe(hook -> HOLOGRAMS = hook);
     }
 
@@ -101,7 +101,6 @@ public class HookManager {
         }
 
         Plugin hookPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
-
         if (hookPlugin == null || (requireEnabled && !hookPlugin.isEnabled())) {
             if (notifyIfMissing) {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
@@ -111,14 +110,12 @@ public class HookManager {
         }
 
         T hook = hookSupplier.apply(pluginName);
-
         if (hook == null) {
             return Completable.completed(Option.none());
         }
 
-        if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
-                .find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))
-                .isPresent()) {
+        PandaStream<String> disabledHooks = PandaStream.of(this.plugin.getPluginConfiguration().disabledHooks);
+        if (disabledHooks.find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName)).isPresent()) {
             if (!pluginName.equalsIgnoreCase("FunnyTab")) {
                 FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
                 return Completable.completed(Option.none());
@@ -134,7 +131,7 @@ public class HookManager {
     }
 
     public void earlyInit() {
-        pluginHooks.forEach((pluginName, completableHook) -> {
+        this.pluginHooks.forEach((pluginName, completableHook) -> {
             if (completableHook.isCompleted()) {
                 return;
             }
@@ -161,13 +158,14 @@ public class HookManager {
     }
 
     public void init() {
-        pluginHooks.forEach((pluginName, completableHook) -> {
+        this.pluginHooks.forEach((pluginName, completableHook) -> {
             if (completableHook.isCompleted()) {
                 return;
             }
 
             try {
                 PluginHook.HookInitResult result = completableHook.init();
+
                 if (result == PluginHook.HookInitResult.FAILURE) {
                     FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
                     completableHook.markAsNotCompleted();
@@ -188,7 +186,7 @@ public class HookManager {
     }
 
     public void callConfigUpdated() {
-        pluginHooks.forEach((pluginName, completableHook) -> {
+        this.pluginHooks.forEach((pluginName, completableHook) -> {
             if (!completableHook.isCompleted()) {
                 return;
             }
@@ -201,4 +199,5 @@ public class HookManager {
             }
         });
     }
+
 }

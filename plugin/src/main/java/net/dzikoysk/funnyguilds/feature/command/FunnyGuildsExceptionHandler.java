@@ -12,7 +12,7 @@ class FunnyGuildsExceptionHandler implements ExceptionHandler<Exception> {
     }
 
     @Override
-    public Class getExceptionType() {
+    public Class<Exception> getExceptionType() {
         return Exception.class;
     }
 

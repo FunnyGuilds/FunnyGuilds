@@ -3,13 +3,14 @@ package net.dzikoysk.funnyguilds.event.guild.member;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildMemberRevokeInviteEvent extends GuildMemberEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -23,7 +24,7 @@ public class GuildMemberRevokeInviteEvent extends GuildMemberEvent {
 
     @Override
     public String getDefaultCancelMessage() {
-        return "[FunnyGuilds] Member invitation revokement has been cancelled by the server!";
+        return "[FunnyGuilds] Member invitation revocation has been cancelled by the server!";
     }
 
 }

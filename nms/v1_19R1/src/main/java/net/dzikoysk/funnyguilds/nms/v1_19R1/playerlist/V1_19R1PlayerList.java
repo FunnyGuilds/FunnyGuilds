@@ -25,9 +25,7 @@ public class V1_19R1PlayerList implements PlayerList {
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
 
     private final int cellCount;
-
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
-
     private boolean firstPacket = true;
 
     public V1_19R1PlayerList(int cellCount) {
@@ -35,10 +33,11 @@ public class V1_19R1PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping, Set<Integer> forceUpdateSlots) {
-        final List<Packet<?>> packets = Lists.newArrayList();
-        final List<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
-        final List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
+    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures,
+                     int ping, Set<Integer> forceUpdateSlots) {
+        List<Packet<?>> packets = Lists.newArrayList();
+        List<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
+        List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
 
         try {
             for (int i = 0; i < this.cellCount; i++) {
@@ -111,8 +110,9 @@ public class V1_19R1PlayerList implements PlayerList {
                 ((CraftPlayer) player).getHandle().b.a(packet);
             }
         }
-        catch (Exception ex) {
-            throw new RuntimeException(String.format("Failed to send PlayerList for player '%s'", player.getName()), ex);
+        catch (Exception exception) {
+            throw new RuntimeException("Failed to send PlayerList for player " + player.getName(), exception);
         }
     }
+
 }

@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 public class PrefixGlobalAddGuildRequest extends DefaultConcurrencyRequest {
 
     private final IndividualPrefixManager individualPrefixManager;
-
     private final Guild guild;
 
     public PrefixGlobalAddGuildRequest(IndividualPrefixManager individualPrefixManager, Guild guild) {
@@ -17,7 +16,7 @@ public class PrefixGlobalAddGuildRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        this.individualPrefixManager.addGuild(guild);
+        this.individualPrefixManager.addGuild(this.guild);
     }
 
 }

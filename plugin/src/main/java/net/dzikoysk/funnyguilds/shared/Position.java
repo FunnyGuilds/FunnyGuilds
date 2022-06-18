@@ -13,7 +13,7 @@ public final class Position {
     private final float pitch;
     private final String world;
 
-    public Position(final double x, final double y, final double z, final float yaw, final float pitch, final String world) {
+    public Position(double x, double y, double z, float yaw, float pitch, String world) {
         this.x = x;
         this.y = y;
         this.z = z;

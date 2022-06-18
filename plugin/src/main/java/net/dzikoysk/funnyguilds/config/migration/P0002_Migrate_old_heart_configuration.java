@@ -17,4 +17,5 @@ public class P0002_Migrate_old_heart_configuration extends NamedMigration {
                 move("paste-schematic-with-air", "heart-configuration.paste-schematic-with-air")
         );
     }
+
 }

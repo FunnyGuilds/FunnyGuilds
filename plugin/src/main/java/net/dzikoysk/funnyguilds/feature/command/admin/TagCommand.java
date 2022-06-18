@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildTagChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
@@ -21,12 +22,11 @@ public final class TagCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 2, messages.generalNoTagGiven);
-
+        when(args.length < 2, this.messages.generalNoTagGiven);
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when(guildManager.tagExists(tag), messages.createTagExists);
+        when(this.guildManager.tagExists(tag), this.messages.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -37,10 +37,11 @@ public final class TagCommand extends AbstractFunnyCommand {
 
         guild.setTag(tag);
 
-        sendMessage(sender, (messages.adminTagChanged
-                .replace("{OLD_TAG}", oldTag)
-                .replace("{TAG}", guild.getTag())));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{OLD_TAG}", oldTag)
+                .register("{TAG}", guild.getTag());
 
+        this.sendMessage(sender, formatter.format(this.messages.adminTagChanged));
         SimpleEventHandler.handle(new GuildTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag));
     }
 

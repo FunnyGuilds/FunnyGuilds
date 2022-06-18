@@ -24,9 +24,9 @@ public final class HookUtils {
                     if (playerTwo != null) {
                         replaceMessage = api.replacePlaceholders(playerOne, playerTwo, replaceMessage);
                     }
+
                     return replaceMessage;
-                })
-                .orElseGet(message);
+                }).orElseGet(message);
     }
 
     private static String replacePlaceholdersWithMVdWPlaceholderAPI(Player player, String message) {

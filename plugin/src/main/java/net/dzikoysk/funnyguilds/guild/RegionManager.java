@@ -10,27 +10,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
+import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public class RegionManager {
 
     private final PluginConfiguration pluginConfiguration;
-
     private final Map<String, Region> regionsMap = new ConcurrentHashMap<>();
 
     public RegionManager(PluginConfiguration pluginConfiguration) {
@@ -51,6 +50,13 @@ public class RegionManager {
     }
 
     /**
+     * Deletes all loaded regions data
+     */
+    public void clearRegions() {
+        this.regionsMap.clear();
+    }
+
+    /**
      * Gets the region.
      *
      * @param name       the name of region (probably name of guild)
@@ -58,11 +64,15 @@ public class RegionManager {
      * @return the guild
      */
     public Option<Region> findByName(String name, boolean ignoreCase) {
-        return PandaStream.of(regionsMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getName().equalsIgnoreCase(name)
-                        : entry.getValue().getName().equals(name))
-                .map(Map.Entry::getValue);
+        Region foundRegion = this.regionsMap.get(name);
+
+        if (foundRegion == null && ignoreCase) {
+            foundRegion = PandaStream.of(this.regionsMap.values())
+                    .find(region -> region.getName().equalsIgnoreCase(name))
+                    .orNull();
+        }
+
+        return Option.of(foundRegion);
     }
 
     /**
@@ -82,9 +92,7 @@ public class RegionManager {
      * @return the region
      */
     public Option<Region> findRegionAtLocation(Location location) {
-        return PandaStream.of(regionsMap.entrySet())
-                .find(entry -> entry.getValue().isIn(location))
-                .map(Map.Entry::getValue);
+        return PandaStream.of(this.regionsMap.values()).find(region -> region.isIn(location));
     }
 
     /**
@@ -98,40 +106,29 @@ public class RegionManager {
     }
 
     public boolean isAnyPlayerInRegion(Region region, Collection<UUID> ignoredUuids) {
-        if (!pluginConfiguration.regionsEnabled) {
+        if (!this.pluginConfiguration.regionsEnabled) {
             return false;
         }
 
         FunnyBox box = region.toBox();
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (ignoredUuids.contains(player.getUniqueId())) {
-                continue;
-            }
-
-            if (!box.contains(player.getLocation())) {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
+        return PandaStream.of(Bukkit.getOnlinePlayers())
+                .filter(player -> !ignoredUuids.contains(player.getUniqueId()))
+                .find(player -> box.contains(player.getLocation()))
+                .isPresent();
     }
 
     public boolean isAnyPlayerInRegion(Region region) {
-        return isAnyPlayerInRegion(region, Collections.emptySet());
+        return this.isAnyPlayerInRegion(region, Collections.emptySet());
     }
 
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
-        return isAnyPlayerInRegion(region, ignoredUsers.stream()
+        return this.isAnyPlayerInRegion(region, PandaStream.of(ignoredUsers)
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
 
     public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
-        return regionOption.map(region -> isAnyUserInRegion(region, ignoredUsers))
-                .orElseGet(false);
+        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers)).orElseGet(false);
     }
 
     /**
@@ -146,13 +143,11 @@ public class RegionManager {
         }
 
         int size = this.pluginConfiguration.regionSize;
-
         if (this.pluginConfiguration.enlargeItems != null) {
             size += (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
         }
 
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
-
         return PandaStream.of(this.regionsMap.values())
                 .map(Region::getCenter)
                 .filterNot(regionCenter -> regionCenter.equals(center))
@@ -162,8 +157,7 @@ public class RegionManager {
     }
 
     public boolean isNearRegion(Option<Location> center) {
-        return center.map(this::isNearRegion)
-                .orElseGet(false);
+        return center.map(this::isNearRegion).orElseGet(false);
     }
 
     /**
@@ -174,7 +168,7 @@ public class RegionManager {
      */
     public boolean isGuildHeart(Block block) {
         Pair<Material, Byte> md = this.pluginConfiguration.heart.createMaterial;
-        if (md == null || block.getType() != md.getLeft()) {
+        if (md == null || block.getType() != md.getFirst()) {
             return false;
         }
 
@@ -216,11 +210,11 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
 
         if (dataModel instanceof FlatDataModel) {
-            ((FlatDataModel) dataModel).getRegionFile(region).delete();
+            ((FlatDataModel) dataModel).getRegionFile(region).peek(FunnyIOUtils::deleteFile);
         }
 
         if (dataModel instanceof SQLDataModel) {
-            DatabaseRegion.delete(region);
+            DatabaseRegionSerializer.delete(region);
         }
 
         this.removeRegion(region);

@@ -29,7 +29,7 @@ public class FunnyTabHook extends AbstractPluginHook {
         logger.warning("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
         logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-        Bukkit.getPluginManager().disablePlugin(plugin);
+        Bukkit.getPluginManager().disablePlugin(this.plugin);
         return HookInitResult.UNUSED;
     }
 

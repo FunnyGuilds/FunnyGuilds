@@ -28,6 +28,9 @@ public final class EggTypeChanger {
         }
     }
 
+    private EggTypeChanger() {
+    }
+
     public static boolean needsSpawnEggMeta() {
         return spawnEggMetaClass != null;
     }
@@ -41,12 +44,9 @@ public final class EggTypeChanger {
         try {
             setSpawnedTypeMethod.invoke(meta, type);
         }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            FunnyGuilds.getPluginLogger().error("Failed to set entity type for SpawnEggMeta object", ex);
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
+            FunnyGuilds.getPluginLogger().error("Failed to set entity type for SpawnEggMeta object", exception);
         }
-    }
-
-    private EggTypeChanger() {
     }
 
 }

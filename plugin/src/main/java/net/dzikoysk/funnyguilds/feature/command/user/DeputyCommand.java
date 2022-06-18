@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -26,12 +25,12 @@ public final class DeputyCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
+        when(args.length < 1, this.messages.generalNoNickGiven);
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
-        when(owner.equals(deputyUser), messages.deputyMustBeDifferent);
-        when(!guild.isMember(deputyUser), messages.generalIsNotMember);
+        when(owner.equals(deputyUser), this.messages.deputyMustBeDifferent);
+        when(!guild.isMember(deputyUser), this.messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;
@@ -39,14 +38,14 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
-            owner.sendMessage(messages.deputyRemove);
-            deputyUser.sendMessage(messages.deputyMember);
+            owner.sendMessage(this.messages.deputyRemove);
+            deputyUser.sendMessage(this.messages.deputyMember);
             return;
         }
 
         guild.addDeputy(deputyUser);
-        owner.sendMessage(messages.deputySet);
-        deputyUser.sendMessage(messages.deputyOwner);
+        owner.sendMessage(this.messages.deputySet);
+        deputyUser.sendMessage(this.messages.deputyOwner);
     }
 
 }

@@ -3,57 +3,51 @@ package net.dzikoysk.funnyguilds.data.util;
 import java.io.File;
 import java.io.IOException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import panda.std.Result;
 
 public final class YamlWrapper extends YamlConfiguration {
 
     private final File file;
 
     public YamlWrapper(File file) {
-        super();
+        Result<File, String> createResult = FunnyIOUtils.createFile(file, false);
+        if (createResult.isErr()) {
+            FunnyGuilds.getPluginLogger().error(createResult.getError());
+            this.file = null;
+            return;
+        }
+
+        this.file = createResult.get();
 
         try {
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
-            super.load(file);
+            super.load(this.file);
         }
         catch (Exception exception) {
-            FunnyGuilds.getPluginLogger().error("Failed to load the file!", exception);
+            FunnyGuilds.getPluginLogger().error("Failed to load YAML file", exception);
         }
-
-        this.file = file;
     }
 
     @Override
-    public void save(File file) {
+    public void save(@NotNull File file) {
         try {
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
+            Result<File, String> createResult = FunnyIOUtils.createFile(file, false);
+            if (createResult.isErr()) {
+                FunnyGuilds.getPluginLogger().error(createResult.getError());
+                return;
             }
 
             super.save(file);
         }
-        catch (IOException ioException) {
-            FunnyGuilds.getPluginLogger().error("Failed to save the file!", ioException);
+        catch (IOException exception) {
+            FunnyGuilds.getPluginLogger().error("Failed to save YAML file", exception);
         }
     }
 
     public void save() {
-        try {
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
-            super.save(this.file);
-        }
-        catch (IOException ioException) {
-            FunnyGuilds.getPluginLogger().error("Failed to save the file!", ioException);
-        }
+        this.save(this.file);
     }
 
 }

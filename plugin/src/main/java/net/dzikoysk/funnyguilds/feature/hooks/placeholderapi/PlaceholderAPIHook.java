@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.hooks.placeholderapi;
 
+import java.util.Locale;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
@@ -11,6 +12,7 @@ import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public class PlaceholderAPIHook extends AbstractPluginHook {
@@ -24,7 +26,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
     @Override
     public HookInitResult init() {
-        new FunnyGuildsPlaceholder(plugin).register();
+        new FunnyGuildsPlaceholder(this.plugin).register();
         return HookInitResult.SUCCESS;
     }
 
@@ -36,7 +38,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base);
     }
 
-    private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
+    private static final class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
         private final RankPlaceholdersService rankPlaceholdersService;
@@ -49,7 +51,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String onPlaceholderRequest(Player player, String identifier) {
+        public String onPlaceholderRequest(Player player, @NotNull String identifier) {
             if (player == null) {
                 return "";
             }
@@ -60,15 +62,15 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             User user = userOption.get();
-            String lowerIdentifier = identifier.toLowerCase();
+            String lowerIdentifier = identifier.toLowerCase(Locale.ROOT);
 
             if (lowerIdentifier.contains("position-")) {
-                return rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
+                return this.rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
             }
             else if (lowerIdentifier.contains("top-")) {
-                String temp = rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
+                String temp = this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
-                    temp = rankPlaceholdersService.formatRank(temp, user);
+                    temp = this.rankPlaceholdersService.formatRank(temp, user);
                 }
 
                 return temp;
@@ -100,12 +102,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String getAuthor() {
+        public @NotNull String getAuthor() {
             return "FunnyGuilds Team";
         }
 
         @Override
-        public String getIdentifier() {
+        public @NotNull String getIdentifier() {
             return "funnyguilds";
         }
 
@@ -115,8 +117,8 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String getVersion() {
-            return funnyguildsVersion;
+        public @NotNull String getVersion() {
+            return this.funnyguildsVersion;
         }
 
         @Override

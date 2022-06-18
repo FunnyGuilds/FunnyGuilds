@@ -38,4 +38,5 @@ public class V1_18R2NmsAccessor implements NmsAccessor {
     public MessageAccessor getMessageAccessor() {
         return new V1_18R2MessageAccessor();
     }
+
 }

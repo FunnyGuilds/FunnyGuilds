@@ -35,9 +35,9 @@ public class Dummy {
         }
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
-
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score but scoreboard hasn't been initialized yet" + "(maybe player left the game while updating?)");
+            FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score but scoreboard hasn't been initialized yet " +
+                    "(maybe player left the game while updating?)");
             return;
         }
 
@@ -48,22 +48,20 @@ public class Dummy {
                 .onEmpty(this::initialize);
     }
 
+    @SuppressWarnings("deprecation")
     private void initialize() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
-
         if (!plugin.getPluginConfiguration().dummyEnable) {
             return;
         }
 
-        if (user.hasPermission("funnyguilds.admin.disabledummy")) {
+        if (this.user.hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
-
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug(
-                    "We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
+            FunnyGuilds.getPluginLogger().debug("We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
                             "(maybe player left the game while initializing?)");
             return;
         }

@@ -10,8 +10,7 @@ public final class Cooldown<T> {
     private final Map<T, Instant> cooldowns = new WeakHashMap<>(32);
 
     public boolean isOnCooldown(T key) {
-        Instant cooldown = cooldowns.get(key);
-
+        Instant cooldown = this.cooldowns.get(key);
         if (cooldown == null) {
             return false;
         }
@@ -20,7 +19,7 @@ public final class Cooldown<T> {
             return true;
         }
 
-        cooldowns.remove(key);
+        this.cooldowns.remove(key);
         return false;
     }
 
@@ -29,7 +28,7 @@ public final class Cooldown<T> {
     }
 
     public boolean cooldown(T key, Duration cooldown) {
-        if (isOnCooldown(key)) {
+        if (this.isOnCooldown(key)) {
             return true;
         }
 

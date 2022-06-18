@@ -15,8 +15,7 @@ public class UserTop extends Top<UserRank> {
     }
 
     public Option<User> getUser(int place) {
-        return this.get(place)
-                .map(UserRank::getUser);
+        return this.get(place).map(UserRank::getUser);
     }
 
 }

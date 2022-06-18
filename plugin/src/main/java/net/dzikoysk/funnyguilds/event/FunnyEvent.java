@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.event;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import panda.utilities.StringUtils;
 
 public abstract class FunnyEvent extends Event implements Cancellable {
 
@@ -33,8 +34,8 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     public abstract String getDefaultCancelMessage();
 
     public String getCancelMessage() {
-        if (this.cancelMessage == null || this.cancelMessage.isEmpty()) {
-            return getDefaultCancelMessage();
+        if (StringUtils.isEmpty(this.cancelMessage)) {
+            return this.getDefaultCancelMessage();
         }
 
         return this.cancelMessage;
@@ -56,16 +57,18 @@ public abstract class FunnyEvent extends Event implements Cancellable {
 
     public void notifyDoer() {
         if (this.doer != null) {
-            this.doer.sendMessage(getCancelMessage());
+            this.doer.sendMessage(this.getCancelMessage());
         }
     }
 
     public enum EventCause {
+
         ADMIN,
         CONSOLE,
         SYSTEM,
         USER,
-        UNKNOWN;
+        UNKNOWN
+
     }
 
 }

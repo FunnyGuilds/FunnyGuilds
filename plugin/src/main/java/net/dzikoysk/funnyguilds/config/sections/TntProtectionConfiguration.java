@@ -16,18 +16,21 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     public static class TimeConfig extends OkaeriConfig {
 
-        @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
+        @Comment("Czy włączyć ochronę przed TNT na terenach gildii w podanych godzinach")
         public boolean enabled = false;
 
-        @Comment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
+        @Comment("")
+        @Comment("Czy włączyć ochronę przed TNT na całym serwerze w podanych godzinach")
         public boolean enabledGlobal = false;
 
-        @Comment("O ktorej godzinie ma sie zaczac ochrona przed TNT w gildii")
+        @Comment("")
+        @Comment("O której godzinie ma sie zacząć ochrona przed TNT")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("start-time")
         public FunnyTime startTime = new FunnyTime(22, 0);
 
-        @Comment("Do ktorej godziny ma dzialac ochrona przed TNT w gildii")
+        @Comment("")
+        @Comment("Do której godziny ma działać ochrona przed TNT")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("end-time")
         public FunnyTime endTime = new FunnyTime(6, 0);
@@ -41,10 +44,11 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     public static class BuildConfig extends OkaeriConfig {
 
-        @Comment("Minimalna wysokosc od ktorej mozna stawiac TNT.")
+        @Comment("Minimalna wysokość, od której można stawiać TNT")
         public int minHeight = 0;
 
-        @Comment("Maksymalna wysokosc do ktorej mozna stawiac TNT.")
+        @Comment("")
+        @Comment("Maksymalna wysokość, do której można stawiać TNT")
         public int maxHeight = 255;
 
     }
@@ -53,10 +57,11 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     public static class ExplodeConfig extends OkaeriConfig {
 
-        @Comment("Minimalna wysokosc od ktorej TNT wybucha.")
+        @Comment("Minimalna wysokość, od której TNT wybucha")
         public int minHeight = 0;
 
-        @Comment("Maksymalna wysokosc do ktorej TNT wybucha.")
+        @Comment("")
+        @Comment("Maksymalna wysokość, do której TNT wybucha")
         public int maxHeight = 255;
 
     }

@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.nms.PacketSender;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -58,6 +59,7 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
                 "setLocation",
                 double.class, double.class, double.class, float.class, float.class
         );
+
         ENTITY_WITHER_SET_INVISIBLE = Reflections.getMethod(
                 ENTITY_WITHER_CLASS,
                 "setInvisible",
@@ -71,67 +73,64 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
         );
 
         ENTITY_WITHER_GET_ID = Reflections.getMethod(ENTITY_WITHER_CLASS, "getId");
-
         ENTITY_WITHER_MOT_X = Reflections.getField(ENTITY_CLASS, "motX");
         ENTITY_WITHER_MOT_Y = Reflections.getField(ENTITY_CLASS, "motY");
         ENTITY_WITHER_MOT_Z = Reflections.getField(ENTITY_CLASS, "motZ");
     }
 
+    private final FunnyServer funnyServer;
     private final User user;
     private volatile BukkitTask bossBarHandleTask;
-    private Object witherInstance;
     private final AtomicInteger currentSecond;
     private int witherId;
 
-    public LegacyBossBarProviderImpl(User user) {
+    public LegacyBossBarProviderImpl(FunnyServer funnyServer, User user) {
+        this.funnyServer = funnyServer;
         this.user = user;
         this.currentSecond = new AtomicInteger(0);
     }
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        user.getPlayer()
-                .peek(player -> {
-                    if (this.bossBarHandleTask != null) {
-                        this.bossBarHandleTask.cancel();
-                        this.removeBossBar(player);
-                        this.currentSecond.set(0);
-                    }
+        this.funnyServer.getPlayer(this.user).peek(player -> {
+            if (this.bossBarHandleTask != null) {
+                this.bossBarHandleTask.cancel();
+                this.removeBossBar(player);
+                this.currentSecond.set(0);
+            }
 
-                    this.createBossBar(player, text, timeout);
-                });
+            this.createBossBar(player, text, timeout);
+        });
     }
 
     @Override
     public void removeNotification() {
-        user.getPlayer().peek(this::removeBossBar);
+        this.funnyServer.getPlayer(this.user).peek(this::removeBossBar);
     }
 
     private void createBossBar(Player player, String text, int timeout) {
         try {
-            this.witherInstance = ENTITY_WITHER_CONSTRUCTOR.newInstance(Reflections.getHandle(player.getWorld()));
-
+            Object witherInstance = ENTITY_WITHER_CONSTRUCTOR.newInstance(Reflections.getHandle(player.getWorld()));
             Location witherLocation = player.getLocation().add(player.getLocation().getDirection().normalize().multiply(30));
 
             ENTITY_WITHER_SET_LOCATION.invoke(
-                    this.witherInstance,
+                    witherInstance,
                     witherLocation.getX(), witherLocation.getY(), witherLocation.getZ(), witherLocation.getYaw(), witherLocation.getPitch()
             );
-            ENTITY_WITHER_SET_INVISIBLE.invoke(this.witherInstance, true);
+            ENTITY_WITHER_SET_INVISIBLE.invoke(witherInstance, true);
             ENTITY_WITHER_SET_CUSTOM_NAME.invoke(
-                    this.witherInstance, Reflections.USE_PRE_13_METHODS ? text : NotificationUtil.createBaseComponent(text, false));
+                    witherInstance, Reflections.USE_PRE_13_METHODS ? text : NotificationUtil.createBaseComponent(text, false));
 
-            ENTITY_WITHER_MOT_X.set(this.witherInstance, 0);
-            ENTITY_WITHER_MOT_Y.set(this.witherInstance, 0);
-            ENTITY_WITHER_MOT_Z.set(this.witherInstance, 0);
+            ENTITY_WITHER_MOT_X.set(witherInstance, 0);
+            ENTITY_WITHER_MOT_Y.set(witherInstance, 0);
+            ENTITY_WITHER_MOT_Z.set(witherInstance, 0);
 
             this.witherId = (int) ENTITY_WITHER_GET_ID.invoke(witherInstance);
 
-            Object spawnPacket = PACKET_PLAY_OUT_SPAWN_ENTITY_LIVING_CONSTRUCTOR.newInstance(this.witherInstance);
+            Object spawnPacket = PACKET_PLAY_OUT_SPAWN_ENTITY_LIVING_CONSTRUCTOR.newInstance(witherInstance);
             PacketSender.sendPacket(player, spawnPacket);
 
             this.bossBarHandleTask = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), () -> {
-
                 if (this.currentSecond.getAndIncrement() >= timeout * 2) {
                     this.bossBarHandleTask.cancel();
                     this.removeBossBar(player);
@@ -139,7 +138,6 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
                 }
 
                 this.updateBossBar(player);
-
             }, 10L, 10L);
         }
         catch (Exception ex) {
@@ -169,7 +167,7 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
 
     private void removeBossBar(Player player) {
         try {
-            Object destroyPacket = PACKET_PLAY_OUT_ENTITY_DESTROY_CONSTRUCTOR.newInstance(new int[]{this.witherId});
+            Object destroyPacket = PACKET_PLAY_OUT_ENTITY_DESTROY_CONSTRUCTOR.newInstance(new int[] {this.witherId});
             PacketSender.sendPacket(player, destroyPacket);
             this.currentSecond.set(0);
         }
@@ -177,4 +175,5 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
             throw new RuntimeException("Could not send wither entity destroy packet!", ex);
         }
     }
+
 }

@@ -10,9 +10,9 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaveEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsMember;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -27,25 +27,28 @@ public final class LeaveCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsMember User user, Guild guild) {
-        when(user.isOwner(), messages.leaveIsOwner);
+    public void execute(Player player, @IsMember User member, Guild guild) {
+        when(member.isOwner(), this.messages.leaveIsOwner);
 
-        if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
+        if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, member, guild, member))) {
             return;
         }
 
-        guild.removeMember(user);
-        user.removeGuild();
+        guild.removeMember(member);
+        member.removeGuild();
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()), new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
+        this.concurrencyManager.postRequests(
+                new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, member.getName()),
+                new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player)
+        );
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", user.getName());
+                .register("{PLAYER}", member.getName());
 
-        user.sendMessage(formatter.format(messages.leaveToUser));
-        broadcastMessage(formatter.format(messages.broadcastLeave));
+        member.sendMessage(formatter.format(this.messages.leaveToUser));
+        this.broadcastMessage(formatter.format(this.messages.broadcastLeave));
     }
 
 }

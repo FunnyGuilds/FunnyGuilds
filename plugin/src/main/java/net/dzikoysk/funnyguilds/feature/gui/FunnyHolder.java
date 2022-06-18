@@ -20,21 +20,20 @@ public class FunnyHolder implements InventoryHolder {
     }
 
     public void handleClick(InventoryClickEvent event) {
-        actions.getOrDefault(event.getRawSlot(), e -> e.setCancelled(true)).accept(event);
+        this.actions.getOrDefault(event.getRawSlot(), e -> e.setCancelled(true)).accept(event);
     }
 
     @Override
     public @NotNull Inventory getInventory() {
-        return inventory;
+        return this.inventory;
     }
 
     public GuiWindow getGuiWindow() {
-        return guiWindow;
+        return this.guiWindow;
     }
 
     public void setActionOnSlot(Integer slot, Consumer<InventoryClickEvent> consumer) {
-        actions.put(slot, consumer != null ? consumer : event -> {
-        });
+        this.actions.put(slot, consumer != null ? consumer : event -> {});
     }
 
     public void setInventory(Inventory inventory) {

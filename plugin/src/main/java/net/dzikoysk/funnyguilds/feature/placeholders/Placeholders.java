@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -9,8 +10,8 @@ import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import panda.std.Option;
-import panda.utilities.text.Formatter;
 
 public abstract class Placeholders<T, P extends Placeholders<T, P>> {
 
@@ -30,6 +31,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
         copy.placeholders.put(name, placeholder);
+
         return copy;
     }
 
@@ -45,6 +47,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
         copy.placeholders.putAll(placeholders);
+
         return copy;
     }
 
@@ -55,8 +58,11 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
     public <M> P map(Placeholders<M, ?> toMap, Function<String, String> nameMapper, BiFunction<T, Placeholder<M>, Object> dataMapper) {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
-        toMap.getPlaceholders().forEach((key, placeholder) ->
-                copy.placeholders.put(nameMapper.apply(key), new Placeholder<>(data -> dataMapper.apply(data, placeholder))));
+
+        toMap.getPlaceholders().forEach((key, placeholder) -> {
+            copy.placeholders.put(nameMapper.apply(key), new Placeholder<>(data -> dataMapper.apply(data, placeholder)));
+        });
+
         return copy;
     }
 
@@ -76,11 +82,10 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String format(String text, T data) {
-        return this.toFormatter(data)
-                .format(text);
+        return this.toFormatter(data).format(text);
     }
 
-    public Formatter toFormatter(T data) {
+    public FunnyFormatter toFormatter(T data) {
         return this.toCustomFormatter(data, "", "", name -> name);
     }
 
@@ -92,12 +97,11 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String formatVariables(String text, T data) {
-        return this.toVariablesFormatter(data)
-                .format(text);
+        return this.toVariablesFormatter(data).format(text);
     }
 
-    public Formatter toVariablesFormatter(T data) {
-        return this.toCustomFormatter(data, "{", "}", String::toUpperCase);
+    public FunnyFormatter toVariablesFormatter(T data) {
+        return this.toCustomFormatter(data, "{", "}", name -> name.toUpperCase(Locale.ROOT));
     }
 
     /**
@@ -111,13 +115,12 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
-        return this.toCustomFormatter(data, prefix, suffix, nameModifier)
-                .format(text);
+        return this.toCustomFormatter(data, prefix, suffix, nameModifier).format(text);
     }
 
-    public Formatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
-        Formatter formatter = new Formatter();
-        placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
+    public FunnyFormatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        FunnyFormatter formatter = new FunnyFormatter();
+        this.placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
         return formatter;
     }
 

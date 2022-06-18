@@ -58,4 +58,5 @@ public class V1_9R2EntityAccessor implements EntityAccessor {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(destroyEntityPacket);
         }
     }
+
 }

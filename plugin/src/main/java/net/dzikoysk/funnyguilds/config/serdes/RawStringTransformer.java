@@ -5,6 +5,7 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class RawStringTransformer extends BidirectionalTransformer<String, RawString> {
 
@@ -14,12 +15,12 @@ public class RawStringTransformer extends BidirectionalTransformer<String, RawSt
     }
 
     @Override
-    public RawString leftToRight(String data, SerdesContext serdesContext) {
+    public RawString leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
         return new RawString(ChatUtils.colored(data));
     }
 
     @Override
-    public String rightToLeft(RawString data, SerdesContext serdesContext) {
+    public String rightToLeft(RawString data, @NotNull SerdesContext serdesContext) {
         return ChatUtils.decolor(data.getValue());
     }
 

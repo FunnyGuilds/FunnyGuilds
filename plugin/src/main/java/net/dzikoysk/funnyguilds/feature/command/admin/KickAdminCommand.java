@@ -8,9 +8,9 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -23,11 +23,12 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
-        when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
-        when(user.isOwner(), messages.adminGuildOwner);
+        when(!user.hasGuild(), this.messages.generalPlayerHasNoGuild);
+        when(user.isOwner(), this.messages.adminGuildOwner);
+
         Guild guild = user.getGuild().get();
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -35,22 +36,23 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, user.getName()));
 
         guild.removeMember(user);
         user.removeGuild();
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        sendMessage(sender, (formatter.format(messages.kickToOwner)));
-        broadcastMessage(formatter.format(messages.broadcastKick));
-        user.sendMessage(formatter.format(messages.kickToPlayer));
+        this.sendMessage(sender, formatter.format(this.messages.kickToOwner));
+        this.broadcastMessage(formatter.format(this.messages.broadcastKick));
+        user.sendMessage(formatter.format(this.messages.kickToPlayer));
 
-        this.funnyServer.getPlayer(user.getUUID())
-                .peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player)));
+        this.funnyServer.getPlayer(user).peek(player -> {
+            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player));
+        });
     }
 
 }

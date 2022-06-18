@@ -10,11 +10,12 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -28,7 +29,6 @@ import panda.std.stream.PandaStream;
 public class GuildManager {
 
     private final PluginConfiguration pluginConfiguration;
-
     private final Map<UUID, Guild> guildsMap = new ConcurrentHashMap<>();
 
     public GuildManager(PluginConfiguration pluginConfiguration) {
@@ -46,6 +46,13 @@ public class GuildManager {
      */
     public Set<Guild> getGuilds() {
         return new HashSet<>(this.guildsMap.values());
+    }
+
+    /**
+     * Deletes all loaded guilds data
+     */
+    public void clearGuilds() {
+        this.guildsMap.clear();
     }
 
     /**
@@ -79,7 +86,7 @@ public class GuildManager {
      * @return the guild
      */
     public Option<Guild> findByUuid(UUID uuid) {
-        return Option.of(guildsMap.get(uuid));
+        return Option.of(this.guildsMap.get(uuid));
     }
 
     /**
@@ -90,11 +97,11 @@ public class GuildManager {
      * @return the guild
      */
     public Option<Guild> findByName(String name, boolean ignoreCase) {
-        return PandaStream.of(guildsMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getName().equalsIgnoreCase(name)
-                        : entry.getValue().getName().equals(name))
-                .map(Map.Entry::getValue);
+        if (ignoreCase) {
+            return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getName().equalsIgnoreCase(name));
+        }
+
+        return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getName().equals(name));
     }
 
     /**
@@ -115,11 +122,11 @@ public class GuildManager {
      * @return the guild
      */
     public Option<Guild> findByTag(String tag, boolean ignoreCase) {
-        return PandaStream.of(guildsMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getTag().equalsIgnoreCase(tag)
-                        : entry.getValue().getTag().equals(tag))
-                .map(Map.Entry::getValue);
+        if (ignoreCase) {
+            return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getTag().equalsIgnoreCase(tag));
+        }
+
+        return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getTag().equals(tag));
     }
 
     /**
@@ -203,7 +210,7 @@ public class GuildManager {
      */
     public Guild addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
-        guildsMap.put(guild.getUUID(), guild);
+        this.guildsMap.put(guild.getUUID(), guild);
         return guild;
     }
 
@@ -214,7 +221,7 @@ public class GuildManager {
      */
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
-        guildsMap.remove(guild.getUUID());
+        this.guildsMap.remove(guild.getUUID());
     }
 
     /**
@@ -234,7 +241,7 @@ public class GuildManager {
                             plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                         }
                         else if (this.pluginConfiguration.heart.createMaterial != null &&
-                                this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+                                this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR) {
                             Location center = region.getCenter().clone();
 
                             Bukkit.getScheduler().runTask(plugin, () -> {
@@ -252,25 +259,19 @@ public class GuildManager {
 
         plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(plugin.getIndividualPrefixManager(), guild));
 
-        guild.getMembers().forEach(User::removeGuild);
-
-        for (Guild ally : guild.getAllies()) {
-            ally.removeAlly(guild);
-        }
-
-        for (Guild globalGuild : getGuilds()) {
-            globalGuild.removeEnemy(guild);
-        }
+        PandaStream.of(guild.getMembers()).forEach(User::removeGuild);
+        PandaStream.of(guild.getAllies()).forEach(ally -> ally.removeAlly(guild));
+        PandaStream.of(this.getGuilds()).forEach(globalGuild -> globalGuild.removeEnemy(guild));
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
-            dataModel.getGuildFile(guild).delete();
+            dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
         }
         else if (plugin.getDataModel() instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
+            DatabaseGuildSerializer.delete(guild);
         }
 
-        removeGuild(guild);
+        this.removeGuild(guild);
     }
 
     /**
@@ -299,12 +300,12 @@ public class GuildManager {
      * @param guild the guild for which heart should be spawned
      */
     public void spawnHeart(GuildEntityHelper guildEntityHelper, Guild guild) {
-        if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+        if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR) {
             guild.getRegion()
                     .flatMap(Region::getHeartBlock)
                     .peek(heart -> {
-                        heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
-                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
+                        heart.setType(this.pluginConfiguration.heart.createMaterial.getFirst());
+                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getSecond());
                     });
             return;
         }

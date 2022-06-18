@@ -14,21 +14,17 @@ public class GuildRankManager extends RankManager<GuildTop, GuildRank> {
     }
 
     public Option<Guild> getGuild(String topId, int place) {
-        return this.getTop(topId)
-                .flatMap(top -> top.getGuild(place));
+        return this.getTop(topId).flatMap(top -> top.getGuild(place));
     }
 
     public boolean isRankedGuild(Guild guild) {
-        return guild.getMembers().size() >= pluginConfiguration.minMembersToInclude;
+        return guild.getMembers().size() >= this.pluginConfiguration.minMembersToInclude;
     }
 
     public void register(String id, GuildTop guildTop) {
-        if (PandaStream.of(this.pluginConfiguration.top.enabledGuildTops)
+        PandaStream.of(this.pluginConfiguration.top.enabledGuildTops)
                 .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
-                .isEmpty()) {
-            return;
-        }
-        this.addTop(id, guildTop);
+                .peek(enabledTop -> this.addTop(id, guildTop));
     }
 
     public void register(Map<String, GuildTop> topsToRegister) {

@@ -3,15 +3,16 @@ package net.dzikoysk.funnyguilds.event.guild;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildPreTagChangeEvent extends GuildEvent {
 
+    private static final HandlerList handlers = new HandlerList();
     private final String oldTag;
     private final String newTag;
-    private static final HandlerList handlers = new HandlerList();
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -21,7 +22,6 @@ public class GuildPreTagChangeEvent extends GuildEvent {
 
     public GuildPreTagChangeEvent(EventCause eventCause, User doer, Guild guild, String oldTag, String newTag) {
         super(eventCause, doer, guild);
-
         this.oldTag = oldTag;
         this.newTag = newTag;
     }

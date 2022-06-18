@@ -2,38 +2,41 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
+import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
 
-    private static final Method MATCH_MATERIAL_METHOD =
-            Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
+    private static final Method MATCH_MATERIAL_METHOD = Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
 
     private MaterialUtils() {
     }
 
+    @Nullable
     public static Material parseMaterial(String materialString, boolean allowNullReturn) {
         if (materialString == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
         }
-        String materialName = materialString.toUpperCase().replaceAll(" ", "_");
 
+        String materialName = FunnyFormatter.format(materialString.toUpperCase(Locale.ROOT), " ", "_");
         Material material = matchMaterial(materialName);
+
         if (material == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: " + materialString);
             return allowNullReturn ? null : Material.AIR;
         }
+
         return material;
     }
 
@@ -43,6 +46,7 @@ public final class MaterialUtils {
                 .toSet();
     }
 
+    @Nullable
     public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material data: null");
@@ -85,7 +89,7 @@ public final class MaterialUtils {
             return ChatUtils.colored(config.translatedMaterials.get(material));
         }
 
-        return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
+        return FunnyFormatter.format(material.toString().toLowerCase(Locale.ROOT), "_", " ");
     }
 
     public static String getItemCustomName(ItemStack itemStack) {
@@ -94,7 +98,6 @@ public final class MaterialUtils {
         }
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-
         if (itemMeta == null) {
             return "";
         }
@@ -118,7 +121,6 @@ public final class MaterialUtils {
             }
 
             Material material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, false);
-
             if (material == null) {
                 material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, true);
             }

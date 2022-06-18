@@ -15,16 +15,8 @@ public final class SpyCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(CommandSender sender) {
-        UserCache cache = UserValidation.requireUserByName(sender.getName()).getCache();
-
-        if (cache.isSpy()) {
-            cache.setSpy(false);
-            sendMessage(sender, (messages.adminStopSpy));
-        }
-        else {
-            cache.setSpy(true);
-            sendMessage(sender, (messages.adminStartSpy));
-        }
+        UserCache userCache = UserValidation.requireUserByName(sender.getName()).getCache();
+        this.sendMessage(sender, userCache.toggleSpy() ? this.messages.adminStartSpy : this.messages.adminStopSpy);
     }
 
 }

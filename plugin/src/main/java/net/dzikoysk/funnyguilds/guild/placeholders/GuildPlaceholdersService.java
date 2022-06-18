@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
-import java.util.Date;
 import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.Entity;
@@ -16,6 +15,7 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -44,7 +44,7 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         return text;
     }
 
-    public Option<GuildPlaceholders> getSimplePlaceholders() {
+    public static Option<GuildPlaceholders> getSimplePlaceholders() {
         return SIMPLE;
     }
 
@@ -75,9 +75,7 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         };
 
         return new GuildPlaceholders()
-                .property("validity",
-                        guild -> messages.dateFormat.format(new Date(guild.getValidity())),
-                        () -> messages.gValidityNoValue)
+                .property("validity", guild -> messages.dateFormat.format(guild.getValidity()), () -> messages.gValidityNoValue)
                 .property("protection", guildProtection::apply, () -> "Brak")
                 .property("guild-protection", guildProtection::apply, () -> "Brak")
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
@@ -86,9 +84,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                         () -> messages.gDeputiesNoValue)
                 .property("deputy",
                         guild -> guild.getDeputies().isEmpty()
-                                ? messages.gDeputiesNoValue
+                                ? messages.gDeputyNoValue
                                 : guild.getDeputies().iterator().next().getName(),
-                        () -> messages.gDeputiesNoValue)
+                        () -> messages.gDeputyNoValue)
                 .property("members-online", guild -> guild.getOnlineMembers().size(), () -> 0)
                 .property("members-all", guild -> guild.getMembers().size(), () -> 0)
                 .property("allies-all", guild -> guild.getAllies().size(), () -> 0)
@@ -130,10 +128,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("avg-points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points-format",
-                        (guild, rank) -> NumberRange.inRangeToString(rank.getAveragePoints(), config.pointsFormat)
-                                .replace("{POINTS}", String.valueOf(guild.getRank().getAveragePoints())),
-                        () -> NumberRange.inRangeToString(0, config.pointsFormat)
-                                .replace("{POINTS}", "0"))
+                        (guild, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getAveragePoints(),
+                                config.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
+                        () -> FunnyFormatter.format(NumberRange.inRangeToString(0, config.pointsFormat), "{POINTS}", 0))
                 .property("kills", (guild, rank) -> rank.getKills(), () -> 0)
                 .property("avg-kills", (guild, rank) -> rank.getAverageKills(), () -> 0)
                 .property("deaths", (guild, rank) -> rank.getDeaths(), () -> 0)

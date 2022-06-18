@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
@@ -21,14 +22,14 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
-        when(args.length < 2, messages.generalNoNickGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 2, this.messages.generalNoNickGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User user = UserValidation.requireUserByName(args[1]);
 
-        when(!guild.isMember(user), messages.adminUserNotMemberOf);
-        when(guild.isOwner(user), messages.adminAlreadyLeader);
+        when(!guild.isMember(user), this.messages.adminUserNotMemberOf);
+        when(guild.isOwner(user), this.messages.adminAlreadyLeader);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -36,15 +37,10 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         }
 
         guild.setOwner(user);
-        sendMessage(sender, (messages.leaderSet));
 
-        user.sendMessage(messages.leaderOwner);
-
-        String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
-
-        for (User member : guild.getMembers()) {
-            member.sendMessage(message);
-        }
+        this.sendMessage(sender, this.messages.leaderSet);
+        user.sendMessage(this.messages.leaderOwner);
+        guild.broadcast(FunnyFormatter.format(this.messages.leaderMembers, "{PLAYER}", user.getName()));
     }
 
 }

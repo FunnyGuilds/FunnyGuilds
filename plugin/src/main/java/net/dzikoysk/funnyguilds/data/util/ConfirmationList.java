@@ -1,17 +1,18 @@
 package net.dzikoysk.funnyguilds.data.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public final class ConfirmationList {
 
-    private static final List<UUID> CONFIRMATION_LIST = new ArrayList<>();
+    private static final Set<UUID> CONFIRMATION_LIST = new HashSet<>();
+
+    private ConfirmationList() {
+    }
 
     public static void add(UUID uuid) {
-        if (!CONFIRMATION_LIST.contains(uuid)) {
-            CONFIRMATION_LIST.add(uuid);
-        }
+        CONFIRMATION_LIST.add(uuid);
     }
 
     public static void remove(UUID uuid) {
@@ -22,7 +23,4 @@ public final class ConfirmationList {
         return CONFIRMATION_LIST.contains(uuid);
     }
 
-    private ConfirmationList() {
-
-    }
 }

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.bungeetablist;
 
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -14,7 +15,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.entity.Player;
-import panda.utilities.StringUtils;
 
 public class BungeeTabListPlusHook extends AbstractPluginHook {
 
@@ -31,65 +31,78 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         UserManager userManager = this.plugin.getUserManager();
         UserRankManager userRankManager = this.plugin.getUserRankManager();
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
-        RankPlaceholdersService rankPlaceholdersSerivce = this.plugin.getRankPlaceholdersService();
+        RankPlaceholdersService rankPlaceholdersService = this.plugin.getRankPlaceholdersService();
         TablistPlaceholdersService tablistPlaceholdersService = this.plugin.getTablistPlaceholdersService();
 
         tablistPlaceholdersService.getPlaceholdersKeys().forEach(key ->
-                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_" + key.toLowerCase(), player ->
-                        userManager.findByPlayer(player)
+                BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                        "funnyguilds_" + key.toLowerCase(Locale.ROOT),
+                        player -> userManager.findByPlayer(player)
                                 .map(user -> tablistPlaceholdersService.formatIdentifier(key, user))
-                                .orElseGet(StringUtils.EMPTY))));
+                                .orElseGet(""))));
 
         Set<String> userTopIds = userRankManager.getTopIds();
         Set<String> guildTopIds = guildRankManager.getTopIds();
 
         // User TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
-            final int position = i;
+            int position = i;
 
             userTopIds.forEach(id ->
-                    BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_ptop-" + id + "-" + position, player -> {
-                        User user = userManager.findByPlayer(player).orNull();
-                        return rankPlaceholdersSerivce.formatTop("{PTOP-" + id.toUpperCase() + "-" + position + "}", user);
-                    })));
+                    BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                            "funnyguilds_ptop-" + id + "-" + position,
+                            player -> {
+                                User user = userManager.findByPlayer(player).orNull();
+                                return rankPlaceholdersService.formatTop("{PTOP-" + id.toUpperCase(Locale.ROOT) + "-" + position + "}", user);
+                            })));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
-                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_ptop-" + position, player -> {
-                    User user = userManager.findByPlayer(player).orNull();
-                    return rankPlaceholdersSerivce.formatRank("{PTOP-" + position + "}", user);
-                }));
+                BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                        "funnyguilds_ptop-" + position,
+                        player -> {
+                            User user = userManager.findByPlayer(player).orNull();
+                            return rankPlaceholdersService.formatRank("{PTOP-" + position + "}", user);
+                        }));
             }
         }
 
         // Guild TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
-            final int position = i;
+            int position = i;
 
             guildTopIds.forEach(id ->
-                    BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_gtop_" + id + "-" + position, player -> {
-                        User user = userManager.findByPlayer(player).orNull();
-                        return rankPlaceholdersSerivce.formatTop("{GTOP-" + id.toUpperCase() + "-" + position + "}", user);
-                    })));
+                    BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                            "funnyguilds_gtop_" + id + "-" + position,
+                            player -> {
+                                User user = userManager.findByPlayer(player).orNull();
+                                return rankPlaceholdersService.formatTop("{GTOP-" + id.toUpperCase(Locale.ROOT) + "-" + position + "}", user);
+                            })));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
-                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_gtop_" + position, player -> {
-                    User user = userManager.findByPlayer(player).orNull();
-                    return rankPlaceholdersSerivce.formatRank("{GTOP-" + position + "}", user);
-                }));
+                BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                        "funnyguilds_gtop_" + position,
+                        player -> {
+                            User user = userManager.findByPlayer(player).orNull();
+                            return rankPlaceholdersService.formatRank("{GTOP-" + position + "}", user);
+                        }));
             }
         }
 
         userTopIds.forEach(id ->
-                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_position-" + id, player -> {
-                    User user = userManager.findByPlayer(player).orNull();
-                    return rankPlaceholdersSerivce.formatTopPosition("{POSITION-" + id.toUpperCase() + "}", user);
-                })));
+                BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                        "funnyguilds_position-" + id,
+                        player -> {
+                            User user = userManager.findByPlayer(player).orNull();
+                            return rankPlaceholdersService.formatTopPosition("{POSITION-" + id.toUpperCase(Locale.ROOT) + "}", user);
+                        })));
 
         guildTopIds.forEach(id ->
-                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_g-position-" + id, player -> {
-                    User user = userManager.findByPlayer(player).orNull();
-                    return rankPlaceholdersSerivce.formatTopPosition("{G-POSITION-" + id.toUpperCase() + "}", user);
-                })));
+                BungeeTabListPlusBukkitAPI.registerVariable(this.plugin, new FunctionVariable(
+                        "funnyguilds_g-position-" + id,
+                        player -> {
+                            User user = userManager.findByPlayer(player).orNull();
+                            return rankPlaceholdersService.formatTopPosition("{G-POSITION-" + id.toUpperCase(Locale.ROOT) + "}", user);
+                        })));
 
         return HookInitResult.SUCCESS;
     }

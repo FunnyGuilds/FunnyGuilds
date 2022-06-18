@@ -21,8 +21,6 @@ import static eu.okaeri.configs.migrate.ConfigMigrationDsl.when;
  */
 public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
 
-    private static final ConfigurationFactory CONFIGURATION_FACTORY = new ConfigurationFactory();
-
     public P0004_Migrate_tablist_into_separate_file() {
         super(
                 "Migrate old config.yml tablist into tablist.yml",
@@ -52,6 +50,7 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
             if (!view.exists(localKey)) {
                 return false;
             }
+
             Object targetValue = view.remove(localKey);
             Object oldValue = updateTablistConfig(tablistKey, targetValue);
             return !Objects.equals(targetValue, oldValue);
@@ -59,9 +58,8 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
     }
 
     private static Object updateTablistConfig(String key, Object value) {
-
         File tablistConfigurationFile = FunnyGuilds.getInstance().getTablistConfigurationFile();
-        TablistConfiguration tablistConfig = CONFIGURATION_FACTORY.createTablistConfiguration(tablistConfigurationFile);
+        TablistConfiguration tablistConfig = ConfigurationFactory.createTablistConfiguration(tablistConfigurationFile);
         RawConfigView tablistView = new RawConfigView(tablistConfig);
 
         Object oldValue = tablistView.set(key, value);
@@ -69,4 +67,5 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
 
         return oldValue;
     }
+
 }

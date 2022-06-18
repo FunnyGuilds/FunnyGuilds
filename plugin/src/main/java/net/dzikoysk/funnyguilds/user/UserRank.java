@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.user.top.UserComparator;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
@@ -20,7 +21,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     public User getUser() {
-        return entity;
+        return this.entity;
     }
 
     /**
@@ -75,7 +76,6 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         this.setDeaths(update.apply(this.deaths));
     }
 
-
     @Override
     public int getAssists() {
         return this.assists;
@@ -106,13 +106,11 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     @Override
     public float getKDR() {
-        return getDeaths() == 0
-                ? getKills()
-                : 1.0F * getKills() / getDeaths();
+        return this.deaths == 0 ? this.kills : 1.0F * this.kills / this.deaths;
     }
 
     @Override
-    public int compareTo(UserRank rank) {
+    public int compareTo(@NotNull UserRank rank) {
         return UserComparator.POINTS_COMPARATOR.compare(this, rank);
     }
 

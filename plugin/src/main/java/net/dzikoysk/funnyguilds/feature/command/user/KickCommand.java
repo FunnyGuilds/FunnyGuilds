@@ -11,9 +11,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -29,36 +29,35 @@ public final class KickCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
+    public void execute(Player player, @CanManage User deputy, Guild guild, String[] args) {
+        when(args.length < 1, this.messages.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
-        when(!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
-        when(!guild.equals(formerUser.getGuild().get()), messages.kickOtherGuild);
-        when(formerUser.isOwner(), messages.kickOwner);
+        when(!formerUser.hasGuild(), this.messages.generalPlayerHasNoGuild);
+        when(!guild.equals(formerUser.getGuild().get()), this.messages.kickOtherGuild);
+        when(formerUser.isOwner(), this.messages.kickOwner);
 
-        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
+        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, deputy, guild, formerUser))) {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, formerUser.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, formerUser.getName()));
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
 
         if (formerUser.isOnline()) {
-            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
+            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player));
         }
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", formerUser.getName())
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        user.sendMessage(formatter.format(messages.kickToOwner));
-        broadcastMessage(formatter.format(messages.broadcastKick));
-
-        formerUser.sendMessage(formatter.format(messages.kickToPlayer));
+        deputy.sendMessage(formatter.format(this.messages.kickToOwner));
+        this.broadcastMessage(formatter.format(this.messages.broadcastKick));
+        formerUser.sendMessage(formatter.format(this.messages.kickToPlayer));
     }
 
 }

@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.guild.top.GuildComparator;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.Rank;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
@@ -12,7 +13,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     public Guild getGuild() {
-        return entity;
+        return this.entity;
     }
 
     /**
@@ -33,7 +34,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     public int getAveragePoints() {
-        return calculateAverage(this.getPoints());
+        return this.calculateAverage(this.getPoints());
     }
 
     @Override
@@ -44,7 +45,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     public int getAverageKills() {
-        return calculateAverage(this.getKills());
+        return this.calculateAverage(this.getKills());
     }
 
     @Override
@@ -55,7 +56,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     public int getAverageDeaths() {
-        return calculateAverage(this.getDeaths());
+        return this.calculateAverage(this.getDeaths());
     }
 
     @Override
@@ -66,7 +67,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     public int getAverageAssists() {
-        return calculateAverage(this.getAssists());
+        return this.calculateAverage(this.getAssists());
     }
 
     @Override
@@ -77,14 +78,14 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     public int getAverageLogouts() {
-        return calculateAverage(this.getLogouts());
+        return this.calculateAverage(this.getLogouts());
     }
 
     @Override
     public float getKDR() {
-        return getDeaths() == 0
-                ? getKills()
-                : 1.0F * getKills() / getDeaths();
+        return this.getDeaths() == 0
+                ? this.getKills()
+                : 1.0F * this.getKills() / this.getDeaths();
     }
 
     public float getAverageKDR() {
@@ -95,7 +96,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     }
 
     @Override
-    public int compareTo(GuildRank rank) {
+    public int compareTo(@NotNull GuildRank rank) {
         return GuildComparator.AVG_POINTS_COMPARATOR.compare(this, rank);
     }
 

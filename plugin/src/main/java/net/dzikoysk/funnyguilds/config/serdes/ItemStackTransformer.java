@@ -5,6 +5,7 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemStackTransformer extends BidirectionalTransformer<String, ItemStack> {
 
@@ -14,12 +15,13 @@ public class ItemStackTransformer extends BidirectionalTransformer<String, ItemS
     }
 
     @Override
-    public ItemStack leftToRight(String data, SerdesContext serdesContext) {
+    public ItemStack leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
         return ItemUtils.parseItem(data);
     }
 
     @Override
-    public String rightToLeft(ItemStack data, SerdesContext serdesContext) {
+    public String rightToLeft(@NotNull ItemStack data, @NotNull SerdesContext serdesContext) {
         return ItemUtils.toString(data);
     }
+
 }

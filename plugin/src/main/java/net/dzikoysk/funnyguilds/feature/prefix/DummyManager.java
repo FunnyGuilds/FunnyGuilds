@@ -7,7 +7,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 
-public class DummyManager {
+public final class DummyManager {
+
+    private DummyManager() {
+    }
 
     public static void updatePlayers() {
         PandaStream.of(Bukkit.getOnlinePlayers())
@@ -24,4 +27,5 @@ public class DummyManager {
                 .map(UserCache::getDummy)
                 .forEach(dummy -> dummy.updateScore(user));
     }
+
 }

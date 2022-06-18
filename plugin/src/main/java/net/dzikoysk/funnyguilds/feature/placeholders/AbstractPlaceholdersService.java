@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,21 +15,22 @@ import panda.utilities.text.Joiner;
 
 public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P>> implements PlaceholdersService<T> {
 
-    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT = (list, listNoValue) -> list.isEmpty()
-            ? listNoValue
-            : Joiner.on(", ").join(list).toString();
+    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT =
+            (list, listNoValue) -> list.isEmpty()
+                    ? listNoValue
+                    : Joiner.on(", ").join(list).toString();
 
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
     /**
      * Register placeholders set.
      *
-     * @param plugin plugin which register placeholders set
-     * @param name name of placeholders set
+     * @param plugin       plugin which register placeholders set
+     * @param name         name of placeholders set
      * @param placeholders placeholders set
      */
     public void register(JavaPlugin plugin, String name, P placeholders) {
-        this.placeholders.put(plugin.getName().toLowerCase() + "_" + name.toLowerCase(), placeholders);
+        this.placeholders.put(plugin.getName().toLowerCase(Locale.ROOT) + "_" + name.toLowerCase(Locale.ROOT), placeholders);
     }
 
     /**
@@ -47,13 +49,9 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
      * @return placeholder
      */
     public Option<Placeholder<T>> getPlaceholder(String name) {
-        for (P placeholders : this.placeholders.values()) {
-            Option<Placeholder<T>> placeholder = placeholders.getPlaceholder(name);
-            if (placeholder.isPresent()) {
-                return placeholder;
-            }
-        }
-        return Option.none();
+        return PandaStream.of(this.placeholders.values())
+                .mapOpt(value -> value.getPlaceholder(name))
+                .head();
     }
 
     /**
@@ -68,6 +66,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatVariables(text, data);
         }
+
         return text;
     }
 
@@ -75,6 +74,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatCustom(text, data, prefix, suffix, nameModifier);
         }
+
         return text;
     }
 

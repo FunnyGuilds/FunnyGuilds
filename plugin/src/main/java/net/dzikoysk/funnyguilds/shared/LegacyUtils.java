@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.shared;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import panda.std.Option;
 
 public final class LegacyUtils {
 
@@ -14,10 +15,10 @@ public final class LegacyUtils {
      * @return x value
      */
     public static int getIndex(String text) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder indexBuilder = new StringBuilder();
+
         boolean open = false;
         boolean start = false;
-        int result = -1;
 
         for (char c : text.toCharArray()) {
             boolean end = false;
@@ -34,7 +35,7 @@ public final class LegacyUtils {
                     break;
                 default:
                     if (open && start) {
-                        sb.append(c);
+                        indexBuilder.append(c);
                     }
             }
 
@@ -43,14 +44,11 @@ public final class LegacyUtils {
             }
         }
 
-        try {
-            result = Integer.parseInt(sb.toString());
-        }
-        catch (NumberFormatException e) {
-            FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + sb.toString());
-        }
-
-        return result;
+        return Option.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString()))
+                .orElseGet(() -> {
+                    FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + indexBuilder);
+                    return -1;
+                });
     }
 
 }

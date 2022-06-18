@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -26,20 +25,21 @@ public final class LeaderCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
+        when(args.length < 1, this.messages.generalNoNickGiven);
 
         User leaderUser = UserValidation.requireUserByName(args[0]);
-        when(owner.equals(leaderUser), messages.leaderMustBeDifferent);
-        when(!guild.isMember(leaderUser), messages.generalIsNotMember);
+        when(owner.equals(leaderUser), this.messages.leaderMustBeDifferent);
+        when(!guild.isMember(leaderUser), this.messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(EventCause.USER, owner, guild, leaderUser))) {
             return;
         }
 
         guild.setOwner(leaderUser);
-        owner.sendMessage(messages.leaderSet);
-        leaderUser.sendMessage(messages.leaderOwner);
+
+        owner.sendMessage(this.messages.leaderSet);
+        leaderUser.sendMessage(this.messages.leaderOwner);
     }
 
 }

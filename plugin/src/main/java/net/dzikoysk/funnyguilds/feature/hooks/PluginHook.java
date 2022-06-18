@@ -16,7 +16,11 @@ public interface PluginHook {
     }
 
     enum HookInitResult {
-        SUCCESS, FAILURE, UNUSED
+
+        SUCCESS,
+        FAILURE,
+        UNUSED
+
     }
 
 }

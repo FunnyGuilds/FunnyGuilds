@@ -20,14 +20,13 @@ public interface UserProfile {
         return -1;
     }
 
-    default void sendMessage(String message) {
-    }
+    void sendMessage(String message);
 
-    default void kick(String reason) {
-    }
+    void kick(String reason);
 
-    default void teleport(Position position) {
-    }
+    void teleport(Position position);
+
+    void refresh();
 
     default Position getPosition() {
         return Position.ZERO;

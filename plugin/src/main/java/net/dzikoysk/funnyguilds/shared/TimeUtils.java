@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.shared;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import panda.utilities.StringUtils;
 
 public final class TimeUtils {
 
@@ -10,7 +11,7 @@ public final class TimeUtils {
     }
 
     public static long parseTime(String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isEmpty(string)) {
             return 0;
         }
 
@@ -48,12 +49,13 @@ public final class TimeUtils {
                         }
                     }
                     catch (NumberFormatException e) {
-                        FunnyGuilds.getPluginLogger().parser("Unknown number: " + value.toString());
+                        FunnyGuilds.getPluginLogger().parser("Unknown number: " + value);
                         return time;
                     }
 
                     type.push(c);
                     calc = true;
+
                     break;
                 default:
                     value.append(c);
@@ -89,71 +91,71 @@ public final class TimeUtils {
             millis -= TimeUnit.SECONDS.toMillis(seconds);
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder durationBuilder = new StringBuilder();
 
         if (days > 0) {
-            sb.append(days);
+            durationBuilder.append(days);
 
             if (days == 1) {
-                sb.append(" dzien ");
+                durationBuilder.append(" dzien ");
             }
             else {
-                sb.append(" dni ");
+                durationBuilder.append(" dni ");
             }
         }
 
         if (hours > 0) {
-            sb.append(hours);
+            durationBuilder.append(hours);
 
             long last = hours % 10;
             long lastTwo = hours % 100;
 
             if (hours == 1) {
-                sb.append(" godzine ");
+                durationBuilder.append(" godzine ");
             }
             else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
-                sb.append(" godziny ");
+                durationBuilder.append(" godziny ");
             }
             else {
-                sb.append(" godzin ");
+                durationBuilder.append(" godzin ");
             }
         }
 
         if (minutes > 0) {
-            sb.append(minutes);
+            durationBuilder.append(minutes);
 
             long last = minutes % 10;
             long lastTwo = minutes % 100;
 
             if (minutes == 1) {
-                sb.append(" minute ");
+                durationBuilder.append(" minute ");
             }
             else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
-                sb.append(" minuty ");
+                durationBuilder.append(" minuty ");
             }
             else {
-                sb.append(" minut ");
+                durationBuilder.append(" minut ");
             }
         }
 
         if (seconds > 0) {
-            sb.append(seconds);
+            durationBuilder.append(seconds);
 
             long last = seconds % 10;
             long lastTwo = seconds % 100;
 
             if (seconds == 1) {
-                sb.append(" sekunde ");
+                durationBuilder.append(" sekunde ");
             }
             else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
-                sb.append(" sekundy ");
+                durationBuilder.append(" sekundy ");
             }
             else {
-                sb.append(" sekund ");
+                durationBuilder.append(" sekund ");
             }
         }
 
-        return (sb.toString());
+        return durationBuilder.toString();
     }
 
 }

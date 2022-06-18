@@ -1,14 +1,11 @@
 package net.dzikoysk.funnyguilds.user;
 
-import java.lang.ref.WeakReference;
-import java.util.Objects;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import org.apache.commons.lang3.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -19,7 +16,6 @@ public class User extends AbstractMutableEntity {
 
     private final UserCache cache;
     private final UserRank rank;
-    private WeakReference<Player> playerRef;
     private Option<Guild> guild = Option.none();
     private Option<UserBan> ban = Option.none();
 
@@ -32,7 +28,6 @@ public class User extends AbstractMutableEntity {
 
         this.cache = new UserCache(this);
         this.rank = new UserRank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
-        this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
 
         this.markChanged();
     }
@@ -102,7 +97,7 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean canManage() {
-        return isOwner() || isDeputy();
+        return this.isOwner() || this.isDeputy();
     }
 
     public boolean isOwner() {
@@ -135,36 +130,28 @@ public class User extends AbstractMutableEntity {
         return this.profile;
     }
 
-    // Deprecated methods
-    //  - use UserGameProfile
-    //  - add methods to UserGameProfile and use them
-    //  - get Player/OfflinePlayer in the another way
-
+    /**
+     * @deprecated for removal in the future, in favour of {@link BukkitUserProfile#getPlayer()}
+     */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public Option<Player> getPlayer() {
-        Player player = this.playerRef.get();
-        if (player != null) {
-            return Option.of(player);
-        }
-
-        player = Bukkit.getPlayer(this.uuid);
-        if (player != null) {
-            this.playerRef = new WeakReference<>(player);
-            return Option.of(player);
+        if (this.profile instanceof BukkitUserProfile) {
+            return ((BukkitUserProfile) this.profile).getPlayer();
         }
 
         return Option.none();
     }
 
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public void updateReference(Player player) {
-        Validate.notNull(player, "you can't update reference with null player!");
-        this.playerRef = new WeakReference<>(player);
+        this.profile.refresh();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return this.uuid.hashCode();
     }
 
     @Override
@@ -178,16 +165,12 @@ public class User extends AbstractMutableEntity {
         }
 
         User user = (User) obj;
-
         return this.uuid.equals(user.uuid);
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "uuid=" + this.uuid +
-                ", name='" + this.name + '\'' +
-                '}';
+        return "User{uuid=" + this.uuid + ", name='" + this.name + "'}";
     }
 
 }

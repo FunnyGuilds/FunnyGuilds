@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.Entity;
@@ -14,9 +13,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -32,48 +31,52 @@ public final class BreakCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        when(!guild.hasAllies(), messages.breakHasNotAllies);
+    public void execute(@IsOwner User owner, Guild guild, String[] args) {
+        when(!guild.hasAllies(), this.messages.breakHasNotAllies);
 
         if (args.length < 1) {
-            List<String> list = messages.breakAlliesList;
-            String iss = ChatUtils.toString(Entity.names(guild.getAllies()), true);
-
-            for (String msg : list) {
-                user.sendMessage(msg.replace("{GUILDS}", iss));
-            }
-
+            FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true));
+            this.messages.breakAlliesList.forEach(line -> owner.sendMessage(formatter.format(line)));
             return;
         }
 
         Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guild.isAlly(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", oppositeGuild.getName())
+                .register("{TAG}", guild.getTag());
 
-        if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
+        when(!guild.isAlly(oppositeGuild), () -> formatter.format(this.messages.breakAllyExists));
+
+        if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, owner, guild, oppositeGuild))) {
             return;
         }
 
-        oppositeGuild.getOwner().sendMessage(messages.breakIDone
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag()));
+        FunnyFormatter breakFormatter = new FunnyFormatter()
+                .register("{GUILD}", oppositeGuild.getName())
+                .register("{TAG}", oppositeGuild.getTag());
+
+        FunnyFormatter breakIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
 
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
-        for (User member : guild.getMembers()) {
+        guild.getMembers().forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
-        }
+        });
 
-        for (User member : oppositeGuild.getMembers()) {
+        oppositeGuild.getMembers().forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
-        }
+        });
 
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        user.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
+        owner.sendMessage(breakFormatter.format(this.messages.breakDone));
+        oppositeGuild.getOwner().sendMessage(breakIFormatter.format(this.messages.breakIDone));
     }
 
 }

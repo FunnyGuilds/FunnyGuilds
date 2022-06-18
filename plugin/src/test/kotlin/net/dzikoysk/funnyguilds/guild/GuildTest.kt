@@ -28,7 +28,7 @@ class GuildTest : FunnyGuildsSpec() {
                 .withPrefabValues(MutableEntity::class.java, user1, user2)
                 .withPrefabValues(Location::class.java, Location(null, 0.0, 0.0, 0.0), Location(null, 1.0, 2.0, 3.0))
                 .withIgnoredFields("name", "tag", "rank", "lives", "region", "home", "owner")
-                .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedFFGuilds")
+                .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds")
                 .withIgnoredFields("born", "validity", "validityDate", "protection", "build", "ban", "pvp", "wasChanged")
                 .verify()
     }

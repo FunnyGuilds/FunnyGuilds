@@ -6,6 +6,7 @@ import eu.okaeri.configs.serdes.SerdesContext;
 import java.time.LocalTime;
 import net.dzikoysk.funnyguilds.config.FunnyTime;
 import org.jetbrains.annotations.NotNull;
+import panda.std.Option;
 
 public class FunnyTimeTransformer extends BidirectionalTransformer<String, FunnyTime> {
 
@@ -22,17 +23,13 @@ public class FunnyTimeTransformer extends BidirectionalTransformer<String, Funny
         }
 
         // something went wrong, probably yaml spec, whoopsie... https://noyaml.com/
-        int value;
-        try {
-            value = Integer.parseInt(data);
-        }
-        catch (NumberFormatException exception) {
-            throw new IllegalArgumentException("Cannot resolve time from " + data, exception);
-        }
+        int value = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(data)).orThrow(() -> {
+            return new IllegalArgumentException("Cannot resolve time from " + data + ", it is not a valid integer");
+        });
 
         // the value is above 24 hours in both cases
         if (value > 86400) {
-            throw new IllegalArgumentException("Cannot resolve time from " + value);
+            throw new IllegalArgumentException("Cannot resolve time from " + value + ", integer is greater than 86400");
         }
 
         // value in minutes is above 24 hours

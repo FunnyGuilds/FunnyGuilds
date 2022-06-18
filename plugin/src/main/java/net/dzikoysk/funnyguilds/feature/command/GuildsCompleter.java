@@ -20,7 +20,7 @@ final class GuildsCompleter implements Completer {
 
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
-        return CommandUtils.collectCompletions(guildManager.getGuilds(), prefix, limit, ArrayList::new, Guild::getTag);
+        return CommandUtils.collectCompletions(this.guildManager.getGuilds(), prefix, limit, ArrayList::new, Guild::getTag);
     }
 
     @Override

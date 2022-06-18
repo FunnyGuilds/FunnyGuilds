@@ -15,8 +15,7 @@ public class GuildTop extends Top<GuildRank> {
     }
 
     public Option<Guild> getGuild(int place) {
-        return this.get(place)
-                .map(GuildRank::getGuild);
+        return this.get(place).map(GuildRank::getGuild);
     }
 
 }

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import org.bukkit.ChatColor;
 
 public class BasicPlaceholdersService extends AbstractPlaceholdersService<Object, BasicPlaceholders<Object>> {
@@ -12,7 +12,7 @@ public class BasicPlaceholdersService extends AbstractPlaceholdersService<Object
 
     public static BasicPlaceholders<Object> createSimplePlaceholders(FunnyGuilds plugin) {
         return new BasicPlaceholders<>()
-                .property("tps", MinecraftServerUtils::getFormattedTPS)
+                .property("tps", NmsUtils::getFormattedTPS)
                 .property("users", plugin.getUserManager()::countUsers)
                 .property("guilds", plugin.getGuildManager()::countGuilds);
     }

@@ -10,18 +10,16 @@ public class Top<T> {
 
     private final TopComparator<T> comparator;
     private final BiFunction<String, TopComparator<T>, NavigableSet<T>> recalculateFunction;
-
     private NavigableSet<T> values;
 
     public Top(TopComparator<T> comparator, BiFunction<String, TopComparator<T>, NavigableSet<T>> recalculateFunction) {
         this.comparator = comparator;
         this.recalculateFunction = recalculateFunction;
-
         this.values = new TreeSet<>(comparator);
     }
 
     public TopComparator<T> getComparator() {
-        return comparator;
+        return this.comparator;
     }
 
     public Option<T> get(int place) {

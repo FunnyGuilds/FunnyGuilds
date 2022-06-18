@@ -21,16 +21,17 @@ public class RangeFormatting {
 
     public RangeFormatting(String string) {
         String[] split = string.split(" ");
+
         this.range = new NumberRange(split[0]);
         this.value = split[1];
     }
 
     public NumberRange getRange() {
-        return range;
+        return this.range;
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(String value) {
@@ -39,7 +40,7 @@ public class RangeFormatting {
 
     @Override
     public int hashCode() {
-        return Objects.hash(range, value);
+        return Objects.hash(this.range, this.value);
     }
 
     @Override
@@ -51,9 +52,9 @@ public class RangeFormatting {
         if (!(obj instanceof RangeFormatting)) {
             return false;
         }
-        RangeFormatting rangeFormatting = (RangeFormatting) obj;
 
-        return range.equals(rangeFormatting.range) && value.equals(rangeFormatting.value);
+        RangeFormatting rangeFormatting = (RangeFormatting) obj;
+        return this.range.equals(rangeFormatting.range) && this.value.equals(rangeFormatting.value);
     }
 
     @Override
@@ -62,8 +63,7 @@ public class RangeFormatting {
     }
 
     public static Map<NumberRange, String> toRangeMap(List<RangeFormatting> formattingList) {
-        return PandaStream.of(formattingList)
-                .toMap(RangeFormatting::getRange, RangeFormatting::getValue);
+        return PandaStream.of(formattingList).toMap(RangeFormatting::getRange, RangeFormatting::getValue);
     }
 
 }

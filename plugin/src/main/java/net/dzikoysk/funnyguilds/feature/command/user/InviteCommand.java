@@ -11,10 +11,9 @@ import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -33,36 +32,40 @@ public final class InviteCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
-        when(guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmount.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
+    public void execute(@CanManage User deputy, Guild guild, String[] args) {
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{AMOUNT}", this.config.maxMembersInGuild)
+                .register("{OWNER}", deputy.getName())
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(guild.getMembers().size() >= this.config.maxMembersInGuild, formatter.format(this.messages.inviteAmount));
 
         User invitedUser = UserValidation.requireUserByName(args[0]);
-        Option<Player> invitedPlayerOption = funnyServer.getPlayer(invitedUser.getUUID());
 
-        if (guildInvitationList.hasInvitation(guild, invitedUser)) {
-            if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, user, guild, invitedUser))) {
+        if (this.guildInvitationList.hasInvitation(guild, invitedUser)) {
+            if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, deputy, guild, invitedUser))) {
                 return;
             }
 
-            guildInvitationList.expireInvitation(guild, invitedUser);
-            user.sendMessage(messages.inviteCancelled);
-            when(invitedPlayerOption.isPresent(), messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            deputy.sendMessage(this.messages.inviteCancelled);
+            invitedUser.sendMessage(formatter.format(this.messages.inviteCancelledToInvited));
+
+            this.guildInvitationList.expireInvitation(guild, invitedUser);
             return;
         }
 
-        when(invitedPlayerOption.isEmpty(), messages.invitePlayerExists);
-        when(invitedUser.hasGuild(), messages.generalUserHasGuild);
+        when(invitedUser.hasGuild(), this.messages.generalUserHasGuild);
 
-        if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, user, guild, invitedUser))) {
+        if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, deputy, guild, invitedUser))) {
             return;
         }
 
-        guildInvitationList.createInvitation(guild, invitedUser);
+        this.guildInvitationList.createInvitation(guild, invitedUser);
 
-        Player invitedPlayer = invitedPlayerOption.get();
-        user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
-        sendMessage(invitedPlayer, messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        deputy.sendMessage(FunnyFormatter.format(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
+        invitedUser.sendMessage(formatter.format(this.messages.inviteToInvited));
     }
 
 }

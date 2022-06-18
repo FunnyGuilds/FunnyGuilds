@@ -76,19 +76,11 @@ public class WarSystem {
         }
 
         if (guild.getLives() < 1) {
-            conquer(attacker, guild, user);
+            this.conquer(attacker, guild, user);
         }
         else {
-            String messageForAttacker = WarUtils.getMessage(Message.ATTACKER, guild);
-            String messageForAttacked = WarUtils.getMessage(Message.ATTACKED, attacker);
-
-            for (User member : attacker.getMembers()) {
-                member.sendMessage(messageForAttacker);
-            }
-
-            for (User member : guild.getMembers()) {
-                member.sendMessage(messageForAttacked);
-            }
+            attacker.broadcast(WarUtils.getMessage(Message.ATTACKER, guild));
+            guild.broadcast(WarUtils.getMessage(Message.ATTACKED, attacker));
         }
     }
 
@@ -98,22 +90,12 @@ public class WarSystem {
             return;
         }
 
-        String message = WarUtils.getWinMessage(conqueror, loser);
-
-        for (User user : conqueror.getMembers()) {
-            user.sendMessage(message);
-        }
-
-        message = WarUtils.getLoseMessage(conqueror, loser);
-
-        for (User user : loser.getMembers()) {
-            user.sendMessage(message);
-        }
+        conqueror.broadcast(WarUtils.getWinMessage(conqueror, loser));
+        loser.broadcast(WarUtils.getLoseMessage(conqueror, loser));
 
         FunnyGuilds.getInstance().getGuildManager().deleteGuild(FunnyGuilds.getInstance(), loser);
         conqueror.updateLives(lives -> lives + 1);
 
-        message = WarUtils.getBroadcastMessage(conqueror, loser);
-        Bukkit.broadcastMessage(message);
+        Bukkit.broadcastMessage(WarUtils.getBroadcastMessage(conqueror, loser));
     }
 }

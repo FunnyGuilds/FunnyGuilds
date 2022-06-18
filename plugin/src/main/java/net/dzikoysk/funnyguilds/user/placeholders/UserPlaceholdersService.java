@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,14 +26,12 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                 .property("name", User::getName)
                 .property("player", User::getName)
                 .property("ping", User::getPing)
-                .property("ping-format", user ->
-                        NumberRange.inRangeToString(user.getPing(), config.pingFormat)
-                                .replace("{PING}", String.valueOf(user.getPing())))
+                .property("ping-format", user -> FunnyFormatter.format(NumberRange.inRangeToString(user.getPing(),
+                        config.pingFormat), "{PING}", user.getPing()))
                 .property("position", (user, rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
                 .property("points", (user, rank) -> rank.getPoints())
-                .property("points-format", (user, rank) ->
-                        NumberRange.inRangeToString(rank.getPoints(), config.pointsFormat)
-                                .replace("{POINTS}", String.valueOf(rank.getPoints())))
+                .property("points-format", (user, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getPoints(),
+                        config.pointsFormat), "{POINTS}", rank.getPoints()))
                 .property("kills", (user, rank) -> rank.getKills())
                 .property("deaths", (user, rank) -> rank.getDeaths())
                 .property("kdr", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()))
@@ -61,7 +60,7 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                 .playerOptionProperty("vault-money", playerOption -> playerOption
                         .filter(player -> HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked())
                         .map(VaultHook::accountBalance)
-                        .map(value -> Double.toString(value))
+                        .map(value -> String.format(Locale.US, "%.2f", value))
                         .orElseGet(""));
     }
 
@@ -71,8 +70,7 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
         }
 
         Location location = player.getLocation();
-        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location))
-                .orNull();
+        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location)).orNull();
 
         if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;

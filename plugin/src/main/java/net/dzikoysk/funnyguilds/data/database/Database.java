@@ -5,16 +5,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
+import panda.utilities.StringUtils;
 
 public class Database {
-
-    private static Database instance;
 
     private final HikariDataSource dataSource;
 
     public Database() {
-        instance = this;
-
         this.dataSource = new HikariDataSource();
         MysqlConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
@@ -28,7 +25,7 @@ public class Database {
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
         this.dataSource.setUsername(c.user);
 
-        if (c.password != null && !c.password.isEmpty()) {
+        if (!StringUtils.isEmpty(c.password)) {
             this.dataSource.setPassword(c.password);
         }
 
@@ -38,23 +35,12 @@ public class Database {
         this.dataSource.addDataSourceProperty("useServerPrepStmts", true);
     }
 
-    public static Database getInstance() {
-        if (instance == null) {
-            return new Database();
-        }
-
-        return instance;
-    }
-
-    public HikariDataSource getDataSource() {
-        return dataSource;
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return getInstance().getDataSource().getConnection();
+    public Connection getConnection() throws SQLException {
+        return this.dataSource.getConnection();
     }
 
     public void shutdown() {
         this.dataSource.close();
     }
+
 }

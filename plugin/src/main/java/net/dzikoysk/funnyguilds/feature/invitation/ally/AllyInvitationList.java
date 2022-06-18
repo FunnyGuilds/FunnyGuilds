@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -14,7 +13,6 @@ import panda.std.stream.PandaStream;
 public class AllyInvitationList implements InvitationList<AllyInvitation> {
 
     private final Set<AllyInvitation> invitations = new HashSet<>();
-
     private final GuildManager guildManager;
 
     public AllyInvitationList(GuildManager guildManager) {
@@ -42,8 +40,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
         return PandaStream.of(this.getInvitationsFor(to))
                 .map(AllyInvitation::getFrom)
                 .map(Guild::getName)
-                .collect(Collectors.toSet());
-
+                .toSet();
     }
 
     public Set<String> getInvitationGuildNames(Guild to) {
@@ -54,7 +51,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
         return PandaStream.of(this.getInvitationsFor(to))
                 .map(AllyInvitation::getFrom)
                 .map(Guild::getTag)
-                .collect(Collectors.toSet());
+                .toSet();
     }
 
     public Set<String> getInvitationGuildTags(Guild to) {
@@ -65,9 +62,11 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     public void createInvitation(UUID from, UUID to) {
         Option<Guild> fromOption = this.guildManager.findByUuid(from);
         Option<Guild> toOption = this.guildManager.findByUuid(to);
+
         if (fromOption.isEmpty() || toOption.isEmpty()) {
             return;
         }
+
         this.invitations.add(new AllyInvitation(fromOption.get(), toOption.get()));
     }
 

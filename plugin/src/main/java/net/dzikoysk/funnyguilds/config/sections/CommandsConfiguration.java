@@ -12,62 +12,61 @@ public class CommandsConfiguration extends OkaeriConfig {
 
     public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-    @Comment
+    @Comment("")
     public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-    @Comment
+    @Comment("")
     public FunnyCommand create = new FunnyCommand("zaloz");
-    @Comment
+    @Comment("")
     public FunnyCommand delete = new FunnyCommand("usun");
-    @Comment
+    @Comment("")
     public FunnyCommand confirm = new FunnyCommand("potwierdz");
-    @Comment
+    @Comment("")
     public FunnyCommand invite = new FunnyCommand("zapros");
-    @Comment
+    @Comment("")
     public FunnyCommand join = new FunnyCommand("dolacz");
-    @Comment
+    @Comment("")
     public FunnyCommand leave = new FunnyCommand("opusc");
-    @Comment
+    @Comment("")
     public FunnyCommand kick = new FunnyCommand("wyrzuc");
-    @Comment
+    @Comment("")
     public FunnyCommand base = new FunnyCommand("baza");
-    @Comment
+    @Comment("")
     public FunnyCommand enlarge = new FunnyCommand("powieksz");
-    @Comment
+    @Comment("")
     public FunnyCommand ally = new FunnyCommand("sojusz");
-    @Comment
+    @Comment("")
     public FunnyCommand war = new FunnyCommand("wojna");
-    @Comment
+    @Comment("")
     public FunnyCommand items = new FunnyCommand("przedmioty");
-    @Comment
+    @Comment("")
     public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
-    @Comment
+    @Comment("")
     public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
-    @Comment
+    @Comment("")
     public FunnyCommand tnt = new FunnyCommand("tnt");
-
-    @Comment
+    @Comment("")
     public FunnyCommand break_ = new FunnyCommand("rozwiaz");
-
-    @Comment
+    @Comment("")
     public FunnyCommand info = new FunnyCommand("info");
-    @Comment
+    @Comment("")
     public FunnyCommand player = new FunnyCommand("gracz");
-    @Comment
+    @Comment("")
     public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
-    @Comment
+    @Comment("")
     public FunnyCommand validity = new FunnyCommand("przedluz");
-    @Comment
+    @Comment("")
     public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-    @Comment
+    @Comment("")
     public FunnyCommand deputy = new FunnyCommand("zastepca");
-    @Comment
+    @Comment("")
     public FunnyCommand ranking = new FunnyCommand("ranking");
-    @Comment
+    @Comment("")
     public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-    @Comment
+    @Comment("")
     public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
 
-    @Comment({"", "Komendy administratora"})
+    @Comment
+    @Comment("Komendy administratora")
     public AdminCommands admin = new CommandsConfiguration.AdminCommands();
 
     @Names(strategy = NameStrategy.IDENTITY)

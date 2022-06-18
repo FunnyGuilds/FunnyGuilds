@@ -1,22 +1,21 @@
-package net.dzikoysk.funnyguilds.data.flat;
+package net.dzikoysk.funnyguilds.data.flat.seralizer;
 
 import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.user.User;
+import panda.std.Option;
 
-public class FlatUser {
+public final class FlatUserSerializer {
 
-    private final User user;
-
-    public FlatUser(User user) {
-        this.user = user;
+    private FlatUserSerializer() {
     }
 
-    public static User deserialize(File file) {
+    public static Option<User> deserialize(File file) {
         if (file.isDirectory()) {
-            return null;
+            return Option.none();
         }
 
         YamlWrapper wrapper = new YamlWrapper(file);
@@ -32,7 +31,7 @@ public class FlatUser {
         String reason = wrapper.getString("reason");
 
         if (id == null || name == null) {
-            return null;
+            return Option.none();
         }
 
         Object[] values = new Object[9];
@@ -49,14 +48,20 @@ public class FlatUser {
         return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
     }
 
-    public boolean serialize(FlatDataModel flatDataModel) {
-        File file = flatDataModel.getUserFile(user);
-        if (file.isDirectory()) {
+    public static boolean serialize(User user) {
+        FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+
+        Option<File> fileOption = dataModel.getUserFile(user);
+        if (fileOption.isEmpty()) {
             return false;
         }
 
-        YamlWrapper wrapper = new YamlWrapper(file);
+        File userFile = fileOption.get();
+        if (userFile.isDirectory()) {
+            return false;
+        }
 
+        YamlWrapper wrapper = new YamlWrapper(userFile);
         wrapper.set("uuid", user.getUUID().toString());
         wrapper.set("name", user.getName());
         wrapper.set("points", user.getRank().getPoints());
@@ -73,4 +78,5 @@ public class FlatUser {
         wrapper.save();
         return true;
     }
+
 }

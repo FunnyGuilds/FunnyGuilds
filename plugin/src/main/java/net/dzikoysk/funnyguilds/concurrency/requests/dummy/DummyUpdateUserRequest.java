@@ -13,7 +13,7 @@ public class DummyUpdateUserRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        user.getCache().getDummy().updateScore(user);
+        this.user.getCache().getDummy().updateScore(this.user);
     }
 
 }

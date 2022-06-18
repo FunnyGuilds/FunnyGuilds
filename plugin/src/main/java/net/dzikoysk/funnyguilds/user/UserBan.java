@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import panda.utilities.StringUtils;
 
 public class UserBan {
 
@@ -22,11 +21,11 @@ public class UserBan {
             return ChatUtils.colored(this.reason);
         }
 
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public long getBanTime() {
-        return banTime;
+        return this.banTime;
     }
 
 }

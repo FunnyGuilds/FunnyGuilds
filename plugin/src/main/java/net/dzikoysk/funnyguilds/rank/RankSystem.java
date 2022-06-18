@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
-public class RankSystem {
+public final class RankSystem {
 
     private final Map<Type, RankingAlgorithm> map;
 
@@ -16,40 +16,7 @@ public class RankSystem {
     }
 
     public RankResult calculate(Type type, int attackerPoints, int victimPoints) {
-        return map.get(type).apply(attackerPoints, victimPoints);
-    }
-
-    public enum Type {
-        ELO,
-        PERCENT,
-        STATIC,
-    }
-
-    public static class RankResult {
-
-        private final int attackerPoints;
-        private final int victimPoints;
-
-        public RankResult(int attackerPoints, int victimPoints) {
-            this.attackerPoints = attackerPoints;
-            this.victimPoints = victimPoints;
-        }
-
-        public RankResult(int samePoints) {
-            this.attackerPoints = samePoints;
-            this.victimPoints = samePoints;
-        }
-
-        public int getAttackerPoints() {
-            return attackerPoints;
-        }
-
-        public int getVictimPoints() {
-            return victimPoints;
-        }
-    }
-
-    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {
+        return this.map.get(type).apply(attackerPoints, victimPoints);
     }
 
     public static RankSystem create(PluginConfiguration config) {
@@ -71,6 +38,42 @@ public class RankSystem {
                 .build();
 
         return new RankSystem(Maps.newEnumMap(build));
+    }
+
+    public enum Type {
+
+        ELO,
+        PERCENT,
+        STATIC
+
+    }
+
+    public static class RankResult {
+
+        private final int attackerPoints;
+        private final int victimPoints;
+
+        public RankResult(int attackerPoints, int victimPoints) {
+            this.attackerPoints = attackerPoints;
+            this.victimPoints = victimPoints;
+        }
+
+        public RankResult(int samePoints) {
+            this.attackerPoints = samePoints;
+            this.victimPoints = samePoints;
+        }
+
+        public int getAttackerPoints() {
+            return this.attackerPoints;
+        }
+
+        public int getVictimPoints() {
+            return this.victimPoints;
+        }
+
+    }
+
+    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {
     }
 
 }

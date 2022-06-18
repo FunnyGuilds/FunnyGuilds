@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -10,18 +11,20 @@ import org.bukkit.scheduler.BukkitTask;
 
 public final class BossBarProviderImpl implements BossBarProvider {
 
+    private final FunnyServer funnyServer;
     private final User user;
     private final BossBar bossBar;
     private volatile BukkitTask hideBossBarTask;
 
-    public BossBarProviderImpl(User user) {
+    public BossBarProviderImpl(FunnyServer funnyServer, User user) {
+        this.funnyServer = funnyServer;
         this.user = user;
         this.bossBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
     }
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        user.getPlayer().peek(player -> {
+        this.funnyServer.getPlayer(this.user).peek(player -> {
             this.bossBar.setTitle(text);
             this.bossBar.setColor(options.getColor());
             this.bossBar.setStyle(options.getStyle());
@@ -45,7 +48,7 @@ public final class BossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void removeNotification() {
-        user.getPlayer().peek(player -> {
+        this.funnyServer.getPlayer(this.user).peek(player -> {
             this.bossBar.removePlayer(player);
             this.bossBar.setVisible(false);
         });

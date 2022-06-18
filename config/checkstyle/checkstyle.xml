@@ -63,6 +63,9 @@
                       LITERAL_IF, LITERAL_TRY, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF,
                       INTERFACE_DEF, RECORD_DEF, COMPACT_CTOR_DEF"/>
         </module>
+        <module name="RequireThis">
+            <property name="validateOnlyOverlapping" value="false"/>
+        </module>
         <module name="SuppressionXpathSingleFilter">
             <!-- suppresion is required till https://github.com/checkstyle/checkstyle/issues/7541 -->
             <property name="id" value="RightCurlyAlone"/>

@@ -18,17 +18,15 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
-import org.mockito.Mockito.anyString
-import org.mockito.Mockito.lenient
-import org.mockito.Mockito.mockStatic
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
 open class FunnyGuildsSpec : BukkitSpec() {
 
-    protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-    protected lateinit var mockedItemUtils: MockedStatic<ItemUtils>
+    private lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
+    private lateinit var mockedItemUtils: MockedStatic<ItemUtils>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
@@ -39,17 +37,17 @@ open class FunnyGuildsSpec : BukkitSpec() {
     @Mock
     lateinit var funnyGuilds: FunnyGuilds
 
-    protected val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
+    private val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
 
     protected lateinit var config: PluginConfiguration
-    protected lateinit var messages: MessageConfiguration
-    protected lateinit var tablistConfig: TablistConfiguration
+    private lateinit var messages: MessageConfiguration
+    private lateinit var tablistConfig: TablistConfiguration
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
     protected lateinit var userRankManager: UserRankManager
     protected lateinit var guildRankManager: GuildRankManager
-    protected lateinit var regionManager: RegionManager
+    private lateinit var regionManager: RegionManager
 
     protected lateinit var rankPlaceholdersService: RankPlaceholdersService
 
@@ -84,7 +82,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
         rankPlaceholdersService = RankPlaceholdersService(
-            funnyGuildsLogger,
             config,
             messages,
             tablistConfig,
@@ -93,11 +90,10 @@ open class FunnyGuildsSpec : BukkitSpec() {
         )
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
-
         mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
     }
 
-    fun preparePluginConfiguration() {
+    private fun preparePluginConfiguration() {
         val parsedData = mutableMapOf<NumberRange, Int>()
 
         NumberRange.parseIntegerRange(config.eloConstants_, false)

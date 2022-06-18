@@ -6,10 +6,9 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -22,7 +21,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -31,19 +30,17 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.guildManager.deleteGuild(plugin, guild);
+        this.guildManager.deleteGuild(this.plugin, guild);
 
-        Formatter formatter = guildPlaceholdersService.getSimplePlaceholders()
-                .map(placeholders -> placeholders
-                        .property("admin", sender::getName)
-                        .property("player", sender::getName)
-                )
-                .map(placeholders -> placeholders.toVariablesFormatter(guild))
-                .orElseGet(new Formatter());
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{PLAYER}", sender.getName())
+                .register("{ADMIN}", sender.getName())
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
 
-        guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
-        sendMessage(sender, (formatter.format(messages.deleteSuccessful)));
-        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
+        guild.getOwner().sendMessage(formatter.format(this.messages.adminGuildBroken));
+        this.sendMessage(sender, formatter.format(this.messages.deleteSuccessful));
+        this.broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 
 }

@@ -15,4 +15,5 @@ public class P0003_Migrate_old_tnt_protection_configuration extends NamedMigrati
                 move("guild-tnt-protection-end-time", "tnt-protection.time.end-time")
         );
     }
+
 }

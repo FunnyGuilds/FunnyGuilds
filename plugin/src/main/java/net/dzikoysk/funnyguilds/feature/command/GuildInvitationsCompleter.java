@@ -26,7 +26,13 @@ final class GuildInvitationsCompleter implements Completer {
     public List<String> apply(Context context, String prefix, Integer limit) {
         return this.userManager.findByName(context.getCommandSender().getName())
                 .map(User::getUUID)
-                .map(uuid -> CommandUtils.collectCompletions(guildInvitationList.getInvitationGuildTags(uuid), prefix, limit, ArrayList::new, (guildTag) -> guildTag))
+                .map(uuid -> CommandUtils.collectCompletions(
+                        this.guildInvitationList.getInvitationGuildTags(uuid),
+                        prefix,
+                        limit,
+                        ArrayList::new,
+                        (guildTag) -> guildTag)
+                )
                 .orElseGet(Collections.emptyList());
     }
 

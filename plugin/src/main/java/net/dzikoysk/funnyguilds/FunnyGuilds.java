@@ -80,9 +80,10 @@ import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
-import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
@@ -99,6 +100,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
+import panda.std.Result;
 import panda.utilities.ClassUtils;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -144,6 +146,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private BossBarService bossBarService;
 
+    private Database database;
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
@@ -174,33 +177,34 @@ public class FunnyGuilds extends JavaPlugin {
             logger.error("If you think that is not true - contact plugin developers");
             logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
 
-            shutdown("Spigot required for service not detected!");
+            this.shutdown("Spigot required for service not detected!");
             return;
         }
 
-        if (!this.getDataFolder().exists()) {
-            this.getDataFolder().mkdir();
+        Result<File, String> createResult = FunnyIOUtils.createFile(this.getDataFolder(), true);
+        if (createResult.isErr()) {
+            this.shutdown(createResult.getError());
+            return;
         }
 
         try {
-            ConfigurationFactory configurationFactory = new ConfigurationFactory();
-            this.messageConfiguration = configurationFactory.createMessageConfiguration(messageConfigurationFile);
-            this.pluginConfiguration = configurationFactory.createPluginConfiguration(pluginConfigurationFile);
-            this.tablistConfiguration = configurationFactory.createTablistConfiguration(tablistConfigurationFile);
+            this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile);
+            this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
+            this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);
-            shutdown("Critical error has been encountered!");
+            this.shutdown("Critical error has been encountered!");
             return;
         }
 
-        this.nmsAccessor = this.prepareNmsAccessor();
+        this.nmsAccessor = prepareNmsAccessor();
         this.guildEntityHelper = new GuildEntityHelper(this.pluginConfiguration, this.nmsAccessor);
 
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
-        descriptionChanger.rename(pluginConfiguration.pluginName);
+        descriptionChanger.rename(this.pluginConfiguration.pluginName);
 
-        this.concurrencyManager = new ConcurrencyManager(this, pluginConfiguration.concurrencyThreads);
+        this.concurrencyManager = new ConcurrencyManager(this.pluginConfiguration.concurrencyThreads);
         this.concurrencyManager.printStatus();
 
         this.dynamicListenerManager = new DynamicListenerManager(this);
@@ -244,11 +248,22 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
         this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
 
-        this.rankPlaceholdersService = new RankPlaceholdersService(logger, this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
-
-        this.tablistPlaceholdersService = new TablistPlaceholdersService(basicPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService);
+        this.rankPlaceholdersService = new RankPlaceholdersService(
+                this.pluginConfiguration,
+                this.messageConfiguration,
+                this.tablistConfiguration,
+                this.userRankManager,
+                this.guildRankManager
+        );
+        this.tablistPlaceholdersService = new TablistPlaceholdersService(
+                this.basicPlaceholdersService,
+                this.timePlaceholdersService,
+                this.userPlaceholdersService,
+                this.guildPlaceholdersService
+        );
 
         this.bossBarService = new BossBarService();
+        this.database = new Database();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -256,7 +271,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
         catch (Exception ex) {
             logger.error("Could not load data from database", ex);
-            shutdown("Critical error has been encountered!");
+            this.shutdown("Critical error has been encountered!");
             return;
         }
 
@@ -269,7 +284,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.injector = DependencyInjection.createInjector(resources -> {
             resources.on(Server.class).assignInstance(this.getServer());
-            resources.on(FunnyServer.class).assignInstance(this.getFunnyServer());
+            resources.on(FunnyServer.class).assignInstance(this.funnyServer);
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
@@ -304,12 +319,11 @@ public class FunnyGuilds extends JavaPlugin {
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
-            FunnyCommandsConfiguration commandsConfiguration = new FunnyCommandsConfiguration();
-            this.funnyCommands = commandsConfiguration.createFunnyCommands(this);
+            this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
         }
         catch (Exception exception) {
             logger.error("Could not register commands", exception);
-            shutdown("Critical error has been encountered!");
+            this.shutdown("Critical error has been encountered!");
             return;
         }
 
@@ -329,7 +343,7 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuildHeartProtectionHandler.class)
                     .add(TntProtection.class);
 
-            if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
+            if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
                 setBuilder.add(BlockFlow.class);
             }
 
@@ -344,7 +358,7 @@ public class FunnyGuilds extends JavaPlugin {
                 pluginManager.registerEvents(this.injector.newInstanceWithFields(listenerClass), this);
             }
 
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
+            this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled,
                     this.injector.newInstanceWithFields(BlockBreak.class),
                     this.injector.newInstanceWithFields(BlockIgnite.class),
                     this.injector.newInstanceWithFields(BlockPlace.class),
@@ -357,16 +371,28 @@ public class FunnyGuilds extends JavaPlugin {
                     this.injector.newInstanceWithFields(EntityProtect.class)
             );
 
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, this.injector.newInstanceWithFields(PlayerMove.class));
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, this.injector.newInstanceWithFields(BlockPhysics.class));
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, this.injector.newInstanceWithFields(PlayerRespawn.class));
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventTeleport, this.injector.newInstanceWithFields(PlayerTeleport.class));
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventMove,
+                    this.injector.newInstanceWithFields(PlayerMove.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventPhysics,
+                    this.injector.newInstanceWithFields(BlockPhysics.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.respawnInBase,
+                    this.injector.newInstanceWithFields(PlayerRespawn.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventTeleport,
+                    this.injector.newInstanceWithFields(PlayerTeleport.class)
+            );
 
             this.dynamicListenerManager.reloadAll();
         }
         catch (Throwable throwable) {
             logger.error("Could not register listeners", throwable);
-            shutdown("Critical error has been encountered!");
+            this.shutdown("Critical error has been encountered!");
             return;
         }
 
@@ -376,8 +402,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.hookManager.setupHooks();
         this.hookManager.init();
 
-        if (MinecraftServerUtils.getReloadCount() > 0) {
-            Bukkit.broadcast(ChatUtils.colored(messageConfiguration.reloadWarn), "funnyguilds.admin");
+        if (NmsUtils.getReloadCount() > 0) {
+            Bukkit.broadcast(ChatUtils.colored(this.messageConfiguration.reloadWarn), "funnyguilds.admin");
         }
 
         logger.info("~ Created by FunnyGuilds Team ~");
@@ -399,7 +425,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        this.userManager.getUsers().forEach(user -> bossBarService.getBossBarProvider(user).removeNotification());
+        this.userManager.getUsers().forEach(user -> this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification());
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -408,15 +434,14 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.stopHandler();
 
         this.getServer().getScheduler().cancelTasks(this);
-        this.getConcurrencyManager().awaitTermination(this.pluginConfiguration.pluginTaskTerminationTimeout);
+        this.concurrencyManager.awaitTermination(this.pluginConfiguration.pluginTaskTerminationTimeout);
 
-        Database.getInstance().shutdown();
-
+        this.database.shutdown();
         plugin = null;
     }
 
     public void shutdown(String content) {
-        if (this.isDisabling() || this.forceDisabling) {
+        if (this.isDisabling || this.forceDisabling) {
             return;
         }
 
@@ -427,13 +452,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            final FunnyGuildsInboundChannelHandler inboundChannelHandler = nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
-            final FunnyGuildsOutboundChannelHandler outboundChannelHandler = nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+            FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
+            FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
 
-            Option<User> userOption = userManager.findByPlayer(player);
+            Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 continue;
             }
+
             User user = userOption.get();
 
             inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
@@ -450,7 +476,8 @@ public class FunnyGuilds extends JavaPlugin {
 
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
-                    this.getNmsAccessor().getPlayerListAccessor(),
+                    this.nmsAccessor.getPlayerListAccessor(),
+                    this.funnyServer,
                     this.tablistConfiguration.playerList,
                     this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
                     this.tablistConfiguration.playerListAnimated, this.tablistConfiguration.pages,
@@ -476,6 +503,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public File getPluginDataFolder() {
         return this.pluginDataFolderFile;
+    }
+
+    public Database getDatabase() {
+        return this.database;
     }
 
     public DataModel getDataModel() {
@@ -587,7 +618,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public BossBarService getBossBarService() {
-        return bossBarService;
+        return this.bossBarService;
     }
 
     public Injector getInjector() {
@@ -609,7 +640,7 @@ public class FunnyGuilds extends JavaPlugin {
         return logger;
     }
 
-    private NmsAccessor prepareNmsAccessor() {
+    private static NmsAccessor prepareNmsAccessor() {
         switch (Reflections.SERVER_VERSION) {
             case "v1_8_R3":
                 return new V1_8R3NmsAccessor();
@@ -640,4 +671,5 @@ public class FunnyGuilds extends JavaPlugin {
                         Reflections.SERVER_VERSION));
         }
     }
+
 }

@@ -4,6 +4,7 @@ import eu.okaeri.configs.schema.GenericsPair;
 import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import net.dzikoysk.funnyguilds.config.NumberRange;
+import org.jetbrains.annotations.NotNull;
 
 public class NumberRangeTransformer extends BidirectionalTransformer<String, NumberRange> {
 
@@ -13,12 +14,13 @@ public class NumberRangeTransformer extends BidirectionalTransformer<String, Num
     }
 
     @Override
-    public NumberRange leftToRight(String data, SerdesContext serdesContext) {
+    public NumberRange leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
         return new NumberRange(data);
     }
 
     @Override
-    public String rightToLeft(NumberRange data, SerdesContext serdesContext) {
+    public String rightToLeft(NumberRange data, @NotNull SerdesContext serdesContext) {
         return data.toString();
     }
+
 }

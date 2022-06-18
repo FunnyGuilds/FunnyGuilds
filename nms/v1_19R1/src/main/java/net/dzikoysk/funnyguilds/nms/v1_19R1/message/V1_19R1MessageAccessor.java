@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.nms.v1_19R1.message;
 
 import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
+import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessorConstants;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -16,12 +17,17 @@ public class V1_19R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
-        ClientboundSetTitleTextPacket titlePacket =
-                new ClientboundSetTitleTextPacket(CraftChatMessage.fromStringOrNull(titleMessage.getText(), false));
-        ClientboundSetSubtitleTextPacket subtitlePacket =
-                new ClientboundSetSubtitleTextPacket(CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false));
-        ClientboundSetTitlesAnimationPacket timesPacket =
-                new ClientboundSetTitlesAnimationPacket(titleMessage.getFadeInDuration(), titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
+        ClientboundSetTitleTextPacket titlePacket = new ClientboundSetTitleTextPacket(
+                CraftChatMessage.fromStringOrNull(titleMessage.getText(), false)
+        );
+        ClientboundSetSubtitleTextPacket subtitlePacket = new ClientboundSetSubtitleTextPacket(
+                CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false)
+        );
+        ClientboundSetTitlesAnimationPacket timesPacket = new ClientboundSetTitlesAnimationPacket(
+                titleMessage.getFadeInDuration(),
+                titleMessage.getStayDuration(),
+                titleMessage.getFadeOutDuration()
+        );
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().b.a(titlePacket);    // a -> sendPacket
@@ -37,7 +43,6 @@ public class V1_19R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        //każde wywołanie NMS to jeden martwy kotek :(
         for (Player player : players) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
@@ -47,4 +52,5 @@ public class V1_19R1MessageAccessor implements MessageAccessor {
     public void sendActionBarMessage(String text, Collection<? extends Player> players) {
         this.sendActionBarMessage(text, players.toArray(new Player[0]));
     }
+
 }

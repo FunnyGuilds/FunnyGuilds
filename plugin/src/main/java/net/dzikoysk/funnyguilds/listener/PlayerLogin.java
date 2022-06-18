@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
 import net.dzikoysk.funnyguilds.guild.GuildRegex;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -19,15 +18,15 @@ public class PlayerLogin extends AbstractFunnyListener {
 
         String name = event.getPlayer().getName();
         if (name.length() < 2) {
-            event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick jest za krotki!"));
+            event.disallow(Result.KICK_OTHER, this.messages.loginNickTooShort);
         }
 
         if (name.length() > 16) {
-            event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick jest za dlugi!"));
+            event.disallow(Result.KICK_OTHER, this.messages.loginNickTooLong);
         }
 
         if (!name.matches(GuildRegex.LETTERS_DIGITS_UNDERSCORE.getPattern())) {
-            event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
+            event.disallow(Result.KICK_OTHER, this.messages.loginNickInvalid);
         }
 
         this.userManager.findByPlayer(event.getPlayer())

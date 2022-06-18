@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import java.util.Date;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
@@ -22,15 +22,15 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
-        when(args.length < 2, messages.adminNoValidityTimeGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 2, this.messages.adminNoValidityTimeGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(guild.isBanned(), messages.adminGuildBanned);
+        when(guild.isBanned(), this.messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {
-            sendMessage(sender, (messages.adminTimeError));
+            this.sendMessage(sender, this.messages.adminTimeError);
             return;
         }
 
@@ -47,8 +47,11 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         validity += time;
         guild.setValidity(validity);
 
-        String date = messages.dateFormat.format(new Date(validity));
-        sendMessage(sender, (messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date)));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{VALIDITY}", this.messages.dateFormat.format(validity));
+
+        this.sendMessage(sender, formatter.format(this.messages.adminNewValidity));
     }
 
 }

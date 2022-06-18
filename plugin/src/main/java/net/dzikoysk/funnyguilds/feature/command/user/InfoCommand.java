@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 @FunnyComponent
 public final class InfoCommand extends AbstractFunnyCommand {
@@ -33,13 +32,12 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .filter(User::hasGuild)
                         .flatMap(User::getGuild)
                         .map(Guild::getTag))
-                .orThrow(() -> new ValidationException(messages.infoTag));
+                .orThrow(() -> new ValidationException(this.messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-
-        PandaStream.of(messages.infoList)
-                .map(line -> guildPlaceholdersService.format(line, guild))
-                .forEach(sender::sendMessage);
+        this.messages.infoList.stream()
+                .map(line -> this.guildPlaceholdersService.format(line, guild))
+                .forEach(line -> this.sendMessage(sender, line));
     }
 
 }

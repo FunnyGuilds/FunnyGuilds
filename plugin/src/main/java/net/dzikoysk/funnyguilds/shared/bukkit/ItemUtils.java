@@ -2,17 +2,17 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
+import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
@@ -52,24 +53,23 @@ public final class ItemUtils {
     private ItemUtils() {
     }
 
-    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, String message) {
+        boolean enableItemComponent = FunnyGuilds.getInstance().getPluginConfiguration().enableItemComponent;
 
         for (ItemStack requiredItem : requiredItems) {
             if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                 continue;
             }
 
-            if (messages.createItems.isEmpty()) {
+            if (message.isEmpty()) {
                 return false;
             }
 
-            if (config.enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+            if (enableItemComponent) {
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(message, requiredItems, requiredItem));
             }
             else {
-                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+                player.sendMessage(translateTextPlaceholder(message, requiredItems, requiredItem));
             }
 
             return false;
@@ -79,41 +79,29 @@ public final class ItemUtils {
     }
 
     public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
-        StringBuilder contentBuilder = new StringBuilder();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyFormatter formatter = new FunnyFormatter();
 
         if (message.contains("{ITEM}")) {
-            contentBuilder.append(item.getAmount());
-            contentBuilder.append(config.itemAmountSuffix + " ");
-            contentBuilder.append(MaterialUtils.getMaterialName(item.getType()));
-
-            message = StringUtils.replace(message, "{ITEM}", contentBuilder.toString());
+            formatter.register("{ITEM}", item.getAmount() + config.itemAmountSuffix.getValue() + " " +
+                    MaterialUtils.getMaterialName(item.getType()));
         }
 
         if (message.contains("{ITEMS}")) {
-            Collection<String> translatedItems = new ArrayList<>();
-
-            for (ItemStack itemStack : items) {
-                contentBuilder.setLength(0);
-
-                contentBuilder.append(itemStack.getAmount());
-                contentBuilder.append(config.itemAmountSuffix + " ");
-                contentBuilder.append(MaterialUtils.getMaterialName(itemStack.getType()));
-
-                translatedItems.add(contentBuilder.toString());
-            }
-
-            message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
+            formatter.register("{ITEMS}", FunnyStringUtils.join(
+                    PandaStream.of(items)
+                            .map(itemStack -> itemStack.getAmount() + config.itemAmountSuffix.getValue() + " " +
+                                    MaterialUtils.getMaterialName(itemStack.getType()))
+                            .toList(),
+                    true)
+            );
         }
 
         if (message.contains("{ITEM-NO-AMOUNT}")) {
-            contentBuilder.setLength(0);
-            contentBuilder.append(MaterialUtils.getMaterialName(item.getType()));
-
-            message = StringUtils.replace(message, "{ITEM-NO-AMOUNT}", contentBuilder.toString());
+            formatter.register("{ITEM-NO-AMOUNT}", MaterialUtils.getMaterialName(item.getType()));
         }
 
-        return message;
+        return formatter.format(message);
     }
 
     public static ItemStack parseItem(String itemString) {
@@ -122,46 +110,38 @@ public final class ItemUtils {
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
         Material material = MaterialUtils.parseMaterial(typeSplit[0], false);
+        Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
+            FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
+        });
 
-        int stack;
-        int data;
+        Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
+            FunnyGuilds.getPluginLogger().parser("Unknown data: " + split[0]);
+        });
 
-        try {
-            stack = Integer.parseInt(split[0]);
-            data = Integer.parseInt(subtype);
-        }
-        catch (NumberFormatException e) {
-            FunnyGuilds.getPluginLogger().parser("Unknown size: " + split[0]);
-            stack = 1;
-            data = 0;
-        }
-
-        ItemBuilder item = new ItemBuilder(material, stack, data);
+        ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
+        FunnyFormatter formatter = new FunnyFormatter().register("_", "").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {
-            String[] itemAttribute = split[index].split(":", 2);
+            String[] itemAttributes = split[index].split(":", 2);
+            String attributeName = itemAttributes[0];
+            String attributeValue = itemAttributes[1];
 
-            String attributeName = itemAttribute[0];
-            String attributeValue = itemAttribute[1];
-
-            switch (attributeName.toLowerCase()) {
+            switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    item.setName(attributeValue.replace("_", " "), true);
+                    item.setName(formatter.format(attributeName), true);
                     continue;
                 case "lore":
-                    String[] lores = String.join(":", attributeValue).split("#");
-
-                    List<String> lore = PandaStream.of(lores)
-                            .map(line -> line.replace("_", " "))
-                            .map(line -> line.replace("{HASH}", "#"))
-                            .toList();
-
+                    List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
                     item.setLore(lore, true);
                     continue;
                 case "enchant":
                 case "enchantment":
                     Pair<Enchantment, Integer> parsedEnchant = parseEnchant(attributeValue);
+                    if (parsedEnchant.getFirst() == null) {
+                        continue;
+                    }
+
                     item.addEnchant(parsedEnchant.getFirst(), parsedEnchant.getSecond());
                     continue;
                 case "enchants":
@@ -172,26 +152,20 @@ public final class ItemUtils {
                             .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
                     continue;
                 case "skullowner":
-                    if (item.getMeta() instanceof SkullMeta) {
-                        ((SkullMeta) item.getMeta()).setOwner(attributeValue);
-                        item.refreshMeta();
+                    if (!(item.getMeta() instanceof SkullMeta)) {
+                        FunnyGuilds.getPluginLogger().parser("Invalid item skull owner attribute (given item is not a skull!): " + split[index]);
+                        continue;
                     }
+
+                    ((SkullMeta) item.getMeta()).setOwner(attributeValue);
+                    item.refreshMeta();
                     continue;
                 case "flags":
                 case "itemflags":
-                    String[] flags = attributeValue.split(",");
-
-                    for (String flag : flags) {
-                        flag = flag.trim();
-
-                        ItemFlag matchedFlag = matchItemFlag(flag);
-                        if (matchedFlag == null) {
-                            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flag);
-                            continue;
-                        }
-
-                        item.setFlag(matchedFlag);
-                    }
+                    PandaStream.of(attributeValue.split(","))
+                            .map(String::trim)
+                            .mapOpt(ItemUtils::matchItemFlag)
+                            .forEach(item::setFlag);
 
                     continue;
                 case "armorcolor":
@@ -214,26 +188,21 @@ public final class ItemUtils {
                     continue;
                 case "eggtype":
                     if (!EggTypeChanger.needsSpawnEggMeta()) {
-                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
+                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, " +
+                                "no need to use eggtype in item creation!");
                         continue;
                     }
 
-                    EntityType type = null;
-                    String entityTypeName = attributeValue.toUpperCase();
+                    Option<EntityType> entityType = Option.attempt(IllegalArgumentException.class, () -> {
+                        return EntityType.valueOf(attributeValue.toUpperCase(Locale.ROOT));
+                    }).onEmpty(() -> {
+                        FunnyGuilds.getPluginLogger().parser("Unknown entity type: " + attributeValue);
+                    });
 
-                    try {
-                        type = EntityType.valueOf(entityTypeName);
-                    }
-                    catch (Exception exception) {
-                        FunnyGuilds.getPluginLogger().parser("Unknown entity type: " + entityTypeName);
-                    }
-
-                    if (type != null) {
-                        EggTypeChanger.applyChanges(item.getMeta(), type);
+                    if (entityType.isPresent()) {
+                        EggTypeChanger.applyChanges(item.getMeta(), entityType.get());
                         item.refreshMeta();
                     }
-
-                    continue;
             }
         }
 
@@ -241,9 +210,7 @@ public final class ItemUtils {
     }
 
     public static List<ItemStack> parseItems(List<String> itemStrings) {
-        return PandaStream.of(itemStrings)
-                .map(ItemUtils::parseItem)
-                .toList();
+        return PandaStream.of(itemStrings).map(ItemUtils::parseItem).toList();
     }
 
     public static List<ItemStack> parseItems(String... itemStrings) {
@@ -251,44 +218,43 @@ public final class ItemUtils {
     }
 
     public static String toString(ItemStack item) {
-        String material = item.getType().toString().toLowerCase();
+        String material = item.getType().toString().toLowerCase(Locale.ROOT);
         short durability = item.getDurability();
         int amount = item.getAmount();
 
         StringBuilder itemString = new StringBuilder(amount + " " + material + (durability > 0 ? ":" + durability : ""));
+        FunnyFormatter formatter = new FunnyFormatter().register(" ", "_").register("#", "{HASH}");
 
         ItemMeta meta = item.getItemMeta();
-
         if (meta == null) {
             return itemString.toString();
         }
 
         if (meta.hasDisplayName()) {
-            itemString.append(" name:").append(ChatUtils.decolor(meta.getDisplayName()).replace(" ", "_"));
+            itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
         }
 
         if (meta.hasLore()) {
             List<String> lore = PandaStream.of(meta.getLore())
                     .map(ChatUtils::decolor)
-                    .map(line -> line.replace(" ", "_"))
-                    .map(line -> line.replace("#", "{HASH}"))
+                    .map(formatter::format)
                     .toList();
 
             itemString.append(" lore:").append(Joiner.on("#").join(lore));
         }
 
         if (meta.hasEnchants()) {
-            List<String> enchants = PandaStream.of(meta.getEnchants().entrySet())
-                    .map(entry -> getEnchantName(entry.getKey()).toLowerCase() + ":" + entry.getValue())
+            List<String> enchants = PandaStream.of(meta.getEnchants().entrySet().stream())
+                    .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
                     .toList();
 
             itemString.append(" enchants:").append(Joiner.on(",").join(enchants));
         }
 
-        if (meta.getItemFlags().size() > 0) {
+        if (!meta.getItemFlags().isEmpty()) {
             List<String> flags = PandaStream.of(meta.getItemFlags())
                     .map(ItemFlag::name)
-                    .map(String::toLowerCase)
+                    .map(name -> name.toLowerCase(Locale.ROOT))
                     .toList();
 
             itemString.append(" flags:").append(Joiner.on(",").join(flags));
@@ -306,16 +272,13 @@ public final class ItemUtils {
             Color color = armorMeta.getColor();
 
             String colorString = color.getRed() + "_" + color.getGreen() + "_" + color.getBlue();
-
             itemString.append(" armorcolor:").append(colorString);
         }
 
         if (EggTypeChanger.needsSpawnEggMeta()) {
             if (meta instanceof SpawnEggMeta) {
                 SpawnEggMeta eggMeta = (SpawnEggMeta) meta;
-
-                String entityType = eggMeta.getSpawnedType().name().toLowerCase();
-
+                String entityType = eggMeta.getSpawnedType().name().toLowerCase(Locale.ROOT);
                 itemString.append(" eggtype:").append(entityType);
             }
         }
@@ -326,7 +289,7 @@ public final class ItemUtils {
     private static Enchantment matchEnchant(String enchantName) {
         if (BY_IN_GAME_NAME_ENCHANT != null && CREATE_NAMESPACED_KEY != null) {
             try {
-                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase());
+                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase(Locale.ROOT));
                 Object enchantment = BY_IN_GAME_NAME_ENCHANT.invoke(null, namespacedKey);
 
                 if (enchantment != null) {
@@ -337,7 +300,7 @@ public final class ItemUtils {
             }
         }
 
-        return Enchantment.getByName(enchantName.toUpperCase());
+        return Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
     }
 
     private static String getEnchantName(Enchantment enchantment) {
@@ -353,6 +316,7 @@ public final class ItemUtils {
             catch (InvocationTargetException | IllegalAccessException ignored) {
             }
         }
+
         return enchantment.getName();
     }
 
@@ -364,38 +328,28 @@ public final class ItemUtils {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant: " + split[0]);
         }
 
-        int level;
-        try {
-            level = Integer.parseInt(split[1]);
-        }
-        catch (NumberFormatException numberFormatException) {
+        Option<Integer> level = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1]));
+        if (level.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant level: " + split[1]);
-            level = 1;
         }
 
-        return Pair.of(enchant, level);
+        return Pair.of(enchant, level.orElseGet(1));
     }
 
-    private static ItemFlag matchItemFlag(String flagName) {
-        for (ItemFlag flag : ItemFlag.values()) {
-            if (flag.name().equalsIgnoreCase(flagName)) {
-                return flag;
-            }
-        }
-
-        return null;
+    private static Option<ItemFlag> matchItemFlag(String flagName) {
+        return Option.attempt(IllegalArgumentException.class, () -> {
+            return ItemFlag.valueOf(flagName.toUpperCase(Locale.ROOT));
+        }).onEmpty(() -> {
+            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flagName);
+        });
     }
 
     public static int getItemAmount(ItemStack item, Inventory inv) {
-        int amount = 0;
-
-        for (ItemStack is : inv.getContents()) {
-            if (item.isSimilar(is)) {
-                amount += is.getAmount();
-            }
-        }
-
-        return amount;
+        return PandaStream.of(inv.getContents())
+                .filter(item::isSimilar)
+                .toStream()
+                .mapToInt(ItemStack::getAmount)
+                .sum();
     }
 
     public static ItemStack[] toArray(Collection<ItemStack> collection) {

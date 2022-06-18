@@ -12,6 +12,9 @@ import org.jetbrains.annotations.ApiStatus;
 
 public final class GuildUtils {
 
+    private GuildUtils() {
+    }
+
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static int countGuilds() {
@@ -124,7 +127,7 @@ public final class GuildUtils {
     }
 
     /**
-     * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(Guild)}.
+     * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(FunnyGuilds, Guild)}.
      *
      * @param guild guild to remove
      * @deprecated for removal in the future, in favour of {@link GuildManager#removeGuild(Guild)}
@@ -182,9 +185,6 @@ public final class GuildUtils {
     public static boolean validateTag(PluginConfiguration pluginConfiguration, String guildTag) {
         return pluginConfiguration.whitelist == pluginConfiguration.restrictedGuildTags.stream()
                 .anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
-    }
-
-    private GuildUtils() {
     }
 
 }

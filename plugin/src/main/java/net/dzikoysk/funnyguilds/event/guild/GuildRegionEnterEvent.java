@@ -7,24 +7,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuildRegionEnterEvent extends GuildEvent {
 
-    private static final HandlerList HANDLERS = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-    public GuildRegionEnterEvent(EventCause cause, User doer, Guild guild) {
-        super(cause, doer, guild, true);
-    }
-
-    @NotNull
     @Override
-    public HandlerList getHandlers() {
-        return HANDLERS;
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
     }
 
     public static HandlerList getHandlerList() {
-        return HANDLERS;
+        return handlers;
+    }
+
+    public GuildRegionEnterEvent(EventCause cause, User doer, Guild guild) {
+        super(cause, doer, guild, true);
     }
 
     @Override
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild region enter has been cancelled by the server!";
     }
+
 }

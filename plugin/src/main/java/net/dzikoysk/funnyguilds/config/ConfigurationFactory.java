@@ -28,20 +28,24 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 
 public final class ConfigurationFactory {
 
-    public MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
+    private ConfigurationFactory() {
+    }
+
+    public static MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
             it.withConfigurer(new YamlBukkitConfigurer());
             it.withSerdesPack(registry -> {
                 registry.register(new DecolorTransformer());
                 registry.register(new SimpleDateFormatTransformer());
             });
+
             it.withBindFile(messageConfigurationFile);
             it.saveDefaults();
             it.load(true);
         });
     }
 
-    public PluginConfiguration createPluginConfiguration(File pluginConfigurationFile) {
+    public static PluginConfiguration createPluginConfiguration(File pluginConfigurationFile) {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
@@ -53,10 +57,12 @@ public final class ConfigurationFactory {
                 registry.register(new RangeFormattingTransformer());
                 registry.register(new VectorSerializer());
             });
+
             it.withBindFile(pluginConfigurationFile);
             it.withLogger(FunnyGuilds.getInstance().getLogger());
             it.saveDefaults();
             it.load(true);
+
             it.migrate(
                     new P0001_Fix_freecam_compensation_key_case(),
                     new P0002_Migrate_old_heart_configuration(),
@@ -67,7 +73,7 @@ public final class ConfigurationFactory {
         });
     }
 
-    public TablistConfiguration createTablistConfiguration(File tablistConfigurationFile) {
+    public static TablistConfiguration createTablistConfiguration(File tablistConfigurationFile) {
         return ConfigManager.create(TablistConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
@@ -75,12 +81,12 @@ public final class ConfigurationFactory {
                 registry.register(new TablistPageSerializer());
                 registry.register(new SkinTextureSerializer());
             });
+
             it.withBindFile(tablistConfigurationFile);
             it.saveDefaults();
             it.load(true);
-            it.migrate(
-                    new T0001_Update_player_list_animated()
-            );
+
+            it.migrate(new T0001_Update_player_list_animated());
         });
     }
 

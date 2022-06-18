@@ -16,4 +16,5 @@ public class PlayerRespawn extends AbstractFunnyListener {
                 .flatMap(Guild::getHome)
                 .peek(event::setRespawnLocation);
     }
+
 }

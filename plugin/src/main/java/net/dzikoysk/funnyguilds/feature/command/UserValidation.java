@@ -12,8 +12,9 @@ public final class UserValidation {
     public static User requireUserByName(String name) {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        return plugin.getUserManager().findByName(name, true)
-                .orThrow(() -> new ValidationException(plugin.getMessageConfiguration().generalNotPlayedBefore));
+        return plugin.getUserManager().findByName(name, true).orThrow(() -> {
+            return new ValidationException(plugin.getMessageConfiguration().generalNotPlayedBefore);
+        });
     }
 
 }

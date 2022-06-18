@@ -1,84 +1,86 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
+import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
+import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.shared.IOUtils;
+import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import org.apache.commons.lang3.StringUtils;
+import panda.std.Option;
+import panda.std.Result;
+import panda.std.stream.PandaStream;
 
 public class FlatDataModel implements DataModel {
 
+    private final FunnyGuilds plugin;
+    private final File usersFolderFile;
     private final File guildsFolderFile;
     private final File regionsFolderFile;
-    private final File usersFolderFile;
 
-    public FlatDataModel(FunnyGuilds funnyGuilds) {
-        this.guildsFolderFile = new File(funnyGuilds.getPluginDataFolder(), "guilds");
-        this.regionsFolderFile = new File(funnyGuilds.getPluginDataFolder(), "regions");
-        this.usersFolderFile = new File(funnyGuilds.getPluginDataFolder(), "users");
 
-        FlatPatcher flatPatcher = new FlatPatcher();
-        flatPatcher.patch(this);
+    public FlatDataModel(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.usersFolderFile = new File(plugin.getPluginDataFolder(), "users");
+        this.guildsFolderFile = new File(plugin.getPluginDataFolder(), "guilds");
+        this.regionsFolderFile = new File(plugin.getPluginDataFolder(), "regions");
+
+        FlatPatcher.patch(plugin, this.guildsFolderFile, this.regionsFolderFile);
     }
 
-    public File getGuildsFolder() {
-        return this.guildsFolderFile;
-    }
+    private Option<File> loadCustomFile(EntityType type, String name) {
+        File fileFolder;
 
-    public File getRegionsFolder() {
-        return this.regionsFolderFile;
-    }
-
-    public File getUsersFolder() {
-        return this.usersFolderFile;
-    }
-
-    File loadCustomFile(EntityType type, String name) {
         switch (type) {
-            case GUILD: {
-                File file = new File(this.guildsFolderFile, name + ".yml");
-                IOUtils.initialize(file, true);
-                return file;
-            }
-            case REGION: {
-                File file = new File(this.regionsFolderFile, name + ".yml");
-                IOUtils.initialize(file, true);
-                return file;
-            }
-            case USER: {
-                File file = new File(this.usersFolderFile, name + ".yml");
-                IOUtils.initialize(file, true);
-                return file;
-            }
-            default: return null;
+            case USER:
+                fileFolder = this.usersFolderFile;
+                break;
+            case GUILD:
+                fileFolder = this.guildsFolderFile;
+                break;
+            case REGION:
+                fileFolder = this.regionsFolderFile;
+                break;
+            default:
+                fileFolder = null;
         }
+
+        if (fileFolder == null) {
+            return Option.none();
+        }
+
+        Result<File, String> createResult = FunnyIOUtils.createFile(new File(fileFolder, name + ".yml"), false);
+        if (createResult.isErr()) {
+            FunnyGuilds.getPluginLogger().error(createResult.getError());
+            return Option.none();
+        }
+
+        return Option.of(createResult.get());
     }
 
-    public File getUserFile(User user) {
-        return new File(this.usersFolderFile, user.getUUID() + ".yml");
+    public Option<File> getUserFile(User user) {
+        return this.loadCustomFile(EntityType.USER, user.getUUID().toString());
     }
 
-    public File getRegionFile(Region region) {
-        return new File(this.regionsFolderFile, region.getName() + ".yml");
+    public Option<File> getGuildFile(Guild guild) {
+        return this.loadCustomFile(EntityType.GUILD, guild.getName());
     }
 
-    public File getGuildFile(Guild guild) {
-        return new File(this.guildsFolderFile, guild.getName() + ".yml");
+    public Option<File> getRegionFile(Region region) {
+        return this.loadCustomFile(EntityType.REGION, region.getName());
     }
 
     @Override
@@ -97,122 +99,99 @@ public class FlatDataModel implements DataModel {
         this.saveGuilds(ignoreNotChanged);
     }
 
-    private void saveUsers(boolean ignoreNotChanged) {
-        if (UserUtils.getUsers().isEmpty()) {
+    private void loadUsers() {
+        UserManager userManager = this.plugin.getUserManager();
+        userManager.clearUsers();
+
+        File[] userFiles = this.usersFolderFile.listFiles();
+        if (userFiles == null || userFiles.length == 0) {
+            FunnyGuilds.getPluginLogger().info("No users to load");
             return;
         }
 
-        int errors = 0;
+        AtomicInteger deserializationErrors = new AtomicInteger();
+        PandaStream.of(userFiles)
+                .filter(file -> file.length() != 0)
+                .mapOpt(UserUtils::checkUserFile)
+                .forEach(file -> FlatUserSerializer.deserialize(file)
+                        .peek(User::wasChanged)
+                        .onEmpty(deserializationErrors::incrementAndGet)
+                );
 
-        for (User user : UserUtils.getUsers()) {
-            if (user.getUUID() == null || user.getName() == null) {
-                errors++;
-                continue;
-            }
-
-            if (ignoreNotChanged && !user.wasChanged()) {
-                continue;
-            }
-
-            new FlatUser(user).serialize(this);
+        if (deserializationErrors.get() > 0) {
+            FunnyGuilds.getPluginLogger().error("Users load errors " + deserializationErrors.get());
         }
 
+        FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
+    }
+
+    private void saveUsers(boolean ignoreNotChanged) {
+        Set<User> users = this.plugin.getUserManager().getUsers();
+        if (users.isEmpty()) {
+            return;
+        }
+
+        AtomicInteger incorrectUsersCount = new AtomicInteger();
+        long serializationErrors = PandaStream.of(users)
+                .filter(user -> checkUser(user, incorrectUsersCount))
+                .filter(user -> !ignoreNotChanged || user.wasChanged())
+                .filterNot(FlatUserSerializer::serialize)
+                .count();
+
+        long errors = serializationErrors + incorrectUsersCount.get();
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Users save errors " + errors);
         }
     }
 
-    private void loadUsers() {
-        File[] path = usersFolderFile.listFiles();
-        int errors = 0;
+    private void loadGuilds() {
+        GuildManager guildManager = this.plugin.getGuildManager();
+        guildManager.clearGuilds();
 
-        if (path == null) {
-            FunnyGuilds.getPluginLogger().warning("Users directory is empty");
+        File[] guildFiles = this.guildsFolderFile.listFiles();
+        if (guildFiles == null || guildFiles.length == 0) {
+            FunnyGuilds.getPluginLogger().info("No guilds to load");
             return;
         }
 
-        for (File file : path) {
-            if (file.length() == 0) {
-                continue;
-            }
-
-            String filenameWithoutExtension = StringUtils.removeEnd(file.getName(), ".yml");
-
-            if (!UserUtils.validateUUID(filenameWithoutExtension)) {
-                if (UserUtils.validateUsername(filenameWithoutExtension)) {
-                    file = migrateUser(file);
-
-                    if (file == null) {
-                        continue;
+        AtomicInteger incorrectGuildsCount = new AtomicInteger();
+        long ownerlessGuilds = PandaStream.of(guildFiles)
+                .map(FlatGuildSerializer::deserialize)
+                .forEach(guildOption -> {
+                    if (guildOption.isEmpty()) {
+                        incorrectGuildsCount.incrementAndGet();
                     }
-                }
-                else {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
-                    continue;
-                }
-            }
+                })
+                .mapOpt(guildOption -> guildOption)
+                .forEach(Guild::wasChanged)
+                .filter(guild -> guild.getOwner() == null)
+                .forEach(guild -> FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!"))
+                .count();
 
-            User user = FlatUser.deserialize(file);
-
-            if (user == null) {
-                errors++;
-                continue;
-            }
-
-            user.wasChanged();
-        }
-
+        long errors = ownerlessGuilds + incorrectGuildsCount.get();
         if (errors > 0) {
-            FunnyGuilds.getPluginLogger().error("Users load errors " + errors);
+            FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
         }
 
-        FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+        ConcurrencyManager concurrencyManager = this.plugin.getConcurrencyManager();
+        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest(this.plugin.getIndividualPrefixManager()));
+
+        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
 
-    private File migrateUser(File file) {
-        YamlWrapper wrapper = new YamlWrapper(file);
-
-        String id = wrapper.getString("uuid");
-
-        if (id == null || !UserUtils.validateUUID(id)) {
-            FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. UUID is invalid.");
-            return null;
-        }
-
-        Path source = file.toPath();
-        Path target = source.resolveSibling(String.format("%s.yml", id));
-
-        if (Files.exists(target)) {
-            return target.toFile();
-        }
-
-        try {
-            return Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile();
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Could not move file '" + source + "' to '" + target + "'.", e.getCause());
-        }
-    }
-
-    private void saveRegions(boolean ignoreNotChanged) {
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+    private void saveGuilds(boolean ignoreNotChanged) {
+        Set<Guild> guilds = this.plugin.getGuildManager().getGuilds();
+        if (guilds.isEmpty()) {
             return;
         }
 
-        int errors = 0;
-
-        for (Region region : RegionUtils.getRegions()) {
-            if (ignoreNotChanged && !region.wasChanged()) {
-                continue;
-            }
-
-            if (!new FlatRegion(region).serialize(this)) {
-                errors++;
-            }
-        }
+        long errors = PandaStream.of(guilds)
+                .filter(guild -> !ignoreNotChanged || guild.wasChanged())
+                .filterNot(FlatGuildSerializer::serialize)
+                .count();
 
         if (errors > 0) {
-            FunnyGuilds.getPluginLogger().error("Regions save errors " + errors);
+            FunnyGuilds.getPluginLogger().error("Guilds save errors: " + errors);
         }
     }
 
@@ -222,89 +201,57 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        File[] path = regionsFolderFile.listFiles();
-        int errors = 0;
+        RegionManager regionManager = this.plugin.getRegionManager();
+        regionManager.clearRegions();
 
-        if (path == null) {
-            FunnyGuilds.getPluginLogger().warning("Regions directory is empty");
+        File[] regionFiles = this.regionsFolderFile.listFiles();
+        if (regionFiles == null || regionFiles.length == 0) {
+            FunnyGuilds.getPluginLogger().info("No regions to load");
             return;
         }
 
-        for (File file : path) {
-            Region region = FlatRegion.deserialize(file);
+        long correctlyLoaded = PandaStream.of(regionFiles)
+                .mapOpt(FlatRegionSerializer::deserialize)
+                .forEach(region -> {
+                    region.wasChanged();
+                    regionManager.addRegion(region);
+                }).count();
 
-            if (region == null) {
-                errors++;
-                continue;
-            }
-
-            region.wasChanged();
-            FunnyGuilds.getInstance().getRegionManager().addRegion(region);
-        }
-
+        long errors = regionFiles.length - correctlyLoaded;
         if (errors > 0) {
-            FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
+            FunnyGuilds.getPluginLogger().error("Region load errors " + errors);
         }
 
-        FunnyGuilds.getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
+        FunnyGuilds.getPluginLogger().info("Loaded regions: " + regionManager.countRegions());
     }
 
-    private void saveGuilds(boolean ignoreNotChanged) {
-        int errors = 0;
-
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (ignoreNotChanged && !guild.wasChanged()) {
-                continue;
-            }
-
-            if (!new FlatGuild(guild).serialize(this)) {
-                errors++;
-            }
-        }
-
-        if (errors > 0) {
-            FunnyGuilds.getPluginLogger().error("Guilds save errors: " + errors);
-        }
-    }
-
-    private void loadGuilds() {
-        GuildUtils.getGuilds().clear();
-        File[] path = guildsFolderFile.listFiles();
-        int errors = 0;
-
-        if (path == null) {
-            FunnyGuilds.getPluginLogger().warning("Guilds directory is empty");
+    private void saveRegions(boolean ignoreNotChanged) {
+        if (!this.plugin.getPluginConfiguration().regionsEnabled) {
             return;
         }
 
-        for (File file : path) {
-            Guild guild = FlatGuild.deserialize(file);
-
-            if (guild == null) {
-                errors++;
-                continue;
-            }
-
-            guild.wasChanged();
+        Set<Region> regions = this.plugin.getRegionManager().getRegions();
+        if (regions.isEmpty()) {
+            return;
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getOwner() != null) {
-                continue;
-            }
-
-            errors++;
-            FunnyGuilds.getPluginLogger().error("In guild " + guild.getTag() + " owner not exist!");
-        }
+        long errors = PandaStream.of(regions)
+                .filter(region -> !ignoreNotChanged || region.wasChanged())
+                .filterNot(FlatRegionSerializer::serialize)
+                .count();
 
         if (errors > 0) {
-            FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
+            FunnyGuilds.getPluginLogger().error("Regions save errors: " + errors);
+        }
+    }
+
+    private static boolean checkUser(User user, AtomicInteger errorCounter) {
+        if (user.getUUID() == null || user.getName() == null) {
+            errorCounter.incrementAndGet();
+            return false;
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest(FunnyGuilds.getInstance().getIndividualPrefixManager()));
-
-        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + FunnyGuilds.getInstance().getGuildManager().countGuilds());
+        return true;
     }
 
 }

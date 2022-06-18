@@ -28,6 +28,9 @@ public final class Reflections {
     private static final Field INVALID_FIELD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredField("invalidFieldMarker"));
     private static final FieldAccessor<?> INVALID_FIELD_ACCESSOR = getField(INVALID_CLASS, Void.class, 0);
 
+    private Reflections() {
+    }
+
     public static void prepareServerVersion() {
         SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
 
@@ -128,7 +131,7 @@ public final class Reflections {
 
     @SuppressWarnings("unchecked")
     private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
-        final String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
+        String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
 
         FieldAccessor<T> output = (FieldAccessor<T>) FIELD_ACCESSOR_CACHE.get(cacheKey);
 
@@ -140,7 +143,7 @@ public final class Reflections {
             return output;
         }
 
-        for (final Field field : target.getDeclaredFields()) {
+        for (Field field : target.getDeclaredFields()) {
             if ((name == null || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType()) && index-- <= 0) {
                 field.setAccessible(true);
 
@@ -279,9 +282,6 @@ public final class Reflections {
 
         public void invalidMethodMaker() {
         }
-    }
-
-    private Reflections() {
     }
 
 }

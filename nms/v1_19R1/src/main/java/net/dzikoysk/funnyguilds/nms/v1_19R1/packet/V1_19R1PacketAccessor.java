@@ -13,27 +13,27 @@ import org.bukkit.entity.Player;
 
 public class V1_19R1PacketAccessor implements PacketAccessor {
 
-    private final GenericInboundChannelHandlerInstaller inboundChannelHandlerInstaller = new GenericInboundChannelHandlerInstaller(V1_19R1FunnyGuildsInboundChannelHandler::new);
-    private final GenericOutboundChannelHandlerInstaller outboundChannelHandlerInstaller = new GenericOutboundChannelHandlerInstaller(V1_19R1FunnyGuildsOutboundChannelHandler::new);
+    private final GenericInboundChannelHandlerInstaller<V1_19R1FunnyGuildsInboundChannelHandler> inboundChannelHandlerInstaller =
+            new GenericInboundChannelHandlerInstaller<>(V1_19R1FunnyGuildsInboundChannelHandler::new);
+    private final GenericOutboundChannelHandlerInstaller<V1_19R1FunnyGuildsOutboundChannelHandler> outboundChannelHandlerInstaller =
+            new GenericOutboundChannelHandlerInstaller<>(V1_19R1FunnyGuildsOutboundChannelHandler::new);
 
     @Override
     public FunnyGuildsInboundChannelHandler getOrInstallInboundChannelHandler(Player player) {
-        final EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
 
-        // entityPlayer.playerConnection.networkManager.channel
-        final Channel channel = entityPlayer.b.b.m;
-        final ChannelPipeline pipeline = channel.pipeline();
+        Channel channel = entityPlayer.b.b.m;
+        ChannelPipeline pipeline = channel.pipeline();
 
         return this.inboundChannelHandlerInstaller.installChannelHandlerInPipeline(pipeline);
     }
 
     @Override
     public FunnyGuildsOutboundChannelHandler getOrInstallOutboundChannelHandler(Player player) {
-        final EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
 
-        // entityPlayer.playerConnection.networkManager.channel
-        final Channel channel = entityPlayer.b.b.m;
-        final ChannelPipeline pipeline = channel.pipeline();
+        Channel channel = entityPlayer.b.b.m;
+        ChannelPipeline pipeline = channel.pipeline();
 
         return this.outboundChannelHandlerInstaller.installChannelHandlerOutPipeline(pipeline);
     }

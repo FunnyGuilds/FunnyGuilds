@@ -19,7 +19,7 @@ public abstract class DefaultConcurrencyRequest implements ConcurrencyRequest {
 
     @Override
     public ConcurrencyExceptionHandler getExceptionHandler() {
-        return exceptionHandler;
+        return this.exceptionHandler;
     }
 
     public static ConcurrencyRequest of(Runnable runnable) {

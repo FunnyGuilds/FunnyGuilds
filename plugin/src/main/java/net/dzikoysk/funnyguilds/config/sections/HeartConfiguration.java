@@ -8,55 +8,65 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.io.File;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import panda.std.Pair;
+import panda.utilities.StringUtils;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
 
-    @Comment("Blok lub entity, ktore jest sercem gildii")
-    @Comment("Zmiana entity wymaga pelnego restartu serwera")
-    @Comment("Bloki musza byc podawane w formacie - material:metadata")
-    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    @Comment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
-    @Comment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
+    @Comment("Blok lub entity, które jest sercem gildii")
+    @Comment("Zmiana entity wymaga pełnego restartu serwera")
+    @Comment("Bloki muszą być podawane w formacie - material:metadata")
+    @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
+    @Comment("Typ entity musi byc zgodny z tą lista (i zdrowym rozsądkiem) - https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
+    @Comment("UWAGA: Zmiana bloku, gdy są juz zrobione jakieś gildie, spowoduje nieprawidłowe działanie ich regionów")
     @Comment(" ")
-    @Comment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
-    @Comment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
+    @Comment("UWAGA: Jeśli jako serca gildii chcesz użyć bloku, który spada pod wpływem grawitacji - upewnij się, ze będzie on stał na jakimś innym bloku!")
+    @Comment("Jeśli pojawi sie w powietrzu - spadnie i plugin nie będzie odczytywał go poprawnie!")
     public String createType = "ender_crystal";
     @Exclude
     public Pair<Material, Byte> createMaterial;
     @Exclude
     public EntityType createEntityType;
 
-    @Comment("Czy poziom na jakim ma byc wyznaczone centrum gildii ma byc ustalany przez pozycje gracza")
+    @Comment("")
+    @Comment("Czy poziom na jakim ma być wyznaczone centrum gildii ma być ustalany przez pozycję gracza")
     @CustomKey("use-player-position-for-center-y")
     public boolean usePlayerPositionForCenterY = false;
 
-    @Comment("Na jakim poziomie ma byc wyznaczone centrum gildii")
+    @Comment("")
+    @Comment("Na jakim poziomie ma być wyznaczone centrum gildii")
     @CustomKey("create-center-y")
     public int createCenterY = 60;
 
-    @Comment("Konfiguracja hologramu nad sercem gildii.")
+    @Comment("")
+    @Comment("Konfiguracja hologramu nad sercem gildii")
     public HologramConfiguration hologram = new HologramConfiguration();
 
-    @Comment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
+    @Comment("")
+    @Comment("Czy ma się tworzyć kula z obsydianu dookoła centrum gildii")
     public boolean createCenterSphere = true;
 
-    @Comment("Czy przy tworzeniu gildii powinien byc wklejany schemat")
+    @Comment("")
+    @Comment("Czy przy tworzeniu gildii powinien być wklejany schemat")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
     public boolean pasteSchematicOnCreation = false;
 
-    @Comment("Nazwa pliku ze schematem poczatkowym gildii")
+    @Comment("")
+    @Comment("Nazwa pliku ze schematem początkowym gildii")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
     @Comment("Schemat musi znajdować się w folderze FunnyGuilds")
     public String guildSchematicFileName = "funnyguilds.schematic";
 
-    @Comment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
-    @Comment("Przy duzych schematach ma to wplyw na wydajnosc")
+    @Comment("")
+    @Comment("Czy schemat przy tworzeniu gildii powinien być wklejany razem z powietrzem")
+    @Comment("Przy dużych schematach ma to wpływ na wydajność")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
     public boolean pasteSchematicWithAir = true;
 
@@ -65,15 +75,16 @@ public class HeartConfiguration extends OkaeriConfig {
 
     public void loadProcessedProperties() {
         try {
-            this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
+            this.createEntityType = EntityType.valueOf(FunnyFormatter.format(this.createType.toUpperCase(Locale.ROOT), " ", "_"));
         }
-        catch (Exception materialThen) {
+        catch (IllegalArgumentException materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
         }
 
         if (this.pasteSchematicOnCreation) {
-            if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
-                FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
+            if (StringUtils.isEmpty(this.guildSchematicFileName)) {
+                FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field " +
+                        "\"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
             }
             else {

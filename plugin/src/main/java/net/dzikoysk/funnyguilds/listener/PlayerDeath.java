@@ -24,17 +24,17 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
-import net.dzikoysk.funnyguilds.shared.MapUtil;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
-import panda.utilities.text.Formatter;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -53,6 +53,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         if (victimOption.isEmpty()) {
             return;
         }
+
         User victim = victimOption.get();
         UserCache victimCache = victim.getCache();
 
@@ -62,7 +63,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         if (playerAttacker == null) {
-            if (!config.considerLastAttackerAsKiller) {
+            if (!this.config.considerLastAttackerAsKiller) {
                 victimCache.clearDamage();
                 return;
             }
@@ -74,19 +75,23 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
 
             Instant attackTime = victimCache.wasVictimOf(lastAttacker);
-            if (attackTime == null || attackTime.plus(config.lastAttackerAsKillerConsiderationTimeout).isBefore(Instant.now())) {
+            if (attackTime == null || attackTime.plus(this.config.lastAttackerAsKillerConsiderationTimeout).isBefore(Instant.now())) {
                 victimCache.clearDamage();
                 return;
             }
 
+            playerAttacker = this.funnyServer.getPlayer(lastAttacker.getUUID()).orNull();
+        }
 
-            playerAttacker = server.getPlayer(lastAttacker.getUUID());
+        if (playerAttacker == null) {
+            return;
         }
 
         Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);
         if (attackerOption.isEmpty()) {
             return;
         }
+
         User attacker = attackerOption.get();
         UserCache attackerCache = attacker.getCache();
 
@@ -103,14 +108,14 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
         }
 
-        if (config.rankFarmingProtect) {
+        if (this.config.rankFarmingProtect) {
             Instant attackTimestamp = attackerCache.wasAttackerOf(victim);
             Instant victimTimestamp = attackerCache.wasVictimOf(attacker);
 
             if (attackTimestamp != null) {
-                if (attackTimestamp.plus(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
-                    ChatUtils.sendMessage(playerVictim, messages.rankLastVictimV);
-                    ChatUtils.sendMessage(playerAttacker, messages.rankLastVictimA);
+                if (attackTimestamp.plus(this.config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
+                    ChatUtils.sendMessage(playerVictim, this.messages.rankLastVictimV);
+                    ChatUtils.sendMessage(playerAttacker, this.messages.rankLastVictimA);
 
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
@@ -119,9 +124,9 @@ public class PlayerDeath extends AbstractFunnyListener {
                 }
             }
             else if (victimTimestamp != null) {
-                if (victimTimestamp.plus(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
-                    ChatUtils.sendMessage(playerVictim, messages.rankLastAttackerV);
-                    ChatUtils.sendMessage(playerAttacker, messages.rankLastAttackerA);
+                if (victimTimestamp.plus(this.config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
+                    ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerV);
+                    ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerA);
 
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
@@ -131,12 +136,12 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
         }
 
-        if (config.rankIPProtect) {
+        if (this.config.rankIPProtect) {
             String attackerIP = playerAttacker.getAddress().getHostString();
 
             if (attackerIP != null && attackerIP.equalsIgnoreCase(playerVictim.getAddress().getHostString())) {
-                ChatUtils.sendMessage(playerVictim, messages.rankIPVictim);
-                ChatUtils.sendMessage(playerAttacker, messages.rankIPAttacker);
+                ChatUtils.sendMessage(playerVictim, this.messages.rankIPVictim);
+                ChatUtils.sendMessage(playerAttacker, this.messages.rankIPAttacker);
 
                 victimCache.clearDamage();
                 event.setDeathMessage(null);
@@ -145,11 +150,10 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
         }
 
-        int[] rankChanges = new int[2];
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
 
-        RankSystem.RankResult result = rankSystem.calculate(config.rankSystem, attackerPoints, victimPoints);
+        RankSystem.RankResult result = this.rankSystem.calculate(this.config.rankSystem, attackerPoints, victimPoints);
 
         PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, attacker, result.getAttackerPoints());
         PointsChangeEvent victimPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, victim, -result.getVictimPoints());
@@ -162,12 +166,12 @@ public class PlayerDeath extends AbstractFunnyListener {
         if (SimpleEventHandler.handle(attackerPointsChangeEvent) && SimpleEventHandler.handle(victimPointsChangeEvent)) {
             double attackerDamage = victimCache.killedBy(attacker);
 
-            if (config.assistEnable && victimCache.isAssisted()) {
-                double toShare = attackerPointsChangeEvent.getPointsChange() * (1 - config.assistKillerShare);
+            if (this.config.assistEnable && victimCache.isAssisted()) {
+                double toShare = attackerPointsChangeEvent.getPointsChange() * (1 - this.config.assistKillerShare);
                 double totalDamage = victimCache.getTotalDamage() + attackerDamage;
                 int givenPoints = 0;
 
-                Map<User, Double> damage = MapUtil.sortByValue(victimCache.getDamage());
+                Map<User, Double> damage = MapUtils.sortByValue(victimCache.getDamage());
                 int assists = 0;
 
                 for (Entry<User, Double> assist : damage.entrySet()) {
@@ -179,8 +183,8 @@ public class PlayerDeath extends AbstractFunnyListener {
                         continue;
                     }
 
-                    if (config.assistsLimit > 0) {
-                        if (assists >= config.assistsLimit) {
+                    if (this.config.assistsLimit > 0) {
+                        if (assists >= this.config.assistsLimit) {
                             break;
                         }
 
@@ -191,18 +195,20 @@ public class PlayerDeath extends AbstractFunnyListener {
                     if (!SimpleEventHandler.handle(assistPointsChangeEvent)) {
                         continue;
                     }
-                    addedPoints = assistPointsChangeEvent.getPointsChange();
 
-                    if (!config.broadcastDeathMessage) {
+                    if (!this.config.broadcastDeathMessage) {
                         messageReceivers.add(assistUser);
                     }
 
+                    addedPoints = assistPointsChangeEvent.getPointsChange();
                     givenPoints += addedPoints;
 
-                    String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assistUser.getName());
-                    assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
-                    assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
-                    assistEntries.add(assistEntry);
+                    FunnyFormatter formatter = new FunnyFormatter()
+                            .register("{PLAYER}", assistUser.getName())
+                            .register("{+}", addedPoints)
+                            .register("{SHARE}", FunnyStringUtils.getPercent(assistFraction));
+
+                    assistEntries.add(formatter.format(this.messages.rankAssistEntry));
 
                     int finalAddedPoints = addedPoints;
                     assistUser.getRank().updatePoints(currentValue -> currentValue + finalAddedPoints);
@@ -225,22 +231,20 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
 
             attackerCache.registerVictim(victim);
-
             victimPointsBeforeChange = victim.getRank().getPoints();
 
             victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getPointsChange());
             victimCache.registerKiller(attacker);
             victimCache.clearDamage();
 
-            if (!config.broadcastDeathMessage) {
+            if (!this.config.broadcastDeathMessage) {
                 messageReceivers.add(attacker);
                 messageReceivers.add(victim);
             }
         }
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-
-        if (config.dataModel == DataModel.MYSQL) {
+        if (this.config.dataModel == DataModel.MYSQL) {
             victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
             attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
 
@@ -256,51 +260,51 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = attackerPointsChangeEvent.getPointsChange();
         int victimPointsChange = Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange());
 
-        Formatter killFormatter = new Formatter()
+        FunnyFormatter killFormatter = new FunnyFormatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
-                .register("{+}", Integer.toString(attackerPointsChange))
-                .register("{-}", Integer.toString(victimPointsChange))
-                .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(attackerPointsChange, config.killPointsChangeFormat, true)
-                        .replace("{CHANGE}", Integer.toString(Math.abs(attackerPointsChange))))
-                .register("{MINUS-FORMATTED}", NumberRange.inRangeToString(victimPointsChange, config.killPointsChangeFormat, true)
-                        .replace("{CHANGE}", Integer.toString(Math.abs(victimPointsChange))))
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, config.pointsFormat, true))
-                .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
+                .register("{+}", attackerPointsChange)
+                .register("{-}", victimPointsChange)
+                .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(attackerPointsChange, this.config.killPointsChangeFormat, true))
+                .register("{CHANGE}", Math.abs(attackerPointsChange))
+                .register("{MINUS-FORMATTED}", NumberRange.inRangeToString(victimPointsChange, this.config.killPointsChangeFormat, true))
+                .register("{CHANGE}", Math.abs(victimPointsChange))
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, this.config.pointsFormat, true))
+                .register("{POINTS}", victim.getRank().getPoints())
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
-                .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
+                .register("{REMAINING-HEARTS}", (int) (playerAttacker.getHealth() / 2))
                 .register("{VTAG}", victim.getGuild()
-                        .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
                 .register("{ATAG}", attacker.getGuild()
-                        .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
-                .register("{ASSISTS}", config.assistEnable && !assistEntries.isEmpty()
-                        ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
+                .register("{ASSISTS}", this.config.assistEnable && !assistEntries.isEmpty()
+                        ? FunnyFormatter.format(this.messages.rankAssistMessage, "{ASSISTS}", String.join(this.messages.rankAssistDelimiter, assistEntries))
                         : "");
 
-        if (config.displayTitleNotificationForKiller) {
+        if (this.config.displayTitleNotificationForKiller) {
             TitleMessage titleMessage = TitleMessage.builder()
-                    .text(killFormatter.format(messages.rankKillTitle))
-                    .subText(killFormatter.format(messages.rankKillSubtitle))
-                    .fadeInDuration(config.notificationTitleFadeIn)
-                    .stayDuration(config.notificationTitleStay)
-                    .fadeOutDuration(config.notificationTitleFadeOut)
+                    .text(killFormatter.format(this.messages.rankKillTitle))
+                    .subText(killFormatter.format(this.messages.rankKillSubtitle))
+                    .fadeInDuration(this.config.notificationTitleFadeIn)
+                    .stayDuration(this.config.notificationTitleStay)
+                    .fadeOutDuration(this.config.notificationTitleFadeOut)
                     .build();
 
             this.messageAccessor.sendTitleMessage(titleMessage, playerAttacker);
         }
 
-        String deathMessage = killFormatter.format(messages.rankDeathMessage);
+        String deathMessage = killFormatter.format(this.messages.rankDeathMessage);
 
-        if (config.broadcastDeathMessage) {
-            if (config.ignoreDisabledDeathMessages) {
-                for (Player player : event.getEntity().getWorld().getPlayers()) {
+        if (this.config.broadcastDeathMessage) {
+            if (this.config.ignoreDisabledDeathMessages) {
+                event.getEntity().getWorld().getPlayers().forEach(player -> {
                     event.setDeathMessage(null);
                     ChatUtils.sendMessage(player, deathMessage);
-                }
+                });
             }
             else {
                 event.setDeathMessage(deathMessage);
@@ -308,24 +312,9 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
         else {
             event.setDeathMessage(null);
-
-            for (User fighter : messageReceivers) {
-                fighter.sendMessage(deathMessage);
-            }
+            messageReceivers.forEach(fighter -> fighter.sendMessage(deathMessage));
         }
 
-    }
-
-    private int[] getEloValues(int victimPoints, int attackerPoints) {
-        int[] rankChanges = new int[2];
-
-        int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
-        int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
-
-        rankChanges[0] = (int) Math.round(attackerElo * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
-        rankChanges[1] = (int) Math.round(victimElo * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * -1);
-
-        return rankChanges;
     }
 
 }

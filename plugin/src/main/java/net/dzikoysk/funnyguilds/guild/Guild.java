@@ -5,12 +5,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
@@ -19,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -38,7 +37,7 @@ public class Guild extends AbstractMutableEntity {
     private Set<User> deputies = ConcurrentHashMap.newKeySet();
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
     private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
-    private Set<UUID> alliedFFGuilds = ConcurrentHashMap.newKeySet();
+    private Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
 
     private long born;
     private long validity;
@@ -63,11 +62,11 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void broadcast(String message) {
-        this.getMembers().forEach(user -> user.sendMessage(message));
+        this.members.forEach(user -> user.sendMessage(message));
     }
 
     public void deserializationUpdate() {
-        owner.setGuild(this);
+        this.owner.setGuild(this);
         this.members.forEach(user -> user.setGuild(this));
     }
 
@@ -155,7 +154,7 @@ public class Guild extends AbstractMutableEntity {
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isSomeoneInRegion() {
-        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(region, new HashSet<>(members));
+        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(this.region, new HashSet<>(this.members));
     }
 
     /**
@@ -197,10 +196,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Set<User> getOnlineMembers() {
-        return this.members
-                .stream()
+        return PandaStream.of(this.members)
                 .filter(User::isOnline)
-                .collect(Collectors.toSet());
+                .toSet();
     }
 
     public boolean isMember(User user) {
@@ -213,10 +211,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addMember(User user) {
-        if (this.members.contains(user)) {
-            return;
-        }
-
         this.members.add(user);
         this.markChanged();
     }
@@ -245,10 +239,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addDeputy(User user) {
-        if (this.deputies.contains(user)) {
-            return;
-        }
-
         this.deputies.add(user);
         this.markChanged();
     }
@@ -276,12 +266,8 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addAlly(Guild guild) {
-        this.markChanged();
-        if (this.allies.contains(guild)) {
-            return;
-        }
-
         this.allies.add(guild);
+        this.markChanged();
     }
 
     public void removeAlly(Guild guild) {
@@ -290,7 +276,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Set<Guild> getEnemies() {
-        return enemies;
+        return this.enemies;
     }
 
     public boolean hasEnemies() {
@@ -307,10 +293,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addEnemy(Guild guild) {
-        if (this.enemies.contains(guild)) {
-            return;
-        }
-
         this.enemies.add(guild);
         this.markChanged();
     }
@@ -337,6 +319,8 @@ public class Guild extends AbstractMutableEntity {
         return this.validity;
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public Date getValidityDate() {
         return this.validityDate == null ? this.validityDate = new Date(this.validity) : this.validityDate;
     }
@@ -367,7 +351,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean canBeAttacked() {
-        return this.getProtection() < System.currentTimeMillis();
+        return this.protection < System.currentTimeMillis();
     }
 
     public void setProtection(long protection) {
@@ -413,7 +397,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public boolean getPvP() {
+    public boolean hasPvPEnabled() {
         return this.pvp;
     }
 
@@ -422,17 +406,26 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public boolean getPvP(Guild alliedGuild) {
-        return this.allies.contains(alliedGuild) && this.alliedFFGuilds.contains(alliedGuild.getUUID());
+    public boolean togglePvP() {
+        this.pvp = !this.pvp;
+        this.markChanged();
+        return this.pvp;
     }
 
-    public void setPvP(Guild alliedGuild, boolean enablePvp) {
-        if (enablePvp) {
-            this.alliedFFGuilds.add(alliedGuild.getUUID());
+    public boolean hasAllyPvPEnabled(Guild alliedGuild) {
+        return this.allies.contains(alliedGuild) && this.alliedPvPGuilds.contains(alliedGuild.uuid);
+    }
+
+    public boolean toggleAllyPvP(Guild alliedGuild) {
+        boolean enabled = false;
+
+        if (!this.alliedPvPGuilds.remove(alliedGuild.uuid)) {
+            this.alliedPvPGuilds.add(alliedGuild.uuid);
+            enabled = true;
         }
-        else {
-            this.alliedFFGuilds.remove(alliedGuild.getUUID());
-        }
+
+        this.markChanged();
+        return enabled;
     }
 
     @Override
@@ -442,7 +435,7 @@ public class Guild extends AbstractMutableEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return this.uuid.hashCode();
     }
 
     @Override

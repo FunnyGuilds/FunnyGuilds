@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.nms;
 import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.plugin.PluginDescriptionFile;
+import panda.utilities.StringUtils;
 
 public final class DescriptionChanger {
 
@@ -13,21 +14,20 @@ public final class DescriptionChanger {
     }
 
     public void rename(String pluginName) {
-        if (pluginName == null || pluginName.isEmpty()) {
+        if (StringUtils.isEmpty(pluginName)) {
             return;
         }
 
         try {
-            Field field = Reflections.getPrivateField(descriptionFile.getClass(), "name");
-
+            Field field = Reflections.getPrivateField(this.descriptionFile.getClass(), "name");
             if (field == null) {
                 return;
             }
 
-            field.set(descriptionFile, pluginName);
+            field.set(this.descriptionFile, pluginName);
         }
-        catch (Exception ex) {
-            FunnyGuilds.getPluginLogger().error("Could not change description file", ex);
+        catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not change description file", exception);
         }
     }
 
