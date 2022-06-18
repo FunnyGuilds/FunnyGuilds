@@ -253,7 +253,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", player.getName());
 
         user.sendMessage(formatter.format(this.messages.createGuild));
-        broadcastMessage(formatter.format(this.messages.broadcastCreate));
+        this.broadcastMessage(formatter.format(this.messages.broadcastCreate));
 
         if (!this.config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {
             return;

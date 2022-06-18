@@ -8,12 +8,12 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.nms.PacketSender;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
-import panda.std.Option;
 
 public class LegacyBossBarProviderImpl implements BossBarProvider {
 
@@ -78,19 +78,21 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
         ENTITY_WITHER_MOT_Z = Reflections.getField(ENTITY_CLASS, "motZ");
     }
 
+    private final FunnyServer funnyServer;
     private final User user;
     private volatile BukkitTask bossBarHandleTask;
     private final AtomicInteger currentSecond;
     private int witherId;
 
-    public LegacyBossBarProviderImpl(User user) {
+    public LegacyBossBarProviderImpl(FunnyServer funnyServer, User user) {
+        this.funnyServer = funnyServer;
         this.user = user;
         this.currentSecond = new AtomicInteger(0);
     }
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(player -> {
+        this.funnyServer.getPlayer(this.user).peek(player -> {
             if (this.bossBarHandleTask != null) {
                 this.bossBarHandleTask.cancel();
                 this.removeBossBar(player);
@@ -103,7 +105,7 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void removeNotification() {
-        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(this::removeBossBar);
+        this.funnyServer.getPlayer(this.user).peek(this::removeBossBar);
     }
 
     private void createBossBar(Player player, String text, int timeout) {

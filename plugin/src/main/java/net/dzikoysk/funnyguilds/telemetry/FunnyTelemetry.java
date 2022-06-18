@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 import panda.std.Option;
-import panda.std.Result;
 import panda.utilities.IOUtils;
 
 /**
@@ -26,7 +25,7 @@ public final class FunnyTelemetry {
     public static final String FUNNYBIN_POST = URL + "/funnybin/api/post";
     public static final String FUNNYBIN_POST_BUNDLE = URL + "/funnybin/api/bundle/post";
 
-    public static Option<FunnybinResponse> postToFunnybin(String paste, PasteType pasteType, String tag) throws IOException {
+    public static FunnybinResponse postToFunnybin(String paste, PasteType pasteType, String tag) throws IOException {
         return sendPost(FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag), paste, FunnybinResponse.class);
     }
 
@@ -43,10 +42,10 @@ public final class FunnyTelemetry {
             addQueryElement("paste", iterator.next(), url);
         }
 
-        return sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class);
+        return Option.of(sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class));
     }
 
-    private static <T> Option<T> sendPost(String url, String body, Class<T> response) throws IOException {
+    private static <T> T sendPost(String url, String body, Class<T> response) throws IOException {
         System.setProperty("jdk.tls.client.protocols", "TLSv1,TLSv1.1,TLSv1.2");
         System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 
@@ -61,12 +60,9 @@ public final class FunnyTelemetry {
         connection.setRequestProperty("Content-Length", String.valueOf(bodyBytes.length));
         connection.getOutputStream().write(bodyBytes);
 
-        Result<String, IOException> input = IOUtils.convertStreamToString(connection.getInputStream(), StandardCharsets.UTF_8);
-        if (input.isOk()) {
-            return Option.of(gson.fromJson(input.get(), response));
-        }
-
-        throw input.getError();
+        return IOUtils.convertStreamToString(connection.getInputStream(), StandardCharsets.UTF_8)
+                .map(input -> gson.fromJson(input, response))
+                .orThrow(exception -> exception);
     }
 
     private static String encodeUTF8(String str) throws UnsupportedEncodingException {

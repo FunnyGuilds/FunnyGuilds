@@ -51,7 +51,7 @@ public final class NameCommand extends AbstractFunnyCommand {
                 dataModel.getRegionFile(region).peek(FunnyIOUtils::deleteFile);
             }
             else if (this.dataModel instanceof SQLDataModel) {
-                DatabaseRegionSerializer.delete((SQLDataModel) this.dataModel, region);
+                DatabaseRegionSerializer.delete(region);
             }
 
             region.setName(args[1]);
@@ -62,11 +62,11 @@ public final class NameCommand extends AbstractFunnyCommand {
             dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
         }
         else if (this.dataModel instanceof SQLDataModel) {
-            DatabaseGuildSerializer.delete((SQLDataModel) this.dataModel, guild);
+            DatabaseGuildSerializer.delete(guild);
         }
 
         guild.setName(args[1]);
-        sendMessage(sender, FunnyFormatter.format(this.messages.adminNameChanged, "{GUILD}", guild.getName()));
+        this.sendMessage(sender, FunnyFormatter.format(this.messages.adminNameChanged, "{GUILD}", guild.getName()));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

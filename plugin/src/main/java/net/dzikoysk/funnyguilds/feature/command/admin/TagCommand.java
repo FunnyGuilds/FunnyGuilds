@@ -41,7 +41,7 @@ public final class TagCommand extends AbstractFunnyCommand {
                 .register("{OLD_TAG}", oldTag)
                 .register("{TAG}", guild.getTag());
 
-        sendMessage(sender, formatter.format(this.messages.adminTagChanged));
+        this.sendMessage(sender, formatter.format(this.messages.adminTagChanged));
         SimpleEventHandler.handle(new GuildTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag));
     }
 

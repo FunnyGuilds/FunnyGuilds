@@ -46,7 +46,7 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{DATE}", protectionDateAsString);
 
-        sendMessage(sender, formatter.format(this.messages.adminProtectionSetSuccessfully));
+        this.sendMessage(sender, formatter.format(this.messages.adminProtectionSetSuccessfully));
     }
 
 }

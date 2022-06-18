@@ -30,7 +30,7 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {
-            sendMessage(sender, this.messages.adminTimeError);
+            this.sendMessage(sender, this.messages.adminTimeError);
             return;
         }
 
@@ -51,7 +51,7 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{VALIDITY}", this.messages.dateFormat.format(validity));
 
-        sendMessage(sender, formatter.format(this.messages.adminNewValidity));
+        this.sendMessage(sender, formatter.format(this.messages.adminNewValidity));
     }
 
 }

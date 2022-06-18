@@ -48,7 +48,9 @@ public final class FlatUserSerializer {
         return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
     }
 
-    public static boolean serialize(FlatDataModel dataModel, User user) {
+    public static boolean serialize(User user) {
+        FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+
         Option<File> fileOption = dataModel.getUserFile(user);
         if (fileOption.isEmpty()) {
             return false;

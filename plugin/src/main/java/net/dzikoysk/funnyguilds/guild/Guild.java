@@ -138,7 +138,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Option<Location> getCenter() {
-        return this.region.map(Region::getCenter).map(Location::clone);
+        return this.region
+                .map(Region::getCenter)
+                .map(Location::clone);
     }
 
     public Option<Location> getEnderCrystal() {
@@ -194,7 +196,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Set<User> getOnlineMembers() {
-        return PandaStream.of(this.members).filter(User::isOnline).toSet();
+        return PandaStream.of(this.members)
+                .filter(User::isOnline)
+                .toSet();
     }
 
     public boolean isMember(User user) {

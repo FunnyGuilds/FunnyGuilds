@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
 
@@ -16,7 +14,7 @@ public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest 
 
     @Override
     public void execute() {
-        DatabaseGuildSerializer.updatePoints((SQLDataModel) FunnyGuilds.getInstance().getDataModel(), this.guild);
+        DatabaseGuildSerializer.updatePoints(this.guild);
     }
 
 }

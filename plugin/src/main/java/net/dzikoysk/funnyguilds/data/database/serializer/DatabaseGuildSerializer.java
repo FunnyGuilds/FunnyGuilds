@@ -121,7 +121,8 @@ public final class DatabaseGuildSerializer {
         return Option.none();
     }
 
-    public static void serialize(SQLDataModel dataModel, Guild guild) {
+    public static void serialize(Guild guild) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getGuildsTable());
 
         String members = FunnyStringUtils.join(Entity.names(guild.getMembers()));
@@ -152,14 +153,16 @@ public final class DatabaseGuildSerializer {
         statement.executeUpdate();
     }
 
-    public static void delete(SQLDataModel dataModel, Guild guild) {
+    public static void delete(Guild guild) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLNamedStatement statement = SQLBasicUtils.getDelete(dataModel.getGuildsTable());
 
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }
 
-    public static void updatePoints(SQLDataModel dataModel, Guild guild) {
+    public static void updatePoints(Guild guild) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLTable table = dataModel.getGuildsTable();
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orNull());
 

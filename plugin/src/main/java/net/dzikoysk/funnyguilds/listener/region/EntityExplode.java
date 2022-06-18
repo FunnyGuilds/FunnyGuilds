@@ -20,7 +20,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import panda.std.stream.PandaStream;
 
 public class EntityExplode extends AbstractFunnyListener {
 
@@ -140,7 +139,7 @@ public class EntityExplode extends AbstractFunnyListener {
             return;
         }
 
-        PandaStream.of(additionalExplodedBlocks)
+        additionalExplodedBlocks.stream()
                 .filter(block -> !explodedBlocks.contains(block))
                 .forEach(explodedBlocks::add);
     }

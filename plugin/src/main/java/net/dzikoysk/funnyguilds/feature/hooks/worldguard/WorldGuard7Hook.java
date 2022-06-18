@@ -105,6 +105,8 @@ public class WorldGuard7Hook extends WorldGuardHook {
             return Collections.emptyList();
         }
 
-        return PandaStream.of(regionSet.get().getRegions()).map(ProtectedRegion::getId).toList();
+        return PandaStream.of(regionSet.get().getRegions())
+                .map(ProtectedRegion::getId)
+                .toList();
     }
 }

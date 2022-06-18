@@ -17,28 +17,28 @@ public final class FunnyIOUtils {
     private FunnyIOUtils() {
     }
 
-    public static File createFile(String fileName, boolean isDirectory) {
+    public static Result<File, String> createFile(String fileName, boolean isDirectory) {
         return createFile(new File(fileName), isDirectory);
     }
 
-    public static File createFile(File file, boolean isDirectory) {
+    public static Result<File, String> createFile(File file, boolean isDirectory) {
         if (!file.exists()) {
             try {
                 if (isDirectory) {
                     if (!file.mkdirs()) {
-                        throw new IOException("Could not create directory");
+                        return Result.error("Could not create directory");
                     }
 
-                    return file;
+                    return Result.ok(file);
                 }
 
                 File parentFile = file.getParentFile();
                 if (!parentFile.exists() && !parentFile.mkdirs()) {
-                    throw new IOException("Could not create parent directories");
+                    return Result.error("Could not create parent directories");
                 }
 
                 if (!file.createNewFile()) {
-                    throw new IOException("Could not create file");
+                    return Result.error("Could not create file");
                 }
             }
             catch (IOException exception) {
@@ -46,7 +46,7 @@ public final class FunnyIOUtils {
             }
         }
 
-        return file;
+        return Result.ok(file);
     }
 
     public static void deleteFile(String fileName) {
@@ -60,7 +60,7 @@ public final class FunnyIOUtils {
 
         if (file.isDirectory()) {
             File[] contents = file.listFiles();
-            if (contents != null && contents.length != 0) {
+            if (contents != null) {
                 PandaStream.of(contents).forEach(FunnyIOUtils::deleteFile);
             }
         }
@@ -79,12 +79,8 @@ public final class FunnyIOUtils {
             encoding = encoding == null ? "UTF-8" : encoding;
 
             try (InputStream input = connection.getInputStream()) {
-                Result<String, IOException> conversion = IOUtils.convertStreamToString(input, Charset.forName(encoding));
-                if (conversion.isOk()) {
-                    return conversion.get();
-                }
-
-                throw conversion.getError();
+                return IOUtils.convertStreamToString(input, Charset.forName(encoding))
+                        .orThrow(exception -> exception);
             }
         }
         catch (Exception exception) {

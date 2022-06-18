@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import panda.std.stream.PandaStream;
 
 public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
@@ -28,27 +27,14 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
     public void execute() {
         try {
             if (this.dataModel instanceof SQLDataModel) {
-                SQLDataModel sqlDataModel = (SQLDataModel) this.dataModel;
-                DatabaseGuildSerializer.serialize(sqlDataModel, this.guild);
-
-                this.guild.getRegion()
-                        .peek(region -> DatabaseRegionSerializer.serialize(sqlDataModel, region));
-
-                PandaStream.of(this.guild.getMembers())
-                        .forEach(member -> DatabaseUserSerializer.serialize(sqlDataModel, member));
-
-                return;
+                DatabaseGuildSerializer.serialize(this.guild);
+                this.guild.getRegion().peek(DatabaseRegionSerializer::serialize);
+                this.guild.getMembers().forEach(DatabaseUserSerializer::serialize);
             }
-
-            if (this.dataModel instanceof FlatDataModel) {
-                FlatDataModel flatDataModel = (FlatDataModel) this.dataModel;
-                FlatGuildSerializer.serialize(flatDataModel, this.guild);
-
-                this.guild.getRegion()
-                        .peek(region -> FlatRegionSerializer.serialize(flatDataModel, region));
-
-                PandaStream.of(this.guild.getMembers())
-                        .forEach(member -> FlatUserSerializer.serialize(flatDataModel, member));
+            else if (this.dataModel instanceof FlatDataModel) {
+                FlatGuildSerializer.serialize(this.guild);
+                this.guild.getRegion().peek(FlatRegionSerializer::serialize);
+                this.guild.getMembers().forEach(FlatUserSerializer::serialize);
             }
         }
         catch (Exception exception) {

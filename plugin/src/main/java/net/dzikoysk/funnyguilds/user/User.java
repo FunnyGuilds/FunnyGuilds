@@ -101,11 +101,15 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean isOwner() {
-        return this.guild.map(guild -> guild.isOwner(this)).orElseGet(false);
+        return this.guild
+                .map(guild -> guild.isOwner(this))
+                .orElseGet(false);
     }
 
     public boolean isDeputy() {
-        return this.guild.map(guild -> guild.isDeputy(this)).orElseGet(false);
+        return this.guild
+                .map(guild -> guild.isDeputy(this))
+                .orElseGet(false);
     }
 
     public Option<UserBan> getBan() {
@@ -113,7 +117,9 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean isBanned() {
-        return this.ban.map(UserBan::isBanned).orElseGet(false);
+        return this.ban
+                .map(UserBan::isBanned)
+                .orElseGet(false);
     }
 
     public void setBan(@Nullable UserBan ban) {

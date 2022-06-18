@@ -15,9 +15,9 @@ import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.utilities.text.Joiner;
@@ -26,6 +26,7 @@ public class IndividualPlayerList {
 
     private final User user;
     private final PlayerList playerList;
+    private final FunnyServer funnyServer;
 
     private final Map<Integer, String> unformattedCells;
     private final int cellCount;
@@ -44,10 +45,12 @@ public class IndividualPlayerList {
     private int cycle;
     private int currentPage;
 
-    public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, Map<Integer, String> unformattedCells, String header,
-                                String footer, boolean animated, List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
+    public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, FunnyServer funnyServer,
+                                Map<Integer, String> unformattedCells, String header, String footer, boolean animated,
+                                List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
                                 int cellPing, boolean fillCells, boolean enableLegacyPlaceholders) {
         this.user = user;
+        this.funnyServer = funnyServer;
 
         this.unformattedCells = new HashMap<>(unformattedCells);
         this.header = header;
@@ -116,7 +119,7 @@ public class IndividualPlayerList {
 
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
-        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(player -> {
+        this.funnyServer.getPlayer(this.user).peek(player -> {
             this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet());
         });
     }
@@ -141,7 +144,7 @@ public class IndividualPlayerList {
     private String putVars(String cell) {
         String formatted = cell;
 
-        Option<Player> playerOption = this.user.getPlayer();
+        Option<Player> playerOption = this.funnyServer.getPlayer(this.user);
         if (playerOption.isEmpty()) {
             return formatted;
         }

@@ -80,7 +80,11 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            playerAttacker = this.server.getPlayer(lastAttacker.getUUID());
+            playerAttacker = this.funnyServer.getPlayer(lastAttacker.getUUID()).orNull();
+        }
+
+        if (playerAttacker == null) {
+            return;
         }
 
         Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);

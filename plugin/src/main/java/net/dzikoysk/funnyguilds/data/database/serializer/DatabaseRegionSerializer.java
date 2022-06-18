@@ -51,7 +51,8 @@ public final class DatabaseRegionSerializer {
         return Option.none();
     }
 
-    public static void serialize(SQLDataModel dataModel, Region region) {
+    public static void serialize(Region region) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getRegionsTable());
 
         statement.set("name", region.getName());
@@ -62,7 +63,8 @@ public final class DatabaseRegionSerializer {
         statement.executeUpdate();
     }
 
-    public static void delete(SQLDataModel dataModel, Region region) {
+    public static void delete(Region region) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLNamedStatement statement = SQLBasicUtils.getDelete(dataModel.getRegionsTable());
 
         statement.set("name", region.getName());

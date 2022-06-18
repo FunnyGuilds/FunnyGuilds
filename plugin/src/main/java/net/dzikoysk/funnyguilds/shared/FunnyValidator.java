@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 public final class FunnyValidator {
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^\\w{3,16}$");
-    private static final Pattern UUID_PATTERN = Pattern.compile("^[{]?[\\da-fA-F]{8}-([\\da-fA-F]{4}-){3}[\\da-fA-F]{12}[}]?$");
+    private static final Pattern UUID_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
 
     private FunnyValidator() {
     }

@@ -159,7 +159,9 @@ public final class FlatGuildSerializer {
         return DeserializationUtils.deserializeGuild(config, guildManager, values);
     }
 
-    public static boolean serialize(FlatDataModel dataModel, Guild guild) {
+    public static boolean serialize(Guild guild) {
+        FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+
         if (guild.getOwner() == null) {
             FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + ", caused by: owner is null");
             return false;

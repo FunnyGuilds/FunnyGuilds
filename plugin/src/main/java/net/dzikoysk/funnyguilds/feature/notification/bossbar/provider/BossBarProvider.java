@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider;
 
 import java.time.Duration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,11 +17,11 @@ public interface BossBarProvider {
 
     void removeNotification();
 
-    static BossBarProvider getBossBar(User user) {
+    static BossBarProvider getBossBar(FunnyServer funnyServer, User user) {
         if (Reflections.SERVER_VERSION.equalsIgnoreCase("v1_8_R3")) {
-            return new LegacyBossBarProviderImpl(user);
+            return new LegacyBossBarProviderImpl(funnyServer, user);
         }
 
-        return new BossBarProviderImpl(user);
+        return new BossBarProviderImpl(funnyServer, user);
     }
 }

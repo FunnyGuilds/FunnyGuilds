@@ -44,7 +44,7 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", owner.getName());
 
         owner.sendMessage(formatter.format(this.messages.deleteSuccessful));
-        broadcastMessage(formatter.format(this.messages.broadcastDelete));
+        this.broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 
 }

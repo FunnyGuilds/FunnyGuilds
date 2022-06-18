@@ -9,11 +9,7 @@ import panda.utilities.StringUtils;
 
 public final class FunnyFormatter {
 
-    private final List<Pair<String, Supplier<?>>> placeholders;
-
-    public FunnyFormatter() {
-        this.placeholders = new ArrayList<>();
-    }
+    private final List<Pair<String, Supplier<?>>> placeholders = new ArrayList<>();
 
     public String format(String message) {
         if (message == null || message.isEmpty()) {
@@ -32,7 +28,7 @@ public final class FunnyFormatter {
     }
 
     public static String format(String message, String placeholder, Supplier<?> valueSupplier) {
-        if (message == null || message.isEmpty()) {
+        if (StringUtils.isEmpty(message)) {
             return "";
         }
 

@@ -44,13 +44,11 @@ public final class LegacyUtils {
             }
         }
 
-        Option<Integer> result = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString()));
-        if (result.isEmpty()) {
-            FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + indexBuilder);
-            return -1;
-        }
-
-        return result.get();
+        return Option.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString()))
+                .orElseGet(() -> {
+                    FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + indexBuilder);
+                    return -1;
+                });
     }
 
 }

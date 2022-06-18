@@ -5,10 +5,10 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import panda.std.Option;
@@ -16,17 +16,17 @@ import panda.std.Option;
 public class BukkitUserProfile implements UserProfile {
 
     private final UUID uuid;
-    private final Server server;
+    private final FunnyServer funnyServer;
 
     private WeakReference<OfflinePlayer> offlinePlayerRef;
     private WeakReference<Player> playerRef;
 
-    public BukkitUserProfile(UUID uuid, Server server) {
+    public BukkitUserProfile(UUID uuid, FunnyServer funnyServer) {
         this.uuid = uuid;
-        this.server = server;
+        this.funnyServer = funnyServer;
 
-        this.offlinePlayerRef = new WeakReference<>(server.getOfflinePlayer(uuid));
-        this.playerRef = new WeakReference<>(server.getPlayer(uuid));
+        this.offlinePlayerRef = new WeakReference<>(funnyServer.getOfflinePlayer(uuid));
+        this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orNull());
     }
 
     //TODO: change visibility to private after removing deprecated methods from User
@@ -43,7 +43,7 @@ public class BukkitUserProfile implements UserProfile {
 
     private void refreshOfflinePlayerRef() {
         if (this.offlinePlayerRef.get() == null) {
-            this.offlinePlayerRef = new WeakReference<>(this.server.getOfflinePlayer(this.uuid));
+            this.offlinePlayerRef = new WeakReference<>(this.funnyServer.getOfflinePlayer(this.uuid));
         }
     }
 
@@ -100,14 +100,12 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public void refresh() {
-        Player player = this.server.getPlayer(this.uuid);
-        if (player == null) {
+        this.funnyServer.getPlayer(this.uuid).peek(player -> {
+            this.playerRef = new WeakReference<>(player);
+            this.offlinePlayerRef = new WeakReference<>(player);
+        }).onEmpty(() -> {
             this.playerRef = new WeakReference<>(null);
-            return;
-        }
-
-        this.playerRef = new WeakReference<>(player);
-        this.offlinePlayerRef = new WeakReference<>(player);
+        });
     }
 
     @Override

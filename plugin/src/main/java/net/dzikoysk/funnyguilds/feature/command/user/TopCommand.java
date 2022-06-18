@@ -21,7 +21,7 @@ public final class TopCommand extends AbstractFunnyCommand {
 
         this.messages.topList.forEach(line -> {
             String parsedRank = this.rankPlaceholdersService.format(line, targetUser);
-            sendMessage(sender, (parsedRank == null ? line : parsedRank));
+            this.sendMessage(sender, (parsedRank == null ? line : parsedRank));
         });
     }
 

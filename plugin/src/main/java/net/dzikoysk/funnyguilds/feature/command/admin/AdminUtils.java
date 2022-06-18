@@ -15,7 +15,9 @@ final class AdminUtils {
 
     public static @Nullable User getAdminUser(CommandSender sender) {
         UserManager userManager = FunnyGuilds.getInstance().getUserManager();
-        return (sender instanceof Player) ? userManager.findByUuid(((Player) sender).getUniqueId()).orNull() : null;
+        return (sender instanceof Player)
+                ? userManager.findByUuid(((Player) sender).getUniqueId()).orNull()
+                : null;
     }
 
     public static EventCause getCause(@Nullable User admin) {

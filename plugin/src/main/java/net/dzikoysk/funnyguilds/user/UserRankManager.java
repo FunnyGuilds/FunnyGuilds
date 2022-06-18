@@ -18,12 +18,9 @@ public class UserRankManager extends RankManager<UserTop, UserRank> {
     }
 
     public void register(String id, UserTop userTop) {
-        Option<String> enabledTop = PandaStream.of(this.pluginConfiguration.top.enabledUserTops).find(top -> top.equalsIgnoreCase(id));
-        if (enabledTop.isEmpty()) {
-            return;
-        }
-
-        this.addTop(id, userTop);
+        PandaStream.of(this.pluginConfiguration.top.enabledUserTops)
+                .find(top -> top.equalsIgnoreCase(id))
+                .peek(enabledTop -> this.addTop(id, userTop));
     }
 
     public void register(Map<String, UserTop> topsToRegister) {

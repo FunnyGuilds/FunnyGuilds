@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.shared;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Queue;
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
@@ -16,8 +14,7 @@ public final class TimeUtils {
             return 0;
         }
 
-
-        Queue<Character> type = Collections.asLifoQueue(new ArrayDeque<>());
+        Stack<Character> type = new Stack<>();
         StringBuilder value = new StringBuilder();
 
         boolean calc = false;
@@ -30,12 +27,12 @@ public final class TimeUtils {
                 case 'm':
                 case 's':
                     if (!calc) {
-                        type.add(c);
+                        type.push(c);
                     }
 
                     try {
                         long i = Integer.parseInt(value.toString());
-                        switch (type.remove()) {
+                        switch (type.pop()) {
                             case 'd':
                                 time += i * 86400000L;
                                 break;
@@ -55,7 +52,7 @@ public final class TimeUtils {
                         return time;
                     }
 
-                    type.add(c);
+                    type.push(c);
                     calc = true;
 
                     break;

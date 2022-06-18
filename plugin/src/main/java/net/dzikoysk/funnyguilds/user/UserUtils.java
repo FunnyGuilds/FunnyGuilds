@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
+import panda.std.Result;
 
 public final class UserUtils {
 
@@ -144,7 +145,9 @@ public final class UserUtils {
         }
 
         if (FunnyValidator.validateUsername(filenameWithoutExtension)) {
-            return migrateUserFile(file).orElse(Option.none());
+            return migrateUserFile(file)
+                    .onError(error -> FunnyGuilds.getPluginLogger().error(error))
+                    .toOption();
         }
 
         return Option.none();
@@ -154,32 +157,29 @@ public final class UserUtils {
      * Try migrating a user file to a new name
      *
      * @param file user file
-     * @return Migrated user file
+     * @return Result with migrated user file or a migration error message
      */
-    public static Option<File> migrateUserFile(File file) {
+    public static Result<File, String> migrateUserFile(File file) {
         YamlWrapper wrapper = new YamlWrapper(file);
         String id = wrapper.getString("uuid");
 
         if (id == null || !FunnyValidator.validateUUID(id)) {
-            FunnyGuilds.getPluginLogger().error("Migration of user file '" + file.getName() + "' failed, UUID is invalid");
-            return Option.none();
+            return Result.error("Migration of user file '" + file.getName() + "' failed, UUID is invalid");
         }
 
         Path source = file.toPath();
         Path target = source.resolveSibling(String.format("%s.yml", id));
 
         if (Files.exists(target)) {
-            return Option.of(target.toFile());
+            return Result.ok(target.toFile());
         }
 
         try {
-            return Option.of(Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile());
+            return Result.ok(Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile());
         }
         catch (IOException exception) {
-            FunnyGuilds.getPluginLogger().error("Could not move file '" + source + "' to '" + target + "': ", exception.getCause());
+            return Result.error("Could not move file '" + source + "' to '" + target + "': " + exception.getMessage());
         }
-
-        return Option.none();
     }
 
 }

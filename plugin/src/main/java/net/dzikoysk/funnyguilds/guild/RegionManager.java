@@ -214,7 +214,7 @@ public class RegionManager {
         }
 
         if (dataModel instanceof SQLDataModel) {
-            DatabaseRegionSerializer.delete((SQLDataModel) dataModel, region);
+            DatabaseRegionSerializer.delete(region);
         }
 
         this.removeRegion(region);

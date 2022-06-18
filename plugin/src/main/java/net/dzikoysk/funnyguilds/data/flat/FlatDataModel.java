@@ -21,6 +21,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Option;
+import panda.std.Result;
 import panda.std.stream.PandaStream;
 
 public class FlatDataModel implements DataModel {
@@ -61,7 +62,13 @@ public class FlatDataModel implements DataModel {
             return Option.none();
         }
 
-        return Option.of(FunnyIOUtils.createFile(new File(fileFolder, name + ".yml"), false));
+        Result<File, String> createResult = FunnyIOUtils.createFile(new File(fileFolder, name + ".yml"), false);
+        if (createResult.isErr()) {
+            FunnyGuilds.getPluginLogger().error(createResult.getError());
+            return Option.none();
+        }
+
+        return Option.of(createResult.get());
     }
 
     public Option<File> getUserFile(User user) {
@@ -129,7 +136,7 @@ public class FlatDataModel implements DataModel {
         long serializationErrors = PandaStream.of(users)
                 .filter(user -> checkUser(user, incorrectUsersCount))
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
-                .filter(user -> !FlatUserSerializer.serialize(this, user))
+                .filterNot(FlatUserSerializer::serialize)
                 .count();
 
         long errors = serializationErrors + incorrectUsersCount.get();
@@ -156,8 +163,7 @@ public class FlatDataModel implements DataModel {
                         incorrectGuildsCount.incrementAndGet();
                     }
                 })
-                .filter(Option::isPresent)
-                .map(Option::get)
+                .mapOpt(guildOption -> guildOption)
                 .forEach(Guild::wasChanged)
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!"))
@@ -182,7 +188,7 @@ public class FlatDataModel implements DataModel {
 
         long errors = PandaStream.of(guilds)
                 .filter(guild -> !ignoreNotChanged || guild.wasChanged())
-                .filter(guild -> !FlatGuildSerializer.serialize(this, guild))
+                .filterNot(FlatGuildSerializer::serialize)
                 .count();
 
         if (errors > 0) {
@@ -206,9 +212,7 @@ public class FlatDataModel implements DataModel {
         }
 
         long correctlyLoaded = PandaStream.of(regionFiles)
-                .map(FlatRegionSerializer::deserialize)
-                .filter(Option::isPresent)
-                .map(Option::get)
+                .mapOpt(FlatRegionSerializer::deserialize)
                 .forEach(region -> {
                     region.wasChanged();
                     regionManager.addRegion(region);
@@ -234,7 +238,7 @@ public class FlatDataModel implements DataModel {
 
         long errors = PandaStream.of(regions)
                 .filter(region -> !ignoreNotChanged || region.wasChanged())
-                .filter(region -> !FlatRegionSerializer.serialize(this, region))
+                .filterNot(FlatRegionSerializer::serialize)
                 .count();
 
         if (errors > 0) {

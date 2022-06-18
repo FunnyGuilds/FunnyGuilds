@@ -41,6 +41,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                         IndividualPlayerList playerList = new IndividualPlayerList(
                                 user,
                                 this.plugin.getNmsAccessor().getPlayerListAccessor(),
+                                this.plugin.getFunnyServer(),
                                 tablistConfig.playerList,
                                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                                 tablistConfig.playerListAnimated, tablistConfig.pages,

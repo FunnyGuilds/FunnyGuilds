@@ -48,7 +48,7 @@ public final class KillsCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName())
                 .register("{KILLS}", finalKills);
 
-        sendMessage(sender, formatter.format(this.messages.adminKillsChanged));
+        this.sendMessage(sender, formatter.format(this.messages.adminKillsChanged));
     }
 
 }

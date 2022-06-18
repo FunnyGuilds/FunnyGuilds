@@ -46,10 +46,10 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 this.post(sender, args);
                 break;
             case "help":
-                this.messages.funnyguildsHelp.forEach(line -> sendMessage(sender, line));
+                this.messages.funnyguildsHelp.forEach(line -> this.sendMessage(sender, line));
                 break;
             default:
-                sendMessage(sender, FunnyFormatter.format(this.messages.funnyguildsVersion, "{VERSION}",
+                this.sendMessage(sender, FunnyFormatter.format(this.messages.funnyguildsVersion, "{VERSION}",
                         this.plugin.getVersion().getFullVersion()));
                 break;
         }
@@ -59,14 +59,14 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     private void reload(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.reload"), this.messages.permission);
 
-        sendMessage(sender, this.messages.reloadReloading);
+        this.sendMessage(sender, this.messages.reloadReloading);
         this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(this.plugin, sender));
     }
 
     private void saveAll(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.admin"), this.messages.permission);
 
-        sendMessage(sender, this.messages.saveallSaving);
+        this.sendMessage(sender, this.messages.saveallSaving);
         long currentTime = System.currentTimeMillis();
 
         DataModel dataModel = this.dataModel;
@@ -80,7 +80,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         }
 
         String time = String.format("%.2f", (System.currentTimeMillis() - currentTime) / 1000.0D);
-        sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
+        this.sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
     }
 
     private void post(CommandSender sender, String[] args) {
@@ -88,7 +88,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
         Option<FunnybinRequest> request = FunnybinRequest.of(sender, args);
         if (!request.isPresent()) {
-            this.messages.funnybinHelp.forEach(line -> sendMessage(sender, line));
+            this.messages.funnybinHelp.forEach(line -> this.sendMessage(sender, line));
             return;
         }
 

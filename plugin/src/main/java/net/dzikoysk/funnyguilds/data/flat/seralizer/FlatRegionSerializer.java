@@ -51,7 +51,9 @@ public final class FlatRegionSerializer {
         return DeserializationUtils.deserializeRegion(FunnyGuilds.getInstance().getRegionManager(), values);
     }
 
-    public static boolean serialize(FlatDataModel dataModel, Region region) {
+    public static boolean serialize(Region region) {
+        FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+
         Option<File> fileOption = dataModel.getRegionFile(region);
         if (fileOption.isEmpty()) {
             return false;

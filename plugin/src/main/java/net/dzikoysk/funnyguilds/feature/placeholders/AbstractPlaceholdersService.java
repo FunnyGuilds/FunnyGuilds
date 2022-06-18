@@ -15,9 +15,10 @@ import panda.utilities.text.Joiner;
 
 public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P>> implements PlaceholdersService<T> {
 
-    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT = (list, listNoValue) -> list.isEmpty()
-            ? listNoValue
-            : Joiner.on(", ").join(list).toString();
+    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT =
+            (list, listNoValue) -> list.isEmpty()
+                    ? listNoValue
+                    : Joiner.on(", ").join(list).toString();
 
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
@@ -49,10 +50,8 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
      */
     public Option<Placeholder<T>> getPlaceholder(String name) {
         return PandaStream.of(this.placeholders.values())
-                .map(value -> value.getPlaceholder(name))
-                .filter(Option::isPresent)
-                .head()
-                .orElseGet(Option.none());
+                .mapOpt(value -> value.getPlaceholder(name))
+                .head();
     }
 
     /**

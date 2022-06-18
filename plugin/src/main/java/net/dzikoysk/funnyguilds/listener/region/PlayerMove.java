@@ -75,7 +75,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (this.config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                this.bossBarService.getBossBarProvider(user).sendNotification(
+                                this.bossBarService.getBossBarProvider(this.funnyServer, user).sendNotification(
                                         formatter.format(this.messages.notificationBossbarLeaveGuildRegion),
                                         this.config.bossBarOptions_,
                                         this.config.regionNotificationTime
@@ -129,7 +129,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (this.config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                this.bossBarService.getBossBarProvider(user).sendNotification(
+                                this.bossBarService.getBossBarProvider(this.funnyServer, user).sendNotification(
                                         formatter.format(this.messages.notificationBossbarEnterGuildRegion),
                                         this.config.bossBarOptions_,
                                         this.config.regionNotificationTime
@@ -166,19 +166,19 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             for (User memberUser : guild.getOnlineMembers()) {
-                                Player memberPlayer = this.server.getPlayer(memberUser.getUUID());
-                                if (memberPlayer == null) {
+                                Option<Player> memberPlayer = this.funnyServer.getPlayer(memberUser);
+                                if (memberPlayer.isEmpty()) {
                                     continue;
                                 }
 
                                 if (this.config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
                                     this.messageAccessor.sendActionBarMessage(formatter.format(
-                                            this.messages.notificationActionbarIntruderEnterGuildRegion), memberPlayer
+                                            this.messages.notificationActionbarIntruderEnterGuildRegion), memberPlayer.get()
                                     );
                                 }
 
                                 if (this.config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                    this.bossBarService.getBossBarProvider(memberUser).sendNotification(
+                                    this.bossBarService.getBossBarProvider(this.funnyServer, memberUser).sendNotification(
                                             formatter.format(this.messages.notificationBossbarIntruderEnterGuildRegion),
                                             this.config.bossBarOptions_,
                                             this.config.regionNotificationTime
@@ -198,7 +198,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                             .fadeOutDuration(this.config.notificationTitleFadeOut)
                                             .build();
 
-                                    this.messageAccessor.sendTitleMessage(titleMessage, memberPlayer);
+                                    this.messageAccessor.sendTitleMessage(titleMessage, memberPlayer.get());
                                 }
 
                             }

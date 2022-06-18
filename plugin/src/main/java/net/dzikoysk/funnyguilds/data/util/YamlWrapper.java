@@ -6,13 +6,21 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import panda.std.Result;
 
 public final class YamlWrapper extends YamlConfiguration {
 
     private final File file;
 
     public YamlWrapper(File file) {
-        this.file = FunnyIOUtils.createFile(file, false);
+        Result<File, String> createResult = FunnyIOUtils.createFile(file, false);
+        if (createResult.isErr()) {
+            FunnyGuilds.getPluginLogger().error(createResult.getError());
+            this.file = null;
+            return;
+        }
+
+        this.file = createResult.get();
 
         try {
             super.load(this.file);
@@ -25,7 +33,12 @@ public final class YamlWrapper extends YamlConfiguration {
     @Override
     public void save(@NotNull File file) {
         try {
-            FunnyIOUtils.createFile(file, false);
+            Result<File, String> createResult = FunnyIOUtils.createFile(file, false);
+            if (createResult.isErr()) {
+                FunnyGuilds.getPluginLogger().error(createResult.getError());
+                return;
+            }
+
             super.save(file);
         }
         catch (IOException exception) {

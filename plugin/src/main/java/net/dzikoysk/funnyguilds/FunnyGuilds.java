@@ -100,6 +100,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
+import panda.std.Result;
 import panda.utilities.ClassUtils;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -180,7 +181,11 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        FunnyIOUtils.createFile(this.getDataFolder(), true);
+        Result<File, String> createResult = FunnyIOUtils.createFile(this.getDataFolder(), true);
+        if (createResult.isErr()) {
+            this.shutdown(createResult.getError());
+            return;
+        }
 
         try {
             this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile);
@@ -420,7 +425,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        this.userManager.getUsers().forEach(user -> this.bossBarService.getBossBarProvider(user).removeNotification());
+        this.userManager.getUsers().forEach(user -> this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification());
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -472,6 +477,7 @@ public class FunnyGuilds extends JavaPlugin {
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
+                    this.funnyServer,
                     this.tablistConfiguration.playerList,
                     this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
                     this.tablistConfiguration.playerListAnimated, this.tablistConfiguration.pages,

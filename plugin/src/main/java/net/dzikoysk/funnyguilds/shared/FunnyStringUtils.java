@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import panda.utilities.StringUtils;
 import panda.utilities.text.Joiner;
 
 public final class FunnyStringUtils {
@@ -25,7 +26,7 @@ public final class FunnyStringUtils {
 
     public static List<String> fromString(String s) {
         List<String> list = new ArrayList<>();
-        if (s == null || s.isEmpty()) {
+        if (StringUtils.isEmpty(s)) {
             return list;
         }
 

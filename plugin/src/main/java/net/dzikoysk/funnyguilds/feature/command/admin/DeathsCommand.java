@@ -48,7 +48,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName())
                 .register("{DEATHS}", finalDeaths);
 
-        sendMessage(sender, formatter.format(this.messages.adminDeathsChanged));
+        this.sendMessage(sender, formatter.format(this.messages.adminDeathsChanged));
     }
 
 }

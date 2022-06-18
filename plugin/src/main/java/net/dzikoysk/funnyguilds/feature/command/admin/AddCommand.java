@@ -49,7 +49,7 @@ public final class AddCommand extends AbstractFunnyCommand {
 
         userToAdd.sendMessage(formatter.format(this.messages.joinToMember));
         guild.getOwner().sendMessage(formatter.format(this.messages.joinToOwner));
-        broadcastMessage(formatter.format(this.messages.broadcastJoin));
+        this.broadcastMessage(formatter.format(this.messages.broadcastJoin));
     }
 
 }

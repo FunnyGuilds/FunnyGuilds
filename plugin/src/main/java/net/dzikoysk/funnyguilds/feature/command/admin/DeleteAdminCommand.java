@@ -39,8 +39,8 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         guild.getOwner().sendMessage(formatter.format(this.messages.adminGuildBroken));
-        sendMessage(sender, formatter.format(this.messages.deleteSuccessful));
-        broadcastMessage(formatter.format(this.messages.broadcastDelete));
+        this.sendMessage(sender, formatter.format(this.messages.deleteSuccessful));
+        this.broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 
 }

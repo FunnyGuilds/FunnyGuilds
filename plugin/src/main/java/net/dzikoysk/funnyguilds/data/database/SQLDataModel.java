@@ -172,11 +172,11 @@ public class SQLDataModel implements DataModel {
     public void save(boolean ignoreNotChanged) {
         PandaStream.of(this.plugin.getUserManager().getUsers())
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
-                .forEach(user -> DatabaseUserSerializer.serialize(this, user));
+                .forEach(DatabaseUserSerializer::serialize);
 
         PandaStream.of(this.plugin.getGuildManager().getGuilds())
                 .filter(guild -> !ignoreNotChanged || guild.wasChanged())
-                .forEach(guild -> DatabaseGuildSerializer.serialize(this, guild));
+                .forEach(DatabaseGuildSerializer::serialize);
 
         if (!this.plugin.getPluginConfiguration().regionsEnabled) {
             return;
@@ -184,7 +184,7 @@ public class SQLDataModel implements DataModel {
 
         PandaStream.of(this.plugin.getRegionManager().getRegions())
                 .filter(region -> !ignoreNotChanged || region.wasChanged())
-                .forEach(region -> DatabaseRegionSerializer.serialize(this, region));
+                .forEach(DatabaseRegionSerializer::serialize);
     }
 
     public SQLTable getUsersTable() {

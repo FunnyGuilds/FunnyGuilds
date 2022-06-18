@@ -50,7 +50,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
                 .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, this.config.pointsFormat))
                 .register("{POINTS}", finalPoints);
 
-        sendMessage(sender, formatter.format(this.messages.adminPointsChanged));
+        this.sendMessage(sender, formatter.format(this.messages.adminPointsChanged));
     }
 
 }

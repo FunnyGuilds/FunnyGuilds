@@ -21,7 +21,7 @@ public final class RankingCommand extends AbstractFunnyCommand {
 
         this.messages.rankingList.forEach(line -> {
             String parsedRank = this.rankPlaceholdersService.format(line, targetUser);
-            sendMessage(sender, (parsedRank == null ? line : parsedRank));
+            this.sendMessage(sender, (parsedRank == null ? line : parsedRank));
         });
     }
 

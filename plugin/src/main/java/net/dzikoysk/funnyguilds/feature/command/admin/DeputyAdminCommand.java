@@ -39,7 +39,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
-            sendMessage(sender, this.messages.deputyRemove);
+            this.sendMessage(sender, this.messages.deputyRemove);
             userToMove.sendMessage(this.messages.deputyMember);
 
             guild.broadcast(formatter.format(this.messages.deputyNoLongerMembers));
@@ -48,7 +48,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
 
         guild.addDeputy(userToMove);
 
-        sendMessage(sender, this.messages.deputySet);
+        this.sendMessage(sender, this.messages.deputySet);
         userToMove.sendMessage(this.messages.deputyOwner);
         guild.broadcast(formatter.format(this.messages.deputyMembers));
     }

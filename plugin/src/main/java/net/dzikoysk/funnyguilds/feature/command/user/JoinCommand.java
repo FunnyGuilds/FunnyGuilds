@@ -62,8 +62,10 @@ public final class JoinCommand extends AbstractFunnyCommand {
             return;
         }
 
-        when(guild.getMembers().size() >= this.config.maxMembersInGuild, FunnyFormatter.format(this.messages.inviteAmountJoin,
-                "{AMOUNT}", this.config.maxMembersInGuild));
+        when(
+                guild.getMembers().size() >= this.config.maxMembersInGuild,
+                FunnyFormatter.format(this.messages.inviteAmountJoin, "{AMOUNT}", this.config.maxMembersInGuild)
+        );
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
             return;
@@ -87,7 +89,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", player.getName());
 
         user.sendMessage(formatter.format(this.messages.joinToMember));
-        broadcastMessage(formatter.format(this.messages.broadcastJoin));
+        this.broadcastMessage(formatter.format(this.messages.broadcastJoin));
 
         guild.getOwner().sendMessage(formatter.format(this.messages.joinToOwner));
     }

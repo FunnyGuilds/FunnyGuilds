@@ -18,7 +18,7 @@ public class ConcurrencyTask implements Runnable {
     @Override
     public void run() {
         for (ConcurrencyRequest request : this.requests) {
-            boolean result = execute(request);
+            boolean result = this.execute(request);
 
             if (!result) {
                 FunnyGuilds.getPluginLogger().warning("Task #" + this.id + " has been interrupted");
@@ -27,7 +27,7 @@ public class ConcurrencyTask implements Runnable {
         }
     }
 
-    private static boolean execute(ConcurrencyRequest request) {
+    private boolean execute(ConcurrencyRequest request) {
         try {
             request.execute();
         }

@@ -52,7 +52,8 @@ public final class DatabaseUserSerializer {
         return Option.none();
     }
 
-    public static void serialize(SQLDataModel dataModel, User user) {
+    public static void serialize(User user) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getUsersTable());
 
         statement.set("uuid", user.getUUID().toString());
@@ -68,7 +69,8 @@ public final class DatabaseUserSerializer {
         statement.executeUpdate();
     }
 
-    public static void updatePoints(SQLDataModel dataModel, User user) {
+    public static void updatePoints(User user) {
+        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLTable table = dataModel.getUsersTable();
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orNull());
 

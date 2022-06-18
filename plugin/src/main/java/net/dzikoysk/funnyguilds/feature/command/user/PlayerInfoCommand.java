@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -61,7 +60,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             formatter.register("{TAG}", this.messages.gTagNoValue);
         }
 
-        PandaStream.of(baseMessage).forEach(line -> sendMessage(messageTarget, formatter.format(line)));
+        baseMessage.forEach(line -> this.sendMessage(messageTarget, formatter.format(line)));
     }
 
 }

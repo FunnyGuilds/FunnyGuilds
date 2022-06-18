@@ -24,7 +24,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         User user = this.userManager.findByPlayer(player)
                 .peek(foundUser -> foundUser.getProfile().refresh())
                 .orElseGet(() -> {
-                    UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.server);
+                    UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.funnyServer);
                     return this.userManager.create(player.getUniqueId(), player.getName(), profile);
                 });
 
@@ -39,6 +39,7 @@ public class PlayerJoin extends AbstractFunnyListener {
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
+                    this.funnyServer,
                     this.tablistConfig.playerList,
                     this.tablistConfig.playerListHeader, this.tablistConfig.playerListFooter,
                     this.tablistConfig.playerListAnimated, this.tablistConfig.pages,

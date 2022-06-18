@@ -42,7 +42,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getTag())
                 .register("{LIVES}", lives);
 
-        sendMessage(sender, formatter.format(this.messages.adminLivesChanged));
+        this.sendMessage(sender, formatter.format(this.messages.adminLivesChanged));
     }
 
 }

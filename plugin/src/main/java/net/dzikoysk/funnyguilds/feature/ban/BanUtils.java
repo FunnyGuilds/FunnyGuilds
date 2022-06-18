@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import org.bukkit.ChatColor;
-import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public final class BanUtils {
 
@@ -16,15 +16,16 @@ public final class BanUtils {
 
     public static void ban(Guild guild, long time, String reason) {
         guild.setBan(time + System.currentTimeMillis());
-        guild.getMembers().forEach(member -> {
-            ban(member, time, reason);
-            member.getProfile().kick(getBanMessage(member));
-        });
+        PandaStream.of(guild.getMembers())
+                .map(member -> ban(member, time, reason))
+                .forEach(member -> member.getProfile().kick(getBanMessage(member)));
     }
 
-    public static void ban(User user, long time, String reason) {
+    public static User ban(User user, long time, String reason) {
         time += System.currentTimeMillis();
         user.setBan(new UserBan(reason, time));
+
+        return user;
     }
 
     public static void unban(Guild guild) {
@@ -45,19 +46,17 @@ public final class BanUtils {
     public static String getBanMessage(User user) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
-        Option<UserBan> banOption = user.getBan();
-        if (banOption.isEmpty()) {
-            return "";
-        }
+        return user.getBan()
+                .map(ban -> {
+                    FunnyFormatter formatter = new FunnyFormatter()
+                            .register("{NEWLINE}", ChatColor.RESET + "\n")
+                            .register("{DATE}", messages.dateFormat.format(ban.getBanTime()))
+                            .register("{REASON}", ban.getReason())
+                            .register("{PLAYER}", user.getName());
 
-        UserBan ban = banOption.get();
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{NEWLINE}", ChatColor.RESET + "\n")
-                .register("{DATE}", messages.dateFormat.format(ban.getBanTime()))
-                .register("{REASON}", ban.getReason())
-                .register("{PLAYER}", user.getName());
-
-        return formatter.format(messages.banMessage);
+                    return formatter.format(messages.banMessage);
+                })
+                .orElseGet("");
     }
 
 }

@@ -30,7 +30,7 @@ public class WarPacketCallbacks implements PacketCallbacks {
         }
 
         this.plugin.getConcurrencyManager().postRequests(
-                new WarAttackRequest(this.plugin, this.plugin.getGuildEntityHelper(), this.user, entityId)
+                new WarAttackRequest(this.plugin.getFunnyServer(), this.plugin.getGuildEntityHelper(), this.user, entityId)
         );
     }
 

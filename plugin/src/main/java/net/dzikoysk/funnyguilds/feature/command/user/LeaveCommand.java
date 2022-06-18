@@ -48,7 +48,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", member.getName());
 
         member.sendMessage(formatter.format(this.messages.leaveToUser));
-        broadcastMessage(formatter.format(this.messages.broadcastLeave));
+        this.broadcastMessage(formatter.format(this.messages.broadcastLeave));
     }
 
 }

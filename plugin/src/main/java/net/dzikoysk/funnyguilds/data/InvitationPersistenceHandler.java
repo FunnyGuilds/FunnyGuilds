@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.Bukkit;
@@ -87,19 +88,24 @@ public class InvitationPersistenceHandler {
                 .filter(Option::isPresent)
                 .map(Option::get)
                 .forEach(guild -> {
-                    String key = guild.getUUID().toString();
-
-                    PandaStream.of(yaml.getStringList(key + ".players"))
-                            .map(UUID::fromString)
-                            .forEach(userUuid -> this.guildInvitationList.createInvitation(guild.getUUID(), userUuid));
-
-                    PandaStream.of(yaml.getStringList(key + ".guilds"))
-                            .map(UUID::fromString)
-                            .map(this.guildManager::findByUuid)
-                            .filter(Option::isPresent)
-                            .map(Option::get)
-                            .forEach(allyGuild -> this.allyInvitationList.createInvitation(guild, allyGuild));
+                    this.loadGuildInvitations(yaml, guild);
+                    this.loadAllyInvitations(yaml, guild);
                 });
+    }
+
+    private void loadGuildInvitations(YamlWrapper yaml, Guild guild) {
+        PandaStream.of(yaml.getStringList(guild.getUUID().toString() + ".players"))
+                .map(UUID::fromString)
+                .forEach(userUuid -> this.guildInvitationList.createInvitation(guild.getUUID(), userUuid));
+    }
+
+    private void loadAllyInvitations(YamlWrapper yaml, Guild guild) {
+        PandaStream.of(yaml.getStringList(guild.getUUID().toString() + ".guilds"))
+                .map(UUID::fromString)
+                .map(this.guildManager::findByUuid)
+                .filter(Option::isPresent)
+                .map(Option::get)
+                .forEach(allyGuild -> this.allyInvitationList.createInvitation(guild, allyGuild));
     }
 
 }

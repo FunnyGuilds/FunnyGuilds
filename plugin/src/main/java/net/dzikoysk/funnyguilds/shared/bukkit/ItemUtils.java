@@ -164,9 +164,8 @@ public final class ItemUtils {
                 case "itemflags":
                     PandaStream.of(attributeValue.split(","))
                             .map(String::trim)
-                            .map(ItemUtils::matchItemFlag)
-                            .filter(Option::isPresent)
-                            .forEach(flagOption -> item.setFlag(flagOption.get()));
+                            .mapOpt(ItemUtils::matchItemFlag)
+                            .forEach(item::setFlag);
 
                     continue;
                 case "armorcolor":

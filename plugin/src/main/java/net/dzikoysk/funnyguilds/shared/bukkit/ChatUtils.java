@@ -13,7 +13,7 @@ public final class ChatUtils {
     private ChatUtils() {
     }
 
-    public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([\\dA-Fa-fK-Ok-oRXrx][^\u00a7]*)");
+    public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
 
     public static String colored(String message) {
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : "";

@@ -39,7 +39,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
     @Override
     public void execute() throws Exception {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        List<Option<FunnybinResponse>> sentPastes = new ArrayList<>();
+        List<FunnybinResponse> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < this.files.size(); i++) {
             String fileName = this.files.get(i);
@@ -104,12 +104,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         }
 
         if (sentPastes.size() == 1) {
-            Option<FunnybinResponse> paste = sentPastes.get(0);
-            if (paste.isEmpty()) {
-                return;
-            }
-
-            String message = FunnyFormatter.format(messages.funnybinFileSent, "{LINK}", paste.get().getShortUrl());
+            String message = FunnyFormatter.format(messages.funnybinFileSent, "{LINK}", sentPastes.get(0).getShortUrl());
             ChatUtils.sendMessage(this.sender, message);
             return;
         }
@@ -117,11 +112,10 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         ChatUtils.sendMessage(this.sender, messages.funnybinBuildingBundle);
 
         try {
-            Option<FunnybinResponse> response = FunnyTelemetry.createBundle(PandaStream.of(sentPastes)
-                    .filter(Option::isPresent)
-                    .map(Option::get)
-                    .map(FunnybinResponse::getUuid)
-                    .toList()
+            Option<FunnybinResponse> response = FunnyTelemetry.createBundle(
+                    PandaStream.of(sentPastes)
+                            .map(FunnybinResponse::getUuid)
+                            .toList()
             );
 
             if (response.isEmpty()) {

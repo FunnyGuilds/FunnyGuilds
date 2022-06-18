@@ -16,7 +16,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -37,7 +36,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true));
-            PandaStream.of(this.messages.breakAlliesList).forEach(line -> owner.sendMessage(formatter.format(line)));
+            this.messages.breakAlliesList.forEach(line -> owner.sendMessage(formatter.format(line)));
             return;
         }
 
@@ -65,11 +64,11 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
-        PandaStream.of(guild.getMembers()).forEach(member -> {
+        guild.getMembers().forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
         });
 
-        PandaStream.of(oppositeGuild.getMembers()).forEach(member -> {
+        oppositeGuild.getMembers().forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
         });
 

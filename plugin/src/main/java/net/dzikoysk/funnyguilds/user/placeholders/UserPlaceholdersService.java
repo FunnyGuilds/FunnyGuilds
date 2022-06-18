@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 public class UserPlaceholdersService extends AbstractPlaceholdersService<User, UserPlaceholders> {
@@ -48,7 +47,7 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                         .map(World::getName)
                         .orElseGet(""))
                 .playerOptionProperty("online", playerOption -> playerOption
-                        .map(player -> PandaStream.of(Bukkit.getOnlinePlayers()).filter(player::canSee).count())
+                        .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
                         .orElseGet(0L))
                 .playerProperty("wg-region", player -> {
                     List<String> regionNames = getWorldGuardRegionNames(player);

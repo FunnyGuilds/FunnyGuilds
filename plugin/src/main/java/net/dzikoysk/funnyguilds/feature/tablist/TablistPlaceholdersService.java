@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
@@ -48,10 +47,14 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
                 this.basicPlaceholdersService.getPlaceholdersKeys(),
                 this.timePlaceholdersService.getPlaceholdersKeys(),
                 this.userPlaceholdersService.getPlaceholdersKeys(),
-                this.guildPlaceholdersService.getPlaceholdersKeys().stream().map(key -> "{G-" + key).collect(Collectors.toSet())
+                PandaStream.of(this.guildPlaceholdersService.getPlaceholdersKeys())
+                        .map(key -> "{G-" + key)
+                        .toSet()
         );
 
-        return PandaStream.of(keys).flatMap(streamKeys -> streamKeys).toSet();
+        return PandaStream.of(keys)
+                .flatMap(streamKeys -> streamKeys)
+                .toSet();
     }
 
 }

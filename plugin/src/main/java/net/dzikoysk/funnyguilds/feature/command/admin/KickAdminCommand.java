@@ -46,11 +46,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        sendMessage(sender, formatter.format(this.messages.kickToOwner));
-        broadcastMessage(formatter.format(this.messages.broadcastKick));
+        this.sendMessage(sender, formatter.format(this.messages.kickToOwner));
+        this.broadcastMessage(formatter.format(this.messages.broadcastKick));
         user.sendMessage(formatter.format(this.messages.kickToPlayer));
 
-        this.funnyServer.getPlayer(user.getUUID()).peek(player -> {
+        this.funnyServer.getPlayer(user).peek(player -> {
             this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player));
         });
     }

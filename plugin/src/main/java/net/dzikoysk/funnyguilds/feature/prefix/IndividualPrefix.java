@@ -250,7 +250,7 @@ public class IndividualPrefix {
 
     @NotNull
     public Scoreboard getScoreboard() {
-        return this.user.getCache().getScoreboard().orThrow(() -> new NullPointerException("scoreboard is null"));
+        return this.user.getCache().getScoreboard().orThrow(() -> new IllegalStateException("scoreboard is null"));
     }
 
 }

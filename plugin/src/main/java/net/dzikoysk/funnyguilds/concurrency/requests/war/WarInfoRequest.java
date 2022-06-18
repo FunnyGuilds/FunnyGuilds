@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import panda.std.Pair;
@@ -21,7 +22,7 @@ import panda.std.stream.PandaStream;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
-    private final FunnyGuilds plugin;
+    private final FunnyServer funnyServer;
     private final PluginConfiguration config;
     private final GuildEntityHelper guildEntityHelper;
     private InfoCommand infoExecutor;
@@ -29,7 +30,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
     private final int entityId;
 
     public WarInfoRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, int entityId) {
-        this.plugin = plugin;
+        this.funnyServer = plugin.getFunnyServer();
         this.config = plugin.getPluginConfiguration();
         this.guildEntityHelper = guildEntityHelper;
 
@@ -49,7 +50,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
         PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
                 .filter(entry -> entry.getValue().getId() == this.entityId)
                 .map(Entry::getKey)
-                .mapOpt(guild -> this.plugin.getFunnyServer().getPlayer(this.user.getUUID())
+                .mapOpt(guild -> this.funnyServer.getPlayer(this.user)
                         .map(player -> Pair.of(player, guild))
                 )
                 .forEach(playerToGuild -> this.displayGuildInfo(playerToGuild.getFirst(), playerToGuild.getSecond()));

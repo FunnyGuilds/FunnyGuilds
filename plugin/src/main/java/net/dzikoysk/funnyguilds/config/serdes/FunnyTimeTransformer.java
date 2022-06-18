@@ -36,11 +36,15 @@ public class FunnyTimeTransformer extends BidirectionalTransformer<String, Funny
         // restore as seconds from midnight
         // 00:00 - 00:24 may have bad time
         if (value > 1440) {
-            return new FunnyTime(LocalTime.of(value / 3600, (value % 3600) / 60));
+            int hours = value / 3600;
+            int minutes = (value % 3600) / 60;
+            return new FunnyTime(LocalTime.of(hours, minutes));
         }
 
         // restore as minutes from midnight
-        return new FunnyTime(LocalTime.of(value / 60, value % 60));
+        int hours = value / 60;
+        int minutes = value % 60;
+        return new FunnyTime(LocalTime.of(hours, minutes));
     }
 
     @Override

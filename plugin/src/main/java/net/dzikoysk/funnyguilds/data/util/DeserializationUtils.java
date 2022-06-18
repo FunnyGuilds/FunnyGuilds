@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserProfile;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
 
@@ -27,7 +26,7 @@ public final class DeserializationUtils {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
-        UserProfile profile = new BukkitUserProfile(playerUniqueId, Bukkit.getServer()); // :(
+        UserProfile profile = new BukkitUserProfile(playerUniqueId, FunnyGuilds.getInstance().getFunnyServer()); // :(
         User user = userManager.create(playerUniqueId, playerName, profile);
 
         user.getRank().setPoints((int) values[2]);

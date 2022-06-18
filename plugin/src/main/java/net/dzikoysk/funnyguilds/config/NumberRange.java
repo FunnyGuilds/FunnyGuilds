@@ -12,7 +12,7 @@ import panda.std.stream.PandaStream;
 
 public final class NumberRange {
 
-    private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[\\d.*]+)-(-?[\\d.*]+)");
+    private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[0-9.*]+)-(-?[0-9.*]+)");
 
     private final Number minRange;
     private final Number maxRange;
