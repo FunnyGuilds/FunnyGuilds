@@ -112,9 +112,8 @@ public class FlatDataModel implements DataModel {
         AtomicInteger deserializationErrors = new AtomicInteger();
         PandaStream.of(userFiles)
                 .filter(file -> file.length() != 0)
-                .map(UserUtils::checkUserFile)
-                .filter(Option::isPresent)
-                .forEach(fileOption -> FlatUserSerializer.deserialize(fileOption.get())
+                .mapOpt(UserUtils::checkUserFile)
+                .forEach(file -> FlatUserSerializer.deserialize(file)
                         .peek(User::wasChanged)
                         .onEmpty(deserializationErrors::incrementAndGet)
                 );

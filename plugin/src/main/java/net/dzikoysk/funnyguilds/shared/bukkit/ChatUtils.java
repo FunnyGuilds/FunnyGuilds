@@ -36,7 +36,7 @@ public final class ChatUtils {
     }
 
     public static void sendMessage(CommandSender sender, String message) {
-        if (message == null || message.isEmpty()) {
+        if (StringUtils.isEmpty(message)) {
             return;
         }
 
@@ -44,7 +44,7 @@ public final class ChatUtils {
     }
 
     public static void broadcastMessage(String message) {
-        if (message == null || message.isEmpty()) {
+        if (StringUtils.isEmpty(message)) {
             return;
         }
 

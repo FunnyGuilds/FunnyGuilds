@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
+import panda.utilities.StringUtils;
 
 public class Database {
 
@@ -24,7 +25,7 @@ public class Database {
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
         this.dataSource.setUsername(c.user);
 
-        if (c.password != null && !c.password.isEmpty()) {
+        if (!StringUtils.isEmpty(c.password)) {
             this.dataSource.setPassword(c.password);
         }
 

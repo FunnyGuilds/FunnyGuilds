@@ -27,6 +27,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import panda.std.Option;
+import panda.utilities.StringUtils;
 
 public final class FlatGuildSerializer {
 
@@ -103,7 +104,7 @@ public final class FlatGuildSerializer {
         }
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
-        if (deputyName != null && !deputyName.isEmpty()) {
+        if (!StringUtils.isEmpty(deputyName)) {
             deputies = userManager.findByNames(FunnyStringUtils.fromString(deputyName));
         }
 

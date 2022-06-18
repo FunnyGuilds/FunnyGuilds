@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import panda.std.Pair;
+import panda.utilities.StringUtils;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
@@ -81,7 +82,7 @@ public class HeartConfiguration extends OkaeriConfig {
         }
 
         if (this.pasteSchematicOnCreation) {
-            if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
+            if (StringUtils.isEmpty(this.guildSchematicFileName)) {
                 FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field " +
                         "\"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;

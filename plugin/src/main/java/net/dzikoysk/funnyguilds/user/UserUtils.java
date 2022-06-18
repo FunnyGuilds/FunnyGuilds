@@ -174,12 +174,8 @@ public final class UserUtils {
             return Result.ok(target.toFile());
         }
 
-        try {
-            return Result.ok(Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile());
-        }
-        catch (IOException exception) {
-            return Result.error("Could not move file '" + source + "' to '" + target + "': " + exception.getMessage());
-        }
+        return Result.attempt(IOException.class, () -> Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile())
+                .mapErr(error -> "Could not move file '" + source + "' to '" + target + "': " + error.getMessage());
     }
 
 }

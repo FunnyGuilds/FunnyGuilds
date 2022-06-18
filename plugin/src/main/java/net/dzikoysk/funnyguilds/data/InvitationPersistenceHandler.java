@@ -84,9 +84,7 @@ public class InvitationPersistenceHandler {
         YamlWrapper yaml = new YamlWrapper(this.invitationsFile);
         PandaStream.of(yaml.getKeys(false))
                 .map(UUID::fromString)
-                .map(this.guildManager::findByUuid)
-                .filter(Option::isPresent)
-                .map(Option::get)
+                .mapOpt(this.guildManager::findByUuid)
                 .forEach(guild -> {
                     this.loadGuildInvitations(yaml, guild);
                     this.loadAllyInvitations(yaml, guild);
@@ -102,9 +100,7 @@ public class InvitationPersistenceHandler {
     private void loadAllyInvitations(YamlWrapper yaml, Guild guild) {
         PandaStream.of(yaml.getStringList(guild.getUUID().toString() + ".guilds"))
                 .map(UUID::fromString)
-                .map(this.guildManager::findByUuid)
-                .filter(Option::isPresent)
-                .map(Option::get)
+                .mapOpt(this.guildManager::findByUuid)
                 .forEach(allyGuild -> this.allyInvitationList.createInvitation(guild, allyGuild));
     }
 

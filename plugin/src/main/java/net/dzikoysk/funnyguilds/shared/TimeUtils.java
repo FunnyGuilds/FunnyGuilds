@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.shared;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import panda.utilities.StringUtils;
 
 public final class TimeUtils {
 
@@ -10,7 +11,7 @@ public final class TimeUtils {
     }
 
     public static long parseTime(String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isEmpty(string)) {
             return 0;
         }
 

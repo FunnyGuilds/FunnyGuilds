@@ -22,6 +22,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import panda.std.Option;
+import panda.utilities.StringUtils;
 
 public final class DatabaseGuildSerializer {
 
@@ -62,7 +63,7 @@ public final class DatabaseGuildSerializer {
             }
 
             UUID uuid = UUID.randomUUID();
-            if (id != null && !id.isEmpty()) {
+            if (!StringUtils.isEmpty(id)) {
                 uuid = UUID.fromString(id);
             }
 

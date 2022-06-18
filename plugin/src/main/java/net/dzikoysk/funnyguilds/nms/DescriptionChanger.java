@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.nms;
 import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.plugin.PluginDescriptionFile;
+import panda.utilities.StringUtils;
 
 public final class DescriptionChanger {
 
@@ -13,7 +14,7 @@ public final class DescriptionChanger {
     }
 
     public void rename(String pluginName) {
-        if (pluginName == null || pluginName.isEmpty()) {
+        if (StringUtils.isEmpty(pluginName)) {
             return;
         }
 

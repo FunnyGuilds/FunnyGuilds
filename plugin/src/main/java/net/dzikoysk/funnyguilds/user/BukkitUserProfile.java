@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import panda.std.Option;
+import panda.utilities.StringUtils;
 
 public class BukkitUserProfile implements UserProfile {
 
@@ -81,7 +82,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override //TODO: MiniMessage support
     public void sendMessage(String message) {
-        if (message == null || message.isEmpty()) {
+        if (StringUtils.isEmpty(message)) {
             return;
         }
 

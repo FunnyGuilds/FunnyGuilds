@@ -12,7 +12,7 @@ public final class FunnyFormatter {
     private final List<Pair<String, Supplier<?>>> placeholders = new ArrayList<>();
 
     public String format(String message) {
-        if (message == null || message.isEmpty()) {
+        if (StringUtils.isEmpty(message)) {
             return "";
         }
 
