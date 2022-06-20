@@ -1,13 +1,5 @@
 package net.dzikoysk.funnyguilds.user;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.Dummy;
@@ -20,25 +12,12 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class UserCache {
 
     private final User user;
 
-    private final Map<User, DamageCache> damageCaches = new HashMap<>();
-
-    private DamageCache lastOldDamageCache;
-
-    private final Cache<UUID, Instant> killerCache = CacheBuilder
-            .newBuilder()
-            .expireAfterWrite(30, TimeUnit.MINUTES)
-            .build();
-
-    private final Cache<UUID, Instant> victimCache = CacheBuilder
-            .newBuilder()
-            .expireAfterWrite(30, TimeUnit.MINUTES)
-            .build();
+    private final DamageCache damageCache;
 
     private IndividualPlayerList playerList;
     private Scoreboard scoreboard;
@@ -52,156 +31,27 @@ public class UserCache {
 
     public UserCache(User user) {
         this.user = user;
+        this.damageCache = new DamageCache(user);
     }
 
-    public void addDamage(User user, double damage, Instant lastTime) {
-        if (!this.damageCaches.containsKey(user)) {
-            this.damageCaches.put(user, new DamageCache(user, damage, lastTime));
-            return;
-        }
-
-        DamageCache damageCache = this.damageCaches.get(user);
-        damageCache.addDamage(damage);
-        damageCache.setLastTime(lastTime);
+    public DamageCache getDamageCache() {
+        return this.damageCache;
     }
 
-    public double killedBy(User user) {
-        if (user == null) {
-            return 0.0D;
-        }
-
-        DamageCache damageCache = this.damageCaches.remove(user);
-        if (damageCache == null) {
-            return 0.0D;
-        }
-
-        return damageCache.getDamage();
-    }
-
-    public void clearDamage() {
-        this.lastOldDamageCache = this.getLastAttackerDamageCache();
-        this.damageCaches.clear();
-    }
-
-    public boolean toggleSpy() {
-        this.spy = !this.spy;
-        return this.spy;
-    }
-
-    public void setTeleportation(BukkitTask teleportation) {
-        this.teleportation = teleportation;
-    }
-
-    public void setDummy(Dummy dummy) {
-        this.dummy = dummy;
-    }
-
-    public void setIndividualPrefix(@Nullable IndividualPrefix prefix) {
-        this.prefix = Option.of(prefix);
-    }
-
-    public void setEnter(boolean enter) {
-        this.enter = enter;
+    public Option<IndividualPlayerList> getPlayerList() {
+        return Option.of(this.playerList);
     }
 
     public void setPlayerList(IndividualPlayerList playerList) {
         this.playerList = playerList;
     }
 
-    public synchronized void setScoreboard(Scoreboard sb) {
-        this.scoreboard = sb;
+    public Option<IndividualPrefix> getIndividualPrefix() {
+        return this.prefix;
     }
 
-    public void registerVictim(User user) {
-        this.victimCache.put(user.getUUID(), Instant.now());
-    }
-
-    public void registerKiller(User user) {
-        this.killerCache.put(user.getUUID(), Instant.now());
-    }
-
-    @Nullable
-    public User getLastKiller() {
-        return PandaStream.of(this.killerCache.asMap().entrySet())
-                .sorted(Entry.<UUID, Instant>comparingByValue().reversed())
-                .map(Entry::getKey)
-                .head()
-                .flatMap(FunnyGuilds.getInstance().getUserManager()::findByUuid)
-                .orNull();
-    }
-
-    @Nullable
-    public DamageCache getLastAttackerDamageCache() {
-        DamageCache last = null;
-
-        for (DamageCache damageCache : this.damageCaches.values()) {
-            if (last == null) {
-                last = damageCache;
-                continue;
-            }
-
-            if (last.getLastTime().isBefore(damageCache.getLastTime())) {
-                last = damageCache;
-            }
-        }
-
-        if (last == null) {
-            return this.lastOldDamageCache != null ? this.lastOldDamageCache : null;
-        }
-
-        return last;
-    }
-
-    @Nullable
-    public Instant wasVictimOf(User attacker) {
-        return this.killerCache.getIfPresent(attacker.getUUID());
-    }
-
-    @Nullable
-    public Instant wasAttackerOf(User victim) {
-        return this.victimCache.getIfPresent(victim.getUUID());
-    }
-
-    public void setNotificationTime(long notification) {
-        this.notificationTime = notification;
-    }
-
-    public boolean isSpy() {
-        return this.spy;
-    }
-
-    public BukkitTask getTeleportation() {
-        return this.teleportation;
-    }
-
-    public Map<User, Double> getDamage() {
-        Map<User, Double> damage = new HashMap<>();
-        for (DamageCache damageCache : this.damageCaches.values()) {
-            damage.put(damageCache.getAttacker(), damageCache.getDamage());
-        }
-
-        return damage;
-    }
-
-    public Double getTotalDamage() {
-        return this.damageCaches.values().stream()
-                .mapToDouble(DamageCache::getDamage)
-                .sum();
-    }
-
-    public boolean isAssisted() {
-        return !this.damageCaches.isEmpty();
-    }
-
-    public boolean isInCombat() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        DamageCache damageCache = this.getLastAttackerDamageCache();
-
-        if (damageCache == null || !damageCache.getAttacker().isOnline()) {
-            return false;
-        }
-
-        return damageCache.getLastTime().plus(config.lastAttackerAsKillerConsiderationTimeout).compareTo(Instant.now()) >= 0;
+    public void setIndividualPrefix(@Nullable IndividualPrefix prefix) {
+        this.prefix = Option.of(prefix);
     }
 
     public synchronized Option<Scoreboard> getScoreboard() {
@@ -225,8 +75,8 @@ public class UserCache {
         }
     }
 
-    public Option<IndividualPrefix> getIndividualPrefix() {
-        return this.prefix;
+    public synchronized void setScoreboard(Scoreboard sb) {
+        this.scoreboard = sb;
     }
 
     public Dummy getDummy() {
@@ -237,16 +87,41 @@ public class UserCache {
         return this.dummy;
     }
 
+    public void setDummy(Dummy dummy) {
+        this.dummy = dummy;
+    }
+
+    public BukkitTask getTeleportation() {
+        return this.teleportation;
+    }
+
+    public void setTeleportation(BukkitTask teleportation) {
+        this.teleportation = teleportation;
+    }
+
     public long getNotificationTime() {
         return this.notificationTime;
+    }
+
+    public void setNotificationTime(long notification) {
+        this.notificationTime = notification;
     }
 
     public boolean getEnter() {
         return this.enter;
     }
 
-    public Option<IndividualPlayerList> getPlayerList() {
-        return Option.of(this.playerList);
+    public void setEnter(boolean enter) {
+        this.enter = enter;
+    }
+
+    public boolean isSpy() {
+        return this.spy;
+    }
+
+    public boolean toggleSpy() {
+        this.spy = !this.spy;
+        return this.spy;
     }
 
 }

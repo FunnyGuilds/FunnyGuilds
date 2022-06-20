@@ -42,8 +42,8 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("<------- Rank Messages -------> #")
     public String rankLastVictimV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
-    public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
-    public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
+    public String rankLastAttackerV = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja odebrane!";
+    public String rankLastAttackerA = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
