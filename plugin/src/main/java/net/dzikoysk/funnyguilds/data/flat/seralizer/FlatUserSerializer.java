@@ -76,6 +76,8 @@ public final class FlatUserSerializer {
         });
 
         wrapper.save();
+        user.markUnchanged();
+
         return true;
     }
 

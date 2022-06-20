@@ -17,9 +17,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
-import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class SQLDataModel implements DataModel {
 
@@ -104,7 +102,7 @@ public class SQLDataModel implements DataModel {
                     continue;
                 }
 
-                DatabaseUserSerializer.deserialize(result).peek(User::wasChanged);
+                DatabaseUserSerializer.deserialize(result);
             }
         });
 
@@ -116,7 +114,7 @@ public class SQLDataModel implements DataModel {
 
         SQLBasicUtils.getSelectAll(this.guildsTable).executeQuery(resultAll -> {
             while (resultAll.next()) {
-                DatabaseGuildSerializer.deserialize(resultAll).peek(Guild::wasChanged);
+                DatabaseGuildSerializer.deserialize(resultAll);
             }
         });
 
@@ -141,7 +139,7 @@ public class SQLDataModel implements DataModel {
             }
         });
 
-        PandaStream.of(guildManager.getGuilds())
+        guildManager.getGuilds().stream()
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> guildManager.deleteGuild(FunnyGuilds.getInstance(), guild));
 
@@ -158,10 +156,7 @@ public class SQLDataModel implements DataModel {
 
         SQLBasicUtils.getSelectAll(this.regionsTable).executeQuery(result -> {
             while (result.next()) {
-                DatabaseRegionSerializer.deserialize(result).peek(region -> {
-                    region.wasChanged();
-                    regionManager.addRegion(region);
-                });
+                DatabaseRegionSerializer.deserialize(result).peek(regionManager::addRegion);
             }
         });
 
@@ -170,11 +165,11 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void save(boolean ignoreNotChanged) {
-        PandaStream.of(this.plugin.getUserManager().getUsers())
+        this.plugin.getUserManager().getUsers().stream()
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
                 .forEach(DatabaseUserSerializer::serialize);
 
-        PandaStream.of(this.plugin.getGuildManager().getGuilds())
+        this.plugin.getGuildManager().getGuilds().stream()
                 .filter(guild -> !ignoreNotChanged || guild.wasChanged())
                 .forEach(DatabaseGuildSerializer::serialize);
 
@@ -182,7 +177,7 @@ public class SQLDataModel implements DataModel {
             return;
         }
 
-        PandaStream.of(this.plugin.getRegionManager().getRegions())
+        this.plugin.getRegionManager().getRegions().stream()
                 .filter(region -> !ignoreNotChanged || region.wasChanged())
                 .forEach(DatabaseRegionSerializer::serialize);
     }

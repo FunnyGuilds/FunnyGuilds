@@ -40,6 +40,7 @@ public final class DeserializationUtils {
             user.setBan(new UserBan((String) values[8], banTime));
         }
 
+        user.markUnchanged();
         return Option.of(user);
     }
 
@@ -84,6 +85,7 @@ public final class DeserializationUtils {
         guild.setPvP((boolean) values[15]);
         guild.deserializationUpdate();
 
+        guild.markUnchanged();
         return Option.of(guild);
     }
 
@@ -100,6 +102,7 @@ public final class DeserializationUtils {
         region.setEnlarge((int) values[3]);
         region.update();
 
+        region.markUnchanged();
         return Option.of(region);
     }
 

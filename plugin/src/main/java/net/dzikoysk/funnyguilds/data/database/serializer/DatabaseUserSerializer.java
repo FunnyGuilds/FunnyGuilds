@@ -67,6 +67,7 @@ public final class DatabaseUserSerializer {
         statement.set("reason", user.getBan().map(UserBan::getReason).orNull());
 
         statement.executeUpdate();
+        user.markUnchanged();
     }
 
     public static void updatePoints(User user) {
