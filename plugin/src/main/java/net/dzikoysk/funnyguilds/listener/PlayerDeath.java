@@ -246,12 +246,10 @@ public class PlayerDeath extends AbstractFunnyListener {
         if (this.config.dataModel == DataModel.MYSQL) {
             victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
             attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
-
             PandaStream.of(assistUsers).flatMap(User::getGuild).forEach(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
 
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
-
             PandaStream.of(assistUsers).forEach(assistUser -> taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(assistUser)));
         }
 
