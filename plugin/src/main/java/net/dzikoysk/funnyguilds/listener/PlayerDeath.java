@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUser
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
@@ -242,7 +243,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         victimDamageCache.clear();
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-        if (this.config.dataModel == PluginConfiguration.DataModel.MYSQL) {
+        if (this.config.dataModel == DataModel.MYSQL) {
             victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
             attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
 
