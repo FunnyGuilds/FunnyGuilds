@@ -608,9 +608,10 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public static class DamageTracking extends OkaeriConfig {
 
-        //TODO: Comments
+        @Comment("Czas po którym zadane obrażenia, stają się \"przestarzałe\"")
         public Duration expireTime = Duration.ofMinutes(1);
-        //TODO: Comments
+
+        @Comment("Jak długa ma być historia zadanych obrażeń")
         public int maxTracks = 30;
 
     }
