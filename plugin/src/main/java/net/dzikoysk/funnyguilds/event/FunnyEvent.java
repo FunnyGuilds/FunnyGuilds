@@ -29,13 +29,20 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         return this.eventCause;
     }
 
+    /**
+     * @return the doer of the event, if doer wasn't a user the Option will be empty
+     */
     public Option<User> getDoer() {
         return this.doer;
     }
 
     public abstract String getDefaultCancelMessage();
 
-    //TODO: javadocs
+    /**
+     * The message that will be displayed for event doer when the event is cancelled.
+     *
+     * @return the set cancel message, if null the default cancel message will be returned.
+     */
     public String getCancelMessage() {
         if (StringUtils.isEmpty(this.cancelMessage)) {
             return this.getDefaultCancelMessage();
@@ -44,6 +51,11 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         return this.cancelMessage;
     }
 
+    /**
+     * Sets the message that will be displayed for event doer when the event is cancelled.
+     *
+     * @param cancelMessage the cancel message
+     */
     public void setCancelMessage(String cancelMessage) {
         this.cancelMessage = cancelMessage;
     }

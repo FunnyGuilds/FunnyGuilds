@@ -20,7 +20,9 @@ public abstract class GuildEvent extends FunnyEvent {
         this.guild = guild;
     }
 
-    //TODO: javadocs
+    /**
+     * @return the guild that event has been fired for
+     */
     public Guild getGuild() {
         return this.guild;
     }

@@ -4,18 +4,20 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public abstract class GuildMemberEvent extends GuildEvent {
 
-    private final Option<User> member;
+    private final User member;
 
-    public GuildMemberEvent(EventCause eventCause, @Nullable User doer, Guild guild, @Nullable User member) {
+    public GuildMemberEvent(EventCause eventCause, @Nullable User doer, Guild guild, User member) {
         super(eventCause, doer, guild);
-        this.member = Option.of(member);
+        this.member = member;
     }
 
-    public Option<User> getMember() {
+    /**
+     * @return the user that event has been fired for
+     */
+    public User getMember() {
         return this.member;
     }
 
