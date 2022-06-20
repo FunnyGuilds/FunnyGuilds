@@ -4,7 +4,6 @@ import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
-import net.dzikoysk.funnyguilds.event.guild.GuildHeartAttackEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
@@ -53,11 +52,6 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
 
         SimpleEventHandler.handle(interactEvent);
         if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
-            return;
-        }
-
-        //TODO: [FG 5.0] remove deprecated event call
-        if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, this.user, guild))) {
             return;
         }
 

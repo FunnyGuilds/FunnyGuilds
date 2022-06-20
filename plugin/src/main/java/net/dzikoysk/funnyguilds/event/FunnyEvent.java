@@ -3,36 +3,39 @@ package net.dzikoysk.funnyguilds.event;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 import panda.utilities.StringUtils;
 
 public abstract class FunnyEvent extends Event implements Cancellable {
 
     private final EventCause eventCause;
-    private final User doer;
+    private final Option<User> doer;
     private String cancelMessage;
     private boolean cancelled;
 
-    public FunnyEvent(EventCause eventCause, User doer) {
+    public FunnyEvent(EventCause eventCause, @Nullable User doer) {
         this.eventCause = eventCause;
-        this.doer = doer;
+        this.doer = Option.of(doer);
     }
 
-    public FunnyEvent(EventCause eventCause, User doer, boolean isAsync) {
+    public FunnyEvent(EventCause eventCause, @Nullable User doer, boolean isAsync) {
         super(isAsync);
         this.eventCause = eventCause;
-        this.doer = doer;
+        this.doer = Option.of(doer);
     }
 
     public EventCause getEventCause() {
         return this.eventCause;
     }
 
-    public User getDoer() {
+    public Option<User> getDoer() {
         return this.doer;
     }
 
     public abstract String getDefaultCancelMessage();
 
+    //TODO: javadocs
     public String getCancelMessage() {
         if (StringUtils.isEmpty(this.cancelMessage)) {
             return this.getDefaultCancelMessage();
@@ -55,10 +58,8 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         this.cancelled = cancelled;
     }
 
-    public void notifyDoer() {
-        if (this.doer != null) {
-            this.doer.sendMessage(this.getCancelMessage());
-        }
+    void notifyDoer() {
+        this.doer.peek(user -> user.sendMessage(this.getCancelMessage()));
     }
 
     public enum EventCause {
