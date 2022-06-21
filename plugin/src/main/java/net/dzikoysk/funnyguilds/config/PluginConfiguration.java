@@ -612,8 +612,8 @@ public class PluginConfiguration extends OkaeriConfig {
         public Duration expireTime = Duration.ofMinutes(1);
 
         @Min(-1)
-        @Comment("Jak długa ma być historia zadanych obrażeń")
-        @Comment("Wstaw -1 jeśli ma być nieskończonej")
+        @Comment("Jak długa ma być historia zadanych obrażeń.")
+        @Comment("Wstaw -1 jeśli ma być nieskończona.")
         public int maxTracks = 30;
 
     }
