@@ -105,6 +105,10 @@ public class DamageCache {
         this.damageHistory.removeIf(damage -> this.damageHistory.size() > 1 && damage.isExpired(trackingConfig.expireTime));
 
         // Remove over limit
+        if (trackingConfig.maxTracks < 1) {
+            return;
+        }
+
         while (this.damageHistory.size() > trackingConfig.maxTracks) {
             this.damageHistory.remove();
         }

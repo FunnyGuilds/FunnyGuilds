@@ -611,7 +611,9 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment("Czas po którym zadane obrażenia, stają się \"przestarzałe\"")
         public Duration expireTime = Duration.ofMinutes(1);
 
+        @Min(-1)
         @Comment("Jak długa ma być historia zadanych obrażeń")
+        @Comment("Wstaw -1 jeśli ma być nieskończonej")
         public int maxTracks = 30;
 
     }
@@ -665,7 +667,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public double assistKillerShare = 0.5;
 
     @Comment("")
-    @Comment("Czy zabójcy zawsze mają dzielić sie ilością punktów według rank-assist-killer-share, nawet gdy nie ma osob asystujących")
+    @Comment("Czy zabójcy zawsze mają dzielić sie ilością punktów według rank-assist-killer-share, nawet gdy nie ma osób asystujących")
     @CustomKey("rank-assist-victim-always-share")
     public boolean assistKillerAlwaysShare = true;
 
