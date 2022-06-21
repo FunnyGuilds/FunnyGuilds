@@ -32,15 +32,15 @@ public class GuildPreChatEvent extends GuildEvent {
     }
 
     public GuildChatEvent.Type getType() {
-        return type;
+        return this.type;
     }
 
     public Set<Guild> getReceivers() {
-        return receivers;
+        return this.receivers;
     }
 
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public void setMessage(String message) {
