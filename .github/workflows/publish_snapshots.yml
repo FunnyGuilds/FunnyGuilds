@@ -32,7 +32,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Publish with Gradle
-        run: ./gradlew clean build publishAllPublicationsToReleasesRepository --stacktrace
+        run: ./gradlew clean build publishAllPublicationsToSnapshotsRepository --stacktrace
         env:
           MAVEN_NAME: ${{ secrets.SNAPSHOTS_MAVEN_NAME }}
           MAVEN_TOKEN: ${{ secrets.SNAPSHOTS_MAVEN_TOKEN }}
