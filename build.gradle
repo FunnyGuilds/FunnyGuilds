@@ -52,8 +52,19 @@ subprojects {
     publishing {
         repositories {
             maven {
-                name = "local-repository"
+                name = "releases"
                 url = uri("https://repo.panda-lang.org/releases")
+                //allowInsecureProtocol(true)
+
+                credentials {
+                    username = System.getenv("MAVEN_NAME")
+                    password = System.getenv("MAVEN_TOKEN")
+                }
+            }
+
+            maven {
+                name = "snapshots"
+                url = uri("https://repo.panda-lang.org/snapshots")
                 //allowInsecureProtocol(true)
 
                 credentials {
@@ -65,6 +76,11 @@ subprojects {
         publications {
             libraries(MavenPublication) {
                 from components.java
+
+                String snapshotsEnv = System.getenv("SNAPSHOT");
+                if (snapshotsEnv != null && snapshotsEnv.equalsIgnoreCase("true")) {
+                    version = version + "-SNAPSHOT"
+                }
 
                 // Add external repositories to published artifacts
                 // ~ btw: pls don't touch this
