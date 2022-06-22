@@ -157,7 +157,8 @@ public class FlatDataModel implements DataModel {
         AtomicInteger ownerlessGuilds = new AtomicInteger();
 
         PandaStream.of(guildFiles)
-                .mapOpt(guildFile -> deserializeAndCheckGuild(guildFile, incorrectGuildsCount))
+                .mapOpt(guildFile -> FlatGuildSerializer.deserialize(guildFile)
+                        .onEmpty(incorrectGuildsCount::incrementAndGet))
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> {
                     FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!");
@@ -249,15 +250,6 @@ public class FlatDataModel implements DataModel {
         }
 
         return true;
-    }
-
-    private static Option<Guild> deserializeAndCheckGuild(File guildFile, AtomicInteger incorrectGuildsCount) {
-        Option<Guild> guild = FlatGuildSerializer.deserialize(guildFile);
-        if (guild.isEmpty()) {
-            incorrectGuildsCount.incrementAndGet();
-        }
-
-        return guild;
     }
 
 }
