@@ -90,7 +90,7 @@ public class PlayerChat extends AbstractFunnyListener {
                 message, Collections.singleton(guild), Type.PRIVATE);
     }
 
-    private boolean sendMessageToGuildAllies(User user,Player player, Guild guild, String message) {
+    private boolean sendMessageToGuildAllies(User user, Player player, Guild guild, String message) {
         Set<Guild> allies = new HashSet<>(guild.getAllies());
         allies.add(guild);
 
@@ -98,7 +98,7 @@ public class PlayerChat extends AbstractFunnyListener {
                 message, allies, Type.ALLY);
     }
 
-    private boolean sendMessageToAllGuilds(User user,Player player, Guild guild, String message) {
+    private boolean sendMessageToAllGuilds(User user, Player player, Guild guild, String message) {
         return this.sendMessageToGuilds(user, player, guild, this.config.chatGlobalDesign.getValue(), this.config.chatGlobal,
                 message, this.guildManager.getGuilds(), Type.ALL);
     }
