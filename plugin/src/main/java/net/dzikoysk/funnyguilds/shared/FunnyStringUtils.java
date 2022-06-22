@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.shared;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import panda.utilities.StringUtils;
@@ -12,15 +13,15 @@ public final class FunnyStringUtils {
     private FunnyStringUtils() {
     }
 
-    public static String join(Iterable<String> strings, boolean insertSpaces) {
+    public static String join(Collection<String> strings, boolean insertSpaces) {
         return join(strings, insertSpaces ? ", " : ",");
     }
 
-    public static String join(Iterable<String> strings) {
+    public static String join(Collection<String> strings) {
         return join(strings, false);
     }
 
-    public static String join(Iterable<String> strings, String separator) {
+    public static String join(Collection<String> strings, String separator) {
         return Joiner.on(separator).join(strings).toString();
     }
 
