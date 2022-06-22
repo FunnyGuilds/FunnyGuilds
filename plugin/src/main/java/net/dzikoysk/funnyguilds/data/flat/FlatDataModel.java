@@ -114,7 +114,6 @@ public class FlatDataModel implements DataModel {
                 .filter(file -> file.length() != 0)
                 .mapOpt(UserUtils::checkUserFile)
                 .forEach(file -> FlatUserSerializer.deserialize(file)
-                        .peek(User::wasChanged)
                         .onEmpty(deserializationErrors::incrementAndGet)
                 );
 
@@ -155,20 +154,18 @@ public class FlatDataModel implements DataModel {
         }
 
         AtomicInteger incorrectGuildsCount = new AtomicInteger();
-        long ownerlessGuilds = PandaStream.of(guildFiles)
-                .map(FlatGuildSerializer::deserialize)
-                .forEach(guildOption -> {
-                    if (guildOption.isEmpty()) {
-                        incorrectGuildsCount.incrementAndGet();
-                    }
-                })
-                .mapOpt(guildOption -> guildOption)
-                .forEach(Guild::wasChanged)
-                .filter(guild -> guild.getOwner() == null)
-                .forEach(guild -> FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!"))
-                .count();
+        AtomicInteger ownerlessGuilds = new AtomicInteger();
 
-        long errors = ownerlessGuilds + incorrectGuildsCount.get();
+        PandaStream.of(guildFiles)
+                .mapOpt(guildFile -> FlatGuildSerializer.deserialize(guildFile)
+                        .onEmpty(incorrectGuildsCount::incrementAndGet))
+                .filter(guild -> guild.getOwner() == null)
+                .forEach(guild -> {
+                    FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!");
+                    ownerlessGuilds.incrementAndGet();
+                });
+
+        long errors = incorrectGuildsCount.get() + ownerlessGuilds.get();
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
         }
@@ -210,14 +207,15 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        long correctlyLoaded = PandaStream.of(regionFiles)
+        AtomicInteger correctlyLoaded = new AtomicInteger();
+        PandaStream.of(regionFiles)
                 .mapOpt(FlatRegionSerializer::deserialize)
                 .forEach(region -> {
-                    region.wasChanged();
                     regionManager.addRegion(region);
-                }).count();
+                    correctlyLoaded.incrementAndGet();
+                });
 
-        long errors = regionFiles.length - correctlyLoaded;
+        long errors = regionFiles.length - correctlyLoaded.get();
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Region load errors " + errors);
         }
