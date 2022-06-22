@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.rank.TopComparator;
-import panda.std.stream.PandaStream;
 
 public class GuildRecalculation implements BiFunction<String, TopComparator<GuildRank>, NavigableSet<GuildRank>> {
 
@@ -24,7 +23,7 @@ public class GuildRecalculation implements BiFunction<String, TopComparator<Guil
         GuildRankManager rankManager = FunnyGuilds.getInstance().getGuildRankManager();
         NavigableSet<GuildRank> guildsRank = new TreeSet<>(topComparator);
 
-        PandaStream.of(this.guildManager.getGuilds())
+        this.guildManager.getGuilds().stream()
                 .filter(rankManager::isRankedGuild)
                 .map(Guild::getRank)
                 .forEach(guildsRank::add);
