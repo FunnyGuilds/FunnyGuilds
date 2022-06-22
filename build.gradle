@@ -14,7 +14,7 @@ rewrite {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.10.1"
+    version = "4.10.2-SNAPSHOTS"
 
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
@@ -52,10 +52,26 @@ subprojects {
     publishing {
         repositories {
             maven {
-                name = "local-repository"
+                name = "releases"
                 url = uri("https://repo.panda-lang.org/releases")
                 //allowInsecureProtocol(true)
 
+                credentials {
+                    username = System.getenv("MAVEN_NAME")
+                    password = System.getenv("MAVEN_TOKEN")
+                }
+            }
+
+            maven {
+                if (version.toString().endsWith("-SNAPSHOTS")) {
+                    name = "snapshots"
+                    url = uri("https://repo.panda-lang.org/snapshots")
+                } else {
+                    name = "releases"
+                    url = uri("https://repo.panda-lang.org/releases")
+                }
+
+                //allowInsecureProtocol(true)
                 credentials {
                     username = System.getenv("MAVEN_NAME")
                     password = System.getenv("MAVEN_TOKEN")
