@@ -1,4 +1,4 @@
-name: Publish FunnyGuilds to Snapshots Panda repository
+name: Publish FunnyGuilds to Panda repository
 on:
   push:
     branches: [ master ]
@@ -32,8 +32,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Publish with Gradle
-        run: ./gradlew clean build publishAllPublicationsToSnapshotsRepository --stacktrace
+        run: ./gradlew clean build publish --stacktrace
         env:
-          MAVEN_NAME: ${{ secrets.SNAPSHOTS_MAVEN_NAME }}
-          MAVEN_TOKEN: ${{ secrets.SNAPSHOTS_MAVEN_TOKEN }}
-          SNAPSHOT: true
+          RELEASES_MAVEN_NAME: ${{ secrets.RELEASES_MAVEN_NAME }}
+          RELEASES_MAVEN_TOKEN: ${{ secrets.RELEASES_MAVEN_TOKEN }}
+          SNAPSHOTS_MAVEN_NAME: ${{ secrets.SNAPSHOTS_MAVEN_NAME }}
+          SNAPSHOTS_MAVEN_TOKEN: ${{ secrets.SNAPSHOTS_MAVEN_TOKEN }}

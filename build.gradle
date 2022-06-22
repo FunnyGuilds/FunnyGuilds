@@ -14,7 +14,7 @@ rewrite {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.10.1"
+    version = "4.10.2-SNAPSHOTS"
 
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
@@ -63,24 +63,29 @@ subprojects {
             }
 
             maven {
-                name = "snapshots"
-                url = uri("https://repo.panda-lang.org/snapshots")
-                //allowInsecureProtocol(true)
+                if (version.toString().endsWith("-SNAPSHOTS")) {
+                    name = "snapshots"
+                    url = uri("https://repo.panda-lang.org/snapshots")
 
-                credentials {
-                    username = System.getenv("MAVEN_NAME")
-                    password = System.getenv("MAVEN_TOKEN")
+                    credentials {
+                        username = System.getenv("SNAPSHOTS_MAVEN_NAME")
+                        password = System.getenv("SNAPSHOTS_MAVEN_TOKEN")
+                    }
+                } else {
+                    name = "releases"
+                    url = uri("https://repo.panda-lang.org/releases")
+
+                    credentials {
+                        username = System.getenv("RELEASES_MAVEN_NAME")
+                        password = System.getenv("RELEASES_MAVEN_TOKEN")
+                    }
                 }
+                //allowInsecureProtocol(true)
             }
         }
         publications {
             libraries(MavenPublication) {
                 from components.java
-
-                String snapshotsEnv = System.getenv("SNAPSHOT");
-                if (snapshotsEnv != null && snapshotsEnv.equalsIgnoreCase("true")) {
-                    version = version + "-SNAPSHOT"
-                }
 
                 // Add external repositories to published artifacts
                 // ~ btw: pls don't touch this
