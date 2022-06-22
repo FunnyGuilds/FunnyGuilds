@@ -32,17 +32,25 @@ FunnyGuilds hooks into those plugins:
 
 #### Maven
 ```xml
+<!-- Releases -->
 <repository>
     <id>panda-repository</id>
-    <name>Panda Repository</name>
     <url>https://repo.panda-lang.org/releases</url>
+</repository>
+<!-- Snapshots -->
+<repository>
+    <id>panda-repository</id>
+    <url>https://repo.panda-lang.org/snapshots</url>
 </repository>
 ```
 ```xml
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
+    <!-- Release -->
     <version>4.10.1</version>
+    <!-- Snapshots (Nightly) -->
+    <version>4.10.2-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
