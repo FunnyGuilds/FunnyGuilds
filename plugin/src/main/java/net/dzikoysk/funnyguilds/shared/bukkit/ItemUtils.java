@@ -115,7 +115,7 @@ public final class ItemUtils {
         });
 
         Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown data: " + split[0]);
+            FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
         });
 
         ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
@@ -129,7 +129,7 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    item.setName(formatter.format(attributeName), true);
+                    item.setName(formatter.format(attributeValue), true);
                     continue;
                 case "lore":
                     List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
