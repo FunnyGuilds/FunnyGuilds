@@ -1,11 +1,15 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildChatEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildChatEvent.Type;
+import net.dzikoysk.funnyguilds.event.guild.GuildPreChatEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -33,7 +37,7 @@ public class PlayerChat extends AbstractFunnyListener {
 
         User user = userOption.get();
         boolean isGuildChat = user.getGuild()
-                .map(guild -> this.sendGuildMessage(player, guild, event.getMessage()))
+                .map(guild -> this.sendGuildMessage(user, player, guild, event.getMessage()))
                 .orElseGet(false);
 
         if (isGuildChat) {
@@ -69,54 +73,53 @@ public class PlayerChat extends AbstractFunnyListener {
         event.setFormat(formatter.format(event.getFormat()));
     }
 
-    private boolean sendGuildMessage(Player player, Guild guild, String message) {
-        if (this.sendMessageToAllGuilds(player, guild, message)) {
+    private boolean sendGuildMessage(User user, Player player, Guild guild, String message) {
+        if (this.sendMessageToAllGuilds(user, player, guild, message)) {
             return true;
         }
 
-        if (this.sendMessageToGuildAllies(player, guild, message)) {
+        if (this.sendMessageToGuildAllies(user, player, guild, message)) {
             return true;
         }
 
-        return this.sendMessageToGuildMembers(player, guild, message);
+        return this.sendMessageToGuildMembers(user, player, guild, message);
     }
 
-    private void spy(Player player, Guild playerGuild, String message) {
-        String spyMessage = this.formatChatDesign(player, playerGuild, this.config.chatSpyDesign.getValue(), message);
-
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(onlinePlayer -> this.userManager.findByPlayer(onlinePlayer))
-                .filter(user -> user.getCache().isSpy())
-                .forEach(user -> user.sendMessage(spyMessage));
+    private boolean sendMessageToGuildMembers(User user, Player player, Guild guild, String message) {
+        return this.sendMessageToGuilds(user, player, guild, this.config.chatPrivDesign.getValue(), this.config.chatPriv,
+                message, Collections.singleton(guild), Type.PRIVATE);
     }
 
-    private boolean sendMessageToGuildMembers(Player player, Guild guild, String message) {
-        return this.sendMessageToGuilds(player, guild, this.config.chatPrivDesign.getValue(), this.config.chatPriv,
-                message, Collections.singletonList(guild));
-    }
-
-    private boolean sendMessageToGuildAllies(Player player, Guild guild, String message) {
+    private boolean sendMessageToGuildAllies(User user, Player player, Guild guild, String message) {
         Set<Guild> allies = new HashSet<>(guild.getAllies());
         allies.add(guild);
 
-        return this.sendMessageToGuilds(player, guild, this.config.chatAllyDesign.getValue(), this.config.chatAlly, message, allies);
+        return this.sendMessageToGuilds(user, player, guild, this.config.chatAllyDesign.getValue(), this.config.chatAlly,
+                message, allies, Type.ALLY);
     }
 
-    private boolean sendMessageToAllGuilds(Player player, Guild guild, String message) {
-        return this.sendMessageToGuilds(player, guild, this.config.chatGlobalDesign.getValue(), this.config.chatGlobal,
-                message, this.guildManager.getGuilds());
+    private boolean sendMessageToAllGuilds(User user, Player player, Guild guild, String message) {
+        return this.sendMessageToGuilds(user, player, guild, this.config.chatGlobalDesign.getValue(), this.config.chatGlobal,
+                message, this.guildManager.getGuilds(), Type.ALL);
     }
 
-    private boolean sendMessageToGuilds(Player player, Guild playerGuild, String chatDesign, String prefix, String message,
-                                        Collection<Guild> receivers) {
+    private boolean sendMessageToGuilds(User user, Player player, Guild playerGuild, String chatDesign, String prefix, String message,
+                                        Set<Guild> receivers, Type type) {
         int prefixLength = prefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
             String subMessage = message.substring(prefixLength).trim();
-            String resultMessage = this.formatChatDesign(player, playerGuild, chatDesign, subMessage);
+            String resultMessage = this.formatChatDesign(user, player, playerGuild, chatDesign, subMessage);
 
-            this.spy(player, playerGuild, subMessage);
-            receivers.forEach(guild -> sendMessageToGuild(guild, resultMessage));
+            GuildPreChatEvent preChatEvent = new GuildPreChatEvent(EventCause.USER, user, playerGuild, type, receivers, resultMessage);
+            if (!SimpleEventHandler.handle(preChatEvent)) {
+                return true;
+            }
+
+            this.spy(user, player, playerGuild, subMessage);
+            preChatEvent.getReceivers().forEach(guild -> sendMessageToGuild(guild, resultMessage));
+
+            SimpleEventHandler.handle(new GuildChatEvent(EventCause.USER, user, playerGuild, type, receivers, resultMessage));
 
             return true;
         }
@@ -130,8 +133,16 @@ public class PlayerChat extends AbstractFunnyListener {
                 .forEach(member -> member.sendMessage(message));
     }
 
-    private String formatChatDesign(Player player, Guild playerGuild, String chatDesign, String message) {
-        User user = this.userManager.findByUuid(player.getUniqueId()).orNull();
+    private void spy(User user, Player player, Guild playerGuild, String message) {
+        String spyMessage = this.formatChatDesign(user, player, playerGuild, this.config.chatSpyDesign.getValue(), message);
+
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> this.userManager.findByPlayer(onlinePlayer))
+                .filter(onlineUser -> onlineUser.getCache().isSpy())
+                .forEach(onlineUser -> onlineUser.sendMessage(spyMessage));
+    }
+
+    private String formatChatDesign(User user, Player player, Guild playerGuild, String chatDesign, String message) {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())

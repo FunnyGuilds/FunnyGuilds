@@ -4,7 +4,6 @@ import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
-import net.dzikoysk.funnyguilds.event.guild.GuildHeartAttackEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
@@ -97,10 +96,6 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
 
         if (eventAction == Action.LEFT_CLICK_BLOCK) {
-            if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
-                return;
-            }
-
             WarSystem.getInstance().attack(player, guild);
             return;
         }

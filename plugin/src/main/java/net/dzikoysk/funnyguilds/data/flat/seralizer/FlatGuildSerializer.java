@@ -203,6 +203,8 @@ public final class FlatGuildSerializer {
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 
         wrapper.save();
+        guild.markUnchanged();
+
         return true;
     }
 

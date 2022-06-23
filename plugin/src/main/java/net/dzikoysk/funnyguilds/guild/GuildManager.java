@@ -259,9 +259,9 @@ public class GuildManager {
 
         plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(plugin.getIndividualPrefixManager(), guild));
 
-        PandaStream.of(guild.getMembers()).forEach(User::removeGuild);
-        PandaStream.of(guild.getAllies()).forEach(ally -> ally.removeAlly(guild));
-        PandaStream.of(this.getGuilds()).forEach(globalGuild -> globalGuild.removeEnemy(guild));
+        guild.getMembers().forEach(User::removeGuild);
+        guild.getAllies().forEach(ally -> ally.removeAlly(guild));
+        this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());

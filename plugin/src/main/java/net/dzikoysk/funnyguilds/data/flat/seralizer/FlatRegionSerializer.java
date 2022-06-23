@@ -71,6 +71,8 @@ public final class FlatRegionSerializer {
         wrapper.set("enlarge", region.getEnlarge());
 
         wrapper.save();
+        region.markUnchanged();
+
         return true;
     }
 

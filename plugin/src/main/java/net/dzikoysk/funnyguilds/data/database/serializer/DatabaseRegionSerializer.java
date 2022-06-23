@@ -61,6 +61,7 @@ public final class DatabaseRegionSerializer {
         statement.set("enlarge", region.getEnlarge());
 
         statement.executeUpdate();
+        region.markUnchanged();
     }
 
     public static void delete(Region region) {

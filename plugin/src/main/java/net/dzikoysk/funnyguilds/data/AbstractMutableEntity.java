@@ -10,14 +10,13 @@ public abstract class AbstractMutableEntity implements MutableEntity {
     }
 
     @Override
+    public void markUnchanged() {
+        this.wasChanged = false;
+    }
+
+    @Override
     public boolean wasChanged() {
-        boolean changedState = this.wasChanged;
-
-        if (changedState) {
-            this.wasChanged = false;
-        }
-
-        return changedState;
+        return this.wasChanged;
     }
 
 }

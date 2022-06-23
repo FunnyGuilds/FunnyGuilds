@@ -152,6 +152,7 @@ public final class DatabaseGuildSerializer {
         statement.set("info", "");
 
         statement.executeUpdate();
+        guild.markUnchanged();
     }
 
     public static void delete(Guild guild) {
