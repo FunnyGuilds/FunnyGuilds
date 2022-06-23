@@ -139,9 +139,9 @@ public class PlayerDeath extends AbstractFunnyListener {
         messageReceivers.add(attacker);
         messageReceivers.add(victim);
 
-        List<User> assistUsers = new ArrayList<>();
-        List<String> assistEntries = new ArrayList<>();
         Pair<Set<User>, List<String>> assistsResult = this.calculateAssists(victim, victimDamageCache, attacker, result, messageReceivers);
+        Set<User> assistUsers = assistsResult.getFirst();
+        List<String> assistEntries = assistsResult.getSecond();
 
         int addedAttackerPoints;
         if (!this.config.assistKillerAlwaysShare && assistUsers.isEmpty()) {
@@ -205,7 +205,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{ATAG}", attacker.getGuild()
                         .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
-                .register("{ASSISTS}", this.config.assistEnable && !assistEntries.isEmpty()
+                .register("{ASSISTS}", !assistEntries.isEmpty()
                         ? FunnyFormatter.format(this.messages.rankAssistMessage, "{ASSISTS}", String.join(this.messages.rankAssistDelimiter, assistEntries))
                         : "");
 
@@ -247,6 +247,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
     }
 
+    // Function to check if player is rank farming (killing player indefinitely to get points)
     private boolean checkRankFarmingProtection(Player playerVictim, Player playerAttacker, User victim, DamageCache victimDamageCache, User attacker, DamageCache attackerDamageCache) {
         if (!this.config.rankFarmingProtect) {
             return false;
@@ -271,6 +272,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         return false;
     }
 
+    // Function to check if player is rank farming (killing player indefinitely to get points)
     private boolean checkIPRankFarmingProtection(Player playerVictim, Player playerAttacker) {
         if (!this.config.rankIPProtect) {
             return false;
@@ -287,6 +289,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         return false;
     }
 
+    // This method calculate how many points assisting players should receive
+    // Returns a Pair of Set (users that received points for assisting) & List (formatted assists to later use in kill message).
     private Pair<Set<User>, List<String>> calculateAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
         if (!this.config.assistEnable) {
             return Pair.of(new HashSet<>(), new ArrayList<>());
