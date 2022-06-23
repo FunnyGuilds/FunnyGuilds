@@ -123,6 +123,11 @@ public final class ItemUtils {
 
         for (int index = 2; index < split.length; index++) {
             String[] itemAttributes = split[index].split(":", 2);
+
+            if (itemAttributes.length != 2) {
+                FunnyGuilds.getPluginLogger().parser("Unknown item meta attribute: " + itemAttributes[0]);
+            }
+
             String attributeName = itemAttributes[0];
             String attributeValue = itemAttributes[1];
 
