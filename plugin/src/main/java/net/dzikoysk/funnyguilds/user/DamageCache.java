@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DamageTracking;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
-import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 
 public class DamageCache {
 
@@ -53,19 +53,19 @@ public class DamageCache {
         return this.getTotalDamageMap().getOrDefault(user, 0.0);
     }
 
-    @Nullable
-    public Damage getLastDamage() {
+    public Option<Damage> getLastDamage() {
         if (this.damageHistory.isEmpty()) {
-            return null;
+            return Option.none();
         }
-        return this.damageHistory.getLast();
+        return Option.of(this.damageHistory.getLast());
     }
 
     public boolean isInCombat() {
-        Damage lastDamage = this.getLastDamage();
-        if (lastDamage == null) {
+        Option<Damage> lastDamageOption = this.getLastDamage();
+        if (lastDamageOption.isEmpty()) {
             return false;
         }
+        Damage lastDamage = lastDamageOption.get();
 
         if (!lastDamage.getAttacker().isOnline()) {
             return false;
@@ -75,9 +75,8 @@ public class DamageCache {
         return lastDamage.isExpired(lastAttackerAsKillerConsiderationTimeout);
     }
 
-    @Nullable
-    public Instant getLastKillTime(User user) {
-        return this.killHistory.getIfPresent(user.getUUID());
+    public Option<Instant> getLastKillTime(User user) {
+        return Option.of(this.killHistory.getIfPresent(user.getUUID()));
     }
 
     public void addDamage(User damageDealer, double damage) {

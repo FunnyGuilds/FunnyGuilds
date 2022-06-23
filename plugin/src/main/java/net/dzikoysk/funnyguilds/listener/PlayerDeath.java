@@ -3,11 +3,12 @@ package net.dzikoysk.funnyguilds.listener;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
@@ -38,6 +39,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
+import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public class PlayerDeath extends AbstractFunnyListener {
@@ -62,24 +64,18 @@ public class PlayerDeath extends AbstractFunnyListener {
         UserCache victimCache = victim.getCache();
         DamageCache victimDamageCache = victimCache.getDamageCache();
 
-        Consumer<User> callDeathsChangeEvent = killer -> {
-            DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(EventCause.USER, killer, victim, 1);
-            if (SimpleEventHandler.handle(deathsChangeEvent)) {
-                victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getDeathsChange());
-            }
-        };
-
         Option<User> attackerOption = Option.none();
         if (playerAttacker == null && this.config.considerLastAttackerAsKiller) {
-            Damage lastDamage = victimDamageCache.getLastDamage();
-            if (lastDamage == null || !lastDamage.getAttacker().isOnline()) {
-                callDeathsChangeEvent.accept(victim);
+            Option<Damage> lastDamageOption = victimDamageCache.getLastDamage();
+            if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
+                this.handleDeathEvent(victim, victim);
                 victimDamageCache.clear();
                 return;
             }
+            Damage lastDamage = lastDamageOption.get();
 
             if (lastDamage.isExpired(this.config.lastAttackerAsKillerConsiderationTimeout)) {
-                callDeathsChangeEvent.accept(victim);
+                this.handleDeathEvent(victim, victim);
                 victimDamageCache.clear();
                 return;
             }
@@ -92,7 +88,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             attackerOption = this.userManager.findByPlayer(playerAttacker);
         }
 
-        callDeathsChangeEvent.accept(attackerOption.orElseGet(victim));
+        this.handleDeathEvent(victim, attackerOption.orElseGet(victim));
 
         if (attackerOption.isEmpty()) {
             return;
@@ -114,42 +110,16 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
         }
 
-        if (this.config.rankFarmingProtect) {
-            Instant victimTimestamp = victimDamageCache.getLastKillTime(attacker);
-            Instant attackerTimestamp = attackerDamageCache.getLastKillTime(victim);
-
-            if (victimTimestamp != null && Duration.between(victimTimestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
-                ChatUtils.sendMessage(playerVictim, this.messages.rankLastVictimV);
-                ChatUtils.sendMessage(playerAttacker, this.messages.rankLastVictimA);
-
-                victimDamageCache.clear();
-                event.setDeathMessage(null);
-
-                return;
-            }
-            else if (attackerTimestamp != null && Duration.between(attackerTimestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
-                ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerV);
-                ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerA);
-
-                victimDamageCache.clear();
-                event.setDeathMessage(null);
-
-                return;
-            }
+        if (this.checkRankFarmingProtection(playerVictim, playerAttacker, victim, victimDamageCache, attacker, attackerDamageCache)) {
+            victimDamageCache.clear();
+            event.setDeathMessage(null);
+            return;
         }
 
-        if (this.config.rankIPProtect) {
-            String attackerIP = playerAttacker.getAddress().getHostString();
-
-            if (attackerIP != null && attackerIP.equalsIgnoreCase(playerVictim.getAddress().getHostString())) {
-                ChatUtils.sendMessage(playerVictim, this.messages.rankIPVictim);
-                ChatUtils.sendMessage(playerAttacker, this.messages.rankIPAttacker);
-
-                victimDamageCache.clear();
-                event.setDeathMessage(null);
-
-                return;
-            }
+        if (this.checkIPRankFarmingProtection(playerVictim, playerAttacker)) {
+            victimDamageCache.clear();
+            event.setDeathMessage(null);
+            return;
         }
 
         KillsChangeEvent killsChangeEvent = new KillsChangeEvent(EventCause.USER, attacker, victim, 1);
@@ -171,56 +141,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         List<User> assistUsers = new ArrayList<>();
         List<String> assistEntries = new ArrayList<>();
-        if (this.config.assistEnable) {
-            Map<User, Double> damageMap = victimDamageCache.getSortedTotalDamageMap();
-
-            double toShare = result.getAttackerPoints() * (1 - this.config.assistKillerShare);
-            double totalDamage = victimDamageCache.getTotalDamage();
-
-            damageMap.remove(attacker);
-
-            int assistsCount = 0;
-            for (Entry<User, Double> assist : damageMap.entrySet()) {
-                User assistUser = assist.getKey();
-                double dealtDamage = assist.getValue();
-
-                double assistFraction = dealtDamage / totalDamage;
-                int addedPoints = (int) Math.round(assistFraction * toShare);
-
-                if (addedPoints <= 0) {
-                    continue;
-                }
-
-                if (this.config.assistsLimit > 0) {
-                    if (assistsCount >= this.config.assistsLimit) {
-                        break;
-                    }
-
-                    assistsCount++;
-                }
-
-                assistUsers.add(assistUser);
-
-                PointsChangeEvent assistPointsChangeEvent = new PointsChangeEvent(EventCause.USER, victim, assistUser, addedPoints);
-                if (SimpleEventHandler.handle(assistPointsChangeEvent)) {
-                    assistUser.getRank().updatePoints(currentValue -> currentValue + addedPoints);
-                }
-
-                AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.USER, victim, assistUser, 1);
-                if (SimpleEventHandler.handle(assistsChangeEvent)) {
-                    assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
-                }
-
-                messageReceivers.add(assistUser);
-
-                FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{PLAYER}", assistUser.getName())
-                        .register("{+}", assistPointsChangeEvent.getPointsChange())
-                        .register("{SHARE}", FunnyStringUtils.getPercent(assistFraction));
-
-                assistEntries.add(formatter.format(this.messages.rankAssistEntry));
-            }
-        }
+        Pair<Set<User>, List<String>> assistsResult = this.calculateAssists(victim, victimDamageCache, attacker, result, messageReceivers);
 
         int addedAttackerPoints;
         if (!this.config.assistKillerAlwaysShare && assistUsers.isEmpty()) {
@@ -317,6 +238,113 @@ public class PlayerDeath extends AbstractFunnyListener {
             event.setDeathMessage(null);
             messageReceivers.forEach(fighter -> fighter.sendMessage(deathMessage));
         }
+    }
+
+    private void handleDeathEvent(User victim, User attacker) {
+        DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(EventCause.USER, attacker, victim, 1);
+        if (SimpleEventHandler.handle(deathsChangeEvent)) {
+            victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getDeathsChange());
+        }
+    }
+
+    private boolean checkRankFarmingProtection(Player playerVictim, Player playerAttacker, User victim, DamageCache victimDamageCache, User attacker, DamageCache attackerDamageCache) {
+        if (!this.config.rankFarmingProtect) {
+            return false;
+        }
+
+        Option<Instant> victimTimestamp = victimDamageCache.getLastKillTime(attacker);
+        Option<Instant> attackerTimestamp = attackerDamageCache.getLastKillTime(victim);
+
+        if (victimTimestamp.isPresent() && Duration.between(victimTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
+            ChatUtils.sendMessage(playerVictim, this.messages.rankLastVictimV);
+            ChatUtils.sendMessage(playerAttacker, this.messages.rankLastVictimA);
+
+            return true;
+        }
+        else if (attackerTimestamp.isPresent() && Duration.between(attackerTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
+            ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerV);
+            ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerA);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean checkIPRankFarmingProtection(Player playerVictim, Player playerAttacker) {
+        if (!this.config.rankIPProtect) {
+            return false;
+        }
+
+        String attackerIP = playerAttacker.getAddress().getHostString();
+        if (attackerIP != null && attackerIP.equalsIgnoreCase(playerVictim.getAddress().getHostString())) {
+            ChatUtils.sendMessage(playerVictim, this.messages.rankIPVictim);
+            ChatUtils.sendMessage(playerAttacker, this.messages.rankIPAttacker);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private Pair<Set<User>, List<String>> calculateAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
+        if (!this.config.assistEnable) {
+            return Pair.of(new HashSet<>(), new ArrayList<>());
+        }
+
+        Set<User> assistUsers = new HashSet<>();
+        List<String> assistEntries = new ArrayList<>();
+
+        Map<User, Double> damageMap = victimDamageCache.getSortedTotalDamageMap();
+
+        double toShare = result.getAttackerPoints() * (1 - this.config.assistKillerShare);
+        double totalDamage = victimDamageCache.getTotalDamage();
+
+        damageMap.remove(attacker);
+
+        int assistsCount = 0;
+        for (Entry<User, Double> assist : damageMap.entrySet()) {
+            User assistUser = assist.getKey();
+            double dealtDamage = assist.getValue();
+
+            double assistFraction = dealtDamage / totalDamage;
+            int addedPoints = (int) Math.round(assistFraction * toShare);
+
+            if (addedPoints <= 0) {
+                continue;
+            }
+
+            if (this.config.assistsLimit > 0) {
+                if (assistsCount >= this.config.assistsLimit) {
+                    break;
+                }
+
+                assistsCount++;
+            }
+
+            assistUsers.add(assistUser);
+
+            PointsChangeEvent assistPointsChangeEvent = new PointsChangeEvent(EventCause.USER, victim, assistUser, addedPoints);
+            if (SimpleEventHandler.handle(assistPointsChangeEvent)) {
+                assistUser.getRank().updatePoints(currentValue -> currentValue + addedPoints);
+            }
+
+            AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.USER, victim, assistUser, 1);
+            if (SimpleEventHandler.handle(assistsChangeEvent)) {
+                assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
+            }
+
+            messageReceivers.add(assistUser);
+
+            FunnyFormatter formatter = new FunnyFormatter()
+                    .register("{PLAYER}", assistUser.getName())
+                    .register("{+}", assistPointsChangeEvent.getPointsChange()) //TODO: Support formatting
+                    .register("{SHARE}", FunnyStringUtils.getPercent(assistFraction));
+
+            assistEntries.add(formatter.format(this.messages.rankAssistEntry));
+        }
+
+        return Pair.of(assistUsers, assistEntries);
     }
 
 }
