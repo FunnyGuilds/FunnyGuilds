@@ -115,7 +115,7 @@ public final class ItemUtils {
         });
 
         Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown data: " + split[0]);
+            FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
         });
 
         ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
@@ -123,13 +123,18 @@ public final class ItemUtils {
 
         for (int index = 2; index < split.length; index++) {
             String[] itemAttributes = split[index].split(":", 2);
+
+            if (itemAttributes.length != 2) {
+                FunnyGuilds.getPluginLogger().parser("Unknown item meta attribute: " + itemAttributes[0]);
+            }
+
             String attributeName = itemAttributes[0];
             String attributeValue = itemAttributes[1];
 
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    item.setName(formatter.format(attributeName), true);
+                    item.setName(formatter.format(attributeValue), true);
                     continue;
                 case "lore":
                     List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
