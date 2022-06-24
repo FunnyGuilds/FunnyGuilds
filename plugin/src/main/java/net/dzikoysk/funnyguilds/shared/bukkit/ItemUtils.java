@@ -119,7 +119,7 @@ public final class ItemUtils {
         });
 
         ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
-        FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
+        FunnyFormatter formatter = new FunnyFormatter().register("_", "").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {
             String[] itemAttributes = split[index].split(":", 2);
