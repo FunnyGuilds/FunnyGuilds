@@ -259,8 +259,8 @@ public class PlayerDeath extends AbstractFunnyListener {
             return true;
         }
         else if (attackerTimestamp.isPresent() && Duration.between(attackerTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
-            ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerV);
-            ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerA);
+            ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerA);
+            ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerV);
 
             return true;
         }

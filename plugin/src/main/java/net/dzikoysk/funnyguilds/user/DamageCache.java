@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.user;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -9,7 +7,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DamageTracking;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
@@ -20,9 +17,7 @@ public class DamageCache {
     private final User user;
 
     private final LinkedList<Damage> damageHistory = new LinkedList<>();
-    private final Cache<UUID, Instant> killHistory = CacheBuilder.newBuilder()
-            .expireAfterWrite(1, TimeUnit.HOURS)
-            .build();
+    private final Map<UUID, Instant> killHistory = new HashMap<>();
 
     public DamageCache(User user) {
         this.user = user;
@@ -76,7 +71,7 @@ public class DamageCache {
     }
 
     public Option<Instant> getLastKillTime(User user) {
-        return Option.of(this.killHistory.getIfPresent(user.getUUID()));
+        return Option.of(this.killHistory.get(user.getUUID()));
     }
 
     public void addDamage(User damageDealer, double damage) {
