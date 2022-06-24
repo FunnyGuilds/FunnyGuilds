@@ -52,8 +52,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankKillSubtitle = "&7+{+}";
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
-    @Comment("Dostępne zmienne: {PLAYER}, {+}, {SHARE}")
-    public String rankAssistEntry = "&b{PLAYER} &7(&a+{+}&7, {SHARE}% dmg)";
+    @Comment("Dostępne zmienne: {PLAYER}, {+}, {PLUS-FORMATTED}, {SHARE}")
+    public String rankAssistEntry = "&b{PLAYER} &7({PLUS-FORMATTED}&7, {SHARE}% dmg)";
     @Comment("Znaki oddzielające kolejne wpisy o asystujących graczach")
     public String rankAssistDelimiter = "&8, ";
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")

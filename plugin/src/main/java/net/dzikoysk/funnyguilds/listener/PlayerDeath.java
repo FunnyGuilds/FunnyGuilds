@@ -336,9 +336,12 @@ public class PlayerDeath extends AbstractFunnyListener {
 
             messageReceivers.add(assistUser);
 
+            int pointsChange = assistPointsChangeEvent.getPointsChange();
             FunnyFormatter formatter = new FunnyFormatter()
                     .register("{PLAYER}", assistUser.getName())
-                    .register("{+}", assistPointsChangeEvent.getPointsChange()) //TODO: Support formatting
+                    .register("{+}", pointsChange)
+                    .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(pointsChange, this.config.killPointsChangeFormat, true))
+                    .register("{CHANGE}", Math.abs(pointsChange))
                     .register("{SHARE}", FunnyStringUtils.getPercent(assistFraction));
 
             assistEntries.add(formatter.format(this.messages.rankAssistEntry));
