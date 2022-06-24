@@ -42,8 +42,8 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("<------- Rank Messages -------> #")
     public String rankLastVictimV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
-    public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
-    public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
+    public String rankLastAttackerV = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja odebrane!";
+    public String rankLastAttackerA = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
@@ -52,8 +52,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankKillSubtitle = "&7+{+}";
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
-    @Comment("Dostępne zmienne: {PLAYER}, {+}, {SHARE}")
-    public String rankAssistEntry = "&b{PLAYER} &7(&a+{+}&7, {SHARE}% dmg)";
+    @Comment("Dostępne zmienne: {PLAYER}, {+}, {PLUS-FORMATTED}, {SHARE}")
+    public String rankAssistEntry = "&b{PLAYER} &7({PLUS-FORMATTED}&7, {SHARE}% dmg)";
     @Comment("Znaki oddzielające kolejne wpisy o asystujących graczach")
     public String rankAssistDelimiter = "&8, ";
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")

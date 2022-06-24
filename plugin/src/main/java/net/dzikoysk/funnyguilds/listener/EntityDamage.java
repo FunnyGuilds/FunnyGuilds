@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import java.time.Instant;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -88,7 +87,7 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            victimUser.getCache().addDamage(attackerUser, event.getDamage(), Instant.now());
+            victimUser.getCache().getDamageCache().addDamage(attackerUser, event.getDamage());
         });
     }
 

@@ -604,6 +604,20 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
 
+    public DamageTracking damageTracking = new DamageTracking();
+
+    public static class DamageTracking extends OkaeriConfig {
+
+        @Comment("Czas po którym zadane obrażenia, stają się \"przestarzałe\"")
+        public Duration expireTime = Duration.ofMinutes(1);
+
+        @Min(-1)
+        @Comment("Jak długa ma być historia zadanych obrażeń.")
+        @Comment("Wstaw -1 jeśli ma być nieskończona.")
+        public int maxTracks = 30;
+
+    }
+
     @PositiveOrZero
     @Comment("")
     @Comment("Czas przez jaki osoba, która zaatakowała gracza, który zginął, ma być uznawany za jego zabójcę")
@@ -651,6 +665,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Reszta rankingu rozdzielana jest między osoby asystujące, w zaleznosci od zadanych obrażeń")
     @CustomKey("rank-assist-killer-share")
     public double assistKillerShare = 0.5;
+
+    @Comment("")
+    @Comment("Czy zabójcy zawsze mają dzielić sie ilością punktów według rank-assist-killer-share, nawet gdy nie ma osób asystujących")
+    @CustomKey("rank-assist-victim-always-share")
+    public boolean assistKillerAlwaysShare = true;
 
     @Comment("")
     @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")

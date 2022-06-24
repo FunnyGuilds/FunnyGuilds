@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.event.FunnyEvent;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.rank.LogoutsChangeEvent;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,15 +25,18 @@ public class PlayerQuit extends AbstractFunnyListener {
         this.userManager.findByPlayer(player).peek(user -> {
             UserCache cache = user.getCache();
 
-            if (cache.isInCombat()) {
-                user.getRank().updateLogouts(currentValue -> currentValue + 1);
+            if (cache.getDamageCache().isInCombat()) {
+                LogoutsChangeEvent logoutsChangeEvent = new LogoutsChangeEvent(FunnyEvent.EventCause.USER, user, user, 1);
+                if (SimpleEventHandler.handle(logoutsChangeEvent)) {
+                    user.getRank().updateLogouts(currentValue -> currentValue + logoutsChangeEvent.getLogoutsChange());
+                }
             }
 
             cache.setIndividualPrefix(null);
             cache.setScoreboard(null);
             cache.setDummy(null);
             cache.setPlayerList(null);
-            cache.clearDamage();
+            cache.getDamageCache().clear();
 
             this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification();
         });
