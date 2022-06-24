@@ -119,13 +119,14 @@ public final class ItemUtils {
         });
 
         ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
-        FunnyFormatter formatter = new FunnyFormatter().register("_", "").register("{HASH}", "#");
+        FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {
             String[] itemAttributes = split[index].split(":", 2);
 
             if (itemAttributes.length != 2) {
                 FunnyGuilds.getPluginLogger().parser("Unknown item meta attribute: " + itemAttributes[0]);
+                continue;
             }
 
             String attributeName = itemAttributes[0];
