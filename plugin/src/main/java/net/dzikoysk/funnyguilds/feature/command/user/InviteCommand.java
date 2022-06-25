@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
 import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
@@ -23,9 +25,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -60,7 +59,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
             try {
                 range = Math.pow(Double.parseDouble(args[1]), 2);
-            } catch (Exception exception) {
+            }
+            catch (Exception exception) {
                 range = this.config.inviteCommandAllMaxRange;
             }
 
@@ -142,13 +142,14 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
                 List<String> toReturn = Bukkit.getOnlinePlayers().stream()
                         .filter(it -> !it.equals(sender))
-                        .filter(it -> !userManager.findByPlayer(it).get().isVanished())
+                        .filter(it -> !this.userManager.findByPlayer(it).get().isVanished())
                         .map(HumanEntity::getName)
                         .collect(Collectors.toList());
-                toReturn.add(configuration.inviteCommandAllArgument);
+                toReturn.add(this.configuration.inviteCommandAllArgument);
 
                 return toReturn;
-            } else {
+            }
+            else {
                 return Lists.newArrayList("");
             }
         }
