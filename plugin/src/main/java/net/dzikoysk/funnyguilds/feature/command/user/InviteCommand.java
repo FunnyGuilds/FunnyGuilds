@@ -136,14 +136,14 @@ public final class InviteCommand extends AbstractFunnyCommand {
         @Override
         public List<String> apply(Context context, String prefix, Integer limit) {
             String[] args = context.getArguments();
-            CommandSender sender = context.getCommandSender();
 
             if (args.length == 1) {
 
                 List<String> toReturn = Bukkit.getOnlinePlayers().stream()
-                        .filter(it -> !it.equals(sender))
-                        .filter(it -> !this.userManager.findByPlayer(it).get().isVanished())
-                        .map(HumanEntity::getName)
+                        .map(it -> this.userManager.findByPlayer(it).get())
+                        .filter(it -> !it.hasGuild())
+                        .filter(it -> !it.isVanished())
+                        .map(User::getName)
                         .collect(Collectors.toList());
                 toReturn.add(this.configuration.inviteCommandAllArgument);
 
