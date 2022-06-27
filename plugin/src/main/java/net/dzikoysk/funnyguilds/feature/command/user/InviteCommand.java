@@ -3,8 +3,10 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -21,10 +23,10 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
+import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -39,7 +41,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             description = "${user.invite.description}",
             aliases = "${user.invite.aliases}",
             permission = "funnyguilds.invite",
-            completer = "invite-command",
+            completer = "invite-players",
             acceptsExceeded = true,
             playerOnly = true
     )
@@ -55,34 +57,31 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
         if (args[0].equals(this.config.inviteCommandAllArgument)) {
 
-            Double range;
+            double range;
 
-            try {
-                range = Math.pow(Double.parseDouble(args[1]), 2);
+            if (args.length >= 2) {
+                range = Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1])).orThrow(() -> new ValidationException(this.messages.inviteAllArgumentIsNotNumber));
             }
-            catch (Exception exception) {
+            else {
                 range = this.config.inviteCommandAllMaxRange;
             }
 
-            Double finalRange = range;
+            when(range > this.config.inviteCommandAllMaxRange, FunnyFormatter.format(this.messages.inviteRangeToBig, "{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
+
             List<Player> nearbyPlayers = Bukkit.getServer().getOnlinePlayers().stream()
-                    .filter(player -> finalRange >= player.getLocation().distanceSquared(sender.getLocation()))
+                    .filter(player -> range >= player.getLocation().distanceSquared(sender.getLocation()))
                     .filter(player -> player != sender)
                     .collect(Collectors.toList());
 
             when(guild.getMembers().size() + nearbyPlayers.size() > this.config.maxMembersInGuild, formatter.format(this.messages.inviteAmount));
-            when(nearbyPlayers.size() == 0, this.messages.inviteNoOneIsNearby);
+            when(nearbyPlayers.isEmpty(), this.messages.inviteNoOneIsNearby);
 
+            sender.sendMessage(FunnyFormatter.format(this.messages.inviteAllCommand, "{RANGE}", range));
 
-            for (Player player : nearbyPlayers) {
-                User invitedUser = this.userManager.findByPlayer(player).get();
-
-                if (invitedUser.isVanished()) {
-                    continue;
-                }
-
-                this.inviteUserToGuild(deputy, guild, invitedUser, formatter);
-            }
+            PandaStream.of(nearbyPlayers)
+                    .mapOpt(this.userManager::findByPlayer)
+                    .filter(User::isVanished)
+                    .forEach(it -> this.inviteUserToGuild(deputy, guild, it, formatter));
 
             return;
 
@@ -98,7 +97,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
                 return;
             }
 
-            deputy.sendMessage(this.messages.inviteCancelled.replace("{USER}", invitedUser.getName()));
+            deputy.sendMessage(FunnyFormatter.format(this.messages.inviteCancelled, "{PLAYER}", invitedUser.getName()));
             invitedUser.sendMessage(formatter.format(this.messages.inviteCancelledToInvited));
 
             this.guildInvitationList.expireInvitation(guild, invitedUser);
@@ -115,43 +114,5 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
         deputy.sendMessage(FunnyFormatter.format(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
         invitedUser.sendMessage(formatter.format(this.messages.inviteToInvited));
-    }
-
-    public static final class InviteCommandCompleter implements Completer {
-
-        private final PluginConfiguration configuration;
-        private final UserManager userManager;
-
-        public InviteCommandCompleter(PluginConfiguration configuration, UserManager userManager) {
-            this.configuration = configuration;
-            this.userManager = userManager;
-        }
-
-
-        @Override
-        public String getName() {
-            return "invite-command";
-        }
-
-        @Override
-        public List<String> apply(Context context, String prefix, Integer limit) {
-            String[] args = context.getArguments();
-
-            if (args.length == 1) {
-
-                List<String> toReturn = Bukkit.getOnlinePlayers().stream()
-                        .map(it -> this.userManager.findByPlayer(it).get())
-                        .filter(it -> !it.hasGuild())
-                        .filter(it -> !it.isVanished())
-                        .map(User::getName)
-                        .collect(Collectors.toList());
-                toReturn.add(this.configuration.inviteCommandAllArgument);
-
-                return toReturn;
-            }
-            else {
-                return Lists.newArrayList("");
-            }
-        }
     }
 }

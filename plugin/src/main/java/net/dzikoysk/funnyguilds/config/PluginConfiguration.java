@@ -1150,7 +1150,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Jaki jest maksymalny promień podczas zapraszania graczy w danym promieniu")
-    public Double inviteCommandAllMaxRange = Math.pow(10.0, 2);
+    public double inviteCommandAllMaxRange = 10.0;
 
     @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
