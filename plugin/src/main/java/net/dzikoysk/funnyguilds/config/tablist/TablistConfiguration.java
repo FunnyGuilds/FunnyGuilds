@@ -151,7 +151,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Wygląd stopki listy graczy")
     @CustomKey("player-list-footer")
-    public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
+    public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &6&lmessages.yml&c&l!";
 
     @Comment("")
     @Comment("Wygląd głowek na liście graczy")
@@ -268,7 +268,7 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-KILLS}")
                             .build(),
                             "&7GitHub: &agithub.com/funnyguilds",
-                            "&a&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!"),
+                            "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &7&lmessages.yml&c&l!"),
 
                     new TablistPage(10, ImmutableMap.<Integer, String>builder()
                             .put(42, " &b&lTOP &8- &b&lSmierci")
@@ -297,7 +297,7 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-DEATHS}")
                             .build(),
                             "&7Strona: &6funnyguilds.dzikoysk.net",
-                            "&6&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!")
+                            "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &b&lmessages.yml&c&l!")
             )
     );
 
