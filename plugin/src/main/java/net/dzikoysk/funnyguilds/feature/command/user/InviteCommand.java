@@ -69,7 +69,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             when(range > this.config.inviteCommandAllMaxRange, FunnyFormatter.format(this.messages.inviteRangeToBig, "{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
 
             List<Player> nearbyPlayers = Bukkit.getServer().getOnlinePlayers().stream()
-                    .filter(player -> range >= player.getLocation().distanceSquared(sender.getLocation()))
+                    .filter(player -> range >= player.getLocation().distance(sender.getLocation()))
                     .filter(player -> player != sender)
                     .collect(Collectors.toList());
 
@@ -84,7 +84,6 @@ public final class InviteCommand extends AbstractFunnyCommand {
                     .forEach(it -> this.inviteUserToGuild(deputy, guild, it, formatter));
 
             return;
-
         }
 
         this.inviteUserToGuild(deputy, guild, UserValidation.requireUserByName(args[0]), formatter);

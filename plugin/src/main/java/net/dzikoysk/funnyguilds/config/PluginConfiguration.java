@@ -1149,7 +1149,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public String inviteCommandAllArgument = "*";
 
     @Comment("")
-    @Comment("Jaki jest maksymalny promień podczas zapraszania graczy w danym promieniu")
+    @Comment("Maksymalna odległość, w jakiej zapraszani są gracze w momencie użycia komendy \"/invite *\"")
     public double inviteCommandAllMaxRange = 10.0;
 
     @Comment("")

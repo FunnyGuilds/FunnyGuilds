@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,19 +36,17 @@ public class InvitePlayersCompleter implements Completer {
         String[] args = context.getArguments();
 
         if (args.length != 1) {
-            return Lists.newArrayList("");
+            return Collections.emptyList();
         }
 
         return CommandUtils.collectCompletions(
-                Stream.concat(
-                        PandaStream.of(Bukkit.getServer().getOnlinePlayers())
-                                .mapOpt(this.userManager::findByPlayer)
-                                .filter(it -> !it.hasGuild())
-                                .filter(it -> !it.isVanished())
-                                .map(User::getName)
-                                .toStream(),
-                        Lists.newArrayList(this.configuration.inviteCommandAllArgument).stream()
-                ).collect(Collectors.toList()),
+                PandaStream.of(Bukkit.getServer().getOnlinePlayers())
+                        .mapOpt(this.userManager::findByPlayer)
+                        .filterNot(User::hasGuild)
+                        .filterNot(User::isVanished)
+                        .map(User::getName)
+                        .concat(configuration.inviteCommandAllArgument)
+                        .toList(),
                 prefix, limit, ArrayList::new, it -> it
         );
 
