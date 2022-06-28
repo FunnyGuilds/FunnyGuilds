@@ -47,8 +47,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                                 tablistConfig.playerListAnimated, tablistConfig.pages,
                                 tablistConfig.heads.textures,
                                 tablistConfig.playerListPing,
-                                tablistConfig.playerListFillCells,
-                                config.top.enableLegacyPlaceholders
+                                tablistConfig.playerListFillCells
                         );
 
                         user.getCache().setPlayerList(playerList);
