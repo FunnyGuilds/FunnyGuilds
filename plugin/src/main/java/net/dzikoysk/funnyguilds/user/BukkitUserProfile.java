@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.user;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
@@ -12,7 +13,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import panda.std.Option;
-import panda.utilities.StringUtils;
 
 public class BukkitUserProfile implements UserProfile {
 
@@ -82,7 +82,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override //TODO: MiniMessage support
     public void sendMessage(String message) {
-        if (StringUtils.isEmpty(message)) {
+        if (FunnyStringUtils.isEmpty(message)) {
             return;
         }
 

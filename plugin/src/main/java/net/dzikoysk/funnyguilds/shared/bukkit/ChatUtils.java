@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +37,7 @@ public final class ChatUtils {
     }
 
     public static void sendMessage(CommandSender sender, String message) {
-        if (StringUtils.isEmpty(message)) {
+        if (FunnyStringUtils.isEmpty(message)) {
             return;
         }
 
@@ -44,7 +45,7 @@ public final class ChatUtils {
     }
 
     public static void broadcastMessage(String message) {
-        if (StringUtils.isEmpty(message)) {
+        if (FunnyStringUtils.isEmpty(message)) {
             return;
         }
 

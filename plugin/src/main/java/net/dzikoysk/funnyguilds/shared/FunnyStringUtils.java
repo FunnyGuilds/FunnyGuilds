@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import panda.utilities.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import panda.utilities.text.Joiner;
 
 public final class FunnyStringUtils {
@@ -25,13 +25,21 @@ public final class FunnyStringUtils {
         return Joiner.on(separator).join(strings).toString();
     }
 
-    public static List<String> fromString(String s) {
+    public static boolean isEmpty(String string) {
+        return string == null || string.isEmpty();
+    }
+
+    public static String replace(String string, String pattern, String replacement) {
+        return StringUtils.replace(string, pattern, replacement);
+    }
+
+    public static List<String> fromString(String string) {
         List<String> list = new ArrayList<>();
-        if (StringUtils.isEmpty(s)) {
+        if (isEmpty(string)) {
             return list;
         }
 
-        return Arrays.asList(s.split(","));
+        return Arrays.asList(string.split(","));
     }
 
     public static String appendDigit(int number) {

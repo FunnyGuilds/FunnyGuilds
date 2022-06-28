@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import panda.std.Pair;
-import panda.utilities.StringUtils;
 
 public final class FunnyFormatter {
 
     private final List<Pair<String, Supplier<?>>> placeholders = new ArrayList<>();
 
     public String format(String message) {
-        if (StringUtils.isEmpty(message)) {
+        if (FunnyStringUtils.isEmpty(message)) {
             return "";
         }
 
@@ -28,7 +27,7 @@ public final class FunnyFormatter {
     }
 
     public static String format(String message, String placeholder, Supplier<?> valueSupplier) {
-        if (StringUtils.isEmpty(message)) {
+        if (FunnyStringUtils.isEmpty(message)) {
             return "";
         }
 
@@ -41,7 +40,7 @@ public final class FunnyFormatter {
             throw new NullPointerException("Placeholder " + placeholder + " returns null value");
         }
 
-        return StringUtils.replace(message, placeholder, Objects.toString(value));
+        return FunnyStringUtils.replace(message, placeholder, Objects.toString(value));
     }
 
     public FunnyFormatter register(String placeholder, Object value) {
