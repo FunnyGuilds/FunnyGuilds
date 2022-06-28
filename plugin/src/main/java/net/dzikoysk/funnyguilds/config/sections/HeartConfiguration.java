@@ -11,11 +11,11 @@ import java.io.File;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import panda.std.Pair;
-import panda.utilities.StringUtils;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
@@ -82,7 +82,7 @@ public class HeartConfiguration extends OkaeriConfig {
         }
 
         if (this.pasteSchematicOnCreation) {
-            if (StringUtils.isEmpty(this.guildSchematicFileName)) {
+            if (FunnyStringUtils.isEmpty(this.guildSchematicFileName)) {
                 FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field " +
                         "\"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
