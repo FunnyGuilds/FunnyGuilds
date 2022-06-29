@@ -40,15 +40,13 @@ public class IndividualPlayerList {
     private final Map<NumberRange, SkinTexture> cellTextures;
     private final int cellPing;
 
-    private final boolean enableLegacyPlaceholders;
-
     private int cycle;
     private int currentPage;
 
     public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, FunnyServer funnyServer,
                                 Map<Integer, String> unformattedCells, String header, String footer, boolean animated,
                                 List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
-                                int cellPing, boolean fillCells, boolean enableLegacyPlaceholders) {
+                                int cellPing, boolean fillCells) {
         this.user = user;
         this.funnyServer = funnyServer;
 
@@ -60,8 +58,6 @@ public class IndividualPlayerList {
         this.pagesCount = pages.size();
         this.cellTextures = cellTextures;
         this.cellPing = cellPing;
-
-        this.enableLegacyPlaceholders = enableLegacyPlaceholders;
 
         if (!fillCells) {
             Entry<Integer, String> entry = MapUtils.findTheMaximumEntryByKey(unformattedCells);
@@ -80,23 +76,11 @@ public class IndividualPlayerList {
     }
 
     public void send() {
-        Map<Integer, String> unformattedCells = this.unformattedCells;
+        Map<Integer, String> unformattedCells = new HashMap<>(this.unformattedCells);
         String header = this.header;
         String footer = this.footer;
 
         if (this.animated) {
-            this.cycle++;
-
-            int pageCycles = this.pages.get(this.currentPage).cycles;
-            if (this.cycle + 1 >= pageCycles) {
-                this.cycle = 0;
-                this.currentPage++;
-
-                if (this.currentPage >= this.pagesCount) {
-                    this.currentPage = 0;
-                }
-            }
-
             TablistPage page = this.pages.get(this.currentPage);
             if (page != null) {
                 if (page.playerList != null) {
@@ -122,6 +106,24 @@ public class IndividualPlayerList {
         this.funnyServer.getPlayer(this.user).peek(player -> {
             this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet());
         });
+    }
+
+    void updatePageCycle() {
+        if (!this.animated) {
+            return;
+        }
+
+        this.cycle++;
+
+        int pageCycles = this.pages.get(this.currentPage).cycles;
+        if (this.cycle + 1 >= pageCycles) {
+            this.cycle = 0;
+            this.currentPage++;
+
+            if (this.currentPage >= this.pagesCount) {
+                this.currentPage = 0;
+            }
+        }
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
