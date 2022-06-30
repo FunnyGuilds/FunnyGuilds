@@ -41,7 +41,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             description = "${user.invite.description}",
             aliases = "${user.invite.aliases}",
             permission = "funnyguilds.invite",
-            completer = "invite-players",
+            completer = "invite-players:3",
             acceptsExceeded = true,
             playerOnly = true
     )
@@ -63,7 +63,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
                 range = Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1])).orThrow(() -> new ValidationException(this.messages.inviteAllArgumentIsNotNumber));
             }
             else {
-                range = this.config.inviteCommandAllMaxRange;
+                range = this.config.inviteCommandAllDefaultRange;
             }
 
             when(range > this.config.inviteCommandAllMaxRange, FunnyFormatter.format(this.messages.inviteRangeToBig, "{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
