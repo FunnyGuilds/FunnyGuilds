@@ -14,7 +14,7 @@ rewrite {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.10.2-SNAPSHOTS"
+    version = "4.10.2-SNAPSHOT"
 
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
@@ -63,7 +63,7 @@ subprojects {
             }
 
             maven {
-                if (version.toString().endsWith("-SNAPSHOTS")) {
+                if (version.toString().endsWith("-SNAPSHOT")) {
                     name = "snapshots"
                     url = uri("https://repo.panda-lang.org/snapshots")
                 } else {
