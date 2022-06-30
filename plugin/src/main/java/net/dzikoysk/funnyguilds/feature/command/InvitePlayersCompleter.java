@@ -1,11 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
@@ -45,7 +42,7 @@ public class InvitePlayersCompleter implements Completer {
                         .filterNot(User::hasGuild)
                         .filterNot(User::isVanished)
                         .map(User::getName)
-                        .concat(configuration.inviteCommandAllArgument)
+                        .concat(this.configuration.inviteCommandAllArgument)
                         .toList(),
                 prefix, limit, ArrayList::new, it -> it
         );
