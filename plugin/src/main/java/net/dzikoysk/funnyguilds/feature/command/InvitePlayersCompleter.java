@@ -21,7 +21,6 @@ public class InvitePlayersCompleter implements Completer {
         this.userManager = userManager;
     }
 
-
     @Override
     public String getName() {
         return "invite-players";

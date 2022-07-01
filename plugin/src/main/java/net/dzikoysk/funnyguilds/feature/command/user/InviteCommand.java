@@ -49,7 +49,11 @@ public final class InviteCommand extends AbstractFunnyCommand {
         when(args.length < 1, this.messages.generalNoNickGiven);
         when(guild.getMembers().size() >= this.config.maxMembersInGuild, formatter.format(this.messages.inviteAmount));
 
-        if (args[0].equals(this.config.inviteCommandAllArgument)) {
+        boolean checkArgument = this.config.inviteCommandAllArgumentIgnoreCase
+                ? args[0].equalsIgnoreCase(this.config.inviteCommandAllArgument)
+                : args[0].equals(this.config.inviteCommandAllArgument);
+
+        if (checkArgument) {
             double range = args.length >= 2
                 ? Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1]))
                         .orThrow(() -> new ValidationException(this.messages.inviteAllArgumentIsNotNumber))

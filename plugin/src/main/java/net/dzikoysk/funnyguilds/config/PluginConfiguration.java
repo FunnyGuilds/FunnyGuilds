@@ -1145,8 +1145,12 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("")
-    @Comment("Jaki argument powinien zostać podany przez gracza gdy chce zaprosić wszystkich graczy w danym promieniu")
+    @Comment("Jaki argument powinien zostać podany przez gracza, gdy chce zaprosić wszystkich graczy w danym promieniu")
     public String inviteCommandAllArgument = "*";
+
+    @Comment("")
+    @Comment("Czy wielkość liter powinna być ignorowana dla argumentu od zapraszania wszystkich graczy w danym promieniu ")
+    public boolean inviteCommandAllArgumentIgnoreCase = true;
 
     @Comment("")
     @Comment("Maksymalna odległość, w jakiej zapraszani są gracze w momencie użycia komendy \"/invite *\"")
