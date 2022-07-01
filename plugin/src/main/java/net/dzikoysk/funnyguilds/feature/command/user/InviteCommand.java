@@ -53,12 +53,10 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
             double range;
 
-            if (args.length >= 2) {
-                range = Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1])).orThrow(() -> new ValidationException(this.messages.inviteAllArgumentIsNotNumber));
-            }
-            else {
-                range = this.config.inviteCommandAllDefaultRange;
-            }
+            double range = args.length >= 2
+                ? Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1]))
+                        .orThrow(() -> new ValidationException(this.messages.inviteAllArgumentIsNotNumber))
+                : this.config.inviteCommandAllDefaultRange;
 
             when(range > this.config.inviteCommandAllMaxRange, FunnyFormatter.format(this.messages.inviteRangeToBig, "{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
 
