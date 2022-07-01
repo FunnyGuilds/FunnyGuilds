@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
@@ -30,12 +29,6 @@ public class InvitePlayersCompleter implements Completer {
 
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
-        String[] args = context.getArguments();
-
-        if (args.length != 1) {
-            return Collections.emptyList();
-        }
-
         return CommandUtils.collectCompletions(
                 PandaStream.of(Bukkit.getServer().getOnlinePlayers())
                         .mapOpt(this.userManager::findByPlayer)
