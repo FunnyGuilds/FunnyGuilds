@@ -669,7 +669,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czy zabójcy zawsze mają dzielić sie ilością punktów według rank-assist-killer-share, nawet gdy nie ma osób asystujących")
     @CustomKey("rank-assist-victim-always-share")
-    public boolean assistKillerAlwaysShare = true;
+    public boolean assistKillerAlwaysShare = false;
 
     @Comment("")
     @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")
