@@ -1149,7 +1149,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public String inviteCommandAllArgument = "*";
 
     @Comment("")
-    @Comment("Czy wielkość liter powinna być ignorowana dla argumentu od zapraszania wszystkich graczy w danym promieniu ")
+    @Comment("Czy wielkość liter powinna być ignorowana dla argumentu od zapraszania wszystkich graczy w danym promieniu")
     public boolean inviteCommandAllArgumentIgnoreCase = true;
 
     @Comment("")
