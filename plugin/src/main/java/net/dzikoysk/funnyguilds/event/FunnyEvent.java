@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.event;
 
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
-import panda.utilities.StringUtils;
 
 public abstract class FunnyEvent extends Event implements Cancellable {
 
@@ -44,7 +44,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
      * @return the set cancel message, if null the default cancel message will be returned.
      */
     public String getCancelMessage() {
-        if (StringUtils.isEmpty(this.cancelMessage)) {
+        if (FunnyStringUtils.isEmpty(this.cancelMessage)) {
             return this.getDefaultCancelMessage();
         }
 

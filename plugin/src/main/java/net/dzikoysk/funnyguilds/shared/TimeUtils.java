@@ -11,7 +11,7 @@ public final class TimeUtils {
     }
 
     public static long parseTime(String string) {
-        if (StringUtils.isEmpty(string)) {
+        if (FunnyStringUtils.isEmpty(string)) {
             return 0;
         }
 

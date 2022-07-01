@@ -2,8 +2,8 @@ package net.dzikoysk.funnyguilds.nms;
 
 import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
-import panda.utilities.StringUtils;
 
 public final class DescriptionChanger {
 
@@ -14,7 +14,7 @@ public final class DescriptionChanger {
     }
 
     public void rename(String pluginName) {
-        if (StringUtils.isEmpty(pluginName)) {
+        if (FunnyStringUtils.isEmpty(pluginName)) {
             return;
         }
 
