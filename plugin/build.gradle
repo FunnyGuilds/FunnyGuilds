@@ -14,7 +14,7 @@ dependencies {
     // okaeri config library
     implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.5"
     implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.6"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.5"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.6"
     // okaeri holographicdisplays commons
     implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.18"
 
