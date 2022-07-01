@@ -362,13 +362,25 @@ public class MessageConfiguration extends OkaeriConfig {
     public String inviteAllyAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe sojuszy miedzygildyjnych! (&c{AMOUNT}&7)";
     @Comment("Dostępne zmienne: {AMOUNT}, {GUILD}, {TAG}")
     public String inviteAllyTargetAmount = "&7Gildia {TAG} posiada juz maksymalna liczbe sojuszy! (&c{AMOUNT}&7)";
-    public String inviteCancelled = "&cCofnieto zaproszenie!";
+    @Comment("Dostępne zmienne: {PLAYER}")
+    public String inviteCancelled = "&cCofnieto zaproszenie dla {PLAYER}!";
     @Comment("Dostępne zmienne: {OWNER}, {GUILD}, {TAG}")
     public String inviteCancelledToInvited = "&7Zaproszenie do gildii &c{GUILD} &7zostalo wycofane!";
     @Comment("Dostępne zmienne: {PLAYER}")
     public String inviteToOwner = "&7Gracz &a{PLAYER} &7zostal zaproszony do gildii!";
     @Comment("Dostępne zmienne: {OWNER}, {GUILD}, {TAG}")
     public String inviteToInvited = "&aOtrzymano zaproszenie do gildii &7{TAG}&a!";
+
+    public String inviteNoOneIsNearby = "&cNikogo nie ma w pobliżu!";
+
+    @Comment("Dostępne zmienne: {RANGE}")
+    public String inviteAllCommand = "&aZapraszam wszystkich w promieniu {RANGE} bloków!";
+
+    @Comment("Dostępne zmienne: {MAX_RANGE}")
+    public String inviteRangeToBig = "&cPodany zasięg jest zbyt duży! (Maksymalnie: {MAX_RANGE})";
+
+    @Comment("Dostępne zmienne: {MAX_RANGE}")
+    public String inviteAllArgumentIsNotNumber = "&cPodany zasięg nie jest poprawną liczbą!";
 
     @Comment("")
     @Comment("<------- Join Messages -------> #")

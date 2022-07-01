@@ -1145,6 +1145,22 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("")
+    @Comment("Jaki argument powinien zostać podany przez gracza, gdy chce zaprosić wszystkich graczy w danym promieniu")
+    public String inviteCommandAllArgument = "*";
+
+    @Comment("")
+    @Comment("Czy wielkość liter powinna być ignorowana dla argumentu od zapraszania wszystkich graczy w danym promieniu")
+    public boolean inviteCommandAllArgumentIgnoreCase = true;
+
+    @Comment("")
+    @Comment("Maksymalna odległość, w jakiej zapraszani są gracze w momencie użycia komendy \"/invite *\"")
+    public double inviteCommandAllMaxRange = 50.0;
+
+    @Comment("")
+    @Comment("Domyślna odległość, w jakiej zapraszani są gracze w momencie użycia komendy \"/invite *\"")
+    public double inviteCommandAllDefaultRange = 10.0;
+
+    @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
     @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, HolographicDisplays")
     @Comment("Aby zostawić wszystkie hooki włączone wystarczy wpisać: disabled-hooks: []")
