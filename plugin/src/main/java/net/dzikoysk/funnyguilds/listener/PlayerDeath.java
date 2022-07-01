@@ -145,7 +145,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && assistUsers.isEmpty())
                 ? result.getAttackerPoints()
-                : (int) Math.round(result.getAttackerPoints() * (1 - this.config.assistKillerShare));
+                : (int) Math.round(result.getAttackerPoints() * this.config.assistKillerShare);
 
         PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, victim, attacker, addedAttackerPoints);
         if (SimpleEventHandler.handle(attackerPointsChangeEvent)) {
