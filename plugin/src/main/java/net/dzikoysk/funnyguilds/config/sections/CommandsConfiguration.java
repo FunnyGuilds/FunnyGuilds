@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config.sections;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class CommandsConfiguration extends OkaeriConfig {
     @Comment("")
     public FunnyCommand tnt = new FunnyCommand("tnt");
     @Comment("")
+    @CustomKey("break")
     public FunnyCommand break_ = new FunnyCommand("rozwiaz");
     @Comment("")
     public FunnyCommand info = new FunnyCommand("info");
@@ -67,7 +69,7 @@ public class CommandsConfiguration extends OkaeriConfig {
 
     @Comment
     @Comment("Komendy administratora")
-    public AdminCommands admin = new CommandsConfiguration.AdminCommands();
+    public AdminCommands admin = new AdminCommands();
 
     @Names(strategy = NameStrategy.IDENTITY)
     public static class FunnyCommand extends OkaeriConfig {
