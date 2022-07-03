@@ -14,7 +14,7 @@ rewrite {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.10.2-SNAPSHOT"
+    version = "4.10.2"
 
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
