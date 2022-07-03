@@ -48,9 +48,9 @@ FunnyGuilds hooks into those plugins:
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
     <!-- Release -->
-    <version>4.10.1</version>
+    <version>4.10.2</version>
     <!-- Snapshots (Nightly) -->
-    <version>4.10.2-SNAPSHOT</version>
+    <version>4.10.3-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
