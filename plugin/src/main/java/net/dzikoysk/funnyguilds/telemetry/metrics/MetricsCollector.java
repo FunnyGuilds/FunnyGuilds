@@ -15,21 +15,12 @@ public class MetricsCollector implements Runnable {
     private final UserManager userManager;
     private final GuildManager guildManager;
 
-    private MCStats mcstats;
     private Metrics bstats;
 
     public MetricsCollector(FunnyGuilds plugin) {
         this.plugin = plugin;
         this.userManager = plugin.getUserManager();
         this.guildManager = plugin.getGuildManager();
-
-        try {
-            this.mcstats = new MCStats(plugin);
-        }
-        catch (Exception exception) {
-            this.mcstats = null;
-            FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", exception);
-        }
 
         try {
             this.bstats = new Metrics(plugin, 677);
@@ -46,28 +37,6 @@ public class MetricsCollector implements Runnable {
 
     @Override
     public void run() {
-        // MCStats
-        MCStats mcstats = this.mcstats;
-        if (mcstats != null) {
-            MCStats.Graph global = mcstats.createGraph("Guilds and Users");
-
-            global.addPlotter(new MCStats.Plotter("Users") {
-                @Override
-                public int getValue() {
-                    return MetricsCollector.this.userManager.countUsers();
-                }
-            });
-
-            global.addPlotter(new MCStats.Plotter("Guilds") {
-                @Override
-                public int getValue() {
-                    return MetricsCollector.this.guildManager.countGuilds();
-                }
-            });
-
-            mcstats.start();
-        }
-
         // bStats
         Metrics bstats = this.bstats;
         if (bstats != null) {
