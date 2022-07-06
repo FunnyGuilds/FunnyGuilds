@@ -57,3 +57,9 @@ FunnyGuilds hooks into those plugins:
 
 #### Stats
 Current statistics (since 3.9.x) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
+<br>
+The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
+
+| Servers | Players | Users     | Guilds |
+|---------|---------|-----------|--------|
+| 1158    | 12 336  | 1 034 312 | 16 973 |
