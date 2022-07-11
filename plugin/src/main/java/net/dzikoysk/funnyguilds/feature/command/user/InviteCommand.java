@@ -73,7 +73,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
             PandaStream.of(nearbyPlayers)
                     .mapOpt(this.userManager::findByPlayer)
-                    .filter(User::isVanished)
+                    .filterNot(User::isVanished)
                     .forEach(it -> this.inviteUserToGuild(deputy, guild, it, formatter));
 
             return;
