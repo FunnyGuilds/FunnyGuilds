@@ -22,7 +22,7 @@ public class Database {
 
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + "?characterEncoding=utf8");
         this.dataSource.setUsername(c.user);
 
         if (!FunnyStringUtils.isEmpty(c.password)) {
