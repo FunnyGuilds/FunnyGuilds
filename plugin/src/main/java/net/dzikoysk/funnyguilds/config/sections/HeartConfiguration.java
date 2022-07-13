@@ -13,8 +13,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.util.Vector;
 import panda.std.Pair;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
@@ -69,6 +71,40 @@ public class HeartConfiguration extends OkaeriConfig {
     @Comment("Przy dużych schematach ma to wpływ na wydajność")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
     public boolean pasteSchematicWithAir = true;
+
+    @Comment("")
+    @Comment("Przesunięcie domyślnego home gildii względem serca gildii")
+    @Comment("Opcja przydatna w przypadku ustawienie własnego schematu serca, aby gracze nie pojawiali sie w bloku")
+    public Vector homeOffset = new Vector(0, 0, 0);
+
+    @Comment("")
+    @Comment("Pozycja głowy gracza dla domyślnego home gildii")
+    public HeadPosition homeHeadPosition = new HeadPosition(0, 0);
+
+    public static class HeadPosition extends OkaeriConfig {
+
+        private float yaw;
+        private float pitch;
+
+        public HeadPosition(float yaw, float pitch) {
+            this.yaw = yaw;
+            this.pitch = pitch;
+        }
+
+        public float getYaw() {
+            return this.yaw;
+        }
+
+        public float getPitch() {
+            return this.pitch;
+        }
+
+        public void setHeadPosition(Location location) {
+            location.setYaw(this.yaw);
+            location.setPitch(this.pitch);
+        }
+
+    }
 
     @Exclude
     public File guildSchematicFile;
