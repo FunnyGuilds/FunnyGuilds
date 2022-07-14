@@ -252,13 +252,13 @@ public class PlayerDeath extends AbstractFunnyListener {
         Option<Instant> victimTimestamp = victimDamageCache.getLastKillTime(attacker);
         Option<Instant> attackerTimestamp = attackerDamageCache.getLastKillTime(victim);
 
-        if (victimTimestamp.isPresent() && Duration.between(victimTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
+        if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             ChatUtils.sendMessage(playerVictim, this.messages.rankLastVictimV);
             ChatUtils.sendMessage(playerAttacker, this.messages.rankLastVictimA);
 
             return true;
         }
-        else if (attackerTimestamp.isPresent() && Duration.between(attackerTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
+        else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerV);
             ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerA);
 
