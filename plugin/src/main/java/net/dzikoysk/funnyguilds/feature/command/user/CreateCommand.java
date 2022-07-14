@@ -166,7 +166,10 @@ public final class CreateCommand extends AbstractFunnyCommand {
         guild.setProtection(Instant.now().plus(this.config.warProtection).toEpochMilli());
         guild.setPvP(this.config.damageGuild);
 
-        Location home = guildLocation.clone().add(0.5D, -2.0D, 0.5D);
+        Location home = guildLocation.clone()
+                .add(0.5D, -2.0D, 0.5D)
+                .add(heartConfig.homeOffset);
+        heartConfig.homeHeadPosition.setHeadPosition(home);
         guild.setHome(home);
 
         if (this.config.regionsEnabled) {
