@@ -600,6 +600,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean rankFarmingProtect = true;
 
     @Comment("")
+    @Comment("Czy opcja blokady nabijania rankingu powinna działać w obie strony tzn. jeśli gracz nas zabije, a potem zabijemy go my to nie dostaniemy punktów")
+    public boolean bidirectionalRankFarmingProtect = false;
+
+    @Comment("")
     @Comment("Czy ostatnia osoba, która zaatakowała gracza, który zginął, ma być uznawana za jego zabójcę")
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
