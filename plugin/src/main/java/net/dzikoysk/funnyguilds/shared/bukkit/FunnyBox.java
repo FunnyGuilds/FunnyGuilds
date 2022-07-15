@@ -330,6 +330,14 @@ public class FunnyBox {
         return this.expand(direction.getX(), direction.getY(), direction.getZ(), 1.0d);
     }
 
+    public FunnyBox expandDirectional(Vector direction1, Vector direction2) {
+        Validate.notNull(direction1, "direction1 cannot be null");
+        Validate.notNull(direction2, "direction2 cannot be null");
+
+        return this.expand(direction1.getX(), direction1.getY(), direction1.getZ(), 1.0d)
+                .expand(direction2.getX(), direction2.getY(), direction2.getZ(), 1.0d);
+    }
+
     public FunnyBox union(double posX, double posY, double posZ) {
         double newMinX = Math.min(this.minX, posX);
         double newMinY = Math.min(this.minY, posY);
