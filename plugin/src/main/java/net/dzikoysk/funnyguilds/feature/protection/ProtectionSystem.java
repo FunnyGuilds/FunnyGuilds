@@ -57,6 +57,10 @@ public final class ProtectionSystem {
             return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
+        if (!heartConfig.interactionProtection.enabled) {
+            return Option.none();
+        }
+
         return guild.getEnderCrystal()
                 .map(Location::getBlock)
                 .map(FunnyBox::of)
