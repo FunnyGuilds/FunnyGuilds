@@ -72,6 +72,9 @@ public class HeartConfiguration extends OkaeriConfig {
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
     public boolean pasteSchematicWithAir = true;
 
+    @Exclude
+    public File guildSchematicFile;
+
     @Comment("")
     @Comment("Przesunięcie domyślnego home gildii względem serca gildii")
     @Comment("Opcja przydatna w przypadku ustawienie własnego schematu serca, aby gracze nie pojawiali sie w bloku")
@@ -106,8 +109,22 @@ public class HeartConfiguration extends OkaeriConfig {
 
     }
 
-    @Exclude
-    public File guildSchematicFile;
+    public InteractionProtection interactionProtection = new InteractionProtection();
+
+    public static class InteractionProtection extends OkaeriConfig {
+
+        @Comment("Czy blokada interakcji w okolicach serca gildii powinna być włączona")
+        public boolean enabled = false;
+
+        @Comment("")
+        @Comment("Przesunięcie pierwszego wierzchołka względem serca gildii")
+        public Vector firstCorner = new Vector(2, -1, -2);
+
+        @Comment("")
+        @Comment("Przesunięcie drugiego wierzchołka względem serca gildii")
+        public Vector secondCorner = new Vector(-2, 3, 2);
+
+    }
 
     public void loadProcessedProperties() {
         try {
