@@ -6,6 +6,10 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Points change event called only in combat for tracking attacker, victim and assists points change at the same time.
+ * Called after normal PointsChangeEvent
+ */
 public class CombatPointsChangeEvent extends AbstractRankEvent {
 
     private static final HandlerList handlers = new HandlerList();
