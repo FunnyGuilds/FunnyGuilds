@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.Triple;
@@ -24,8 +23,8 @@ public final class ProtectionSystem {
     private ProtectionSystem() {
     }
 
-    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(@Nullable Player player, Location location, boolean includeBuildLock) {
-        if (location == null) {
+    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
+        if (player == null || location == null) {
             return Option.none();
         }
 
@@ -45,14 +44,11 @@ public final class ProtectionSystem {
             return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
-        if (player != null && player.hasPermission("funnyguilds.admin.build")) {
+        if (player.hasPermission("funnyguilds.admin.build")) {
             return Option.none();
         }
 
-        Option<User> userOption = Option.of(player)
-                .map(Player::getUniqueId)
-                .flatMap(uuid -> plugin.getUserManager().findByUuid(uuid));
-
+        Option<User> userOption = plugin.getUserManager().findByUuid(player.getUniqueId());
         if (!userOption.is(guild::isMember)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
@@ -61,23 +57,33 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
-        if (!heartConfig.interactionProtection.enabled) {
-            return Option.none();
+        if (heartConfig.interactionProtection.enabled && isGuildHeartProtectedRegion(location)) {
+            return Option.of(Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
         }
 
+        return Option.none();
+    }
+
+    public static boolean isGuildHeartProtectedRegion(Location location) {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+        Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
+        if (regionOption.isEmpty()) {
+            return false;
+        }
+        Region region = regionOption.get();
+        Guild guild = region.getGuild();
+
+        HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
         return guild.getEnderCrystal()
                 .map(Location::getBlock)
                 .map(FunnyBox::of)
                 .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
-                .filter(box -> box.contains(location))
-                .map(box -> Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
+                .map(box -> box.contains(location))
+                .orElseGet(false);
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
-        if (result.getFirst() == null) {
-            return;
-        }
-
         if (result.getThird() == ProtectionType.LOCKED) {
             ProtectionSystem.sendRegionExplodeMessage(result.getFirst(), result.getSecond());
         }
@@ -96,7 +102,7 @@ public final class ProtectionSystem {
         ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time));
     }
 
-    public enum ProtectionType {
+    public static enum ProtectionType {
 
         UNAUTHORIZED,
         LOCKED,

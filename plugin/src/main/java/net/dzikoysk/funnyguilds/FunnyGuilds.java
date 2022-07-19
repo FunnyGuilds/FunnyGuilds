@@ -34,6 +34,7 @@ import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PistonUse;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
@@ -362,6 +363,7 @@ public class FunnyGuilds extends JavaPlugin {
                     this.injector.newInstanceWithFields(BlockBreak.class),
                     this.injector.newInstanceWithFields(BlockIgnite.class),
                     this.injector.newInstanceWithFields(BlockPlace.class),
+                    this.injector.newInstanceWithFields(PistonUse.class),
                     this.injector.newInstanceWithFields(BucketAction.class),
                     this.injector.newInstanceWithFields(EntityExplode.class),
                     this.injector.newInstanceWithFields(HangingBreak.class),
