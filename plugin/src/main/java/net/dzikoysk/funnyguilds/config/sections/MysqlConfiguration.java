@@ -25,6 +25,8 @@ public class MysqlConfiguration extends OkaeriConfig {
     public int connectionTimeout;
     @Variable("FG_MYSQL_USE_SSL")
     public boolean useSSL;
+    @Variable("FG_MYSQL_CHARACTER_ENCODING")
+    public String characterEncoding;
 
     @Variable("FG_MYSQL_USERS_TABLE_NAME")
     public String usersTableName;
@@ -37,8 +39,8 @@ public class MysqlConfiguration extends OkaeriConfig {
     }
 
     public MysqlConfiguration(String hostname, int port, String database, String user, String password, int poolSize,
-                              int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName,
-                              String regionsTableName) {
+                              int connectionTimeout, boolean useSSL, String characterEncoding,
+                              String usersTableName, String guildsTableName, String regionsTableName) {
         this.hostname = hostname;
         this.port = port;
         this.database = database;
@@ -47,6 +49,7 @@ public class MysqlConfiguration extends OkaeriConfig {
         this.poolSize = poolSize;
         this.connectionTimeout = connectionTimeout;
         this.useSSL = useSSL;
+        this.characterEncoding = characterEncoding;
         this.usersTableName = usersTableName;
         this.guildsTableName = guildsTableName;
         this.regionsTableName = regionsTableName;

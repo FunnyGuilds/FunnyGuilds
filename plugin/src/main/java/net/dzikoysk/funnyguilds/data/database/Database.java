@@ -20,9 +20,13 @@ public class Database {
             poolSize = Runtime.getRuntime().availableProcessors() * 2 + 1; // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
         }
 
+        String characterEncoding = c.characterEncoding.isEmpty()
+                ? ""
+                : "?characterEncoding=" + c.characterEncoding;
+
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + "?characterEncoding=utf8mb4");
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + characterEncoding);
         this.dataSource.setUsername(c.user);
 
         if (!FunnyStringUtils.isEmpty(c.password)) {
