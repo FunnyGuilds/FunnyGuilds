@@ -3,12 +3,11 @@ package net.dzikoysk.funnyguilds.listener;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
@@ -20,6 +19,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
+import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
@@ -39,7 +39,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
-import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public class PlayerDeath extends AbstractFunnyListener {
@@ -139,9 +138,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         messageReceivers.add(attacker);
         messageReceivers.add(victim);
 
-        Pair<Set<User>, List<String>> assistsResult = this.calculateAssists(victim, victimDamageCache, attacker, result, messageReceivers);
-        Set<User> assistUsers = assistsResult.getFirst();
-        List<String> assistEntries = assistsResult.getSecond();
+        Map<User, Integer> assistUsers = this.calculateAssists(victim, victimDamageCache, attacker, result, messageReceivers);
 
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && assistUsers.isEmpty())
                 ? result.getAttackerPoints()
@@ -157,23 +154,45 @@ public class PlayerDeath extends AbstractFunnyListener {
             victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getPointsChange());
         }
 
+        CombatPointsChangeEvent combatPointsChangeEvent = new CombatPointsChangeEvent(EventCause.USER, attacker, victim,
+                attackerPointsChangeEvent.getPointsChange(), victimPointsChangeEvent.getPointsChange(), assistUsers);
+        if (SimpleEventHandler.handle(combatPointsChangeEvent)) {
+            attacker.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getAttackerPointsChange());
+            victim.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getVictimPointsChange());
+
+            assistUsers.forEach((user, change) -> user.getRank().updatePoints(currentValue -> currentValue + change));
+        }
+
+        List<String> assistEntries = new ArrayList<>();
+        assistUsers.forEach((user, change) -> {
+            FunnyFormatter formatter = new FunnyFormatter()
+                    .register("{PLAYER}", user.getName())
+                    .register("{+}", change)
+                    .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true))
+                    .register("{CHANGE}", Math.abs(change))
+                    .register("{SHARE}", FunnyStringUtils.getPercent(change));
+
+            assistEntries.add(formatter.format(this.messages.rankAssistEntry));
+            messageReceivers.add(user);
+        });
+
         victimDamageCache.clear();
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
         if (this.config.dataModel == DataModel.MYSQL) {
             victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
             attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
-            PandaStream.of(assistUsers).flatMap(User::getGuild).forEach(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
+            PandaStream.of(assistUsers.keySet()).flatMap(User::getGuild).forEach(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
 
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
-            PandaStream.of(assistUsers).forEach(assistUser -> taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(assistUser)));
+            PandaStream.of(assistUsers.keySet()).forEach(assistUser -> taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(assistUser)));
         }
 
         ConcurrencyTaskBuilder updateUserRequests = taskBuilder
                 .delegate(new DummyGlobalUpdateUserRequest(victim))
                 .delegate(new DummyGlobalUpdateUserRequest(attacker));
-        PandaStream.of(assistUsers).map(DummyGlobalUpdateUserRequest::new).forEach(taskBuilder::delegate);
+        PandaStream.of(assistUsers.keySet()).map(DummyGlobalUpdateUserRequest::new).forEach(taskBuilder::delegate);
 
         this.concurrencyManager.postTask(updateUserRequests.build());
 
@@ -287,13 +306,12 @@ public class PlayerDeath extends AbstractFunnyListener {
 
     // This method calculate how many points assisting players should receive
     // Returns a Pair of Set (users that received points for assisting) & List (formatted assists to later use in kill message).
-    private Pair<Set<User>, List<String>> calculateAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
+    private Map<User, Integer> calculateAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
         if (!this.config.assistEnable) {
-            return Pair.of(new HashSet<>(), new ArrayList<>());
+            return new HashMap<>();
         }
 
-        Set<User> assistUsers = new HashSet<>();
-        List<String> assistEntries = new ArrayList<>();
+        Map<User, Integer> assistUsers = new HashMap<>();
 
         Map<User, Double> damageMap = victimDamageCache.getSortedTotalDamageMap();
 
@@ -322,11 +340,9 @@ public class PlayerDeath extends AbstractFunnyListener {
                 assistsCount++;
             }
 
-            assistUsers.add(assistUser);
-
             PointsChangeEvent assistPointsChangeEvent = new PointsChangeEvent(EventCause.USER, victim, assistUser, addedPoints);
             if (SimpleEventHandler.handle(assistPointsChangeEvent)) {
-                assistUser.getRank().updatePoints(currentValue -> currentValue + addedPoints);
+                assistUser.getRank().updatePoints(currentValue -> currentValue + assistPointsChangeEvent.getPointsChange());
             }
 
             AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.USER, victim, assistUser, 1);
@@ -334,20 +350,10 @@ public class PlayerDeath extends AbstractFunnyListener {
                 assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
             }
 
-            messageReceivers.add(assistUser);
-
-            int pointsChange = assistPointsChangeEvent.getPointsChange();
-            FunnyFormatter formatter = new FunnyFormatter()
-                    .register("{PLAYER}", assistUser.getName())
-                    .register("{+}", pointsChange)
-                    .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(pointsChange, this.config.killPointsChangeFormat, true))
-                    .register("{CHANGE}", Math.abs(pointsChange))
-                    .register("{SHARE}", FunnyStringUtils.getPercent(assistFraction));
-
-            assistEntries.add(formatter.format(this.messages.rankAssistEntry));
+            assistUsers.put(assistUser, assistPointsChangeEvent.getPointsChange());
         }
 
-        return Pair.of(assistUsers, assistEntries);
+        return assistUsers;
     }
 
 }
