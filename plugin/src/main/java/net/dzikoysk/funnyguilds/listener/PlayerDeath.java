@@ -145,7 +145,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && assistUsers.isEmpty())
                 ? result.getAttackerPoints()
-                : (int) Math.round(result.getAttackerPoints() * (1 - this.config.assistKillerShare));
+                : (int) Math.round(result.getAttackerPoints() * this.config.assistKillerShare);
 
         PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, victim, attacker, addedAttackerPoints);
         if (SimpleEventHandler.handle(attackerPointsChangeEvent)) {
@@ -252,13 +252,13 @@ public class PlayerDeath extends AbstractFunnyListener {
         Option<Instant> victimTimestamp = victimDamageCache.getLastKillTime(attacker);
         Option<Instant> attackerTimestamp = attackerDamageCache.getLastKillTime(victim);
 
-        if (victimTimestamp.isPresent() && Duration.between(victimTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
+        if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             ChatUtils.sendMessage(playerVictim, this.messages.rankLastVictimV);
             ChatUtils.sendMessage(playerAttacker, this.messages.rankLastVictimA);
 
             return true;
         }
-        else if (attackerTimestamp.isPresent() && Duration.between(attackerTimestamp.get(), Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0) {
+        else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             ChatUtils.sendMessage(playerVictim, this.messages.rankLastAttackerV);
             ChatUtils.sendMessage(playerAttacker, this.messages.rankLastAttackerA);
 

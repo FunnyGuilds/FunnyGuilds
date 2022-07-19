@@ -17,8 +17,8 @@ Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/
 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.17.1, 1.18.2, 1.19
 
 #### Download
-Get the latest stable version: [FunnyGuilds Snowdrop 4.10.1 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.10.1+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
+Get the latest stable version: [FunnyGuilds Snowdrop 4.10.2 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.10.3+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
 #### Hooks
@@ -48,9 +48,9 @@ FunnyGuilds hooks into those plugins:
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
     <!-- Release -->
-    <version>4.10.1</version>
+    <version>4.10.2</version>
     <!-- Snapshots (Nightly) -->
-    <version>4.10.2-SNAPSHOT</version>
+    <version>4.10.3-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```

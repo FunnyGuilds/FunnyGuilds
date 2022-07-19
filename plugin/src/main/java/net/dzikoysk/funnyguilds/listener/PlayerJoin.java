@@ -45,8 +45,7 @@ public class PlayerJoin extends AbstractFunnyListener {
                     this.tablistConfig.playerListAnimated, this.tablistConfig.pages,
                     this.tablistConfig.heads.textures,
                     this.tablistConfig.playerListPing,
-                    this.tablistConfig.playerListFillCells,
-                    this.config.top.enableLegacyPlaceholders
+                    this.tablistConfig.playerListFillCells
             );
 
             individualPlayerList.send();

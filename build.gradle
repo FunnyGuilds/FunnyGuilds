@@ -4,8 +4,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
     id 'checkstyle'
-    id 'org.openrewrite.rewrite' version '5.22.2'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.0'
+    id 'org.openrewrite.rewrite' version '5.24.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
 }
 
 rewrite {
@@ -14,7 +14,7 @@ rewrite {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.10.2-SNAPSHOTS"
+    version = "4.10.3-SNAPSHOT"
 
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
@@ -49,6 +49,8 @@ subprojects {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
+    compileJava.options.encoding = 'UTF-8'
+
     publishing {
         repositories {
             maven {
@@ -63,7 +65,7 @@ subprojects {
             }
 
             maven {
-                if (version.toString().endsWith("-SNAPSHOTS")) {
+                if (version.toString().endsWith("-SNAPSHOT")) {
                     name = "snapshots"
                     url = uri("https://repo.panda-lang.org/snapshots")
                 } else {

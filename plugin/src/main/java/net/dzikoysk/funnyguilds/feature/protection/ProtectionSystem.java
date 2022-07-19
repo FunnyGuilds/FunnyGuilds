@@ -4,10 +4,12 @@ import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,19 +49,32 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        HeartConfiguration heartConfig = config.heart;
         if (region.getHeart().contentEquals(location)) {
-            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-            Pair<Material, Byte> heartMaterial = config.heart.createMaterial;
+            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
 
             return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
-        return Option.none();
+        if (!heartConfig.interactionProtection.enabled) {
+            return Option.none();
+        }
+
+        return guild.getEnderCrystal()
+                .map(Location::getBlock)
+                .map(FunnyBox::of)
+                .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
+                .filter(box -> box.contains(location))
+                .map(box -> Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
         if (result.getThird() == ProtectionType.LOCKED) {
             ProtectionSystem.sendRegionExplodeMessage(result.getFirst(), result.getSecond());
+        }
+        else if (result.getThird() == ProtectionType.HEART_INTERACTION) {
+            ChatUtils.sendMessage(result.getFirst(), FunnyGuilds.getInstance().getMessageConfiguration().regionInteract);
         }
         else {
             ChatUtils.sendMessage(result.getFirst(), FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
@@ -77,7 +92,8 @@ public final class ProtectionSystem {
 
         UNAUTHORIZED,
         LOCKED,
-        HEART
+        HEART,
+        HEART_INTERACTION
 
     }
 

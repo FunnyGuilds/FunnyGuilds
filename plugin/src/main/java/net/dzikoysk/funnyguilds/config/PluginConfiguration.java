@@ -56,7 +56,7 @@ import panda.std.Option;
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
 @Header("          FunnyGuilds           #")
-@Header("         4.10.1 Snowdrop        #")
+@Header("         4.10.2 Snowdrop        #")
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderów znajduje się tutaj:")
@@ -600,6 +600,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean rankFarmingProtect = true;
 
     @Comment("")
+    @Comment("Czy opcja blokady nabijania rankingu powinna działać w obie strony tzn. jeśli gracz nas zabije, a potem zabijemy go my to nie dostaniemy punktów")
+    public boolean bidirectionalRankFarmingProtect = false;
+
+    @Comment("")
     @Comment("Czy ostatnia osoba, która zaatakowała gracza, który zginął, ma być uznawana za jego zabójcę")
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
@@ -669,7 +673,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czy zabójcy zawsze mają dzielić sie ilością punktów według rank-assist-killer-share, nawet gdy nie ma osób asystujących")
     @CustomKey("rank-assist-victim-always-share")
-    public boolean assistKillerAlwaysShare = true;
+    public boolean assistKillerAlwaysShare = false;
 
     @Comment("")
     @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")
@@ -1143,6 +1147,22 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Jak długo plugin powinien czekać na zatrzymanie wszystkich bieżących zadań przy wyłączaniu serwera")
     public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
+
+    @Comment("")
+    @Comment("Jaki argument powinien zostać podany przez gracza, gdy chce zaprosić wszystkich graczy w danym promieniu")
+    public String inviteCommandAllArgument = "*";
+
+    @Comment("")
+    @Comment("Czy wielkość liter powinna być ignorowana dla argumentu od zapraszania wszystkich graczy w danym promieniu")
+    public boolean inviteCommandAllArgumentIgnoreCase = true;
+
+    @Comment("")
+    @Comment("Maksymalna odległość, w jakiej zapraszani są gracze w momencie użycia komendy \"/invite *\"")
+    public double inviteCommandAllMaxRange = 50.0;
+
+    @Comment("")
+    @Comment("Domyślna odległość, w jakiej zapraszani są gracze w momencie użycia komendy \"/invite *\"")
+    public double inviteCommandAllDefaultRange = 10.0;
 
     @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")

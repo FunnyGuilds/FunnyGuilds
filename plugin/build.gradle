@@ -12,9 +12,9 @@ dependencies {
     implementation "net.dzikoysk:funnycommands:0.5.3"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.5"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.5"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.5"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.6"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.6"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.6"
     // okaeri holographicdisplays commons
     implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.18"
 
@@ -33,11 +33,11 @@ dependencies {
     implementation "org.bstats:bstats-bukkit:3.0.0"
 
     // probably fix for some exception?
-    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.17.2"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.18.0"
 
     // bukkit stuff
     shadow "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
-    shadow "org.apache.logging.log4j:log4j-core:2.17.2"
+    shadow "org.apache.logging.log4j:log4j-core:2.18.0"
 
     // integrations
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
@@ -54,7 +54,7 @@ dependencies {
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
     testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.10'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.7.0'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.7.10'
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'com.mojang:authlib:3.2.38'
     testImplementation 'org.mockito:mockito-core:4.6.1'
