@@ -28,20 +28,28 @@ public final class ProtectionSystem {
             return Option.none();
         }
 
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+        Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
+        if (regionOption.isEmpty()) {
+            return Option.none();
+        }
+        Region region = regionOption.get();
+        Guild guild = region.getGuild();
+
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        HeartConfiguration heartConfig = config.heart;
+        if (region.getHeart().contentEquals(location)) {
+            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
+            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+        }
+
         if (player.hasPermission("funnyguilds.admin.build")) {
             return Option.none();
         }
 
-        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location);
-        if (regionOption.isEmpty()) {
-            return Option.none();
-        }
-
-        Region region = regionOption.get();
-        Guild guild = region.getGuild();
-
-        User user = FunnyGuilds.getInstance().getUserManager().findByUuid(player.getUniqueId()).orNull();
-        if (!guild.isMember(user)) {
+        Option<User> userOption = plugin.getUserManager().findByUuid(player.getUniqueId());
+        if (!userOption.is(guild::isMember)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
 
@@ -49,24 +57,30 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        HeartConfiguration heartConfig = config.heart;
-        if (region.getHeart().contentEquals(location)) {
-            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
-
-            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+        if (heartConfig.interactionProtection.enabled && isGuildHeartProtectedRegion(location)) {
+            return Option.of(Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
         }
 
-        if (!heartConfig.interactionProtection.enabled) {
-            return Option.none();
-        }
+        return Option.none();
+    }
 
+    public static boolean isGuildHeartProtectedRegion(Location location) {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+        Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
+        if (regionOption.isEmpty()) {
+            return false;
+        }
+        Region region = regionOption.get();
+        Guild guild = region.getGuild();
+
+        HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
         return guild.getEnderCrystal()
                 .map(Location::getBlock)
                 .map(FunnyBox::of)
                 .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
-                .filter(box -> box.contains(location))
-                .map(box -> Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
+                .map(box -> box.contains(location))
+                .orElseGet(false);
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
@@ -88,7 +102,7 @@ public final class ProtectionSystem {
         ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time));
     }
 
-    public enum ProtectionType {
+    public static enum ProtectionType {
 
         UNAUTHORIZED,
         LOCKED,
