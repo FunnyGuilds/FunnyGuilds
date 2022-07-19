@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.Triple;
@@ -23,38 +24,41 @@ public final class ProtectionSystem {
     private ProtectionSystem() {
     }
 
-    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
-        if (player == null || location == null) {
+    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(@Nullable Player player, Location location, boolean includeBuildLock) {
+        if (location == null) {
             return Option.none();
         }
 
-        if (player.hasPermission("funnyguilds.admin.build")) {
-            return Option.none();
-        }
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location);
+        Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
         if (regionOption.isEmpty()) {
             return Option.none();
         }
-
         Region region = regionOption.get();
         Guild guild = region.getGuild();
 
-        User user = FunnyGuilds.getInstance().getUserManager().findByUuid(player.getUniqueId()).orNull();
-        if (!guild.isMember(user)) {
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        HeartConfiguration heartConfig = config.heart;
+        if (region.getHeart().contentEquals(location)) {
+            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
+            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+        }
+
+        if (player != null && player.hasPermission("funnyguilds.admin.build")) {
+            return Option.none();
+        }
+
+        Option<User> userOption = Option.of(player)
+                .map(Player::getUniqueId)
+                .flatMap(uuid -> plugin.getUserManager().findByUuid(uuid));
+
+        if (!userOption.is(guild::isMember)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
 
         if (includeBuildLock && !guild.canBuild()) {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
-        }
-
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        HeartConfiguration heartConfig = config.heart;
-        if (region.getHeart().contentEquals(location)) {
-            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
-
-            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
         if (!heartConfig.interactionProtection.enabled) {
@@ -70,6 +74,10 @@ public final class ProtectionSystem {
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
+        if (result.getFirst() == null) {
+            return;
+        }
+
         if (result.getThird() == ProtectionType.LOCKED) {
             ProtectionSystem.sendRegionExplodeMessage(result.getFirst(), result.getSecond());
         }
