@@ -1189,7 +1189,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("1. Wyłącz serwer")
     @Comment("2. Zmień dane w configu FG")
     @Comment("3. Zmień nazwy tabel w bazie używając np. phpMyAdmin")
-    public MysqlConfiguration mysql = new MysqlConfiguration("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "", "users", "guilds", "regions");
+    public MysqlConfiguration mysql = new MysqlConfiguration();
 
     private List<ItemStack> loadGUI(List<String> contents) {
         List<ItemStack> items = new ArrayList<>();

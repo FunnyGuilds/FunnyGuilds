@@ -9,50 +9,30 @@ import eu.okaeri.configs.annotation.Variable;
 public class MysqlConfiguration extends OkaeriConfig {
 
     @Variable("FG_MYSQL_HOSTNAME")
-    public String hostname;
+    public String hostname = "localhost";
     @Variable("FG_MYSQL_PORT")
-    public int port;
+    public int port = 3306;
     @Variable("FG_MYSQL_DATABASE")
-    public String database;
+    public String database = "db";
     @Variable("FG_MYSQL_USER")
-    public String user;
+    public String user = "root";
     @Variable("FG_MYSQL_PASSWORD")
-    public String password;
+    public String password = "passwd";
 
     @Variable("FG_MYSQL_POOL_SIZE")
-    public int poolSize;
+    public int poolSize = 5;
     @Variable("FG_MYSQL_CONNECTION_TIMEOUT")
-    public int connectionTimeout;
+    public int connectionTimeout = 30000;
     @Variable("FG_MYSQL_USE_SSL")
-    public boolean useSSL;
+    public boolean useSSL = true;
     @Variable("FG_MYSQL_CHARACTER_ENCODING")
-    public String characterEncoding;
+    public String characterEncoding = "";
 
     @Variable("FG_MYSQL_USERS_TABLE_NAME")
-    public String usersTableName;
+    public String usersTableName = "users";
     @Variable("FG_MYSQL_GUILDS_TABLE_NAME")
-    public String guildsTableName;
+    public String guildsTableName = "guilds";
     @Variable("FG_MYSQL_REGIONS_TABLE_NAME")
-    public String regionsTableName;
-
-    public MysqlConfiguration() {
-    }
-
-    public MysqlConfiguration(String hostname, int port, String database, String user, String password, int poolSize,
-                              int connectionTimeout, boolean useSSL, String characterEncoding,
-                              String usersTableName, String guildsTableName, String regionsTableName) {
-        this.hostname = hostname;
-        this.port = port;
-        this.database = database;
-        this.user = user;
-        this.password = password;
-        this.poolSize = poolSize;
-        this.connectionTimeout = connectionTimeout;
-        this.useSSL = useSSL;
-        this.characterEncoding = characterEncoding;
-        this.usersTableName = usersTableName;
-        this.guildsTableName = guildsTableName;
-        this.regionsTableName = regionsTableName;
-    }
+    public String regionsTableName = "regions";
 
 }

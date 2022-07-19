@@ -20,7 +20,7 @@ public class Database {
             poolSize = Runtime.getRuntime().availableProcessors() * 2 + 1; // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
         }
 
-        String characterEncoding = c.characterEncoding.isEmpty()
+        String characterEncoding = c.characterEncoding == null || c.characterEncoding.isEmpty()
                 ? ""
                 : "?characterEncoding=" + c.characterEncoding;
 
