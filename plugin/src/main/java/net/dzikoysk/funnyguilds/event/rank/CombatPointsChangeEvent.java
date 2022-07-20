@@ -6,7 +6,6 @@ import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Points change event called only in combat for tracking attacker, victim and assists points change at the same time.
@@ -28,8 +27,8 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         return handlers;
     }
 
-    public CombatPointsChangeEvent(EventCause eventCause, @Nullable User doer, User affected, int attackerPointsChange, int victimPointsChange, Map<User, Integer> assistsPointsChange) {
-        super(eventCause, doer, affected);
+    public CombatPointsChangeEvent(EventCause eventCause, User attacker, User victim, int attackerPointsChange, int victimPointsChange, Map<User, Integer> assistsPointsChange) {
+        super(eventCause, attacker, victim);
         this.attackerPointsChange = attackerPointsChange;
         this.victimPointsChange = victimPointsChange;
         this.assistsPointsChange = new CombatTable(assistsPointsChange);
@@ -55,13 +54,17 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         return this.victimPointsChange;
     }
 
+    public void setVictimPointsChange(int victimPointsChange) {
+        this.victimPointsChange = victimPointsChange;
+    }
+
     public CombatTable getAssistsPointsChange() {
         return this.assistsPointsChange;
     }
 
     @Override
     public String getDefaultCancelMessage() {
-        return "[FunnyGuilds] Kill points change has been cancelled by the server!";
+        return "[FunnyGuilds] Combat points change has been cancelled by the server!";
     }
 
     public static class CombatTable {
@@ -72,7 +75,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
             this.pointsChangeMap = pointsChangeMap;
         }
 
-        public Map<User, Integer> getPointsChange() {
+        public Map<User, Integer> getPointsChanges() {
             return new HashMap<>(this.pointsChangeMap);
         }
 
@@ -90,7 +93,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         /**
          * @return if points change was modified for user, false if that user wasn't assisting
          */
-        public boolean modify(User user, IntFunction<Integer> update) {
+        public boolean modifyPointsChange(User user, IntFunction<Integer> update) {
             if (!this.pointsChangeMap.containsKey(user)) {
                 return false;
             }
