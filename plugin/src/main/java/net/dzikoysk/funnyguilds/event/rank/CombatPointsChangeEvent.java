@@ -83,6 +83,9 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
             return new HashMap<>(this.pointsChangeMap);
         }
 
+        /**
+         * @return if points change was modified for user, false if that user wasn't assisting
+         */
         public boolean modify(User user, IntFunction<Integer> update) {
             if (!this.pointsChangeMap.containsKey(user)) {
                 return false;
