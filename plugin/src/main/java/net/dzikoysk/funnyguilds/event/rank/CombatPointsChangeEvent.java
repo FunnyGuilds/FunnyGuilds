@@ -77,6 +77,17 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         }
 
         /**
+         * @return the points change of the user, if user wasn't assisting the return value will be 0
+         */
+        public int getUserPointsChange(User user) {
+            return this.pointsChangeMap.getOrDefault(user, 0);
+        }
+
+        public boolean wasAssisting(User user) {
+            return this.pointsChangeMap.containsKey(user);
+        }
+
+        /**
          * @return if points change was modified for user, false if that user wasn't assisting
          */
         public boolean modify(User user, IntFunction<Integer> update) {
