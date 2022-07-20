@@ -6,6 +6,7 @@ import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import panda.std.Option;
 
 /**
  * Points change event called only in combat for tracking attacker, victim and assists points change at the same time.
@@ -82,8 +83,8 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         /**
          * @return the points change of the user, if user wasn't assisting the return value will be 0
          */
-        public int getUserPointsChange(User user) {
-            return this.pointsChangeMap.getOrDefault(user, 0);
+        public Option<Integer> getUserPointsChange(User user) {
+            return Option.of(this.pointsChangeMap.get(user));
         }
 
         public boolean wasAssisting(User user) {
@@ -94,12 +95,13 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
          * @return if points change was modified for user, false if that user wasn't assisting
          */
         public boolean modifyPointsChange(User user, IntFunction<Integer> update) {
-            if (!this.pointsChangeMap.containsKey(user)) {
-                return false;
-            }
+            return this.pointsChangeMap.compute(user, (key, value) -> {
+                if (value == null) {
+                    return null;
+                }
 
-            this.pointsChangeMap.computeIfPresent(user, (key, value) -> update.apply(value));
-            return true;
+                return update.apply(value);
+            }) != null;
         }
 
     }
