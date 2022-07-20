@@ -95,13 +95,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
          * @return if points change was modified for user, false if that user wasn't assisting
          */
         public boolean modifyPointsChange(User user, IntFunction<Integer> update) {
-            return this.pointsChangeMap.compute(user, (key, value) -> {
-                if (value == null) {
-                    return null;
-                }
-
-                return update.apply(value);
-            }) != null;
+            return this.pointsChangeMap.computeIfPresent(user, (key, value) -> update.apply(value)) != null;
         }
 
     }
