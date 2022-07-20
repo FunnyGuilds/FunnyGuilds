@@ -1,7 +1,8 @@
 package net.dzikoysk.funnyguilds.event.rank;
 
+import java.util.HashMap;
 import java.util.Map;
-import net.dzikoysk.funnyguilds.user.FixedSizeMap;
+import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
     private static final HandlerList handlers = new HandlerList();
     private int attackerPointsChange;
     private int victimPointsChange;
-    private final FixedSizeMap<User, Integer> assistsPointsChange;
+    private final CombatTable assistsPointsChange;
 
     @Override
     public @NotNull HandlerList getHandlers() {
@@ -31,7 +32,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         super(eventCause, doer, affected);
         this.attackerPointsChange = attackerPointsChange;
         this.victimPointsChange = victimPointsChange;
-        this.assistsPointsChange = new FixedSizeMap<>(assistsPointsChange);
+        this.assistsPointsChange = new CombatTable(assistsPointsChange);
     }
 
     public User getAttacker() {
@@ -62,12 +63,35 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
      * @return FixedMapSize that allows only for modification of existing keys - and modifying points change only for assisting users
      */
     public Map<User, Integer> getAssistsPointsChange() {
-        return this.assistsPointsChange;
+        return this.assistsPointsChange.getPointsChange();
     }
 
     @Override
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Kill points change has been cancelled by the server!";
+    }
+
+    private static class CombatTable {
+
+        private final Map<User, Integer> pointsChangeMap;
+
+        private CombatTable(Map<User, Integer> pointsChangeMap) {
+            this.pointsChangeMap = pointsChangeMap;
+        }
+
+        public Map<User, Integer> getPointsChange() {
+            return new HashMap<>(this.pointsChangeMap);
+        }
+
+        public boolean modify(User user, IntFunction<Integer> update) {
+            if (!this.pointsChangeMap.containsKey(user)) {
+                return false;
+            }
+
+            this.pointsChangeMap.computeIfPresent(user, (key, value) -> update.apply(value));
+            return true;
+        }
+
     }
 
 }

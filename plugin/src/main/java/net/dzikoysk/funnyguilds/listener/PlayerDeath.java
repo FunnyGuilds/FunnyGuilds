@@ -28,6 +28,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.DamageCache;
@@ -175,8 +176,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
-            PandaStream.of(calculatedAssists.keySet())
-                    .forEach(assistUser -> taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(assistUser)));
+            calculatedAssists.keySet().forEach(assistUser -> taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(assistUser)));
         }
 
         ConcurrencyTaskBuilder updateUserRequests = taskBuilder
@@ -191,7 +191,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
 
-        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsPointsChange());
+        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsPointsChange()  );
 
         FunnyFormatter killFormatter = new FunnyFormatter()
                 .register("{ATTACKER}", attacker.getName())
@@ -215,7 +215,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
                 .register("{ASSISTS}", !formattedAssists.isEmpty()
-                        ? FunnyFormatter.format(this.messages.rankAssistMessage, "{ASSISTS}", String.join(this.messages.rankAssistDelimiter, formattedAssists))
+                        ? FunnyFormatter.format(this.messages.rankAssistMessage, "{ASSISTS}", FunnyStringUtils.join(formattedAssists, this.messages.rankAssistDelimiter))
                         : "");
 
         if (this.config.displayTitleNotificationForKiller) {
