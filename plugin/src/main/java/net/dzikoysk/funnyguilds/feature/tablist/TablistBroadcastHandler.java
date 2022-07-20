@@ -26,8 +26,7 @@ public class TablistBroadcastHandler implements Runnable {
 
         // Don't remove this toArray - iterating over online players asynchronously could occur with ConcurrentModificationException (See GH-2031).
         PandaStream.of(Bukkit.getOnlinePlayers().toArray(new Player[0]))
-                .map(Player::getUniqueId)
-                .flatMap(userManager::findByUuid)
+                .flatMap(player -> userManager.findByUuid(player.getUniqueId()))
                 .flatMap(user -> user.getCache().getPlayerList())
                 .forEach(playerList -> {
                     playerList.updatePageCycle();
