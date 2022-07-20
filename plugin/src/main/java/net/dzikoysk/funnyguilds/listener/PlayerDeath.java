@@ -191,7 +191,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
 
-        List<String> formattedAssists = this.formatAssists(calculatedAssists);
+        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsPointsChange());
 
         FunnyFormatter killFormatter = new FunnyFormatter()
                 .register("{ATTACKER}", attacker.getName())
