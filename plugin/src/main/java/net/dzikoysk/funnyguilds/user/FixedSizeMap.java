@@ -62,7 +62,6 @@ public class FixedSizeMap<K, V> implements Map<K, V> {
         if (!this.map.keySet().containsAll(map.keySet())) {
             throw new UnsupportedOperationException("FixedSizeMap only allows modifying values of existing keys");
         }
-
         this.map.putAll(map);
     }
 
