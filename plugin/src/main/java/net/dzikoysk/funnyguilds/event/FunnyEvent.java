@@ -80,6 +80,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         CONSOLE,
         SYSTEM,
         USER,
+        COMBAT,
         UNKNOWN
 
     }
