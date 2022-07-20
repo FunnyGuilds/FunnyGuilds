@@ -55,15 +55,8 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         return this.victimPointsChange;
     }
 
-    public void setVictimPointsChange(int victimPointsChange) {
-        this.victimPointsChange = victimPointsChange;
-    }
-
-    /**
-     * @return FixedMapSize that allows only for modification of existing keys - and modifying points change only for assisting users
-     */
-    public Map<User, Integer> getAssistsPointsChange() {
-        return this.assistsPointsChange.getPointsChange();
+    public CombatTable getAssistsPointsChange() {
+        return this.assistsPointsChange;
     }
 
     @Override
@@ -71,7 +64,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         return "[FunnyGuilds] Kill points change has been cancelled by the server!";
     }
 
-    private static class CombatTable {
+    public static class CombatTable {
 
         private final Map<User, Integer> pointsChangeMap;
 

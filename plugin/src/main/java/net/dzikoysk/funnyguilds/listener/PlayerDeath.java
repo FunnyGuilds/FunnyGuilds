@@ -160,8 +160,9 @@ public class PlayerDeath extends AbstractFunnyListener {
             attacker.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getAttackerPointsChange());
             victim.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getVictimPointsChange());
 
-            combatPointsChangeEvent.getAssistsPointsChange().forEach((user, points) ->
-                    user.getRank().updatePoints(currentValue -> currentValue + points));
+            combatPointsChangeEvent.getAssistsPointsChange()
+                    .getPointsChange()
+                    .forEach((user, points) -> user.getRank().updatePoints(currentValue -> currentValue + points));
         }
 
         victimDamageCache.clear();
@@ -191,7 +192,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
 
-        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsPointsChange()  );
+        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsPointsChange().getPointsChange());
 
         FunnyFormatter killFormatter = new FunnyFormatter()
                 .register("{ATTACKER}", attacker.getName())
