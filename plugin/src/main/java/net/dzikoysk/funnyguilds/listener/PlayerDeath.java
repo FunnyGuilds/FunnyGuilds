@@ -67,14 +67,14 @@ public class PlayerDeath extends AbstractFunnyListener {
         if (playerAttacker == null && this.config.considerLastAttackerAsKiller) {
             Option<Damage> lastDamageOption = victimDamageCache.getLastDamage();
             if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
-                this.handleDeathEvent(victim, victim, false);
+                this.handleDeathEvent(victim, victim, EventCause.USER);
                 victimDamageCache.clear();
                 return;
             }
             Damage lastDamage = lastDamageOption.get();
 
             if (lastDamage.isExpired(this.config.lastAttackerAsKillerConsiderationTimeout)) {
-                this.handleDeathEvent(victim, victim, false);
+                this.handleDeathEvent(victim, victim, EventCause.USER);
                 victimDamageCache.clear();
                 return;
             }
@@ -87,7 +87,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             attackerOption = this.userManager.findByPlayer(playerAttacker);
         }
 
-        this.handleDeathEvent(victim, attackerOption.orElseGet(victim), attackerOption.isPresent());
+        this.handleDeathEvent(victim, attackerOption.orElseGet(victim), attackerOption.isPresent() ? EventCause.COMBAT : EventCause.USER);
 
         if (attackerOption.isEmpty()) {
             return;
@@ -250,8 +250,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
     }
 
-    private void handleDeathEvent(User victim, User attacker, boolean combat) {
-        DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(combat ? EventCause.COMBAT : EventCause.USER, attacker, victim, 1);
+    private void handleDeathEvent(User victim, User attacker, EventCause cause) {
+        DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(cause, attacker, victim, 1);
         if (SimpleEventHandler.handle(deathsChangeEvent)) {
             victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getDeathsChange());
         }
