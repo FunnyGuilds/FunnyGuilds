@@ -137,7 +137,6 @@ public class PlayerDeath extends AbstractFunnyListener {
         List<User> messageReceivers = new ArrayList<>();
 
         messageReceivers.add(attacker);
-        messageReceivers.add(victim);
 
         Pair<Set<User>, List<String>> assistsResult = this.calculateAssists(victim, victimDamageCache, attacker, result, messageReceivers);
         Set<User> assistUsers = assistsResult.getFirst();
