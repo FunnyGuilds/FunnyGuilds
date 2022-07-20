@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.event.rank;
 
 import java.util.Map;
+import net.dzikoysk.funnyguilds.user.FixedSizeMap;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
     private static final HandlerList handlers = new HandlerList();
     private int attackerPointsChange;
     private int victimPointsChange;
-    private final Map<User, Integer> assistsPointsChange;
+    private final FixedSizeMap<User, Integer> assistsPointsChange;
 
     @Override
     public @NotNull HandlerList getHandlers() {
@@ -30,7 +31,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         super(eventCause, doer, affected);
         this.attackerPointsChange = attackerPointsChange;
         this.victimPointsChange = victimPointsChange;
-        this.assistsPointsChange = assistsPointsChange;
+        this.assistsPointsChange = new FixedSizeMap<>(assistsPointsChange);
     }
 
     public User getAttacker() {
@@ -58,7 +59,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
     }
 
     /**
-     * @return mutable map of assists and their points change, by modifying this map, you will change the points change of the assists or remove player from final assists
+     * @return FixedMapSize that allows only for modification of existing keys - and modifying points change only for assisting users
      */
     public Map<User, Integer> getAssistsPointsChange() {
         return this.assistsPointsChange;

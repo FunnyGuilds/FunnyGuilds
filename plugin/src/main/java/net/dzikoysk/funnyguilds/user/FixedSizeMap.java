@@ -7,6 +7,9 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Map that allows only for modifications of existing keys.
+ */
 public class FixedSizeMap<K, V> implements Map<K, V> {
 
     private final Map<K, V> map;
