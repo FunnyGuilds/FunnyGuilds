@@ -46,10 +46,10 @@ public class FixedSizeMap<K, V> implements Map<K, V> {
     @Nullable
     @Override
     public V put(K key, V value) {
-        if (this.containsKey(key)) {
+        if (!this.containsKey(key)) {
             throw new UnsupportedOperationException("FixedSizeMap only allows modifying values of existing keys");
         }
-        return null;
+        return this.map.put(key, value);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class FixedSizeMap<K, V> implements Map<K, V> {
 
     @Override
     public void putAll(@NotNull Map<? extends K, ? extends V> map) {
-        if (this.map.keySet().containsAll(map.keySet())) {
+        if (!this.map.keySet().containsAll(map.keySet())) {
             throw new UnsupportedOperationException("FixedSizeMap only allows modifying values of existing keys");
         }
 
