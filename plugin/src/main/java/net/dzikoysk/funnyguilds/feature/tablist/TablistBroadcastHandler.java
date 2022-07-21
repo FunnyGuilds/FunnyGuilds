@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 
 public class TablistBroadcastHandler implements Runnable {
@@ -23,8 +24,9 @@ public class TablistBroadcastHandler implements Runnable {
             return;
         }
 
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(userManager::findByPlayer)
+        // Don't remove this toArray - iterating over online players asynchronously without shallow copy could occur with ConcurrentModificationException (See GH-2031).
+        PandaStream.of(Bukkit.getOnlinePlayers().toArray(new Player[0]))
+                .flatMap(player -> userManager.findByUuid(player.getUniqueId()))
                 .flatMap(user -> user.getCache().getPlayerList())
                 .forEach(playerList -> {
                     playerList.updatePageCycle();
