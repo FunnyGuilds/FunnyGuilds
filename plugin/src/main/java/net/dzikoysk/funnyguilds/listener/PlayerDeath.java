@@ -64,7 +64,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         DamageCache victimDamageCache = victimCache.getDamageCache();
 
         Option<User> attackerOption = Option.none();
-        if (playerAttacker == null && this.config.considerLastAttackerAsKiller) {
+        if (playerAttacker == null && this.config.considerLastAttackerAsKiller || playerVictim.equals(playerAttacker)) { // If player killed himself use last attacker as a killer
             Option<Damage> lastDamageOption = victimDamageCache.getLastDamage();
             if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
@@ -83,7 +83,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             playerAttacker = this.funnyServer.getPlayer(lastDamage.getAttacker().getUUID()).get();
         }
 
-        if (attackerOption.isEmpty() && playerAttacker != null) {
+        if (attackerOption.isEmpty() && playerAttacker != null && !playerVictim.equals(playerAttacker)) { // If player killed himself do not use him as a killer
             attackerOption = this.userManager.findByPlayer(playerAttacker);
         }
 
