@@ -83,7 +83,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             playerAttacker = this.funnyServer.getPlayer(lastDamage.getAttacker().getUUID()).get();
         }
 
-        if (attackerOption.isEmpty() && playerAttacker != null) {
+        if (attackerOption.isEmpty() && playerAttacker != null && !playerVictim.equals(playerAttacker)) { // If player killed himself do not use him as a killer
             attackerOption = this.userManager.findByPlayer(playerAttacker);
         }
 
