@@ -9,7 +9,6 @@ public final class HookUtils {
 
     public static String replacePlaceholders(Player playerOne, Player playerTwo, String message) {
         message = replacePlaceholdersWithPlaceholderAPI(playerOne, playerTwo, message);
-        message = replacePlaceholdersWithMVdWPlaceholderAPI(playerOne, message);
         return message;
     }
 
@@ -27,12 +26,6 @@ public final class HookUtils {
 
                     return replaceMessage;
                 }).orElseGet(message);
-    }
-
-    private static String replacePlaceholdersWithMVdWPlaceholderAPI(Player player, String message) {
-        return HookManager.MVDW_PLACEHOLDER_API
-                .map(api -> api.replacePlaceholders(player, message))
-                .orElseGet(message);
     }
 
 }
