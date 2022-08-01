@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.bungeetablist.BungeeTabListPlusHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
-import net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
@@ -30,7 +29,6 @@ public class HookManager {
     public static Option<FunnyTabHook> FUNNY_TAB = Option.none();
     public static Option<VaultHook> VAULT = Option.none();
     public static Option<BungeeTabListPlusHook> BUNGEE_TAB_LIST_PLUS = Option.none();
-    public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API = Option.none();
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
     public static Option<HologramsHook> HOLOGRAMS = Option.none();
 
@@ -83,9 +81,6 @@ public class HookManager {
 
         this.setupHook("Vault", true, VaultHook::new, true)
                 .subscribe(hook -> VAULT = hook);
-
-        this.setupHook("MVdWPlaceholderAPI", true, pluginName -> new MVdWPlaceholderAPIHook(pluginName, this.plugin), true)
-                .subscribe(hook -> MVDW_PLACEHOLDER_API = hook);
 
         this.setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, this.plugin), true)
                 .subscribe(hook -> PLACEHOLDER_API = hook);
