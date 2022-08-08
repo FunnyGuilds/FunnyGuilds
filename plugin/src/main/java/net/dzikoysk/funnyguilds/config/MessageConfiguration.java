@@ -47,6 +47,10 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankLastAttackerA = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
+    public String rankMemberVictim = "&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja odebrane!";
+    public String rankMemberAttacker = "&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja dodane!";
+    public String rankAllyVictim = "&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja odebrane!";
+    public String rankAllyAttacker = "&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja dodane!";
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
     public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
