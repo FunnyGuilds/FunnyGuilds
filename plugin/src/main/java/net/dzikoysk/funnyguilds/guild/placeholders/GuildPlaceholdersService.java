@@ -65,19 +65,11 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         MessageConfiguration messages = plugin.getMessageConfiguration();
         GuildRankManager rankManager = plugin.getGuildRankManager();
 
-        Function<Guild, Object> guildProtection = guild -> {
-            long now = System.currentTimeMillis();
-            long protectionEndTime = guild.getProtection();
-
-            return protectionEndTime < now
-                    ? "Brak"
-                    : TimeUtils.getDurationBreakdown(protectionEndTime - now);
-        };
-
         return new GuildPlaceholders()
                 .property("validity", guild -> messages.dateFormat.format(guild.getValidity()), () -> messages.gValidityNoValue)
-                .property("protection", guildProtection::apply, () -> "Brak")
-                .property("guild-protection", guildProtection::apply, () -> "Brak")
+                .property("validity-time", guild -> formatTime(guild, Guild::getValidity), () -> messages.gValidityNoValue)
+                .property("protection", guild -> messages.dateFormat.format(guild.getProtection()), () -> messages.gProtectionNoValue)
+                .property("protection-time", guild -> formatTime(guild, Guild::getProtection), () -> messages.gProtectionNoValue)
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
                 .property("deputies",
                         guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.gDeputiesNoValue),
@@ -97,6 +89,11 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                                 .map(value -> Integer.toString(value))
                                 .orElseGet(messages.gRegionSizeNoValue),
                         () -> messages.gRegionSizeNoValue)
+                .property("pvp",
+                        guild -> guild.hasPvPEnabled()
+                                ? messages.pvpStatusOn
+                                : messages.pvpStatusOff,
+                        () -> messages.pvpStatusOff)
                 .property("lives", Guild::getLives, () -> 0)
                 .property("lives-symbol",
                         guild -> {
@@ -158,6 +155,15 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("enemies-tags",
                         guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue),
                         () -> messages.enemiesNoValue);
+    }
+
+    private static String formatTime(Guild guild, Function<Guild, Long> timeFunction) {
+        long now = System.currentTimeMillis();
+        long endTime = timeFunction.apply(guild);
+
+        return endTime < now
+                ? "Brak"
+                : TimeUtils.getDurationBreakdown(endTime - now);
     }
 
 }

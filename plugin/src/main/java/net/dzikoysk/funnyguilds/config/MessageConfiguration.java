@@ -23,6 +23,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String gDeputiesNoValue = "Brak (G-DEPUTIES)";
     public String gDeputyNoValue = "Brak (G-DEPUTY)";
     public String gValidityNoValue = "Brak (G-VALIDITY)";
+    public String gProtectionNoValue = "Brak (G-PROTECTION)";
     public String gRegionSizeNoValue = "Brak (G-REGION-SIZE)";
     public String livesNoValue = "Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)";
     public String alliesNoValue = "Brak (ALLIES)";
@@ -563,6 +564,9 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostępne zmienne: {TAG}")
     public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
     public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
+
+    public String pvpStatusOn = "&aWlaczone";
+    public String pvpStatusOff = "&cWylaczone";
 
     @Comment("")
     @Comment("<------- Admin Messages -------> #")
