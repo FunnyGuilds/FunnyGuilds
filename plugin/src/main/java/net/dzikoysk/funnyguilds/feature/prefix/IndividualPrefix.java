@@ -44,7 +44,7 @@ public class IndividualPrefix {
                     }
 
                     if (this.user.hasGuild()) {
-                        if (this.user.equals(byName) || guild.isMember(byName)) {
+                        if (this.user.equals(byName) || this.user.getGuild().is(userGuild -> userGuild.isMember(byName))) {
                             team.setPrefix(preparePrefix(this.plugin.getPluginConfiguration().prefixOur.getValue(), guild));
                         }
                     }
