@@ -122,14 +122,14 @@ public final class UserUtils {
         }
 
         if (user.isOwner()) {
-            return pluginConfiguration.chatPositionLeader;
+            return pluginConfiguration.chatPositionLeader.getValue();
         }
 
         if (user.isDeputy()) {
-            return pluginConfiguration.chatPositionDeputy;
+            return pluginConfiguration.chatPositionDeputy.getValue();
         }
 
-        return pluginConfiguration.chatPositionMember;
+        return pluginConfiguration.chatPositionMember.getValue();
     }
 
     /**

@@ -796,17 +796,17 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Znacznik dla lidera gildii")
     @CustomKey("chat-position-leader")
-    public String chatPositionLeader = "**";
+    public RawString chatPositionLeader = new RawString("**");
 
     @Comment("")
     @Comment("Znacznik dla zastępcy gildii")
     @CustomKey("chat-position-deputy")
-    public String chatPositionDeputy = "*";
+    public RawString chatPositionDeputy = new RawString("*");
 
     @Comment("")
     @Comment("Znacznik dla członka gildii")
     @CustomKey("chat-position-member")
-    public String chatPositionMember = "";
+    public RawString chatPositionMember = new RawString("");
 
     @Comment("")
     @Comment("Wygląd znacznika {TAG} wstawionego w format chatu")
