@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.util;
 
+import java.time.Instant;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public final class DeserializationUtils {
 
         long banTime = (long) values[7];
         if (banTime > 0) {
-            user.setBan(new UserBan((String) values[8], banTime));
+            user.setBan(new UserBan((String) values[8], Instant.ofEpochMilli(banTime)));
         }
 
         user.markUnchanged();

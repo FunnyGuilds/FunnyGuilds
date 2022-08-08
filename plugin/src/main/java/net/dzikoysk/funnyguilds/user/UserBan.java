@@ -1,19 +1,20 @@
 package net.dzikoysk.funnyguilds.user;
 
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 
 public class UserBan {
 
     private final String reason;
-    private final long banTime;
+    private final Instant time;
 
-    public UserBan(String reason, long banTime) {
+    public UserBan(String reason, Instant time) {
         this.reason = reason;
-        this.banTime = banTime;
+        this.time = time;
     }
 
     public boolean isBanned() {
-        return this.banTime != 0;
+        return this.time.isAfter(Instant.now());
     }
 
     public String getReason() {
@@ -24,8 +25,8 @@ public class UserBan {
         return "";
     }
 
-    public long getBanTime() {
-        return this.banTime;
+    public Instant getTime() {
+        return this.time;
     }
 
 }

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import java.sql.ResultSet;
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -63,7 +64,7 @@ public final class DatabaseUserSerializer {
         statement.set("deaths", user.getRank().getDeaths());
         statement.set("assists", user.getRank().getAssists());
         statement.set("logouts", user.getRank().getLogouts());
-        statement.set("ban", user.getBan().map(UserBan::getBanTime).orElseGet(0L));
+        statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("reason", user.getBan().map(UserBan::getReason).orNull());
 
         statement.executeUpdate();

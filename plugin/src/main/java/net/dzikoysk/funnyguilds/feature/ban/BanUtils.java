@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.ban;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -22,9 +24,7 @@ public final class BanUtils {
     }
 
     public static User ban(User user, long time, String reason) {
-        time += System.currentTimeMillis();
-        user.setBan(new UserBan(reason, time));
-
+        user.setBan(new UserBan(reason, Instant.now().plus(time, ChronoUnit.MILLIS)));
         return user;
     }
 
@@ -38,8 +38,7 @@ public final class BanUtils {
 
     public static void checkIfBanShouldExpire(User user) {
         user.getBan()
-                .map(UserBan::getBanTime)
-                .filter(time -> System.currentTimeMillis() > time)
+                .filterNot(UserBan::isBanned)
                 .peek(time -> user.setBan(null));
     }
 
@@ -50,7 +49,7 @@ public final class BanUtils {
                 .map(ban -> {
                     FunnyFormatter formatter = new FunnyFormatter()
                             .register("{NEWLINE}", ChatColor.RESET + "\n")
-                            .register("{DATE}", messages.dateFormat.format(ban.getBanTime()))
+                            .register("{DATE}", messages.dateFormat.format(ban.getTime()))
                             .register("{REASON}", ban.getReason())
                             .register("{PLAYER}", user.getName());
 

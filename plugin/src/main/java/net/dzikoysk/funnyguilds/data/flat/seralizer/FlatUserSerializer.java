@@ -71,7 +71,7 @@ public final class FlatUserSerializer {
         wrapper.set("logouts", user.getRank().getLogouts());
 
         user.getBan().peek(ban -> {
-            wrapper.set("ban", ban.getBanTime());
+            wrapper.set("ban", ban.getTime());
             wrapper.set("reason", ban.getReason());
         });
 
