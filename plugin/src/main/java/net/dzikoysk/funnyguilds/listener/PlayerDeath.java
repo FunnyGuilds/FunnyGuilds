@@ -121,6 +121,18 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
 
+        if (this.checkMemberRankChangeProtection(victim, attacker)) {
+            victimDamageCache.clear();
+            event.setDeathMessage(null);
+            return;
+        }
+
+        if (this.checkAllyRankChangeProtection(attacker, victim)) {
+            attackerDamageCache.clear();
+            event.setDeathMessage(null);
+            return;
+        }
+
         KillsChangeEvent killsChangeEvent = new KillsChangeEvent(EventCause.COMBAT, attacker, victim, 1);
         if (SimpleEventHandler.handle(killsChangeEvent)) {
             attacker.getRank().updateKills(currentValue -> currentValue + killsChangeEvent.getKillsChange());
@@ -292,7 +304,36 @@ public class PlayerDeath extends AbstractFunnyListener {
         if (attackerIP != null && attackerIP.equalsIgnoreCase(playerVictim.getAddress().getHostString())) {
             ChatUtils.sendMessage(playerVictim, this.messages.rankIPVictim);
             ChatUtils.sendMessage(playerAttacker, this.messages.rankIPAttacker);
+            return true;
+        }
 
+        return false;
+    }
+
+    // Function to check if both players are in the same guild
+    private boolean checkMemberRankChangeProtection(User victim, User attacker) {
+        if (!this.config.rankMemberProtect) {
+            return false;
+        }
+
+        if (victim.getGuild().equals(attacker.getGuild())) {
+            victim.sendMessage(this.messages.rankMemberVictim);
+            attacker.sendMessage(this.messages.rankMemberAttacker);
+            return true;
+        }
+
+        return false;
+    }
+
+    // Function to check if both players are in the allied guild
+    private boolean checkAllyRankChangeProtection(User victim, User attacker) {
+        if (!this.config.rankAllyProtect) {
+            return false;
+        }
+
+        if (victim.getGuild().equals(attacker.getGuild())) {
+            victim.sendMessage(this.messages.rankAllyVictim);
+            attacker.sendMessage(this.messages.rankAllyAttacker);
             return true;
         }
 

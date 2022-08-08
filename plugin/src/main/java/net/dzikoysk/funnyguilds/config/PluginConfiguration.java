@@ -641,6 +641,14 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean rankIPProtect = false;
 
     @Comment("")
+    @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki są członkami tej samej gildii")
+    public boolean rankMemberProtect = false;
+
+    @Comment("")
+    @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki są z sojuszniczych gildii")
+    public boolean rankAllyProtect = false;
+
+    @Comment("")
     @Comment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzględnieni przy wyznaczaniu pozycji gracza w rankingu")
     @CustomKey("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
