@@ -128,7 +128,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
 
-        if (this.checkAllyRankChangeProtection(attacker, victim)) {
+        if (this.checkAllyRankChangeProtection(victim, attacker)) {
             attackerDamageCache.clear();
             event.setDeathMessage(null);
             return;
