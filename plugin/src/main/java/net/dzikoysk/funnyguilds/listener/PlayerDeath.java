@@ -25,6 +25,7 @@ import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -127,7 +128,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
 
-        if (this.checkAllyRankChangeProtection(attacker, victim)) {
+        if (this.checkAllyRankChangeProtection(victim, attacker)) {
             attackerDamageCache.clear();
             event.setDeathMessage(null);
             return;
@@ -331,7 +332,15 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        if (victim.getGuild().equals(attacker.getGuild())) {
+        Option<Guild> victimGuildOption = victim.getGuild();
+        Option<Guild> attackerGuildOption = attacker.getGuild();
+        if (victimGuildOption.isEmpty() || attackerGuildOption.isEmpty()) {
+            return false;
+        }
+        Guild victimGuild = victimGuildOption.get();
+        Guild attackerGuild = attackerGuildOption.get();
+
+        if (victimGuild.isAlly(attackerGuild) || attackerGuild.isAlly(victimGuild)) {
             victim.sendMessage(this.messages.rankAllyVictim);
             attacker.sendMessage(this.messages.rankAllyAttacker);
             return true;
