@@ -32,33 +32,7 @@ import net.dzikoysk.funnyguilds.feature.command.admin.TagCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TeleportCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.UnbanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ValidityAdminCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.AllyCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.BaseCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.BreakCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.ConfirmCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.CreateCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.DeleteCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.DeputyCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.EnlargeCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.EscapeCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.FunnyGuildsCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.GuildCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.InviteCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.ItemsCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.JoinCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.KickCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.LeaderCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.LeaveCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.PvPCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.RankResetCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.RankingCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.SetBaseCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
+import net.dzikoysk.funnyguilds.feature.command.user.*;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Server;
@@ -105,6 +79,7 @@ public final class FunnyCommandsConfiguration {
                 .command("pvp", commands.pvp, PvPCommand.class)
                 .command("ranking", commands.ranking, RankingCommand.class)
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
+                .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
                 .command("top", commands.top, TopCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)

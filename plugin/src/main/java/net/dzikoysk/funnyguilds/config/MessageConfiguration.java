@@ -65,6 +65,10 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankResetItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
     @Comment("Dostępne zmienne: {LAST-RANK}, {CURRENT-RANK}")
     public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
+    @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
+    public String statsResetItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
+    @Comment("Dostępne zmienne: {LAST-RANK}, {CURRENT-RANK}, {LAST-DEATH}, {CURRENT-DEATH}, {LAST-KILL}, {CURRENT-KILL}")
+    public String statsResetMessage ="&7Zresetowales swoje statystyki do podstawowych";
 
     @Comment("")
     @Comment("<------- Ban Messages -------> #")
