@@ -44,6 +44,8 @@ public class CommandsConfiguration extends OkaeriConfig {
     @Comment("")
     public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
     @Comment("")
+    public FunnyCommand statsReset = new FunnyCommand("statsreset", Collections.singletonList("resetstats"));
+    @Comment("")
     public FunnyCommand tnt = new FunnyCommand("tnt");
     @Comment("")
     @CustomKey("break")

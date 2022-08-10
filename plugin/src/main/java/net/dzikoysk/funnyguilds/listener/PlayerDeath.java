@@ -317,6 +317,10 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
+        if (!victim.hasGuild() || !attacker.hasGuild()) {
+            return false;
+        }
+
         if (victim.getGuild().equals(attacker.getGuild())) {
             victim.sendMessage(this.messages.rankMemberVictim);
             attacker.sendMessage(this.messages.rankMemberAttacker);
