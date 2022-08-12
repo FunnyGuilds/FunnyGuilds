@@ -40,7 +40,7 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
             return new ValidationException(this.messages.adminInvalidProtectionDate);
         });
 
-        guild.setProtection(protectionDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        guild.setProtection(protectionDate.atZone(ZoneId.systemDefault()).toInstant());
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{TAG}", guild.getTag())

@@ -161,9 +161,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
         Guild guild = new Guild(name, tag);
         guild.setOwner(user);
         guild.setLives(this.config.warLives);
-        guild.setBorn(System.currentTimeMillis());
-        guild.setValidity(Instant.now().plus(this.config.validityStart).toEpochMilli());
-        guild.setProtection(Instant.now().plus(this.config.warProtection).toEpochMilli());
+        guild.setBorn(Instant.now());
+        guild.setValidity(Instant.now().plus(this.config.validityStart));
+        guild.setProtection(Instant.now().plus(this.config.warProtection));
         guild.setPvP(this.config.damageGuild);
 
         Location home = guildLocation.clone()

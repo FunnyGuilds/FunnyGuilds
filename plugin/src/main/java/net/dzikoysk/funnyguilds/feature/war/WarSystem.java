@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.war;
 
+import java.time.Duration;
 import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -65,11 +66,11 @@ public class WarSystem {
         }
 
         if (!guild.canBeAttacked()) {
-            user.sendMessage(WarUtils.getMessage(Message.WAIT, guild.getProtection() - System.currentTimeMillis()));
+            user.sendMessage(WarUtils.getMessage(Message.WAIT, Duration.between(guild.getProtection(), Instant.now())));
             return;
         }
 
-        guild.setProtection(Instant.now().plus(config.warWait).toEpochMilli());
+        guild.setProtection(Instant.now().plus(config.warWait));
 
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
             guild.updateLives(lives -> lives - 1);

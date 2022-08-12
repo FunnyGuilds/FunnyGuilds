@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.protection;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -96,10 +97,11 @@ public final class ProtectionSystem {
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        long time = TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis());
-
-        ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time));
+        guild.getBuild().peek(build -> {
+            long time = Duration.between(build, Instant.now()).getSeconds();
+            MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time));
+        });
     }
 
     public static enum ProtectionType {

@@ -46,8 +46,8 @@ public class GuildValidationHandler implements Runnable {
 
     private void validateGuildBans() {
         PandaStream.of(this.guildManager.getGuilds())
-                .filterNot(guild -> guild.getBan() > System.currentTimeMillis())
-                .forEach(guild -> guild.setBan(0));
+                .filterNot(Guild::isBanned)
+                .forEach(guild -> guild.setBan(null));
 
         this.banGuildsCounter = 0;
     }

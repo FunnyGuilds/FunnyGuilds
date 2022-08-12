@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.ban;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -16,15 +16,15 @@ public final class BanUtils {
     private BanUtils() {
     }
 
-    public static void ban(Guild guild, long time, String reason) {
-        guild.setBan(time + System.currentTimeMillis());
+    public static void ban(Guild guild, Duration time, String reason) {
+        guild.setBan(Instant.now().plus(time));
         PandaStream.of(guild.getMembers())
                 .map(member -> ban(member, time, reason))
                 .forEach(member -> member.getProfile().kick(getBanMessage(member)));
     }
 
-    public static User ban(User user, long time, String reason) {
-        user.setBan(new UserBan(reason, Instant.now().plus(time, ChronoUnit.MILLIS)));
+    public static User ban(User user, Duration time, String reason) {
+        user.setBan(new UserBan(reason, Instant.now().plus(time)));
         return user;
     }
 

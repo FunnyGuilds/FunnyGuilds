@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.time.Duration;
 import java.util.Arrays;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -33,8 +34,8 @@ public final class BanCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         when(guild.isBanned(), this.messages.adminGuildBanned);
 
-        long time = TimeUtils.parseTime(args[1]);
-        when(time < 1, this.messages.adminTimeError);
+        Duration time = TimeUtils.parseTimeDuration(args[1]);
+        when(time.toMillis() < 1, this.messages.adminTimeError);
 
         String reason = Joiner.on(" ").join(Arrays.copyOfRange(args, 2, args.length)).toString();
         User admin = AdminUtils.getAdminUser(sender);

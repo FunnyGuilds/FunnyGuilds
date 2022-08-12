@@ -1,13 +1,17 @@
 package net.dzikoysk.funnyguilds.shared;
 
+import java.time.Duration;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import panda.utilities.StringUtils;
 
 public final class TimeUtils {
 
     private TimeUtils() {
+    }
+
+    public static Duration parseTimeDuration(String string) {
+        return Duration.ofMillis(parseTime(string));
     }
 
     public static long parseTime(String string) {
@@ -64,6 +68,10 @@ public final class TimeUtils {
         }
 
         return time;
+    }
+
+    public static String getDurationBreakdown(Duration duration) {
+        return getDurationBreakdown(duration.toMillis());
     }
 
     public static String getDurationBreakdown(long millis) {

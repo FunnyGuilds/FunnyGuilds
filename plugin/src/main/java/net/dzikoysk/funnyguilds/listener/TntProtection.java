@@ -54,7 +54,7 @@ public class TntProtection extends AbstractFunnyListener {
         this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)
                 .filterNot(guild -> this.config.regionExplodeExcludeEntities.contains(event.getEntityType()))
-                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(this.config.regionExplode).toEpochMilli()))
+                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(this.config.regionExplode)))
                 .toStream(guild -> guild.getMembers().stream())
                 .filterNot(user -> this.informationMessageCooldowns.cooldown(user.getUUID(), this.config.infoPlayerCooldown))
                 .forEach(user -> user.sendMessage(message));

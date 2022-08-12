@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -39,12 +38,11 @@ public class Guild extends AbstractMutableEntity {
     private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
     private Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
 
-    private long born;
-    private long validity;
-    private Date validityDate;
-    private long protection;
-    private long build;
-    private long ban;
+    private Instant born;
+    private Instant validity;
+    private Instant protection;
+    private Option<Instant> build = Option.none();
+    private Option<Instant> ban = Option.none();
 
     private boolean pvp;
 
@@ -54,7 +52,7 @@ public class Guild extends AbstractMutableEntity {
         this.tag = tag;
 
         this.rank = new GuildRank(this);
-        this.born = System.currentTimeMillis();
+        this.born = Instant.now();
     }
 
     public Guild(String name, String tag) {
@@ -306,92 +304,91 @@ public class Guild extends AbstractMutableEntity {
         return !this.isEnemy(guild) && !this.isAlly(guild);
     }
 
-    public long getBorn() {
+    public Instant getBorn() {
         return this.born;
     }
 
-    public void setBorn(long time) {
+    public void setBorn(Instant time) {
         this.born = time;
         this.markChanged();
     }
 
-    public long getValidity() {
+    public Instant getValidity() {
         return this.validity;
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public Date getValidityDate() {
-        return this.validityDate == null ? this.validityDate = new Date(this.validity) : this.validityDate;
-    }
-
     public boolean isValid() {
-        if (this.validity == this.born || this.validity == 0) {
-            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
+        if (this.validity == null || this.validity.equals(this.born)) {
+            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
             this.markChanged();
         }
 
-        return this.validity >= System.currentTimeMillis();
+        return this.validity.compareTo(Instant.now()) >= 0;
     }
 
-    public void setValidity(long time) {
-        if (time == this.born) {
-            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
+    public void setValidity(Instant time) {
+        if (time == null || this.born.equals(time)) {
+            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
         }
         else {
             this.validity = time;
         }
 
-        this.validityDate = new Date(this.validity);
         this.markChanged();
     }
 
-    public long getProtection() {
+    public Instant getProtection() {
         return this.protection;
     }
 
     public boolean canBeAttacked() {
-        return this.protection < System.currentTimeMillis();
+        return this.protection.isBefore(Instant.now());
     }
 
-    public void setProtection(long protection) {
+    public void setProtection(Instant protection) {
         this.protection = protection;
         this.markChanged();
     }
 
-    public long getBuild() {
+    public Option<Instant> getBuild() {
         return this.build;
     }
 
     public boolean canBuild() {
-        if (this.build > System.currentTimeMillis()) {
+        if (this.build.is(build -> build.isAfter(Instant.now()))) {
             return false;
         }
 
-        this.build = 0;
+        this.build = Option.none();
         this.markChanged();
         return true;
     }
 
-    public void setBuild(long time) {
-        this.build = time;
+    public void setBuild(@Nullable Instant time) {
+        this.build = Option.of(time);
         this.markChanged();
     }
 
-    public long getBan() {
+    public Option<Instant> getBan() {
         return this.ban;
     }
 
     public boolean isBanned() {
-        return this.ban > System.currentTimeMillis();
+        if (this.ban.is(ban -> ban.isAfter(Instant.now()))) {
+            return true;
+        }
+
+        this.ban = Option.none();
+        this.markChanged();
+        return false;
     }
 
-    public void setBan(long time) {
-        if (time > System.currentTimeMillis()) {
-            this.ban = time;
+    public void setBan(@Nullable Instant time) {
+        if (time != null && time.isAfter(Instant.now())) {
+            this.ban = Option.of(time);
         }
         else {
-            this.ban = 0;
+            this.ban = Option.of(null);
         }
 
         this.markChanged();
