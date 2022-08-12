@@ -381,10 +381,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Funkcja niedostępna, jeśli możliwość teleportacji do gildii jest wyłączona")
     public boolean escapeEnable = true;
 
-    @Min(0)
+    @PositiveOrZero
     @Comment("")
-    @Comment("Czas w sekundach, jaki musi upłynąć od włączenia ucieczki do teleportacji")
-    public int escapeDelay = 120;
+    @Comment("Czas jaki musi upłynąć od włączenia ucieczki do teleportacji")
+    @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
+    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Przykład: 1m30s")
+    public Duration escapeDelay = Duration.ofSeconds(120);
 
     @Comment("")
     @Comment("Możliwość ucieczki na spawn dla graczy bez gildii")
@@ -478,10 +481,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     public TntProtectionConfiguration tntProtection = new TntProtectionConfiguration();
 
-    @Min(0)
+    @PositiveOrZero
     @Comment("")
-    @Comment("Przez ile sekund po wybuchu nie można budować na terenie gildii")
-    public int regionExplode = 120;
+    @Comment("Czas przez nie jaki można budować na terenie gildii po wybuchu")
+    @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
+    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Przykład: 1m30s")
+    public Duration regionExplode = Duration.ofSeconds(120);
 
     @Comment("")
     @Comment("Lista entity, których wybuch nie powoduje blokady budowania na terenie gildii")
