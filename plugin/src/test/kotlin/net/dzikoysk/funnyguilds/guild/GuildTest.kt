@@ -29,7 +29,7 @@ class GuildTest : FunnyGuildsSpec() {
                 .withPrefabValues(Location::class.java, Location(null, 0.0, 0.0, 0.0), Location(null, 1.0, 2.0, 3.0))
                 .withIgnoredFields("name", "tag", "rank", "lives", "region", "home", "owner")
                 .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds")
-                .withIgnoredFields("born", "validity", "validityDate", "protection", "build", "ban", "pvp", "wasChanged")
+                .withIgnoredFields("born", "validity", "protection", "build", "ban", "pvp", "wasChanged")
                 .verify()
     }
 
