@@ -483,7 +483,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @PositiveOrZero
     @Comment("")
-    @Comment("Czas przez nie jaki można budować na terenie gildii po wybuchu")
+    @Comment("Czas przez jaki nie można budować na terenie gildii po wybuchu")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
     @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
     @Comment("Przykład: 1m30s")
