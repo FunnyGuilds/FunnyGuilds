@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -67,7 +69,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         when(!sender.hasPermission("funnyguilds.admin"), this.messages.permission);
 
         this.sendMessage(sender, this.messages.saveallSaving);
-        long currentTime = System.currentTimeMillis();
+        Instant currentTime = Instant.now();
 
         DataModel dataModel = this.dataModel;
         try {
@@ -79,7 +81,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        String time = String.format("%.2f", (System.currentTimeMillis() - currentTime) / 1000.0D);
+        String time = String.format("%.2f", Duration.between(Instant.now(), currentTime).getSeconds());
         this.sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
     }
 

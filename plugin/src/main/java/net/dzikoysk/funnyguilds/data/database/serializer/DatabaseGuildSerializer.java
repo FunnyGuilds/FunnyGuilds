@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -46,10 +47,10 @@ public final class DatabaseGuildSerializer {
             String regionName = resultSet.getString("region");
             String membersString = resultSet.getString("members");
             boolean pvp = resultSet.getBoolean("pvp");
-            long born = resultSet.getLong("born");
-            long validity = resultSet.getLong("validity");
-            long attacked = resultSet.getLong("attacked");
-            long ban = resultSet.getLong("ban");
+            Instant born = TimeUtils.positiveOrNullInstant(resultSet.getLong("born"));
+            Instant validity = TimeUtils.positiveOrNullInstant(resultSet.getLong("validity"));
+            Instant attacked = TimeUtils.positiveOrNullInstant(resultSet.getLong("attacked"));
+            Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
 
             FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -82,12 +83,16 @@ public final class DatabaseGuildSerializer {
                 members = userManager.findByNames(FunnyStringUtils.fromString(membersString));
             }
 
-            if (born == 0) {
-                born = System.currentTimeMillis();
+            if (born == null) {
+                born = Instant.now();
             }
 
-            if (validity == 0) {
-                validity = Instant.now().plus(config.validityStart).toEpochMilli();
+            if (validity == null) {
+                validity = Instant.now().plus(config.validityStart);
+            }
+
+            if (attacked == null) {
+                attacked = Instant.now();
             }
 
             if (lives == 0) {

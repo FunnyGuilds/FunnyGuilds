@@ -77,11 +77,11 @@ public final class DeserializationUtils {
         guild.setMembers((Set<User>) values[6]);
         guild.setAllies((Set<Guild>) values[7]);
         guild.setEnemies((Set<Guild>) values[8]);
-        guild.setBorn(Instant.ofEpochMilli((long) values[9]));
-        guild.setValidity(Instant.ofEpochMilli((long) values[10]));
-        guild.setProtection(Instant.ofEpochMilli((long) values[11]));
+        guild.setBorn((Instant) values[9]);
+        guild.setValidity((Instant) values[10]);
+        guild.setProtection((Instant) values[11]);
         guild.setLives((int) values[12]);
-        guild.setBan(Instant.ofEpochMilli((long) values[13]));
+        guild.setBan((Instant) values[13]);
         guild.setDeputies((Set<User>) values[14]);
         guild.setPvP((boolean) values[15]);
         guild.deserializationUpdate();

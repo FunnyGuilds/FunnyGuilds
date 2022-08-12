@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests;
 
+import java.time.Duration;
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -16,12 +18,12 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
 
     private final FunnyGuilds plugin;
     private final CommandSender sender;
-    private final long startTime;
+    private final Instant startTime;
 
     public ReloadRequest(FunnyGuilds plugin, CommandSender sender) {
         this.plugin = plugin;
         this.sender = sender;
-        this.startTime = System.currentTimeMillis();
+        this.startTime = Instant.now();
     }
 
     @Override
@@ -54,8 +56,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                     });
         }
 
-        long endTime = System.currentTimeMillis();
-        String diff = String.format("%.2f", (endTime - this.startTime) / 1000.0D);
+        String diff = String.format("%.2f", Duration.between(Instant.now(), startTime).getSeconds());
 
         String message = FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", diff);
         ChatUtils.sendMessage(this.sender, message);

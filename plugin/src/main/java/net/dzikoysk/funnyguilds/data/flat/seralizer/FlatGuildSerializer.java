@@ -21,6 +21,7 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -54,10 +55,10 @@ public final class FlatGuildSerializer {
         String hs = wrapper.getString("home");
         String regionName = wrapper.getString("region");
         boolean pvp = wrapper.getBoolean("pvp");
-        long born = wrapper.getLong("born");
-        long validity = wrapper.getLong("validity");
-        long attacked = wrapper.getLong("attacked");
-        long ban = wrapper.getLong("ban");
+        Instant born = TimeUtils.positiveOrNullInstant(wrapper.getLong("born"));
+        Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
+        Instant attacked = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked"));
+        Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
 
         if (name == null) {
@@ -126,12 +127,16 @@ public final class FlatGuildSerializer {
         Set<Guild> allies = guildManager.findByNames(loadSet(wrapper, "allies"));
         Set<Guild> enemies = guildManager.findByNames(loadSet(wrapper, "enemies"));
 
-        if (born == 0) {
-            born = System.currentTimeMillis();
+        if (born == null) {
+            born = Instant.now();
         }
 
-        if (validity == 0) {
-            validity = Instant.now().plus(config.validityStart).toEpochMilli();
+        if (validity == null) {
+            validity = Instant.now().plus(config.validityStart);
+        }
+
+        if (attacked == null) {
+            attacked = Instant.now();
         }
 
         if (lives == 0) {

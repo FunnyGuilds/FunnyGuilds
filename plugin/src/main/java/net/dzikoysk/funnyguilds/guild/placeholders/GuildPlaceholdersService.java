@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Locale;
 import java.util.function.Function;
@@ -160,10 +161,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
 
     private static String formatTime(Guild guild, Function<Guild, Instant> timeFunction) {
         Instant endTime = timeFunction.apply(guild);
-
         return endTime.isBefore(Instant.now())
                 ? "Brak"
-                : TimeUtils.getDurationBreakdown(endTime.toEpochMilli() - System.currentTimeMillis());
+                : TimeUtils.getDurationBreakdown(Duration.between(endTime, Instant.now()));
     }
 
 }

@@ -1,13 +1,23 @@
 package net.dzikoysk.funnyguilds.shared;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
 
     private TimeUtils() {
+    }
+
+    @Nullable
+    public static Instant positiveOrNullInstant(long time) {
+        if (time < 0) {
+            return null;
+        }
+        return Instant.ofEpochMilli(time);
     }
 
     public static Duration parseTimeDuration(String string) {
