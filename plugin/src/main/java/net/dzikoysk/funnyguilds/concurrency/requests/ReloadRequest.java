@@ -56,7 +56,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                     });
         }
 
-        String diff = String.format("%.2f", Duration.between(Instant.now(), this.startTime).getSeconds());
+        String diff = String.format("%.2f", Duration.between(Instant.now(), this.startTime).toMillis() / 1000.0);
 
         String message = FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", diff);
         ChatUtils.sendMessage(this.sender, message);

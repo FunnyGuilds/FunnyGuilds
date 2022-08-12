@@ -81,7 +81,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        String time = String.format("%.2f", Duration.between(Instant.now(), currentTime).getSeconds());
+        String time = String.format("%.2f", Duration.between(Instant.now(), currentTime).toMillis() / 1000.0);
         this.sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
     }
 
