@@ -198,11 +198,11 @@ public final class FlatGuildSerializer {
         wrapper.set("regions", null);
         wrapper.set("allies", new ArrayList<>(Entity.names(guild.getAllies())));
         wrapper.set("enemies", new ArrayList<>(Entity.names(guild.getEnemies())));
-        wrapper.set("born", guild.getBorn());
-        wrapper.set("validity", guild.getValidity());
-        wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
+        wrapper.set("born", guild.getBorn().toEpochMilli());
+        wrapper.set("validity", guild.getValidity().toEpochMilli());
+        wrapper.set("attacked", guild.getProtection().toEpochMilli()); //TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
-        wrapper.set("ban", guild.getBan());
+        wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 

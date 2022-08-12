@@ -148,10 +148,10 @@ public final class DatabaseGuildSerializer {
         statement.set("enemies", enemies);
         statement.set("points", guild.getRank().getAveragePoints());
         statement.set("lives", guild.getLives());
-        statement.set("born", guild.getBorn());
-        statement.set("validity", guild.getValidity());
-        statement.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
-        statement.set("ban", guild.getBan());
+        statement.set("born", guild.getBorn().toEpochMilli());
+        statement.set("validity", guild.getValidity().toEpochMilli());
+        statement.set("attacked", guild.getProtection().toEpochMilli()); //TODO: [FG 5.0] attacked -> protection
+        statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
 
