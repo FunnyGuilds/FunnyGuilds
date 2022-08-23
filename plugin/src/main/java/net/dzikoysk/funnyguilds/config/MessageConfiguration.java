@@ -77,7 +77,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     public String regionInteract = "&cNie mozesz ingerowac w okolice serca swojej gildii!";
     @Comment("Dostępne zmienne: {TIME}")
-    public String regionExplode = "&cBudowanie na terenie zostało zablokowane na &4{TIME}&c!";
+    public String regionExplode = "&cBudowanie na terenie twojej gildii zostało zablokowane na &4{TIME}&c!";
     @Comment("Dostępne zmienne: {TIME}")
     public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME}&c!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
