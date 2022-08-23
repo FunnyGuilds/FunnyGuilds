@@ -49,7 +49,7 @@ public final class DatabaseGuildSerializer {
             boolean pvp = resultSet.getBoolean("pvp");
             Instant born = TimeUtils.positiveOrNullInstant(resultSet.getLong("born"));
             Instant validity = TimeUtils.positiveOrNullInstant(resultSet.getLong("validity"));
-            Instant attacked = TimeUtils.positiveOrNullInstant(resultSet.getLong("attacked"));
+            Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
 
@@ -91,8 +91,8 @@ public final class DatabaseGuildSerializer {
                 validity = Instant.now().plus(config.validityStart);
             }
 
-            if (attacked == null) {
-                attacked = Instant.now();
+            if (protection == null) {
+                protection = Instant.now();
             }
 
             if (lives == 0) {
@@ -111,7 +111,7 @@ public final class DatabaseGuildSerializer {
             values[8] = Sets.newHashSet();
             values[9] = born;
             values[10] = validity;
-            values[11] = attacked;
+            values[11] = protection;
             values[12] = lives;
             values[13] = ban;
             values[14] = deputies;

@@ -14,7 +14,7 @@ public final class TimeUtils {
 
     @Nullable
     public static Instant positiveOrNullInstant(long time) {
-        if (time < 0) {
+        if (time <= 0) {
             return null;
         }
         return Instant.ofEpochMilli(time);

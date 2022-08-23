@@ -318,22 +318,15 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isValid() {
-        if (this.validity == null || this.validity.equals(this.born)) {
-            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
-            this.markChanged();
-        }
-
         return Instant.now().isBefore(this.validity);
     }
 
     public void setValidity(Instant time) {
         if (time == null || this.born.equals(time)) {
-            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
-        }
-        else {
-            this.validity = time;
+            time = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
         }
 
+        this.validity = time;
         this.markChanged();
     }
 
@@ -365,6 +358,10 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setBuild(@Nullable Instant time) {
+        if (time != null && time.isBefore(Instant.now())) {
+            time = null;
+        }
+
         this.build = Option.of(time);
         this.markChanged();
     }
@@ -384,13 +381,11 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setBan(@Nullable Instant time) {
-        if (time != null && time.isAfter(Instant.now())) {
-            this.ban = Option.of(time);
-        }
-        else {
-            this.ban = Option.of(null);
+        if (time != null && time.isBefore(Instant.now())) {
+            time = null;
         }
 
+        this.ban = Option.of(time);
         this.markChanged();
     }
 

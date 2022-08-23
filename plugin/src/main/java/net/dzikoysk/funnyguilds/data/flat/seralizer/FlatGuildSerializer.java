@@ -57,7 +57,7 @@ public final class FlatGuildSerializer {
         boolean pvp = wrapper.getBoolean("pvp");
         Instant born = TimeUtils.positiveOrNullInstant(wrapper.getLong("born"));
         Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
-        Instant attacked = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked"));
+        Instant attacked = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
 
