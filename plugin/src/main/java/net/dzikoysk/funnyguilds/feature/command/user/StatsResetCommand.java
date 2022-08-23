@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,23 +27,36 @@ public final class StatsResetCommand extends AbstractFunnyCommand {
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems, this.messages.statsResetItems)) {
             return;
         }
-        int lastRank = user.getRank().getPoints();
-        int lastDeaths = user.getRank().getDeaths();
-        int lastKills = user.getRank().getKills();
-        user.getRank().setPoints(this.config.rankStart);
-        user.getRank().setDeaths(0);
-        user.getRank().setKills(0);
+
+        UserRank rank = user.getRank();
+
+        int lastPoints = rank.getPoints();
+        int lastKills = rank.getKills();
+        int lastDeaths = rank.getDeaths();
+        int lastAssists = rank.getAssists();
+        int lastLogouts = rank.getLogouts();
+
+        rank.setPoints(this.config.rankStart);
+        rank.setKills(0);
+        rank.setDeaths(0);
+        rank.setAssists(0);
+        rank.setLogouts(0);
+
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{LAST-RANK}", lastRank)
-                .register("{CURRENT-RANK}", user.getRank().getPoints())
-                .register("{LAST-DEATH}", lastDeaths)
-                .register("{CURRENT-DEATH", user.getRank().getDeaths())
+                .register("{LAST-PINTS}", lastPoints)
+                .register("{CURRENT-POINTS}", rank.getPoints())
+                .register("{LAST-DEATHS}", lastDeaths)
+                .register("{CURRENT-DEATHS", rank.getDeaths())
                 .register("{LAST-KILLS}", lastKills)
-                .register("{CURRENT-KILLS}", user.getRank().getKills());
+                .register("{CURRENT-KILLS}", rank.getKills())
+                .register("{LAST-ASSISTS}", lastAssists)
+                .register("{CURRENT-ASSISTS}", rank.getAssists())
+                .register("{LAST-LOGOUTS}", lastLogouts)
+                .register("{CURRENT-LOGOUTS}", rank.getLogouts());
 
-        user.sendMessage(formatter.format(this.messages.statsResetMessage));
+        this.messages.statsResetMessage.forEach(message -> user.sendMessage(formatter.format(message)));
     }
 
 }
