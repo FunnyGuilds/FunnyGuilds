@@ -27,14 +27,21 @@ class TimeUtilsTest {
     }
 
     @Test
-    fun `test long format time`() {
+    fun `test long format time nominative`() {
         val durationOne = Duration.ofDays(2).plusHours(15).plusMinutes(59).plusSeconds(1);
         val durationTwo = Duration.ofDays(2)
         val durationThree = Duration.ofSeconds(20)
 
-        assertEquals("2 dni 15 godzin 59 minut 1 sekunda", TimeUtils.formatTime(durationOne))
-        assertEquals("2 dni", TimeUtils.formatTime(durationTwo))
-        assertEquals("20 sekund", TimeUtils.formatTime(durationThree))
+        assertEquals("2 dni 15 godzin 59 minut 1 sekunda", TimeUtils.formatTime(durationOne, TimeDivision.Form.NOMINATIVE))
+        assertEquals("2 dni", TimeUtils.formatTime(durationTwo, TimeDivision.Form.NOMINATIVE))
+        assertEquals("20 sekund", TimeUtils.formatTime(durationThree, TimeDivision.Form.NOMINATIVE))
+    }
+
+    @Test
+    fun `test long format time accusative`() {
+        val durationOne = Duration.ofDays(1).plusHours(1).plusMinutes(1).plusSeconds(1);
+
+        assertEquals("1 dzień 1 godzinę 1 minutę 1 sekundę", TimeUtils.formatTime(durationOne, TimeDivision.Form.ACCUSATIVE))
     }
 
 }

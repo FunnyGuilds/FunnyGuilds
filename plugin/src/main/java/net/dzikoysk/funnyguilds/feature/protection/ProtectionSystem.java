@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
@@ -99,9 +100,9 @@ public final class ProtectionSystem {
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
         guild.getBuild().peek(build -> {
-            Duration time = Duration.between(build, Instant.now());
+            Duration time = Duration.between(Instant.now(), build);
             MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", TimeUtils.formatTime(time)));
+            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", TimeUtils.formatTime(time, TimeDivision.Form.ACCUSATIVE)));
         });
     }
 

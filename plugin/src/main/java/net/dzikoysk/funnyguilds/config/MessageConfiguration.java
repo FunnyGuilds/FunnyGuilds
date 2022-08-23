@@ -77,9 +77,9 @@ public class MessageConfiguration extends OkaeriConfig {
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     public String regionInteract = "&cNie mozesz ingerowac w okolice serca swojej gildii!";
     @Comment("Dostępne zmienne: {TIME}")
-    public String regionExplode = "&cBudowanie na terenie gildii zablokowane na czas &4{TIME} sekund&c!";
+    public String regionExplode = "&cBudowanie na terenie zostało zablokowane na &4{TIME}&c!";
     @Comment("Dostępne zmienne: {TIME}")
-    public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!";
+    public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME}&c!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
     public String regionTeleport = "&cNie mozesz teleportowac sie na teren innej gildii!";
     public String regionExplosionHasProtection = "&cEksplozja nie spowodowala zniszczen na terenie gildii, poniewaz jest ona chroniona!";
@@ -237,7 +237,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Zalozyciel: &c{OWNER}",
             "&7Zastepcy: &c{DEPUTIES}",
             "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
-            "&7Ochrona: &c{GUILD-PROTECTION}",
+            "&7Ochrona: &c{PROTECTION}",
             "&7Zycia: &4{LIVES}",
             "&7Waznosc: &c{VALIDITY}",
             "&7Czlonkowie: &7{MEMBERS}",

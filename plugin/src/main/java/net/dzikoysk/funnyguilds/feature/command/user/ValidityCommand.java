@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -38,7 +39,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             Duration delta = Duration.between(Instant.now(), validity);
 
             when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.format(this.messages.validityWhen, "{TIME}",
-                    TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
+                    TimeUtils.formatTime(delta.minus(this.config.validityWhen), TimeDivision.Form.NOMINATIVE)));
         }
 
         List<ItemStack> requiredItems = this.config.validityItems;

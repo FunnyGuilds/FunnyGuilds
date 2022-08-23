@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.shared;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import net.dzikoysk.funnyguilds.shared.TimeDivision.Form;
 import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
@@ -84,9 +85,9 @@ public final class TimeUtils {
         return Duration.ofMillis(parseTime(time));
     }
 
-    public static String formatTime(long time, String delimiter, boolean shortForm) {
+    public static String formatTime(long time, String delimiter, Form form) {
         if (time <= 0) {
-            return TimeDivision.SECOND.getForm(0, shortForm);
+            return TimeDivision.SECOND.getFormatted(0, form);
         }
 
         LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
@@ -99,19 +100,19 @@ public final class TimeUtils {
             }
             timeParts.put(division, divisionTime);
         }
-        return formatTimeParts(timeParts, delimiter, shortForm);
+        return formatTimeParts(timeParts, delimiter, form);
     }
 
-    public static String formatTime(long time) {
-        return formatTime(time, " ", false);
+    public static String formatTime(long time, Form form) {
+        return formatTime(time, " ", form);
     }
 
-    public static String formatTime(Duration duration) {
-        return formatTime(duration.toMillis(), " ", false);
+    public static String formatTime(Duration duration, Form form) {
+        return formatTime(duration.toMillis(), " ", form);
     }
 
     public static String formatTimeShort(long time) {
-        return formatTime(time, " ", true);
+        return formatTime(time, " ", Form.SHORT);
     }
 
     public static String formatTimeShort(Duration duration) {
@@ -122,17 +123,17 @@ public final class TimeUtils {
         return String.format("%.2f", duration.toMillis() / 1000.0);
     }
 
-    private static String formatTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, boolean shortForm) {
+    private static String formatTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, Form form) {
         StringBuilder timeStringBuilder = new StringBuilder();
         timeParts.forEach((key, partValue) -> {
             if (partValue == 0) {
                 return;
             }
-            timeStringBuilder.append(delimiter).append(partValue).append(key.getForm(partValue, shortForm));
+            timeStringBuilder.append(delimiter).append(key.getFormatted(partValue, form));
         });
 
         if (timeStringBuilder.length() == 0) {
-            return "0" + TimeDivision.SECOND.getForm(0, shortForm);
+            return TimeDivision.SECOND.getFormatted(0, form);
         }
 
         return timeStringBuilder.substring(delimiter.length());

@@ -19,6 +19,7 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -166,7 +167,7 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         Instant endTime = timeFunction.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? "Brak"
-                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()));
+                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()), TimeDivision.Form.NOMINATIVE);
     }
 
     private static String formatTimeShort(Guild guild, Function<Guild, Instant> timeFunction) {
