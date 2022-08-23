@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
 
-    private static final TimeDivision[] LONG_DATE_DIVISIONS = new TimeDivision[]{
+    private static final TimeDivision[] LONG_DATE_DIVISIONS = new TimeDivision[] {
             TimeDivision.YEAR, TimeDivision.MONTH, TimeDivision.DAY, TimeDivision.HOUR, TimeDivision.MINUTE, TimeDivision.SECOND
     };
 
@@ -118,6 +118,10 @@ public final class TimeUtils {
         return formatTimeShort(duration.toMillis());
     }
 
+    public static String formatTimeSimple(Duration duration) {
+        return String.format("%.2f", duration.toMillis() / 1000.0);
+    }
+
     private static String formatTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, boolean shortForm) {
         StringBuilder timeStringBuilder = new StringBuilder();
         timeParts.forEach((key, partValue) -> {
@@ -133,6 +137,5 @@ public final class TimeUtils {
 
         return timeStringBuilder.substring(delimiter.length());
     }
-
 
 }

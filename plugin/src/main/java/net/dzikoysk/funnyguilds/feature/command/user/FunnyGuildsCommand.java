@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.ReloadRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.Option;
@@ -69,7 +70,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         when(!sender.hasPermission("funnyguilds.admin"), this.messages.permission);
 
         this.sendMessage(sender, this.messages.saveallSaving);
-        Instant currentTime = Instant.now();
+        Instant startTime = Instant.now();
 
         DataModel dataModel = this.dataModel;
         try {
@@ -81,7 +82,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        String time = String.format("%.2f", Duration.between(Instant.now(), currentTime).toMillis() / 1000.0);
+        String time = TimeUtils.formatTimeSimple(Duration.between(startTime, Instant.now()));
         this.sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
     }
 

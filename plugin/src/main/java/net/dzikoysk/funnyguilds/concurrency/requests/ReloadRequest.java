@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
@@ -56,10 +57,8 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                     });
         }
 
-        String diff = String.format("%.2f", Duration.between(Instant.now(), this.startTime).toMillis() / 1000.0);
-
-        String message = FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", diff);
-        ChatUtils.sendMessage(this.sender, message);
+        String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
+        ChatUtils.sendMessage(this.sender,  FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", time));
     }
 
 }

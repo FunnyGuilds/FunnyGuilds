@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Locale;
@@ -68,10 +69,10 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         GuildRankManager rankManager = plugin.getGuildRankManager();
 
         return new GuildPlaceholders()
-                .property("validity", guild -> messages.dateFormat.format(guild.getValidity()), () -> messages.gValidityNoValue)
+                .property("validity", guild -> messages.dateFormat.format(Date.from(guild.getValidity())), () -> messages.gValidityNoValue)
                 .property("validity-time", guild -> formatTime(guild, Guild::getValidity), () -> messages.gValidityNoValue)
                 .property("validity-time-short", guild -> formatTimeShort(guild, Guild::getValidity), () -> messages.gValidityNoValue)
-                .property("protection", guild -> messages.dateFormat.format(guild.getProtection()), () -> messages.gProtectionNoValue)
+                .property("protection", guild -> messages.dateFormat.format(Date.from(guild.getProtection())), () -> messages.gProtectionNoValue)
                 .property("protection-time", guild -> formatTime(guild, Guild::getProtection), () -> messages.gProtectionNoValue)
                 .property("protection-time-short", guild -> formatTimeShort(guild, Guild::getProtection), () -> messages.gProtectionNoValue)
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)

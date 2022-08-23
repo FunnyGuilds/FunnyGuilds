@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.ban;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -49,7 +50,7 @@ public final class BanUtils {
                 .map(ban -> {
                     FunnyFormatter formatter = new FunnyFormatter()
                             .register("{NEWLINE}", ChatColor.RESET + "\n")
-                            .register("{DATE}", messages.dateFormat.format(ban.getTime()))
+                            .register("{DATE}", messages.dateFormat.format(Date.from(ban.getTime())))
                             .register("{REASON}", ban.getReason())
                             .register("{PLAYER}", user.getName());
 

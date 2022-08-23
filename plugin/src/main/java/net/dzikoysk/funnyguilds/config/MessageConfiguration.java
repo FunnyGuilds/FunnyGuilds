@@ -691,10 +691,10 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("<------- System Messages -------> #")
     public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
-    public String reloadTime = "&aFunnyGuilds &7przeladowano! (&b{TIME}s&7)";
+    public String reloadTime = "&aFunnyGuilds &7przeladowano! (&b{TIME}&7)";
     public String reloadReloading = "&7Przeladowywanie...";
     public String saveallSaving = "&7Zapisywanie...";
-    public String saveallSaved = "&7Zapisano (&b{TIME}s&7)!";
+    public String saveallSaved = "&7Zapisano (&b{TIME}&7)!";
     public String loginNickTooShort = "&cNick jest za krotki!";
     public String loginNickTooLong = "&cNick jest za dlugi!";
     public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";

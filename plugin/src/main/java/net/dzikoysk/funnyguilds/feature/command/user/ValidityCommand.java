@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -60,7 +61,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         validity = validity.plus(validityTime);
         guild.setValidity(validity);
 
-        String formattedValidity = this.messages.dateFormat.format(validity);
+        String formattedValidity = this.messages.dateFormat.format(Date.from(validity));
         deputy.sendMessage(FunnyFormatter.format(this.messages.validityDone, "{DATE}", formattedValidity));
     }
 
