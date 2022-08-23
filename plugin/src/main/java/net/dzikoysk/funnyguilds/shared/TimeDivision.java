@@ -70,6 +70,10 @@ public enum TimeDivision {
     }
 
     public String getFormatted(long amount, Form form) {
+        if (form == Form.SHORT) {
+            return amount + this.getShortForm();
+        }
+
         return amount + " " + this.getForm(amount, form);
     }
 
