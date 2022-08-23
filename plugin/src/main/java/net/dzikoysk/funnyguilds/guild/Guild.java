@@ -323,7 +323,7 @@ public class Guild extends AbstractMutableEntity {
             this.markChanged();
         }
 
-        return this.validity.compareTo(Instant.now()) >= 0;
+        return Instant.now().isBefore(this.validity);
     }
 
     public void setValidity(Instant time) {
