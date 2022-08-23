@@ -70,11 +70,11 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostępne zmienne: {LAST-POINTS}, {CURRENT-POINTS}, {LAST-KILLS}, {CURRENT-KILLS}, {LAST-DEATHS}, {CURRENT-DEATHS}, {LAST-ASSISTS}, {CURRENT-ASSISTS}, {LAST-LOGOUTS}, {CURRENT-LOGOUTS}")
     public List<String> statsResetMessage = Arrays.asList(
             "&7Zresetowales swoje statystyki do podstawowych",
-            "&7Punkty: {LAST-POINTS} -> {CURRENT-POINTS}",
-            "&7Zabójstwa: {LAST-KILLS} -> {CURRENT-KILLS}",
-            "&7Śmierci: {LAST-DEATHS} -> {CURRENT-DEATHS}",
-            "&7Asysty: {LAST-ASSISTS} -> {CURRENT-ASSISTS}",
-            "&7Wylogowania: {LAST-LOGOUTS} -> {CURRENT-LOGOUTS}"
+            " &7Punkty: &c{LAST-POINTS} &8-> &a{CURRENT-POINTS}",
+            " &7Zabójstwa: &c{LAST-KILLS} &8-> &a{CURRENT-KILLS}",
+            " &7Śmierci: &c{LAST-DEATHS} &8-> &a{CURRENT-DEATHS}",
+            " &7Asysty: &c{LAST-ASSISTS} &8-> &a{CURRENT-ASSISTS}",
+            " &7Wylogowania: &c{LAST-LOGOUTS} &8-> &a{CURRENT-LOGOUTS}"
     );
 
     @Comment("")
