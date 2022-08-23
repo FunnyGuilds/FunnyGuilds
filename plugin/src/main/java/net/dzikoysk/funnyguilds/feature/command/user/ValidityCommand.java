@@ -37,7 +37,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             Duration delta = Duration.between(Instant.now(), validity);
 
             when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.format(this.messages.validityWhen, "{TIME}",
-                    TimeUtils.getDurationBreakdown(delta.minus(this.config.validityWhen))));
+                    TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
         }
 
         List<ItemStack> requiredItems = this.config.validityItems;

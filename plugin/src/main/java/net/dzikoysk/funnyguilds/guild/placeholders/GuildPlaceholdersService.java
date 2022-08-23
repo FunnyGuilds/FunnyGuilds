@@ -70,8 +70,10 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         return new GuildPlaceholders()
                 .property("validity", guild -> messages.dateFormat.format(guild.getValidity()), () -> messages.gValidityNoValue)
                 .property("validity-time", guild -> formatTime(guild, Guild::getValidity), () -> messages.gValidityNoValue)
+                .property("validity-time-short", guild -> formatTimeShort(guild, Guild::getValidity), () -> messages.gValidityNoValue)
                 .property("protection", guild -> messages.dateFormat.format(guild.getProtection()), () -> messages.gProtectionNoValue)
                 .property("protection-time", guild -> formatTime(guild, Guild::getProtection), () -> messages.gProtectionNoValue)
+                .property("protection-time-short", guild -> formatTimeShort(guild, Guild::getProtection), () -> messages.gProtectionNoValue)
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
                 .property("deputies",
                         guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.gDeputiesNoValue),
@@ -163,7 +165,14 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         Instant endTime = timeFunction.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? "Brak"
-                : TimeUtils.getDurationBreakdown(Duration.between(endTime, Instant.now()));
+                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()));
+    }
+
+    private static String formatTimeShort(Guild guild, Function<Guild, Instant> timeFunction) {
+        Instant endTime = timeFunction.apply(guild);
+        return endTime.isBefore(Instant.now())
+                ? "Brak"
+                : TimeUtils.formatTimeShort(Duration.between(endTime, Instant.now()));
     }
 
 }
