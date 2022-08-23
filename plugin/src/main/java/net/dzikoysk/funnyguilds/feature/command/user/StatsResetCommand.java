@@ -48,7 +48,7 @@ public final class StatsResetCommand extends AbstractFunnyCommand {
                 .register("{LAST-PINTS}", lastPoints)
                 .register("{CURRENT-POINTS}", rank.getPoints())
                 .register("{LAST-DEATHS}", lastDeaths)
-                .register("{CURRENT-DEATHS",rank.getDeaths())
+                .register("{CURRENT-DEATHS", rank.getDeaths())
                 .register("{LAST-KILLS}", lastKills)
                 .register("{CURRENT-KILLS}", rank.getKills())
                 .register("{LAST-ASSISTS}", lastAssists)
