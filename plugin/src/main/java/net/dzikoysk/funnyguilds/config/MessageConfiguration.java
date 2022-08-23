@@ -67,8 +67,15 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
     public String statsResetItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
-    @Comment("Dostępne zmienne: {LAST-RANK}, {CURRENT-RANK}, {LAST-DEATH}, {CURRENT-DEATH}, {LAST-KILL}, {CURRENT-KILL}")
-    public String statsResetMessage ="&7Zresetowales swoje statystyki do podstawowych";
+    @Comment("Dostępne zmienne: {LAST-POINTS}, {CURRENT-POINTS}, {LAST-KILLS}, {CURRENT-KILLS}, {LAST-DEATHS}, {CURRENT-DEATHS}, {LAST-ASSISTS}, {CURRENT-ASSISTS}, {LAST-LOGOUTS}, {CURRENT-LOGOUTS}")
+    public List<String> statsResetMessage = Arrays.asList(
+            "&7Zresetowales swoje statystyki do podstawowych",
+            "&7Punkty: {LAST-POINTS} -> {CURRENT-POINTS}",
+            "&7Zabójstwa: {LAST-KILLS} -> {CURRENT-KILLS}",
+            "&7Śmierci: {LAST-DEATHS} -> {CURRENT-DEATHS}",
+            "&7Asysty: {LAST-ASSISTS} -> {CURRENT-ASSISTS}",
+            "&7Wylogowania: {LAST-LOGOUTS} -> {CURRENT-LOGOUTS}"
+    );
 
     @Comment("")
     @Comment("<------- Ban Messages -------> #")
