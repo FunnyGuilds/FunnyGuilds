@@ -55,6 +55,7 @@ import net.dzikoysk.funnyguilds.feature.command.user.PvPCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.RankResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.RankingCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.SetBaseCommand;
+import net.dzikoysk.funnyguilds.feature.command.user.StatsResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
@@ -105,6 +106,7 @@ public final class FunnyCommandsConfiguration {
                 .command("pvp", commands.pvp, PvPCommand.class)
                 .command("ranking", commands.ranking, RankingCommand.class)
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
+                .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
                 .command("top", commands.top, TopCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)

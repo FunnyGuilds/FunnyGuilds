@@ -56,7 +56,7 @@ import panda.std.Option;
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
 @Header("          FunnyGuilds           #")
-@Header("         4.10.2 Snowdrop        #")
+@Header("         4.10.3 Snowdrop        #")
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderów znajduje się tutaj:")
@@ -488,6 +488,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
     @Comment("Przykład: 1m30s")
     public Duration regionExplode = Duration.ofSeconds(120);
+
+    @Comment("")
+    @Comment("Czy blokada budowania przy wybuchu powinna działać jeśli gildia jest chroniona")
+    public boolean regionExplodeBlockProtected = false;
+
+    @Comment("Czy blokada budowania przy wybuchu powinna działać jeśli TNT jest wyłączone")
+    public boolean regionExplodeBlockTntDisabled = false;
 
     @Comment("")
     @Comment("Lista entity, których wybuch nie powoduje blokady budowania na terenie gildii")
@@ -1113,6 +1120,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista przedmiotów wymaganych do resetu rankingu")
     @CustomKey("rank-reset-needed-items")
     public List<ItemStack> rankResetItems = ItemUtils.parseItems("1 diamond");
+
+    @Comment("")
+    @Comment("Lista przedmiotów wymaganych do resetu statystyk")
+    @CustomKey("stats-reset-needed-items")
+    public List<ItemStack> statsResetItems = ItemUtils.parseItems("1 diamond");
 
     @Comment("")
     @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkość znaków jego nicku")
