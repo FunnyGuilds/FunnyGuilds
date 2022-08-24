@@ -484,6 +484,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public int regionExplode = 120;
 
     @Comment("")
+    @Comment("Czy blokada budowania przy wybuchu powinna działać jeśli gildia jest chroniona")
+    public boolean regionExplodeBlockProtected = false;
+
+    @Comment("Czy blokada budowania przy wybuchu powinna działać jeśli TNT jest wyłączone")
+    public boolean regionExplodeBlockTntDisabled = false;
+
+    @Comment("")
     @Comment("Lista entity, których wybuch nie powoduje blokady budowania na terenie gildii")
     @Comment("Nazwy entity muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchają)")
     public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
