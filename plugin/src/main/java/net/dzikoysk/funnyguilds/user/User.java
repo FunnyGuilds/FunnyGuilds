@@ -4,8 +4,6 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -128,25 +126,6 @@ public class User extends AbstractMutableEntity {
 
     public UserProfile getProfile() {
         return this.profile;
-    }
-
-    /**
-     * @deprecated for removal in the future, in favour of {@link BukkitUserProfile#getPlayer()}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public Option<Player> getPlayer() {
-        if (this.profile instanceof BukkitUserProfile) {
-            return ((BukkitUserProfile) this.profile).getPlayer();
-        }
-
-        return Option.none();
-    }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public void updateReference(Player player) {
-        this.profile.refresh();
     }
 
     @Override

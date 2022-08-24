@@ -1,10 +1,8 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.util.function.IntFunction;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.user.top.UserComparator;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
@@ -22,16 +20,6 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     public User getUser() {
         return this.entity;
-    }
-
-    /**
-     * @deprecated for removal in the future, in favour of {@link Rank#getPosition(String)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    @Override
-    public int getPosition() {
-        return this.getPosition(DefaultTops.USER_POINTS_TOP);
     }
 
     @Override
