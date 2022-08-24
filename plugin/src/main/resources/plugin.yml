@@ -54,6 +54,7 @@ permissions:
       funnyguilds.pvp: true
       funnyguilds.ranking: true
       funnyguilds.rankreset: true
+      funnyguilds.statsreset: true
       funnyguilds.setbase: true
       funnyguilds.tnt: true
       funnyguilds.top: true

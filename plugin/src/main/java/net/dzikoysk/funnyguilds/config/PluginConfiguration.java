@@ -56,7 +56,7 @@ import panda.std.Option;
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
 @Header("          FunnyGuilds           #")
-@Header("         4.10.2 Snowdrop        #")
+@Header("         4.10.3 Snowdrop        #")
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderów znajduje się tutaj:")
@@ -1114,6 +1114,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista przedmiotów wymaganych do resetu rankingu")
     @CustomKey("rank-reset-needed-items")
     public List<ItemStack> rankResetItems = ItemUtils.parseItems("1 diamond");
+
+    @Comment("")
+    @Comment("Lista przedmiotów wymaganych do resetu statystyk")
+    @CustomKey("stats-reset-needed-items")
+    public List<ItemStack> statsResetItems = ItemUtils.parseItems("1 diamond");
 
     @Comment("")
     @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkość znaków jego nicku")
