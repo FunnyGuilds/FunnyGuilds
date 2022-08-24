@@ -385,9 +385,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czas jaki musi upłynąć od włączenia ucieczki do teleportacji")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny, d - dni")
     @Comment("Przykład: 1m30s")
-    public Duration escapeDelay = Duration.ofSeconds(120);
+    public Duration escapeDelay = Duration.ofMinutes(2);
 
     @Comment("")
     @Comment("Możliwość ucieczki na spawn dla graczy bez gildii")
@@ -485,9 +485,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czas przez jaki nie można budować na terenie gildii po wybuchu")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny, d - dni")
     @Comment("Przykład: 1m30s")
-    public Duration regionExplode = Duration.ofSeconds(120);
+    public Duration regionExplode = Duration.ofMinutes(2);
 
     @Comment("")
     @Comment("Czy blokada budowania przy wybuchu powinna działać jeśli gildia jest chroniona")
@@ -639,7 +639,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czas przez jaki osoba, która zaatakowała gracza, który zginął, ma być uznawany za jego zabójcę")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny, d - dni")
     @Comment("Przykład: 1m30s")
     @CustomKey("rank-farming-consideration-timeout")
     public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
