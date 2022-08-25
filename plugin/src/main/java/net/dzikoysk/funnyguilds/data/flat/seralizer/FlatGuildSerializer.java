@@ -64,7 +64,7 @@ public final class FlatGuildSerializer {
         int lives = wrapper.getInt("lives");
 
         if (name == null) {
-           logger.deserialize("Cannot deserialize guild, caused by: name is null");
+            logger.deserialize("Cannot deserialize guild, caused by: name is null");
             return Option.none();
         }
 

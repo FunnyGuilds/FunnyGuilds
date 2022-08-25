@@ -105,7 +105,7 @@ public final class TimeUtils {
     }
 
     public static String formatTimeShort(Duration duration) {
-        return formatTime (duration, Case.SHORT);
+        return formatTime(duration, Case.SHORT);
     }
 
     public static String formatTimeSimple(Duration duration) {
