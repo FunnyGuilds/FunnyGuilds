@@ -153,6 +153,4 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                         () -> messages.enemiesNoValue);
     }
 
-
-
 }
