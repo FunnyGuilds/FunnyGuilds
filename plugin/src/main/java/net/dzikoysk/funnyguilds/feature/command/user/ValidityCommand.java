@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -63,7 +61,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         validity = validity.plus(validityTime);
         guild.setValidity(validity);
 
-        String formattedValidity = this.messages.dateFormat.format(LocalDateTime.ofInstant(validity, ZoneId.systemDefault()));
+        String formattedValidity = this.messages.dateFormat.format(validity);
         deputy.sendMessage(FunnyFormatter.format(this.messages.validityDone, "{DATE}", formattedValidity));
     }
 

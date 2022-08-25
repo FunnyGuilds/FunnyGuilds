@@ -14,13 +14,13 @@ import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_c
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeFormatterTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.ItemStackTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.NumberRangeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.SimpleDateFormatTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
@@ -36,7 +36,7 @@ public final class ConfigurationFactory {
             it.withConfigurer(new YamlBukkitConfigurer());
             it.withSerdesPack(registry -> {
                 registry.register(new DecolorTransformer());
-                registry.register(new SimpleDateFormatTransformer());
+                registry.register(new FunnyTimeFormatterTransformer());
             });
 
             it.withBindFile(messageConfigurationFile);
