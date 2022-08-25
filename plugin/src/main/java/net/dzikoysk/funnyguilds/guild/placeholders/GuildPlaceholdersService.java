@@ -64,8 +64,6 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         GuildRankManager rankManager = plugin.getGuildRankManager();
 
         return new GuildPlaceholders()
-                .timeProperty("validity", Guild::getValidity, messages.dateFormat, () -> messages.gValidityNoValue)
-                .timeProperty("protection", Guild::getProtection, messages.dateFormat, () -> messages.gProtectionNoValue)
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
                 .property("deputies",
                         guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.gDeputiesNoValue),
@@ -90,6 +88,8 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                                 ? messages.pvpStatusOn
                                 : messages.pvpStatusOff,
                         () -> messages.pvpStatusOff)
+                .timeProperty("validity", Guild::getValidity, messages.dateFormat, () -> messages.gValidityNoValue)
+                .timeProperty("protection", Guild::getProtection, messages.dateFormat, () -> messages.gProtectionNoValue)
                 .property("lives", Guild::getLives, () -> 0)
                 .property("lives-symbol",
                         guild -> {
