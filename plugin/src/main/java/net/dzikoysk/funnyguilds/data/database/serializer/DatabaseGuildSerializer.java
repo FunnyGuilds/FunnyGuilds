@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -54,11 +55,22 @@ public final class DatabaseGuildSerializer {
             int lives = resultSet.getInt("lives");
 
             FunnyGuilds plugin = FunnyGuilds.getInstance();
+            FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
             PluginConfiguration config = plugin.getPluginConfiguration();
             UserManager userManager = plugin.getUserManager();
 
-            if (name == null || tag == null || os == null) {
-                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+            if (name == null) {
+                logger.deserialize("Cannot deserialize guild, caused by: name is null");
+                return Option.none();
+            }
+
+            if (tag == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
+                return Option.none();
+            }
+
+            if (os == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
                 return Option.none();
             }
 
@@ -69,7 +81,7 @@ public final class DatabaseGuildSerializer {
 
             Option<User> ownerOption = userManager.findByName(os);
             if (ownerOption.isEmpty()) {
-                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
+                logger.deserialize("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
                 return Option.none();
             }
 
@@ -83,16 +95,19 @@ public final class DatabaseGuildSerializer {
                 members = userManager.findByNames(FunnyStringUtils.fromString(membersString));
             }
 
-            if (born == null) {
-                born = Instant.now();
+            if (born == null || born.toEpochMilli() <= 0) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
+                return Option.none();
             }
 
-            if (validity == null) {
-                validity = Instant.now().plus(config.validityStart);
+            if (validity == null || validity.toEpochMilli() <= 0) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
+                return Option.none();
             }
 
-            if (protection == null) {
-                protection = Instant.now();
+            if (protection == null || protection.toEpochMilli() <= 0) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
+                return Option.none();
             }
 
             if (lives == 0) {

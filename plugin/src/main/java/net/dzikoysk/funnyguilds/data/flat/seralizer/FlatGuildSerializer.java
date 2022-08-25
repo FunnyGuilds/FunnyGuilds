@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -40,6 +41,7 @@ public final class FlatGuildSerializer {
         }
 
         FunnyGuilds plugin = FunnyGuilds.getInstance();
+        FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
         UserManager userManager = plugin.getUserManager();
         GuildManager guildManager = plugin.getGuildManager();
         RegionManager regionManager = plugin.getRegionManager();
@@ -57,35 +59,35 @@ public final class FlatGuildSerializer {
         boolean pvp = wrapper.getBoolean("pvp");
         Instant born = TimeUtils.positiveOrNullInstant(wrapper.getLong("born"));
         Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
-        Instant attacked = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
+        Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
 
         if (name == null) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild, caused by: name is null");
+           logger.deserialize("Cannot deserialize guild, caused by: name is null");
             return Option.none();
         }
 
         if (tag == null) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
             return Option.none();
         }
 
         if (ownerName == null) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
             return Option.none();
         }
 
         Region region = null;
         if (config.regionsEnabled) {
             if (regionName == null) {
-                FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: region is null");
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region is null");
                 return Option.none();
             }
 
             Option<Region> regionOption = regionManager.findByName(regionName);
             if (regionOption.isEmpty()) {
-                FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: region (object) is null");
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region (object) is null");
                 return Option.none();
             }
 
@@ -99,7 +101,7 @@ public final class FlatGuildSerializer {
 
         Option<User> ownerOption = userManager.findByName(ownerName);
         if (ownerOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
             return Option.none();
         }
 
@@ -127,16 +129,19 @@ public final class FlatGuildSerializer {
         Set<Guild> allies = guildManager.findByNames(loadSet(wrapper, "allies"));
         Set<Guild> enemies = guildManager.findByNames(loadSet(wrapper, "enemies"));
 
-        if (born == null) {
-            born = Instant.now();
+        if (born == null || born.toEpochMilli() <= 0) {
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
+            return Option.none();
         }
 
-        if (validity == null) {
-            validity = Instant.now().plus(config.validityStart);
+        if (validity == null || validity.toEpochMilli() <= 0) {
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
+            return Option.none();
         }
 
-        if (attacked == null) {
-            attacked = Instant.now();
+        if (protection == null || protection.toEpochMilli() <= 0) {
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
+            return Option.none();
         }
 
         if (lives == 0) {
@@ -155,7 +160,7 @@ public final class FlatGuildSerializer {
         values[8] = enemies;
         values[9] = born;
         values[10] = validity;
-        values[11] = attacked;
+        values[11] = protection;
         values[12] = lives;
         values[13] = ban;
         values[14] = deputies;
