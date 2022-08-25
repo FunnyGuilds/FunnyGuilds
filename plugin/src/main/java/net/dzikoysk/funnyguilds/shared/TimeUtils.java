@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.shared;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashMap;
-import net.dzikoysk.funnyguilds.shared.TimeDivision.Form;
+import net.dzikoysk.funnyguilds.shared.TimeDivision.Case;
 import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
@@ -23,9 +23,9 @@ public final class TimeUtils {
         return Instant.ofEpochMilli(time);
     }
 
-    public static long parseTime(String time) {
+    public static Duration parseTime(String time) {
         StringBuilder tempNumber = new StringBuilder();
-        long resultTime = 0L;
+        long resultTime = 0;
 
         char[] stringChars = time.toLowerCase().toCharArray();
         timeLoop:
@@ -60,7 +60,7 @@ public final class TimeUtils {
                     }
 
                     if (tempNumber.length() == 0) {
-                        return 0L;
+                        return Duration.ofMillis(0);
                     }
 
                     resultTime += Long.parseLong(tempNumber.toString()) * timeDivision.getMillis();
@@ -71,23 +71,20 @@ public final class TimeUtils {
                 }
             }
 
-            return 0L;
+            return Duration.ofMillis(0);
         }
 
         if (tempNumber.length() != 0) {
-            return 0L;
+            return Duration.ofMillis(0);
         }
 
-        return resultTime;
+        return Duration.ofMillis(resultTime);
     }
 
-    public static Duration parseTimeDuration(String time) {
-        return Duration.ofMillis(parseTime(time));
-    }
-
-    public static String formatTime(long time, String delimiter, Form form) {
+    public static String formatTime(Duration duration, String delimiter, Case inflectionCase) {
+        long time = duration.toMillis();
         if (time <= 0) {
-            return TimeDivision.SECOND.getFormatted(0, form);
+            return TimeDivision.SECOND.getFormatted(0, inflectionCase);
         }
 
         LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
@@ -100,30 +97,22 @@ public final class TimeUtils {
             }
             timeParts.put(division, divisionTime);
         }
-        return formatTimeParts(timeParts, delimiter, form);
+        return formatTimeParts(timeParts, delimiter, inflectionCase);
     }
 
-    public static String formatTime(long time, Form form) {
-        return formatTime(time, " ", form);
-    }
-
-    public static String formatTime(Duration duration, Form form) {
-        return formatTime(duration.toMillis(), " ", form);
-    }
-
-    public static String formatTimeShort(long time) {
-        return formatTime(time, " ", Form.SHORT);
+    public static String formatTime(Duration duration, Case inflectionCase) {
+        return formatTime(duration, " ", inflectionCase);
     }
 
     public static String formatTimeShort(Duration duration) {
-        return formatTimeShort(duration.toMillis());
+        return formatTime (duration, Case.SHORT);
     }
 
     public static String formatTimeSimple(Duration duration) {
         return String.format("%.2f", duration.toMillis() / 1000.0);
     }
 
-    private static String formatTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, Form form) {
+    private static String formatTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, Case form) {
         StringBuilder timeStringBuilder = new StringBuilder();
         timeParts.forEach((key, partValue) -> {
             if (partValue == 0) {

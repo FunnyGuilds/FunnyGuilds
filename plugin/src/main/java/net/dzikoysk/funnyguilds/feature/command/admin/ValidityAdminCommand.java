@@ -31,7 +31,7 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         when(guild.isBanned(), this.messages.adminGuildBanned);
 
-        Duration time = TimeUtils.parseTimeDuration(args[1]);
+        Duration time = TimeUtils.parseTime(args[1]);
         when(time.toMillis() < 1, this.messages.adminTimeError);
 
         User admin = AdminUtils.getAdminUser(sender);

@@ -26,7 +26,7 @@ public final class WarUtils {
                 message = messages.warAlly;
                 break;
             case WAIT:
-                message = FunnyFormatter.format(messages.warWait, "{TIME}", TimeUtils.formatTime((Duration) values[0], TimeDivision.Form.NOMINATIVE));
+                message = FunnyFormatter.format(messages.warWait, "{TIME}", TimeUtils.formatTime((Duration) values[0], TimeDivision.Case.NOMINATIVE));
                 break;
             case ATTACKER:
                 message = FunnyFormatter.format(messages.warAttacker, "{ATTACKED}", ((Guild) values[0]).getTag());

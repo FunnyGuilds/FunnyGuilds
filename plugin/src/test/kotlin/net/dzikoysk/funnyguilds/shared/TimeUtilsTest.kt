@@ -8,8 +8,8 @@ class TimeUtilsTest {
 
     @Test
     fun `should parse time`() {
-        val durationOne = TimeUtils.parseTime("6d15h19m12s")
-        val durationTwo = TimeUtils.parseTime("2d12s")
+        val durationOne = TimeUtils.parseTime("6d15h19m12s").toMillis()
+        val durationTwo = TimeUtils.parseTime("2d12s").toMillis()
 
         assertEquals(durationOne, 573552 * 1000L)
         assertEquals(durationTwo, 172812 * 1000L)
@@ -32,16 +32,16 @@ class TimeUtilsTest {
         val durationTwo = Duration.ofDays(2)
         val durationThree = Duration.ofSeconds(20)
 
-        assertEquals("2 dni 15 godzin 59 minut 1 sekunda", TimeUtils.formatTime(durationOne, TimeDivision.Form.NOMINATIVE))
-        assertEquals("2 dni", TimeUtils.formatTime(durationTwo, TimeDivision.Form.NOMINATIVE))
-        assertEquals("20 sekund", TimeUtils.formatTime(durationThree, TimeDivision.Form.NOMINATIVE))
+        assertEquals("2 dni 15 godzin 59 minut 1 sekunda", TimeUtils.formatTime(durationOne, TimeDivision.Case.NOMINATIVE))
+        assertEquals("2 dni", TimeUtils.formatTime(durationTwo, TimeDivision.Case.NOMINATIVE))
+        assertEquals("20 sekund", TimeUtils.formatTime(durationThree, TimeDivision.Case.NOMINATIVE))
     }
 
     @Test
     fun `test long format time accusative`() {
         val durationOne = Duration.ofDays(1).plusHours(1).plusMinutes(1).plusSeconds(1);
 
-        assertEquals("1 dzień 1 godzinę 1 minutę 1 sekundę", TimeUtils.formatTime(durationOne, TimeDivision.Form.ACCUSATIVE))
+        assertEquals("1 dzień 1 godzinę 1 minutę 1 sekundę", TimeUtils.formatTime(durationOne, TimeDivision.Case.ACCUSATIVE))
     }
 
 }

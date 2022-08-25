@@ -102,7 +102,7 @@ public final class ProtectionSystem {
         guild.getBuild().peek(build -> {
             Duration time = Duration.between(Instant.now(), build);
             MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", TimeUtils.formatTime(time, TimeDivision.Form.ACCUSATIVE)));
+            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", TimeUtils.formatTime(time, TimeDivision.Case.ACCUSATIVE)));
         });
     }
 

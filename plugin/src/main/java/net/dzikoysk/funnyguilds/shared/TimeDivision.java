@@ -39,16 +39,16 @@ public enum TimeDivision {
     }
 
     public String getForm(long amount) {
-        return this.getForm(amount, Form.NOMINATIVE);
+        return this.getForm(amount, Case.NOMINATIVE);
     }
 
-    public String getForm(long amount, Form form) {
-        if (form == Form.SHORT) {
+    public String getForm(long amount, Case inflectionCase) {
+        if (inflectionCase == Case.SHORT) {
             return this.shortForm;
         }
 
         if (amount == 1) {
-            if (form == Form.ACCUSATIVE) {
+            if (inflectionCase == Case.ACCUSATIVE) {
                 return this.singularFormAccusative;
             }
 
@@ -69,12 +69,12 @@ public enum TimeDivision {
         return this.doubleForm;
     }
 
-    public String getFormatted(long amount, Form form) {
-        if (form == Form.SHORT) {
+    public String getFormatted(long amount, Case inflectionCase) {
+        if (inflectionCase == Case.SHORT) {
             return amount + this.getShortForm();
         }
 
-        return amount + " " + this.getForm(amount, form);
+        return amount + " " + this.getForm(amount, inflectionCase);
     }
 
     public String getShortForm() {
@@ -85,7 +85,7 @@ public enum TimeDivision {
         return Arrays.copyOf(this.abbreviations, this.abbreviations.length);
     }
 
-    public enum Form {
+    public enum Case {
 
         NOMINATIVE,
         ACCUSATIVE,

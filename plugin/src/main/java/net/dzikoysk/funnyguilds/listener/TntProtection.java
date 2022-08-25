@@ -39,7 +39,7 @@ public class TntProtection extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
-        String message = FunnyFormatter.format(this.messages.regionExplode, "{TIME}", TimeUtils.formatTime(this.config.regionExplode, TimeDivision.Form.ACCUSATIVE));
+        String message = FunnyFormatter.format(this.messages.regionExplode, "{TIME}", TimeUtils.formatTime(this.config.regionExplode, TimeDivision.Case.ACCUSATIVE));
 
         this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)

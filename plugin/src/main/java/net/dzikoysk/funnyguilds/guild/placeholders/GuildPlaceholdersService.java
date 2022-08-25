@@ -167,7 +167,7 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         Instant endTime = timeFunction.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? "Brak"
-                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()), TimeDivision.Form.NOMINATIVE);
+                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()), TimeDivision.Case.NOMINATIVE);
     }
 
     private static String formatTimeShort(Guild guild, Function<Guild, Instant> timeFunction) {
