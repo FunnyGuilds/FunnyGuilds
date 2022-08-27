@@ -4,7 +4,11 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
     id 'checkstyle'
+<<<<<<< HEAD
     id 'org.openrewrite.rewrite' version '5.27.0'
+=======
+    id 'org.openrewrite.rewrite' version '5.26.3'
+>>>>>>> 7f49090a (Bump org.openrewrite.rewrite from 5.26.1 to 5.26.3 (#2112))
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
 }
 
