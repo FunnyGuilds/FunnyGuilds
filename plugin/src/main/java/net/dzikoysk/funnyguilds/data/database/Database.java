@@ -22,7 +22,7 @@ public class Database {
 
         String characterEncoding = c.characterEncoding == null || c.characterEncoding.isEmpty()
                 ? ""
-                : "?characterEncoding=" + c.characterEncoding;
+                : "&characterEncoding=" + c.characterEncoding;
 
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
