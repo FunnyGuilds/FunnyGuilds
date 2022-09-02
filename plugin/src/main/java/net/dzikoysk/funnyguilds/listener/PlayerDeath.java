@@ -182,7 +182,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             victim.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getVictimPointsChange());
 
             combatPointsChangeEvent.getAssistsMap()
-                    .getPointsChanges()
+                    .getPointChanges()
                     .forEach((user, points) -> user.getRank().updatePoints(currentValue -> currentValue + points));
         }
 

@@ -83,12 +83,12 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
             return new HashMap<>(this.assistsMap);
         }
 
-        public Map<User, Integer> getPointsChanges() {
+        public Map<User, Integer> getPointChanges() {
             return PandaStream.of(this.assistsMap.entrySet())
                     .toMap(Map.Entry::getKey, entry -> entry.getValue().getPointsChange());
         }
 
-        public Map<User, Double> getDamageShare() {
+        public Map<User, Double> getDamageShares() {
             return PandaStream.of(this.assistsMap.entrySet())
                     .toMap(Map.Entry::getKey, entry -> entry.getValue().getDamageShare());
         }
