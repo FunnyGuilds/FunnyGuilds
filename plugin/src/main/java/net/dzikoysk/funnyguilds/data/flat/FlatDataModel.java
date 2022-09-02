@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
@@ -27,6 +28,8 @@ import panda.std.stream.PandaStream;
 public class FlatDataModel implements DataModel {
 
     private final FunnyGuilds plugin;
+    private final PluginConfiguration pluginConfiguration;
+
     private final File usersFolderFile;
     private final File guildsFolderFile;
     private final File regionsFolderFile;
@@ -34,9 +37,12 @@ public class FlatDataModel implements DataModel {
 
     public FlatDataModel(FunnyGuilds plugin) {
         this.plugin = plugin;
-        this.usersFolderFile = new File(plugin.getPluginDataFolder(), "users");
-        this.guildsFolderFile = new File(plugin.getPluginDataFolder(), "guilds");
-        this.regionsFolderFile = new File(plugin.getPluginDataFolder(), "regions");
+        this.pluginConfiguration = plugin.getPluginConfiguration();
+
+        File dataFolder = plugin.getDataFolder();
+        this.usersFolderFile = new File(dataFolder, "users");
+        this.guildsFolderFile = new File(dataFolder, "guilds");
+        this.regionsFolderFile = new File(dataFolder, "regions");
 
         FlatPatcher.patch(plugin, this.guildsFolderFile, this.regionsFolderFile);
     }
@@ -112,7 +118,7 @@ public class FlatDataModel implements DataModel {
         AtomicInteger deserializationErrors = new AtomicInteger();
         PandaStream.of(userFiles)
                 .filter(file -> file.length() != 0)
-                .mapOpt(UserUtils::checkUserFile)
+                .mapOpt(file -> UserUtils.checkUserFile(this.pluginConfiguration, file))
                 .forEach(file -> FlatUserSerializer.deserialize(file)
                         .onEmpty(deserializationErrors::incrementAndGet)
                 );

@@ -18,7 +18,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.lenient
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
 import java.util.logging.Logger
 
@@ -67,7 +69,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
 
-        userManager = UserManager()
+        userManager = UserManager(config)
         guildManager = GuildManager(config)
         userRankManager = UserRankManager(config)
         userRankManager.register(DefaultTops.defaultUserTops(config, userManager))

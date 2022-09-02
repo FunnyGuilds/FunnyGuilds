@@ -39,7 +39,6 @@ import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
-import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
@@ -153,13 +152,27 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("LETTERS - umożliwia użycie małych i wielkich liter")
     @Comment("LETTERS_DIGITS - umożliwia użycie małych i wielkich liter oraz cyfr")
     @Comment("LETTERS_DIGITS_UNDERSCORE - umożliwia użycie małych i wielkich liter, cyfr oraz podkreślnika")
-    @CustomKey("name-regex")
-    public GuildRegex nameRegex = GuildRegex.LETTERS;
+    @Comment(" ")
+    @Comment("Dodatkowo można stworzyć własną zasadę regexa - pomocna może okazać sięprzy tym strona https://regex101.com/")
+    public FunnyPattern nameRegex = new FunnyPattern(DefaultRegex.LETTERS);
 
     @Comment("")
     @Comment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
     @Comment("Możliwe zasady są takie same jak w przypadku name-regex")
-    public GuildRegex tagRegex = GuildRegex.LETTERS;
+    public FunnyPattern tagRegex = new FunnyPattern(DefaultRegex.LETTERS);
+
+    @Comment("")
+    @Comment("Zasada sprawdzania nicków graczy")
+    @Comment("Możliwe zasady są takie same jak w przypadku name-regex")
+    public FunnyPattern playerNameRegex = new FunnyPattern(DefaultRegex.LETTERS_DIGITS_UNDERSCORE);
+
+    @Comment("")
+    @Comment("Minimalna długość nicku gracza")
+    public int playerNameMinLength = 3;
+
+    @Comment("")
+    @Comment("Maksymalna długość nicku gracza")
+    public int playerNameMaxLength = 16;
 
     @Min(0)
     @Comment("")
