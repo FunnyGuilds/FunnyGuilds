@@ -120,6 +120,8 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         }
 
         /**
+         * Modify damage share for user - it's only visual and don't affect points change
+         *
          * @return if damage share was modified for user, false if that user wasn't assisting
          */
         public boolean modifyDamageShare(User user, DoubleFunction<Double> update) {
