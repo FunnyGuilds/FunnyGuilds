@@ -20,6 +20,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent;
+import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent.CombatTable.Assist;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
@@ -151,7 +152,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         messageReceivers.add(attacker);
         messageReceivers.add(victim);
 
-        Map<User, Integer> calculatedAssists = this.handleAssists(attacker, attackerDamageCache, victim, result, messageReceivers);
+        Map<User, Assist> calculatedAssists = this.handleAssists(victim, victimDamageCache, attacker, result, messageReceivers);
 
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && calculatedAssists.isEmpty())
                 ? result.getAttackerPoints()
@@ -167,13 +168,20 @@ public class PlayerDeath extends AbstractFunnyListener {
             victimPointsChangeEvent.setPointsChange(0);
         }
 
-        CombatPointsChangeEvent combatPointsChangeEvent = new CombatPointsChangeEvent(EventCause.COMBAT, attacker, victim,
-                attackerPointsChangeEvent.getPointsChange(), victimPointsChangeEvent.getPointsChange(), calculatedAssists);
+        CombatPointsChangeEvent combatPointsChangeEvent = new CombatPointsChangeEvent(
+                EventCause.COMBAT,
+                attacker,
+                victim,
+                attackerPointsChangeEvent.getPointsChange(),
+                victimPointsChangeEvent.getPointsChange(),
+                calculatedAssists
+        );
+
         if (SimpleEventHandler.handle(combatPointsChangeEvent)) {
             attacker.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getAttackerPointsChange());
             victim.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getVictimPointsChange());
 
-            combatPointsChangeEvent.getAssistsPointsChange()
+            combatPointsChangeEvent.getAssistsMap()
                     .getPointsChanges()
                     .forEach((user, points) -> user.getRank().updatePoints(currentValue -> currentValue + points));
         }
@@ -205,7 +213,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
 
-        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsPointsChange().getPointsChanges());
+        List<String> formattedAssists = this.formatAssists(combatPointsChangeEvent.getAssistsMap().getAssistsMap());
 
         FunnyFormatter killFormatter = new FunnyFormatter()
                 .register("{ATTACKER}", attacker.getName())
@@ -354,9 +362,9 @@ public class PlayerDeath extends AbstractFunnyListener {
     }
 
     // This method calculate how many points assisting players should receive
-    // Returns a Pair of Set (users that received points for assisting) & List (formatted assists to later use in kill message).
-    private Map<User, Integer> handleAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
-        Map<User, Integer> calculatedAssists = new HashMap<>();
+    // Returns a map of players that were assisting
+    private Map<User, Assist> handleAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
+        Map<User, Assist> calculatedAssists = new HashMap<>();
 
         if (!this.config.assistEnable) {
             return calculatedAssists;
@@ -392,7 +400,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             if (!SimpleEventHandler.handle(assistPointsChangeEvent)) {
                 assistPointsChangeEvent.setPointsChange(0);
             }
-            calculatedAssists.put(assistUser, assistPointsChangeEvent.getPointsChange());
+            calculatedAssists.put(assistUser, new Assist(assistPointsChangeEvent.getPointsChange(), assistFraction));
 
             AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.COMBAT, victim, assistUser, 1);
             if (SimpleEventHandler.handle(assistsChangeEvent)) {
@@ -405,14 +413,18 @@ public class PlayerDeath extends AbstractFunnyListener {
         return calculatedAssists;
     }
 
-    private List<String> formatAssists(Map<User, Integer> assists) {
+    private List<String> formatAssists(Map<User, Assist> assists) {
         List<String> formattedAssists = new ArrayList<>();
-        assists.forEach((user, points) -> {
+        assists.forEach((user, assist) -> {
+            int points = assist.getPointsChange();
+            double damageShare = assist.getDamageShare();
+
             FunnyFormatter formatter = new FunnyFormatter()
                     .register("{PLAYER}", user.getName())
                     .register("{+}", points)
                     .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(points, this.config.killPointsChangeFormat, true))
-                    .register("{CHANGE}", Math.abs(points));
+                    .register("{CHANGE}", Math.abs(points))
+                    .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
             formattedAssists.add(formatter.format(this.messages.rankAssistEntry));
         });
         return formattedAssists;

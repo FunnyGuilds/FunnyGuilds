@@ -2,11 +2,14 @@ package net.dzikoysk.funnyguilds.event.rank;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.DoubleFunction;
 import java.util.function.IntFunction;
+import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent.CombatTable.Assist;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 /**
  * Points change event called only in combat for tracking attacker, victim and assists points change at the same time.
@@ -17,7 +20,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
     private static final HandlerList handlers = new HandlerList();
     private int attackerPointsChange;
     private int victimPointsChange;
-    private final CombatTable assistsPointsChange;
+    private final CombatTable assistsMap;
 
     @Override
     public @NotNull HandlerList getHandlers() {
@@ -28,11 +31,11 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         return handlers;
     }
 
-    public CombatPointsChangeEvent(EventCause eventCause, User attacker, User victim, int attackerPointsChange, int victimPointsChange, Map<User, Integer> assistsPointsChange) {
+    public CombatPointsChangeEvent(EventCause eventCause, User attacker, User victim, int attackerPointsChange, int victimPointsChange, Map<User, Assist> assistsMap) {
         super(eventCause, attacker, victim);
         this.attackerPointsChange = attackerPointsChange;
         this.victimPointsChange = victimPointsChange;
-        this.assistsPointsChange = new CombatTable(assistsPointsChange);
+        this.assistsMap = new CombatTable(assistsMap);
     }
 
     public User getAttacker() {
@@ -59,8 +62,8 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         this.victimPointsChange = victimPointsChange;
     }
 
-    public CombatTable getAssistsPointsChange() {
-        return this.assistsPointsChange;
+    public CombatTable getAssistsMap() {
+        return this.assistsMap;
     }
 
     @Override
@@ -70,32 +73,90 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
 
     public static class CombatTable {
 
-        private final Map<User, Integer> pointsChangeMap;
+        private final Map<User, Assist> assistsMap;
 
-        private CombatTable(Map<User, Integer> pointsChangeMap) {
-            this.pointsChangeMap = pointsChangeMap;
+        private CombatTable(Map<User, Assist> assistsMap) {
+            this.assistsMap = assistsMap;
+        }
+
+        public Map<User, Assist> getAssistsMap() {
+            return new HashMap<>(this.assistsMap);
         }
 
         public Map<User, Integer> getPointsChanges() {
-            return new HashMap<>(this.pointsChangeMap);
+            return PandaStream.of(this.assistsMap.entrySet())
+                    .toMap(Map.Entry::getKey, entry -> entry.getValue().getPointsChange());
         }
 
-        /**
-         * @return the points change of the user, if user wasn't assisting the return value will be 0
-         */
+        public Map<User, Double> getDamageShare() {
+            return PandaStream.of(this.assistsMap.entrySet())
+                    .toMap(Map.Entry::getKey, entry -> entry.getValue().getDamageShare());
+        }
+
+        public Option<Assist> getUserAssist(User user) {
+            return Option.of(this.assistsMap.get(user));
+        }
+
         public Option<Integer> getUserPointsChange(User user) {
-            return Option.of(this.pointsChangeMap.get(user));
+            return this.getUserAssist(user).map(Assist::getPointsChange);
+        }
+
+        public Option<Double> getUserDamageShare(User user) {
+            return this.getUserAssist(user).map(Assist::getDamageShare);
         }
 
         public boolean wasAssisting(User user) {
-            return this.pointsChangeMap.containsKey(user);
+            return this.assistsMap.containsKey(user);
         }
 
         /**
          * @return if points change was modified for user, false if that user wasn't assisting
          */
         public boolean modifyPointsChange(User user, IntFunction<Integer> update) {
-            return this.pointsChangeMap.computeIfPresent(user, (key, value) -> update.apply(value)) != null;
+            return this.assistsMap.computeIfPresent(
+                    user,
+                    (key, value) -> value.setPointsChange(update.apply(value.getPointsChange()))
+            ) != null;
+        }
+
+        /**
+         * @return if damage share was modified for user, false if that user wasn't assisting
+         */
+        public boolean modifyDamageShare(User user, DoubleFunction<Double> update) {
+            return this.assistsMap.computeIfPresent(
+                    user,
+                    (key, value) -> value.setDamageShare(update.apply(value.getDamageShare()))
+            ) != null;
+        }
+
+        public static class Assist {
+
+            private int pointsChange;
+            private double damageShare;
+
+            public Assist(int pointsChange, double damageShare) {
+                this.pointsChange = pointsChange;
+                this.damageShare = damageShare;
+            }
+
+            public int getPointsChange() {
+                return this.pointsChange;
+            }
+
+            private Assist setPointsChange(int pointsChange) {
+                this.pointsChange = pointsChange;
+                return this;
+            }
+
+            public double getDamageShare() {
+                return this.damageShare;
+            }
+
+            private Assist setDamageShare(double damageShare) {
+                this.damageShare = damageShare;
+                return this;
+            }
+
         }
 
     }
