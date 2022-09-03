@@ -3,7 +3,8 @@ package net.dzikoysk.funnyguilds.shared;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashMap;
-import net.dzikoysk.funnyguilds.shared.TimeDivision.Case;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.TimeInflection.Case;
 import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
@@ -81,10 +82,12 @@ public final class TimeUtils {
         return Duration.ofMillis(resultTime);
     }
 
-    public static String formatTime(Duration duration, String delimiter, Case inflectionCase) {
+    public static String formatTime(MessageConfiguration messages, Duration duration, String delimiter, Case inflectionCase) {
         long time = duration.toMillis();
         if (time <= 0) {
-            return TimeDivision.SECOND.getFormatted(0, inflectionCase);
+            return messages.getInflection(TimeDivision.SECOND)
+                    .map(inflection -> inflection.getFormatted(0, inflectionCase))
+                    .orElseGet(0 + " " + TimeDivision.SECOND.name().toLowerCase());
         }
 
         LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
@@ -97,32 +100,37 @@ public final class TimeUtils {
             }
             timeParts.put(division, divisionTime);
         }
-        return formatTimeParts(timeParts, delimiter, inflectionCase);
+        return formatTimeParts(messages, timeParts, delimiter, inflectionCase);
     }
 
-    public static String formatTime(Duration duration, Case inflectionCase) {
-        return formatTime(duration, " ", inflectionCase);
+    public static String formatTime(MessageConfiguration messages, Duration duration, Case inflectionCase) {
+        return formatTime(messages, duration, " ", inflectionCase);
     }
 
-    public static String formatTimeShort(Duration duration) {
-        return formatTime(duration, Case.SHORT);
+    public static String formatTimeShort(MessageConfiguration messages, Duration duration) {
+        return formatTime(messages, duration, Case.SHORT);
     }
 
     public static String formatTimeSimple(Duration duration) {
         return String.format("%.2f", duration.toMillis() / 1000.0);
     }
 
-    private static String formatTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, Case form) {
+    private static String formatTimeParts(MessageConfiguration messages,LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, Case inflectionCase) {
         StringBuilder timeStringBuilder = new StringBuilder();
         timeParts.forEach((key, partValue) -> {
             if (partValue == 0) {
                 return;
             }
-            timeStringBuilder.append(delimiter).append(key.getFormatted(partValue, form));
+            timeStringBuilder.append(delimiter);
+            timeStringBuilder.append(messages.getInflection(key)
+                    .map(inflection -> inflection.getFormatted(partValue, inflectionCase))
+                    .orElseGet(partValue + " " + key.name().toLowerCase()));
         });
 
         if (timeStringBuilder.length() == 0) {
-            return TimeDivision.SECOND.getFormatted(0, form);
+            return messages.getInflection(TimeDivision.SECOND)
+                    .map(inflection -> inflection.getFormatted(0, inflectionCase))
+                    .orElseGet(0 + " " + TimeDivision.SECOND.name().toLowerCase());
         }
 
         return timeStringBuilder.substring(delimiter.length());

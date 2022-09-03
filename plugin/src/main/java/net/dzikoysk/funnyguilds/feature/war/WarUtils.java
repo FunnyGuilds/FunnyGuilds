@@ -3,9 +3,9 @@ package net.dzikoysk.funnyguilds.feature.war;
 import java.time.Duration;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.TimeInflection;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 
 public final class WarUtils {
@@ -26,7 +26,7 @@ public final class WarUtils {
                 message = messages.warAlly;
                 break;
             case WAIT:
-                message = FunnyFormatter.format(messages.warWait, "{TIME}", TimeUtils.formatTime((Duration) values[0], TimeDivision.Case.NOMINATIVE));
+                message = FunnyFormatter.format(messages.warWait, "{TIME}", TimeUtils.formatTime(FunnyGuilds.getInstance().getMessageConfiguration(), (Duration) values[0], TimeInflection.Case.NOMINATIVE));
                 break;
             case ATTACKER:
                 message = FunnyFormatter.format(messages.warAttacker, "{ATTACKED}", ((Guild) values[0]).getTag());

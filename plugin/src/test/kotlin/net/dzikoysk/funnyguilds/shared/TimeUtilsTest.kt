@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.shared
 
+import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.config.TimeInflection.Case
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import kotlin.test.assertEquals
 
-class TimeUtilsTest {
+class TimeUtilsTest : FunnyGuildsSpec() {
 
     @Test
     fun `should parse time`() {
@@ -21,9 +23,9 @@ class TimeUtilsTest {
         val durationTwo = Duration.ofDays(3)
         val durationThree = Duration.ofSeconds(20)
 
-        assertEquals("3d 5h 10m 20s", TimeUtils.formatTimeShort(durationOne))
-        assertEquals("3d", TimeUtils.formatTimeShort(durationTwo))
-        assertEquals("20s", TimeUtils.formatTimeShort(durationThree))
+        assertEquals("3d 5h 10m 20s", TimeUtils.formatTimeShort(messages, durationOne))
+        assertEquals("3d", TimeUtils.formatTimeShort(messages, durationTwo))
+        assertEquals("20s", TimeUtils.formatTimeShort(messages, durationThree))
     }
 
     @Test
@@ -32,16 +34,16 @@ class TimeUtilsTest {
         val durationTwo = Duration.ofDays(2)
         val durationThree = Duration.ofSeconds(20)
 
-        assertEquals("2 dni 15 godzin 59 minut 1 sekunda", TimeUtils.formatTime(durationOne, TimeDivision.Case.NOMINATIVE))
-        assertEquals("2 dni", TimeUtils.formatTime(durationTwo, TimeDivision.Case.NOMINATIVE))
-        assertEquals("20 sekund", TimeUtils.formatTime(durationThree, TimeDivision.Case.NOMINATIVE))
+        assertEquals("2 dni 15 godzin 59 minut 1 sekunda", TimeUtils.formatTime(messages, durationOne, Case.NOMINATIVE))
+        assertEquals("2 dni", TimeUtils.formatTime(messages, durationTwo, Case.NOMINATIVE))
+        assertEquals("20 sekund", TimeUtils.formatTime(messages, durationThree, Case.NOMINATIVE))
     }
 
     @Test
     fun `test long format time accusative`() {
         val durationOne = Duration.ofDays(1).plusHours(1).plusMinutes(1).plusSeconds(1);
 
-        assertEquals("1 dzień 1 godzinę 1 minutę 1 sekundę", TimeUtils.formatTime(durationOne, TimeDivision.Case.ACCUSATIVE))
+        assertEquals("1 dzień 1 godzinę 1 minutę 1 sekundę", TimeUtils.formatTime(messages, durationOne, Case.ACCUSATIVE))
     }
 
 }

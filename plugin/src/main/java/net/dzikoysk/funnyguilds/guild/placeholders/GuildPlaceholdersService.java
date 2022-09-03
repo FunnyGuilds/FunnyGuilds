@@ -88,8 +88,8 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                                 ? messages.pvpStatusOn
                                 : messages.pvpStatusOff,
                         () -> messages.pvpStatusOff)
-                .timeProperty("validity", Guild::getValidity, messages.dateFormat, () -> messages.gValidityNoValue)
-                .timeProperty("protection", Guild::getProtection, messages.dateFormat, () -> messages.gProtectionNoValue)
+                .timeProperty("validity", Guild::getValidity, messages, () -> messages.gValidityNoValue)
+                .timeProperty("protection", Guild::getProtection, messages, () -> messages.gProtectionNoValue)
                 .property("lives", Guild::getLives, () -> 0)
                 .property("lives-symbol",
                         guild -> {

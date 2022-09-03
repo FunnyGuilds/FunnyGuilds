@@ -3,10 +3,10 @@ package net.dzikoysk.funnyguilds.listener;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.UUID;
+import net.dzikoysk.funnyguilds.config.TimeInflection.Case;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +39,7 @@ public class TntProtection extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
-        String message = FunnyFormatter.format(this.messages.regionExplode, "{TIME}", TimeUtils.formatTime(this.config.regionExplode, TimeDivision.Case.ACCUSATIVE));
+        String message = FunnyFormatter.format(this.messages.regionExplode, "{TIME}", TimeUtils.formatTime(this.messages, this.config.regionExplode, Case.ACCUSATIVE));
 
         this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)

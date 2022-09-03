@@ -1,18 +1,41 @@
 package net.dzikoysk.funnyguilds.config;
 
+import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import org.apache.commons.lang3.Validate;
+import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class MessageConfiguration extends OkaeriConfig {
 
-    @Comment("<------- Global Date Format -------> #")
+    @Comment("<------- Time -------> #")
     public FunnyTimeFormatter dateFormat = new FunnyTimeFormatter("dd.MM.yyyy HH:mm:ss");
+
+    public Map<Locale, Map<TimeDivision, TimeInflection>> timeInflection = ImmutableMap.<Locale, Map<TimeDivision, TimeInflection>>builder()
+            .put(Locale.forLanguageTag("pl"), ImmutableMap.<TimeDivision, TimeInflection>builder()
+                    .put(TimeDivision.SECOND, new TimeInflection("sekunda", "sekundę", "sekundy", "sekund", "s"))
+                    .put(TimeDivision.MINUTE, new TimeInflection("minuta", "minutę", "minuty", "minut", "m"))
+                    .put(TimeDivision.HOUR, new TimeInflection("godzina", "godzinę", "godziny", "godzin", "h"))
+                    .put(TimeDivision.DAY, new TimeInflection("dzień", "dni", "dni", "d"))
+                    .put(TimeDivision.WEEK, new TimeInflection("tydzień", "tygodnie", "tygodni", "w"))
+                    .put(TimeDivision.MONTH, new TimeInflection("miesiąc", "miesiące", "miesięcy", "mo"))
+                    .put(TimeDivision.YEAR, new TimeInflection("rok", "lata", "lat", "y"))
+                    .build())
+            .build();
+
+    public Locale defaultLocale = Locale.forLanguageTag("pl");
 
     @Comment("")
     @Comment("<------- No Value Messages -------> #")
@@ -713,6 +736,17 @@ public class MessageConfiguration extends OkaeriConfig {
     public OkaeriConfig load() throws OkaeriException {
         super.load();
 
+        Validate.isTrue(!this.timeInflection.isEmpty(), "There is not time inflection defined");
+
+        PandaStream.of(this.timeInflection.values())
+                .filter(map -> map.size() < TimeDivision.values().length)
+                .map(Map::keySet)
+                .forEach(keys -> {
+                    Set<TimeDivision> divisions = new HashSet<>(Arrays.asList(TimeDivision.values()));
+                    divisions.removeAll(keys);
+                    throw new IllegalArgumentException("Missing time inflection for " + divisions);
+                });
+
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
                 if (field.getType().equals(String.class)) {
@@ -730,6 +764,16 @@ public class MessageConfiguration extends OkaeriConfig {
         }
 
         return this;
+    }
+
+    public Option<TimeInflection> getInflection(Locale locale, TimeDivision division) {
+        return Option.of(this.timeInflection.get(locale))
+                .orElse(this.timeInflection.get(this.defaultLocale))
+                .map(map -> map.get(division));
+    }
+
+    public Option<TimeInflection> getInflection(TimeDivision division) {
+        return this.getInflection(this.defaultLocale, division);
     }
 
 }
