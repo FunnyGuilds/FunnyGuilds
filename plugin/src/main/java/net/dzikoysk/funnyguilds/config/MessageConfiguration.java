@@ -729,10 +729,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public OkaeriConfig load() throws OkaeriException {
         super.load();
 
-        Validate.isTrue(!this.timeInflection.isEmpty(), "There is not time inflection defined");
-
-
-        if(this.timeInflection.size() < TimeDivision.values().length) {
+        Validate.isTrue(!this.timeInflection.isEmpty(), "There is no time inflection defined");
+        if (this.timeInflection.size() < TimeDivision.values().length) {
             Set<TimeDivision> divisions = new HashSet<>(Arrays.asList(TimeDivision.values()));
             divisions.removeAll(this.timeInflection.keySet());
             throw new IllegalArgumentException("Missing time inflection for " + divisions);
