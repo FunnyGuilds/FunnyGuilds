@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
-import org.jetbrains.annotations.ApiStatus;
 
 public abstract class Rank<T extends MutableEntity> {
 
@@ -39,14 +38,6 @@ public abstract class Rank<T extends MutableEntity> {
     public void setPosition(String top, int position) {
         this.position.put(top.toLowerCase(Locale.ROOT), position);
     }
-
-    /**
-     * @return player position in default top.
-     * @deprecated for removal in the future, in favour of {@link Rank#getPosition(String)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public abstract int getPosition();
 
     public abstract int getPoints();
 

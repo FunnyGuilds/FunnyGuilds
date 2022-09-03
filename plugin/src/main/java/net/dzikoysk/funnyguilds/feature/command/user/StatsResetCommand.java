@@ -45,10 +45,10 @@ public final class StatsResetCommand extends AbstractFunnyCommand {
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{LAST-PINTS}", lastPoints)
+                .register("{LAST-POINTS}", lastPoints)
                 .register("{CURRENT-POINTS}", rank.getPoints())
                 .register("{LAST-DEATHS}", lastDeaths)
-                .register("{CURRENT-DEATHS", rank.getDeaths())
+                .register("{CURRENT-DEATHS}", rank.getDeaths())
                 .register("{LAST-KILLS}", lastKills)
                 .register("{CURRENT-KILLS}", rank.getKills())
                 .register("{LAST-ASSISTS}", lastAssists)

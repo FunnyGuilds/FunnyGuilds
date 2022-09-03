@@ -1,9 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,7 +11,6 @@ import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -95,16 +92,6 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
-    /**
-     * @return true if guild is ranked; false if guild is not ranked.
-     * @deprecated for removal in the future, in favour of {@link GuildRankManager#isRankedGuild(Guild)}}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public boolean isRanked() {
-        return FunnyGuilds.getInstance().getGuildRankManager().isRankedGuild(this);
-    }
-
     public int getLives() {
         return this.lives;
     }
@@ -143,16 +130,6 @@ public class Guild extends AbstractMutableEntity {
 
     public Option<Location> getEnderCrystal() {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
-    }
-
-    /**
-     * @return if someone is in guild region
-     * @deprecated for removal in the future, in favour of {@link RegionManager#isAnyUserInRegion(Region, Collection)}}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public boolean isSomeoneInRegion() {
-        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(this.region, new HashSet<>(this.members));
     }
 
     /**

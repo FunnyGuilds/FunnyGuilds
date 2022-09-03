@@ -67,7 +67,7 @@ public class DamageCache {
         }
 
         Duration lastAttackerAsKillerConsiderationTimeout = FunnyGuilds.getInstance().getPluginConfiguration().lastAttackerAsKillerConsiderationTimeout;
-        return lastDamage.isExpired(lastAttackerAsKillerConsiderationTimeout);
+        return !lastDamage.isExpired(lastAttackerAsKillerConsiderationTimeout);
     }
 
     public Option<Instant> getLastKillTime(User user) {

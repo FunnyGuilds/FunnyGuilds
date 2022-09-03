@@ -78,8 +78,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when(name.length() < this.config.createNameMinLength,
                 FunnyFormatter.format(this.messages.createNameMinLength, "{LENGTH}", this.config.createNameMinLength));
 
-        when(!tag.matches(this.config.tagRegex.getPattern()), this.messages.createOLTag);
-        when(!name.matches(this.config.nameRegex.getPattern()), this.messages.createOLName);
+        when(!this.config.tagRegex.matches(tag), this.messages.createOLTag);
+        when(!this.config.nameRegex.matches(name), this.messages.createOLName);
 
         when(this.guildManager.nameExists(name), this.messages.createNameExists);
         when(this.guildManager.tagExists(tag), this.messages.createTagExists);

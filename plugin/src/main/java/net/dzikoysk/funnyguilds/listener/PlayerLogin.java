@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
-import net.dzikoysk.funnyguilds.guild.GuildRegex;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -12,21 +11,23 @@ public class PlayerLogin extends AbstractFunnyListener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        if (Bukkit.hasWhitelist()) {
+        if (event.getResult() != Result.ALLOWED) {
             return;
         }
 
         String name = event.getPlayer().getName();
-        if (name.length() < 2) {
-            event.disallow(Result.KICK_OTHER, this.messages.loginNickTooShort);
-        }
-
-        if (name.length() > 16) {
-            event.disallow(Result.KICK_OTHER, this.messages.loginNickTooLong);
-        }
-
-        if (!name.matches(GuildRegex.LETTERS_DIGITS_UNDERSCORE.getPattern())) {
-            event.disallow(Result.KICK_OTHER, this.messages.loginNickInvalid);
+        switch (FunnyValidator.validateUsername(this.config, name)) {
+            case TOO_SHORT:
+                event.disallow(Result.KICK_OTHER, this.messages.loginNickTooShort);
+                break;
+            case TOO_LONG:
+                event.disallow(Result.KICK_OTHER, this.messages.loginNickTooLong);
+                break;
+            case INVALID:
+                event.disallow(Result.KICK_OTHER, this.messages.loginNickInvalid);
+                break;
+            case VALID:
+                break;
         }
 
         this.userManager.findByPlayer(event.getPlayer())
