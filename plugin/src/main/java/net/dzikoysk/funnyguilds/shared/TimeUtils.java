@@ -85,9 +85,7 @@ public final class TimeUtils {
     public static String formatTime(MessageConfiguration messages, Duration duration, String delimiter, Case inflectionCase) {
         long time = duration.toMillis();
         if (time <= 0) {
-            return messages.getInflection(TimeDivision.SECOND)
-                    .map(inflection -> inflection.getFormatted(0, inflectionCase))
-                    .orElseGet(0 + " " + TimeDivision.SECOND.name().toLowerCase());
+            return messages.getInflection(TimeDivision.SECOND).getFormatted(0, inflectionCase);
         }
 
         LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
@@ -122,15 +120,11 @@ public final class TimeUtils {
                 return;
             }
             timeStringBuilder.append(delimiter);
-            timeStringBuilder.append(messages.getInflection(key)
-                    .map(inflection -> inflection.getFormatted(partValue, inflectionCase))
-                    .orElseGet(partValue + " " + key.name().toLowerCase()));
+            timeStringBuilder.append(messages.getInflection(key).getFormatted(partValue, inflectionCase));
         });
 
         if (timeStringBuilder.length() == 0) {
-            return messages.getInflection(TimeDivision.SECOND)
-                    .map(inflection -> inflection.getFormatted(0, inflectionCase))
-                    .orElseGet(0 + " " + TimeDivision.SECOND.name().toLowerCase());
+            return messages.getInflection(TimeDivision.SECOND).getFormatted(0, inflectionCase);
         }
 
         return timeStringBuilder.substring(delimiter.length());
