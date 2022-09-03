@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
@@ -135,16 +136,17 @@ public final class UserUtils {
     /**
      * Check if user file is correct and if not - try migrating it
      *
+     * @param config plugin configuration
      * @param file user file
      * @return A final (source or migrated) user file
      */
-    public static Option<File> checkUserFile(File file) {
+    public static Option<File> checkUserFile(PluginConfiguration config, File file) {
         String filenameWithoutExtension = StringUtils.removeEnd(file.getName(), ".yml");
         if (FunnyValidator.validateUUID(filenameWithoutExtension)) {
             return Option.of(file);
         }
 
-        if (FunnyValidator.validateUsername(filenameWithoutExtension)) {
+        if (FunnyValidator.validateUsername(config, filenameWithoutExtension) != NameResult.VALID) {
             return migrateUserFile(file)
                     .onError(error -> FunnyGuilds.getPluginLogger().error(error))
                     .toOption();

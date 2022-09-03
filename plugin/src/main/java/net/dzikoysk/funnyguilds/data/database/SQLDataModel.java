@@ -17,11 +17,13 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import panda.std.Option;
 
 public class SQLDataModel implements DataModel {
 
     private final FunnyGuilds plugin;
+    private final PluginConfiguration pluginConfiguration;
 
     private final SQLTable usersTable;
     private final SQLTable guildsTable;
@@ -29,12 +31,12 @@ public class SQLDataModel implements DataModel {
 
 
     public SQLDataModel(FunnyGuilds plugin) {
-        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
-
         this.plugin = plugin;
-        this.usersTable = new SQLTable(pluginConfiguration.mysql.usersTableName);
-        this.guildsTable = new SQLTable(pluginConfiguration.mysql.guildsTableName);
-        this.regionsTable = new SQLTable(pluginConfiguration.mysql.regionsTableName);
+        this.pluginConfiguration = plugin.getPluginConfiguration();
+
+        this.usersTable = new SQLTable(this.pluginConfiguration.mysql.usersTableName);
+        this.guildsTable = new SQLTable(this.pluginConfiguration.mysql.guildsTableName);
+        this.regionsTable = new SQLTable(this.pluginConfiguration.mysql.regionsTableName);
 
         this.prepareTables();
     }
@@ -97,7 +99,7 @@ public class SQLDataModel implements DataModel {
             while (result.next()) {
                 String userName = result.getString("name");
 
-                if (!FunnyValidator.validateUsername(userName)) {
+                if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
                     FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
                     continue;
                 }

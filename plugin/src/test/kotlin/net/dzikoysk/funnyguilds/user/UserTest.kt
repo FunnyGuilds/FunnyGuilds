@@ -32,7 +32,6 @@ class UserTest : FunnyGuildsSpec() {
 
     @Test
     fun `cache in the user manager should be correct with the user state after updating username`() {
-        val userManager = UserManager()
         val uuid = UUID.randomUUID()
         val name = "name"
 

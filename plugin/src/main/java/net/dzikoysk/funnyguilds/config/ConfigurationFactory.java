@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_c
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.FunnyPatternTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.ItemStackTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
@@ -53,9 +54,10 @@ public final class ConfigurationFactory {
                 registry.register(new MaterialTransformer());
                 registry.register(new ItemStackTransformer());
                 registry.register(new EntityTypeTransformer());
-                registry.register(new FunnyTimeTransformer());
-                registry.register(new RangeFormattingTransformer());
                 registry.register(new VectorSerializer());
+                registry.register(new FunnyTimeTransformer());
+                registry.register(new FunnyPatternTransformer());
+                registry.register(new RangeFormattingTransformer());
             });
 
             it.withBindFile(pluginConfigurationFile);

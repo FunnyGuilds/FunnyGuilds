@@ -8,7 +8,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -19,14 +21,12 @@ import panda.std.stream.PandaStream;
 
 public class UserManager {
 
+    private final PluginConfiguration pluginConfiguration;
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
-    @Deprecated
-    private static UserManager INSTANCE;
-
-    public UserManager() {
-        INSTANCE = this;
+    public UserManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
     }
 
     public int countUsers() {
@@ -135,8 +135,8 @@ public class UserManager {
     /**
      * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByUuid(UUID)}, {@link UserManager#findByName(String)} etc.
      *
-     * @param uuid the universally unique identifier which will be assigned to user
-     * @param name the nickname which will be assigned to User
+     * @param uuid        the universally unique identifier which will be assigned to user
+     * @param name        the nickname which will be assigned to User
      * @param userProfile the user profile which will be assigned to User
      * @return the user
      */
@@ -145,7 +145,7 @@ public class UserManager {
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
         Validate.notNull(userProfile, "userProfile can't be null!");
-        Validate.isTrue(FunnyValidator.validateUsername(name), "name is not valid!");
+        Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, name) == NameResult.VALID, "name is not valid!");
 
         User user = new User(uuid, name, userProfile);
         this.addUser(user);
@@ -222,7 +222,7 @@ public class UserManager {
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static UserManager getInstance() {
-        return INSTANCE;
+        return FunnyGuilds.getInstance().getUserManager();
     }
 
 }
