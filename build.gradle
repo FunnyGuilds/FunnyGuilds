@@ -92,7 +92,7 @@ subprojects {
                     project.getRepositories().findAll { repo ->
                         if (repo.getUrl().toString().startsWith('http')) {
                             def repository = repositories.appendNode('repository')
-                            repository.appendNode('id', repo.getUrl().toStrimg().replace("https://", "").replace("/", "-").replace(".", "-").trim())
+                            repository.appendNode('id', repo.getUrl().toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
                             repository.appendNode('url', repo.getUrl().toString().trim())
                         }
                     }
