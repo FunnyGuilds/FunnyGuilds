@@ -22,6 +22,7 @@ allprojects {
 
     java {
         withSourcesJar()
+        withJavadocJar()
     }
 
     repositories {
@@ -91,8 +92,8 @@ subprojects {
                     project.getRepositories().findAll { repo ->
                         if (repo.getUrl().toString().startsWith('http')) {
                             def repository = repositories.appendNode('repository')
-                            repository.appendNode('id', repo.getDisplayName())
-                            repository.appendNode('url', repo.getUrl().toString())
+                            repository.appendNode('id', repo.getUrl().toStrimg().replace("https://", "").replace("/", "-").replace(".", "-").trim())
+                            repository.appendNode('url', repo.getUrl().toString().trim())
                         }
                     }
                 }
