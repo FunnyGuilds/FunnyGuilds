@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
-import net.dzikoysk.funnyguilds.feature.hooks.bungeetablist.BungeeTabListPlusHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
@@ -28,7 +27,6 @@ public class HookManager {
     public static Option<WorldEditHook> WORLD_EDIT = Option.none();
     public static Option<FunnyTabHook> FUNNY_TAB = Option.none();
     public static Option<VaultHook> VAULT = Option.none();
-    public static Option<BungeeTabListPlusHook> BUNGEE_TAB_LIST_PLUS = Option.none();
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
     public static Option<HologramsHook> HOLOGRAMS = Option.none();
 
@@ -68,16 +66,6 @@ public class HookManager {
                 return new WorldEdit7Hook(pluginName);
             }
         }, true).subscribe(hook -> WORLD_EDIT = hook);
-
-        this.setupHook("BungeeTabListPlus", true, pluginName -> {
-            try {
-                Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
-                return new BungeeTabListPlusHook(pluginName, this.plugin);
-            }
-            catch (ClassNotFoundException exception) {
-                return null;
-            }
-        }, true).subscribe(hook -> BUNGEE_TAB_LIST_PLUS = hook);
 
         this.setupHook("Vault", true, VaultHook::new, true)
                 .subscribe(hook -> VAULT = hook);
