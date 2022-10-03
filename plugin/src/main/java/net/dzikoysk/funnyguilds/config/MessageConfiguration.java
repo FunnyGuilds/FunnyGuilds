@@ -604,6 +604,16 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostępne zmienne: {PLAYER}, {DEATHS}")
     public String adminDeathsChanged = "&aUstawiono &7{DEATHS} &azgonow dla gracza &7{PLAYER}";
 
+    public String adminNoLogoutsGiven = "&cPodaj liczbę wylogowań!";
+
+    @Comment("Dostępne zmienne: {PLAYER}, {LOGOUTS}")
+    public String adminLogoutsChanged = "&aUstawiono &7{LOGOUTS} &awylogowań dla gracza &7{PLAYER}";
+
+    public String adminNoAssistsGiven = "&cPodaj liczbę asyst!";
+
+    @Comment("Dostępne zmienne: {PLAYER}, {ASSISTS}")
+    public String adminAssistsChanged = "&aUstawiono &7{ASSISTS} &aasyst dla gracza &7{PLAYER}";
+
     public String adminNoBanTimeGiven = "&cPodaj czas na jaki ma byc zbanowana gildia!";
     public String adminNoReasonGiven = "&cPodaj powod!";
     public String adminGuildBanned = "&cTa gildia jest juz zbanowana!";
