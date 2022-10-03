@@ -32,6 +32,8 @@ import net.dzikoysk.funnyguilds.feature.command.admin.TagCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TeleportCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.UnbanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ValidityAdminCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.AssistsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.LogoutsCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.AllyCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BreakCommand;
@@ -135,8 +137,8 @@ public final class FunnyCommandsConfiguration {
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
                 .command("validity", commands.admin.validity, ValidityAdminCommand.class)
-                .command("logouts", commands.admin.logouts, Logouts.class)
-                .command("assists", commands.admin.assists, Assists.class);
+                .command("logouts", commands.admin.logouts, LogoutsCommand.class)
+                .command("assists", commands.admin.assists, AssistsCommand.class);
 
         return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()

@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class Logouts extends AbstractFunnyCommand {
+public final class LogoutsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
             name = "${admin.logouts.name}",

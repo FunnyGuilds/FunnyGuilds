@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class Assists extends AbstractFunnyCommand {
+public final class AssistsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
             name = "${admin.assists.name}",
