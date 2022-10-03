@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.rank.LogoutsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -23,13 +25,24 @@ public final class LogoutsCommand extends AbstractFunnyCommand {
 
         User user = UserValidation.requireUserByName(args[0]);
 
-        int logouts = Integer.parseInt(args[1]);
+        int newLogouts = Integer.parseInt(args[1]);
+        int previousLogouts = user.getRank().getLogouts();
+        int logoutsChange = newLogouts - previousLogouts;
 
-        user.getRank().setLogouts(logouts);
+        User admin = AdminUtils.getAdminUser(sender);
+
+        LogoutsChangeEvent logoutsChangeEvent = new LogoutsChangeEvent(AdminUtils.getCause(admin), admin, user, logoutsChange);
+        if (!SimpleEventHandler.handle(logoutsChangeEvent)) {
+            return;
+        }
+
+        newLogouts = previousLogouts + logoutsChangeEvent.getLogoutsChange();
+
+        user.getRank().setLogouts(newLogouts);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", user.getName())
-                .register("{LOGOUTS}", logouts);
+                .register("{LOGOUTS}", newLogouts);
 
         this.sendMessage(sender, formatter.format(this.messages.adminLogoutsChanged));
     }

@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -23,13 +25,24 @@ public final class AssistsCommand extends AbstractFunnyCommand {
 
         User user = UserValidation.requireUserByName(args[0]);
 
-        int assists = Integer.parseInt(args[1]);
+        int newAssists = Integer.parseInt(args[1]);
+        int previousAssists = user.getRank().getAssists();
+        int assistsChange = newAssists - previousAssists;
 
-        user.getRank().setAssists(assists);
+        User admin = AdminUtils.getAdminUser(sender);
+
+        AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(AdminUtils.getCause(admin), admin, user, assistsChange);
+        if (!SimpleEventHandler.handle(assistsChangeEvent)) {
+            return;
+        }
+
+        newAssists = previousAssists + assistsChangeEvent.getAssistsChange();
+
+        user.getRank().setAssists(newAssists);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", user.getName())
-                .register("{ASSISTS}", assists);
+                .register("{ASSISTS}", newAssists);
 
         this.sendMessage(sender, formatter.format(this.messages.adminAssistsChanged));
     }

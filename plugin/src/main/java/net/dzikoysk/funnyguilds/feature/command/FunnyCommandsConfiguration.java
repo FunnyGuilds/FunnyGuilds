@@ -117,6 +117,7 @@ public final class FunnyCommandsConfiguration {
 
         CommandComponents adminCommands = new CommandComponents("admin")
                 .command("add", commands.admin.add, AddCommand.class)
+                .command("assists", commands.admin.assists, AssistsCommand.class)
                 .command("base", commands.admin.base, BaseAdminCommand.class)
                 .command("ban", commands.admin.ban, BanCommand.class)
                 .command("deaths", commands.admin.deaths, DeathsCommand.class)
@@ -127,6 +128,7 @@ public final class FunnyCommandsConfiguration {
                 .command("kills", commands.admin.kills, KillsCommand.class)
                 .command("leader", commands.admin.leader, LeaderAdminCommand.class)
                 .command("lives", commands.admin.lives, LivesCommand.class)
+                .command("logouts", commands.admin.logouts, LogoutsCommand.class)
                 .command("main", commands.admin.main, MainCommand.class)
                 .command("move", commands.admin.move, MoveCommand.class)
                 .command("name", commands.admin.name, NameCommand.class)
@@ -136,9 +138,7 @@ public final class FunnyCommandsConfiguration {
                 .command("tag", commands.admin.tag, TagCommand.class)
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
-                .command("validity", commands.admin.validity, ValidityAdminCommand.class)
-                .command("logouts", commands.admin.logouts, LogoutsCommand.class)
-                .command("assists", commands.admin.assists, AssistsCommand.class);
+                .command("validity", commands.admin.validity, ValidityAdminCommand.class);
 
         return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()
