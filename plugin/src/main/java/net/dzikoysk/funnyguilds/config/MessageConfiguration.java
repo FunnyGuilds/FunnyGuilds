@@ -627,7 +627,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String adminNoAssistsGiven = "&cWpisz liczbę asyst!";
 
     @Comment("Dostępne zmienne: {PLAYER}, {ASSISTS}")
-    public String adminAssistsChanged = "&aUstawiono &7{ASSISTS} &aasystuje dla gracza &7{PLAYER}";
+    public String adminAssistsChanged = "&aUstawiono &7{ASSISTS} &aasyst dla gracza &7{PLAYER}";
 
     @Comment("Dostępne zmienne: {GUILD}")
     public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
