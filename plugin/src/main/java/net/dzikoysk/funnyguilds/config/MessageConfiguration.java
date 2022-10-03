@@ -624,7 +624,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostępne zmienne: {PLAYER}, {LOGOUTS}")
     public String adminLogoutsChanged = "&aUstawiono &7{LOGOUTS} &awylogowań dla gracza &7{PLAYER}";
 
-    public String adminNoAssistsGiven = "&cWpisz liczbę asystuje!";
+    public String adminNoAssistsGiven = "&cWpisz liczbę asyst!";
 
     @Comment("Dostępne zmienne: {PLAYER}, {ASSISTS}")
     public String adminAssistsChanged = "&aUstawiono &7{ASSISTS} &aasystuje dla gracza &7{PLAYER}";
