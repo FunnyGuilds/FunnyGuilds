@@ -134,7 +134,9 @@ public final class FunnyCommandsConfiguration {
                 .command("tag", commands.admin.tag, TagCommand.class)
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
-                .command("validity", commands.admin.validity, ValidityAdminCommand.class);
+                .command("validity", commands.admin.validity, ValidityAdminCommand.class)
+                .command("logouts", commands.admin.logouts, Logouts.class)
+                .command("assists", commands.admin.assists, Assists.class);
 
         return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()

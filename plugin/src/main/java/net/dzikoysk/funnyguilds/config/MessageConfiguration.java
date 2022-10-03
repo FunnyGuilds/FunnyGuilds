@@ -619,6 +619,16 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostępne zmienne: {GUILD}, {LIVES}")
     public String adminLivesChanged = "&aUstawiono &7{LIVES} &azyc dla gildii &7{GUILD}&a!";
 
+    public String adminNoLogoutsGiven = "&cWpisz liczbę wylogowań!";
+
+    @Comment("Dostępne zmienne: {PLAYER}, {LOGOUTS}")
+    public String adminLogoutsChanged = "&aUstawiono &7{LOGOUTS} &awylogowań dla gracza &7{PLAYER}";
+
+    public String adminNoAssistsGiven = "&cWpisz liczbę asystuje!";
+
+    @Comment("Dostępne zmienne: {PLAYER}, {ASSISTS}")
+    public String adminAssistsChanged = "&aUstawiono &7{ASSISTS} &aasystuje dla gracza &7{PLAYER}";
+
     @Comment("Dostępne zmienne: {GUILD}")
     public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
 
