@@ -2,6 +2,10 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
+plugins {
+    id("xyz.jpenilla.run-paper")
+}
+
 dependencies {
     project(":nms").getSubprojects().each {
         implementation it
@@ -107,5 +111,11 @@ test {
         showCauses = true
         showStackTraces = true
         showStandardStreams = true
+    }
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.18.2")
     }
 }
