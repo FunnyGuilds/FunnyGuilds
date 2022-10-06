@@ -33,10 +33,9 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
-import net.dzikoysk.funnyguilds.user.DamageCache;
-import net.dzikoysk.funnyguilds.user.DamageCache.Damage;
+import net.dzikoysk.funnyguilds.damage.DamageState;
+import net.dzikoysk.funnyguilds.damage.Damage;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -62,22 +61,21 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         User victim = victimOption.get();
-        UserCache victimCache = victim.getCache();
-        DamageCache victimDamageCache = victimCache.getDamageCache();
+        DamageState victimDamageState = damageManager.getDamageState(victim.getUUID());
 
         Option<User> attackerOption = Option.none();
         if (playerAttacker == null && this.config.considerLastAttackerAsKiller || playerVictim.equals(playerAttacker)) { // If player killed himself use last attacker as a killer
-            Option<Damage> lastDamageOption = victimDamageCache.getLastDamage();
+            Option<Damage> lastDamageOption = victimDamageState.getLastDamage();
             if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
-                victimDamageCache.clear();
+                victimDamageState.clear();
                 return;
             }
             Damage lastDamage = lastDamageOption.get();
 
             if (lastDamage.isExpired(this.config.lastAttackerAsKillerConsiderationTimeout)) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
-                victimDamageCache.clear();
+                victimDamageState.clear();
                 return;
             }
 
@@ -95,42 +93,41 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
         User attacker = attackerOption.get();
-        UserCache attackerCache = attacker.getCache();
-        DamageCache attackerDamageCache = attackerCache.getDamageCache();
+        DamageState attackerDamageState = this.damageManager.getDamageState(attacker.getUUID());
 
         if (victim.equals(attacker)) {
-            victimDamageCache.clear();
+            victimDamageState.clear();
             return;
         }
 
         if (HookManager.WORLD_GUARD.isPresent()) {
             WorldGuardHook worldGuard = HookManager.WORLD_GUARD.get();
             if (worldGuard.isInNonPointsRegion(playerVictim.getLocation()) || worldGuard.isInNonPointsRegion(playerAttacker.getLocation())) {
-                victimDamageCache.clear();
+                victimDamageState.clear();
                 return;
             }
         }
 
-        if (this.checkRankFarmingProtection(playerVictim, playerAttacker, victim, victimDamageCache, attacker, attackerDamageCache)) {
-            victimDamageCache.clear();
+        if (this.checkRankFarmingProtection(playerVictim, playerAttacker, victim, victimDamageState, attacker, attackerDamageState)) {
+            victimDamageState.clear();
             event.setDeathMessage(null);
             return;
         }
 
         if (this.checkIPRankFarmingProtection(playerVictim, playerAttacker)) {
-            victimDamageCache.clear();
+            victimDamageState.clear();
             event.setDeathMessage(null);
             return;
         }
 
         if (this.checkMemberRankChangeProtection(victim, attacker)) {
-            victimDamageCache.clear();
+            victimDamageState.clear();
             event.setDeathMessage(null);
             return;
         }
 
         if (this.checkAllyRankChangeProtection(victim, attacker)) {
-            attackerDamageCache.clear();
+            attackerDamageState.clear();
             event.setDeathMessage(null);
             return;
         }
@@ -140,7 +137,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             attacker.getRank().updateKills(currentValue -> currentValue + killsChangeEvent.getKillsChange());
         }
 
-        victimDamageCache.addKill(attacker);
+        victimDamageState.addKill(attacker);
 
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
@@ -152,7 +149,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         messageReceivers.add(attacker);
         messageReceivers.add(victim);
 
-        Map<User, Assist> calculatedAssists = this.handleAssists(victim, victimDamageCache, attacker, result, messageReceivers);
+        Map<User, Assist> calculatedAssists = this.handleAssists(victim, victimDamageState, attacker, result, messageReceivers);
 
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && calculatedAssists.isEmpty())
                 ? result.getAttackerPoints()
@@ -186,7 +183,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .forEach((user, points) -> user.getRank().updatePoints(currentValue -> currentValue + points));
         }
 
-        victimDamageCache.clear();
+        victimDamageState.clear();
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
         if (this.config.dataModel == DataModel.MYSQL) {
@@ -279,13 +276,13 @@ public class PlayerDeath extends AbstractFunnyListener {
     }
 
     // Function to check if player is rank farming (killing player indefinitely to get points)
-    private boolean checkRankFarmingProtection(Player playerVictim, Player playerAttacker, User victim, DamageCache victimDamageCache, User attacker, DamageCache attackerDamageCache) {
+    private boolean checkRankFarmingProtection(Player playerVictim, Player playerAttacker, User victim, DamageState victimDamageState, User attacker, DamageState attackerDamageState) {
         if (!this.config.rankFarmingProtect) {
             return false;
         }
 
-        Option<Instant> victimTimestamp = victimDamageCache.getLastKillTime(attacker);
-        Option<Instant> attackerTimestamp = attackerDamageCache.getLastKillTime(victim);
+        Option<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
+        Option<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
 
         if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             ChatUtils.sendMessage(playerVictim, this.messages.rankLastVictimV);
@@ -363,18 +360,18 @@ public class PlayerDeath extends AbstractFunnyListener {
 
     // This method calculate how many points assisting players should receive
     // Returns a map of players that were assisting
-    private Map<User, Assist> handleAssists(User victim, DamageCache victimDamageCache, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
+    private Map<User, Assist> handleAssists(User victim, DamageState victimDamageState, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
         Map<User, Assist> calculatedAssists = new HashMap<>();
 
         if (!this.config.assistEnable) {
             return calculatedAssists;
         }
 
-        Map<User, Double> damageMap = victimDamageCache.getSortedTotalDamageMap();
+        Map<User, Double> damageMap = new HashMap<>(victimDamageState.getSortedTotalDamageMap());
         damageMap.remove(attacker);
 
         double toShare = result.getAttackerPoints() * (1 - this.config.assistKillerShare);
-        double totalDamage = victimDamageCache.getTotalDamage();
+        double totalDamage = victimDamageState.getTotalDamage();
 
         int assistsCount = 0;
         for (Entry<User, Double> assist : damageMap.entrySet()) {

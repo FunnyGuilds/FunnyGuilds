@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.feature.prefix.Dummy;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
@@ -17,8 +18,6 @@ public class UserCache {
 
     private final User user;
 
-    private final DamageCache damageCache;
-
     private IndividualPlayerList playerList;
     private Scoreboard scoreboard;
     private Option<IndividualPrefix> prefix = Option.none();
@@ -31,11 +30,11 @@ public class UserCache {
 
     public UserCache(User user) {
         this.user = user;
-        this.damageCache = new DamageCache(user);
     }
 
-    public DamageCache getDamageCache() {
-        return this.damageCache;
+    @Deprecated
+    public DamageState getDamageHistory() {
+        return FunnyGuilds.getInstance().getDamageManager().getDamageState(this.user.getUUID());
     }
 
     public Option<IndividualPlayerList> getPlayerList() {

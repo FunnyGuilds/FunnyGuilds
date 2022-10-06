@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
@@ -128,6 +129,7 @@ public class FunnyGuilds extends JavaPlugin {
     private GuildManager guildManager;
     private UserRankManager userRankManager;
     private GuildRankManager guildRankManager;
+    private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
     private IndividualPrefixManager individualPrefixManager;
@@ -227,6 +229,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
         this.guildRankManager = new GuildRankManager(this.pluginConfiguration);
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
+        this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
         this.individualPrefixManager = new IndividualPrefixManager(this);
@@ -564,6 +567,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public GuildRankManager getGuildRankManager() {
         return this.guildRankManager;
+    }
+
+    public DamageManager getDamageManager() {
+        return this.damageManager;
     }
 
     public RegionManager getRegionManager() {
