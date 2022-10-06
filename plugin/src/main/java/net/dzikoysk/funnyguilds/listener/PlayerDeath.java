@@ -16,6 +16,8 @@ import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUser
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
+import net.dzikoysk.funnyguilds.damage.Damage;
+import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
@@ -33,8 +35,6 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
-import net.dzikoysk.funnyguilds.damage.DamageState;
-import net.dzikoysk.funnyguilds.damage.Damage;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

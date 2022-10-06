@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.damage;
 
-import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.Validate;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
+import net.dzikoysk.funnyguilds.user.User;
+import org.apache.commons.lang3.Validate;
 
 public final class Damage {
 
