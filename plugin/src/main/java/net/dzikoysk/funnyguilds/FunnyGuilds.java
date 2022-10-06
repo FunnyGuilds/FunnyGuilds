@@ -300,6 +300,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(DamageManager.class).assignInstance(this.damageManager);
             resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
