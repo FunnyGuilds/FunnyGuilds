@@ -1,40 +1,43 @@
-package net.dzikoysk.funnyguilds.user;
+package net.dzikoysk.funnyguilds.damage;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DamageTracking;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
 
-public class DamageCache {
+public class DamageState {
 
-    private final User user;
+    private final UUID ownerUUID;
 
     private final LinkedList<Damage> damageHistory = new LinkedList<>();
     private final Map<UUID, Instant> killHistory = new HashMap<>();
 
-    public DamageCache(User user) {
-        this.user = user;
+    public DamageState(UUID ownerUUID) {
+        this.ownerUUID = ownerUUID;
     }
 
-    public Map<User, Double> getTotalDamageMap() {
+    private Map<User, Double> getTotalDamageMap() {
         Map<User, Double> damageMap = new HashMap<>();
+
         for (Damage damage : this.damageHistory) {
             double damageAmount = damageMap.getOrDefault(damage.getAttacker(), 0.0);
             damageAmount += damage.getDamage();
             damageMap.put(damage.getAttacker(), damageAmount);
         }
+
         return damageMap;
     }
 
     public Map<User, Double> getSortedTotalDamageMap() {
-        return MapUtils.sortByValue(this.getTotalDamageMap());
+        return Collections.unmodifiableMap(MapUtils.sortByValue(this.getTotalDamageMap()));
     }
 
     public double getTotalDamage() {
@@ -76,7 +79,7 @@ public class DamageCache {
 
     public void addDamage(User damageDealer, double damage) {
         // Prevent players from damaging themselves to for eg. avoid points loss after logout
-        if (this.user.equals(damageDealer)) {
+        if (this.ownerUUID.equals(damageDealer.getUUID())) {
             return;
         }
 
@@ -110,57 +113,6 @@ public class DamageCache {
 
     public void clear() {
         this.damageHistory.clear();
-    }
-
-    public static class Damage {
-
-        private final User attacker;
-        private final double damage;
-        private final Instant attackTime;
-
-        private Damage(User attacker, double damage, Instant attackTime) {
-            this.attacker = attacker;
-            this.damage = damage;
-            this.attackTime = attackTime;
-        }
-
-        private Damage(User attacker, double damage) {
-            this(attacker, damage, Instant.now());
-        }
-
-        public User getAttacker() {
-            return this.attacker;
-        }
-
-        public double getDamage() {
-            return this.damage;
-        }
-
-        public Instant getAttackTime() {
-            return this.attackTime;
-        }
-
-        public boolean isExpired(Duration expireTime) {
-            return Duration.between(this.attackTime, Instant.now()).compareTo(expireTime) > 0;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(this.attacker, this.damage, this.attackTime);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (!(obj instanceof Damage)) {
-                return false;
-            }
-            Damage dmg = (Damage) obj;
-            return Double.compare(dmg.damage, this.damage) == 0 && this.attacker.equals(dmg.attacker) && this.attackTime.equals(dmg.attackTime);
-        }
-
     }
 
 }

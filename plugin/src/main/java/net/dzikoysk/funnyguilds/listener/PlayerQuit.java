@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.LogoutsChangeEvent;
@@ -25,9 +26,11 @@ public class PlayerQuit extends AbstractFunnyListener {
     private void handleQuit(Player player) {
         this.userManager.findByUuid(player.getUniqueId()).peek(user -> {
             UserCache cache = user.getCache();
+            DamageState damageState = damageManager.getDamageState(user.getUUID());
 
-            if (cache.getDamageCache().isInCombat()) {
+            if (damageState.isInCombat()) {
                 LogoutsChangeEvent logoutsChangeEvent = new LogoutsChangeEvent(FunnyEvent.EventCause.USER, user, user, 1);
+
                 if (SimpleEventHandler.handle(logoutsChangeEvent)) {
                     user.getRank().updateLogouts(currentValue -> currentValue + logoutsChangeEvent.getLogoutsChange());
                 }
@@ -37,7 +40,8 @@ public class PlayerQuit extends AbstractFunnyListener {
             cache.setScoreboard(null);
             cache.setDummy(null);
             cache.setPlayerList(null);
-            cache.getDamageCache().clear();
+
+            damageState.clear();
 
             this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification();
         });

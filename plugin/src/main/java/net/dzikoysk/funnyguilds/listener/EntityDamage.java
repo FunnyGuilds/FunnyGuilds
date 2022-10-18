@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -87,7 +88,9 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            victimUser.getCache().getDamageCache().addDamage(attackerUser, event.getDamage());
+            DamageState damageState = damageManager.getDamageState(victimUser.getUUID());
+
+            damageState.addDamage(attackerUser, event.getDamage());
         });
     }
 
