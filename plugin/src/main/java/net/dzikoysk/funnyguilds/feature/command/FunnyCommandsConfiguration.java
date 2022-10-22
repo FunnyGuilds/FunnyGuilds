@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.AssistsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BaseAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeathsCommand;
@@ -22,6 +23,7 @@ import net.dzikoysk.funnyguilds.feature.command.admin.KickAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KillsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LeaderAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LivesCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.LogoutsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.MainCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.MoveCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.NameCommand;
@@ -115,6 +117,7 @@ public final class FunnyCommandsConfiguration {
 
         CommandComponents adminCommands = new CommandComponents("admin")
                 .command("add", commands.admin.add, AddCommand.class)
+                .command("assists", commands.admin.assists, AssistsCommand.class)
                 .command("base", commands.admin.base, BaseAdminCommand.class)
                 .command("ban", commands.admin.ban, BanCommand.class)
                 .command("deaths", commands.admin.deaths, DeathsCommand.class)
@@ -125,6 +128,7 @@ public final class FunnyCommandsConfiguration {
                 .command("kills", commands.admin.kills, KillsCommand.class)
                 .command("leader", commands.admin.leader, LeaderAdminCommand.class)
                 .command("lives", commands.admin.lives, LivesCommand.class)
+                .command("logouts", commands.admin.logouts, LogoutsCommand.class)
                 .command("main", commands.admin.main, MainCommand.class)
                 .command("move", commands.admin.move, MoveCommand.class)
                 .command("name", commands.admin.name, NameCommand.class)

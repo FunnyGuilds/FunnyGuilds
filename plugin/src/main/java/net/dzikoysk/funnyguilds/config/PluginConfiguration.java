@@ -59,10 +59,7 @@ import panda.std.Option;
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderów znajduje się tutaj:")
-@Header("https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#funnyguilds")
-@Header(" ")
-@Header("FunnyGuilds wspiera także placeholdery w BungeeTabListPlus")
-@Header("Placeholdery są dokładnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiście)")
+@Header("https://github.com/FunnyGuilds/FunnyGuilds/wiki/%5BPL%5D-PlaceholderAPI")
 @Header(" ")
 @Header("Jeżeli chcesz, aby dana wiadomość była pusta, zamiast wiadomości umieść: ''")
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
@@ -1205,7 +1202,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
-    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, PlaceholderAPI, HolographicDisplays")
+    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, HolographicDisplays")
     @Comment("Aby zostawić wszystkie hooki włączone wystarczy wpisać: disabled-hooks: []")
     public Set<String> disabledHooks = new HashSet<>();
 

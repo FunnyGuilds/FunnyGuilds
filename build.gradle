@@ -4,8 +4,9 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
     id 'checkstyle'
-    id 'org.openrewrite.rewrite' version '5.27.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'org.openrewrite.rewrite' version '5.30.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id("xyz.jpenilla.run-paper") version "1.0.6"
 }
 
 rewrite {
@@ -22,6 +23,7 @@ allprojects {
 
     java {
         withSourcesJar()
+        withJavadocJar()
     }
 
     repositories {
@@ -91,8 +93,8 @@ subprojects {
                     project.getRepositories().findAll { repo ->
                         if (repo.getUrl().toString().startsWith('http')) {
                             def repository = repositories.appendNode('repository')
-                            repository.appendNode('id', repo.getDisplayName())
-                            repository.appendNode('url', repo.getUrl().toString())
+                            repository.appendNode('id', repo.getUrl().toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
+                            repository.appendNode('url', repo.getUrl().toString().trim())
                         }
                     }
                 }
