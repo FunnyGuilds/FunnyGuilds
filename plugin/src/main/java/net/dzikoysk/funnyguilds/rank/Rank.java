@@ -29,12 +29,18 @@ public abstract class Rank<T extends MutableEntity> {
     }
 
     /**
-     * @return position in which the player is in the top, return 0 if the player is not in the top
+     * @param top the id of the top - you can use {@link DefaultTops} to get ids of default built-in tops
+     *
+     * @return position in which entity is for the given top, return 0 if entity is not in the top
      */
     public int getPosition(String top) {
         return this.position.getOrDefault(top.toLowerCase(Locale.ROOT), 0);
     }
 
+    /**
+     * You should not use this method since this value will be overwritten in the next top recalculation
+     * It's only for internal use (or when you added your own top from your plugin)
+     */
     public void setPosition(String top, int position) {
         this.position.put(top.toLowerCase(Locale.ROOT), position);
     }
