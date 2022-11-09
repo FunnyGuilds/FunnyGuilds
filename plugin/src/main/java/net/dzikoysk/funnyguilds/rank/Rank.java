@@ -29,7 +29,7 @@ public abstract class Rank<T extends MutableEntity> {
     }
 
     /**
-     * @param top the id of the top - tou can use {@link DefaultTops} to get ids of default built-in tops
+     * @param top the id of the top - you can use {@link DefaultTops} to get ids of default built-in tops
      *
      * @return position in which entity is for the given top, return 0 if entity is not in the top
      */
