@@ -39,6 +39,7 @@ public abstract class Rank<T extends MutableEntity> {
 
     /**
      * You should not use this method since this value will be overwritten in the next top recalculation
+     * It's only for internal use (or when you added your own top from your plugin)
      */
     public void setPosition(String top, int position) {
         this.position.put(top.toLowerCase(Locale.ROOT), position);
