@@ -88,7 +88,7 @@ public final class TimeUtils {
             return messages.getInflection(TimeDivision.SECOND).getFormatted(0, inflectionCase);
         }
 
-        LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
+        LinkedHashMap<TimeDivision, Integer> timeParts = new LinkedHashMap<>();
         for (TimeDivision division : LONG_DATE_DIVISIONS) {
             long divisionTime = time / division.getMillis();
 
@@ -113,7 +113,7 @@ public final class TimeUtils {
         return String.format("%.2f", duration.toMillis() / 1000.0);
     }
 
-    private static String formatTimeParts(MessageConfiguration messages,LinkedHashMap<TimeDivision, Long> timeParts, String delimiter, Case inflectionCase) {
+    private static String formatTimeParts(MessageConfiguration messages,LinkedHashMap<TimeDivision, Integer> timeParts, String delimiter, Case inflectionCase) {
         StringBuilder timeStringBuilder = new StringBuilder();
         timeParts.forEach((key, partValue) -> {
             if (partValue == 0) {

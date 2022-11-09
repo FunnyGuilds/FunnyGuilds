@@ -21,6 +21,8 @@ dependencies {
     implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.6"
     // okaeri holographicdisplays commons
     implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.19"
+    // okaeri pluralize
+    implementation "eu.okaeri:okaeri-pluralize:1.1.1"
 
     // general stuff
     //noinspection GradlePackageUpdate

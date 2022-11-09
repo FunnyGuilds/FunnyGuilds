@@ -21,13 +21,41 @@ public class MessageConfiguration extends OkaeriConfig {
     public FunnyTimeFormatter dateFormat = new FunnyTimeFormatter("dd.MM.yyyy HH:mm:ss");
 
     public Map<TimeDivision, TimeInflection> timeInflection = ImmutableMap.<TimeDivision, TimeInflection>builder()
-            .put(TimeDivision.SECOND, new TimeInflection("sekunda", "sekundę", "sekundy", "sekund", "s"))
-            .put(TimeDivision.MINUTE, new TimeInflection("minuta", "minutę", "minuty", "minut", "m"))
-            .put(TimeDivision.HOUR, new TimeInflection("godzina", "godzinę", "godziny", "godzin", "h"))
-            .put(TimeDivision.DAY, new TimeInflection("dzień", "dni", "dni", "d"))
-            .put(TimeDivision.WEEK, new TimeInflection("tydzień", "tygodnie", "tygodni", "w"))
-            .put(TimeDivision.MONTH, new TimeInflection("miesiąc", "miesiące", "miesięcy", "mo"))
-            .put(TimeDivision.YEAR, new TimeInflection("rok", "lata", "lat", "y"))
+            .put(TimeDivision.SECOND, new TimeInflection(
+                            new String[] {"sekunda", "sekundy", "sekund"},
+                            new String[] {"sekundę", "sekundy", "sekund"},
+                            "s"
+                    ))
+            .put(TimeDivision.MINUTE, new TimeInflection(
+                            new String[] {"minuta", "minuty", "minut"},
+                            new String[] {"minutę", "minuty", "minut"},
+                            "m"
+                    ))
+            .put(TimeDivision.HOUR, new TimeInflection(
+                            new String[] {"godzina", "godziny", "godzin"},
+                            new String[] {"godzinę", "godziny", "godzin"},
+                            "h"
+                    ))
+            .put(TimeDivision.DAY, new TimeInflection(
+                            new String[] {"dzień", "dni", "dni"},
+                            new String[] {"dzień", "dni", "dni"},
+                            "d"
+                    ))
+            .put(TimeDivision.WEEK, new TimeInflection(
+                            new String[] {"tydzień", "tygodnie", "tygodni"},
+                            new String[] {"tydzień", "tygodnie", "tygodni"},
+                            "w"
+                    ))
+            .put(TimeDivision.MONTH, new TimeInflection(
+                            new String[] {"miesiąc", "miesiące", "miesięcy"},
+                            new String[] {"miesiąc", "miesiące", "miesięcy"},
+                            "ms"
+                    ))
+            .put(TimeDivision.YEAR, new TimeInflection(
+                            new String[] {"rok", "lata", "lat"},
+                            new String[] {"rok", "lata", "lat"},
+                            "y"
+                    ))
             .build();
 
     @Comment("")

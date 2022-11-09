@@ -1,83 +1,49 @@
 package net.dzikoysk.funnyguilds.config;
 
 import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.pluralize.Pluralize;
+import java.util.Locale;
 
 public class TimeInflection extends OkaeriConfig {
 
-    private String singularNominativeForm;
-    private String singularAccusativeForm;
-    private String doubleForm;
-    private String pluralForm;
+    private Locale locale;
+    private String[] nominativeInflection;
+    private String[] accusativeInflection;
     private String shortForm;
 
-    public TimeInflection(String singularNominativeForm, String singularAccusativeForm, String doubleForm, String pluralForm, String shortForm) {
-        this.singularNominativeForm = singularNominativeForm;
-        this.singularAccusativeForm = singularAccusativeForm;
-        this.doubleForm = doubleForm;
-        this.pluralForm = pluralForm;
+    public TimeInflection(Locale locale, String[] nominativeInflection, String[] accusativeInflection, String shortForm) {
+        this.locale = locale;
+        this.nominativeInflection = nominativeInflection;
+        this.accusativeInflection = accusativeInflection;
         this.shortForm = shortForm;
     }
 
-    public TimeInflection(String singularNominativeForm, String doubleForm, String pluralForm, String shortForm) {
-        this(singularNominativeForm, singularNominativeForm, doubleForm, pluralForm, shortForm);
-    }
-
-    public TimeInflection(String singularForm, String doubleForm, String shortForm) {
-        this(singularForm, doubleForm, doubleForm, shortForm);
-    }
-
-    public String getSingularNominativeForm() {
-        return this.singularNominativeForm;
-    }
-
-    public String getSingularAccusativeForm() {
-        return this.singularAccusativeForm;
-    }
-
-    public String getDoubleForm() {
-        return this.doubleForm;
-    }
-
-    public String getPluralForm() {
-        return this.pluralForm;
+    public TimeInflection(String[] nominativeInflection, String[] accusativeInflection, String shortForm) {
+        this(Locale.forLanguageTag("pl"), nominativeInflection, accusativeInflection, shortForm);
     }
 
     public String getShortForm() {
         return this.shortForm;
     }
 
-    public String getForm(long amount) {
+    public String getForm(int amount) {
         return this.getForm(amount, Case.NOMINATIVE);
     }
 
-    public String getForm(long amount, Case inflectionCase) {
+    public String getForm(int amount, Case inflectionCase) {
         if (inflectionCase == Case.SHORT) {
             return this.shortForm;
         }
 
-        if (amount == 1) {
-            if (inflectionCase == Case.ACCUSATIVE) {
-                return this.singularAccusativeForm;
-            }
-
-            return this.singularNominativeForm;
+        String[] inflection = this.nominativeInflection;
+        if (inflectionCase == Case.ACCUSATIVE) {
+            inflection = this.accusativeInflection;
         }
 
-        long onesNumber = amount % 10;
-        long tensNumber = amount % 100;
-
-        if (onesNumber < 2 || onesNumber > 4) {
-            return this.pluralForm;
-        }
-
-        if (tensNumber >= 12 && tensNumber <= 14) {
-            return this.pluralForm;
-        }
-
-        return this.doubleForm;
+        return Pluralize.pluralize(this.locale, amount, inflection);
     }
 
-    public String getFormatted(long amount, Case inflectionCase) {
+    public String getFormatted(int amount, Case inflectionCase) {
         if (inflectionCase == Case.SHORT) {
             return amount + this.getShortForm();
         }
