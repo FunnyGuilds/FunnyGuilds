@@ -3,8 +3,8 @@ updates:
 - package-ecosystem: gradle
   directory: "/"
   schedule:
-    interval: daily
-    time: "04:00"
+    interval: monthly
+    time: "20:00"
     timezone: "Europe/Warsaw"
   open-pull-requests-limit: 10
   ignore:
