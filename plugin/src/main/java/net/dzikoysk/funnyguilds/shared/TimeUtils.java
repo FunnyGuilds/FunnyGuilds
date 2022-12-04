@@ -96,7 +96,7 @@ public final class TimeUtils {
             if (divisionTime <= 0) {
                 continue;
             }
-            timeParts.put(division, divisionTime);
+            timeParts.put(division, (int) divisionTime);
         }
         return formatTimeParts(messages, timeParts, delimiter, inflectionCase);
     }
@@ -113,7 +113,7 @@ public final class TimeUtils {
         return String.format("%.2f", duration.toMillis() / 1000.0);
     }
 
-    private static String formatTimeParts(MessageConfiguration messages,LinkedHashMap<TimeDivision, Integer> timeParts, String delimiter, Case inflectionCase) {
+    private static String formatTimeParts(MessageConfiguration messages, LinkedHashMap<TimeDivision, Integer> timeParts, String delimiter, Case inflectionCase) {
         StringBuilder timeStringBuilder = new StringBuilder();
         timeParts.forEach((key, partValue) -> {
             if (partValue == 0) {
