@@ -20,6 +20,7 @@ permissions:
       funnyguilds.reload: true
       funnyguilds.admin.build: true
       funnyguilds.admin.interact: true
+      funnyguilds.admin.teleport: true
       funnyguilds.admin.notification: true
       funnyguilds.admin.disabledummy: false
 
