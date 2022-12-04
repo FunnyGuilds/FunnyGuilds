@@ -17,7 +17,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
     public void onTeleport(PlayerTeleportEvent event) {
         this.userManager.findByUuid(event.getPlayer().getUniqueId())
                 .filter(user -> event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.PLUGIN)
-                .filterNot(user -> user.hasPermission("funnyguilds.admin"))
+                .filterNot(user -> user.hasPermission("funnyguilds.admin.teleport"))
                 .filterNot(user -> this.isTeleportationToRegionAllowed(event.getTo(), user))
                 .peek(user -> {
                     user.sendMessage(this.messages.regionTeleport);
