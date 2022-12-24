@@ -3,15 +3,15 @@ plugins {
     id 'org.ajoberstar.grgit' version '4.1.1'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
-    id 'checkstyle'
-    id 'org.openrewrite.rewrite' version '5.32.0'
+    // id 'checkstyle'
+    // id 'org.openrewrite.rewrite' version '5.32.0'
     id 'org.jetbrains.kotlin.jvm' version '1.7.22'
     id("xyz.jpenilla.run-paper") version "1.1.0"
 }
 
-rewrite {
-    activeRecipe("org.openrewrite.java.format.AutoFormat")
-}
+//rewrite {
+//    activeRecipe("org.openrewrite.java.format.AutoFormat")
+//}
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
@@ -19,7 +19,7 @@ allprojects {
 
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
-    apply plugin: 'checkstyle'
+    // apply plugin: 'checkstyle'
 
     java {
         withSourcesJar()
