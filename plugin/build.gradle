@@ -74,7 +74,7 @@ processResources {
 }
 
 shadowJar {
-    archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.19).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.${grgit.log().size()} (MC 1.8-1.19).jar"
 
     relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
     relocate "panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities"
