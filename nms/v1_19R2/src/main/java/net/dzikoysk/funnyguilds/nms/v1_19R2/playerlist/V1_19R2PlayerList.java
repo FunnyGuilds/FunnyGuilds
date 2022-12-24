@@ -114,7 +114,7 @@ public class V1_19R2PlayerList implements PlayerList {
             packets.add(addPlayerPacket);
 
             ClientboundPlayerInfoUpdatePacket updatePlayerPacket = createPlayerInfoPacket(
-                    EnumSet.of(a.f), // update display name
+                    EnumSet.of(a.e, a.f), // update latency, update display name
                     updatePlayerList
             );
             packets.add(updatePlayerPacket);
