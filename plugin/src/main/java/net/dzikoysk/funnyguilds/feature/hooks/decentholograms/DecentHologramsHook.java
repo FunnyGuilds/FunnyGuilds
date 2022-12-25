@@ -7,10 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
+import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -30,6 +32,17 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
         super(name);
         this.plugin = plugin;
         this.config = plugin.getPluginConfiguration();
+    }
+
+    @Override
+    public HookInitResult init() {
+        Runnable updateTask = () -> this.plugin.getGuildManager().getGuilds().forEach(this::update);
+        long updateInterval = this.config.heart.hologram.updateInterval;
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, updateTask, 100L, updateInterval);
+        Bukkit.getPluginManager().registerEvents(this, this.plugin);
+
+        return HookInitResult.SUCCESS;
     }
 
     @Override
@@ -80,6 +93,11 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             return;
         }
         holo.delete();
+    }
+
+    @EventHandler
+    public void handleGuildCreate(GuildCreateEvent event) {
+        this.update(event.getGuild());
     }
 
     private static String prepareHologramName(Guild guild) {
