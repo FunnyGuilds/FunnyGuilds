@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
+import net.dzikoysk.funnyguilds.feature.hooks.decentholograms.DecentHologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
@@ -75,6 +76,11 @@ public class HookManager {
 
         this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, this.plugin), true)
                 .subscribe(hook -> HOLOGRAMS = hook);
+
+        if (HOLOGRAMS.isEmpty()) {
+            this.<HologramsHook>setupHook("DecentHolograms", true, pluginName -> new DecentHologramsHook(pluginName, this.plugin), true)
+                    .subscribe(hook -> HOLOGRAMS = hook);
+        }
     }
 
     public <T extends PluginHook> Completable<Option<T>> setupHook(String pluginName, boolean requireEnabled,
