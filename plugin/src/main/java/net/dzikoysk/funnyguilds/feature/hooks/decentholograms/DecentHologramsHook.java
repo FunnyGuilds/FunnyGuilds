@@ -51,6 +51,10 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
 
     @Override
     public void update(@NotNull Guild guild) {
+        this.update(guild, false);
+    }
+
+    public void update(@NotNull Guild guild, boolean updateLocation) {
         HologramConfiguration holoConfig = this.config.heart.hologram;
         if (!holoConfig.enabled) {
             return;
@@ -68,7 +72,9 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
                 (g) -> DHAPI.createHologram(prepareHologramName(guild), holoCenter, false)
         );
 
-        DHAPI.moveHologram(holo, holoCenter);
+        if (updateLocation) {
+            DHAPI.moveHologram(holo, holoCenter);
+        }
 
         List<String> lines = new ArrayList<>();
         if (holoConfig.item != Material.AIR) {
@@ -108,7 +114,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
 
     @EventHandler
     public void handleGuildMove(GuildMoveEvent event) {
-        this.update(event.getGuild());
+        this.update(event.getGuild(), true);
     }
 
     private static String prepareHologramName(Guild guild) {
