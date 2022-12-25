@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -17,7 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -47,6 +47,10 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
 
     @Override
     public void update(@NotNull Guild guild) {
+        this.update(guild, false);
+    }
+
+    private void update(@NotNull Guild guild, boolean updateLocation) {
         HologramConfiguration holoConfig = this.config.heart.hologram;
         if (!holoConfig.enabled) {
             return;
@@ -56,21 +60,25 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
         if (guildCenterOption.isEmpty()) {
             return;
         }
-        Location guildCenter = guildCenterOption.get();
+        Location holoCenter = guildCenterOption.get()
+                .add(holoConfig.locationCorrection);
 
         Hologram holo = this.holograms.computeIfAbsent(
                 guild,
-                (g) -> DHAPI.createHologram(prepareHologramName(guild), guildCenter, false)
+                (g) -> DHAPI.createHologram(prepareHologramName(guild), holoCenter, false)
         );
 
-        DHAPI.moveHologram(holo, guildCenter.add(holoConfig.locationCorrection));
+        if (updateLocation) {
+            DHAPI.moveHologram(holo, holoCenter);
+        }
+
         DHAPI.setHologramLines(holo, PandaStream.of(holoConfig.displayedLines)
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
                 .map(ChatUtils::colored)
                 .toList());
 
         if (holoConfig.item != Material.AIR) {
-            DHAPI.insertHologramLine(holo, 0, new ItemStack(holoConfig.item));
+            DHAPI.insertHologramLine(holo, 0, holoConfig.item);
         }
 
         holo.updateAll();
@@ -98,6 +106,11 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
     @EventHandler
     public void handleGuildCreate(GuildCreateEvent event) {
         this.update(event.getGuild());
+    }
+
+    @EventHandler
+    public void handleGuildMove(GuildMoveEvent event) {
+        this.update(event.getGuild(), true);
     }
 
     private static String prepareHologramName(Guild guild) {
