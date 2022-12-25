@@ -89,7 +89,6 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
         if (holo == null) {
             return;
         }
-
         holo.delete();
     }
 

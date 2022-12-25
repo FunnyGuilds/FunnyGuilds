@@ -2,6 +2,9 @@ package net.dzikoysk.funnyguilds.feature.hooks.decentholograms;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
+import eu.decentsoftware.holograms.api.utils.items.HologramItem;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -18,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -47,10 +51,6 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
 
     @Override
     public void update(@NotNull Guild guild) {
-        this.update(guild, false);
-    }
-
-    private void update(@NotNull Guild guild, boolean updateLocation) {
         HologramConfiguration holoConfig = this.config.heart.hologram;
         if (!holoConfig.enabled) {
             return;
@@ -68,20 +68,18 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
                 (g) -> DHAPI.createHologram(prepareHologramName(guild), holoCenter, false)
         );
 
-        if (updateLocation) {
-            DHAPI.moveHologram(holo, holoCenter);
-        }
+        DHAPI.moveHologram(holo, holoCenter);
 
-        DHAPI.setHologramLines(holo, PandaStream.of(holoConfig.displayedLines)
+        List<String> lines = new ArrayList<>();
+        if (holoConfig.item != Material.AIR) {
+            // A little hacky, but prevents from hologram blinking
+            lines.add("#ICON:" + HologramItem.fromItemStack(new ItemStack(holoConfig.item)).getContent());
+        }
+        lines.addAll(PandaStream.of(holoConfig.displayedLines)
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
                 .map(ChatUtils::colored)
                 .toList());
-
-        if (holoConfig.item != Material.AIR) {
-            DHAPI.insertHologramLine(holo, 0, holoConfig.item);
-        }
-
-        holo.updateAll();
+        DHAPI.setHologramLines(holo, lines);
     }
 
     @Override
@@ -90,7 +88,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             return;
         }
 
-        this.holograms.values().forEach(Hologram::delete);
+        this.holograms.values().forEach(Hologram::destroy);
         this.holograms.clear();
     }
 
@@ -100,7 +98,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
         if (holo == null) {
             return;
         }
-        holo.delete();
+        holo.destroy();
     }
 
     @EventHandler
@@ -110,11 +108,11 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
 
     @EventHandler
     public void handleGuildMove(GuildMoveEvent event) {
-        this.update(event.getGuild(), true);
+        this.update(event.getGuild());
     }
 
     private static String prepareHologramName(Guild guild) {
-        return "funnyguilds:" + "guild:" + guild.getName();
+        return "funnyguilds:guild:" + guild.getName();
     }
 
 }
