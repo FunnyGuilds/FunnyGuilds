@@ -75,10 +75,20 @@ public class HookManager {
                 .subscribe(hook -> PLACEHOLDER_API = hook);
 
         this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, this.plugin), true)
-                .subscribe(hdHook -> HOLOGRAMS = hdHook);
+                .subscribe(hook -> {
+                    if (HOLOGRAMS.isDefined()) {
+                        return;
+                    }
+                    HOLOGRAMS = hook;
+                });
 
         this.<HologramsHook>setupHook("DecentHolograms", true, pluginName -> new DecentHologramsHook(pluginName, this.plugin), true)
-                .subscribe(dhHook -> HOLOGRAMS = dhHook);
+                .subscribe(hook -> {
+                    if (HOLOGRAMS.isDefined()) {
+                        return;
+                    }
+                    HOLOGRAMS = hook;
+                });
     }
 
     public <T extends PluginHook> Completable<Option<T>> setupHook(String pluginName, boolean requireEnabled,
