@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -36,7 +35,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, user.getName()));
+        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, user));
 
         guild.removeMember(user);
         user.removeGuild();
@@ -50,9 +49,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         this.broadcastMessage(formatter.format(this.messages.broadcastKick));
         user.sendMessage(formatter.format(this.messages.kickToPlayer));
 
-        this.funnyServer.getPlayer(user).peek(player -> {
-            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player));
-        });
+        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, user));
     }
 
 }

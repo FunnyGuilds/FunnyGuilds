@@ -22,7 +22,9 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
@@ -133,7 +135,10 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
-    private IndividualPrefixManager individualPrefixManager;
+
+    private ScoreboardService scoreboardService;
+    private IndividualNameTagManager individualNameTagManager;
+    private DummyManager dummyManager;
 
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
@@ -233,7 +238,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
-        this.individualPrefixManager = new IndividualPrefixManager(this);
+        this.scoreboardService = new ScoreboardService(this);
+        this.individualNameTagManager = new IndividualNameTagManager(this);
+        this.dummyManager = new DummyManager(this.pluginConfiguration, this.userManager, this.scoreboardService);
 
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
@@ -302,7 +309,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
-            resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
+            resources.on(IndividualNameTagManager.class).assignInstance(this.individualNameTagManager);
+            resources.on(DummyManager.class).assignInstance(this.dummyManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
             resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
@@ -473,9 +481,7 @@ public class FunnyGuilds extends JavaPlugin {
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
             UserCache cache = user.getCache();
-
-            cache.updateScoreboardIfNull(player);
-            cache.getDummy();
+            //TODO: Handle reloading in scoreboard
 
             if (!this.tablistConfiguration.playerListEnable) {
                 continue;
@@ -583,8 +589,16 @@ public class FunnyGuilds extends JavaPlugin {
         return this.funnyServer;
     }
 
-    public IndividualPrefixManager getIndividualPrefixManager() {
-        return this.individualPrefixManager;
+    public ScoreboardService getScoreboardService() {
+        return this.scoreboardService;
+    }
+
+    public IndividualNameTagManager getIndividualNameTagManager() {
+        return this.individualNameTagManager;
+    }
+
+    public DummyManager getDummyManager() {
+        return this.dummyManager;
     }
 
     public GuildInvitationList getGuildInvitationList() {

@@ -974,27 +974,43 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
     public RawString ptopOffline = new RawString("&c");
 
-    @CustomKey("use-shared-scoreboard")
-    @Comment("")
-    @Comment("Czy FunnyGuilds powinno korzystać ze wspoldzielonego scoreboarda")
-    @Comment("Ta opcja pozwala na wspólne działanie pluginu FunnyGuilds oraz innych pluginów modyfikujących scoreboard")
-    @Comment("UWAGA: opcja eksperymentalna i może powodować błędy przy wyświetlaniu rzeczy zależnych od scoreboardów!")
-    public boolean useSharedScoreboard = false;
+    public Scoreboard scoreboard = new Scoreboard();
 
-    @Comment("")
-    @Comment("Czy włączyć dummy z punktami")
-    @Comment("UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
-    @CustomKey("dummy-enable")
-    public boolean dummyEnable = true;
+    public static class Scoreboard extends OkaeriConfig {
 
-    @Comment("")
-    @Comment("Wygląd nazwy wyświetlanej za punktami")
-    public RawString dummySuffix = new RawString("pkt");
+        @Comment("Czy systemy oparte na scoreboardzie (podane niżej) powinny być włączone?")
+        public boolean enabled = true;
 
-    @Comment("")
-    @Comment("Czy tagi gildyjne obok nicku gracza mają byc włączone")
-    @CustomKey("guild-tag-enabled")
-    public boolean guildTagEnabled = true;
+        @Comment("")
+        @Comment("Czy FunnyGuilds powinno korzystać ze współdzielonego scoreboarda")
+        @Comment("Ta opcja pozwala na wspólne działanie pluginu FunnyGuilds oraz innych pluginów modyfikujących scoreboard")
+        @Comment("UWAGA: opcja eksperymentalna i może powodować błędy przy wyświetlaniu rzeczy zależnych od scoreboardów!")
+        public boolean useSharedScoreboard = false;
+
+        public NameTag nameTag = new NameTag();
+
+        public static class NameTag extends OkaeriConfig {
+
+            @Comment("Czy system nametag'ów powinien być włączony (wartość przed i po nicku gracza)")
+            public boolean enabled = true;
+
+        }
+
+        public Dummy dummy = new Dummy();
+
+        public static class Dummy extends OkaeriConfig {
+
+            @Comment("Czy włączyć dummy z punktami (liczbę punktów pod nickiem gracza)")
+            @Comment("UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
+            public boolean enabled = true;
+
+            @Comment("")
+            @Comment("Wygląd nazwy wyświetlanej za punktami")
+            public RawString suffix = new RawString("pkt");
+
+        }
+
+    }
 
     @Comment("")
     @Comment("Czy tag gildii podany przy tworzeniu gildii powinien zachować formę taką, w jakiej został wpisany")

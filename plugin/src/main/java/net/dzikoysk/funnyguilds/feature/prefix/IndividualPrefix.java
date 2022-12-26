@@ -21,6 +21,7 @@ public class IndividualPrefix {
     }
 
     protected void addPlayer(String player) {
+        if (true) return;
         this.plugin.getUserManager().findByName(player)
                 .filter(User::hasGuild)
                 .peek(byName -> {
@@ -54,6 +55,7 @@ public class IndividualPrefix {
     }
 
     public void addGuild(Guild to) {
+        if (true) return;
         if (to == null) {
             return;
         }
@@ -98,6 +100,7 @@ public class IndividualPrefix {
     }
 
     protected void removePlayer(String playerName) {
+        if (true) return;
         Team team = this.getScoreboard().getEntryTeam(playerName);
         if (team != null) {
             team.removeEntry(playerName);
@@ -107,6 +110,7 @@ public class IndividualPrefix {
     }
 
     protected void removeGuild(Guild guild) {
+        if (true) return;
         if (guild == null) {
             return;
         }
@@ -124,6 +128,7 @@ public class IndividualPrefix {
     }
 
     public void initialize() {
+        if (true) return;
         Set<Guild> guilds = this.plugin.getGuildManager().getGuilds();
         Scoreboard scoreboard = this.getScoreboard();
 
