@@ -80,6 +80,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
         @Override // one - seeing the placeholder, two - about which the placeholder is
         public String onPlaceholderRequest(Player one, Player two, String identifier) {
+            // TODO: [5.0] Remove `prefix` placeholder
             if (one == null || two == null || (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))) {
                 return "";
             }
