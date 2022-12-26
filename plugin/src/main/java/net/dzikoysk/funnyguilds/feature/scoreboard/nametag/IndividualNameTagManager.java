@@ -22,6 +22,13 @@ public class IndividualNameTagManager {
         this.pluginConfiguration = plugin.getPluginConfiguration();
         this.userManager = plugin.getUserManager();
         this.scoreboardService = plugin.getScoreboardService();
+
+        Bukkit.getScheduler().runTaskTimer(
+                plugin,
+                this::updatePlayers,
+                100,
+                this.pluginConfiguration.scoreboard.nameTag.updateRate.getSeconds()
+        );
     }
 
     // Ensures specific user has their own nametag

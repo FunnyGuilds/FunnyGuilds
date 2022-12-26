@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.dummy;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
 import net.dzikoysk.funnyguilds.user.User;
@@ -13,10 +14,17 @@ public class DummyManager {
     private final UserManager userManager;
     private final ScoreboardService scoreboardService;
 
-    public DummyManager(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
-        this.pluginConfiguration = pluginConfiguration;
-        this.userManager = userManager;
-        this.scoreboardService = scoreboardService;
+    public DummyManager(FunnyGuilds plugin) {
+        this.pluginConfiguration = plugin.getPluginConfiguration();
+        this.userManager = plugin.getUserManager();
+        this.scoreboardService = plugin.getScoreboardService();
+
+        Bukkit.getScheduler().runTaskTimer(
+                plugin,
+                this::updatePlayers,
+                100,
+                this.pluginConfiguration.scoreboard.dummy.updateRate.getSeconds()
+        );
     }
 
     public void updatePlayers() {

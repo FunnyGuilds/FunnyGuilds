@@ -243,7 +243,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.scoreboardService = new ScoreboardService(this);
         this.individualNameTagManager = new IndividualNameTagManager(this);
-        this.dummyManager = new DummyManager(this.pluginConfiguration, this.userManager, this.scoreboardService);
+        this.dummyManager = new DummyManager(this);
 
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);

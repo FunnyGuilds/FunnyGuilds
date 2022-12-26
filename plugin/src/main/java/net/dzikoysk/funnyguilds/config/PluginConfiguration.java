@@ -643,7 +643,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czas przez jaki osoba, która zaatakowała gracza, który zginął, ma być uznawany za jego zabójcę")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
     @Comment("Przykład: 1m30s")
     @CustomKey("rank-farming-consideration-timeout")
     public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
@@ -991,8 +991,14 @@ public class PluginConfiguration extends OkaeriConfig {
 
         public static class NameTag extends OkaeriConfig {
 
-            @Comment("Czy system nametag'ów powinien być włączony (wartość przed i po nicku gracza)")
+            @Comment("Czy system nametagów powinien być włączony (wartość przed i po nicku gracza)")
             public boolean enabled = true;
+
+            @Comment("Co jaki czas nametagi wszystkich graczy powinny być odświażane (niezależnie od innych triggerów)")
+            @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
+            @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
+            @Comment("Przykład: 1m30s")
+            public Duration updateRate = Duration.ofMinutes(1);
 
         }
 
@@ -1003,6 +1009,12 @@ public class PluginConfiguration extends OkaeriConfig {
             @Comment("Czy włączyć dummy z punktami (liczbę punktów pod nickiem gracza)")
             @Comment("UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
             public boolean enabled = true;
+
+            @Comment("Co jaki czas dummy wszystkich graczy powinny być odświażane (niezależnie od innych triggerów)")
+            @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
+            @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
+            @Comment("Przykład: 1m30s")
+            public Duration updateRate = Duration.ofMinutes(1);
 
             @Comment("")
             @Comment("Wygląd nazwy wyświetlanej za punktami")
