@@ -40,9 +40,11 @@ import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
@@ -944,20 +946,59 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean logGuildChat = false;
 
     @Comment("")
-    @Comment("Wygląd tagu osób w tej samej gildii")
-    public RawString prefixOur = new RawString("&a{TAG}&f ");
+    public RelationalTag relationalTag = new RelationalTag();
 
-    @Comment("")
-    @Comment("Wygląd tagu gildii sojuszniczej")
-    public RawString prefixAllies = new RawString("&6{TAG}&f ");
+    public static class RelationalTag extends OkaeriConfig {
 
-    @Comment("")
-    @Comment("Wygląd tagu wrogiej gildii")
-    public RawString prefixEnemies = new RawString("&c{TAG}&f ");
+        @Comment("Wygląd tagu osób w tej samej gildii")
+        public RawString our = new RawString("&a{TAG}&f");
 
-    @Comment("")
-    @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
-    public RawString prefixOther = new RawString("&7{TAG}&f ");
+        @Comment("")
+        @Comment("Wygląd tagu gildii sojuszniczej")
+        public RawString allies = new RawString("&6{TAG}&f");
+
+        @Comment("")
+        @Comment("Wygląd tagu wrogiej gildii")
+        public RawString enemies = new RawString("&c{TAG}&f");
+
+        @Comment("")
+        @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
+        public RawString other = new RawString("&7{TAG}&f");
+
+        public String choseTag(Guild guild, Guild targetGuild) {
+            if (targetGuild == null) {
+                return "";
+            }
+
+            if (guild == null) {
+                return this.other.getValue();
+            }
+
+            if (guild.equals(targetGuild)) {
+                return this.our.getValue();
+            }
+
+            if (guild.isAlly(targetGuild)) {
+                return this.allies.getValue();
+            }
+
+            if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
+                return this.enemies.getValue();
+            }
+
+            return this.other.getValue();
+        }
+
+        public String choseAndPrepareTag(Guild guild, Guild targetGuild) {
+            if (targetGuild == null) {
+                return "";
+            }
+
+            return FunnyFormatter.of("{TAG}", targetGuild.getTag())
+                    .format(this.choseTag(guild, targetGuild));
+        }
+
+    }
 
     @Comment("")
     @Comment("Czy ptop-online/ptop-offline mają uznawać graczy na vanishu za graczy offline")
@@ -975,6 +1016,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
     public RawString ptopOffline = new RawString("&c");
 
+    @Comment("")
     public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();
 
     @Comment("")

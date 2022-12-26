@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
-import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -132,7 +131,7 @@ public class IndividualNameTag {
 
         FunnyFormatter formatter = FunnyFormatter.of(
                 "{REL_TAG}",
-                IndividualPrefix.chooseAndPreparePrefix(this.plugin.getPluginConfiguration(), guild, targetGuild)
+                this.plugin.getPluginConfiguration().relationalTag.choseTag(guild, targetGuild)
         );
         value = formatter.format(value);
 

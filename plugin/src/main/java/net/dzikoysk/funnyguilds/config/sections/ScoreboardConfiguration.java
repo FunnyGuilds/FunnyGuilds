@@ -20,6 +20,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
     @Comment("UWAGA: opcja eksperymentalna i może powodować błędy przy wyświetlaniu rzeczy zależnych od scoreboardów!")
     public boolean useSharedScoreboard = false;
 
+    @Comment("")
     public NameTag nameTag = new NameTag();
 
     public static class NameTag extends OkaeriConfig {
@@ -28,17 +29,19 @@ public class ScoreboardConfiguration extends OkaeriConfig {
         public boolean enabled = true;
 
         @Comment("")
-        @Comment("Co jaki czas nametagi wszystkich graczy powinny być odświażane (niezależnie od innych triggerów)")
+        @Comment("Co jaki czas nametagi wszystkich graczy powinny być odświeżane (niezależnie od innych triggerów)")
         @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
         @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
         @Comment("Przykład: 1m30s")
         public Duration updateRate = Duration.ofMinutes(1);
 
+        @Comment("")
         @Comment("Konfiguracja prefixu (wartość przed nickiem gracza)")
         @Comment("Wspierane placeholdery: {TAG}, {REL_TAG}, {NAME}")
         @Comment("Wspierane jest również PlaceholderAPI (w tym relacyjne placeholdery)")
         public Value prefix = new Value(new RawString(""), new RawString("{REL_TAG} "));
 
+        @Comment("")
         @Comment("Konfiguracja suffixu (wartość po nicku gracza)")
         @Comment("Wspierane placeholdery: {TAG}, {REL_TAG}, {NAME}")
         @Comment("Wspierane jest również PlaceholderAPI (w tym relacyjne placeholdery)")
@@ -91,6 +94,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
 
     }
 
+    @Comment("")
     public Dummy dummy = new Dummy();
 
     public static class Dummy extends OkaeriConfig {
@@ -100,7 +104,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
         public boolean enabled = true;
 
         @Comment("")
-        @Comment("Co jaki czas dummy wszystkich graczy powinny być odświażane (niezależnie od innych triggerów)")
+        @Comment("Co jaki czas dummy wszystkich graczy powinny być odświeżane (niezależnie od innych triggerów)")
         @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
         @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
         @Comment("Przykład: 1m30s")

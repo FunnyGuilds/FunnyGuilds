@@ -6,8 +6,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
-import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -82,7 +80,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
         @Override // one - seeing the placeholder, two - about which the placeholder is
         public String onPlaceholderRequest(Player one, Player two, String identifier) {
-            if (one == null || two == null || !identifier.equalsIgnoreCase("prefix")) {
+            if (one == null || two == null || (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))) {
                 return "";
             }
 
@@ -94,10 +92,9 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return "";
             }
 
-            return IndividualPrefix.chooseAndPreparePrefix(
-                    this.plugin.getPluginConfiguration(),
-                    userOneOption.get().getGuild().orElseGet((Guild) null),
-                    userTwoOption.get().getGuild().orElseGet((Guild) null)
+            return this.plugin.getPluginConfiguration().relationalTag.choseAndPrepareTag(
+                    userOneOption.get().getGuild().orNull(),
+                    userTwoOption.get().getGuild().orNull()
             );
         }
 
