@@ -35,10 +35,9 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, user));
-
         guild.removeMember(user);
         user.removeGuild();
+        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, user));
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
@@ -48,8 +47,6 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         this.sendMessage(sender, formatter.format(this.messages.kickToOwner));
         this.broadcastMessage(formatter.format(this.messages.broadcastKick));
         user.sendMessage(formatter.format(this.messages.kickToPlayer));
-
-        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, user));
     }
 
 }

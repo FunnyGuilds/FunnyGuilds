@@ -5,6 +5,10 @@ import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
+import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -91,7 +95,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
@@ -466,6 +469,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void handleReload() {
+        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
         for (Player player : this.getServer().getOnlinePlayers()) {
             FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
             FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
@@ -479,9 +483,6 @@ public class FunnyGuilds extends JavaPlugin {
 
             inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
-
-            UserCache cache = user.getCache();
-            //TODO: Handle reloading in scoreboard
 
             if (!this.tablistConfiguration.playerListEnable) {
                 continue;
@@ -499,8 +500,13 @@ public class FunnyGuilds extends JavaPlugin {
                     this.tablistConfiguration.playerListFillCells
             );
 
-            cache.setPlayerList(individualPlayerList);
+            user.getCache().setPlayerList(individualPlayerList);
         }
+
+        this.concurrencyManager.postRequests(
+                new NameTagGlobalUpdateRequest(this),
+                new DummyGlobalUpdateRequest(this)
+        );
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
