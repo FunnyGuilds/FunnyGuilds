@@ -44,10 +44,10 @@ public class DummyManager {
 
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
-                .forEach(onlineUser -> this.scoreboardService.updatePlayer(
-                        onlineUser,
-                        () -> onlineUser.getCache().getDummy().updateScore(user)
-                ));
+                .forEach(onlineUser -> {
+                    this.scoreboardService.updatePlayer(onlineUser);
+                    onlineUser.getCache().getDummy().updateScore(user);
+                });
     }
 
 }

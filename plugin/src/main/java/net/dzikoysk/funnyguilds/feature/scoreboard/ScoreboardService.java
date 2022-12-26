@@ -23,17 +23,17 @@ public class ScoreboardService {
         this.userManager = plugin.getUserManager();
     }
 
-    public void updatePlayers(Runnable afterUpdate) {
+    public void updatePlayers() {
         if (!this.pluginConfiguration.scoreboard.enabled) {
             return;
         }
 
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
-                .forEach(user -> this.updatePlayer(user, afterUpdate));
+                .forEach(user -> this.updatePlayer(user));
     }
 
-    public void updatePlayer(User user, Runnable afterUpdate) {
+    public void updatePlayer(User user) {
         if (!this.pluginConfiguration.scoreboard.enabled) {
             return;
         }
@@ -47,7 +47,6 @@ public class ScoreboardService {
         cache.getScoreboard().peek(scoreboard -> {
             try {
                 player.setScoreboard(scoreboard);
-                afterUpdate.run();
             }
             catch (IllegalStateException e) {
                 FunnyGuilds.getPluginLogger().error("[ScoreboardService] Cannot set scoreboard for " + user.getName(), e);
@@ -64,7 +63,6 @@ public class ScoreboardService {
                 player.setScoreboard(scoreboard);
             }
             cache.setScoreboard(scoreboard);
-            afterUpdate.run();
         });
     }
 }

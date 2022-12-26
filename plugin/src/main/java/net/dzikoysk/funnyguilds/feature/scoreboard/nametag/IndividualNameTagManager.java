@@ -37,13 +37,12 @@ public class IndividualNameTagManager {
             return;
         }
 
-        this.scoreboardService.updatePlayer(user, () -> {
-            UserCache userCache = user.getCache();
-            userCache.getIndividualNameTag().onEmpty(() -> {
-                IndividualNameTag nameTag = new IndividualNameTag(this.plugin, user);
-                nameTag.initialize();
-                userCache.setIndividualNameTag(nameTag);
-            });
+        this.scoreboardService.updatePlayer(user);
+        UserCache userCache = user.getCache();
+        userCache.getIndividualNameTag().onEmpty(() -> {
+            IndividualNameTag nameTag = new IndividualNameTag(this.plugin, user);
+            nameTag.initialize();
+            userCache.setIndividualNameTag(nameTag);
         });
     }
 
