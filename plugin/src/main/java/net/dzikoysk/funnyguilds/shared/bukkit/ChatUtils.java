@@ -14,16 +14,19 @@ public final class ChatUtils {
     private ChatUtils() {
     }
 
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})");
-    private static final Pattern REVERSE_HEX_PATTERN = Pattern.compile("&[xX]&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})");
-
     public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
+
+    private static final Pattern HEX_TO_LEGACY_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})");
+    private static final Pattern LEGACY_TO_HEX_PATTERN = Pattern.compile("&[xX]&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})");
+
+    private static final String HEX_COLOR_PATTERN = "&#$1$2$3$4$5$6";
+    private static final String LEGACY_COLOR_PATTERN = "&x&$1&$2&$3&$4&$5&$6";
 
     public static String colored(String message) {
         if (message == null) {
             return "";
         }
-        message = HEX_PATTERN.matcher(message).replaceAll("&x&$1&$2&$3&$4&$5&$6");
+        message = HEX_TO_LEGACY_PATTERN.matcher(message).replaceAll(LEGACY_COLOR_PATTERN);
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
@@ -36,7 +39,7 @@ public final class ChatUtils {
             return null;
         }
         String rawString = DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
-        rawString = REVERSE_HEX_PATTERN.matcher(rawString).replaceAll("&#$1$2$3$4$5$6");
+        rawString = LEGACY_TO_HEX_PATTERN.matcher(rawString).replaceAll(HEX_COLOR_PATTERN);
         return rawString;
     }
 
