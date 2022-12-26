@@ -27,13 +27,13 @@ public class IndividualNameTagManager {
                 plugin,
                 this::updatePlayers,
                 100,
-                this.pluginConfiguration.scoreboard.nameTag.updateRate.getSeconds()
+                this.pluginConfiguration.scoreboard.nametag.updateRate.getSeconds()
         );
     }
 
     // Ensures specific user has their own nametag
     public void updateNameTag(User user) {
-        if (!this.pluginConfiguration.scoreboard.nameTag.enabled) {
+        if (!this.pluginConfiguration.scoreboard.nametag.enabled) {
             return;
         }
 
@@ -49,7 +49,7 @@ public class IndividualNameTagManager {
 
     // Update everyone to everyone
     public void updatePlayers() {
-        if (!this.pluginConfiguration.scoreboard.nameTag.enabled) {
+        if (!this.pluginConfiguration.scoreboard.nametag.enabled) {
             return;
         }
 
@@ -60,7 +60,7 @@ public class IndividualNameTagManager {
 
     // Update specific player to everyone
     public void updatePlayer(User user) {
-        if (!this.pluginConfiguration.scoreboard.nameTag.enabled) {
+        if (!this.pluginConfiguration.scoreboard.nametag.enabled) {
             return;
         }
 

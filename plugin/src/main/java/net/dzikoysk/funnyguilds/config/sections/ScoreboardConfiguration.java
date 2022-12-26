@@ -21,7 +21,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
     public boolean useSharedScoreboard = false;
 
     @Comment("")
-    public NameTag nameTag = new NameTag();
+    public NameTag nametag = new NameTag();
 
     public static class NameTag extends OkaeriConfig {
 

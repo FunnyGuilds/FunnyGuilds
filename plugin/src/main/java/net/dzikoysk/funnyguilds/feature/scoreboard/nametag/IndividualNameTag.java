@@ -69,7 +69,7 @@ public class IndividualNameTag {
 
         Team targetTeam = prepareTeam(scoreboard, target.getName());
 
-        ScoreboardConfiguration.NameTag nameTagConfig = this.plugin.getPluginConfiguration().scoreboard.nameTag;
+        ScoreboardConfiguration.NameTag nameTagConfig = this.plugin.getPluginConfiguration().scoreboard.nametag;
         targetTeam.setPrefix(this.prepareValue(prepareConfigValue(nameTagConfig.prefix, target), target));
         targetTeam.setSuffix(this.prepareValue(prepareConfigValue(nameTagConfig.suffix, target), target));
     }
