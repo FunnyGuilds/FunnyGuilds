@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
@@ -53,6 +54,10 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
                 .mapOpt(guild -> this.funnyServer.getPlayer(this.user)
                         .map(player -> Pair.of(player, guild))
                 )
+                .filter(playerToGuild -> playerToGuild.getSecond()
+                        .getEnderCrystal()
+                        .map(Location::getWorld)
+                        .is(guildWorld -> guildWorld.equals(playerToGuild.getFirst().getWorld())))
                 .forEach(playerToGuild -> this.displayGuildInfo(playerToGuild.getFirst(), playerToGuild.getSecond()));
     }
 
