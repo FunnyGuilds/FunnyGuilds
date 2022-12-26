@@ -35,6 +35,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
@@ -974,55 +975,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
     public RawString ptopOffline = new RawString("&c");
 
-    public Scoreboard scoreboard = new Scoreboard();
-
-    public static class Scoreboard extends OkaeriConfig {
-
-        @Comment("Czy systemy oparte na scoreboardzie (podane niżej) powinny być włączone?")
-        public boolean enabled = true;
-
-        @Comment("")
-        @Comment("Czy FunnyGuilds powinno korzystać ze współdzielonego scoreboarda")
-        @Comment("Ta opcja pozwala na wspólne działanie pluginu FunnyGuilds oraz innych pluginów modyfikujących scoreboard")
-        @Comment("UWAGA: opcja eksperymentalna i może powodować błędy przy wyświetlaniu rzeczy zależnych od scoreboardów!")
-        public boolean useSharedScoreboard = false;
-
-        public NameTag nameTag = new NameTag();
-
-        public static class NameTag extends OkaeriConfig {
-
-            @Comment("Czy system nametagów powinien być włączony (wartość przed i po nicku gracza)")
-            public boolean enabled = true;
-
-            @Comment("Co jaki czas nametagi wszystkich graczy powinny być odświażane (niezależnie od innych triggerów)")
-            @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-            @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
-            @Comment("Przykład: 1m30s")
-            public Duration updateRate = Duration.ofMinutes(1);
-
-        }
-
-        public Dummy dummy = new Dummy();
-
-        public static class Dummy extends OkaeriConfig {
-
-            @Comment("Czy włączyć dummy z punktami (liczbę punktów pod nickiem gracza)")
-            @Comment("UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
-            public boolean enabled = true;
-
-            @Comment("Co jaki czas dummy wszystkich graczy powinny być odświażane (niezależnie od innych triggerów)")
-            @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-            @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
-            @Comment("Przykład: 1m30s")
-            public Duration updateRate = Duration.ofMinutes(1);
-
-            @Comment("")
-            @Comment("Wygląd nazwy wyświetlanej za punktami")
-            public RawString suffix = new RawString("pkt");
-
-        }
-
-    }
+    public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();
 
     @Comment("")
     @Comment("Czy tag gildii podany przy tworzeniu gildii powinien zachować formę taką, w jakiej został wpisany")

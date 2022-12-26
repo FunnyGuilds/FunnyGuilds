@@ -1,11 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.RawString;
+import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -65,9 +70,9 @@ public class IndividualNameTag {
 
         Team targetTeam = prepareTeam(scoreboard, target.getName());
 
-        //TODO: Set normal values lol
-        targetTeam.setPrefix(target.getName());
-        targetTeam.setSuffix(ChatColor.RED + "Suffix");
+        ScoreboardConfiguration.NameTag nameTagConfig = this.plugin.getPluginConfiguration().scoreboard.nameTag;
+        targetTeam.setPrefix(this.prepareValue(prepareConfigValue(nameTagConfig.prefix, target), target));
+        targetTeam.setSuffix(this.prepareValue(prepareConfigValue(nameTagConfig.suffix, target), target));
     }
 
     public void removePlayer(User target) {
@@ -103,21 +108,69 @@ public class IndividualNameTag {
         return team;
     }
 
-    private String prepareValue(String value, User target) {
-        value = decorateValue(value, target);
-        if (value.length() > 16) {
-            value = value.substring(0, 16);
+    private String prepareValue(RawString value, User target) {
+        String formatted = decorateValue(value.getValue(), target);
+        if (formatted.length() > 16) {
+            formatted = formatted.substring(0, 16);
         }
-        return value;
+        return formatted;
     }
 
     private String decorateValue(String value, User target) {
         Player player = Bukkit.getPlayer(this.user.getUUID());
+        if (player == null) {
+            return value;
+        }
+
         Player targetPlayer = Bukkit.getPlayer(target.getUUID());
+        if (targetPlayer == null) {
+            return value;
+        }
+
+        Guild guild = this.user.getGuild().orNull();
+        Guild targetGuild = target.getGuild().orNull();
+
+        FunnyFormatter formatter = FunnyFormatter.of(
+                "{REL_TAG}",
+                IndividualPrefix.chooseAndPreparePrefix(this.plugin.getPluginConfiguration(), guild, targetGuild)
+        );
+        value = formatter.format(value);
+
+        String finalValue = value;
+        value = GuildPlaceholdersService.getSimplePlaceholders()
+                .map(placeholders -> placeholders.formatVariables(finalValue, target.getGuild().orNull()))
+                .orElseGet(value);
 
         value = HookUtils.replacePlaceholders(targetPlayer, player, value);
 
         return value;
+    }
+
+    private RawString prepareConfigValue(ScoreboardConfiguration.NameTag.Value value, User target) {
+        Option<Guild> guildOption = this.user.getGuild();
+        Option<Guild> targetGuildOption = target.getGuild();
+
+        if (targetGuildOption.isEmpty()) {
+            return value.getNoGuild();
+        }
+        else if (guildOption.isEmpty()) {
+            return value.getOtherGuild();
+        }
+
+        Guild guild = guildOption.get();
+        Guild targetGuild = targetGuildOption.get();
+
+        RawString finalValue = value.getOtherGuild();
+        if (guild.equals(targetGuild)) {
+            finalValue = value.getOurGuild();
+        }
+        else if (guild.isAlly(targetGuild) || targetGuild.isAlly(guild)) {
+            finalValue = value.getAlliesGuild();
+        }
+        else if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
+            finalValue = value.getEnemiesGuild();
+        }
+        return finalValue;
     }
 
 }
