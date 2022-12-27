@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -36,7 +38,12 @@ public class PlayerQuit extends AbstractFunnyListener {
                 }
             }
 
-            cache.setIndividualPrefix(null);
+            this.concurrencyManager.postRequests(
+                    new NameTagGlobalUpdateUserRequest(this.plugin, user),
+                    new DummyGlobalUpdateUserRequest(this.plugin, user)
+            );
+
+            cache.setIndividualNameTag(null);
             cache.setScoreboard(null);
             cache.setDummy(null);
             cache.setPlayerList(null);

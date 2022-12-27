@@ -4,7 +4,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
@@ -61,11 +61,11 @@ public final class WarCommand extends AbstractFunnyCommand {
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         guild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, enemyGuild));
+            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
         });
 
         enemyGuild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
+            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
         });
 
         this.concurrencyManager.postTask(taskBuilder.build());

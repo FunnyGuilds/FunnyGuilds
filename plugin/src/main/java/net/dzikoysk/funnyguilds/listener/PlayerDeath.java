@@ -199,10 +199,10 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         ConcurrencyTaskBuilder updateUserRequests = taskBuilder
-                .delegate(new DummyGlobalUpdateUserRequest(victim))
-                .delegate(new DummyGlobalUpdateUserRequest(attacker));
+                .delegate(new DummyGlobalUpdateUserRequest(this.plugin, victim))
+                .delegate(new DummyGlobalUpdateUserRequest(this.plugin, attacker));
         PandaStream.of(calculatedAssists.keySet())
-                .map(DummyGlobalUpdateUserRequest::new)
+                .map(user -> new DummyGlobalUpdateUserRequest(this.plugin, user))
                 .forEach(taskBuilder::delegate);
 
         this.concurrencyManager.postTask(updateUserRequests.build());

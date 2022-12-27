@@ -7,8 +7,7 @@ import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -242,8 +241,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         guild.getRegion().peek(region -> this.regionManager.addRegion(region));
 
         this.concurrencyManager.postRequests(
-                new PrefixGlobalAddGuildRequest(this.individualPrefixManager, guild),
-                new PrefixGlobalAddPlayerRequest(this.individualPrefixManager, user.getName()),
+                new NameTagGlobalUpdateUserRequest(this.plugin, user),
                 new DatabaseUpdateGuildRequest(this.plugin.getDataModel(), guild)
         );
 
