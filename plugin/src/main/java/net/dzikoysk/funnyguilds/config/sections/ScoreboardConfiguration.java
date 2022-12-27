@@ -37,13 +37,13 @@ public class ScoreboardConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Konfiguracja prefixu (wartość przed nickiem gracza)")
-        @Comment("Wspierane placeholdery: {TAG}, {REL_TAG}, {NAME}")
+        @Comment("Wspierane placeholdery: {TAG}, {REL_TAG}, {NAME}, {POS}")
         @Comment("Wspierane jest również PlaceholderAPI (w tym relacyjne placeholdery)")
         public Value prefix = new Value(new RawString(""), new RawString("{REL_TAG} "));
 
         @Comment("")
         @Comment("Konfiguracja suffixu (wartość po nicku gracza)")
-        @Comment("Wspierane placeholdery: {TAG}, {REL_TAG}, {NAME}")
+        @Comment("Wspierane placeholdery: {TAG}, {REL_TAG}, {NAME}, {POS}")
         @Comment("Wspierane jest również PlaceholderAPI (w tym relacyjne placeholdery)")
         public Value suffix = new Value();
 
