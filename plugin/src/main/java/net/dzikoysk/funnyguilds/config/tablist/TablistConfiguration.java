@@ -71,7 +71,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{G-LOGOUTS} - suma wylogowań członków gildii")
     @Comment("{G-AVG-LOGOUTS} - średnia liczba wylogowań członków gildii")
     @Comment("{G-KDR} - stosunek zabójstw do śmierci gildii")
-    @Comment("{G-KDA} - stosunek zabójstw i asyst do śmierci gracza")
+    @Comment("{G-KDA} - stosunek zabójstw i asyst do śmierci gildii")
     @Comment("{G-AVG-KDR} - średni stosunek zabójstw do śmierci członków gildii")
     @Comment("{G-AVG-KDA} - średni stosunek zabójstw + asyst do śmierci członków gildii")
     @Comment("{G-MEMBERS-ONLINE} - liczba członków gildii online")
