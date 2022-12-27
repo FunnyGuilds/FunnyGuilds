@@ -49,12 +49,12 @@ public class MessageConfiguration extends OkaeriConfig {
             .put(TimeDivision.MONTH, new TimeInflection(
                             new String[] {"miesiąc", "miesiące", "miesięcy"},
                             new String[] {"miesiąc", "miesiące", "miesięcy"},
-                            "ms"
+                            "mc"
                     ))
             .put(TimeDivision.YEAR, new TimeInflection(
                             new String[] {"rok", "lata", "lat"},
                             new String[] {"rok", "lata", "lat"},
-                            "y"
+                            "l"
                     ))
             .build();
 

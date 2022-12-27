@@ -9,7 +9,7 @@ public enum TimeDivision {
     HOUR(3600000L, "h", "godz"),
     DAY(86400000L, "d", "dni", "day"),
     WEEK(604800000L, "w", "t", "tyg"),
-    MONTH(2592000000L, "mo", "ms", "mies"),
+    MONTH(2592000000L, "mo", "ms", "mc", "mies"),
     YEAR(31536000000L,  "y", "r", "l", "lat", "rok");
 
     private final long millis;
