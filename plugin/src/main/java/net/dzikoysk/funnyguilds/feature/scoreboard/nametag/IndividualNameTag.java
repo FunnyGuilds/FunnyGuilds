@@ -131,7 +131,7 @@ public class IndividualNameTag {
 
         FunnyFormatter formatter = FunnyFormatter.of(
                 "{REL_TAG}",
-                this.plugin.getPluginConfiguration().relationalTag.choseTag(guild, targetGuild)
+                this.plugin.getPluginConfiguration().relationalTag.chooseTag(guild, targetGuild)
         );
         value = formatter.format(value);
 

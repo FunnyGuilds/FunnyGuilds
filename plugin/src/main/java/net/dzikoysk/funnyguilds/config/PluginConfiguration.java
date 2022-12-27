@@ -15,6 +15,7 @@ import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
 import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
+import eu.okaeri.validator.annotation.Nullable;
 import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
@@ -965,7 +966,7 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
         public RawString other = new RawString("&7{TAG}&f");
 
-        public String choseTag(Guild guild, Guild targetGuild) {
+        public String chooseTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return "";
             }
@@ -989,13 +990,13 @@ public class PluginConfiguration extends OkaeriConfig {
             return this.other.getValue();
         }
 
-        public String choseAndPrepareTag(Guild guild, Guild targetGuild) {
+        public String choseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return "";
             }
 
             return FunnyFormatter.of("{TAG}", targetGuild.getTag())
-                    .format(this.choseTag(guild, targetGuild));
+                    .format(this.chooseTag(guild, targetGuild));
         }
 
     }
