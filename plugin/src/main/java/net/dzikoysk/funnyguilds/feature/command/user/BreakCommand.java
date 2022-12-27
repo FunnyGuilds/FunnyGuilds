@@ -5,7 +5,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
@@ -65,11 +65,11 @@ public final class BreakCommand extends AbstractFunnyCommand {
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         guild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
+            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
         });
 
         oppositeGuild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
+            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
         });
 
         ConcurrencyTask task = taskBuilder.build();

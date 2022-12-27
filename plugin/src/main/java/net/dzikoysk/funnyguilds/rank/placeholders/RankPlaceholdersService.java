@@ -326,27 +326,14 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
     }
 
     private String formatGuildRank(String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
-        RawString prefix = new RawString("{TAG}");
+        String prefix = "{TAG}";
 
         if (this.tablistConfig.playerListUseRelationshipColors) {
-            prefix = this.config.prefixOther;
-
-            if (targetUser != null && targetUser.hasGuild()) {
-                Guild targetGuild = targetUser.getGuild().get();
-
-                if (guild.equals(targetGuild)) {
-                    prefix = this.config.prefixOur;
-                }
-                else if (targetGuild.isAlly(guild)) {
-                    prefix = this.config.prefixAllies;
-                }
-                else if (targetGuild.isEnemy(guild)) {
-                    prefix = this.config.prefixEnemies;
-                }
-            }
+            Guild viewerGuild = targetUser != null ? targetUser.getGuild().orNull() : null;
+            prefix = this.config.relationalTag.choseAndPrepareTag(viewerGuild, guild);
         }
 
-        String formattedPrefix = FunnyFormatter.format(prefix.getValue(), "{TAG}", guild.getTag());
+        String formattedPrefix = FunnyFormatter.format(prefix, "{TAG}", guild.getTag());
         return FunnyFormatter.format(text, placeholder, formattedPrefix + topFormat);
     }
 

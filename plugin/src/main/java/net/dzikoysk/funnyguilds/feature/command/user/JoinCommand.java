@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
@@ -81,7 +81,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         user.setGuild(guild);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        this.concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(this.individualPrefixManager, user.getName()));
+        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, user));
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())

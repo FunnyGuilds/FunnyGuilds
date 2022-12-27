@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -91,7 +91,7 @@ public class SQLDataModel implements DataModel {
         this.loadGuilds();
 
         ConcurrencyManager concurrencyManager = this.plugin.getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest(this.plugin.getIndividualPrefixManager()));
+        concurrencyManager.postRequests(new NameTagGlobalUpdateRequest(this.plugin));
     }
 
     public void loadUsers() {

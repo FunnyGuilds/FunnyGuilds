@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
@@ -52,17 +51,9 @@ public class PlayerJoin extends AbstractFunnyListener {
             cache.setPlayerList(individualPlayerList);
         }
 
-        cache.updateScoreboardIfNull(player);
-
-        if (this.config.guildTagEnabled && cache.getIndividualPrefix().isEmpty()) {
-            IndividualPrefix prefix = new IndividualPrefix(user);
-            prefix.initialize();
-            cache.setIndividualPrefix(prefix);
-        }
-
         this.concurrencyManager.postRequests(
-                new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player),
-                new DummyGlobalUpdateUserRequest(user)
+                new NameTagGlobalUpdateUserRequest(this.plugin, user),
+                new DummyGlobalUpdateUserRequest(this.plugin, user)
         );
 
         FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);

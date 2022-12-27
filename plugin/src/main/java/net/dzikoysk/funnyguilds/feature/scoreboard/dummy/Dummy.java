@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.prefix;
+package net.dzikoysk.funnyguilds.feature.scoreboard.dummy;
 
 import java.text.MessageFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -22,10 +22,6 @@ public class Dummy {
     }
 
     public void updateScore(User user) {
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
-            return;
-        }
-
         if (user == null) {
             return;
         }
@@ -36,8 +32,7 @@ public class Dummy {
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score but scoreboard hasn't been initialized yet " +
-                    "(maybe player left the game while updating?)");
+            FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score, but scoreboard hasn't been initialized.");
             return;
         }
 
@@ -51,28 +46,22 @@ public class Dummy {
     @SuppressWarnings("deprecation")
     private void initialize() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
-        if (!plugin.getPluginConfiguration().dummyEnable) {
-            return;
-        }
-
         if (this.user.hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
-                            "(maybe player left the game while initializing?)");
+            FunnyGuilds.getPluginLogger().debug("We're trying to initialize Dummy, but scoreboard hasn't been initialized.");
             return;
         }
-
         Scoreboard scoreboard = scoreboardOption.get();
-        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
 
+        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
         if (objective == null || !objective.getName().equals(OBJECTIVE_NAME)) {
             objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            objective.setDisplayName(plugin.getPluginConfiguration().dummySuffix.getValue());
+            objective.setDisplayName(plugin.getPluginConfiguration().scoreboard.dummy.suffix.getValue());
         }
 
         UserManager userManager = plugin.getUserManager();

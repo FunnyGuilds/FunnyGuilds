@@ -5,6 +5,10 @@ import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
+import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -22,7 +26,9 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
@@ -89,7 +95,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
@@ -133,7 +138,10 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
-    private IndividualPrefixManager individualPrefixManager;
+
+    private ScoreboardService scoreboardService;
+    private IndividualNameTagManager individualNameTagManager;
+    private DummyManager dummyManager;
 
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
@@ -233,7 +241,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
-        this.individualPrefixManager = new IndividualPrefixManager(this);
+        this.scoreboardService = new ScoreboardService(this);
+        this.individualNameTagManager = new IndividualNameTagManager(this);
+        this.dummyManager = new DummyManager(this);
 
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
@@ -302,7 +312,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
-            resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
+            resources.on(IndividualNameTagManager.class).assignInstance(this.individualNameTagManager);
+            resources.on(DummyManager.class).assignInstance(this.dummyManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
             resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
@@ -458,6 +469,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void handleReload() {
+        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
         for (Player player : this.getServer().getOnlinePlayers()) {
             Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
@@ -471,11 +483,6 @@ public class FunnyGuilds extends JavaPlugin {
             FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
             outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
-
-            UserCache cache = user.getCache();
-
-            cache.updateScoreboardIfNull(player);
-            cache.getDummy();
 
             if (!this.tablistConfiguration.playerListEnable) {
                 continue;
@@ -493,8 +500,13 @@ public class FunnyGuilds extends JavaPlugin {
                     this.tablistConfiguration.playerListFillCells
             );
 
-            cache.setPlayerList(individualPlayerList);
+            user.getCache().setPlayerList(individualPlayerList);
         }
+
+        this.concurrencyManager.postRequests(
+                new NameTagGlobalUpdateRequest(this),
+                new DummyGlobalUpdateRequest(this)
+        );
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
@@ -583,8 +595,16 @@ public class FunnyGuilds extends JavaPlugin {
         return this.funnyServer;
     }
 
-    public IndividualPrefixManager getIndividualPrefixManager() {
-        return this.individualPrefixManager;
+    public ScoreboardService getScoreboardService() {
+        return this.scoreboardService;
+    }
+
+    public IndividualNameTagManager getIndividualNameTagManager() {
+        return this.individualNameTagManager;
+    }
+
+    public DummyManager getDummyManager() {
+        return this.dummyManager;
     }
 
     public GuildInvitationList getGuildInvitationList() {
