@@ -137,7 +137,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("logouts", (guild, rank) -> rank.getLogouts(), () -> 0)
                 .property("avg-logouts", (guild, rank) -> rank.getAverageLogouts(), () -> 0)
                 .property("kdr", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()), () -> 0.0)
-                .property("avg-kdr", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getAverageKDR()), () -> 0.0);
+                .property("avg-kdr", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getAverageKDR()), () -> 0.0)
+                .property("kda", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getKDA()), () -> 0.0)
+                .property("avg-kda", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getAverageKDA()), () -> 0.0);
     }
 
     public static GuildPlaceholders createAlliesEnemiesPlaceholders(FunnyGuilds plugin) {

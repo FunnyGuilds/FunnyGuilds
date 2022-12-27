@@ -98,6 +98,11 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     @Override
+    public float getKDA() {
+        return this.deaths == 0 ? (this.kills + this.assists) : 1.0F * (this.kills + this.assists) / this.deaths;
+    }
+
+    @Override
     public int compareTo(@NotNull UserRank rank) {
         return UserComparator.POINTS_COMPARATOR.compare(this, rank);
     }
