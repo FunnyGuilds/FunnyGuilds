@@ -12,7 +12,7 @@ dependencies {
     }
 
     // funnyguilds & panda utilities
-    api "org.panda-lang:expressible:1.2.1"
+    api "org.panda-lang:expressible:1.2.2"
     implementation "net.dzikoysk:funnycommands:0.5.3"
 
     // okaeri config library
@@ -55,6 +55,7 @@ dependencies {
     }
     shadow "net.kyori:adventure-api:4.12.0"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
+    shadow "com.github.decentsoftware-eu:decentholograms:2.7.9"
 
     testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.12.1'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5:1.7.22'
@@ -76,7 +77,7 @@ processResources {
 }
 
 shadowJar {
-    archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.19).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.${grgit.log().size()} (MC 1.8-1.19).jar"
 
     relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
     relocate "panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities"
@@ -118,6 +119,6 @@ test {
 
 tasks {
     runServer {
-        minecraftVersion("1.18.2")
+        minecraftVersion("1.19.3")
     }
 }

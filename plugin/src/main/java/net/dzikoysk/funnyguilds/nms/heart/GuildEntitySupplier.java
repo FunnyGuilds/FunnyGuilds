@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.nms.heart;
 import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketSuppliers;
+import org.bukkit.World;
 import panda.std.stream.PandaStream;
 
 public class GuildEntitySupplier implements PacketSuppliers {
@@ -14,8 +15,9 @@ public class GuildEntitySupplier implements PacketSuppliers {
     }
 
     @Override
-    public Collection<FakeEntity> supplyFakeEntities(int chunkX, int chunkZ) {
+    public Collection<FakeEntity> supplyFakeEntities(World world, int chunkX, int chunkZ) {
         return PandaStream.of(this.helper.getGuildEntities().values())
+                .filter(entity -> entity.getLocation().getWorld().equals(world))
                 .filter(entity -> entity.getChunkX() == chunkX)
                 .filter(entity -> entity.getChunkZ() == chunkZ)
                 .toSet();

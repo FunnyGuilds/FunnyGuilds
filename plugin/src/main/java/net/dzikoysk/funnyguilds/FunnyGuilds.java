@@ -77,6 +77,7 @@ import net.dzikoysk.funnyguilds.nms.v1_16R3.V1_16R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R2.V1_18R2NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R1.V1_19R1NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_19R2.V1_19R2NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -458,17 +459,17 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
-            FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
-
             Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 continue;
             }
-
             User user = userOption.get();
 
+            FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
             inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
+
+            FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+            outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
             UserCache cache = user.getCache();
@@ -675,9 +676,12 @@ public class FunnyGuilds extends JavaPlugin {
                 return new V1_18R2NmsAccessor();
             case "v1_19_R1":
                 return new V1_19R1NmsAccessor();
+            case "v1_19_R2":
+                return new V1_19R2NmsAccessor();
             default:
-                throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
-                        Reflections.SERVER_VERSION));
+                throw new IllegalStateException(String.format(
+                        "Could not find matching NmsAccessor for currently running server version: %s", Reflections.SERVER_VERSION
+                ));
         }
     }
 
