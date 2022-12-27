@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
@@ -9,6 +10,7 @@ import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -19,10 +21,12 @@ import panda.std.stream.PandaStream;
 public class IndividualNameTag {
 
     private final FunnyGuilds plugin;
+    private final PluginConfiguration pluginConfiguration;
     private final User user;
 
     public IndividualNameTag(FunnyGuilds plugin, User user) {
         this.plugin = plugin;
+        this.pluginConfiguration = plugin.getPluginConfiguration();
         this.user = user;
     }
 
@@ -69,7 +73,7 @@ public class IndividualNameTag {
 
         Team targetTeam = prepareTeam(scoreboard, target.getName());
 
-        ScoreboardConfiguration.NameTag nameTagConfig = this.plugin.getPluginConfiguration().scoreboard.nametag;
+        ScoreboardConfiguration.NameTag nameTagConfig = this.pluginConfiguration.scoreboard.nametag;
         targetTeam.setPrefix(this.prepareValue(prepareConfigValue(nameTagConfig.prefix, target), target));
         targetTeam.setSuffix(this.prepareValue(prepareConfigValue(nameTagConfig.suffix, target), target));
     }
@@ -129,10 +133,9 @@ public class IndividualNameTag {
         Guild guild = this.user.getGuild().orNull();
         Guild targetGuild = target.getGuild().orNull();
 
-        FunnyFormatter formatter = FunnyFormatter.of(
-                "{REL_TAG}",
-                this.plugin.getPluginConfiguration().relationalTag.chooseTag(guild, targetGuild)
-        );
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
+                .register("{POS}", UserUtils.getUserPosition(this.pluginConfiguration, target));
         value = formatter.format(value);
 
         String finalValue = value;
