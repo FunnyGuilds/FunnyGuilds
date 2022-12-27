@@ -40,6 +40,7 @@ allprojects {
         maven { url "https://nexus.codecrafter47.de/content/repositories/public" }
         maven { url "https://repo.codemc.io/repository/maven-public" }
         maven { url "https://repo.papermc.io/repository/maven-public/"}
+        maven { url "https://jitpack.io" }
     }
 }
 

@@ -60,6 +60,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(this.plugin, user));
 
         FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+        outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
         outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
