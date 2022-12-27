@@ -15,7 +15,6 @@ import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
 import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
-import eu.okaeri.validator.annotation.Nullable;
 import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
@@ -54,6 +53,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
