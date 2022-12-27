@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.nms.v1_8R3.message;
 
-import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
@@ -37,11 +36,6 @@ public class V1_8R3MessageAccessor implements MessageAccessor {
     }
 
     @Override
-    public void sendTitleMessage(TitleMessage titleMessage, Collection<? extends Player> players) {
-        this.sendTitleMessage(titleMessage, players.toArray(new Player[0]));
-    }
-
-    @Override
     public void sendActionBarMessage(String text, Player... players) {
         PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(
                 ChatSerializer.a("{\"text\":\"" + text + "\"}"),
@@ -51,11 +45,6 @@ public class V1_8R3MessageAccessor implements MessageAccessor {
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(actionBarPacket);
         }
-    }
-
-    @Override
-    public void sendActionBarMessage(String text, Collection<? extends Player> players) {
-        this.sendActionBarMessage(text, players.toArray(new Player[0]));
     }
 
 }

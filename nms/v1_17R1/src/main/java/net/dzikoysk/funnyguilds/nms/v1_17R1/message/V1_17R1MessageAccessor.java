@@ -1,62 +1,25 @@
 package net.dzikoysk.funnyguilds.nms.v1_17R1.message;
 
-import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
-import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessorConstants;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
-import net.minecraft.network.chat.ChatMessageType;
-import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
-import net.minecraft.network.protocol.game.PacketPlayOutChat;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 public class V1_17R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
-        ClientboundSetTitleTextPacket titlePacket = new ClientboundSetTitleTextPacket(
-                CraftChatMessage.fromStringOrNull(titleMessage.getText(), false)
-        );
-        ClientboundSetSubtitleTextPacket subtitlePacket = new ClientboundSetSubtitleTextPacket(
-                CraftChatMessage.fromStringOrNull(titleMessage.getSubText(), false)
-        );
-        ClientboundSetTitlesAnimationPacket timesPacket = new ClientboundSetTitlesAnimationPacket(
-                titleMessage.getFadeInDuration(),
-                titleMessage.getStayDuration(),
-                titleMessage.getFadeOutDuration()
-        );
-
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.sendPacket(titlePacket);
-            ((CraftPlayer) player).getHandle().b.sendPacket(subtitlePacket);
-            ((CraftPlayer) player).getHandle().b.sendPacket(timesPacket);
+            player.sendTitle(titleMessage.getText(), titleMessage.getSubText(), titleMessage.getFadeInDuration(), titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
         }
-    }
-
-    @Override
-    public void sendTitleMessage(TitleMessage titleMessage, Collection<? extends Player> players) {
-        this.sendTitleMessage(titleMessage, players.toArray(new Player[0]));
     }
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(
-                CraftChatMessage.fromStringOrNull(text, true),
-                ChatMessageType.c,
-                MessageAccessorConstants.SENDER_ALWAYS_DISPLAY
-        );
-
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.sendPacket(actionBarPacket);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
-    }
-
-    @Override
-    public void sendActionBarMessage(String text, Collection<? extends Player> players) {
-        this.sendActionBarMessage(text, players.toArray(new Player[0]));
     }
 
 }
