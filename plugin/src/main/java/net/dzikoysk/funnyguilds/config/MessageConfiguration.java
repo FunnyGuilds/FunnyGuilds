@@ -215,7 +215,7 @@ public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("<------- Info Messages -------> #")
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
     public List<String> playerInfoList = Arrays.asList(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -229,7 +229,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&8-------------.------------------"
     );
 
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
     public List<String> playerRightClickInfo = Arrays.asList(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -241,7 +241,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",

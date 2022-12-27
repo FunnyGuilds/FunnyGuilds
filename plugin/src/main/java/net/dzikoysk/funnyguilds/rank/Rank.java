@@ -57,6 +57,8 @@ public abstract class Rank<T extends MutableEntity> {
 
     public abstract float getKDR();
 
+    public abstract float getKDA();
+
     @Override
     public boolean equals(Object o) {
         if (o == null) {

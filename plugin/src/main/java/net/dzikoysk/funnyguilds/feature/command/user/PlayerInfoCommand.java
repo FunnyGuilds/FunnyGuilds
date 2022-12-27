@@ -48,6 +48,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 .register("{ASSISTS}", rank.getAssists())
                 .register("{LOGOUTS}", rank.getLogouts())
                 .register("{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()))
+                .register("{KDA}", String.format(Locale.US, "%.2f", rank.getKDA()))
                 .register("{RANK}", rank.getPosition(DefaultTops.USER_POINTS_TOP));
 
         if (infoUser.hasGuild()) {

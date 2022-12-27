@@ -76,9 +76,23 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
                 : 1.0F * this.getKills() / this.getDeaths();
     }
 
+    @Override
+    public float getKDA() {
+        return this.getDeaths() == 0
+                ? this.getKills() + this.getAssists()
+                : 1.0F * (this.getKills() + this.getAssists()) / this.getDeaths();
+    }
+
     public float getAverageKDR() {
         return (float) this.entity.getMembers().stream()
                 .mapToDouble(user -> user.getRank().getKDR())
+                .average()
+                .orElse(0.0D);
+    }
+
+    public float getAverageKDA() {
+        return (float) this.entity.getMembers().stream()
+                .mapToDouble(user -> user.getRank().getKDA())
                 .average()
                 .orElse(0.0D);
     }
