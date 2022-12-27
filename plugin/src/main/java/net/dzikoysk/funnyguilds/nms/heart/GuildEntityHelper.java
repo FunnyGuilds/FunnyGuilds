@@ -54,6 +54,10 @@ public class GuildEntityHelper {
     }
 
     public void spawnGuildEntity(Guild guild, Player player) {
+        if (guild.getEnderCrystal().map(Location::getWorld).isNot(guildWorld -> guildWorld.equals(player.getWorld()))) {
+            return;
+        }
+
         this.getOrCreateGuildEntity(guild)
                 .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
     }
