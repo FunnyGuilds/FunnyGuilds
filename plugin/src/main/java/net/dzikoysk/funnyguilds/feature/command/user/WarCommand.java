@@ -2,9 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
@@ -58,17 +56,13 @@ public final class WarCommand extends AbstractFunnyCommand {
         owner.sendMessage(enemyFormatter.format(this.messages.enemyDone));
         enemyGuild.getOwner().sendMessage(enemyIFormatter.format(this.messages.enemyIDone));
 
-        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
+        guild.getMembers().forEach(member ->
+            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
+        );
 
-        guild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
-        });
-
-        enemyGuild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
-        });
-
-        this.concurrencyManager.postTask(taskBuilder.build());
+        enemyGuild.getMembers().forEach(member ->
+            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
+        );
     }
 
 }

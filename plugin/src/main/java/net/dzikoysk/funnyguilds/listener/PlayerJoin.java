@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
@@ -51,9 +51,9 @@ public class PlayerJoin extends AbstractFunnyListener {
             cache.setPlayerList(individualPlayerList);
         }
 
-        this.concurrencyManager.postRequests(
-                new NameTagGlobalUpdateUserRequest(this.plugin, user),
-                new DummyGlobalUpdateUserRequest(this.plugin, user)
+        this.plugin.scheduleFunnyTasks(
+                new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
+                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user)
         );
 
         FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);

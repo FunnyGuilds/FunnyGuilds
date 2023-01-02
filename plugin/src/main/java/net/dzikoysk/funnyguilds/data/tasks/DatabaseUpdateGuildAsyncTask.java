@@ -1,7 +1,6 @@
-package net.dzikoysk.funnyguilds.concurrency.requests.database;
+package net.dzikoysk.funnyguilds.data.tasks;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
@@ -12,13 +11,14 @@ import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 
-public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
+public class DatabaseUpdateGuildAsyncTask extends AsyncFunnyTask {
 
     private final DataModel dataModel;
     private final Guild guild;
 
-    public DatabaseUpdateGuildRequest(DataModel dataModel, Guild guild) {
+    public DatabaseUpdateGuildAsyncTask(DataModel dataModel, Guild guild) {
         this.dataModel = dataModel;
         this.guild = guild;
     }

@@ -6,8 +6,8 @@ import java.util.Locale;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -241,9 +241,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         guild.getRegion().peek(region -> this.regionManager.addRegion(region));
 
-        this.concurrencyManager.postRequests(
-                new NameTagGlobalUpdateUserRequest(this.plugin, user),
-                new DatabaseUpdateGuildRequest(this.plugin.getDataModel(), guild)
+        this.plugin.scheduleFunnyTasks(
+                new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
+                new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild)
         );
 
         SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));

@@ -8,9 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
@@ -262,12 +260,7 @@ public class GuildManager {
         guild.getMembers().forEach(User::removeGuild);
         guild.getAllies().forEach(ally -> ally.removeAlly(guild));
         this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
-
-        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-        guild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(plugin, member));
-        });
-        plugin.getConcurrencyManager().postTask(taskBuilder.build());
+        guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(plugin.getIndividualNameTagManager(), member)));
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());

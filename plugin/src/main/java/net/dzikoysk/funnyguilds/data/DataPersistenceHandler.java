@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.requests.DataSaveRequest;
+import net.dzikoysk.funnyguilds.data.database.DataSaveAsyncTask;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -22,7 +22,7 @@ public class DataPersistenceHandler {
         }
 
         this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
-            this.plugin.getConcurrencyManager().postRequests(new DataSaveRequest(this.plugin.getDataModel(), false));
+            this.plugin.scheduleFunnyTasks(new DataSaveAsyncTask(this.plugin.getDataModel(), false));
         }, interval, interval);
     }
 
