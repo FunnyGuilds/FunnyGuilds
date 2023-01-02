@@ -10,6 +10,10 @@ plugins {
     id("xyz.jpenilla.run-paper") version "1.1.0"
 }
 
+idea {
+    project.jdkName = "17"
+}
+
 allprojects {
     group = "net.dzikoysk.funnyguilds"
     version = "4.10.3-SNAPSHOT"
@@ -61,35 +65,15 @@ subprojects {
 
     tasks.withType<Javadoc> {
         options {
-            (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet")
+            (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet") // mute warnings
         }
     }
 
     publishing {
         repositories {
             maven {
-                name = "releases"
-                url = uri("https://repo.panda-lang.org/releases")
-
-                credentials {
-                    username = System.getenv("MAVEN_NAME")
-                    password = System.getenv("MAVEN_TOKEN")
-                }
-            }
-
-            maven {
-                when {
-                    version.toString().endsWith("-SNAPSHOT") -> {
-                        name = "snapshots"
-                        url = uri("https://repo.panda-lang.org/snapshots")
-                    }
-                    else -> {
-                        name = "releases"
-                        url = uri("https://repo.panda-lang.org/releases")
-                    }
-                }
-
-                //allowInsecureProtocol(true)
+                name = "reposilite"
+                url = uri("https://maven.reposilite.com/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
                 credentials {
                     username = System.getenv("MAVEN_NAME")
                     password = System.getenv("MAVEN_TOKEN")
@@ -114,11 +98,5 @@ subprojects {
                 }
             }
         }
-    }
-}
-
-idea {
-    project {
-        jdkName = "17"
     }
 }

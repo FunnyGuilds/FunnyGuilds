@@ -119,6 +119,12 @@ tasks.withType<ShadowJar> {
     }
 }
 
+tasks {
+    runServer {
+        minecraftVersion("1.19.3")
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
     setForkEvery(1)
@@ -131,11 +137,5 @@ tasks.withType<Test> {
         showCauses = true
         showStackTraces = true
         showStandardStreams = true
-    }
-}
-
-tasks {
-    runServer {
-        minecraftVersion("1.19.3")
     }
 }
