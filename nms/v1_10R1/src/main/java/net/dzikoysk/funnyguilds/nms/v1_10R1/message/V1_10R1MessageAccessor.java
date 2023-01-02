@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.nms.v1_10R1.message;
 
-import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
-import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_10_R1.PacketPlayOutChat;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_10_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
@@ -36,25 +35,10 @@ public class V1_10R1MessageAccessor implements MessageAccessor {
     }
 
     @Override
-    public void sendTitleMessage(TitleMessage titleMessage, Collection<? extends Player> players) {
-        this.sendTitleMessage(titleMessage, players.toArray(new Player[0]));
-    }
-
-    @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(
-                ChatSerializer.a("{\"text\":\"" + text + "\"}"),
-                (byte) 2
-        );
-
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(actionBarPacket);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
-    }
-
-    @Override
-    public void sendActionBarMessage(String text, Collection<? extends Player> players) {
-        this.sendActionBarMessage(text, players.toArray(new Player[0]));
     }
 
 }
