@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
@@ -42,7 +42,7 @@ public final class KickCommand extends AbstractFunnyCommand {
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
-        this.concurrencyManager.postRequests(new NameTagGlobalUpdateUserRequest(this.plugin, formerUser));
+        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), formerUser));
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", formerUser.getName())

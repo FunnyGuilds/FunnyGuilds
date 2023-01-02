@@ -3,9 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.Entity;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
@@ -62,18 +60,13 @@ public final class BreakCommand extends AbstractFunnyCommand {
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);
 
-        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
+        guild.getMembers().forEach(member ->
+            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
+        );
 
-        guild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
-        });
-
-        oppositeGuild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
-        });
-
-        ConcurrencyTask task = taskBuilder.build();
-        this.concurrencyManager.postTask(task);
+        oppositeGuild.getMembers().forEach(member ->
+            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
+        );
 
         owner.sendMessage(breakFormatter.format(this.messages.breakDone));
         oppositeGuild.getOwner().sendMessage(breakIFormatter.format(this.messages.breakIDone));

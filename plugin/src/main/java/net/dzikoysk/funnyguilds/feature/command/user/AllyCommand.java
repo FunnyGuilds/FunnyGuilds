@@ -3,9 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
@@ -124,17 +122,13 @@ public final class AllyCommand extends AbstractFunnyCommand {
         owner.sendMessage(allyFormatter.format(this.messages.allyDone));
         invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
 
-        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
+        guild.getMembers().forEach(member ->
+            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
+        );
 
-        guild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
-        });
-
-        invitedGuild.getMembers().forEach(member -> {
-            taskBuilder.delegate(new NameTagGlobalUpdateUserRequest(this.plugin, member));
-        });
-
-        this.concurrencyManager.postTask(taskBuilder.build());
+        invitedGuild.getMembers().forEach(member ->
+            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
+        );
     }
 
     private void revokeInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {

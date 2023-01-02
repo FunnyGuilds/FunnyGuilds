@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
@@ -38,9 +37,6 @@ public abstract class AbstractFunnyListener implements Listener {
     public MessageConfiguration messages;
     @Inject
     public TablistConfiguration tablistConfig;
-
-    @Inject
-    public ConcurrencyManager concurrencyManager;
 
     @Inject
     public UserManager userManager;

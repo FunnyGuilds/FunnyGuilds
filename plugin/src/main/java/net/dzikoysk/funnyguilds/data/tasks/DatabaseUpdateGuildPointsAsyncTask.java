@@ -1,14 +1,14 @@
-package net.dzikoysk.funnyguilds.concurrency.requests.database;
+package net.dzikoysk.funnyguilds.data.tasks;
 
-import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 
-public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest {
+public class DatabaseUpdateGuildPointsAsyncTask extends AsyncFunnyTask {
 
     private final Guild guild;
 
-    public DatabaseUpdateGuildPointsRequest(Guild guild) {
+    public DatabaseUpdateGuildPointsAsyncTask(Guild guild) {
         this.guild = guild;
     }
 

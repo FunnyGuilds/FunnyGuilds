@@ -1,14 +1,14 @@
-package net.dzikoysk.funnyguilds.concurrency.requests.database;
+package net.dzikoysk.funnyguilds.data.tasks;
 
-import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
+import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 import net.dzikoysk.funnyguilds.user.User;
 
-public class DatabaseUpdateUserPointsRequest extends DefaultConcurrencyRequest {
+public class DatabaseUpdateUserPointsAsyncTask extends AsyncFunnyTask {
 
     private final User user;
 
-    public DatabaseUpdateUserPointsRequest(User user) {
+    public DatabaseUpdateUserPointsAsyncTask(User user) {
         this.user = user;
     }
 

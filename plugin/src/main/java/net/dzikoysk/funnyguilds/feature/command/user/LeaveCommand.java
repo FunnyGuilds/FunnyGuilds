@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaveEvent;
@@ -35,10 +35,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
 
         guild.removeMember(member);
         member.removeGuild();
-
-        this.concurrencyManager.postRequests(
-                new NameTagGlobalUpdateUserRequest(this.plugin, member)
-        );
+        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member));
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
