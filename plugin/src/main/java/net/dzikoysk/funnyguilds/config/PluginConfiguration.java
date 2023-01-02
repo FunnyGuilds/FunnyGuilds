@@ -990,7 +990,7 @@ public class PluginConfiguration extends OkaeriConfig {
             return this.other.getValue();
         }
 
-        public String choseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
+        public String chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return "";
             }

@@ -330,7 +330,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
         if (this.tablistConfig.playerListUseRelationshipColors) {
             Guild viewerGuild = targetUser != null ? targetUser.getGuild().orNull() : null;
-            prefix = this.config.relationalTag.choseAndPrepareTag(viewerGuild, guild);
+            prefix = this.config.relationalTag.chooseAndPrepareTag(viewerGuild, guild);
         }
 
         String formattedPrefix = FunnyFormatter.format(prefix, "{TAG}", guild.getTag());
