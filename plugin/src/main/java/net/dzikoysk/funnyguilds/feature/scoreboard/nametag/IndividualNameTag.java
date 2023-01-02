@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -144,6 +145,9 @@ public class IndividualNameTag {
                 .orElseGet(value);
 
         value = HookUtils.replacePlaceholders(player, targetPlayer, value);
+
+        // Some placeholders may pass color codes (e.g. &6) - we should recolor them
+        value = ChatUtils.colored(value);
 
         return value;
     }

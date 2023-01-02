@@ -93,7 +93,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return "";
             }
 
-            return this.plugin.getPluginConfiguration().relationalTag.choseAndPrepareTag(
+            return this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
                     userOneOption.get().getGuild().orNull(),
                     userTwoOption.get().getGuild().orNull()
             );
