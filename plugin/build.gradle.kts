@@ -70,7 +70,7 @@ dependencies {
 
     /* tests */
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.7.22")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.0")
     testImplementation("nl.jqno.equalsverifier:equalsverifier:3.12.3")
     testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
