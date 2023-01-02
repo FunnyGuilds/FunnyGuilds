@@ -41,7 +41,7 @@ dependencies {
     }
 
     @Suppress("GradlePackageUpdate")
-    implementation("com.google.code.gson:gson:2.8.0") {
+    implementation("com.google.code.gson:gson:2.10") {
         because("WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it")
     }
 
@@ -57,10 +57,10 @@ dependencies {
 
     /* hooks */
 
-    shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
+    shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.5.2")
-    shadow("me.clip:placeholderapi:2.10.9") {
+    shadow("me.clip:placeholderapi:2.11.2") {
         because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
@@ -70,8 +70,8 @@ dependencies {
 
     /* tests */
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.7.22")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.12.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.0")
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.12.3")
     testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 
