@@ -46,7 +46,7 @@ public class HeartConfiguration extends OkaeriConfig {
 
         @Comment("Konfiguracja na jakiejś wysokości (wartość y) powinno znajdować się serce gildii")
         @Comment("Dostępne wartości:")
-        @Comment(" FIXED - serce gildii będzie znajdowało się na stałej wysokości")
+        @Comment(" FIXED - serce gildii będzie znajdowało się na stałej wysokości (patrz opcje 'fixed-height')")
         @Comment(" PLAYER - serce gildii będzie znajdowało się na wysokości gracza")
         @Comment(" GRAVITY - serce gildii będzie znajdywało się na powierzchni terenu")
         public Height height = Height.FIXED;
@@ -60,12 +60,12 @@ public class HeartConfiguration extends OkaeriConfig {
         }
 
         @Comment("")
-        @Comment("Na jakim poziomie ma być wyznaczone centrum gildii (jeśli ustawienie `height` jest ustawione na `FIXED`)")
+        @Comment("Na jakim poziomie ma być wyznaczone centrum gildii (jeśli ustawienie 'height' to 'FIXED')")
         public int fixedHeight = 60;
 
         @Comment("")
         @Comment("Ostateczne przesunięcie centrum gildii")
-        @Comment("Przydatne m.in. kiedy użyjemy opcji `GRAVITY` i chcemy żeby serce było np. 10 kratek pod powierzchnią")
+        @Comment("Przydatne m.in. kiedy użyjemy opcji 'GRAVITY' i chcemy żeby serce było np. 10 kratek pod powierzchnią")
         public Vector offset = new Vector(0, 0, 0);
 
         public void prepareCenterLocation(Location location) {
