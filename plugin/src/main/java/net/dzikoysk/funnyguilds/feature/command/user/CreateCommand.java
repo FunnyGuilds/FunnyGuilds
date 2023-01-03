@@ -94,7 +94,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         HeartConfiguration heartConfig = this.config.heart;
 
         if (this.config.regionsEnabled) {
-            heartConfig.center.prepareHeartLocation(guildLocation);
+            heartConfig.center.prepareCenterLocation(guildLocation);
 
             if (heartConfig.createEntityType != null && guildLocation.getBlockY() < (world.getMaxHeight() - 2)) {
                 guildLocation.setY(guildLocation.getBlockY() + 2);

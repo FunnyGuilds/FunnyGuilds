@@ -68,7 +68,7 @@ public class HeartConfiguration extends OkaeriConfig {
         @Comment("Przydatne m.in. kiedy użyjemy opcji `GRAVITY` i chcemy żeby serce było np. 10 kratek pod powierzchnią")
         public Vector offset = new Vector(0, 0, 0);
 
-        public void prepareHeartLocation(Location location) {
+        public void prepareCenterLocation(Location location) {
             World world = location.getWorld();
             if (this.height == Height.FIXED) {
                 location.setY(this.fixedHeight);

@@ -38,7 +38,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         Location location = player.getLocation().getBlock().getLocation();
         World world = player.getWorld();
 
-        heartConfig.center.prepareHeartLocation(location);
+        heartConfig.center.prepareCenterLocation(location);
 
         if (heartConfig.createEntityType != null && location.getBlockY() < (world.getMaxHeight() - 2)) {
             location.setY(location.getBlockY() + 2);
