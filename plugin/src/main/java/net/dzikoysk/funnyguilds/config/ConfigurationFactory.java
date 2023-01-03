@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0004_Migrate_tablist_into_sepa
 import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_centery_key;
 import net.dzikoysk.funnyguilds.config.migration.P0006_Migrate_old_scoreboard_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0007_Migrate_old_relational_tag_configuration;
+import net.dzikoysk.funnyguilds.config.migration.P0008_Migrate_old_heart_center_configuration;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
@@ -74,7 +75,8 @@ public final class ConfigurationFactory {
                     new P0004_Migrate_tablist_into_separate_file(),
                     new P0005_Fix_heart_configuration_centery_key(),
                     new P0006_Migrate_old_scoreboard_configuration(),
-                    new P0007_Migrate_old_relational_tag_configuration()
+                    new P0007_Migrate_old_relational_tag_configuration(),
+                    new P0008_Migrate_old_heart_center_configuration()
             );
         });
     }

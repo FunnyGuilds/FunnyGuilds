@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.config.sections;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
@@ -12,9 +11,11 @@ import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 import panda.std.Pair;
@@ -38,14 +39,52 @@ public class HeartConfiguration extends OkaeriConfig {
     public EntityType createEntityType;
 
     @Comment("")
-    @Comment("Czy poziom na jakim ma być wyznaczone centrum gildii ma być ustalany przez pozycję gracza")
-    @CustomKey("use-player-position-for-center-y")
-    public boolean usePlayerPositionForCenterY = false;
+    @Comment("Konfiguracja domyślnej lokalizacji serca gildii przy jej zakładaniu")
+    public Center center = new Center();
 
-    @Comment("")
-    @Comment("Na jakim poziomie ma być wyznaczone centrum gildii")
-    @CustomKey("create-center-y")
-    public int createCenterY = 60;
+    public static class Center extends OkaeriConfig {
+
+        @Comment("Konfiguracja na jakiejś wysokości (wartość y) powinno znajdować się serce gildii")
+        @Comment("Dostępne wartości:")
+        @Comment(" FIXED - serce gildii będzie znajdowało się na stałej wysokości")
+        @Comment(" PLAYER - serce gildii będzie znajdowało się na wysokości gracza")
+        @Comment(" GRAVITY - serce gildii będzie znajdywało się na powierzchni terenu")
+        public Height height = Height.FIXED;
+
+        public enum Height {
+
+            FIXED,
+            PLAYER,
+            GRAVITY
+
+        }
+
+        @Comment("")
+        @Comment("Na jakim poziomie ma być wyznaczone centrum gildii (jeśli ustawienie `height` jest ustawione na `FIXED`)")
+        public int fixedHeight = 60;
+
+        @Comment("")
+        @Comment("Ostateczne przesunięcie centrum gildii")
+        @Comment("Przydatne m.in. kiedy użyjemy opcji `GRAVITY` i chcemy żeby serce było np. 10 kratek pod powierzchnią")
+        public Vector offset = new Vector(0, 0, 0);
+
+        public void prepareHeartLocation(Location location) {
+            World world = location.getWorld();
+            if (this.height == Height.FIXED) {
+                location.setY(this.fixedHeight);
+            }
+            else if (this.height == Height.GRAVITY) {
+                location.setY(world.getHighestBlockYAt(location));
+            }
+            location.add(this.offset);
+
+            int minHeight = LocationUtils.getMinHeight(world);
+            if (location.getBlockY() < minHeight) {
+                location.setY(minHeight + 2);
+            }
+        }
+
+    }
 
     @Comment("")
     @Comment("Konfiguracja hologramu nad sercem gildii")
