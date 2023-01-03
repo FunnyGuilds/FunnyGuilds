@@ -75,22 +75,11 @@ public final class ProtectionSystem {
         Guild guild = region.getGuild();
 
         HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
-
-        Option<Location> optionEnderCrystal = guild.getEnderCrystal();
-        if (optionEnderCrystal.isEmpty()) {
-            return false;
-        }
-
-        Location enderCrystal = optionEnderCrystal.get();
-        Location inBoxLocation = enderCrystal
-                .clone()
-                .add(-location.getX(), -location.getY(), -location.getZ());
-
         return guild.getEnderCrystal()
                 .map(Location::getBlock)
                 .map(FunnyBox::of)
                 .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
-                .map(box -> box.contains(inBoxLocation))
+                .map(box -> box.contains(location))
                 .orElseGet(false);
     }
 
