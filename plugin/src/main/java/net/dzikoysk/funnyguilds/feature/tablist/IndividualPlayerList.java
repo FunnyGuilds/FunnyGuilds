@@ -83,16 +83,16 @@ public class IndividualPlayerList {
         if (this.animated) {
             TablistPage page = this.pages.get(this.currentPage);
             if (page != null) {
-                if (page.playerList != null) {
-                    unformattedCells.putAll(page.playerList);
+                if (page.cells != null) {
+                    unformattedCells.putAll(page.cells);
                 }
 
-                if (page.playerListHeader != null) {
-                    header = page.playerListHeader;
+                if (page.header != null) {
+                    header = page.header;
                 }
 
-                if (page.playerListFooter != null) {
-                    footer = page.playerListFooter;
+                if (page.footer != null) {
+                    footer = page.footer;
                 }
             }
         }

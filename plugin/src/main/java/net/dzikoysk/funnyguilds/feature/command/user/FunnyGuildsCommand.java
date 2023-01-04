@@ -114,7 +114,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             this.plugin.getDataPersistenceHandler().reloadHandler();
             this.plugin.getDynamicListenerManager().reloadAll();
 
-            if (this.plugin.getTablistConfiguration().playerListEnable) {
+            if (this.plugin.getTablistConfiguration().enabled) {
                 TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
                 UserManager userManager = this.plugin.getUserManager();
 
@@ -125,12 +125,12 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                                     user,
                                     this.plugin.getNmsAccessor().getPlayerListAccessor(),
                                     this.plugin.getFunnyServer(),
-                                    tablistConfig.playerList,
-                                    tablistConfig.playerListHeader, tablistConfig.playerListFooter,
-                                    tablistConfig.playerListAnimated, tablistConfig.pages,
+                                    tablistConfig.cells,
+                                    tablistConfig.header, tablistConfig.footer,
+                                    tablistConfig.animated, tablistConfig.pages,
                                     tablistConfig.heads.textures,
-                                    tablistConfig.playerListPing,
-                                    tablistConfig.playerListFillCells
+                                    tablistConfig.cellsPing,
+                                    tablistConfig.fillCells
                             );
 
                             user.getCache().setPlayerList(playerList);

@@ -5,15 +5,15 @@ import java.util.Map;
 public class TablistPage {
 
     public final int cycles;
-    public final Map<Integer, String> playerList;
-    public final String playerListHeader;
-    public final String playerListFooter;
+    public final Map<Integer, String> cells;
+    public final String header;
+    public final String footer;
 
-    public TablistPage(int cycles, Map<Integer, String> playerList, String playerListHeader, String playerListFooter) {
+    public TablistPage(int cycles, Map<Integer, String> cells, String header, String footer) {
         this.cycles = cycles;
-        this.playerList = playerList;
-        this.playerListHeader = playerListHeader;
-        this.playerListFooter = playerListFooter;
+        this.cells = cells;
+        this.header = header;
+        this.footer = footer;
     }
 
 }

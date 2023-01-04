@@ -30,8 +30,7 @@ public class BukkitUserProfile implements UserProfile {
         this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orNull());
     }
 
-    //TODO: change visibility to private after removing deprecated methods from User
-    Option<Player> getPlayer() {
+    private Option<Player> getPlayer() {
         Player player = this.playerRef.get();
 
         if (player == null) {
