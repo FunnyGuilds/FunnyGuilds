@@ -325,7 +325,7 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
+        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
@@ -474,7 +474,7 @@ public class FunnyGuilds extends JavaPlugin {
             outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
-            if (!this.tablistConfiguration.playerListEnable) {
+            if (!this.tablistConfiguration.enabled) {
                 continue;
             }
 
@@ -482,12 +482,12 @@ public class FunnyGuilds extends JavaPlugin {
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
                     this.funnyServer,
-                    this.tablistConfiguration.playerList,
-                    this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
-                    this.tablistConfiguration.playerListAnimated, this.tablistConfiguration.pages,
+                    this.tablistConfiguration.cells,
+                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
+                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
                     this.tablistConfiguration.heads.textures,
-                    this.tablistConfiguration.playerListPing,
-                    this.tablistConfiguration.playerListFillCells
+                    this.tablistConfiguration.cellsPing,
+                    this.tablistConfiguration.fillCells
             );
 
             user.getCache().setPlayerList(individualPlayerList);

@@ -84,13 +84,14 @@ public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("<------- Region Messages -------> #")
-    public String regionOther = "&cTen teren nalezy do innej gildii!";
+    public String regionUnauthorized = "&cTen teren nalezy do innej gildii!";
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     public String regionInteract = "&cNie mozesz ingerowac w okolice serca swojej gildii!";
     @Comment("Dostępne zmienne: {TIME}")
     public String regionExplode = "&cBudowanie na terenie gildii zablokowane na czas &4{TIME} sekund&c!";
     @Comment("Dostępne zmienne: {TIME}")
     public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!";
+    public String regionOther = "&cNie mozesz tego zrobic na terenie gildii!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
     public String regionTeleport = "&cNie mozesz teleportowac sie na teren innej gildii!";
     public String regionExplosionHasProtection = "&cEksplozja nie spowodowala zniszczen na terenie gildii, poniewaz jest ona chroniona!";

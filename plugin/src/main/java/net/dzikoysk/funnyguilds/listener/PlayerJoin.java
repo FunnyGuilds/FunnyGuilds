@@ -34,17 +34,17 @@ public class PlayerJoin extends AbstractFunnyListener {
 
         UserCache cache = user.getCache();
 
-        if (this.tablistConfig.playerListEnable) {
+        if (this.tablistConfig.enabled) {
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
                     this.funnyServer,
-                    this.tablistConfig.playerList,
-                    this.tablistConfig.playerListHeader, this.tablistConfig.playerListFooter,
-                    this.tablistConfig.playerListAnimated, this.tablistConfig.pages,
+                    this.tablistConfig.cells,
+                    this.tablistConfig.header, this.tablistConfig.footer,
+                    this.tablistConfig.animated, this.tablistConfig.pages,
                     this.tablistConfig.heads.textures,
-                    this.tablistConfig.playerListPing,
-                    this.tablistConfig.playerListFillCells
+                    this.tablistConfig.cellsPing,
+                    this.tablistConfig.fillCells
             );
 
             individualPlayerList.send();
