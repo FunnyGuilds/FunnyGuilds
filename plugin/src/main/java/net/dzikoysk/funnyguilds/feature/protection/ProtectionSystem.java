@@ -78,34 +78,35 @@ public final class ProtectionSystem {
         Guild guild = region.getGuild();
 
         HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
-
-        Option<Location> optionEnderCrystal = guild.getEnderCrystal();
-        if (optionEnderCrystal.isEmpty()) {
-            return false;
-        }
-
-        Location enderCrystal = optionEnderCrystal.get();
-        Location inBoxLocation = enderCrystal
-                .clone()
-                .add(-location.getX(), -location.getY(), -location.getZ());
-
         return guild.getEnderCrystal()
                 .map(Location::getBlock)
                 .map(FunnyBox::of)
                 .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
-                .map(box -> box.contains(inBoxLocation))
+                .map(box -> box.contains(location))
                 .orElseGet(false);
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
-        if (result.getThird() == ProtectionType.LOCKED) {
-            ProtectionSystem.sendRegionExplodeMessage(result.getFirst(), result.getSecond());
-        }
-        else if (result.getThird() == ProtectionType.HEART_INTERACTION) {
-            ChatUtils.sendMessage(result.getFirst(), FunnyGuilds.getInstance().getMessageConfiguration().regionInteract);
-        }
-        else {
-            ChatUtils.sendMessage(result.getFirst(), FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
+        Player player = result.getFirst();
+        ProtectionType protectionType = result.getThird();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+
+        switch (protectionType) {
+            case UNAUTHORIZED:
+                ChatUtils.sendMessage(player, messages.regionUnauthorized);
+                break;
+            case HEART:
+                ChatUtils.sendMessage(player, messages.regionCenter);
+                break;
+            case HEART_INTERACTION:
+                ChatUtils.sendMessage(player, messages.regionInteract);
+                break;
+            case LOCKED:
+                ProtectionSystem.sendRegionExplodeMessage(player, result.getSecond());
+                break;
+            default:
+                ChatUtils.sendMessage(player, messages.regionOther);
+                break;
         }
     }
 
@@ -117,7 +118,7 @@ public final class ProtectionSystem {
         });
     }
 
-    public static enum ProtectionType {
+    public enum ProtectionType {
 
         UNAUTHORIZED,
         LOCKED,

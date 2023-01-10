@@ -127,13 +127,14 @@ public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("<------- Region Messages -------> #")
-    public String regionOther = "&cTen teren nalezy do innej gildii!";
+    public String regionUnauthorized = "&cTen teren nalezy do innej gildii!";
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     public String regionInteract = "&cNie mozesz ingerowac w okolice serca swojej gildii!";
     @Comment("Dostępne zmienne: {TIME}")
     public String regionExplode = "&cBudowanie na terenie twojej gildii zostało zablokowane na &4{TIME}&c!";
     @Comment("Dostępne zmienne: {TIME}")
     public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME}&c!";
+    public String regionOther = "&cNie mozesz tego zrobic na terenie gildii!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
     public String regionTeleport = "&cNie mozesz teleportowac sie na teren innej gildii!";
     public String regionExplosionHasProtection = "&cEksplozja nie spowodowala zniszczen na terenie gildii, poniewaz jest ona chroniona!";
@@ -258,7 +259,7 @@ public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("<------- Info Messages -------> #")
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
     public List<String> playerInfoList = Arrays.asList(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -272,7 +273,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&8-------------.------------------"
     );
 
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
     public List<String> playerRightClickInfo = Arrays.asList(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -284,7 +285,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",

@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildPointsAsyncTask;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateUserPointsAsyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
@@ -185,27 +183,32 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         victimDamageState.clear();
 
-        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
         if (this.config.dataModel == DataModel.MYSQL) {
-            victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
-            attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
+            victim.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
+            attacker.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
+
             PandaStream.of(calculatedAssists.keySet())
                     .flatMap(User::getGuild)
-                    .forEach(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
+                    .forEach(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
 
-            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
-            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
-            calculatedAssists.keySet().forEach(assistUser -> taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(assistUser)));
+            this.plugin.scheduleFunnyTasks(
+                    new DatabaseUpdateUserPointsAsyncTask(victim),
+                    new DatabaseUpdateUserPointsAsyncTask(attacker)
+            );
+
+            calculatedAssists.keySet().forEach(assistUser ->
+                    this.plugin.scheduleFunnyTasks(new DatabaseUpdateUserPointsAsyncTask(assistUser))
+            );
         }
 
-        ConcurrencyTaskBuilder updateUserRequests = taskBuilder
-                .delegate(new DummyGlobalUpdateUserRequest(this.plugin, victim))
-                .delegate(new DummyGlobalUpdateUserRequest(this.plugin, attacker));
-        PandaStream.of(calculatedAssists.keySet())
-                .map(user -> new DummyGlobalUpdateUserRequest(this.plugin, user))
-                .forEach(taskBuilder::delegate);
+        this.plugin.scheduleFunnyTasks(
+                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), victim),
+                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), attacker)
+        );
 
-        this.concurrencyManager.postTask(updateUserRequests.build());
+        calculatedAssists.keySet().forEach(user ->
+                this.plugin.scheduleFunnyTasks(new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user))
+        );
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());

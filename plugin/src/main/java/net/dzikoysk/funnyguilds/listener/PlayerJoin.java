@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
@@ -34,26 +34,26 @@ public class PlayerJoin extends AbstractFunnyListener {
 
         UserCache cache = user.getCache();
 
-        if (this.tablistConfig.playerListEnable) {
+        if (this.tablistConfig.enabled) {
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
                     this.funnyServer,
-                    this.tablistConfig.playerList,
-                    this.tablistConfig.playerListHeader, this.tablistConfig.playerListFooter,
-                    this.tablistConfig.playerListAnimated, this.tablistConfig.pages,
+                    this.tablistConfig.cells,
+                    this.tablistConfig.header, this.tablistConfig.footer,
+                    this.tablistConfig.animated, this.tablistConfig.pages,
                     this.tablistConfig.heads.textures,
-                    this.tablistConfig.playerListPing,
-                    this.tablistConfig.playerListFillCells
+                    this.tablistConfig.cellsPing,
+                    this.tablistConfig.fillCells
             );
 
             individualPlayerList.send();
             cache.setPlayerList(individualPlayerList);
         }
 
-        this.concurrencyManager.postRequests(
-                new NameTagGlobalUpdateUserRequest(this.plugin, user),
-                new DummyGlobalUpdateUserRequest(this.plugin, user)
+        this.plugin.scheduleFunnyTasks(
+                new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
+                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user)
         );
 
         FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);

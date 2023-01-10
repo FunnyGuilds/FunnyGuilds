@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
@@ -40,9 +39,6 @@ public abstract class AbstractFunnyCommand {
     public MessageConfiguration messages;
     @Inject
     public TablistConfiguration tablistConfig;
-
-    @Inject
-    public ConcurrencyManager concurrencyManager;
 
     @Inject
     public UserManager userManager;

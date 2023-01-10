@@ -5,9 +5,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseFixAlliesAsyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
@@ -176,8 +175,10 @@ public class FlatDataModel implements DataModel {
             FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
         }
 
-        ConcurrencyManager concurrencyManager = this.plugin.getConcurrencyManager();
-        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new NameTagGlobalUpdateRequest(this.plugin));
+        this.plugin.scheduleFunnyTasks(
+            new DatabaseFixAlliesAsyncTask(guildManager),
+            new NameTagGlobalUpdateSyncTask(this.plugin.getIndividualNameTagManager())
+        );
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }

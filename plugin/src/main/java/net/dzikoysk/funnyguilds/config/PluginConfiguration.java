@@ -996,7 +996,7 @@ public class PluginConfiguration extends OkaeriConfig {
             return this.other.getValue();
         }
 
-        public String choseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
+        public String chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return "";
             }
@@ -1196,17 +1196,8 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("")
-    @Comment("Liczba wątków używanych przez ConcurrencyManager")
-    public int concurrencyThreads = 1;
-
-    @Min(1)
-    @Comment("")
     @Comment("Co ile minut dane są automatycznie zapisywane")
     public int dataInterval = 1;
-
-    @Comment("")
-    @Comment("Jak długo plugin powinien czekać na zatrzymanie wszystkich bieżących zadań przy wyłączaniu serwera")
-    public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("")
     @Comment("Jaki argument powinien zostać podany przez gracza, gdy chce zaprosić wszystkich graczy w danym promieniu")

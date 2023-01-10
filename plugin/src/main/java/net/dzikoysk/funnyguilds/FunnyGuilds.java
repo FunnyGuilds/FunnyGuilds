@@ -4,11 +4,8 @@ import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
-import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.nametag.NameTagGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -90,6 +87,7 @@ import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyTask;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
@@ -128,7 +126,6 @@ public class FunnyGuilds extends JavaPlugin {
     private TablistConfiguration tablistConfiguration;
     private MessageConfiguration messageConfiguration;
 
-    private ConcurrencyManager concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
     private UserManager userManager;
@@ -216,9 +213,6 @@ public class FunnyGuilds extends JavaPlugin {
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
         descriptionChanger.rename(this.pluginConfiguration.pluginName);
 
-        this.concurrencyManager = new ConcurrencyManager(this.pluginConfiguration.concurrencyThreads);
-        this.concurrencyManager.printStatus();
-
         this.dynamicListenerManager = new DynamicListenerManager(this);
 
         this.hookManager = new HookManager(plugin);
@@ -305,7 +299,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
             resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
-            resources.on(ConcurrencyManager.class).assignInstance(this.concurrencyManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
@@ -332,7 +325,7 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
+        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
@@ -452,8 +445,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.stopHandler();
 
         this.getServer().getScheduler().cancelTasks(this);
-        this.concurrencyManager.awaitTermination(this.pluginConfiguration.pluginTaskTerminationTimeout);
-
         this.database.shutdown();
         plugin = null;
     }
@@ -469,7 +460,6 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void handleReload() {
-        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
         for (Player player : this.getServer().getOnlinePlayers()) {
             Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
@@ -484,7 +474,7 @@ public class FunnyGuilds extends JavaPlugin {
             outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
-            if (!this.tablistConfiguration.playerListEnable) {
+            if (!this.tablistConfiguration.enabled) {
                 continue;
             }
 
@@ -492,23 +482,36 @@ public class FunnyGuilds extends JavaPlugin {
                     user,
                     this.nmsAccessor.getPlayerListAccessor(),
                     this.funnyServer,
-                    this.tablistConfiguration.playerList,
-                    this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
-                    this.tablistConfiguration.playerListAnimated, this.tablistConfiguration.pages,
+                    this.tablistConfiguration.cells,
+                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
+                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
                     this.tablistConfiguration.heads.textures,
-                    this.tablistConfiguration.playerListPing,
-                    this.tablistConfiguration.playerListFillCells
+                    this.tablistConfiguration.cellsPing,
+                    this.tablistConfiguration.fillCells
             );
 
             user.getCache().setPlayerList(individualPlayerList);
         }
 
-        this.concurrencyManager.postRequests(
-                new NameTagGlobalUpdateRequest(this),
-                new DummyGlobalUpdateRequest(this)
+        this.scheduleFunnyTasks(
+            new NameTagGlobalUpdateSyncTask(this.getIndividualNameTagManager()),
+            new DummyGlobalUpdateSyncTask(this.getDummyManager())
         );
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
+    }
+
+    public void scheduleFunnyTasks(FunnyTask... tasks) {
+        for (FunnyTask task : tasks) {
+            switch (task.getType()) {
+                case SYNC:
+                    Bukkit.getScheduler().runTask(this, task);
+                    break;
+                case ASYNC:
+                    Bukkit.getScheduler().runTaskAsynchronously(this, task);
+                    break;
+            }
+        }
     }
 
     public boolean isDisabling() {
@@ -557,10 +560,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public MessageConfiguration getMessageConfiguration() {
         return this.messageConfiguration;
-    }
-
-    public ConcurrencyManager getConcurrencyManager() {
-        return this.concurrencyManager;
     }
 
     public DynamicListenerManager getDynamicListenerManager() {

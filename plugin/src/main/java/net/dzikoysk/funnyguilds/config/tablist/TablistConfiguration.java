@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.config.tablist;
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
@@ -19,8 +18,7 @@ import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("Czy lista graczy ma być włączona")
-    @CustomKey("player-list-enable")
-    public boolean playerListEnable = true;
+    public boolean enabled = true;
 
     @Comment("")
     @Comment("Wygląd listy graczy, przedział slotów - od 1 do 80")
@@ -41,6 +39,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{ASSISTS} - liczba asyst gracza")
     @Comment("{LOGOUTS} - liczba wylogowań gracza podczas walki")
     @Comment("{KDR} - stosunek zabójstw do śmierci gracza")
+    @Comment("{KDA} - stosunek zabójstw i asyst do śmierci gracza")
     @Comment("{WG-REGION} - region WorldGuarda, na którym znajduje sie gracz (pierwszy z listy, jeśli jest ich kilka)")
     @Comment("{WG-REGIONS} - regiony WorldGuarda, na których znajduje się gracz (oddzielone przecinkami)")
     @Comment("{VAULT-MONEY} - balans konta gracza, pobierany z pluginu Vault")
@@ -70,7 +69,9 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{G-LOGOUTS} - suma wylogowań członków gildii")
     @Comment("{G-AVG-LOGOUTS} - średnia liczba wylogowań członków gildii")
     @Comment("{G-KDR} - stosunek zabójstw do śmierci gildii")
+    @Comment("{G-KDA} - stosunek zabójstw i asyst do śmierci gildii")
     @Comment("{G-AVG-KDR} - średni stosunek zabójstw do śmierci członków gildii")
+    @Comment("{G-AVG-KDA} - średni stosunek zabójstw i asyst do śmierci członków gildii")
     @Comment("{G-MEMBERS-ONLINE} - liczba członków gildii online")
     @Comment("{G-MEMBERS-ALL} - liczba wszystkich członków gildii")
     @Comment("{G-VALIDITY} - data wygaśnięcia gildii")
@@ -98,8 +99,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{PTOP-<typ>-<pozycja>} - gracz na podanej pozycji w rankingu (np. {PTOP-KILLS-1}, {PTOP-DEATHS-60}), dla danego typu rankingu")
     @Comment("{GTOP-<pozycja>} - gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @Comment("{GTOP-<typ>-<pozycja>} - gildia na podanej pozycji w rankingu (np. {GTOP-KILLS-1}, {PTOP-DEATHS-50}), dla danego typu rankingu")
-    @CustomKey("player-list")
-    public Map<Integer, String> playerList = ImmutableMap.<Integer, String>builder()
+    public Map<Integer, String> cells = ImmutableMap.<Integer, String>builder()
             .put(2, " &b&lSTATYSTYKI")
             .put(4, " &7Nick: &b{PLAYER}")
             .put(6, " &7Punkty: &b{POINTS}")
@@ -150,13 +150,11 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd nagłówka listy graczy")
-    @CustomKey("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.10.2 Snowdrop &8- &bgithub.com/funnyguilds";
+    public String header = "&7FunnyGuilds &b4.10.2 Snowdrop &8- &bgithub.com/funnyguilds";
 
     @Comment("")
     @Comment("Wygląd stopki listy graczy")
-    @CustomKey("player-list-footer")
-    public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &6&lmessages.yml&c&l!";
+    public String footer = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &6&lmessages.yml&c&l!";
 
     @Comment("")
     @Comment("Wygląd głowek na liście graczy")
@@ -206,7 +204,7 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Czy animowana lista graczy ma byc włączona")
-    public boolean playerListAnimated = true;
+    public boolean animated = true;
 
     @Comment("")
     @Comment("Animowane strony listy graczy")
@@ -309,22 +307,19 @@ public class TablistConfiguration extends OkaeriConfig {
     @Min(0)
     @Comment("")
     @Comment("Wartość pingu pokazana przy każdej komórce")
-    @CustomKey("player-list-ping")
-    public int playerListPing = 0;
+    public int cellsPing = 0;
 
     @Comment("")
     @Comment("Czy wszystkie możliwe komórki mają zostać zapełnione, niezależnie od liczby graczy online")
-    @CustomKey("player-list-fill-cells")
-    public boolean playerListFillCells = true;
+    public boolean fillCells = true;
 
     @Min(1)
     @Comment("")
     @Comment("Co ile ticków lista graczy powinna zostać odświeżona (20 ticków = 1 sekunda)")
-    public int playerListUpdateInterval = 20;
+    public int updateInterval = 20;
 
     @Comment("")
     @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
-    @CustomKey("player-list-use-relationship-colors")
-    public boolean playerListUseRelationshipColors = false;
+    public boolean useRelationshipColors = false;
 
 }

@@ -37,6 +37,7 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                 .property("kills", (user, rank) -> rank.getKills())
                 .property("deaths", (user, rank) -> rank.getDeaths())
                 .property("kdr", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()))
+                .property("kda", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDA()))
                 .property("assists", (user, rank) -> rank.getAssists())
                 .property("logouts", (user, rank) -> rank.getLogouts());
     }

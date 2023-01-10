@@ -7,10 +7,14 @@ public interface MessageAccessor {
 
     void sendTitleMessage(TitleMessage titleMessage, Player... players);
 
-    void sendTitleMessage(TitleMessage titleMessage, Collection<? extends Player> players);
+    default void sendTitleMessage(TitleMessage titleMessage, Collection<? extends Player> players) {
+        this.sendTitleMessage(titleMessage, players.toArray(new Player[0]));
+    }
 
     void sendActionBarMessage(String text, Player... players);
 
-    void sendActionBarMessage(String text, Collection<? extends Player> players);
+    default void sendActionBarMessage(String text, Collection<? extends Player> players) {
+        this.sendActionBarMessage(text, players.toArray(new Player[0]));
+    }
 
 }
