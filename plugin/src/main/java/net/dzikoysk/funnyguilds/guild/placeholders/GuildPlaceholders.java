@@ -15,8 +15,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 
-import static net.dzikoysk.funnyguilds.config.TimeInflection.Case.NOMINATIVE;
-
 public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
 
     public GuildPlaceholders property(String name, MonoResolver<Guild> resolver, SimpleResolver fallbackResolver) {
@@ -30,8 +28,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
     public GuildPlaceholders timeProperty(String name, Function<Guild, Instant> timeSupplier, MessageConfiguration messages, SimpleResolver fallbackResolver) {
         String noValue = Objects.toString(fallbackResolver.get(), "");
         return this.property(name, guild -> formatDate(guild, timeSupplier, messages.dateFormat, noValue), fallbackResolver)
-                .property(name + "-time", guild -> formatTime(messages, guild, timeSupplier, noValue), fallbackResolver)
-                .property(name + "-time-short", guild -> formatTimeShort(messages, guild, timeSupplier, noValue), fallbackResolver);
+                .property(name + "-time", guild -> formatTime( guild, timeSupplier, noValue), fallbackResolver);
     }
 
     private static String formatDate(Guild guild, Function<Guild, Instant> timeFunction, FunnyTimeFormatter formatter, String noValue) {
@@ -41,20 +38,12 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                 : formatter.format(endTime);
     }
 
-    private static String formatTime(MessageConfiguration messages, Guild guild, Function<Guild, Instant> timeFunction, String noValue) {
+    private static String formatTime(Guild guild, Function<Guild, Instant> timeFunction, String noValue) {
         Instant endTime = timeFunction.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? noValue
-                : TimeUtils.formatTime(messages, Duration.between(endTime, Instant.now()), NOMINATIVE);
+                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()));
     }
-
-    private static String formatTimeShort(MessageConfiguration messages, Guild guild, Function<Guild, Instant> timeFunction, String noValue) {
-        Instant endTime = timeFunction.apply(guild);
-        return endTime.isBefore(Instant.now())
-                ? noValue
-                : TimeUtils.formatTimeShort(messages, Duration.between(endTime, Instant.now()));
-    }
-
     @Override
     public GuildPlaceholders create() {
         return new GuildPlaceholders();

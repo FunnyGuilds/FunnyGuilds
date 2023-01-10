@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.config;
 
-import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.exception.OkaeriException;
@@ -8,55 +7,15 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.shared.TimeDivision;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.apache.commons.lang3.Validate;
 
 public class MessageConfiguration extends OkaeriConfig {
 
-    @Comment("<------- Time -------> #")
+    @Comment("<------- Global Date Format -------> #")
     public FunnyTimeFormatter dateFormat = new FunnyTimeFormatter("dd.MM.yyyy HH:mm:ss");
-
-    public Map<TimeDivision, TimeInflection> timeInflection = ImmutableMap.<TimeDivision, TimeInflection>builder()
-            .put(TimeDivision.SECOND, new TimeInflection(
-                            new String[] {"sekunda", "sekundy", "sekund"},
-                            new String[] {"sekundę", "sekundy", "sekund"},
-                            "s"
-                    ))
-            .put(TimeDivision.MINUTE, new TimeInflection(
-                            new String[] {"minuta", "minuty", "minut"},
-                            new String[] {"minutę", "minuty", "minut"},
-                            "m"
-                    ))
-            .put(TimeDivision.HOUR, new TimeInflection(
-                            new String[] {"godzina", "godziny", "godzin"},
-                            new String[] {"godzinę", "godziny", "godzin"},
-                            "h"
-                    ))
-            .put(TimeDivision.DAY, new TimeInflection(
-                            new String[] {"dzień", "dni", "dni"},
-                            new String[] {"dzień", "dni", "dni"},
-                            "d"
-                    ))
-            .put(TimeDivision.WEEK, new TimeInflection(
-                            new String[] {"tydzień", "tygodnie", "tygodni"},
-                            new String[] {"tydzień", "tygodnie", "tygodni"},
-                            "w"
-                    ))
-            .put(TimeDivision.MONTH, new TimeInflection(
-                            new String[] {"miesiąc", "miesiące", "miesięcy"},
-                            new String[] {"miesiąc", "miesiące", "miesięcy"},
-                            "mc"
-                    ))
-            .put(TimeDivision.YEAR, new TimeInflection(
-                            new String[] {"rok", "lata", "lat"},
-                            new String[] {"rok", "lata", "lat"},
-                            "l"
-                    ))
-            .build();
 
     @Comment("")
     @Comment("<------- No Value Messages -------> #")
@@ -131,9 +90,9 @@ public class MessageConfiguration extends OkaeriConfig {
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     public String regionInteract = "&cNie mozesz ingerowac w okolice serca swojej gildii!";
     @Comment("Dostępne zmienne: {TIME}")
-    public String regionExplode = "&cBudowanie na terenie twojej gildii zostało zablokowane na &4{TIME}&c!";
+    public String regionExplode = "&cBudowanie na terenie gildii zablokowane na czas &4{TIME} sekund&c!";
     @Comment("Dostępne zmienne: {TIME}")
-    public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME}&c!";
+    public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!";
     public String regionOther = "&cNie mozesz tego zrobic na terenie gildii!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
     public String regionTeleport = "&cNie mozesz teleportowac sie na teren innej gildii!";
@@ -756,10 +715,10 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("<------- System Messages -------> #")
     public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
-    public String reloadTime = "&aFunnyGuilds &7przeladowano! (&b{TIME}&7)";
+    public String reloadTime = "&aFunnyGuilds &7przeladowano! (&b{TIME}s&7)";
     public String reloadReloading = "&7Przeladowywanie...";
     public String saveallSaving = "&7Zapisywanie...";
-    public String saveallSaved = "&7Zapisano (&b{TIME}&7)!";
+    public String saveallSaved = "&7Zapisano (&b{TIME}s&7)!";
     public String loginNickTooShort = "&cNick jest za krotki!";
     public String loginNickTooLong = "&cNick jest za dlugi!";
     public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
@@ -767,13 +726,6 @@ public class MessageConfiguration extends OkaeriConfig {
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();
-
-        Validate.isTrue(!this.timeInflection.isEmpty(), "There is no time inflection defined");
-        if (this.timeInflection.size() < TimeDivision.values().length) {
-            Set<TimeDivision> divisions = new HashSet<>(Arrays.asList(TimeDivision.values()));
-            divisions.removeAll(this.timeInflection.keySet());
-            throw new IllegalArgumentException("Missing time inflection for " + divisions);
-        }
 
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
@@ -786,16 +738,11 @@ public class MessageConfiguration extends OkaeriConfig {
                     list.replaceAll(ChatUtils::colored);
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
 
         return this;
-    }
-
-    public TimeInflection getInflection(TimeDivision division) {
-        return this.timeInflection.get(division);
     }
 
 }

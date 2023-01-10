@@ -5,7 +5,6 @@ import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.TimeInflection.Case;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -114,7 +113,7 @@ public final class ProtectionSystem {
         guild.getBuild().peek(build -> {
             Duration time = Duration.between(Instant.now(), build);
             MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", TimeUtils.formatTime(messages, time, Case.ACCUSATIVE)));
+            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time.getSeconds()));
         });
     }
 

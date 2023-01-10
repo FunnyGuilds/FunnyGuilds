@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.TimeInflection.Case;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
@@ -38,7 +37,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             Duration delta = Duration.between(Instant.now(), validity);
 
             when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.format(this.messages.validityWhen, "{TIME}",
-                    TimeUtils.formatTime(this.messages, delta.minus(this.config.validityWhen), Case.NOMINATIVE)));
+                    TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
         }
 
         List<ItemStack> requiredItems = this.config.validityItems;

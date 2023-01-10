@@ -42,7 +42,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
     private val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
 
     protected lateinit var config: PluginConfiguration
-    protected lateinit var messages: MessageConfiguration
+    private lateinit var messages: MessageConfiguration
     private lateinit var tablistConfig: TablistConfiguration
 
     protected lateinit var userManager: UserManager

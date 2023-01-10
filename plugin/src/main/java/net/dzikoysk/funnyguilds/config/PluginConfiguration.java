@@ -399,7 +399,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czas jaki musi upłynąć od włączenia ucieczki do teleportacji")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
     @Comment("Przykład: 1m30s")
     public Duration escapeDelay = Duration.ofMinutes(2);
 
@@ -499,7 +499,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czas przez jaki nie można budować na terenie gildii po wybuchu")
     @Comment("Format: <wartość><jednostka><wartość><jednostka><...>")
-    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
     @Comment("Przykład: 1m30s")
     public Duration regionExplode = Duration.ofMinutes(2);
 
@@ -785,6 +785,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("info-player-command")
     public boolean infoPlayerCommand = true;
 
+    @PositiveOrZero
     @Comment("")
     @Comment("Cooldown pomiędzy pokazywaniem informacji przez PPM")
     @CustomKey("info-player-cooldown")

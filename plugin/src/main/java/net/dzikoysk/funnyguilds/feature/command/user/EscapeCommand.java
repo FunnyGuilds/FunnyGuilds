@@ -51,7 +51,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(guild.equals(region.getGuild()), this.messages.escapeOnYourRegion);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{TIME}", time)
+                .register("{TIME}", time.getSeconds())
                 .register("{PLAYER}", player.getName())
                 .register("{X}", playerLocation.getBlockX())
                 .register("{Y}", playerLocation.getBlockY())

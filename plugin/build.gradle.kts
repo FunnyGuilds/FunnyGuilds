@@ -29,8 +29,6 @@ dependencies {
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
     // okaeri holographicdisplays commons
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.21")
-    // okaeri placeholders
-    implementation("eu.okaeri:okaeri-pluralize:1.1.1")
 
     /* general stuff */
 
