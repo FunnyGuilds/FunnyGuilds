@@ -738,7 +738,8 @@ public class MessageConfiguration extends OkaeriConfig {
                     list.replaceAll(ChatUtils::colored);
                 }
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
 
