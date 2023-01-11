@@ -129,17 +129,17 @@ public final class FlatGuildSerializer {
         Set<Guild> allies = guildManager.findByNames(loadSet(wrapper, "allies"));
         Set<Guild> enemies = guildManager.findByNames(loadSet(wrapper, "enemies"));
 
-        if (born == null || born.toEpochMilli() <= 0) {
+        if (born == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
             return Option.none();
         }
 
-        if (validity == null || validity.toEpochMilli() <= 0) {
+        if (validity == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
             return Option.none();
         }
 
-        if (protection == null || protection.toEpochMilli() <= 0) {
+        if (protection == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
             return Option.none();
         }

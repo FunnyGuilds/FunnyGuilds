@@ -95,17 +95,17 @@ public final class DatabaseGuildSerializer {
                 members = userManager.findByNames(FunnyStringUtils.fromString(membersString));
             }
 
-            if (born == null || born.toEpochMilli() <= 0) {
+            if (born == null) {
                 logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
                 return Option.none();
             }
 
-            if (validity == null || validity.toEpochMilli() <= 0) {
+            if (validity == null) {
                 logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
                 return Option.none();
             }
 
-            if (protection == null || protection.toEpochMilli() <= 0) {
+            if (protection == null) {
                 logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
                 return Option.none();
             }
