@@ -36,9 +36,9 @@ public final class DeserializationUtils {
         user.getRank().setAssists((int) values[5]);
         user.getRank().setLogouts((int) values[6]);
 
-        long banTime = (long) values[7];
-        if (banTime > 0) {
-            user.setBan(new UserBan((String) values[8], Instant.ofEpochMilli(banTime)));
+        Instant ban = (Instant) values[7];
+        if (ban != null) {
+            user.setBan(new UserBan((String) values[8], ban));
         }
 
         user.markUnchanged();

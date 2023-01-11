@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import panda.std.Option;
@@ -30,7 +31,7 @@ public final class DatabaseUserSerializer {
             int deaths = resultSet.getInt("deaths");
             int assists = resultSet.getInt("assists");
             int logouts = resultSet.getInt("logouts");
-            long ban = resultSet.getLong("ban");
+            Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             String reason = resultSet.getString("reason");
 
             Object[] values = new Object[9];
