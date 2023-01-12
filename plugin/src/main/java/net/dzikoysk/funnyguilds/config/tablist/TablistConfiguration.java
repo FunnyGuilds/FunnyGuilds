@@ -207,11 +207,11 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Animowane strony listy graczy")
     @Comment("Wartość cycles to liczba cykli, przez które widać daną stronę na liście graczy")
-    @Comment("1 cykl to 1 wysłanie listy, częstotliwość wysyłania listy można zmienić ustawiając wartość player-list-update-interval")
+    @Comment("1 cykl to 1 wysłanie listy, częstotliwość wysyłania listy można zmienić ustawiając wartość 'update-interval'")
     @Comment(" ")
-    @Comment("Podsekcję player-list konfiguruje analogicznie do sekcji player-list, ustawia się w niej wszystkie komórki, które mają się zmieniać (nadpisując zwykłą konfigurację)")
-    @Comment("Podsekcję player-list-header konfiguruje się analogicznie do sekcji player-list-header")
-    @Comment("Podsekcję player-list-footer konfiguruje się analogicznie do sekcji player-list-footer")
+    @Comment("Podsekcję 'cells' konfiguruje analogicznie jak główną sekcje 'cells', ustawia się w niej wszystkie komórki, które mają się zmieniać (nadpisując zwykłą konfigurację)")
+    @Comment("Podsekcję 'header' konfiguruje analogicznie jak główną sekcje 'header'")
+    @Comment("Podsekcję 'footer' konfiguruje analogicznie jak główną sekcje 'footer'")
     public List<TablistPage> pages = new LinkedList<>(
             Arrays.asList(
                     new TablistPage(10, ImmutableMap.<Integer, String>builder()
