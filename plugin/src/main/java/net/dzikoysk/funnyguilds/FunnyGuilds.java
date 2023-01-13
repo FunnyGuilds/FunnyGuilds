@@ -677,11 +677,6 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
-        if (true) {
-            throw new IllegalStateException(String.format(
-                    "Could not find matching NmsAccessor for currently running server version: %s", Reflections.SERVER_VERSION
-            ));
-        }
         switch (Reflections.SERVER_VERSION) {
             case "v1_8_R3":
                 return new V1_8R3NmsAccessor();
