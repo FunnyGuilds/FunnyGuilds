@@ -79,23 +79,23 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override // one - seeing the placeholder, two - about which the placeholder is
-        public String onPlaceholderRequest(Player one, Player two, String identifier) {
+        public String onPlaceholderRequest(Player observer, Player target, String identifier) {
             // TODO: [5.0] Remove `prefix` placeholder
-            if (one == null || two == null || (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))) {
+            if (observer == null || target == null || (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))) {
                 return "";
             }
 
             UserManager userManager = this.plugin.getUserManager();
-            Option<User> userOneOption = userManager.findByPlayer(one);
-            Option<User> userTwoOption = userManager.findByPlayer(two);
+            Option<User> userObserverOption = userManager.findByPlayer(observer);
+            Option<User> userTargetOption = userManager.findByPlayer(target);
 
-            if (userOneOption.isEmpty() || userTwoOption.isEmpty()) {
+            if (userObserverOption.isEmpty() || userTargetOption.isEmpty()) {
                 return "";
             }
 
             return this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
-                    userOneOption.get().getGuild().orNull(),
-                    userTwoOption.get().getGuild().orNull()
+                    userObserverOption.get().getGuild().orNull(),
+                    userTargetOption.get().getGuild().orNull()
             );
         }
 
