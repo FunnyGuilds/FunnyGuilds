@@ -207,7 +207,13 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        this.nmsAccessor = prepareNmsAccessor();
+        try {
+            this.nmsAccessor = prepareNmsAccessor();
+        } catch (Exception exception) {
+            logger.error("Could not prepare NMS accessor", exception);
+            this.shutdown("Critical error has been encountered!");
+            return;
+        }
         this.guildEntityHelper = new GuildEntityHelper(this.pluginConfiguration, this.nmsAccessor);
 
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
