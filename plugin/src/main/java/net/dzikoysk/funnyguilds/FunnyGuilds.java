@@ -209,7 +209,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.nmsAccessor = prepareNmsAccessor();
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             logger.error("Could not prepare NMS accessor", exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -675,7 +676,12 @@ public class FunnyGuilds extends JavaPlugin {
         return logger;
     }
 
-    private static NmsAccessor prepareNmsAccessor() {
+    private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
+        if (true) {
+            throw new IllegalStateException(String.format(
+                    "Could not find matching NmsAccessor for currently running server version: %s", Reflections.SERVER_VERSION
+            ));
+        }
         switch (Reflections.SERVER_VERSION) {
             case "v1_8_R3":
                 return new V1_8R3NmsAccessor();
