@@ -37,7 +37,7 @@ FunnyGuilds hooks into those plugins:
 </repository>
 <!-- Snapshots (Nightly) -->
 <repository>
-    <id>reposilite-repository</id>
+    <id>reposilite-snapshots-repository</id>
     <url>https://maven.reposilite.com/snapshots</url>
 </repository>
 ```
