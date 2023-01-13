@@ -211,7 +211,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.nmsAccessor = prepareNmsAccessor();
         }
         catch (Exception exception) {
-            logger.error("Could not prepare NMS accessor", exception);
+            logger.error(String.format("Unsupported server version: %s", Reflections.SERVER_VERSION), exception);
             this.shutdown("Critical error has been encountered!");
             return;
         }
@@ -706,7 +706,7 @@ public class FunnyGuilds extends JavaPlugin {
                 return new V1_19R2NmsAccessor();
             default:
                 throw new IllegalStateException(String.format(
-                        "Could not find matching NmsAccessor for currently running server version: %s", Reflections.SERVER_VERSION
+                        "Could not find applicable NmsAccessor. Unsupported server version: %s", Reflections.SERVER_VERSION
                 ));
         }
     }
