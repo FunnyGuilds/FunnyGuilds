@@ -21,7 +21,11 @@ public final class NmsUtils {
     }
 
     public static int getReloadCount() {
-        return FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getReloadCount();
+        try {
+            return FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getReloadCount();
+        } catch (Exception ex) {
+            return -1;
+        }
     }
 
     public static int getPing(Player player) {
