@@ -86,16 +86,16 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             UserManager userManager = this.plugin.getUserManager();
-            Option<User> userOneOption = userManager.findByPlayer(observer);
-            Option<User> userTwoOption = userManager.findByPlayer(source);
+            Option<User> userObserverOption = userManager.findByPlayer(observer);
+            Option<User> userSourceOption = userManager.findByPlayer(source);
 
-            if (userOneOption.isEmpty() || userTwoOption.isEmpty()) {
+            if (userObserverOption.isEmpty() || userSourceOption.isEmpty()) {
                 return "";
             }
 
             return this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
-                    userOneOption.get().getGuild().orNull(),
-                    userTwoOption.get().getGuild().orNull()
+                    userObserverOption.get().getGuild().orNull(),
+                    userSourceOption.get().getGuild().orNull()
             );
         }
 

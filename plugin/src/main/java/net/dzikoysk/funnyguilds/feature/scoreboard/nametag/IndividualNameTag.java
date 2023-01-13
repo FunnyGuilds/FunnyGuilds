@@ -69,11 +69,11 @@ public class IndividualNameTag {
         }
         Scoreboard scoreboard = scoreboardOption.get();
 
-        Team targetTeam = prepareTeam(scoreboard, target.getName());
+        Team targetTeam = this.prepareTeam(scoreboard, target.getName());
 
         ScoreboardConfiguration.NameTag nameTagConfig = this.pluginConfiguration.scoreboard.nametag;
-        targetTeam.setPrefix(this.prepareValue(prepareConfigValue(nameTagConfig.prefix, target), target));
-        targetTeam.setSuffix(this.prepareValue(prepareConfigValue(nameTagConfig.suffix, target), target));
+        targetTeam.setPrefix(this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, target), target));
+        targetTeam.setSuffix(this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, target), target));
     }
 
     public void removePlayer(User target) {
