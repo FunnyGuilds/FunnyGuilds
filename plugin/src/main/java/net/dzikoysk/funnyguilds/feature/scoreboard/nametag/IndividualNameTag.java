@@ -60,9 +60,6 @@ public class IndividualNameTag {
             return;
         }
 
-        if (this.user.equals(target)) {
-            return;
-        }
         FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + target.getName() + " for " + this.user.getName());
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
@@ -80,9 +77,6 @@ public class IndividualNameTag {
     }
 
     public void removePlayer(User target) {
-        if (this.user.equals(target)) {
-            return;
-        }
         FunnyGuilds.getPluginLogger().debug("[NameTag] Removing " + target.getName() + " for " + this.user.getName());
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
@@ -144,6 +138,7 @@ public class IndividualNameTag {
                 .map(placeholders -> placeholders.formatVariables(finalValue, targetGuild))
                 .orElseGet(value);
 
+        value = HookUtils.replacePlaceholders(targetPlayer, value);
         value = HookUtils.replacePlaceholders(player, targetPlayer, value);
 
         // Some placeholders may pass color codes (e.g. &6) - we should recolor them
