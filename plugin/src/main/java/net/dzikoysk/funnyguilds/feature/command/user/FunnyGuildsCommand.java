@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -12,6 +14,7 @@ import net.dzikoysk.funnyguilds.telemetry.FunnybinAsyncTask;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -65,7 +68,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         when(!sender.hasPermission("funnyguilds.admin"), this.messages.permission);
 
         this.sendMessage(sender, this.messages.saveallSaving);
-        long currentTime = System.currentTimeMillis();
+        Instant startTime = Instant.now();
 
         DataModel dataModel = this.dataModel;
         try {
@@ -77,7 +80,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        String time = String.format("%.2f", (System.currentTimeMillis() - currentTime) / 1000.0D);
+        String time = TimeUtils.formatTimeSimple(Duration.between(startTime, Instant.now()));
         this.sendMessage(sender, FunnyFormatter.format(this.messages.saveallSaved, "{TIME}", time));
     }
 
@@ -100,12 +103,12 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
         private final FunnyGuilds plugin;
         private final CommandSender sender;
-        private final long startTime;
+        private final Instant startTime;
 
         public ReloadAsyncTask(FunnyGuilds plugin, CommandSender sender) {
             this.plugin = plugin;
             this.sender = sender;
-            this.startTime = System.currentTimeMillis();
+            this.startTime = Instant.now();
         }
 
         @Override
@@ -137,11 +140,8 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                         });
             }
 
-            long endTime = System.currentTimeMillis();
-            String diff = String.format("%.2f", (endTime - this.startTime) / 1000.0D);
-
-            String message = FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", diff);
-            ChatUtils.sendMessage(this.sender, message);
+            String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
+            ChatUtils.sendMessage(this.sender,  FunnyFormatter.format(this.plugin.getMessageConfiguration().reloadTime, "{TIME}", time));
         }
 
     }

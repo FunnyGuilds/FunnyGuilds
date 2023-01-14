@@ -4,7 +4,6 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -13,7 +12,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("<------- Global Date Format -------> #")
-    public SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //TODO: change to new datetime API
+    public FunnyTimeFormatter dateFormat = new FunnyTimeFormatter("dd.MM.yyyy HH:mm:ss");
 
     @Comment("")
     @Comment("<------- No Value Messages -------> #")
@@ -249,7 +248,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Zalozyciel: &c{OWNER}",
             "&7Zastepcy: &c{DEPUTIES}",
             "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
-            "&7Ochrona: &c{GUILD-PROTECTION}",
+            "&7Ochrona: &c{PROTECTION}",
             "&7Zycia: &4{LIVES}",
             "&7Waznosc: &c{VALIDITY}",
             "&7Czlonkowie: &7{MEMBERS}",
@@ -736,8 +735,7 @@ public class MessageConfiguration extends OkaeriConfig {
                     list.replaceAll(ChatUtils::colored);
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
 

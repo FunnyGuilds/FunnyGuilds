@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.util;
 
+import java.time.Instant;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -35,9 +36,9 @@ public final class DeserializationUtils {
         user.getRank().setAssists((int) values[5]);
         user.getRank().setLogouts((int) values[6]);
 
-        long banTime = (long) values[7];
-        if (banTime > 0) {
-            user.setBan(new UserBan((String) values[8], banTime));
+        Instant ban = (Instant) values[7];
+        if (ban != null) {
+            user.setBan(new UserBan((String) values[8], ban));
         }
 
         user.markUnchanged();
@@ -76,11 +77,11 @@ public final class DeserializationUtils {
         guild.setMembers((Set<User>) values[6]);
         guild.setAllies((Set<Guild>) values[7]);
         guild.setEnemies((Set<Guild>) values[8]);
-        guild.setBorn((long) values[9]);
-        guild.setValidity((long) values[10]);
-        guild.setProtection((long) values[11]);
+        guild.setBorn((Instant) values[9]);
+        guild.setValidity((Instant) values[10]);
+        guild.setProtection((Instant) values[11]);
         guild.setLives((int) values[12]);
-        guild.setBan((long) values[13]);
+        guild.setBan((Instant) values[13]);
         guild.setDeputies((Set<User>) values[14]);
         guild.setPvP((boolean) values[15]);
         guild.deserializationUpdate();

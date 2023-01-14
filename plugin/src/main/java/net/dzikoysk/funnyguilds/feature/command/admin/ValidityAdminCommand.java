@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.time.Duration;
+import java.time.Instant;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
@@ -28,23 +30,20 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         when(guild.isBanned(), this.messages.adminGuildBanned);
 
-        long time = TimeUtils.parseTime(args[1]);
-        if (time < 1) {
-            this.sendMessage(sender, this.messages.adminTimeError);
-            return;
-        }
+        Duration time = TimeUtils.parseTime(args[1]);
+        when(time.toMillis() < 1, this.messages.adminTimeError);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(AdminUtils.getCause(admin), admin, guild, time))) {
             return;
         }
 
-        long validity = guild.getValidity();
-        if (validity == 0) {
-            validity = System.currentTimeMillis();
+        Instant validity = guild.getValidity();
+        if (validity.toEpochMilli() == 0) {
+            validity = Instant.now();
         }
 
-        validity += time;
+        validity = validity.plus(time);
         guild.setValidity(validity);
 
         FunnyFormatter formatter = new FunnyFormatter()

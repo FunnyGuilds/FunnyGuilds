@@ -33,11 +33,11 @@ public final class ValidityCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
         if (!this.config.validityWhen.isZero()) {
-            long validity = guild.getValidity();
-            Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
+            Instant validity = guild.getValidity();
+            Duration delta = Duration.between(Instant.now(), validity);
 
             when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.format(this.messages.validityWhen, "{TIME}",
-                    TimeUtils.getDurationBreakdown(delta.minus(this.config.validityWhen).toMillis())));
+                    TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
         }
 
         List<ItemStack> requiredItems = this.config.validityItems;
@@ -45,19 +45,19 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             return;
         }
 
-        long validityTime = this.config.validityTime.toMillis();
+        Duration validityTime = this.config.validityTime;
         if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, deputy, guild, validityTime))) {
             return;
         }
 
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
-        long validity = guild.getValidity();
 
-        if (validity == 0) {
-            validity = System.currentTimeMillis();
+        Instant validity = guild.getValidity();
+        if (validity.toEpochMilli() == 0) {
+            validity = Instant.now();
         }
 
-        validity += validityTime;
+        validity = validity.plus(validityTime);
         guild.setValidity(validity);
 
         String formattedValidity = this.messages.dateFormat.format(validity);

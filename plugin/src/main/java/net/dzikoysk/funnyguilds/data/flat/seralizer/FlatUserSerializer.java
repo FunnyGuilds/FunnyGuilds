@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.data.flat.seralizer;
 
 import java.io.File;
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
 
@@ -27,7 +29,7 @@ public final class FlatUserSerializer {
         int deaths = wrapper.getInt("deaths");
         int assists = wrapper.getInt("assists");
         int logouts = wrapper.getInt("logouts");
-        long ban = wrapper.getLong("ban");
+        Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         String reason = wrapper.getString("reason");
 
         if (id == null || name == null) {
@@ -71,7 +73,7 @@ public final class FlatUserSerializer {
         wrapper.set("logouts", user.getRank().getLogouts());
 
         user.getBan().peek(ban -> {
-            wrapper.set("ban", ban.getBanTime());
+            wrapper.set("ban", ban.getTime().toEpochMilli());
             wrapper.set("reason", ban.getReason());
         });
 

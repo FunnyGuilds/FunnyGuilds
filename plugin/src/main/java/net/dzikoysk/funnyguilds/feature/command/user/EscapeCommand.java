@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -38,7 +39,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(regionOption.isEmpty(), this.messages.escapeNoNeedToRun);
 
         Region region = regionOption.get();
-        int time = this.config.escapeDelay;
+        Duration time = this.config.escapeDelay;
 
         if (!user.hasGuild()) {
             when(!this.config.escapeSpawn, this.messages.escapeNoUserGuild);
@@ -50,13 +51,13 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(guild.equals(region.getGuild()), this.messages.escapeOnYourRegion);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{TIME}", time)
+                .register("{TIME}", time.getSeconds())
                 .register("{PLAYER}", player.getName())
                 .register("{X}", playerLocation.getBlockX())
                 .register("{Y}", playerLocation.getBlockY())
                 .register("{Z}", playerLocation.getBlockZ());
 
-        if (time >= 1) {
+        if (time.getSeconds() >= 1) {
             user.sendMessage(formatter.format(this.messages.escapeStartedUser));
             region.getGuild().broadcast(formatter.format(this.messages.escapeStartedOpponents));
         }
@@ -66,7 +67,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         }));
     }
 
-    private void scheduleTeleportation(Player player, User user, Location destination, int time, Runnable onSuccess) {
+    private void scheduleTeleportation(Player player, User user, Location destination, Duration time, Runnable onSuccess) {
         Location before = player.getLocation();
         AtomicInteger timeCounter = new AtomicInteger(0);
         UserCache cache = user.getCache();
@@ -85,14 +86,14 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                 return;
             }
 
-            if (timeCounter.getAndIncrement() > time) {
+            if (timeCounter.getAndIncrement() > time.getSeconds()) {
                 cache.getTeleportation().cancel();
                 player.teleport(destination);
                 user.sendMessage(this.messages.escapeSuccessfulUser);
                 onSuccess.run();
                 cache.setTeleportation(null);
             }
-        }, 0L, (time < 1) ? 0L : 20L));
+        }, 0L, (time.toMillis() < 1) ? 0L : 20L));
     }
 
 }

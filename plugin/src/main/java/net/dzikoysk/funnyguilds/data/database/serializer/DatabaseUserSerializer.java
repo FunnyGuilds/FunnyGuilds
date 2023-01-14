@@ -1,12 +1,14 @@
 package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import java.sql.ResultSet;
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import panda.std.Option;
@@ -29,7 +31,7 @@ public final class DatabaseUserSerializer {
             int deaths = resultSet.getInt("deaths");
             int assists = resultSet.getInt("assists");
             int logouts = resultSet.getInt("logouts");
-            long ban = resultSet.getLong("ban");
+            Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             String reason = resultSet.getString("reason");
 
             Object[] values = new Object[9];
@@ -63,7 +65,7 @@ public final class DatabaseUserSerializer {
         statement.set("deaths", user.getRank().getDeaths());
         statement.set("assists", user.getRank().getAssists());
         statement.set("logouts", user.getRank().getLogouts());
-        statement.set("ban", user.getBan().map(UserBan::getBanTime).orElseGet(0L));
+        statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("reason", user.getBan().map(UserBan::getReason).orNull());
 
         statement.executeUpdate();

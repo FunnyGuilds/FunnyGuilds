@@ -1,161 +1,188 @@
 package net.dzikoysk.funnyguilds.shared;
 
-import java.util.Stack;
-import java.util.concurrent.TimeUnit;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import panda.utilities.StringUtils;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
+
+    private static final TimeDivision[] TIME_DIVISIONS = new TimeDivision[]{
+            TimeDivision.YEAR, TimeDivision.MONTH, TimeDivision.DAY, TimeDivision.HOUR, TimeDivision.MINUTE, TimeDivision.SECOND
+    };
 
     private TimeUtils() {
     }
 
-    public static long parseTime(String string) {
-        if (FunnyStringUtils.isEmpty(string)) {
-            return 0;
+    @Nullable
+    public static Instant positiveOrNullInstant(long time) {
+        if (time <= 0) {
+            return null;
         }
-
-        Stack<Character> type = new Stack<>();
-        StringBuilder value = new StringBuilder();
-
-        boolean calc = false;
-        long time = 0;
-
-        for (char c : string.toCharArray()) {
-            switch (c) {
-                case 'd':
-                case 'h':
-                case 'm':
-                case 's':
-                    if (!calc) {
-                        type.push(c);
-                    }
-
-                    try {
-                        long i = Integer.parseInt(value.toString());
-                        switch (type.pop()) {
-                            case 'd':
-                                time += i * 86400000L;
-                                break;
-                            case 'h':
-                                time += i * 3600000L;
-                                break;
-                            case 'm':
-                                time += i * 60000L;
-                                break;
-                            case 's':
-                                time += i * 1000L;
-                                break;
-                        }
-                    }
-                    catch (NumberFormatException e) {
-                        FunnyGuilds.getPluginLogger().parser("Unknown number: " + value);
-                        return time;
-                    }
-
-                    type.push(c);
-                    calc = true;
-
-                    break;
-                default:
-                    value.append(c);
-                    break;
-            }
-        }
-
-        return time;
+        return Instant.ofEpochMilli(time);
     }
 
-    public static String getDurationBreakdown(long millis) {
-        if (millis == 0) {
-            return "0";
+    public static String formatTimeSimple(Duration duration) {
+        return String.format("%.2f", duration.toMillis() / 1000.0D);
+    }
+
+    public static String formatTime(Duration duration) {
+        return TimeUtils.formatTime(duration, " ");
+    }
+
+    public static String formatTime(Duration duration, String delimiter) {
+        return TimeUtils.formatTime(duration, delimiter, TIME_DIVISIONS);
+    }
+
+    private static String formatTime(Duration time, String delimiter, TimeDivision[] durationDivisions) {
+        long millis = time.toMillis();
+        LinkedHashMap<TimeDivision, Long> timeParts = new LinkedHashMap<>();
+
+        for (final TimeDivision division : durationDivisions) {
+            long divisionTime = millis / division.getMillis();
+
+            millis -= divisionTime * division.getMillis();
+            timeParts.put(division, divisionTime);
         }
 
-        long days = TimeUnit.MILLISECONDS.toDays(millis);
-        if (days > 0) {
-            millis -= TimeUnit.DAYS.toMillis(days);
+        return parseTimeParts(timeParts, delimiter);
+    }
+
+    private static String parseTimeParts(LinkedHashMap<TimeDivision, Long> timeParts, String delimiter) {
+        StringBuilder timeStringBuilder = new StringBuilder();
+        for (Map.Entry<TimeDivision, Long> timePart : timeParts.entrySet()) {
+            long partValue = timePart.getValue();
+            if (partValue == 0) {
+                continue;
+            }
+
+            timeStringBuilder.append(delimiter).append(timePart.getKey().getFormatted(partValue));
         }
 
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        if (hours > 0) {
-            millis -= TimeUnit.HOURS.toMillis(hours);
+        if (timeStringBuilder.length() == 0) {
+            return TimeDivision.SECOND.getFormatted(0);
         }
 
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-        if (minutes > 0) {
-            millis -= TimeUnit.MINUTES.toMillis(minutes);
+        return timeStringBuilder.substring(delimiter.length());
+    }
+
+    public static Duration parseTime(String time) {
+        final StringBuilder tempNumber = new StringBuilder();
+        long resultTime = 0L;
+
+        final char[] stringChars = time.toLowerCase().toCharArray();
+        timeLoop:
+        for (int i = 0; i < stringChars.length; i++) {
+            final char c = stringChars[i];
+            if (c >= '0' && c <= '9') {
+                tempNumber.append(c);
+                continue;
+            }
+
+            for (final TimeDivision timeDivision : TimeDivision.values()) {
+                abbreviationLoop:
+                for (final String abbreviation : timeDivision.getAbbreviations()) {
+                    if (i + abbreviation.length() > stringChars.length) {
+                        continue;
+                    }
+
+                    final char[] abbreviationChars = abbreviation.toCharArray();
+                    for (int a = 0; a < abbreviationChars.length; a++) {
+                        if (abbreviationChars[a] != stringChars[i + a]) {
+                            continue abbreviationLoop;
+                        }
+                    }
+
+                    char next = '0';
+                    if (i + abbreviation.length() < stringChars.length) {
+                        next = stringChars[i + abbreviation.length()];
+                    }
+
+                    if (next < '0' || next > '9') {
+                        continue;
+                    }
+
+                    if (tempNumber.length() == 0) {
+                        return Duration.ofSeconds(0);
+                    }
+
+                    resultTime += Long.parseLong(tempNumber.toString()) * timeDivision.getMillis();
+                    tempNumber.setLength(0);
+
+                    i += abbreviation.length() - 1;
+                    continue timeLoop;
+                }
+            }
+
+            return Duration.ofSeconds(0);
         }
 
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-        if (seconds > 0) {
-            millis -= TimeUnit.SECONDS.toMillis(seconds);
+        if (tempNumber.length() != 0) {
+            return Duration.ofSeconds(0);
         }
 
-        StringBuilder durationBuilder = new StringBuilder();
+        return Duration.ofMillis(resultTime);
+    }
 
-        if (days > 0) {
-            durationBuilder.append(days);
+    public enum TimeDivision {
 
-            if (days == 1) {
-                durationBuilder.append(" dzien ");
-            }
-            else {
-                durationBuilder.append(" dni ");
-            }
+        SECOND(1000L, "sekunda", "sekundy", "sekund", "s", "sek"),
+        MINUTE(60000L, "minuta", "minuty", "minut", "m", "min"),
+        HOUR(3600000L, "godzina", "godziny", "godzin", "h", "godz"),
+        DAY(86400000L, "dzien", "dni", "dni", "d", "dni", "day"),
+        WEEK(604800000L, "tydzien", "tygodnie", "tygodni", "w", "t", "tyg"),
+        MONTH(2592000000L, "miesiac", "miesiace", "miesiecy", "mo", "ms", "mc", "mies"),
+        YEAR(31536000000L, "rok", "lata", "lata", "y", "r", "l", "lat", "rok");
+
+        private final long millis;
+
+        private final String singularForm;
+        private final String doubleForm;
+        private final String pluralForm;
+
+        private final String[] abbreviations;
+
+        TimeDivision(long millis, String singularForm, String doubleForm, String pluralForm, String... abbreviations) {
+            this.millis = millis;
+            this.singularForm = singularForm;
+            this.doubleForm = doubleForm;
+            this.pluralForm = pluralForm;
+            this.abbreviations = abbreviations;
         }
 
-        if (hours > 0) {
-            durationBuilder.append(hours);
-
-            long last = hours % 10;
-            long lastTwo = hours % 100;
-
-            if (hours == 1) {
-                durationBuilder.append(" godzine ");
-            }
-            else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
-                durationBuilder.append(" godziny ");
-            }
-            else {
-                durationBuilder.append(" godzin ");
-            }
+        public long getMillis() {
+            return this.millis;
         }
 
-        if (minutes > 0) {
-            durationBuilder.append(minutes);
+        public String getForm(long amount) {
+            if (amount == 1) {
+                return this.singularForm;
+            }
 
-            long last = minutes % 10;
-            long lastTwo = minutes % 100;
+            long onesNumber = amount % 10;
+            long tensNumber = amount % 100;
 
-            if (minutes == 1) {
-                durationBuilder.append(" minute ");
+            if (onesNumber < 2 || onesNumber > 4) {
+                return this.pluralForm;
             }
-            else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
-                durationBuilder.append(" minuty ");
+
+            if (tensNumber >= 12 && tensNumber <= 14) {
+                return this.pluralForm;
             }
-            else {
-                durationBuilder.append(" minut ");
-            }
+
+            return this.doubleForm;
         }
 
-        if (seconds > 0) {
-            durationBuilder.append(seconds);
-
-            long last = seconds % 10;
-            long lastTwo = seconds % 100;
-
-            if (seconds == 1) {
-                durationBuilder.append(" sekunde ");
-            }
-            else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
-                durationBuilder.append(" sekundy ");
-            }
-            else {
-                durationBuilder.append(" sekund ");
-            }
+        public String getFormatted(long amount) {
+            return amount + " " + this.getForm(amount);
         }
 
-        return durationBuilder.toString();
+        public String[] getAbbreviations() {
+            return Arrays.copyOf(this.abbreviations, this.abbreviations.length);
+        }
+
     }
 
 }

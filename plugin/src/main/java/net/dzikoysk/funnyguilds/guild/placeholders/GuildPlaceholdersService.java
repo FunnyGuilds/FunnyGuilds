@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
 import java.util.Locale;
-import java.util.function.Function;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -16,7 +15,6 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Option;
@@ -66,10 +64,6 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         GuildRankManager rankManager = plugin.getGuildRankManager();
 
         return new GuildPlaceholders()
-                .property("validity", guild -> messages.dateFormat.format(guild.getValidity()), () -> messages.gValidityNoValue)
-                .property("validity-time", guild -> formatTime(guild, Guild::getValidity), () -> messages.gValidityNoValue)
-                .property("protection", guild -> messages.dateFormat.format(guild.getProtection()), () -> messages.gProtectionNoValue)
-                .property("protection-time", guild -> formatTime(guild, Guild::getProtection), () -> messages.gProtectionNoValue)
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
                 .property("deputies",
                         guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.gDeputiesNoValue),
@@ -94,6 +88,8 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                                 ? messages.pvpStatusOn
                                 : messages.pvpStatusOff,
                         () -> messages.pvpStatusOff)
+                .timeProperty("validity", Guild::getValidity, messages, () -> messages.gValidityNoValue)
+                .timeProperty("protection", Guild::getProtection, messages, () -> messages.gProtectionNoValue)
                 .property("lives", Guild::getLives, () -> 0)
                 .property("lives-symbol",
                         guild -> {
@@ -157,15 +153,6 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("enemies-tags",
                         guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue),
                         () -> messages.enemiesNoValue);
-    }
-
-    private static String formatTime(Guild guild, Function<Guild, Long> timeFunction) {
-        long now = System.currentTimeMillis();
-        long endTime = timeFunction.apply(guild);
-
-        return endTime < now
-                ? "Brak"
-                : TimeUtils.getDurationBreakdown(endTime - now);
     }
 
 }

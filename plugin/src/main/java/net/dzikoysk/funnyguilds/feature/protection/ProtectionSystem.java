@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.protection;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -8,6 +9,7 @@ import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
@@ -108,10 +110,11 @@ public final class ProtectionSystem {
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        long time = TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis());
-
-        ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time));
+        guild.getBuild().peek(build -> {
+            Duration time = Duration.between(Instant.now(), build);
+            MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time.getSeconds()));
+        });
     }
 
     public enum ProtectionType {

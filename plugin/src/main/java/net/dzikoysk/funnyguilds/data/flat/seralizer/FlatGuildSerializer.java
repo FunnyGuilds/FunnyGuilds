@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -21,6 +22,7 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -39,6 +41,7 @@ public final class FlatGuildSerializer {
         }
 
         FunnyGuilds plugin = FunnyGuilds.getInstance();
+        FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
         UserManager userManager = plugin.getUserManager();
         GuildManager guildManager = plugin.getGuildManager();
         RegionManager regionManager = plugin.getRegionManager();
@@ -54,37 +57,37 @@ public final class FlatGuildSerializer {
         String hs = wrapper.getString("home");
         String regionName = wrapper.getString("region");
         boolean pvp = wrapper.getBoolean("pvp");
-        long born = wrapper.getLong("born");
-        long validity = wrapper.getLong("validity");
-        long attacked = wrapper.getLong("attacked");
-        long ban = wrapper.getLong("ban");
+        Instant born = TimeUtils.positiveOrNullInstant(wrapper.getLong("born"));
+        Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
+        Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
+        Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
 
         if (name == null) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild, caused by: name is null");
+            logger.deserialize("Cannot deserialize guild, caused by: name is null");
             return Option.none();
         }
 
         if (tag == null) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
             return Option.none();
         }
 
         if (ownerName == null) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
             return Option.none();
         }
 
         Region region = null;
         if (config.regionsEnabled) {
             if (regionName == null) {
-                FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: region is null");
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region is null");
                 return Option.none();
             }
 
             Option<Region> regionOption = regionManager.findByName(regionName);
             if (regionOption.isEmpty()) {
-                FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: region (object) is null");
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region (object) is null");
                 return Option.none();
             }
 
@@ -98,7 +101,7 @@ public final class FlatGuildSerializer {
 
         Option<User> ownerOption = userManager.findByName(ownerName);
         if (ownerOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
             return Option.none();
         }
 
@@ -126,12 +129,19 @@ public final class FlatGuildSerializer {
         Set<Guild> allies = guildManager.findByNames(loadSet(wrapper, "allies"));
         Set<Guild> enemies = guildManager.findByNames(loadSet(wrapper, "enemies"));
 
-        if (born == 0) {
-            born = System.currentTimeMillis();
+        if (born == null) {
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
+            return Option.none();
         }
 
-        if (validity == 0) {
-            validity = Instant.now().plus(config.validityStart).toEpochMilli();
+        if (validity == null) {
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
+            return Option.none();
+        }
+
+        if (protection == null) {
+            logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
+            return Option.none();
         }
 
         if (lives == 0) {
@@ -150,7 +160,7 @@ public final class FlatGuildSerializer {
         values[8] = enemies;
         values[9] = born;
         values[10] = validity;
-        values[11] = attacked;
+        values[11] = protection;
         values[12] = lives;
         values[13] = ban;
         values[14] = deputies;
@@ -193,11 +203,11 @@ public final class FlatGuildSerializer {
         wrapper.set("regions", null);
         wrapper.set("allies", new ArrayList<>(Entity.names(guild.getAllies())));
         wrapper.set("enemies", new ArrayList<>(Entity.names(guild.getEnemies())));
-        wrapper.set("born", guild.getBorn());
-        wrapper.set("validity", guild.getValidity());
-        wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
+        wrapper.set("born", guild.getBorn().toEpochMilli());
+        wrapper.set("validity", guild.getValidity().toEpochMilli());
+        wrapper.set("attacked", guild.getProtection().toEpochMilli()); //TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
-        wrapper.set("ban", guild.getBan());
+        wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -18,6 +19,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -46,18 +48,29 @@ public final class DatabaseGuildSerializer {
             String regionName = resultSet.getString("region");
             String membersString = resultSet.getString("members");
             boolean pvp = resultSet.getBoolean("pvp");
-            long born = resultSet.getLong("born");
-            long validity = resultSet.getLong("validity");
-            long attacked = resultSet.getLong("attacked");
-            long ban = resultSet.getLong("ban");
+            Instant born = TimeUtils.positiveOrNullInstant(resultSet.getLong("born"));
+            Instant validity = TimeUtils.positiveOrNullInstant(resultSet.getLong("validity"));
+            Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
+            Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
 
             FunnyGuilds plugin = FunnyGuilds.getInstance();
+            FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
             PluginConfiguration config = plugin.getPluginConfiguration();
             UserManager userManager = plugin.getUserManager();
 
-            if (name == null || tag == null || os == null) {
-                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+            if (name == null) {
+                logger.deserialize("Cannot deserialize guild, caused by: name is null");
+                return Option.none();
+            }
+
+            if (tag == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
+                return Option.none();
+            }
+
+            if (os == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
                 return Option.none();
             }
 
@@ -68,7 +81,7 @@ public final class DatabaseGuildSerializer {
 
             Option<User> ownerOption = userManager.findByName(os);
             if (ownerOption.isEmpty()) {
-                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
+                logger.deserialize("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
                 return Option.none();
             }
 
@@ -82,12 +95,19 @@ public final class DatabaseGuildSerializer {
                 members = userManager.findByNames(FunnyStringUtils.fromString(membersString));
             }
 
-            if (born == 0) {
-                born = System.currentTimeMillis();
+            if (born == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
+                return Option.none();
             }
 
-            if (validity == 0) {
-                validity = Instant.now().plus(config.validityStart).toEpochMilli();
+            if (validity == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
+                return Option.none();
+            }
+
+            if (protection == null) {
+                logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
+                return Option.none();
             }
 
             if (lives == 0) {
@@ -106,7 +126,7 @@ public final class DatabaseGuildSerializer {
             values[8] = Sets.newHashSet();
             values[9] = born;
             values[10] = validity;
-            values[11] = attacked;
+            values[11] = protection;
             values[12] = lives;
             values[13] = ban;
             values[14] = deputies;
@@ -143,10 +163,10 @@ public final class DatabaseGuildSerializer {
         statement.set("enemies", enemies);
         statement.set("points", guild.getRank().getAveragePoints());
         statement.set("lives", guild.getLives());
-        statement.set("born", guild.getBorn());
-        statement.set("validity", guild.getValidity());
-        statement.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
-        statement.set("ban", guild.getBan());
+        statement.set("born", guild.getBorn().toEpochMilli());
+        statement.set("validity", guild.getValidity().toEpochMilli());
+        statement.set("attacked", guild.getProtection().toEpochMilli()); //TODO: [FG 5.0] attacked -> protection
+        statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
 
