@@ -7,25 +7,12 @@ public final class HookUtils {
     private HookUtils() {
     }
 
-    public static String replacePlaceholders(Player playerOne, Player playerTwo, String message) {
-        message = replacePlaceholdersWithPlaceholderAPI(playerOne, playerTwo, message);
-        return message;
+    public static String replacePlaceholders(Player observer, Player target, String message) {
+        return HookManager.PLACEHOLDER_API.map(api -> api.replacePlaceholders(observer, target, message)).orElseGet(message);
     }
 
     public static String replacePlaceholders(Player player, String message) {
-        return replacePlaceholders(player, null, message);
-    }
-
-    private static String replacePlaceholdersWithPlaceholderAPI(Player playerOne, Player playerTwo, String message) {
-        return HookManager.PLACEHOLDER_API
-                .map(api -> {
-                    String replaceMessage = api.replacePlaceholders(playerOne, message);
-                    if (playerTwo != null) {
-                        replaceMessage = api.replacePlaceholders(playerOne, playerTwo, replaceMessage);
-                    }
-
-                    return replaceMessage;
-                }).orElseGet(message);
+        return HookManager.PLACEHOLDER_API.map(api -> api.replacePlaceholders(player, message)).orElseGet(message);
     }
 
 }

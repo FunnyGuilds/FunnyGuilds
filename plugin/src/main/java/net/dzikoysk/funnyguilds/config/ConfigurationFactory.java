@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0006_Migrate_old_scoreboard_co
 import net.dzikoysk.funnyguilds.config.migration.P0007_Migrate_old_relational_tag_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0008_Migrate_old_heart_center_configuration;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
+import net.dzikoysk.funnyguilds.config.migration.T0002_Update_tablist_keys;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyPatternTransformer;
@@ -94,7 +95,10 @@ public final class ConfigurationFactory {
             it.saveDefaults();
             it.load(true);
 
-            it.migrate(new T0001_Update_player_list_animated());
+            it.migrate(
+                    new T0001_Update_player_list_animated(),
+                    new T0002_Update_tablist_keys()
+            );
         });
     }
 
