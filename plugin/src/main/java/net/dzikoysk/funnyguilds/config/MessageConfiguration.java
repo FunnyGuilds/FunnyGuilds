@@ -5,12 +5,9 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import org.apache.commons.lang3.Validate;
 
 public class MessageConfiguration extends OkaeriConfig {
 
@@ -738,8 +735,7 @@ public class MessageConfiguration extends OkaeriConfig {
                     list.replaceAll(ChatUtils::colored);
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
 
