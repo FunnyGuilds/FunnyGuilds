@@ -8,8 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import pl.peridot.yetanothermessageslibrary.MessageRepository;
+import pl.peridot.yetanothermessageslibrary.message.SendableMessage;
+import pl.peridot.yetanothermessageslibrary.message.holder.impl.ChatHolder;
 
-public class MessageConfiguration extends OkaeriConfig {
+public class MessageConfiguration extends OkaeriConfig implements MessageRepository {
 
     @Comment("<------- Global Date Format -------> #")
     public FunnyTimeFormatter dateFormat = new FunnyTimeFormatter("dd.MM.yyyy HH:mm:ss");
@@ -216,7 +219,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("<------- Info Messages -------> #")
     @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
-    public List<String> playerInfoList = Arrays.asList(
+    public SendableMessage playerInfoList = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
             "&7Gildia: &a{TAG}",
@@ -230,7 +233,7 @@ public class MessageConfiguration extends OkaeriConfig {
     );
 
     @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
-    public List<String> playerRightClickInfo = Arrays.asList(
+    public SendableMessage playerRightClickInfo = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
             "&7Gildia: &a{TAG}",

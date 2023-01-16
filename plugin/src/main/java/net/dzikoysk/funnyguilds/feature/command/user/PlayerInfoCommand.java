@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -13,7 +14,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
+import pl.peridot.yetanothermessageslibrary.message.Sendable;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -33,10 +34,10 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         String name = args.length == 0 ? sender.getName() : args[0];
         User user = when(this.userManager.findByName(name, this.config.playerLookupIgnorecase), this.messages.generalNotPlayedBefore);
 
-        this.sendInfoMessage(this.messages.playerInfoList, user, sender);
+        this.sendInfoMessage(config -> config.playerInfoList, user, sender);
     }
 
-    public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
+    public void sendInfoMessage(Function<MessageConfiguration, Sendable> baseMessage, User infoUser, CommandSender messageTarget) {
         UserRank rank = infoUser.getRank();
         
         FunnyFormatter formatter = new FunnyFormatter()
@@ -61,7 +62,9 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             formatter.register("{TAG}", this.messages.gTagNoValue);
         }
 
-        baseMessage.forEach(line -> this.sendMessage(messageTarget, formatter.format(line)));
+        this.messageService.supplyMessage(baseMessage)
+                .with(formatter)
+                .sendTo(messageTarget);
     }
 
 }

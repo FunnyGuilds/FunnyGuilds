@@ -4,10 +4,9 @@ import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.MessageService;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
@@ -24,8 +23,10 @@ import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
@@ -96,8 +97,10 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -108,6 +111,8 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
+import pl.peridot.yetanothermessageslibrary.SendableMessageService;
+import pl.peridot.yetanothermessageslibrary.util.BukkitSchedulerWrapper;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -125,6 +130,9 @@ public class FunnyGuilds extends JavaPlugin {
     private PluginConfiguration pluginConfiguration;
     private TablistConfiguration tablistConfiguration;
     private MessageConfiguration messageConfiguration;
+
+    private BukkitAudiences adventure;
+    private MessageService messageService;
 
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
@@ -197,7 +205,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile);
+            this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile, new BukkitSchedulerWrapper(this));
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
@@ -232,6 +240,9 @@ public class FunnyGuilds extends JavaPlugin {
         if (this.forceDisabling) {
             return;
         }
+
+        this.adventure = BukkitAudiences.create(this);
+        this.messageService = new MessageService(this.adventure, this.messageConfiguration);
 
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
@@ -306,6 +317,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
             resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
+            resources.on(MessageService.class).assignInstance(this.messageService);
+            resources.on(ScoreboardService.class).assignInstance(this.scoreboardService);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
@@ -453,6 +466,12 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.getServer().getScheduler().cancelTasks(this);
         this.database.shutdown();
+
+        if (this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
+
         plugin = null;
     }
 
@@ -567,6 +586,17 @@ public class FunnyGuilds extends JavaPlugin {
 
     public MessageConfiguration getMessageConfiguration() {
         return this.messageConfiguration;
+    }
+
+    public BukkitAudiences adventure() {
+        if (this.adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return this.adventure;
+    }
+
+    public SendableMessageService<CommandSender, MessageConfiguration> getMessageService() {
+        return this.messageService;
     }
 
     public DynamicListenerManager getDynamicListenerManager() {

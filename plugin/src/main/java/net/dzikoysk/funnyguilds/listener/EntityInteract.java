@@ -46,7 +46,7 @@ public class EntityInteract extends AbstractFunnyListener {
             }
             else {
                 this.userManager.findByPlayer(clickedPlayer).peek(user -> {
-                    this.playerExecutor.sendInfoMessage(this.messages.playerRightClickInfo, user, eventCaller);
+                    this.playerExecutor.sendInfoMessage(config -> config.playerRightClickInfo, user, eventCaller);
                 });
             }
         }
