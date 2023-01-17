@@ -289,7 +289,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.rankPlaceholdersService = new RankPlaceholdersService(
                 this.pluginConfiguration,
                 this.tablistConfiguration,
-                messageService, this.userRankManager,
+                this.messageService,
+                this.userRankManager,
                 this.guildRankManager
         );
         this.tablistPlaceholdersService = new TablistPlaceholdersService(
@@ -695,7 +696,7 @@ public class FunnyGuilds extends JavaPlugin {
     public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
-        // TODO Realod emssages configuration
+        this.messageService.reload();
         this.hookManager.callConfigUpdated();
     }
 

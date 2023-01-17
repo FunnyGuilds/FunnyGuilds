@@ -15,4 +15,8 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         );
     }
 
+    public void reload() {
+        this.getMessageRepositories().forEach((locale, repository) -> repository.load());
+    }
+
 }
