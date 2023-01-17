@@ -18,7 +18,7 @@ import pl.peridot.yetanothermessageslibrary.message.holder.impl.ChatHolder;
 import pl.peridot.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
 @Header("Dla większości wiadomości poprawny jest format: https://github.com/P3ridot/YetAnotherMessagesLibrary/blob/master/repository/okaeri/FORMAT.md")
-@Header("Pozwala on m.in. na dowolną zmiane miejsca wyświetlania wiadomości (np. wyświetlać jakąś wiadomość na actionbarze zamiast chacie)")
+@Header("Pozwala on m.in. na zmianę miejsca wyświetlania wiadomości (np. wyświetlanie danej wiadomość na actionbarze zamiast chacie)")
 @Header("Jeśli jednak wiadomość nie wspiera danego formatu to w konsolii pojawi się błąd")
 @Header(" ")
 @Header("Formatowanie samych wiadomości:")
