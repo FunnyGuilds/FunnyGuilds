@@ -4,8 +4,8 @@ import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.NumberRange;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -29,10 +29,10 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length == 0 && !(sender instanceof Player), this.messages.playerOnly);
+        when(args.length == 0 && !(sender instanceof Player), config -> config.playerOnly);
 
         String name = args.length == 0 ? sender.getName() : args[0];
-        User user = when(this.userManager.findByName(name, this.config.playerLookupIgnorecase), this.messages.generalNotPlayedBefore);
+        User user = when(this.userManager.findByName(name, this.config.playerLookupIgnorecase), config -> config.generalNotPlayedBefore);
 
         this.sendInfoMessage(config -> config.playerInfoList, user, sender);
     }
@@ -62,7 +62,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             formatter.register("{TAG}", this.messages.gTagNoValue);
         }
 
-        this.messageService.supplyMessage(baseMessage)
+        this.messageService.getMessage(baseMessage)
                 .with(formatter)
                 .sendTo(messageTarget);
     }

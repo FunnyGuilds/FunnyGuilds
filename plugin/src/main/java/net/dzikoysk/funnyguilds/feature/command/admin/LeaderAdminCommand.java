@@ -7,10 +7,8 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class LeaderAdminCommand extends AbstractFunnyCommand {
@@ -22,14 +20,14 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoTagGiven);
-        when(args.length < 2, this.messages.generalNoNickGiven);
+        when(args.length < 1, config -> config.generalNoTagGiven);
+        when(args.length < 2, config -> config.generalNoNickGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User user = UserValidation.requireUserByName(args[1]);
 
-        when(!guild.isMember(user), this.messages.adminUserNotMemberOf);
-        when(guild.isOwner(user), this.messages.adminAlreadyLeader);
+        when(!guild.isMember(user), config -> config.adminUserNotMemberOf);
+        when(guild.isOwner(user), config -> config.adminAlreadyLeader);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -38,9 +36,16 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
 
         guild.setOwner(user);
 
-        this.sendMessage(sender, this.messages.leaderSet);
-        user.sendMessage(this.messages.leaderOwner);
-        guild.broadcast(FunnyFormatter.format(this.messages.leaderMembers, "{PLAYER}", user.getName()));
+        this.messageService.getMessage(config -> config.leaderSet)
+                .receiver(sender)
+                .send();
+        this.messageService.getMessage( config -> config.leaderOwner)
+                .receiver(user)
+                .send();
+        this.messageService.getMessage(config -> config.leaderMembers)
+                .with("{PLAYER}", user.getName())
+                .receiver(guild)
+                .send();
     }
 
 }

@@ -2,11 +2,11 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -39,6 +39,9 @@ public abstract class AbstractFunnyListener implements Listener {
     public TablistConfiguration tablistConfig;
 
     @Inject
+    public MessageService messageService;
+
+    @Inject
     public UserManager userManager;
     @Inject
     public GuildManager guildManager;
@@ -61,8 +64,5 @@ public abstract class AbstractFunnyListener implements Listener {
     public MessageAccessor messageAccessor;
     @Inject
     public GuildEntityHelper guildEntityHelper;
-
-    @Inject
-    public BossBarService bossBarService;
 
 }

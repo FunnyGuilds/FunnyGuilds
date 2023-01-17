@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -30,10 +29,10 @@ public final class DeleteCommand extends AbstractFunnyCommand {
     )
     public void execute(@IsOwner User owner, Guild guild) {
         when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
-                guild.getMembers()), this.messages.deleteSomeoneIsNear);
+                guild.getMembers()), config -> config.deleteSomeoneIsNear);
         ConfirmationList.add(owner.getUUID());
 
-        when(this.config.commands.confirm.enabled, this.messages.deleteConfirm);
+        when(this.config.commands.confirm.enabled, config -> config.deleteConfirm);
         this.confirmExecutor.execute(owner, guild);
     }
 

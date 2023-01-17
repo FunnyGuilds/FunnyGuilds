@@ -5,10 +5,9 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Material;
@@ -17,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 import panda.utilities.text.Joiner;
-
+import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
 import static java.util.stream.Collectors.toList;
 
 public final class SecurityFreeCam {
@@ -27,7 +26,7 @@ public final class SecurityFreeCam {
 
     public static void on(Player player, Vector origin, Vector hitPoint, double distance) {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
-        MessageConfiguration messages = funnyGuilds.getMessageConfiguration();
+        MessageService messages = funnyGuilds.getMessageService();
         PluginConfiguration config = funnyGuilds.getPluginConfiguration();
         UserManager userManager = funnyGuilds.getUserManager();
 
@@ -48,10 +47,9 @@ public final class SecurityFreeCam {
         }
 
         String blocksString = Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString();
-        String message = FunnyFormatter.format(messages.securitySystemFreeCam, "{BLOCKS}", blocksString);
 
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
-        SecurityUtils.sendToOperator(player, "FreeCam", message);
+        SecurityUtils.sendToOperator(player, CheatType.FREE_CAM, Replacement.of("{BLOCKS}", blocksString));
     }
 
 }

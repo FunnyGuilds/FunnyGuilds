@@ -6,13 +6,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
-import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -29,6 +30,7 @@ import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
+import pl.peridot.yetanothermessageslibrary.message.Sendable;
 
 public final class ItemUtils {
 
@@ -53,7 +55,7 @@ public final class ItemUtils {
     private ItemUtils() {
     }
 
-    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, String message) {
+    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, Function<MessageConfiguration, Sendable> messageSupplier) {
         boolean enableItemComponent = FunnyGuilds.getInstance().getPluginConfiguration().enableItemComponent;
 
         for (ItemStack requiredItem : requiredItems) {
@@ -61,16 +63,10 @@ public final class ItemUtils {
                 continue;
             }
 
-            if (message.isEmpty()) {
-                return false;
-            }
-
-            if (enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(message, requiredItems, requiredItem));
-            }
-            else {
-                player.sendMessage(translateTextPlaceholder(message, requiredItems, requiredItem));
-            }
+            FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
+                    //TODO replace required items
+                    .receiver(player)
+                    .send();
 
             return false;
         }

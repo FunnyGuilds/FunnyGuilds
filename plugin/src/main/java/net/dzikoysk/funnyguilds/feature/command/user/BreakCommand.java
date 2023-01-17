@@ -3,18 +3,17 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.Entity;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -30,7 +29,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
-        when(!guild.hasAllies(), this.messages.breakHasNotAllies);
+        when(!guild.hasAllies(), config -> config.breakHasNotAllies);
 
         if (args.length < 1) {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true));
@@ -43,7 +42,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", oppositeGuild.getName())
                 .register("{TAG}", guild.getTag());
 
-        when(!guild.isAlly(oppositeGuild), () -> formatter.format(this.messages.breakAllyExists));
+        when(!guild.isAlly(oppositeGuild), config -> config.breakAllyExists);
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, owner, guild, oppositeGuild))) {
             return;
@@ -68,8 +67,14 @@ public final class BreakCommand extends AbstractFunnyCommand {
             this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
         );
 
-        owner.sendMessage(breakFormatter.format(this.messages.breakDone));
-        oppositeGuild.getOwner().sendMessage(breakIFormatter.format(this.messages.breakIDone));
+        this.messageService.getMessage(config -> config.breakDone)
+                .with(breakFormatter)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.breakIDone)
+                .with(breakIFormatter)
+                .receiver(oppositeGuild.getOwner())
+                .send();
     }
 
 }

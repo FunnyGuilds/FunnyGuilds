@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
@@ -14,12 +13,12 @@ import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.panda_lang.utilities.inject.annotations.Inject;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -41,7 +40,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Set<AllyInvitation> invitations = this.allyInvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when(invitations.isEmpty(), this.messages.allyHasNotInvitation);
+            when(invitations.isEmpty(), config -> config.allyHasNotInvitation);
             String guildNames = FunnyStringUtils.join(this.allyInvitationList.getInvitationGuildNames(guild), true);
 
             FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
@@ -53,15 +52,15 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
         User invitedOwner = invitedGuild.getOwner();
 
-        when(guild.equals(invitedGuild), this.messages.allySame);
-        when(guild.isAlly(invitedGuild), this.messages.allyAlly);
+        when(guild.equals(invitedGuild), config -> config.allySame);
+        when(guild.isAlly(invitedGuild), config -> config.allyAlly);
 
         if (guild.isEnemy(invitedGuild)) {
             this.endWar(owner, invitedOwner, guild, invitedGuild);
         }
 
         when(guild.getAllies().size() >= this.config.maxAlliesBetweenGuilds,
-                FunnyFormatter.format(this.messages.inviteAllyAmount, "{AMOUNT}", this.config.maxAlliesBetweenGuilds));
+                config -> config.inviteAllyAmount, FunnyFormatter.of("{AMOUNT}", this.config.maxAlliesBetweenGuilds));
 
         if (invitedGuild.getAllies().size() >= this.config.maxAlliesBetweenGuilds) {
             FunnyFormatter formatter = new FunnyFormatter()
@@ -69,7 +68,10 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{TAG}", invitedGuild.getTag())
                     .register("{AMOUNT}", this.config.maxAlliesBetweenGuilds);
 
-            owner.sendMessage(formatter.format(this.messages.inviteAllyTargetAmount));
+            this.messageService.getMessage(config -> config.inviteAllyTargetAmount)
+                    .with(formatter)
+                    .receiver(owner)
+                    .send();
             return;
         }
 
@@ -97,8 +99,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.enemyEnd));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.enemyIEnd));
+        this.messageService.getMessage(config -> config.enemyEnd)
+                .with(allyFormatter)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.enemyIEnd)
+                .with(allyIFormatter)
+                .receiver(invitedOwner)
+                .send();
     }
 
     private void acceptInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
@@ -119,8 +127,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.allyDone));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
+        this.messageService.getMessage(config -> config.allyDone)
+                .with(allyFormatter)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.allyIDone)
+                .with(allyIFormatter)
+                .receiver(invitedOwner)
+                .send();
 
         guild.getMembers().forEach(member ->
             this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
@@ -146,8 +160,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.allyReturn));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIReturn));
+        this.messageService.getMessage(config -> config.allyReturn)
+                .with(allyFormatter)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.allyIReturn)
+                .with(allyIFormatter)
+                .receiver(invitedOwner)
+                .send();
     }
 
     private void invite(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
@@ -165,8 +185,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.allyInviteDone));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyToInvited));
+        this.messageService.getMessage(config -> config.allyInviteDone)
+                .with(allyFormatter)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.allyToInvited)
+                .with(allyIFormatter)
+                .receiver(invitedOwner)
+                .send();
     }
 
 }

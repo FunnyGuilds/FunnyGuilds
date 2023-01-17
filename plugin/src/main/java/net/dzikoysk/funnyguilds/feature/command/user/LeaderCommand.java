@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -26,11 +25,11 @@ public final class LeaderCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 1, config -> config.generalNoNickGiven);
 
         User leaderUser = UserValidation.requireUserByName(args[0]);
-        when(owner.equals(leaderUser), this.messages.leaderMustBeDifferent);
-        when(!guild.isMember(leaderUser), this.messages.generalIsNotMember);
+        when(owner.equals(leaderUser), config -> config.leaderMustBeDifferent);
+        when(!guild.isMember(leaderUser), config -> config.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(EventCause.USER, owner, guild, leaderUser))) {
             return;
@@ -38,8 +37,12 @@ public final class LeaderCommand extends AbstractFunnyCommand {
 
         guild.setOwner(leaderUser);
 
-        owner.sendMessage(this.messages.leaderSet);
-        leaderUser.sendMessage(this.messages.leaderOwner);
+        this.messageService.getMessage(config -> config.leaderSet)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.leaderOwner)
+                .receiver(leaderUser)
+                .send();
     }
 
 }

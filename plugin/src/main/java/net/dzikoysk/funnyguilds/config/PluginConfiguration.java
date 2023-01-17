@@ -15,7 +15,6 @@ import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
 import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
-import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
 import java.time.Duration;
@@ -38,10 +37,7 @@ import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
-import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -614,11 +610,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean broadcastDeathMessage = true;
 
     @Comment("")
-    @Comment("Czy wiadomość o zabiciu gracza powinna być wyświetlana bez względu na wyłączone wiadomości o śmierci")
-    @CustomKey("ignore-death-messages-disabled")
-    public boolean ignoreDisabledDeathMessages = false;
-
-    @Comment("")
     @Comment("Ranking, od którego rozpoczyna gracz")
     public int rankStart = 1000;
 
@@ -1082,64 +1073,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
     @Comment("")
-    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy jako title")
-    @CustomKey("display-title-notification-for-killer")
-    public boolean displayTitleNotificationForKiller = false;
+    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy")
+    public boolean displayNotificationForKiller = false;
 
     @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
     @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;
-
-    @Comment("")
-    @Comment("Gdzie mają pojawiać się wiadomości związane z poruszaniem się po terenach gildii")
-    @Comment("Możliwe miejsca wyświetlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
-    @CustomKey("region-move-notification-style")
-    public List<NotificationStyle> regionEnterNotificationStyle = Arrays.asList(NotificationStyle.ACTIONBAR, NotificationStyle.BOSSBAR);
-
-    @Min(1)
-    @Comment("")
-    @Comment("Jak długo title/subtitle powinien się pojawiać")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @CustomKey("notification-title-fade-in")
-    public int notificationTitleFadeIn = 10;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Jak długo title/subtitle powinien pozostać na ekranie gracza")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @CustomKey("notification-title-stay")
-    public int notificationTitleStay = 10;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Jak długo title/subtitle powinien znikać")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @CustomKey("notification-title-fade-out")
-    public int notificationTitleFadeOut = 10;
-
-    @Pattern("PINK|BLUE|RED|GREEN|YELLOW|PURPLE|WHITE")
-    @Comment("")
-    @Comment("Jakiego koloru powinien byc boss bar podczas wyświetlania powiadomienia")
-    @Comment("Dostępne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
-    @CustomKey("notification-boss-bar-color")
-    public String bossBarColor = "RED";
-
-    @Pattern("SOLID|SEGMENTED_6|SEGMENTED_10|SEGMENTED_12|SEGMENTED_20")
-    @Comment("")
-    @Comment("Jakiego stylu powinien byc boss bar podczas wyświetlania powiadomienia")
-    @Comment("Dostępne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
-    @CustomKey("notification-boss-bar-style")
-    public String bossBarStyle = "SOLID";
-
-    @Comment("")
-    @Comment("Jakie flagi powinny być nałożone na byc boss bar podczas wyświetlania powiadomienia")
-    @Comment("Dostępne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
-    @CustomKey("notification-boss-bar-flags")
-    public List<String> bossBarFlags = Collections.singletonList("CREATE_FOG");
-
-    @Exclude
-    public BossBarOptions bossBarOptions_;
 
     @Comment("")
     @Comment("Czy osoba, która założyła pierwszą gildię na serwerze powinna dostać nagrodę")
@@ -1357,14 +1297,6 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
-
-        if (!"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
-            this.bossBarOptions_ = BossBarOptions.builder()
-                    .color(this.bossBarColor)
-                    .style(this.bossBarStyle)
-                    .flags(this.bossBarFlags)
-                    .build();
-        }
     }
 
     public enum DataModel {

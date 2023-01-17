@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -32,7 +32,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .filter(User::hasGuild)
                         .flatMap(User::getGuild)
                         .map(Guild::getTag))
-                .orThrow(() -> new ValidationException(this.messages.infoTag));
+                .orThrow(() -> new InternalValidationException(config -> config.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
         this.messages.infoList.stream()

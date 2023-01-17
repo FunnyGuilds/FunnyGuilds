@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,8 +70,9 @@ public class EntityExplode extends AbstractFunnyListener {
                     Entity explosionSource = entityTnt.getSource();
 
                     if (explosionSource instanceof Player) {
-                        Player explosionPlayer = (Player) explosionSource;
-                        ChatUtils.sendMessage(explosionPlayer, this.messages.regionExplosionHasProtection);
+                        this.messageService.getMessage(config -> config.regionExplosionHasProtection)
+                                .receiver(explosionSource)
+                                .send();
                     }
                 }
 
@@ -104,8 +104,9 @@ public class EntityExplode extends AbstractFunnyListener {
                     Entity explosionSource = entityTnt.getSource();
 
                     if (explosionSource instanceof Player) {
-                        Player explosionPlayer = (Player) explosionSource;
-                        ChatUtils.sendMessage(explosionPlayer, this.messages.regionExplosionHasProtection);
+                        this.messageService.getMessage(config -> config.regionExplosionHasProtection)
+                                .receiver(explosionSource)
+                                .send();
                     }
                 }
             }

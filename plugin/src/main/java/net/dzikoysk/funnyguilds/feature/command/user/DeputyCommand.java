@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -26,11 +25,11 @@ public final class DeputyCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 1, config -> config.generalNoNickGiven);
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
-        when(owner.equals(deputyUser), this.messages.deputyMustBeDifferent);
-        when(!guild.isMember(deputyUser), this.messages.generalIsNotMember);
+        when(owner.equals(deputyUser), config -> config.deputyMustBeDifferent);
+        when(!guild.isMember(deputyUser), config -> config.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;
@@ -38,14 +37,22 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
-            owner.sendMessage(this.messages.deputyRemove);
-            deputyUser.sendMessage(this.messages.deputyMember);
+            this.messageService.getMessage(config -> config.deputyRemove)
+                    .receiver(owner)
+                    .send();
+            this.messageService.getMessage(config -> config.deputyMember)
+                    .receiver(deputyUser)
+                    .send();
             return;
         }
 
         guild.addDeputy(deputyUser);
-        owner.sendMessage(this.messages.deputySet);
-        deputyUser.sendMessage(this.messages.deputyOwner);
+        this.messageService.getMessage(config -> config.deputySet)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.deputyOwner)
+                .receiver(deputyUser)
+                .send();
     }
 
 }

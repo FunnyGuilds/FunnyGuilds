@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds
 
-import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
@@ -18,9 +18,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
-import org.mockito.Mockito.anyString
-import org.mockito.Mockito.lenient
-import org.mockito.Mockito.mockStatic
+import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
 import java.util.logging.Logger
 

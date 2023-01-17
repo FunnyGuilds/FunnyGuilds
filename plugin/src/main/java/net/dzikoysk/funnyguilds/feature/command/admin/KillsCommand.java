@@ -1,17 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import panda.std.Option;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class KillsCommand extends AbstractFunnyCommand {
@@ -23,11 +22,11 @@ public final class KillsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoNickGiven);
-        when(args.length < 2, this.messages.adminNoKillsGiven);
+        when(args.length < 1, config -> config.generalNoNickGiven);
+        when(args.length < 2, config -> config.adminNoKillsGiven);
 
         int kills = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.format(this.messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -48,7 +47,9 @@ public final class KillsCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName())
                 .register("{KILLS}", finalKills);
 
-        this.sendMessage(sender, formatter.format(this.messages.adminKillsChanged));
+        this.messageService.getMessage(config -> config.adminKillsChanged)
+                .with(formatter)
+                .sendTo(sender);
     }
 
 }

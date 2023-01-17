@@ -8,8 +8,8 @@ import java.util.function.Function;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.AssistsCommand;
@@ -158,6 +158,7 @@ public final class FunnyCommandsConfiguration {
                 .validator(new OwnerValidator(messages))
                 .commands(userCommands.commands)
                 .commands(adminCommands.commands)
+                .exceptionHandler(new InternalValidationExceptionHandler(plugin.getMessageService()))
                 .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()))
                 .install();
     }

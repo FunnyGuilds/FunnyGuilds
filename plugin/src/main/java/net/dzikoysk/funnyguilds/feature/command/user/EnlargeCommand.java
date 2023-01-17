@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -28,17 +27,17 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
-        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
+        when(!this.config.regionsEnabled, config -> config.regionsDisabled);
 
-        Region region = when(guild.getRegion(), this.messages.regionsDisabled);
+        Region region = when(guild.getRegion(), config -> config.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-        when(enlarge > this.config.enlargeItems.size() - 1, this.messages.enlargeMaxSize);
+        when(enlarge > this.config.enlargeItems.size() - 1, config -> config.enlargeMaxSize);
 
         ItemStack need = this.config.enlargeItems.get(enlarge);
-        when(!player.getInventory().containsAtLeast(need, need.getAmount()), FunnyFormatter.format(this.messages.enlargeItem,
-                "{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT)));
-        when(this.regionManager.isNearRegion(region.getCenter()), this.messages.enlargeIsNear);
+        when(!player.getInventory().containsAtLeast(need, need.getAmount()), config -> config.enlargeItem,
+                FunnyFormatter.of("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT)));
+        when(this.regionManager.isNearRegion(region.getCenter()), config -> config.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, deputy, guild))) {
             return;
@@ -52,7 +51,10 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
                 .register("{SIZE}", region.getSize())
                 .register("{LEVEL}", region.getEnlarge());
 
-        guild.broadcast(formatter.format(this.messages.enlargeDone));
+        this.messageService.getMessage(config -> config.enlargeDone)
+                .with(formatter)
+                .receiver(guild)
+                .send();
     }
 
 }

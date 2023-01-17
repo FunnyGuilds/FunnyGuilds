@@ -131,6 +131,10 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
             ) != null;
         }
 
+        public boolean isEmpty() {
+            return this.assistsMap.isEmpty();
+        }
+
         public static class Assist {
 
             private int pointsChange;

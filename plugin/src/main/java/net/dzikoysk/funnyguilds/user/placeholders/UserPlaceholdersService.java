@@ -43,7 +43,7 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
     }
 
     public static UserPlaceholders createPlayerPlaceholders(FunnyGuilds plugin) {
-        String wgRegionNoValue = plugin.getMessageConfiguration().wgRegionNoValue;
+        String wgRegionNoValue = plugin.getMessageService().get(config -> config.wgRegionNoValue);
         return new UserPlaceholders()
                 .playerOptionProperty("world", playerOption -> playerOption
                         .map(Player::getWorld)

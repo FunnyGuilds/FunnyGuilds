@@ -4,15 +4,16 @@ import java.time.Duration;
 import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
-import net.dzikoysk.funnyguilds.feature.war.WarUtils.Message;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 
@@ -35,42 +36,50 @@ public class WarSystem {
     public void attack(Player player, Guild guild) {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         UserManager userManager = plugin.getUserManager();
-        PluginConfiguration config = plugin.getPluginConfiguration();
+        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
+        MessageService messageService = plugin.getMessageService();
         Option<User> userOp = userManager.findByPlayer(player);
+
+        if (!pluginConfiguration.warEnabled) {
+            messageService.getMessage(config -> config.warDisabled)
+                    .receiver(player)
+                    .send();
+            return;
+        }
 
         if (userOp.isEmpty()) {
             return;
         }
-
         User user = userOp.get();
 
         if (!user.hasGuild()) {
-            user.sendMessage(WarUtils.getMessage(Message.NO_HAS_GUILD));
+            messageService.getMessage(config -> config.warHasNotGuild)
+                    .receiver(player)
+                    .send();
             return;
         }
 
         Guild attacker = user.getGuild().get();
-
         if (attacker.equals(guild)) {
             return;
         }
 
         if (attacker.isAlly(guild)) {
-            user.sendMessage(WarUtils.getMessage(Message.ALLY));
-            return;
-        }
-
-        if (!config.warEnabled) {
-            user.sendMessage(WarUtils.getMessage(Message.DISABLED));
+            messageService.getMessage(config -> config.warAlly)
+                    .receiver(player)
+                    .send();
             return;
         }
 
         if (!guild.canBeAttacked()) {
-            user.sendMessage(WarUtils.getMessage(Message.WAIT, Duration.between(guild.getProtection(), Instant.now())));
+            messageService.getMessage(config -> config.warWait)
+                    .with("{TIME}", TimeUtils.formatTime(Duration.between(guild.getProtection(), Instant.now())))
+                    .receiver(player)
+                    .send();
             return;
         }
 
-        guild.setProtection(Instant.now().plus(config.warWait));
+        guild.setProtection(Instant.now().plus(pluginConfiguration.warWait));
 
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
             guild.updateLives(lives -> lives - 1);
@@ -78,10 +87,15 @@ public class WarSystem {
 
         if (guild.getLives() < 1) {
             this.conquer(attacker, guild, user);
-        }
-        else {
-            attacker.broadcast(WarUtils.getMessage(Message.ATTACKER, guild));
-            guild.broadcast(WarUtils.getMessage(Message.ATTACKED, attacker));
+        } else {
+            messageService.getMessage(config -> config.warAttacker)
+                    .with("{GUILD}", guild.getName())
+                    .receiver(attacker)
+                    .send();
+            messageService.getMessage(config -> config.warAttacked)
+                    .with("{GUILD}", attacker.getName())
+                    .receiver(guild)
+                    .send();
         }
     }
 
@@ -91,12 +105,29 @@ public class WarSystem {
             return;
         }
 
-        conqueror.broadcast(WarUtils.getWinMessage(conqueror, loser));
-        loser.broadcast(WarUtils.getLoseMessage(conqueror, loser));
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        MessageService messageService = plugin.getMessageService();
 
-        FunnyGuilds.getInstance().getGuildManager().deleteGuild(FunnyGuilds.getInstance(), loser);
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{WINNER}", conqueror.getTag())
+                .register("{LOSER}", loser.getTag());
+
+        messageService.getMessage(config -> config.warWin)
+                .with(formatter)
+                .receiver(conqueror)
+                .send();
+        messageService.getMessage(config -> config.warLose)
+                .with(formatter)
+                .receiver(loser)
+                .send();
+
+        plugin.getGuildManager().deleteGuild(plugin, loser);
         conqueror.updateLives(lives -> lives + 1);
 
-        Bukkit.broadcastMessage(WarUtils.getBroadcastMessage(conqueror, loser));
+        messageService.getMessage(config -> config.broadcastWar)
+                .with(formatter)
+                .broadcast()
+                .send();
     }
+
 }

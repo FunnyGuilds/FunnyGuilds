@@ -2,14 +2,14 @@ package net.dzikoysk.funnyguilds.feature.security.cheat;
 
 import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityReach {
 
@@ -40,10 +40,8 @@ public final class SecurityReach {
             return;
         }
 
-        String message = FunnyFormatter.format(messages.securitySystemReach, "{DISTANCE}", FORMAT.format(distance));
-
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
-        SecurityUtils.sendToOperator(player, "Reach", message);
+        SecurityUtils.sendToOperator(player, CheatType.REACH, Replacement.of("{DISTANCE}", FORMAT.format(distance)));
     }
 
 }

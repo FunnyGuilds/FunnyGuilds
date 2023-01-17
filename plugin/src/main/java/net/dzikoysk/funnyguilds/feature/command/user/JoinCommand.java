@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
@@ -13,6 +12,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
@@ -22,7 +22,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.stream.PandaStream;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -41,10 +40,10 @@ public final class JoinCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
-        when(user.hasGuild(), this.messages.joinHasGuild);
+        when(user.hasGuild(), config -> config.joinHasGuild);
 
         Set<GuildInvitation> invitations = this.guildInvitationList.getInvitationsFor(user);
-        when(invitations.isEmpty(), this.messages.joinHasNotInvitation);
+        when(invitations.isEmpty(), config -> config.joinHasNotInvitation);
 
         if (args.length < 1) {
             String guildNames = FunnyStringUtils.join(this.guildInvitationList.getInvitationGuildNames(user), true);
@@ -55,16 +54,16 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(!this.guildInvitationList.hasInvitation(guild, user), this.messages.joinHasNotInvitationTo);
+        when(!this.guildInvitationList.hasInvitation(guild, user), config -> config.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = this.config.joinItems;
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, this.messages.joinItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, config -> config.joinItems)) {
             return;
         }
 
         when(
                 guild.getMembers().size() >= this.config.maxMembersInGuild,
-                FunnyFormatter.format(this.messages.inviteAmountJoin, "{AMOUNT}", this.config.maxMembersInGuild)
+                config -> config.inviteAmountJoin, FunnyFormatter.of("{AMOUNT}", this.config.maxMembersInGuild)
         );
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
@@ -88,10 +87,19 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        user.sendMessage(formatter.format(this.messages.joinToMember));
-        this.broadcastMessage(formatter.format(this.messages.broadcastJoin));
+        this.messageService.getMessage(config -> config.joinToMember)
+                .with(formatter)
+                .receiver(player)
+                .send();
+        this.messageService.getMessage(config -> config.broadcastJoin)
+                .with(formatter)
+                .broadcast()
+                .send();
 
-        guild.getOwner().sendMessage(formatter.format(this.messages.joinToOwner));
+        this.messageService.getMessage( config -> config.joinToOwner)
+                .with(formatter)
+                .receiver(guild.getOwner())
+                .send();
     }
 
 }

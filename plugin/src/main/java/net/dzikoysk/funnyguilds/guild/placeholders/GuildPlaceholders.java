@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;

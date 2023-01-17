@@ -3,11 +3,12 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
+import java.util.Locale;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.MessageService;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -19,7 +20,6 @@ import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
@@ -89,7 +89,6 @@ import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
@@ -100,7 +99,6 @@ import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -111,7 +109,6 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-import pl.peridot.yetanothermessageslibrary.SendableMessageService;
 import pl.peridot.yetanothermessageslibrary.util.BukkitSchedulerWrapper;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -160,8 +157,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
-
-    private BossBarService bossBarService;
 
     private Database database;
     private DataModel dataModel;
@@ -242,7 +237,9 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.adventure = BukkitAudiences.create(this);
-        this.messageService = new MessageService(this.adventure, this.messageConfiguration);
+        this.messageService = new MessageService(this.adventure);
+        this.messageService.setDefaultLocale(Locale.forLanguageTag("pl"));
+        this.messageService.registerRepository(Locale.forLanguageTag("pl"), this.messageConfiguration);
 
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
@@ -289,7 +286,6 @@ public class FunnyGuilds extends JavaPlugin {
                 this.guildPlaceholdersService
         );
 
-        this.bossBarService = new BossBarService();
         this.database = new Database();
 
         try {
@@ -337,7 +333,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
-            resources.on(BossBarService.class).assignInstance(this.bossBarService);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
@@ -434,7 +429,11 @@ public class FunnyGuilds extends JavaPlugin {
         this.hookManager.init();
 
         if (NmsUtils.getReloadCount() > 0) {
-            Bukkit.broadcast(ChatUtils.colored(this.messageConfiguration.reloadWarn), "funnyguilds.admin");
+            this.messageService.getMessage(config -> config.reloadWarn)
+                    .predicate(sender -> sender.hasPermission("funnyguilds.admin"))
+                    .receivers(Bukkit.getOnlinePlayers())
+                    .receiver(Bukkit.getConsoleSender())
+                    .send();
         }
 
         logger.info("~ Created by FunnyGuilds Team ~");
@@ -455,8 +454,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
-
-        this.userManager.getUsers().forEach(user -> this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification());
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -595,7 +592,7 @@ public class FunnyGuilds extends JavaPlugin {
         return this.adventure;
     }
 
-    public SendableMessageService<CommandSender, MessageConfiguration> getMessageService() {
+    public MessageService getMessageService() {
         return this.messageService;
     }
 
@@ -681,10 +678,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public GuildEntityHelper getGuildEntityHelper() {
         return this.guildEntityHelper;
-    }
-
-    public BossBarService getBossBarService() {
-        return this.bossBarService;
     }
 
     public Injector getInjector() {

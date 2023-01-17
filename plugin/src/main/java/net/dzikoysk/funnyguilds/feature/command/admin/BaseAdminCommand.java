@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class BaseAdminCommand extends AbstractFunnyCommand {
@@ -21,14 +20,14 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 1, config -> config.generalNoNickGiven);
 
         User userToTeleport = UserValidation.requireUserByName(args[0]);
-        when(!userToTeleport.isOnline(), this.messages.generalNotOnline);
-        when(!userToTeleport.hasGuild(), this.messages.generalPlayerHasNoGuild);
+        when(!userToTeleport.isOnline(), config -> config.generalNotOnline);
+        when(!userToTeleport.hasGuild(), config -> config.generalPlayerHasNoGuild);
 
         Guild guild = userToTeleport.getGuild().get();
-        when(!guild.hasHome(), this.messages.adminGuildHasNoHome);
+        when(!guild.hasHome(), config -> config.adminGuildHasNoHome);
 
         Location guildHome = guild.getHome().get();
         FunnyFormatter formatter = new FunnyFormatter()
@@ -36,8 +35,14 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", userToTeleport.getName());
 
         userToTeleport.getProfile().teleport(PositionConverter.adapt(guildHome));
-        userToTeleport.sendMessage(formatter.format(this.messages.adminTeleportedToBase));
-        this.sendMessage(sender, formatter.format(this.messages.adminTargetTeleportedToBase));
+        this.messageService.getMessage(config -> config.adminTeleportedToBase)
+                .with(formatter)
+                .receiver(userToTeleport)
+                .send();
+        this.messageService.getMessage(config -> config.adminTargetTeleportedToBase)
+                .with(formatter)
+                .receiver(sender)
+                .send();
     }
 
 }

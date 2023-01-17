@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -15,12 +16,15 @@ public class PlayerTeleport extends AbstractFunnyListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
-        this.userManager.findByUuid(event.getPlayer().getUniqueId())
+        Player player = event.getPlayer();
+        this.userManager.findByUuid(player.getUniqueId())
                 .filter(user -> event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.PLUGIN)
                 .filterNot(user -> user.hasPermission("funnyguilds.admin.teleport"))
                 .filterNot(user -> this.isTeleportationToRegionAllowed(event.getTo(), user))
                 .peek(user -> {
-                    user.sendMessage(this.messages.regionTeleport);
+                    this.messageService.getMessage(config -> config.regionTeleport)
+                            .receiver(player)
+                            .send();
                     event.setCancelled(true);
                 });
     }

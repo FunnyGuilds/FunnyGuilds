@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
-import net.dzikoysk.funnycommands.resources.ExceptionHandler;
+import net.dzikoysk.funnycommands.resources.Context;
+import net.dzikoysk.funnycommands.resources.DetailedExceptionHandler;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 
-class FunnyGuildsExceptionHandler implements ExceptionHandler<Exception> {
+class FunnyGuildsExceptionHandler implements DetailedExceptionHandler<Exception> {
 
     private final FunnyGuildsLogger logger;
 
@@ -17,8 +18,8 @@ class FunnyGuildsExceptionHandler implements ExceptionHandler<Exception> {
     }
 
     @Override
-    public Boolean apply(Exception o) {
-        this.logger.error("An exception has been caught while executing the command", o);
+    public Boolean apply(Context context, Exception ex) {
+        this.logger.error("An exception has been caught while executing the command", ex);
         return true;
     }
 

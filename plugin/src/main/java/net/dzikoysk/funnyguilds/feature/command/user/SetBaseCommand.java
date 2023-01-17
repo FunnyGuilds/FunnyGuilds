@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -29,11 +28,11 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
-        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
+        when(!this.config.regionsEnabled, config -> config.regionsDisabled);
 
         Region region = this.regionManager.findByName(guild.getName()).orNull();
         Location location = player.getLocation();
-        when(region == null || !region.isIn(location), this.messages.setbaseOutside);
+        when(region == null || !region.isIn(location), config -> config.setbaseOutside);
 
         if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, deputy, guild, location))) {
             return;
@@ -51,7 +50,9 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             }
         }
 
-        deputy.sendMessage(this.messages.setbaseDone);
+        this.messageService.getMessage(config -> config.setbaseDone)
+                .receiver(deputy)
+                .send();
     }
 
 }

@@ -37,7 +37,7 @@ public final class ItemComponentUtils {
     private ItemComponentUtils() {
     }
 
-    public static TextComponent translateComponentPlaceholder(String message, List<ItemStack> items, ItemStack item) {
+    public static TextComponent  translateComponentPlaceholder(String message, List<ItemStack> items, ItemStack item) {
         TextComponent translatedMessage = new TextComponent();
 
         StringBuilder messagePart = new StringBuilder();

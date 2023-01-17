@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.ban;
 import java.time.Duration;
 import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
@@ -43,17 +43,17 @@ public final class BanUtils {
     }
 
     public static String getBanMessage(User user) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        MessageService messageService = FunnyGuilds.getInstance().getMessageService();
 
         return user.getBan()
                 .map(ban -> {
                     FunnyFormatter formatter = new FunnyFormatter()
                             .register("{NEWLINE}", ChatColor.RESET + "\n")
-                            .register("{DATE}", messages.dateFormat.format(ban.getTime()))
+                            .register("{DATE}", messageService.get(user, config -> config.dateFormat).format(ban.getTime()))
                             .register("{REASON}", ban.getReason())
                             .register("{PLAYER}", user.getName());
 
-                    return formatter.format(messages.banMessage);
+                    return messageService.get(user, config -> config.banMessage, formatter);
                 })
                 .orElseGet("");
     }

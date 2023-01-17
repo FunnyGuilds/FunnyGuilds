@@ -1,17 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class AddCommand extends AbstractFunnyCommand {
@@ -24,12 +23,12 @@ public final class AddCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoTagGiven);
-        when(!this.guildManager.tagExists(args[0]), this.messages.generalNoGuildFound);
-        when(args.length < 2, this.messages.generalNoNickGiven);
+        when(args.length < 1, config -> config.generalNoTagGiven);
+        when(!this.guildManager.tagExists(args[0]), config -> config.generalNoGuildFound);
+        when(args.length < 2, config -> config.generalNoNickGiven);
 
         User userToAdd = UserValidation.requireUserByName(args[1]);
-        when(userToAdd.hasGuild(), this.messages.generalUserHasGuild);
+        when(userToAdd.hasGuild(), config -> config.generalUserHasGuild);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -47,9 +46,18 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", userToAdd.getName());
 
-        userToAdd.sendMessage(formatter.format(this.messages.joinToMember));
-        guild.getOwner().sendMessage(formatter.format(this.messages.joinToOwner));
-        this.broadcastMessage(formatter.format(this.messages.broadcastJoin));
+        this.messageService.getMessage(config -> config.joinToMember)
+                .with(formatter)
+                .receiver(userToAdd)
+                .send();
+        this.messageService.getMessage(config -> config.joinToOwner)
+                .with(formatter)
+                .receiver(guild.getOwner())
+                .send();
+        this.messageService.getMessage(config -> config.broadcastJoin)
+                .with(formatter)
+                .broadcast()
+                .send();
     }
 
 }

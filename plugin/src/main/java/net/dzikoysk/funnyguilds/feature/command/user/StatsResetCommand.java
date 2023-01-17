@@ -24,7 +24,7 @@ public final class StatsResetCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, User user) {
         List<ItemStack> requiredItems = this.config.statsResetItems;
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, this.messages.statsResetItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, config -> config.statsResetItems)) {
             return;
         }
 

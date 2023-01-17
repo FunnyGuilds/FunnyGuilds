@@ -2,14 +2,13 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -25,7 +24,7 @@ public final class WarCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, this.messages.enemyCorrectUse);
+        when(args.length < 1, config -> config.enemyCorrectUse);
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
         FunnyFormatter formatter = new FunnyFormatter()
@@ -33,13 +32,16 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{TAG}", enemyGuild.getTag())
                 .register("{AMOUNT}", this.config.maxEnemiesBetweenGuilds);
 
-        when(guild.equals(enemyGuild), this.messages.enemySame);
-        when(guild.isAlly(enemyGuild), this.messages.enemyAlly);
-        when(guild.isEnemy(enemyGuild), this.messages.enemyAlready);
-        when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, formatter.format(this.messages.enemyMaxAmount));
+        when(guild.equals(enemyGuild), config -> config.enemySame);
+        when(guild.isAlly(enemyGuild), config -> config.enemyAlly);
+        when(guild.isEnemy(enemyGuild), config -> config.enemyAlready);
+        when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, config -> config.enemyMaxAmount, formatter);
 
         if (enemyGuild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds) {
-            owner.sendMessage(formatter.format(this.messages.enemyMaxTargetAmount));
+            this.messageService.getMessage(config -> config.enemyMaxTargetAmount)
+                    .with(formatter)
+                    .receiver(owner)
+                    .send();
             return;
         }
 
@@ -53,8 +55,14 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(enemyFormatter.format(this.messages.enemyDone));
-        enemyGuild.getOwner().sendMessage(enemyIFormatter.format(this.messages.enemyIDone));
+        this.messageService.getMessage(config -> config.enemyDone)
+                .with(enemyFormatter)
+                .receiver(owner)
+                .send();
+        this.messageService.getMessage(config -> config.enemyIDone)
+                .with(enemyIFormatter)
+                .receiver(enemyGuild.getOwner())
+                .send();
 
         guild.getMembers().forEach(member ->
             this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))

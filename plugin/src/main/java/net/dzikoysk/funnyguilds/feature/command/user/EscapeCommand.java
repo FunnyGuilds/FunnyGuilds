@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -30,25 +29,25 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User user) {
-        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
-        when(!this.config.escapeEnable || !this.config.baseEnable, this.messages.escapeDisabled);
-        when(user.getCache().getTeleportation() != null, this.messages.escapeInProgress);
+        when(!this.config.regionsEnabled, config -> config.regionsDisabled);
+        when(!this.config.escapeEnable || !this.config.baseEnable, config -> config.escapeDisabled);
+        when(user.getCache().getTeleportation() != null, config -> config.escapeInProgress);
 
         Location playerLocation = player.getLocation();
         Option<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
-        when(regionOption.isEmpty(), this.messages.escapeNoNeedToRun);
+        when(regionOption.isEmpty(), config -> config.escapeNoNeedToRun);
 
         Region region = regionOption.get();
         Duration time = this.config.escapeDelay;
 
         if (!user.hasGuild()) {
-            when(!this.config.escapeSpawn, this.messages.escapeNoUserGuild);
+            when(!this.config.escapeSpawn, config -> config.escapeNoUserGuild);
             this.scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
             return;
         }
 
         Guild guild = user.getGuild().get();
-        when(guild.equals(region.getGuild()), this.messages.escapeOnYourRegion);
+        when(guild.equals(region.getGuild()), config -> config.escapeOnYourRegion);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{TIME}", time.getSeconds())
@@ -58,12 +57,21 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                 .register("{Z}", playerLocation.getBlockZ());
 
         if (time.getSeconds() >= 1) {
-            user.sendMessage(formatter.format(this.messages.escapeStartedUser));
-            region.getGuild().broadcast(formatter.format(this.messages.escapeStartedOpponents));
+            this.messageService.getMessage(config -> config.escapeStartedUser)
+                    .with(formatter)
+                    .receiver(player)
+                    .send();
+            this.messageService.getMessage(config -> config.escapeStartedOpponents)
+                    .with(formatter)
+                    .receiver(region.getGuild())
+                    .send();
         }
 
         guild.getHome().peek(home -> this.scheduleTeleportation(player, user, home, time, () -> {
-            region.getGuild().broadcast(formatter.format(this.messages.escapeSuccessfulOpponents));
+            this.messageService.getMessage(config -> config.escapeSuccessfulUser)
+                    .with(formatter)
+                    .receiver(region.getGuild())
+                    .send();
         }));
     }
 
@@ -81,7 +89,9 @@ public final class EscapeCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                user.sendMessage(this.messages.escapeCancelled);
+                this.messageService.getMessage(config -> config.escapeCancelled)
+                        .receiver(player)
+                        .send();
                 cache.setTeleportation(null);
                 return;
             }
@@ -89,7 +99,9 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             if (timeCounter.getAndIncrement() > time.getSeconds()) {
                 cache.getTeleportation().cancel();
                 player.teleport(destination);
-                user.sendMessage(this.messages.escapeSuccessfulUser);
+                this.messageService.getMessage(config -> config.escapeSuccessfulUser)
+                        .receiver(player)
+                        .send();
                 onSuccess.run();
                 cache.setTeleportation(null);
             }

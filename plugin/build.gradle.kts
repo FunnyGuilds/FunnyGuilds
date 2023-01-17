@@ -13,7 +13,7 @@ dependencies {
     project(":nms").dependencyProject.subprojects.forEach {
         implementation(it)
     }
-    implementation("net.dzikoysk:funnycommands:0.5.3")
+    implementation("net.dzikoysk:funnycommands:0.6.0")
 
     /* std */
 
@@ -37,7 +37,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0") // adventure-platform has other versioning than adventure-api
 
-    val yamlVersion = "2.5.1-SNAPSHOT"
+    val yamlVersion = "3.0.1"
     implementation("pl.peridot.yetanothermessageslibrary:core:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:platform-bukkit:$yamlVersion")

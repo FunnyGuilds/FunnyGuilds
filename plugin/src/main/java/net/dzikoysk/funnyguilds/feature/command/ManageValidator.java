@@ -4,7 +4,7 @@ import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.resources.Validator;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import org.panda_lang.utilities.inject.Property;
 
@@ -24,7 +24,7 @@ final class ManageValidator implements Validator<CanManage, User, ValidationExce
         this.memberValidator.isMember(user);
 
         if (!user.canManage()) {
-            throw new ValidationException(this.messageConfiguration.generalIsNotOwner);
+            throw new InternalValidationException(config -> config.generalIsNotOwner);
         }
 
         return true;

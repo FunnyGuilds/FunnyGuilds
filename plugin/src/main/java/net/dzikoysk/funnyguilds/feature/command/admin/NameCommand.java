@@ -17,7 +17,6 @@ import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class NameCommand extends AbstractFunnyCommand {
@@ -32,11 +31,11 @@ public final class NameCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoTagGiven);
-        when(args.length < 2, this.messages.adminNoNewNameGiven);
+        when(args.length < 1, config -> config.generalNoTagGiven);
+        when(args.length < 2, config -> config.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(this.guildManager.nameExists(args[1]), this.messages.createNameExists);
+        when(this.guildManager.nameExists(args[1]), config -> config.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -66,7 +65,9 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
 
         guild.setName(args[1]);
-        this.sendMessage(sender, FunnyFormatter.format(this.messages.adminNameChanged, "{GUILD}", guild.getName()));
+        this.messageService.getMessage(config -> config.adminNameChanged)
+                .with(FunnyFormatter.of("{GUILD}", guild.getName()))
+                .sendTo(sender);
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }
