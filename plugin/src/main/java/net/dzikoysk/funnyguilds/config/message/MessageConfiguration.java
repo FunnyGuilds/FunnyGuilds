@@ -109,6 +109,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             .actionBar("&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!")
             .addHolders(BossBarHolder.builder("&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!")
                     .color(BossBar.Color.RED)
+                    .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
                     .build())
             .build();
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
@@ -116,13 +117,15 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             .actionBar("&7Wkroczyles na teren gildii &c{TAG}&7!")
             .addHolders(BossBarHolder.builder("&7Wkroczyles na teren gildii &c{TAG}&7!")
                     .color(BossBar.Color.RED)
+                    .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
                     .build())
             .build();
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
     public SendableMessage notificationLeaveGuildRegion = SendableMessage.builder()
             .actionBar("&7Opusciles teren gildii &c{TAG}&7!")
             .addHolders(BossBarHolder.builder("&7Opusciles teren gildii &c{TAG}&7!")
-                    .color(BossBar.Color.RED)
+                    .color(BossBar.Color.GREEN)
+                    .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
                     .build())
             .build();
 

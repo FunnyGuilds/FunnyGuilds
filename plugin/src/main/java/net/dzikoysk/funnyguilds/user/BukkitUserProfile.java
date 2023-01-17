@@ -79,7 +79,7 @@ public class BukkitUserProfile implements UserProfile {
         return this.getPlayer().map(NmsUtils::getPing).orElseGet(0);
     }
 
-    @Override //TODO: MiniMessage support
+    @Override
     public void sendMessage(String message) {
         if (FunnyStringUtils.isEmpty(message)) {
             return;
