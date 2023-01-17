@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config.message;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Header;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -16,6 +17,14 @@ import pl.peridot.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
 import pl.peridot.yetanothermessageslibrary.message.holder.impl.ChatHolder;
 import pl.peridot.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
+@Header("Dla większości wiadomości poprawny jest format: https://github.com/P3ridot/YetAnotherMessagesLibrary/blob/master/repository/okaeri/FORMAT.md")
+@Header("Pozwala on m.in. na dowolną zmiane miejsca wyświetlania wiadomości (np. wyświetlać jakąś wiadomość na actionbarze zamiast chacie)")
+@Header("Jeśli jednak wiadomość nie wspiera danego formatu to w konsolii pojawi się błąd")
+@Header(" ")
+@Header("Formatowanie samych wiadomości:")
+@Header("  - MiniMessage -> https://docs.adventure.kyori.net/minimessage/format.html")
+@Header("  - &X -> legacy formatowanie kolorów np. &c")
+@Header("  - &#XXXXXX -> formatowanie kolorów HEX np. &#FF0000")
 public class MessageConfiguration extends OkaeriConfig implements MessageRepository {
 
     @Comment("<------- Global Date Format -------> #")
