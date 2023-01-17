@@ -152,10 +152,10 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("<------- Help Messages -------> #")
     public SendableMessage funnyguildsHelp = ChatHolder.message(
             "&aFunnyGuilds Help:",
-            "&7/funnyguilds (reload|rl) - przeladuj plugin",
-            "&7/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji",
-            "&7/funnyguilds save-all - zapisz wszystko",
-            "&7/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)"
+            "&b/funnyguilds (reload|rl) &7- przeladuj plugin",
+            "&b/funnyguilds (update|check) &7- sprawdz dostepnosc aktualizacji",
+            "&b/funnyguilds save-all &7- zapisz wszystko",
+            "&b/funnyguilds funnybin &7- zapisz konfigurację online (~ usprawnia pomoc na &ahttps://github.com/FunnyGuilds/FunnyGuilds/issues>&7)"
     );
 
     public SendableMessage helpList = ChatHolder.message(
