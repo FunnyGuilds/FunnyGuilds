@@ -448,11 +448,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Minimalna odległość między terenami gildii")
     public int regionMinDistance = 10;
 
-    @Positive
-    @Comment("")
-    @Comment("Czas wyświetlania powiadomienia na pasku powiadomień, w sekundach")
-    public Duration regionNotificationTime = Duration.ofSeconds(15);
-
     @Min(1)
     @Comment("")
     @Comment("Co ile może byc wywoływany pasek powiadomień przez jednego gracza, w sekundach")
