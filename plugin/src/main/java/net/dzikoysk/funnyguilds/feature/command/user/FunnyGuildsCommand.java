@@ -59,6 +59,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             default:
                 this.messageService.getMessage(config -> config.funnyguildsVersion)
                         .with("{VERSION}", this.plugin.getVersion().getFullVersion())
+                        .receiver(sender)
                         .send();
                 break;
         }
