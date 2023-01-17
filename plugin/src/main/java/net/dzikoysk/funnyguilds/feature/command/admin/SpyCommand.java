@@ -18,8 +18,8 @@ public final class SpyCommand extends AbstractFunnyCommand {
         UserCache userCache = UserValidation.requireUserByName(sender.getName()).getCache();
         this.messageService
                 .getMessage(config -> userCache.toggleSpy()
-                        ? this.messages.adminStartSpy
-                        : this.messages.adminStopSpy)
+                        ? config.adminStartSpy
+                        : config.adminStopSpy)
                 .receiver(sender)
                 .send();
     }

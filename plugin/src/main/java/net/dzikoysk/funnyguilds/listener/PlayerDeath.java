@@ -33,6 +33,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -246,15 +247,16 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         FunnyMessageDispatcher deathMessage = this.messageService.getMessage(config -> config.rankDeathMessage)
                 .with(killFormatter)
-                .with(Player.class, receiver -> {
+                .with(CommandSender.class, receiver -> {
                     String assistsMessage = "";
                     CombatPointsChangeEvent.CombatTable combatTable = combatPointsChangeEvent.getAssistsMap();
                     if (!combatTable.isEmpty()) {
                         List<String> formattedAssists = this.formatAssists(receiver, combatTable.getAssistsMap());
+                        String assistsDelimiter = this.messageService.get(receiver, config -> config.rankAssistDelimiter);
                         assistsMessage = this.messageService.get(
                                 receiver,
                                 config -> config.rankAssistMessage,
-                                Replacement.of("{ASSISTS}", FunnyStringUtils.join(formattedAssists, this.messages.rankAssistDelimiter))
+                                Replacement.of("{ASSISTS}", FunnyStringUtils.join(formattedAssists, assistsDelimiter))
                         );
                     }
                     return Replacement.of("{ASSISTS}", assistsMessage);
@@ -427,7 +429,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         return calculatedAssists;
     }
 
-    private List<String> formatAssists(Player receiver, Map<User, Assist> assists) {
+    private List<String> formatAssists(CommandSender receiver, Map<User, Assist> assists) {
         List<String> formattedAssists = new ArrayList<>();
         assists.forEach((user, assist) -> {
             int points = assist.getPointsChange();

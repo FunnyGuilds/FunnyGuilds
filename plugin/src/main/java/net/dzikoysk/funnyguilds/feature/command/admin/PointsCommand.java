@@ -51,7 +51,8 @@ public final class PointsCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminPointsChanged)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

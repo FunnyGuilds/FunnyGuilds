@@ -49,7 +49,8 @@ public final class LogoutsCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminLogoutsChanged)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

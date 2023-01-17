@@ -49,7 +49,8 @@ public final class DeathsCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminDeathsChanged)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

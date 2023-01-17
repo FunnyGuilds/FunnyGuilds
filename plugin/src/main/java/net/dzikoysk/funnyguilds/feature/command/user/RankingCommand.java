@@ -17,12 +17,13 @@ public final class RankingCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        User targetUser = this.userManager.findByName(sender.getName()).orNull();
-
-        this.messages.rankingList.forEach(line -> {
-            String parsedRank = this.rankPlaceholdersService.format(line, targetUser);
-            this.sendMessage(sender, (parsedRank == null ? line : parsedRank));
-        });
+        this.messageService.getMessage(config -> config.rankingList)
+                .with(CommandSender.class, receiver -> {
+                    User targetUser = this.userManager.findByName(sender.getName()).orNull();
+                    return this.rankPlaceholdersService.prepareReplaceable(targetUser);
+                })
+                .receiver(sender)
+                .send();
     }
 
 }

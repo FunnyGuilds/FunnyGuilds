@@ -150,7 +150,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- Help Messages -------> #")
-    public List<String> funnyguildsHelp = Arrays.asList(
+    public SendableMessage funnyguildsHelp = ChatHolder.message(
             "&aFunnyGuilds Help:",
             "&7/funnyguilds (reload|rl) - przeladuj plugin",
             "&7/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji",
@@ -158,7 +158,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&7/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)"
     );
 
-    public List<String> helpList = Arrays.asList(
+    public SendableMessage helpList = ChatHolder.message(
             "&7---------------------&8[ &aGildie &8]&7---------------------",
             "&a/zaloz [tag] [nazwa] &8- &7Tworzy gildie",
             "&a/zapros [gracz] &8- &7Zaprasza gracza do gildii",
@@ -178,7 +178,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii"
     );
 
-    public List<String> adminHelpList = Arrays.asList(
+    public SendableMessage adminHelpList = ChatHolder.message(
             "&a/ga dodaj [tag] [nick] &8- &7Dodaje gracza do gildii",
             "&a/ga usun [tag] &8- &7Usuwa gildie",
             "&a/ga wyrzuc [nick] &8- &7Wyrzuca gracza z gildii",
@@ -230,7 +230,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage infoExists = ChatHolder.message("&cGildia o takim tagu nie istnieje!");
 
     @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
-    public List<String> infoList = Arrays.asList(
+    public SendableMessage infoList = ChatHolder.message(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
             "&7Zalozyciel: &c{OWNER}",
@@ -248,7 +248,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("<------- Top Messages -------> #")
     @Comment("{GTOP-<pozycja>} - gildia na podanej pozycji w rankingu")
-    public List<String> topList = Arrays.asList(
+    public SendableMessage topList = ChatHolder.message(
             "&8----------{ &cTOP 10 &8}----------",
             "&71&8. &c{GTOP-1}",
             "&72&8. &c{GTOP-2}",
@@ -265,7 +265,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("<------- Ranking Messages -------> #")
     @Comment("{PTOP-<pozycja>} - gracz na podanej pozycji w rankingu")
-    public List<String> rankingList = Arrays.asList(
+    public SendableMessage rankingList = ChatHolder.message(
             "&8----------{ &cTOP 10 Graczy &8}----------",
             "&71&8. &c{PTOP-1}",
             "&72&8. &c{PTOP-2}",
@@ -394,7 +394,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage joinHasGuild = ChatHolder.message("&cMasz juz gildie!");
     public SendableMessage joinTagExists = ChatHolder.message("&cNie ma gildii o takim tagu!");
     @Comment("Dostępne zmienne: {GUILDS}")
-    public List<String> joinInvitationList = Arrays.asList(
+    public SendableMessage joinInvitationList = ChatHolder.message(
             "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
             "&7Wpisz &a/dolacz [tag] &7aby dolaczyc do wybranej gildii"
     );
@@ -465,7 +465,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("<------- Ally Messages -------> #")
     public SendableMessage allyHasNotInvitation = ChatHolder.message("&7Aby zaprosic gildie do sojuszy wpisz &c/sojusz [tag]");
     @Comment("Dostępne zmienne: {GUILDS}")
-    public List<String> allyInvitationList = Arrays.asList(
+    public SendableMessage allyInvitationList = ChatHolder.message(
             "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
             "&7Aby zaakceptowac uzyj &a/sojusz [tag]"
     );
@@ -491,7 +491,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("<------- Break Messages -------> #")
     public SendableMessage breakHasNotAllies = ChatHolder.message("&cTwoja gildia nie posiada sojuszy!");
     @Comment("Dostępne zmienne: {GUILDS}")
-    public List<String> breakAlliesList = Arrays.asList(
+    public SendableMessage breakAlliesList = ChatHolder.message(
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
             "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]"
     );
@@ -662,7 +662,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- FunnyGuilds Version Messages -------> #")
-    public List<String> newVersionAvailable = Arrays.asList(
+    public SendableMessage newVersionAvailable = ChatHolder.message(
             "",
             "&8-----------------------------------",
             "&7Dostepna jest nowa wersja &bFunnyGuilds {VERSION_TYPE}&7!",
@@ -678,7 +678,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- FunnyBin Messages -------> #")
-    public List<String> funnybinHelp = Arrays.asList(
+    public SendableMessage funnybinHelp = ChatHolder.message(
             "&cUzycie:",
             "&c/fg funnybin - domyslnie wysyla FunnyGuilds/config.yml i logs/latest.log",
             "&c/fg funnybin config - wysyla FunnyGuilds/config.yml",

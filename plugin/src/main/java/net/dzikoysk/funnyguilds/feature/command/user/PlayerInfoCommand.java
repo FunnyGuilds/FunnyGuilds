@@ -39,7 +39,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
 
     public void sendInfoMessage(Function<MessageConfiguration, Sendable> baseMessage, User infoUser, CommandSender messageTarget) {
         UserRank rank = infoUser.getRank();
-        
+
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", infoUser.getName())
                 .register("{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), this.config.pointsFormat))
@@ -52,19 +52,22 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 .register("{KDA}", String.format(Locale.US, "%.2f", rank.getKDA()))
                 .register("{RANK}", rank.getPosition(DefaultTops.USER_POINTS_TOP));
 
-        if (infoUser.hasGuild()) {
-            Guild guild = infoUser.getGuild().get();
-            formatter.register("{GUILD}", guild.getName());
-            formatter.register("{TAG}", guild.getTag());
-        }
-        else {
-            formatter.register("{GUILD}", this.messages.gNameNoValue);
-            formatter.register("{TAG}", this.messages.gTagNoValue);
-        }
-
         this.messageService.getMessage(baseMessage)
                 .with(formatter)
-                .sendTo(messageTarget);
+                .with(CommandSender.class, receiver -> {
+                    FunnyFormatter guildFormatter = new FunnyFormatter();
+                    if (infoUser.hasGuild()) {
+                        Guild guild = infoUser.getGuild().get();
+                        guildFormatter.register("{GUILD}", guild.getName());
+                        guildFormatter.register("{TAG}", guild.getTag());
+                    } else {
+                        guildFormatter.register("{GUILD}", this.messageService.<String>get(receiver, config -> config.gNameNoValue));
+                        guildFormatter.register("{TAG}", this.messageService.<String>get(receiver, config -> config.gTagNoValue));
+                    }
+                    return guildFormatter;
+                })
+                .receiver(messageTarget)
+                .send();
     }
 
 }

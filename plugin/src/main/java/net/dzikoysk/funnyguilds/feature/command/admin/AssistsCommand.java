@@ -49,7 +49,8 @@ public final class AssistsCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminAssistsChanged)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

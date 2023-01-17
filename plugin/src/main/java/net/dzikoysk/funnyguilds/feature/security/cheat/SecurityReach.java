@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.security.cheat;
 import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -24,7 +23,6 @@ public final class SecurityReach {
 
     public static void on(Player player, double distance) {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
-        MessageConfiguration messages = funnyGuilds.getMessageConfiguration();
         PluginConfiguration config = funnyGuilds.getPluginConfiguration();
         UserManager userManager = funnyGuilds.getUserManager();
 

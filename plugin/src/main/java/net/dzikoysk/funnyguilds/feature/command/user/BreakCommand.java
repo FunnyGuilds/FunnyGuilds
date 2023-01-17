@@ -32,8 +32,10 @@ public final class BreakCommand extends AbstractFunnyCommand {
         when(!guild.hasAllies(), config -> config.breakHasNotAllies);
 
         if (args.length < 1) {
-            FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true));
-            this.messages.breakAlliesList.forEach(line -> owner.sendMessage(formatter.format(line)));
+            this.messageService.getMessage(config -> config.breakAlliesList)
+                    .with("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true))
+                    .receiver(owner)
+                    .send();
             return;
         }
 

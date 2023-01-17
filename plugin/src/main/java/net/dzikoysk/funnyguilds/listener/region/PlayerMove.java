@@ -16,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class PlayerMove extends AbstractFunnyListener {
 
@@ -70,7 +69,8 @@ public class PlayerMove extends AbstractFunnyListener {
 
                             this.messageService.getMessage(config -> config.notificationLeaveGuildRegion)
                                     .with(formatter)
-                                    .sendTo(player);
+                                    .receiver(player)
+                                    .send();
                         });
             }
             else if (!cache.getEnter()) {
@@ -100,7 +100,8 @@ public class PlayerMove extends AbstractFunnyListener {
 
                             this.messageService.getMessage(config -> config.notificationEnterGuildRegion)
                                     .with(formatter)
-                                    .sendTo(player);
+                                    .receiver(player)
+                                    .send();
 
                             if (player.hasPermission("funnyguilds.admin.notification")) {
                                 return;
@@ -117,9 +118,8 @@ public class PlayerMove extends AbstractFunnyListener {
 
                             this.messageService.getMessage(config -> config.notificationIntruderEnterGuildRegion)
                                     .with(formatter)
-                                    .sendTo(PandaStream.of(guild.getOnlineMembers())
-                                            .flatMap(memberUser -> this.funnyServer.getPlayer(memberUser))
-                                            .toList());
+                                    .receiver(guild)
+                                    .send();
 
                             cache.setNotificationTime(System.currentTimeMillis() + 1000L * this.config.regionNotificationCooldown);
                         });

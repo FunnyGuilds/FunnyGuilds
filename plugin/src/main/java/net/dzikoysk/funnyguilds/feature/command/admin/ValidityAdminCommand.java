@@ -8,10 +8,10 @@ import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
+import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class ValidityAdminCommand extends AbstractFunnyCommand {
@@ -45,13 +45,15 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         validity = validity.plus(time);
         guild.setValidity(validity);
 
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{VALIDITY}", this.messages.dateFormat.format(validity));
-
+        Instant finalValidity = validity;
         this.messageService.getMessage(config -> config.adminNewValidity)
-                .with(formatter)
-                .sendTo(sender);
+                .with("{GUILD}", guild.getName())
+                .with(CommandSender.class, receiver -> Replacement.of(
+                        "{VALIDITY}",
+                        this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity)
+                ))
+                .receiver(sender)
+                .send();
     }
 
 }

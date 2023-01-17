@@ -5,9 +5,8 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -32,7 +31,7 @@ public final class ValidityUtils {
 
         messageService.getMessage(config -> config.broadcastValidity)
                 .with(formatter)
-                .with(Player.class, player -> {
+                .with(CommandSender.class, receiver -> {
                     FunnyFormatter cordFormatter = new FunnyFormatter();
                     if (hasCenter) {
                         Location center = regionOption.get().getCenter();
@@ -41,14 +40,15 @@ public final class ValidityUtils {
                         cordFormatter.register("{Z}", center.getBlockZ());
                     }
                     else {
-                        String noInformation = messageService.get(config -> config.noInformation);
+                        String noInformation = messageService.get(receiver, config -> config.noInformation);
                         cordFormatter.register("{X}", noInformation);
                         cordFormatter.register("{Y}", noInformation);
                         cordFormatter.register("{Z}", noInformation);
                     }
                     return cordFormatter;
                 })
-                .sendTo(Bukkit.getOnlinePlayers());
+                .broadcast()
+                .send();
     }
 
 }

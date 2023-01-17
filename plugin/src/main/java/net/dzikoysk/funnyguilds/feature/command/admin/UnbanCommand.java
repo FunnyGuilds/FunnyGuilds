@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -41,10 +40,12 @@ public final class UnbanCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminGuildUnban)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
         this.messageService.getMessage(config -> config.broadcastUnban)
                 .with(formatter)
-                .sendTo(Bukkit.getOnlinePlayers());
+                .broadcast()
+                .send();
     }
 
 }

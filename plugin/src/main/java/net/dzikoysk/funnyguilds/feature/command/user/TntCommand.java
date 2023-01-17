@@ -35,11 +35,13 @@ public final class TntCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.tntInfo)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
         this.messageService.getMessage(isWithinTimeframe
                         ? config -> config.tntNowDisabled
                         : config -> config.tntNowEnabled)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

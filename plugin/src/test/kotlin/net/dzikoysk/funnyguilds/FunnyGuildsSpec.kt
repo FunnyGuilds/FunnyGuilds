@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration
+import net.dzikoysk.funnyguilds.config.message.MessageService
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
@@ -20,6 +21,7 @@ import org.mockito.Mock
 import org.mockito.MockedStatic
 import org.mockito.Mockito.*
 import org.mockito.junit.jupiter.MockitoExtension
+import java.util.*
 import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
@@ -40,8 +42,8 @@ open class FunnyGuildsSpec : BukkitSpec() {
     private val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
 
     protected lateinit var config: PluginConfiguration
-    private lateinit var messages: MessageConfiguration
     private lateinit var tablistConfig: TablistConfiguration
+    private lateinit var messages: MessageService
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
@@ -58,14 +60,16 @@ open class FunnyGuildsSpec : BukkitSpec() {
         mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
         config = PluginConfiguration()
-        messages = MessageConfiguration()
         tablistConfig = TablistConfiguration()
+        messages = MessageService(null)
+        messages.defaultLocale = Locale.forLanguageTag("pl")
+        messages.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
 
         preparePluginConfiguration()
 
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
-        lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
+        lenient().`when`(funnyGuilds.messageService).thenReturn(messages)
 
         userManager = UserManager(config)
         guildManager = GuildManager(config)
@@ -83,8 +87,8 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         rankPlaceholdersService = RankPlaceholdersService(
             config,
-            messages,
             tablistConfig,
+            messages,
             userRankManager,
             guildRankManager
         )

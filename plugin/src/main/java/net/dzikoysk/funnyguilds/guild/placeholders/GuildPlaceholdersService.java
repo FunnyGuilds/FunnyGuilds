@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholders;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
@@ -47,32 +47,32 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
     }
 
     public static GuildPlaceholders createSimplePlaceholders(FunnyGuilds plugin) {
-        MessageConfiguration messages = plugin.getMessageConfiguration();
+        MessageService messages = plugin.getMessageService();
 
         GuildPlaceholders placeholders = new GuildPlaceholders()
-                .property("name", Guild::getName, () -> messages.gNameNoValue)
-                .property("guild", Guild::getName, () -> messages.gNameNoValue)
-                .property("tag", Guild::getTag, () -> messages.gTagNoValue);
+                .property("name", Guild::getName, () -> messages.get(config -> config.gNameNoValue))
+                .property("guild", Guild::getName, () -> messages.get(config -> config.gNameNoValue))
+                .property("tag", Guild::getTag, () -> messages.get(config -> config.gTagNoValue));
         SIMPLE = Option.of(placeholders);
 
         return placeholders;
     }
 
     public static GuildPlaceholders createGuildPlaceholders(FunnyGuilds plugin) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
+        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
+        MessageService messages = plugin.getMessageService();
         GuildRankManager rankManager = plugin.getGuildRankManager();
 
         return new GuildPlaceholders()
-                .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
+                .property("owner", guild -> guild.getOwner().getName(), () -> messages.get(config -> config.gOwnerNoValue))
                 .property("deputies",
-                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.gDeputiesNoValue),
-                        () -> messages.gDeputiesNoValue)
+                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.get(config -> config.gDeputiesNoValue)),
+                        () -> messages.get(config -> config.gDeputiesNoValue))
                 .property("deputy",
                         guild -> guild.getDeputies().isEmpty()
-                                ? messages.gDeputyNoValue
+                                ? messages.get(config -> config.gDeputyNoValue)
                                 : guild.getDeputies().iterator().next().getName(),
-                        () -> messages.gDeputyNoValue)
+                        () -> messages.get(config -> config.gDeputyNoValue))
                 .property("members-online", guild -> guild.getOnlineMembers().size(), () -> 0)
                 .property("members-all", guild -> guild.getMembers().size(), () -> 0)
                 .property("allies-all", guild -> guild.getAllies().size(), () -> 0)
@@ -81,49 +81,49 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                         guild -> guild.getRegion()
                                 .map(Region::getSize)
                                 .map(value -> Integer.toString(value))
-                                .orElseGet(messages.gRegionSizeNoValue),
-                        () -> messages.gRegionSizeNoValue)
+                                .orElseGet((String) messages.get(config -> config.gRegionSizeNoValue)),
+                        () -> messages.get(config -> config.gRegionSizeNoValue))
                 .property("pvp",
                         guild -> guild.hasPvPEnabled()
-                                ? messages.pvpStatusOn
-                                : messages.pvpStatusOff,
-                        () -> messages.pvpStatusOff)
-                .timeProperty("validity", Guild::getValidity, messages, () -> messages.gValidityNoValue)
-                .timeProperty("protection", Guild::getProtection, messages, () -> messages.gProtectionNoValue)
+                                ? messages.get(config -> config.pvpStatusOn)
+                                : messages.get(config -> config.pvpStatusOff),
+                        () -> messages.get(config -> config.pvpStatusOff))
+                .timeProperty("validity", Guild::getValidity, messages, config -> config.gValidityNoValue)
+                .timeProperty("protection", Guild::getProtection, messages, config -> config.gProtectionNoValue)
                 .property("lives", Guild::getLives, () -> 0)
                 .property("lives-symbol",
                         guild -> {
                             int lives = guild.getLives();
-                            if (lives <= config.warLives) {
-                                return StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
-                                        StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
+                            if (lives <= pluginConfiguration.warLives) {
+                                return StringUtils.repeated(lives, pluginConfiguration.livesRepeatingSymbol.full.getValue()) +
+                                        StringUtils.repeated(pluginConfiguration.warLives - lives, pluginConfiguration.livesRepeatingSymbol.empty.getValue());
                             }
                             else {
-                                return StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full.getValue()) +
-                                        config.livesRepeatingSymbol.more.getValue();
+                                return StringUtils.repeated(pluginConfiguration.warLives, pluginConfiguration.livesRepeatingSymbol.full.getValue()) +
+                                        pluginConfiguration.livesRepeatingSymbol.more.getValue();
                             }
-                        }, () -> messages.livesNoValue)
+                        }, () -> messages.get(config -> config.livesNoValue))
                 .property("lives-symbol-all",
-                        guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()),
-                        () -> messages.livesNoValue)
+                        guild -> StringUtils.repeated(guild.getLives(), pluginConfiguration.livesRepeatingSymbol.full.getValue()),
+                        () -> messages.get(config -> config.livesNoValue))
                 .property("position",
                         (guild, rank) -> rankManager.isRankedGuild(guild)
                                 ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
-                                : messages.minMembersToIncludeNoValue,
-                        () -> messages.minMembersToIncludeNoValue)
+                                : messages.get(config -> config.minMembersToIncludeNoValue),
+                        () -> messages.get(config -> config.minMembersToIncludeNoValue))
                 .property("rank",
                         (guild, rank) -> rankManager.isRankedGuild(guild)
                                 ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
-                                : messages.minMembersToIncludeNoValue,
-                        () -> messages.minMembersToIncludeNoValue)
+                                : messages.get(config -> config.minMembersToIncludeNoValue),
+                        () -> messages.get(config -> config.minMembersToIncludeNoValue))
                 //TODO total-points -> points (I know this will break up backwards compatibility so I'm not doing it now)
                 .property("total-points", (guild, rank) -> rank.getPoints(), () -> 0)
                 .property("avg-points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points-format",
                         (guild, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getAveragePoints(),
-                                config.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
-                        () -> FunnyFormatter.format(NumberRange.inRangeToString(0, config.pointsFormat), "{POINTS}", 0))
+                                pluginConfiguration.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
+                        () -> FunnyFormatter.format(NumberRange.inRangeToString(0, pluginConfiguration.pointsFormat), "{POINTS}", 0))
                 .property("kills", (guild, rank) -> rank.getKills(), () -> 0)
                 .property("avg-kills", (guild, rank) -> rank.getAverageKills(), () -> 0)
                 .property("deaths", (guild, rank) -> rank.getDeaths(), () -> 0)
@@ -139,20 +139,20 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
     }
 
     public static GuildPlaceholders createAlliesEnemiesPlaceholders(FunnyGuilds plugin) {
-        MessageConfiguration messages = plugin.getMessageConfiguration();
+        MessageService messages = plugin.getMessageService();
         return new GuildPlaceholders()
                 .property("allies",
-                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getAllies()), messages.alliesNoValue),
-                        () -> messages.alliesNoValue)
+                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getAllies()), messages.get(config -> config.alliesNoValue)),
+                        () -> messages.get(config -> config.alliesNoValue))
                 .property("allies-tags",
-                        guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue),
-                        () -> messages.alliesNoValue)
+                        guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getAllies()), messages.get(config -> config.alliesNoValue)),
+                        () -> messages.get(config -> config.alliesNoValue))
                 .property("enemies",
-                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue),
-                        () -> messages.enemiesNoValue)
+                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getEnemies()), messages.get(config -> config.enemiesNoValue)),
+                        () -> messages.get(config -> config.enemiesNoValue))
                 .property("enemies-tags",
-                        guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue),
-                        () -> messages.enemiesNoValue);
+                        guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.get(config -> config.enemiesNoValue)),
+                        () -> messages.get(config -> config.enemiesNoValue));
     }
 
 }

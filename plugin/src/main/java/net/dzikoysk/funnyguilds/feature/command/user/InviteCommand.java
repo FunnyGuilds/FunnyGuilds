@@ -70,7 +70,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
             this.messageService.getMessage(config -> config.inviteAllCommand)
                     .with(FunnyFormatter.of("{RANGE}", range))
-                    .sendTo(sender);
+                    .receiver(sender)
+                    .send();
 
             PandaStream.of(nearbyPlayers)
                     .mapOpt(this.userManager::findByPlayer)

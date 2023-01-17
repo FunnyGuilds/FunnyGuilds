@@ -43,8 +43,10 @@ public final class AllyCommand extends AbstractFunnyCommand {
             when(invitations.isEmpty(), config -> config.allyHasNotInvitation);
             String guildNames = FunnyStringUtils.join(this.allyInvitationList.getInvitationGuildNames(guild), true);
 
-            FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
-            this.messages.allyInvitationList.forEach(line -> owner.sendMessage(formatter.format(line)));
+            this.messageService.getMessage(config -> config.allyInvitationList)
+                    .with("{GUILDS}", guildNames)
+                    .receiver(owner)
+                    .send();
 
             return;
         }

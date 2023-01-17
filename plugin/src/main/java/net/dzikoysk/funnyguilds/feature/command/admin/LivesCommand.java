@@ -43,7 +43,8 @@ public final class LivesCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminLivesChanged)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

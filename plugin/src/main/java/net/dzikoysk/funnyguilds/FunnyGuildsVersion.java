@@ -92,9 +92,10 @@ public final class FunnyGuildsVersion {
                 .register("{GITHUB_LINK}", GITHUB_URL)
                 .register("{DISCORD_LINK}", DISCORD_URL);
 
-        FunnyGuilds.getInstance().getMessageConfiguration().newVersionAvailable.forEach(line -> {
-            sender.sendMessage(formatter.format(line));
-        });
+        FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.newVersionAvailable)
+                .with(formatter)
+                .receiver(sender)
+                .send();
     }
 
     public String getFullVersion() {

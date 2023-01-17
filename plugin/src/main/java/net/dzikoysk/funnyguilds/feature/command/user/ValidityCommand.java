@@ -15,8 +15,10 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -59,9 +61,12 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         validity = validity.plus(validityTime);
         guild.setValidity(validity);
 
-        String formattedValidity = this.messages.dateFormat.format(validity);
+        Instant finalValidity = validity;
         this.messageService.getMessage(config -> config.validityDone)
-                .with("{DATE}", formattedValidity)
+                .with(CommandSender.class, receiver -> {
+                    String formattedValidity = this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity);
+                    return Replacement.of("{DATE}", formattedValidity);
+                })
                 .receiver(player)
                 .send();
     }

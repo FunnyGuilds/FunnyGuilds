@@ -49,7 +49,8 @@ public final class KillsCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminKillsChanged)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

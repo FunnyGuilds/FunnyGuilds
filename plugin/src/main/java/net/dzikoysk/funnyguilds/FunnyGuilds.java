@@ -126,7 +126,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     private PluginConfiguration pluginConfiguration;
     private TablistConfiguration tablistConfiguration;
-    private MessageConfiguration messageConfiguration;
 
     private BukkitAudiences adventure;
     private MessageService messageService;
@@ -200,7 +199,6 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile, new BukkitSchedulerWrapper(this));
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
@@ -236,10 +234,26 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        this.adventure = BukkitAudiences.create(this);
-        this.messageService = new MessageService(this.adventure);
-        this.messageService.setDefaultLocale(Locale.forLanguageTag("pl"));
-        this.messageService.registerRepository(Locale.forLanguageTag("pl"), this.messageConfiguration);
+        try {
+            this.adventure = BukkitAudiences.create(this);
+        }
+        catch (Exception exception) {
+            logger.error("Could not initialize adventure platform", exception);
+            this.shutdown("Critical error has been encountered!");
+            return;
+        }
+
+        try {
+            MessageConfiguration messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile, new BukkitSchedulerWrapper(this));
+            this.messageService = new MessageService(this.adventure);
+            this.messageService.setDefaultLocale(Locale.forLanguageTag("pl"));
+            this.messageService.registerRepository(Locale.forLanguageTag("pl"), messageConfiguration);
+        }
+        catch (Exception exception) {
+            logger.error("Could not initialize message service", exception);
+            this.shutdown("Critical error has been encountered!");
+            return;
+        }
 
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
@@ -274,9 +288,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankPlaceholdersService = new RankPlaceholdersService(
                 this.pluginConfiguration,
-                this.messageConfiguration,
                 this.tablistConfiguration,
-                this.userRankManager,
+                messageService, this.userRankManager,
                 this.guildRankManager
         );
         this.tablistPlaceholdersService = new TablistPlaceholdersService(
@@ -311,7 +324,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
-            resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
             resources.on(ScoreboardService.class).assignInstance(this.scoreboardService);
@@ -581,10 +593,6 @@ public class FunnyGuilds extends JavaPlugin {
         return this.tablistConfigurationFile;
     }
 
-    public MessageConfiguration getMessageConfiguration() {
-        return this.messageConfiguration;
-    }
-
     public BukkitAudiences adventure() {
         if (this.adventure == null) {
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
@@ -687,7 +695,7 @@ public class FunnyGuilds extends JavaPlugin {
     public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
-        this.messageConfiguration.load();
+        // TODO Realod emssages configuration
         this.hookManager.callConfigUpdated();
     }
 

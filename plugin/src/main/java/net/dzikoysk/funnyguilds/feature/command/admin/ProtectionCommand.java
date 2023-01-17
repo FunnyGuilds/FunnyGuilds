@@ -47,7 +47,8 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.adminProtectionSetSuccessfully)
                 .with(formatter)
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
 }

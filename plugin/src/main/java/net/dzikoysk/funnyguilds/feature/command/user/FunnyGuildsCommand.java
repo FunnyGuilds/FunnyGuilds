@@ -52,11 +52,13 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 this.post(sender, args);
                 break;
             case "help":
-                this.messages.funnyguildsHelp.forEach(line -> this.sendMessage(sender, line));
+                this.messageService.getMessage(config -> config.funnyguildsHelp)
+                        .receiver(sender)
+                        .send();
                 break;
             default:
                 this.messageService.getMessage(config -> config.funnyguildsVersion)
-                        .with(FunnyFormatter.of("{VERSION}", this.plugin.getVersion().getFullVersion()))
+                        .with("{VERSION}", this.plugin.getVersion().getFullVersion())
                         .send();
                 break;
         }
@@ -66,7 +68,9 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     private void saveAll(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.admin"), config -> config.permission);
 
-        this.messageService.getMessage(config -> config.saveallSaving).sendTo(sender);
+        this.messageService.getMessage(config -> config.saveallSaving)
+                .receiver(sender)
+                .send();
         Instant startTime = Instant.now();
 
         DataModel dataModel = this.dataModel;
@@ -82,21 +86,26 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         String time = TimeUtils.formatTimeSimple(Duration.between(startTime, Instant.now()));
         this.messageService.getMessage(config -> config.saveallSaved)
                 .with(FunnyFormatter.of("{TIME}", time))
-                .sendTo(sender);
+                .receiver(sender)
+                .send();
     }
 
     private void post(CommandSender sender, String[] args) {
         when(!sender.hasPermission("funnyguilds.admin"), config -> config.permission);
 
         FunnybinAsyncTask.of(sender, args)
-                .onEmpty(() -> this.messages.funnybinHelp.forEach(line -> this.sendMessage(sender, line)))
+                .onEmpty(() -> this.messageService.getMessage(config -> config.funnybinHelp)
+                        .receiver(sender)
+                        .send())
                 .peek(task -> this.plugin.scheduleFunnyTasks(task));
     }
 
     private void reload(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.reload"), config -> config.permission);
 
-        this.messageService.getMessage(config -> config.reloadReloading).sendTo(sender);
+        this.messageService.getMessage(config -> config.reloadReloading)
+                .receiver(sender)
+                .send();
         this.plugin.scheduleFunnyTasks(new ReloadAsyncTask(this.plugin, sender));
     }
 
