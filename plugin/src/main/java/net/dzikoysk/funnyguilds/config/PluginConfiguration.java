@@ -1045,7 +1045,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean translatedMaterialsEnable = true;
 
     @Comment("")
-    @Comment("Czy do tłumaczenia nazw przedmiotów plugin ma używać tzw. TranslatableComponents - nazwy przedmiotów będą wyświetlane wtedy zawsze w języku gracza")
+    @Comment("Czy do tłumaczenia nazw przedmiotów plugin ma używać tzw. TranslatableComponents - nazwy przedmiotów będą wyświetlane wtedy w języku gracza")
     @Comment("Jeśli opcja będzie włączona opcja 'translated-materials-name' nie będzie miała wpływu na nazwy przedmiotów")
     public boolean useTranslatableComponentsForMaterials = false;
 
