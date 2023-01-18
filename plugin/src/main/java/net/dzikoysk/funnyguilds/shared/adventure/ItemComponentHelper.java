@@ -45,7 +45,6 @@ public final class ItemComponentHelper {
     }
 
     public static Component componentForItem(ItemStack item, boolean displayAmount) {
-
         Material material = item.getType();
         Component component = Component.text(ItemUtils.itemAsString(item, displayAmount));
 
@@ -54,7 +53,6 @@ public final class ItemComponentHelper {
                 HoverEvent.ShowItem showItem = HoverEvent.ShowItem.of(getMaterialKey(material), item.getAmount(), getBinaryTagHolder(item));
                 component = component.hoverEvent(HoverEvent.showItem(showItem));
             } catch (Exception ignored) {
-                ignored.printStackTrace();
             }
         }
         return component;
