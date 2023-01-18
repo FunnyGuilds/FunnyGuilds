@@ -722,16 +722,12 @@ public class FunnyGuilds extends JavaPlugin {
         messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
 
         File oldMessagesFile = new File(this.getDataFolder(), "messages.yml");
-        System.out.println(oldMessagesFile + " " + oldMessagesFile.exists());
-        if (oldMessagesFile.exists()) {
-            File newMessagesFile = new File(this.pluginLanguageFolderFile, this.pluginConfiguration.defaultLocale.toString() + ".yml");
-            if (!newMessagesFile.exists()) {
-                System.out.println(newMessagesFile);
-                try {
-                    Files.copy(oldMessagesFile.toPath(), newMessagesFile.toPath());
-                } catch (Exception ex) {
-                    logger.error("Could not copy legacy messages.yml to new lang directory", ex);
-                }
+        File newMessagesFile = new File(this.pluginLanguageFolderFile, this.pluginConfiguration.defaultLocale.toString() + ".yml");
+        if (oldMessagesFile.exists() && !newMessagesFile.exists()) {
+            try {
+                Files.copy(oldMessagesFile.toPath(), newMessagesFile.toPath());
+            } catch (Exception ex) {
+                logger.error("Could not copy legacy messages.yml to new lang directory", ex);
             }
         }
 
