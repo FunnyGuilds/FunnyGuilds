@@ -91,6 +91,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public Locale defaultLocale = Locale.forLanguageTag("pl");
 
     @Comment("")
+    public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl"), Locale.forLanguageTag("en")));
+
+    @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
     public boolean guildsEnabled = true;
 
@@ -1243,6 +1246,10 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
+        if (this.availableLocales.add(this.defaultLocale)) {
+            FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' wasn't added in available locales, adding it");
+        }
+
         this.guiItems = this.loadGUI(this.guiItems_);
 
         if (!this.useCommonGUI) {

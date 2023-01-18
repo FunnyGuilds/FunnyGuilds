@@ -5,10 +5,6 @@ import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.stream.Stream;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -110,10 +106,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
+import panda.std.stream.PandaStream;
 import panda.utilities.ClassUtils;
 import pl.peridot.yetanothermessageslibrary.util.BukkitSchedulerWrapper;
 
@@ -255,34 +253,7 @@ public class FunnyGuilds extends JavaPlugin {
                 this.shutdown(createResult.getError());
                 return;
             }
-
-            this.messageService = new MessageService(this.adventure);
-            this.messageService.setDefaultLocale(this.pluginConfiguration.defaultLocale);
-            this.messageService.registerLocaleProvider(new PlayerLocaleProvider());
-            this.messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
-
-            for (String lang : Arrays.asList("pl", "en")) { // List of default language files loaded from plugin resources
-                try {
-                    FunnyIOUtils.copyFileFromResources(FunnyGuilds.class.getResourceAsStream("/lang/" + lang + ".yml"), new File(this.pluginLanguageFolderFile, lang + ".yml"), true);
-                }
-                catch (IOException ignored) {
-                    FunnyGuilds.getPluginLogger().warning("Could not copy default language file: " + lang);
-                }
-            };
-
-            BukkitSchedulerWrapper schedulerWrapper = new BukkitSchedulerWrapper(this);
-            try (Stream<Path> pathStream = Files.walk(this.pluginLanguageFolderFile.toPath())) {
-                pathStream
-                        .filter(Files::isRegularFile)
-                        .map(Path::toFile)
-                        .map(File::getName)
-                        .filter(name -> name.endsWith(".yml"))
-                        .forEach(name -> {
-                            String langCode = name.substring(0, name.length() - 4);
-                            Locale locale = Locale.forLanguageTag(langCode);
-                            this.messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(new File(this.pluginLanguageFolderFile, name), schedulerWrapper));
-                        });
-            }
+            this.messageService = this.prepareMessageService();
         }
         catch (Exception exception) {
             logger.error("Could not initialize message service", exception);
@@ -741,6 +712,44 @@ public class FunnyGuilds extends JavaPlugin {
 
     public static FunnyGuildsLogger getPluginLogger() {
         return logger;
+    }
+
+    @NotNull
+    private MessageService prepareMessageService() {
+        MessageService messageService = new MessageService(this.adventure);
+        messageService.setDefaultLocale(this.pluginConfiguration.defaultLocale);
+        messageService.registerLocaleProvider(new PlayerLocaleProvider());
+        messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
+
+        File oldMessagesFile = new File(this.getDataFolder(), "messages.yml");
+        System.out.println(oldMessagesFile + " " + oldMessagesFile.exists());
+        if (oldMessagesFile.exists()) {
+            File newMessagesFile = new File(this.pluginLanguageFolderFile, this.pluginConfiguration.defaultLocale.toString() + ".yml");
+            if (!newMessagesFile.exists()) {
+                System.out.println(newMessagesFile);
+                try {
+                    Files.copy(oldMessagesFile.toPath(), newMessagesFile.toPath());
+                } catch (Exception ex) {
+                    logger.error("Could not copy legacy messages.yml to new lang directory", ex);
+                }
+            }
+        }
+
+        BukkitSchedulerWrapper schedulerWrapper = new BukkitSchedulerWrapper(this);
+        PandaStream.of(this.pluginConfiguration.availableLocales).forEach(locale -> {
+            String localeName = locale.toString();
+            File localeFile = new File(this.pluginLanguageFolderFile, localeName + ".yml");
+            if (!localeFile.exists()) {
+                try {
+                    FunnyIOUtils.copyFileFromResources(FunnyGuilds.class.getResourceAsStream("/lang/" + localeName + ".yml"), localeFile, true);
+                } catch (IOException | NullPointerException ex) {
+                    logger.warning("Could not copy default language file: " + localeName);
+                    logger.warning("New language file will be created with default values");
+                }
+            }
+            messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(localeFile, schedulerWrapper));
+        });
+        return messageService;
     }
 
     private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
