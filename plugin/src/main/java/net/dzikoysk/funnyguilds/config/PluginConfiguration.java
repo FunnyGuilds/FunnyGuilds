@@ -191,8 +191,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czy wiadomości o braku potrzebnych przedmiotów maja zawierać elementy, na które można najechać")
     @Comment("Takie elementy pokazują informacje o przedmiocie, np. jego typ, nazwę czy opis")
-    @Comment("Funkcja jest obecnie trochę niedopracowana i może powodować problemy na niektórych wersjach MC, np. 1.8.8")
-    public boolean enableItemComponent = false;
+    public boolean enableItemComponent = true;
 
     @Comment("")
     @Comment("Przedmioty wymagane do założenia gildii")
@@ -1058,7 +1057,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Wygląd znaczników {ITEM} i {ITEMS} za liczbą przedmiotu")
     @Comment("Dla np. item-amount-suffix: \"szt.\" otrzymamy 1szt. golden_apple")
-    public RawString itemAmountSuffix = new RawString("x");
+    public RawString itemAmountSuffix = new RawString("x ");
 
     @Comment("")
     @Comment("Czy sprawdzanie zakazanych nazw i tagów gildii powinno być włączone")

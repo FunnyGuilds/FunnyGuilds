@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.config.message;
 
 import java.util.Locale;
-import net.dzikoysk.funnyguilds.shared.spigot.LocaleHelper;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocaleHelper;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

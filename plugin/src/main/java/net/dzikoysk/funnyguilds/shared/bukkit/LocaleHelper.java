@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.shared.spigot;
+package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.lang.reflect.Method;
 import org.bukkit.entity.Player;
