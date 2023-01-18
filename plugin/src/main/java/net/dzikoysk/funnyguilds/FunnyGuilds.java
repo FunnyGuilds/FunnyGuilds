@@ -448,9 +448,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         if (NmsUtils.getReloadCount() > 0) {
             this.messageService.getMessage(config -> config.reloadWarn)
-                    .predicate(sender -> sender.hasPermission("funnyguilds.admin"))
-                    .receivers(Bukkit.getOnlinePlayers())
-                    .receiver(Bukkit.getConsoleSender())
+                    .broadcast()
+                    .permission("funnyguilds.admin")
                     .send();
         }
 
