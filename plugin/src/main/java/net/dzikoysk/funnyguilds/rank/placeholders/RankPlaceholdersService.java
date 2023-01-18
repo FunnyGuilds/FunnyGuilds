@@ -352,13 +352,13 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         return FunnyFormatter.format(text, placeholder, formattedPrefix + topFormat);
     }
 
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([A-Za-z0-9-)]+)}");
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([A-Za-z0-9-_)]+)}");
 
-    public Replaceable prepareReplaceable(User targetUser) {
+    public Replaceable prepareReplacement(User targetUser) {
         return new Replaceable() {
             @Override
             public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
-                return RankPlaceholdersService.this.formatRank(text, targetUser);
+                return RankPlaceholdersService.this.format(text, targetUser);
             }
 
             @Override
@@ -366,7 +366,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
                 TextReplacementConfig topReplacement = TextReplacementConfig.builder()
                         .match(PLACEHOLDER_PATTERN)
                         .replacement(((result, input) -> {
-                            String replacement = RankPlaceholdersService.this.formatTop("{" + result.group(1) + "}", targetUser);
+                            String replacement = RankPlaceholdersService.this.format(result.group(), targetUser);
                             return AdventureHelper.legacyToComponent(replacement);
                         }))
                         .build();
