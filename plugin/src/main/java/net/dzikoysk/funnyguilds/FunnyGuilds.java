@@ -261,11 +261,12 @@ public class FunnyGuilds extends JavaPlugin {
             this.messageService.registerLocaleProvider(new PlayerLocaleProvider());
             this.messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
 
-            for (String lang : Arrays.asList("pl", "en")) {
+            for (String lang : Arrays.asList("pl", "en")) { // List of default language files loaded from plugin resources
                 try {
                     FunnyIOUtils.copyFileFromResources(FunnyGuilds.class.getResourceAsStream("/lang/" + lang + ".yml"), new File(this.pluginLanguageFolderFile, lang + ".yml"), true);
                 }
                 catch (IOException ignored) {
+                    FunnyGuilds.getPluginLogger().warning("Could not copy default language file: " + lang);
                 }
             };
 
