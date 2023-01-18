@@ -104,12 +104,29 @@ public final class ItemComponentHelper {
         return new ItemReplacement(item);
     }
 
+    public static ItemsReplacement prepareItemsReplacement(Collection<ItemStack> items) {
+        return new ItemsReplacement(items);
+    }
+
     private static class ItemReplacement implements Replaceable {
 
         private final ItemStack item;
 
+        private final TextReplacementConfig itemReplacement;
+        private final TextReplacementConfig itemNoAmountReplacement;
+
         private ItemReplacement(ItemStack item) {
             this.item = item;
+
+            this.itemReplacement = TextReplacementConfig.builder()
+                    .matchLiteral("{ITEM}")
+                    .replacement(componentForItem(this.item, true))
+                    .build();
+
+            this.itemNoAmountReplacement = TextReplacementConfig.builder()
+                    .matchLiteral("{ITEM-NO-AMOUNT}")
+                    .replacement(componentForItem(this.item, false))
+                    .build();
         }
 
         @Override
@@ -122,31 +139,26 @@ public final class ItemComponentHelper {
 
         @Override
         public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
-            TextReplacementConfig itemReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEM}")
-                    .replacement(componentForItem(this.item, true))
-                    .build();
-
-            TextReplacementConfig itemNoAmountReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEM-NO-AMOUNT}")
-                    .replacement(componentForItem(this.item, false))
-                    .build();
-
-            return text.replaceText(itemReplacement).replaceText(itemNoAmountReplacement);
+            return text.replaceText(this.itemReplacement).replaceText(this.itemNoAmountReplacement);
         }
 
-    }
-
-    public static ItemsReplacement prepareItemsReplacement(Collection<ItemStack> items) {
-        return new ItemsReplacement(items);
     }
 
     private static class ItemsReplacement implements Replaceable {
 
         private final Collection<ItemStack> items;
 
+        private final TextReplacementConfig itemsReplacement;
+
         private ItemsReplacement(Collection<ItemStack> items) {
             this.items = items;
+
+            this.itemsReplacement = TextReplacementConfig.builder()
+                    .matchLiteral("{ITEMS}")
+                    .replacement(FunnyComponentUtils.join(PandaStream.of(this.items)
+                            .map(itemStack -> componentForItem(itemStack, true))
+                            .toList(), true))
+                    .build();
         }
 
         @Override
@@ -160,14 +172,7 @@ public final class ItemComponentHelper {
 
         @Override
         public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
-            TextReplacementConfig itemsReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEMS}")
-                    .replacement(FunnyComponentUtils.join(PandaStream.of(this.items)
-                            .map(itemStack -> componentForItem(itemStack, true))
-                            .toList(), true))
-                    .build();
-
-            return text.replaceText(itemsReplacement);
+            return text.replaceText(this.itemsReplacement);
         }
 
     }
