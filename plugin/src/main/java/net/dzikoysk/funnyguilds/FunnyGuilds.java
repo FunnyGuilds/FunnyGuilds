@@ -5,6 +5,7 @@ import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -131,6 +132,7 @@ public class FunnyGuilds extends JavaPlugin {
     private TablistConfiguration tablistConfiguration;
 
     private BukkitAudiences adventure;
+    private LocaleManager localeManager;
     private MessageService messageService;
 
     private DynamicListenerManager dynamicListenerManager;
@@ -245,7 +247,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.shutdown("Critical error has been encountered!");
             return;
         }
-
+        this.localeManager = new LocaleManager();
         try {
             Result<File, String> createResult = FunnyIOUtils.createFile(this.pluginLanguageFolderFile, true);
             if (createResult.isErr()) {
@@ -603,6 +605,10 @@ public class FunnyGuilds extends JavaPlugin {
             throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
         }
         return this.adventure;
+    }
+
+    public LocaleManager getLocaleManager() {
+        return this.localeManager;
     }
 
     public MessageService getMessageService() {

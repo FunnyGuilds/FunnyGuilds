@@ -5,10 +5,12 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
@@ -44,18 +46,30 @@ public final class ItemComponentHelper {
     private ItemComponentHelper() {
     }
 
-    public static Component componentForItem(ItemStack item, boolean displayAmount) {
-        Material material = item.getType();
-        Component component = Component.text(ItemUtils.itemAsString(item, displayAmount));
+    public static Component itemAsComponent(ItemStack item, boolean displayAmount) {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
 
-        if (FunnyGuilds.getInstance().getPluginConfiguration().enableItemComponent) {
+        Component itemComponent = Component.empty();
+        if (displayAmount) {
+            itemComponent = itemComponent.append(Component.text(item.getAmount() + config.itemAmountSuffix.getValue()));
+        }
+
+        Material material = item.getType();
+        if (config.useTranslatableComponentsForMaterials) {
+            itemComponent = itemComponent.append(Component.translatable(plugin.getLocaleManager().queryMaterial(material)));
+        } else {
+            itemComponent = itemComponent.append(Component.text(MaterialUtils.getMaterialName(material)));
+        }
+
+        if (config.enableItemComponent) {
             try {
                 HoverEvent.ShowItem showItem = HoverEvent.ShowItem.of(getMaterialKey(material), item.getAmount(), getBinaryTagHolder(item));
-                component = component.hoverEvent(HoverEvent.showItem(showItem));
+                itemComponent = itemComponent.hoverEvent(HoverEvent.showItem(showItem));
             } catch (Exception ignored) {
             }
         }
-        return component;
+        return itemComponent;
     }
 
     public static Key getMaterialKey(Material material) throws InvocationTargetException, IllegalAccessException {
@@ -118,12 +132,11 @@ public final class ItemComponentHelper {
 
             this.itemReplacement = TextReplacementConfig.builder()
                     .matchLiteral("{ITEM}")
-                    .replacement(componentForItem(this.item, true))
+                    .replacement(itemAsComponent(this.item, true))
                     .build();
-
             this.itemNoAmountReplacement = TextReplacementConfig.builder()
                     .matchLiteral("{ITEM-NO-AMOUNT}")
-                    .replacement(componentForItem(this.item, false))
+                    .replacement(itemAsComponent(this.item, false))
                     .build();
         }
 
@@ -154,7 +167,7 @@ public final class ItemComponentHelper {
             this.itemsReplacement = TextReplacementConfig.builder()
                     .matchLiteral("{ITEMS}")
                     .replacement(FunnyComponentUtils.join(PandaStream.of(this.items)
-                            .map(itemStack -> componentForItem(itemStack, true))
+                            .map(itemStack -> itemAsComponent(itemStack, true))
                             .toList(), true))
                     .build();
         }

@@ -42,6 +42,8 @@ dependencies {
     implementation("pl.peridot.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
 
+    implementation("com.github.PikaMug:LocaleLib:3.1")
+
     /* general stuff */
 
     @Suppress("GradlePackageUpdate")
@@ -122,6 +124,7 @@ tasks.withType<ShadowJar> {
     relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
     relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
     relocate("pl.peridot", "net.dzikoysk.funnyguilds.libs.pl.peridot")
+    relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
 
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")

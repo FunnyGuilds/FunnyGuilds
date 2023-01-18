@@ -80,9 +80,9 @@ public final class ItemUtils {
         );
     }
 
-    public static String itemAsString(ItemStack item, boolean amount) {
+    public static String itemAsString(ItemStack item, boolean displayAmount) {
         String materialName = MaterialUtils.getMaterialName(item.getType());
-        if (!amount) {
+        if (!displayAmount) {
             return materialName;
         }
         return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
