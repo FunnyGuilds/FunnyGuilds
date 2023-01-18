@@ -1056,7 +1056,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd znaczników {ITEM} i {ITEMS} za liczbą przedmiotu")
-    @Comment("Dla np. item-amount-suffix: \"szt.\" otrzymamy 1szt. golden_apple")
+    @Comment("Dla np. item-amount-suffix: \"szt. \" otrzymamy 1szt. golden_apple")
     public RawString itemAmountSuffix = new RawString("x ");
 
     @Comment("")
