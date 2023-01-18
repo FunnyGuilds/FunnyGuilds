@@ -106,7 +106,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.NotNull;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
@@ -714,7 +713,6 @@ public class FunnyGuilds extends JavaPlugin {
         return logger;
     }
 
-    @NotNull
     private MessageService prepareMessageService() {
         MessageService messageService = new MessageService(this.adventure);
         messageService.setDefaultLocale(this.pluginConfiguration.defaultLocale);

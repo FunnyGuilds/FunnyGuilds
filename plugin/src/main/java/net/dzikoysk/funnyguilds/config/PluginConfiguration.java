@@ -91,6 +91,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public Locale defaultLocale = Locale.forLanguageTag("pl");
 
     @Comment("")
+    @Comment("Lista języków używanych przez plugin")
+    @Comment("Jeżeli chcesz dodać nowy język dodaj go tutaj - utworzy to nowy plik z domyślnymi wartościami, które możesz później edytować")
+    @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
     public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl"), Locale.forLanguageTag("en")));
 
     @Comment("")
