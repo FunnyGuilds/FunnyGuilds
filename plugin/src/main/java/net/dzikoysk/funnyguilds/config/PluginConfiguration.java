@@ -1051,7 +1051,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public Map<Material, String> translatedMaterials = ImmutableMap.<Material, String>builder()
             .put(Material.DIAMOND_SWORD, "&3diamentowy miecz")
             .put(Material.IRON_SWORD, "&7zelazny miecz")
-            .put(Material.GOLD_INGOT, "&eZloto")
+            .put(Material.GOLD_INGOT, "&ezloto")
             .build();
 
     @Comment("")
