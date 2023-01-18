@@ -257,7 +257,7 @@ public class FunnyGuilds extends JavaPlugin {
             }
 
             this.messageService = new MessageService(this.adventure);
-            this.messageService.setDefaultLocale(Locale.forLanguageTag("pl"));
+            this.messageService.setDefaultLocale(this.pluginConfiguration.defaultLocale);
             this.messageService.registerLocaleProvider(new PlayerLocaleProvider());
             this.messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
 
@@ -278,7 +278,6 @@ public class FunnyGuilds extends JavaPlugin {
                         .filter(name -> name.endsWith(".yml"))
                         .forEach(name -> {
                             String langCode = name.substring(0, name.length() - 4);
-                            System.out.println(langCode);
                             Locale locale = Locale.forLanguageTag(langCode);
                             this.messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(new File(this.pluginLanguageFolderFile, name), schedulerWrapper));
                         });

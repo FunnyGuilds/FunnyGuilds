@@ -26,6 +26,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -84,6 +85,10 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy informacje o aktualizacji wersji nightly mają być widoczne podczas wejścia na serwer")
     @Comment("Ta opcja działa tylko wtedy, gdy włączona jest opcja 'update-info'")
     public boolean updateNightlyInfo = true;
+
+    @Comment("")
+    @Comment("Domyślny używany język używany przez plugin jeżeli nie można znaleźć języka gracza")
+    public Locale defaultLocale = Locale.forLanguageTag("pl");
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
