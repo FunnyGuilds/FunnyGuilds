@@ -3,12 +3,18 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Stream;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
+import net.dzikoysk.funnyguilds.config.message.PlayerLocaleProvider;
+import net.dzikoysk.funnyguilds.config.message.UserLocaleProvider;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -118,7 +124,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
-    private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
+    private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
 
     private FunnyGuildsVersion version;
@@ -244,10 +250,39 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            MessageConfiguration messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile, new BukkitSchedulerWrapper(this));
+            Result<File, String> createResult = FunnyIOUtils.createFile(this.pluginLanguageFolderFile, true);
+            if (createResult.isErr()) {
+                this.shutdown(createResult.getError());
+                return;
+            }
+
             this.messageService = new MessageService(this.adventure);
             this.messageService.setDefaultLocale(Locale.forLanguageTag("pl"));
-            this.messageService.registerRepository(Locale.forLanguageTag("pl"), messageConfiguration);
+            this.messageService.registerLocaleProvider(new PlayerLocaleProvider());
+            this.messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
+
+            for (String lang : Arrays.asList("pl", "en")) {
+                try {
+                    FunnyIOUtils.copyFileFromResources(FunnyGuilds.class.getResourceAsStream("/lang/" + lang + ".yml"), new File(this.pluginLanguageFolderFile, lang + ".yml"), true);
+                }
+                catch (IOException ignored) {
+                }
+            };
+
+            BukkitSchedulerWrapper schedulerWrapper = new BukkitSchedulerWrapper(this);
+            try (Stream<Path> pathStream = Files.walk(this.pluginLanguageFolderFile.toPath())) {
+                pathStream
+                        .filter(Files::isRegularFile)
+                        .map(Path::toFile)
+                        .map(File::getName)
+                        .filter(name -> name.endsWith(".yml"))
+                        .forEach(name -> {
+                            String langCode = name.substring(0, name.length() - 4);
+                            System.out.println(langCode);
+                            Locale locale = Locale.forLanguageTag(langCode);
+                            this.messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(new File(this.pluginLanguageFolderFile, name), schedulerWrapper));
+                        });
+            }
         }
         catch (Exception exception) {
             logger.error("Could not initialize message service", exception);

@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import panda.std.Result;
 import panda.std.stream.PandaStream;
@@ -91,4 +94,12 @@ public final class FunnyIOUtils {
         return "";
     }
 
+    public static void copyFileFromResources(InputStream resource, File destination, boolean ignoreIfExists) throws IOException {
+        if (ignoreIfExists && destination.exists()) {
+            return;
+        }
+
+        Path target = destination.toPath();
+        Files.copy(resource, target, StandardCopyOption.REPLACE_EXISTING);
+    }
 }
