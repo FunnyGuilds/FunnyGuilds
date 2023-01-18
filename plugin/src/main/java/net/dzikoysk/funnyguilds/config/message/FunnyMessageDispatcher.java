@@ -6,21 +6,22 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pl.peridot.yetanothermessageslibrary.adventure.AudienceSupplier;
 import pl.peridot.yetanothermessageslibrary.message.BukkitMessageDispatcher;
 import pl.peridot.yetanothermessageslibrary.message.Sendable;
+import pl.peridot.yetanothermessageslibrary.viewer.Viewer;
+import pl.peridot.yetanothermessageslibrary.viewer.ViewerService;
 
 public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessageDispatcher> {
 
     private final Function<User, CommandSender> supplyReceiver;
 
     public FunnyMessageDispatcher(
-            AudienceSupplier<CommandSender> audienceSupplier,
+            ViewerService<CommandSender, ? extends Viewer> viewerService,
             Function<Object, Locale> localeSupplier,
             Function<Object, Sendable> messageSupplier,
             Function<User, CommandSender> supplyReceiver
     ) {
-        super(audienceSupplier, localeSupplier, messageSupplier);
+        super(viewerService, localeSupplier, messageSupplier);
         this.supplyReceiver = supplyReceiver;
     }
 

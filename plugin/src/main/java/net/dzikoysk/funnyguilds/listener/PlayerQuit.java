@@ -49,6 +49,8 @@ public class PlayerQuit extends AbstractFunnyListener {
             cache.setPlayerList(null);
             damageState.clear();
         });
+
+        this.messageService.playerQuit(player);
     }
 
 }

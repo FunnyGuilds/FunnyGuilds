@@ -37,7 +37,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0") // adventure-platform has other versioning than adventure-api
 
-    val yamlVersion = "3.0.3"
+    val yamlVersion = "4.0.3"
     implementation("pl.peridot.yetanothermessageslibrary:core:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:platform-bukkit:$yamlVersion")

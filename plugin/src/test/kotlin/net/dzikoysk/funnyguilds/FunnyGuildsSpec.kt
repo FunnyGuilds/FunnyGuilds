@@ -61,7 +61,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         config = PluginConfiguration()
         tablistConfig = TablistConfiguration()
-        messages = MessageService(null)
+        messages = MessageService(null, null)
         messages.defaultLocale = Locale.forLanguageTag("pl")
         messages.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
 

@@ -33,20 +33,19 @@ import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 import pl.peridot.yetanothermessageslibrary.config.serdes.SerdesMessages;
-import pl.peridot.yetanothermessageslibrary.util.SchedulerWrapper;
 
 public final class ConfigurationFactory {
 
     private ConfigurationFactory() {
     }
 
-    public static MessageConfiguration createMessageConfiguration(File messageConfigurationFile, SchedulerWrapper schedulerWrapper) {
+    public static MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
             it.withConfigurer(new YamlBukkitConfigurer());
             it.withSerdesPack(registry -> {
                 registry.register(new DecolorTransformer());
                 registry.register(new FunnyTimeFormatterTransformer());
-                registry.register(new SerdesMessages(schedulerWrapper));
+                registry.register(new SerdesMessages());
             });
 
             it.withBindFile(messageConfigurationFile);

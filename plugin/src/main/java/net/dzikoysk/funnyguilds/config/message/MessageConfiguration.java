@@ -119,7 +119,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             .addHolders(BossBarHolder.builder("&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!")
                     .color(BossBar.Color.RED)
                     .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
-                    .stay(null, 15 * 20)
+                    .stay(15 * 20)
+                    .clearOtherBars(true)
                     .build())
             .build();
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
@@ -128,7 +129,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             .addHolders(BossBarHolder.builder("&7Wkroczyles na teren gildii &c{TAG}&7!")
                     .color(BossBar.Color.RED)
                     .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
-                    .stay(null, 15 * 20)
+                    .stay(15 * 20)
+                    .clearOtherBars(true)
                     .build())
             .build();
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
@@ -137,7 +139,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             .addHolders(BossBarHolder.builder("&7Opusciles teren gildii &c{TAG}&7!")
                     .color(BossBar.Color.GREEN)
                     .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
-                    .stay(null, 15 * 20)
+                    .stay(15 * 20)
+                    .clearOtherBars(true)
                     .build())
             .build();
 

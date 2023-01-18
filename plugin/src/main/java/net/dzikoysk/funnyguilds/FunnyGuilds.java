@@ -713,7 +713,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private MessageService prepareMessageService() {
-        MessageService messageService = new MessageService(this.adventure);
+        MessageService messageService = new MessageService(this.adventure, new BukkitSchedulerWrapper(this));
         messageService.setDefaultLocale(this.pluginConfiguration.defaultLocale);
         messageService.registerLocaleProvider(new PlayerLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
@@ -740,7 +740,7 @@ public class FunnyGuilds extends JavaPlugin {
                     logger.warning("New language file will be created with default values");
                 }
             }
-            messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(localeFile, schedulerWrapper));
+            messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(localeFile));
         });
         return messageService;
     }
