@@ -66,8 +66,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage rankMemberAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja dodane!");
     public SendableMessage rankAllyVictim = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja odebrane!");
     public SendableMessage rankAllyAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja dodane!");
-    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public SendableMessage rankDeathMessage = ChatHolder.message("{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{WEAPON} {WEAPON-NAME}");
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
+    public SendableMessage rankDeathMessage = ChatHolder.message("{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{ITEM-NO-AMOUNT}");
     public SendableMessage rankKillMessage = TitleHolder.message("&cZabiles gracza {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";

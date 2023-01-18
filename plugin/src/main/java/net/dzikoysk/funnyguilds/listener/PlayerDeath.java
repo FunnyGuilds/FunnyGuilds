@@ -31,6 +31,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
@@ -39,6 +40,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
+import pl.peridot.yetanothermessageslibrary.replace.Replaceable;
 import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public class PlayerDeath extends AbstractFunnyListener {
@@ -236,19 +238,23 @@ public class PlayerDeath extends AbstractFunnyListener {
                         .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""));
 
+        Replaceable itemReplacement = ItemComponentHelper.prepareItemReplacement(playerAttacker.getItemInHand());
+
         if (this.config.displayNotificationForKiller) {
             this.messageService.getMessage(config -> config.rankKillMessage)
                     .with(killFormatter)
+                    .with(itemReplacement)
                     .receiver(attacker)
                     .send();
         }
 
         if (this.config.disableDefaultDeathMessage) {
-            event.setDeathMessage(null); // Disable default death message
+            event.setDeathMessage(null);
         }
 
         FunnyMessageDispatcher deathMessage = this.messageService.getMessage(config -> config.rankDeathMessage)
                 .with(killFormatter)
+                .with(itemReplacement)
                 .with(CommandSender.class, receiver -> {
                     String assistsMessage = "";
                     CombatPointsChangeEvent.CombatTable combatTable = combatPointsChangeEvent.getAssistsMap();
