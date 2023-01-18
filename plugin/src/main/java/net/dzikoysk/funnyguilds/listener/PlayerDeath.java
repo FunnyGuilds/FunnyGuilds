@@ -243,7 +243,9 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
         }
 
-        event.setDeathMessage(null); // Disable default death message
+        if (this.config.disableDefaultDeathMessage) {
+            event.setDeathMessage(null); // Disable default death message
+        }
 
         FunnyMessageDispatcher deathMessage = this.messageService.getMessage(config -> config.rankDeathMessage)
                 .with(killFormatter)

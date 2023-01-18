@@ -616,6 +616,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean broadcastDeathMessage = true;
 
     @Comment("")
+    @Comment("Czy wyłączyć wyświetlanie domyślnej wiadomości o śmierci gracza")
+    public boolean disableDefaultDeathMessage = true;
+
+    @Comment("")
     @Comment("Ranking, od którego rozpoczyna gracz")
     public int rankStart = 1000;
 
