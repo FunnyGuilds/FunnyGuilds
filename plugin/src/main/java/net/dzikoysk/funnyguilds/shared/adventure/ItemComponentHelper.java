@@ -160,6 +160,7 @@ public final class ItemComponentHelper {
         private final Collection<ItemStack> items;
 
         private final TextReplacementConfig itemsReplacement;
+        private final TextReplacementConfig itemsNoAmountReplacement;
 
         private ItemsReplacement(Collection<ItemStack> items) {
             this.items = items;
@@ -170,6 +171,12 @@ public final class ItemComponentHelper {
                             .map(itemStack -> itemAsComponent(itemStack, true))
                             .toList(), true))
                     .build();
+            this.itemsNoAmountReplacement = TextReplacementConfig.builder()
+                    .matchLiteral("{ITEMS-NO-AMOUNT}")
+                    .replacement(FunnyComponentUtils.join(PandaStream.of(this.items)
+                            .map(itemStack -> itemAsComponent(itemStack, false))
+                            .toList(), true))
+                    .build();
         }
 
         @Override
@@ -178,12 +185,15 @@ public final class ItemComponentHelper {
                     .register("{ITEMS}", FunnyStringUtils.join(PandaStream.of(this.items)
                             .map(itemStack -> ItemUtils.itemAsString(itemStack, true))
                             .toList(), true))
+                    .register("{ITEMS-NO-AMOUNT}", FunnyStringUtils.join(PandaStream.of(this.items)
+                            .map(itemStack -> ItemUtils.itemAsString(itemStack, false))
+                            .toList(), true))
                     .format(text);
         }
 
         @Override
         public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
-            return text.replaceText(this.itemsReplacement);
+            return text.replaceText(this.itemsReplacement).replaceText(this.itemsNoAmountReplacement);
         }
 
     }
