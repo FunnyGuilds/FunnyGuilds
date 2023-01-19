@@ -86,20 +86,13 @@ public final class ItemComponentHelper {
 
     @Nullable
     private static Object getTagCompound(ItemStack item) {
-        Object nsmItemStack;
-        try {
-            nsmItemStack = CRAFT_ITEM_STACK_AS_NMS_COPY.invoke(null, item);
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            return null;
-        }
-
         Object nbtTagCompound;
         try {
+            Object nsmItemStack = CRAFT_ITEM_STACK_AS_NMS_COPY.invoke(null, item);
             nbtTagCompound = NMS_ITEM_STACK_GET_TAG.invoke(nsmItemStack);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             return null;
         }
-
         return nbtTagCompound;
     }
 
