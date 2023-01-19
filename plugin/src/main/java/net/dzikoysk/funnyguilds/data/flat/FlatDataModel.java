@@ -33,7 +33,6 @@ public class FlatDataModel implements DataModel {
     private final File guildsFolderFile;
     private final File regionsFolderFile;
 
-
     public FlatDataModel(FunnyGuilds plugin) {
         this.plugin = plugin;
         this.pluginConfiguration = plugin.getPluginConfiguration();
@@ -43,7 +42,7 @@ public class FlatDataModel implements DataModel {
         this.guildsFolderFile = new File(dataFolder, "guilds");
         this.regionsFolderFile = new File(dataFolder, "regions");
 
-        FlatPatcher.patch(plugin, this.guildsFolderFile, this.regionsFolderFile);
+        FlatPatcher.patch(plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
     }
 
     private Option<File> loadCustomFile(EntityType type, String name) {
