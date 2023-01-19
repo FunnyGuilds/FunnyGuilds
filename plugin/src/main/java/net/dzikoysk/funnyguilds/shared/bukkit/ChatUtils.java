@@ -2,9 +2,7 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.util.List;
 import java.util.regex.Pattern;
-import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import panda.std.stream.PandaStream;
 import panda.utilities.StringUtils;
 
@@ -49,14 +47,6 @@ public final class ChatUtils {
         }
 
         return ChatColor.getLastColors(StringUtils.split(text, before)[0]);
-    }
-
-    public static void sendMessage(CommandSender sender, String message) {
-        if (FunnyStringUtils.isEmpty(message)) {
-            return;
-        }
-
-        sender.sendMessage(message);
     }
 
 }
