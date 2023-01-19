@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,8 +39,11 @@ public class EntityInteract extends AbstractFunnyListener {
                 try {
                     this.playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
                 }
-                catch (ValidationException validatorException) {
-                    validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(eventCaller, message));
+                catch (InternalValidationException validatorException) {
+                    this.messageService.getMessage(validatorException.getMessageSupplier())
+                            .with(validatorException.getReplacements())
+                            .receiver(eventCaller)
+                            .send();
                 }
             }
             else {

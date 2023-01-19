@@ -21,6 +21,9 @@ public class InternalValidationException extends RuntimeException {
     }
 
     public Replaceable[] getReplacements() {
+        if (this.replacements == null) {
+            return new Replaceable[0];
+        }
         return this.replacements;
     }
 

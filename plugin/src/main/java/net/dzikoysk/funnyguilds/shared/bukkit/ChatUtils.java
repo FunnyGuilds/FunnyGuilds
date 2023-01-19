@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 import java.util.List;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import panda.std.stream.PandaStream;
@@ -58,14 +57,6 @@ public final class ChatUtils {
         }
 
         sender.sendMessage(message);
-    }
-
-    public static void broadcastMessage(String message) {
-        if (FunnyStringUtils.isEmpty(message)) {
-            return;
-        }
-
-        Bukkit.broadcastMessage(message);
     }
 
 }
