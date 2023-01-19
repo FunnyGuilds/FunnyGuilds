@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
@@ -160,15 +161,15 @@ public final class ItemComponentHelper {
 
             this.itemsReplacement = TextReplacementConfig.builder()
                     .matchLiteral("{ITEMS}")
-                    .replacement(FunnyComponentUtils.join(PandaStream.of(this.items)
+                    .replacement(Component.join(JoinConfiguration.commas(true), PandaStream.of(this.items)
                             .map(itemStack -> itemAsComponent(itemStack, true))
-                            .toList(), true))
+                            .toList()))
                     .build();
             this.itemsNoAmountReplacement = TextReplacementConfig.builder()
                     .matchLiteral("{ITEMS-NO-AMOUNT}")
-                    .replacement(FunnyComponentUtils.join(PandaStream.of(this.items)
+                    .replacement(Component.join(JoinConfiguration.commas(true), PandaStream.of(this.items)
                             .map(itemStack -> itemAsComponent(itemStack, false))
-                            .toList(), true))
+                            .toList()))
                     .build();
         }
 

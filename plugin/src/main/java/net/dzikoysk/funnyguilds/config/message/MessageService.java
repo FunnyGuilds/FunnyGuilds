@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config.message;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -13,8 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 import pl.peridot.yetanothermessageslibrary.SimpleSendableMessageService;
-import pl.peridot.yetanothermessageslibrary.util.BukkitSchedulerWrapper;
-import pl.peridot.yetanothermessageslibrary.util.SchedulerWrapper;
 import pl.peridot.yetanothermessageslibrary.viewer.BukkitViewerDataSupplier;
 import pl.peridot.yetanothermessageslibrary.viewer.SimpleViewer;
 import pl.peridot.yetanothermessageslibrary.viewer.SimpleViewerService;
@@ -23,12 +22,11 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
 
     private final BukkitAudiences adventure;
 
-    public MessageService(BukkitAudiences adventure, SchedulerWrapper schedulerWrapper) {
+    public MessageService(BukkitAudiences adventure, BiConsumer<Runnable, Long> schedule) {
         super(
                 new SimpleViewerService<>(
                         new BukkitViewerDataSupplier(adventure),
-                        (receiver, audience, console, schedule) -> new SimpleViewer(audience, console, schedule),
-                        schedulerWrapper
+                        (receiver, audience, console) -> new SimpleViewer(audience, console, schedule)
                 ),
                 (viewerService, localeSupplier, messageSupplier) -> new FunnyMessageDispatcher(viewerService, localeSupplier, messageSupplier, user -> Bukkit.getPlayer(user.getUUID()))
         );
@@ -51,7 +49,10 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         FunnyGuildsLogger logger = plugin.getPluginLogger();
         PluginConfiguration config = plugin.getPluginConfiguration();
 
-        MessageService messageService = new MessageService(BukkitAudiences.create(plugin), new BukkitSchedulerWrapper(plugin));
+        MessageService messageService = new MessageService(
+                BukkitAudiences.create(plugin),
+                (runnable, delay) -> Bukkit.getScheduler().runTaskLater(plugin, runnable, delay)
+        );
         messageService.setDefaultLocale(config.defaultLocale);
         messageService.registerLocaleProvider(new PlayerLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(plugin.getFunnyServer()));
