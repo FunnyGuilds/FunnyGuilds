@@ -1258,7 +1258,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public void loadProcessedProperties() {
         if (this.availableLocales.add(this.defaultLocale)) {
-            FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' wasn't added in available locales, adding it");
+            FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' hasn't been added in available locales, adding it automatically");
         }
 
         this.guiItems = this.loadGUI(this.guiItems_);
