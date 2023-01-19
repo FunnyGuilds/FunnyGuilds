@@ -81,7 +81,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
 
     public List<FunnyFormatter> getFormatters(T data) {
         return PandaStream.of(this.placeholders.values())
-                .map(placeholders -> placeholders.toFormatter(data))
+                .map(placeholders -> placeholders.toVariablesFormatter(data))
                 .toList();
     }
 

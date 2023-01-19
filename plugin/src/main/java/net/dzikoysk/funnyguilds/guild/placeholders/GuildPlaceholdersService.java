@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -17,6 +19,7 @@ import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import org.bukkit.ChatColor;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.utilities.StringUtils;
@@ -153,6 +156,13 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("enemies-tags",
                         guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.get(config -> config.enemiesNoValue)),
                         () -> messages.get(config -> config.enemiesNoValue));
+    }
+
+    @Override
+    public List<FunnyFormatter> getFormatters(Guild data) {
+        List<FunnyFormatter> formatters = new ArrayList<>(super.getFormatters(data));
+        formatters.add(GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(ChatColor.RESET.toString(), data)));
+        return formatters;
     }
 
 }
