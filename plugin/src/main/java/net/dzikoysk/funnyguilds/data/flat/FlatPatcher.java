@@ -10,9 +10,9 @@ public final class FlatPatcher {
     }
 
     public static void patch(FunnyGuilds plugin, File usersFolder, File guildsFolder, File regionsFolder) {
-        File users = new File(plugin.getDataFolder() + File.separator + "users");
-        File guilds = new File(plugin.getDataFolder() + File.separator + "guilds");
-        File regions = new File(plugin.getDataFolder() + File.separator + "regions");
+        File users = new File(plugin.getDataFolder(), "users");
+        File guilds = new File(plugin.getDataFolder(), "guilds");
+        File regions = new File(plugin.getDataFolder(), "regions");
 
         boolean usersExists = users.exists();
         boolean guildsExists = guilds.exists();
