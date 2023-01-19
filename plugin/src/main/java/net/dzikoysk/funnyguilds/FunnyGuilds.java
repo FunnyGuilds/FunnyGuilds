@@ -3,15 +3,11 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.config.message.PlayerLocaleProvider;
-import net.dzikoysk.funnyguilds.config.message.UserLocaleProvider;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -99,7 +95,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -111,9 +106,7 @@ import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
-import panda.std.stream.PandaStream;
 import panda.utilities.ClassUtils;
-import pl.peridot.yetanothermessageslibrary.util.BukkitSchedulerWrapper;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -131,9 +124,8 @@ public class FunnyGuilds extends JavaPlugin {
     private PluginConfiguration pluginConfiguration;
     private TablistConfiguration tablistConfiguration;
 
-    private BukkitAudiences adventure;
-    private LocaleManager localeManager;
     private MessageService messageService;
+    private LocaleManager localeManager;
 
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
@@ -240,27 +232,19 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            this.adventure = BukkitAudiences.create(this);
-        }
-        catch (Exception exception) {
-            logger.error("Could not initialize adventure platform", exception);
-            this.shutdown("Critical error has been encountered!");
-            return;
-        }
-        this.localeManager = new LocaleManager();
-        try {
             Result<File, String> createResult = FunnyIOUtils.createFile(this.pluginLanguageFolderFile, true);
             if (createResult.isErr()) {
                 this.shutdown(createResult.getError());
                 return;
             }
-            this.messageService = this.prepareMessageService();
+            this.messageService = MessageService.prepareMessageService(this, this.pluginLanguageFolderFile);
         }
         catch (Exception exception) {
             logger.error("Could not initialize message service", exception);
             this.shutdown("Critical error has been encountered!");
             return;
         }
+        this.localeManager = new LocaleManager();
 
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
@@ -483,10 +467,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.getServer().getScheduler().cancelTasks(this);
         this.database.shutdown();
 
-        if (this.adventure != null) {
-            this.adventure.close();
-            this.adventure = null;
-        }
+        this.messageService.close();
 
         plugin = null;
     }
@@ -600,19 +581,12 @@ public class FunnyGuilds extends JavaPlugin {
         return this.tablistConfigurationFile;
     }
 
-    public BukkitAudiences adventure() {
-        if (this.adventure == null) {
-            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
-        }
-        return this.adventure;
+    public MessageService getMessageService() {
+        return this.messageService;
     }
 
     public LocaleManager getLocaleManager() {
         return this.localeManager;
-    }
-
-    public MessageService getMessageService() {
-        return this.messageService;
     }
 
     public DynamicListenerManager getDynamicListenerManager() {
@@ -716,39 +690,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public static FunnyGuildsLogger getPluginLogger() {
         return logger;
-    }
-
-    private MessageService prepareMessageService() {
-        MessageService messageService = new MessageService(this.adventure, new BukkitSchedulerWrapper(this));
-        messageService.setDefaultLocale(this.pluginConfiguration.defaultLocale);
-        messageService.registerLocaleProvider(new PlayerLocaleProvider());
-        messageService.registerLocaleProvider(new UserLocaleProvider(this.funnyServer));
-
-        File oldMessagesFile = new File(this.getDataFolder(), "messages.yml");
-        File newMessagesFile = new File(this.pluginLanguageFolderFile, this.pluginConfiguration.defaultLocale.toString() + ".yml");
-        if (oldMessagesFile.exists() && !newMessagesFile.exists()) {
-            try {
-                Files.copy(oldMessagesFile.toPath(), newMessagesFile.toPath());
-            } catch (Exception ex) {
-                logger.error("Could not copy legacy messages.yml to new lang directory", ex);
-            }
-        }
-
-        BukkitSchedulerWrapper schedulerWrapper = new BukkitSchedulerWrapper(this);
-        PandaStream.of(this.pluginConfiguration.availableLocales).forEach(locale -> {
-            String localeName = locale.toString();
-            File localeFile = new File(this.pluginLanguageFolderFile, localeName + ".yml");
-            if (!localeFile.exists()) {
-                try {
-                    FunnyIOUtils.copyFileFromResources(FunnyGuilds.class.getResourceAsStream("/lang/" + localeName + ".yml"), localeFile, true);
-                } catch (IOException | NullPointerException ex) {
-                    logger.warning("Could not copy default language file: " + localeName);
-                    logger.warning("New language file will be created with default values");
-                }
-            }
-            messageService.registerRepository(locale, ConfigurationFactory.createMessageConfiguration(localeFile));
-        });
-        return messageService;
     }
 
     private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {

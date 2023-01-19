@@ -31,13 +31,14 @@ dependencies {
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.21")
 
     /* messages library */
+
     val adventureVersion = "4.12.0"
     implementation("net.kyori:adventure-api:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0") // adventure-platform has other versioning than adventure-api
 
-    val yamlVersion = "4.0.5"
+    val yamlVersion = "4.1.0"
     implementation("pl.peridot.yetanothermessageslibrary:core:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("pl.peridot.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
