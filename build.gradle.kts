@@ -16,7 +16,7 @@ idea {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.10.3-SNAPSHOT"
+    version = "4.11.1-SNAPSHOT"
 
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
@@ -75,8 +75,8 @@ subprojects {
                 name = "reposilite"
                 url = uri("https://maven.reposilite.com/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
                 credentials {
-                    username = System.getenv("MAVEN_NAME")
-                    password = System.getenv("MAVEN_TOKEN")
+                    username = System.getenv("MAVEN_NAME") ?: property("mavenUser").toString()
+                    password = System.getenv("MAVEN_TOKEN") ?: property("mavenPassword").toString()
                 }
             }
         }
