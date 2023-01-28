@@ -23,7 +23,7 @@ public class DummyManager {
                 plugin,
                 this::updatePlayers,
                 100,
-                this.pluginConfiguration.scoreboard.dummy.updateRate.getSeconds()
+                this.pluginConfiguration.scoreboard.dummy.updateRate.getSeconds() * 20L
         );
     }
 

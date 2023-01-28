@@ -27,7 +27,7 @@ public class IndividualNameTagManager {
                 plugin,
                 this::updatePlayers,
                 100,
-                this.pluginConfiguration.scoreboard.nametag.updateRate.getSeconds()
+                this.pluginConfiguration.scoreboard.nametag.updateRate.getSeconds() * 20L
         );
     }
 
