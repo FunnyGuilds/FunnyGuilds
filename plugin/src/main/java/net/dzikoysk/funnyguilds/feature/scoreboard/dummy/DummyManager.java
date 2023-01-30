@@ -19,6 +19,9 @@ public class DummyManager {
         this.userManager = plugin.getUserManager();
         this.scoreboardService = plugin.getScoreboardService();
 
+        if (!this.isDummyEnabled()) {
+            return;
+        }
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 this::updatePlayers,
@@ -28,7 +31,7 @@ public class DummyManager {
     }
 
     public void updatePlayers() {
-        if (!this.pluginConfiguration.scoreboard.dummy.enabled) {
+        if (!this.isDummyEnabled()) {
             return;
         }
 
@@ -38,7 +41,7 @@ public class DummyManager {
     }
 
     public void updateScore(User user) {
-        if (!this.pluginConfiguration.scoreboard.dummy.enabled) {
+        if (!this.isDummyEnabled()) {
             return;
         }
 
@@ -48,6 +51,10 @@ public class DummyManager {
                     this.scoreboardService.updatePlayer(onlineUser);
                     onlineUser.getCache().getDummy().updateScore(user);
                 });
+    }
+
+    private boolean isDummyEnabled() {
+        return this.pluginConfiguration.scoreboard.dummy.enabled;
     }
 
 }

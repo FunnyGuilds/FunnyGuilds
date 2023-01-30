@@ -11,18 +11,18 @@ import panda.std.stream.PandaStream;
 
 public class IndividualNameTagManager {
 
-    private final FunnyGuilds plugin;
-
     private final PluginConfiguration pluginConfiguration;
     private final UserManager userManager;
     private final ScoreboardService scoreboardService;
 
     public IndividualNameTagManager(FunnyGuilds plugin) {
-        this.plugin = plugin;
         this.pluginConfiguration = plugin.getPluginConfiguration();
         this.userManager = plugin.getUserManager();
         this.scoreboardService = plugin.getScoreboardService();
 
+        if (!this.isNameTagEnabled()) {
+            return;
+        }
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 this::updatePlayers,
@@ -32,15 +32,17 @@ public class IndividualNameTagManager {
     }
 
     // Ensures specific user has their own nametag
-    public void updateNameTag(User user) {
-        if (!this.pluginConfiguration.scoreboard.nametag.enabled) {
+    private void updateNameTag(User user) {
+        if (!this.isNameTagEnabled()) {
             return;
         }
 
+        // Ensure user has their own scoreboard
         this.scoreboardService.updatePlayer(user);
+
         UserCache userCache = user.getCache();
         userCache.getIndividualNameTag().onEmpty(() -> {
-            IndividualNameTag nameTag = new IndividualNameTag(this.plugin, user);
+            IndividualNameTag nameTag = new IndividualNameTag(this.pluginConfiguration, user);
             nameTag.initialize();
             userCache.setIndividualNameTag(nameTag);
         });
@@ -48,7 +50,7 @@ public class IndividualNameTagManager {
 
     // Update everyone to everyone
     public void updatePlayers() {
-        if (!this.pluginConfiguration.scoreboard.nametag.enabled) {
+        if (!this.isNameTagEnabled()) {
             return;
         }
 
@@ -57,22 +59,33 @@ public class IndividualNameTagManager {
                 .forEach(this::updatePlayer);
     }
 
-    // Update specific player to everyone
-    public void updatePlayer(User user) {
-        if (!this.pluginConfiguration.scoreboard.nametag.enabled) {
+    // Update specific observer to everyone (targets) and everyone to specific observer
+    public void updatePlayer(User observer) {
+        if (!this.isNameTagEnabled()) {
             return;
         }
 
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
-                .forEach(onlineUser -> {
-                    this.updateNameTag(onlineUser);
-                    onlineUser.getCache().getIndividualNameTag().peek(nameTag -> nameTag.updatePlayer(user));
-                });
-
-        if (user.isOnline()) {
-            user.getCache().getIndividualNameTag().peek(IndividualNameTag::updatePlayers);
+        boolean isOnline = observer.isOnline();
+        // Ensure observer has their own nametag
+        if (isOnline) {
+            this.updateNameTag(observer);
         }
+
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(target -> this.userManager.findByUuid(target.getUniqueId()))
+                .forEach(target -> {
+                    this.updateNameTag(target);
+                    target.getCache().getIndividualNameTag().peek(nameTag -> nameTag.updatePlayer(observer));
+
+                    // Also update target to observer
+                    if (isOnline) {
+                        observer.getCache().getIndividualNameTag().peek(nameTag -> nameTag.updatePlayer(target));
+                    }
+                });
+    }
+
+    private boolean isNameTagEnabled() {
+        return this.pluginConfiguration.scoreboard.nametag.enabled;
     }
 
 }
