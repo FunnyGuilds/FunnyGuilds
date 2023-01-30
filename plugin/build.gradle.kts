@@ -13,11 +13,11 @@ dependencies {
     project(":nms").dependencyProject.subprojects.forEach {
         implementation(it)
     }
-    implementation("net.dzikoysk:funnycommands:0.5.3")
+    implementation("net.dzikoysk:funnycommands:0.6.0")
 
     /* std */
 
-    val expressible = "1.2.2"
+    val expressible = "1.3.1"
     api("org.panda-lang:expressible:$expressible")
     testImplementation("org.panda-lang:expressible-junit:$expressible")
 
