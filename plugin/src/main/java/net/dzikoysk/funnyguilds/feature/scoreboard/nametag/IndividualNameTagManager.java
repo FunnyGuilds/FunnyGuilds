@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
+import panda.std.Option;
 import panda.std.stream.PandaStream;
 
 public class IndividualNameTagManager {
@@ -32,9 +33,9 @@ public class IndividualNameTagManager {
     }
 
     // Ensures specific user has their own nametag
-    private void updateNameTag(User user) {
+    private Option<IndividualNameTag> getOrCreateNameTag(User user) {
         if (!this.isNameTagEnabled()) {
-            return;
+            return Option.none();
         }
 
         // Ensure user has their own scoreboard
@@ -46,6 +47,7 @@ public class IndividualNameTagManager {
             nameTag.initialize();
             userCache.setIndividualNameTag(nameTag);
         });
+        return userCache.getIndividualNameTag();
     }
 
     // Update everyone to everyone
@@ -65,22 +67,13 @@ public class IndividualNameTagManager {
             return;
         }
 
-        boolean isOnline = observer.isOnline();
-        // Ensure observer has their own nametag
-        if (isOnline) {
-            this.updateNameTag(observer);
-        }
-
+        Option<IndividualNameTag> observerNameTag = observer.isOnline() ? this.getOrCreateNameTag(observer) : Option.none();
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(target -> this.userManager.findByUuid(target.getUniqueId()))
                 .forEach(target -> {
-                    this.updateNameTag(target);
-                    target.getCache().getIndividualNameTag().peek(nameTag -> nameTag.updatePlayer(observer));
-
-                    // Also update target to observer
-                    if (isOnline) {
-                        observer.getCache().getIndividualNameTag().peek(nameTag -> nameTag.updatePlayer(target));
-                    }
+                    this.getOrCreateNameTag(target).peek(nameTag -> nameTag.updatePlayer(observer));
+                    // Also update target to observer (so relational placeholders could be as much real-time as possible
+                    observerNameTag.peek(nameTag -> nameTag.updatePlayer(target));
                 });
     }
 
