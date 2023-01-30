@@ -7,8 +7,6 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
@@ -50,10 +48,6 @@ public abstract class AbstractFunnyListener implements Listener {
     public DamageManager damageManager;
     @Inject
     public RegionManager regionManager;
-    @Inject
-    public IndividualNameTagManager individualNameTagManager;
-    @Inject
-    public DummyManager dummyManager;
 
     @Inject
     public NmsAccessor nmsAccessor;

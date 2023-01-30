@@ -4,11 +4,10 @@ import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -24,8 +23,10 @@ import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
@@ -136,9 +137,8 @@ public class FunnyGuilds extends JavaPlugin {
     private RegionManager regionManager;
     private FunnyServer funnyServer;
 
-    private ScoreboardService scoreboardService;
-    private IndividualNameTagManager individualNameTagManager;
-    private DummyManager dummyManager;
+    private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
+    private Option<DummyManager> dummyManager = Option.none();
 
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
@@ -242,9 +242,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
-        this.scoreboardService = new ScoreboardService(this);
-        this.individualNameTagManager = new IndividualNameTagManager(this);
-        this.dummyManager = new DummyManager(this);
+        this.prepareScoreboardServices();
 
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
@@ -312,8 +310,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
-            resources.on(IndividualNameTagManager.class).assignInstance(this.individualNameTagManager);
-            resources.on(DummyManager.class).assignInstance(this.dummyManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
             resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
@@ -601,15 +597,11 @@ public class FunnyGuilds extends JavaPlugin {
         return this.funnyServer;
     }
 
-    public ScoreboardService getScoreboardService() {
-        return this.scoreboardService;
-    }
-
-    public IndividualNameTagManager getIndividualNameTagManager() {
+    public Option<IndividualNameTagManager> getIndividualNameTagManager() {
         return this.individualNameTagManager;
     }
 
-    public DummyManager getDummyManager() {
+    public Option<DummyManager> getDummyManager() {
         return this.dummyManager;
     }
 
@@ -666,6 +658,22 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistConfiguration.load();
         this.messageConfiguration.load();
         this.hookManager.callConfigUpdated();
+        this.prepareScoreboardServices();
+    }
+
+    private void prepareScoreboardServices() {
+        ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
+        if (scoreboardConfig.enabled) {
+            ScoreboardService scoreboardService = new ScoreboardService(this);
+
+            if (scoreboardConfig.nametag.enabled) {
+                this.individualNameTagManager = Option.of(new IndividualNameTagManager(this, scoreboardService));
+            }
+
+            if (scoreboardConfig.dummy.enabled) {
+                this.dummyManager = Option.of(new DummyManager(this, scoreboardService));
+            }
+        }
     }
 
     public static FunnyGuilds getInstance() {

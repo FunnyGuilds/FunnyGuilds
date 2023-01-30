@@ -14,14 +14,11 @@ public class DummyManager {
     private final UserManager userManager;
     private final ScoreboardService scoreboardService;
 
-    public DummyManager(FunnyGuilds plugin) {
+    public DummyManager(FunnyGuilds plugin, ScoreboardService scoreboardService) {
         this.pluginConfiguration = plugin.getPluginConfiguration();
         this.userManager = plugin.getUserManager();
-        this.scoreboardService = plugin.getScoreboardService();
+        this.scoreboardService = scoreboardService;
 
-        if (!this.isDummyEnabled()) {
-            return;
-        }
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 this::updatePlayers,
@@ -31,30 +28,18 @@ public class DummyManager {
     }
 
     public void updatePlayers() {
-        if (!this.isDummyEnabled()) {
-            return;
-        }
-
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
                 .forEach(this::updateScore);
     }
 
     public void updateScore(User user) {
-        if (!this.isDummyEnabled()) {
-            return;
-        }
-
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
                 .forEach(onlineUser -> {
                     this.scoreboardService.updatePlayer(onlineUser);
                     onlineUser.getCache().getDummy().updateScore(user);
                 });
-    }
-
-    private boolean isDummyEnabled() {
-        return this.pluginConfiguration.scoreboard.dummy.enabled;
     }
 
 }

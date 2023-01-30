@@ -16,14 +16,11 @@ public class IndividualNameTagManager {
     private final UserManager userManager;
     private final ScoreboardService scoreboardService;
 
-    public IndividualNameTagManager(FunnyGuilds plugin) {
+    public IndividualNameTagManager(FunnyGuilds plugin, ScoreboardService scoreboardService) {
         this.pluginConfiguration = plugin.getPluginConfiguration();
         this.userManager = plugin.getUserManager();
-        this.scoreboardService = plugin.getScoreboardService();
+        this.scoreboardService = scoreboardService;
 
-        if (!this.isNameTagEnabled()) {
-            return;
-        }
         Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 this::updatePlayers,
@@ -33,10 +30,6 @@ public class IndividualNameTagManager {
     }
 
     private Option<IndividualNameTag> getOrCreateNameTag(User user) {
-        if (!this.isNameTagEnabled()) {
-            return Option.none();
-        }
-
         // Ensure user has their own scoreboard
         this.scoreboardService.updatePlayer(user);
 
@@ -51,10 +44,6 @@ public class IndividualNameTagManager {
 
     // Update everyone to everyone
     public void updatePlayers() {
-        if (!this.isNameTagEnabled()) {
-            return;
-        }
-
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
                 .forEach(this::updatePlayer);
@@ -62,10 +51,6 @@ public class IndividualNameTagManager {
 
     // Update specific observer to everyone (targets) and everyone to specific observer
     public void updatePlayer(User observer) {
-        if (!this.isNameTagEnabled()) {
-            return;
-        }
-
         Option<IndividualNameTag> observerNameTag = observer.isOnline() ? this.getOrCreateNameTag(observer) : Option.none();
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(target -> this.userManager.findByUuid(target.getUniqueId()))
@@ -74,10 +59,6 @@ public class IndividualNameTagManager {
                     // Also update target to observer (so relational placeholders could be as much real-time as possible)
                     observerNameTag.peek(nameTag -> nameTag.updatePlayer(target));
                 });
-    }
-
-    private boolean isNameTagEnabled() {
-        return this.pluginConfiguration.scoreboard.nametag.enabled;
     }
 
 }
