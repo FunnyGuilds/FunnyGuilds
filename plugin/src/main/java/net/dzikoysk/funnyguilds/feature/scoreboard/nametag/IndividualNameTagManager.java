@@ -32,7 +32,6 @@ public class IndividualNameTagManager {
         );
     }
 
-    // Ensures specific user has their own nametag
     private Option<IndividualNameTag> getOrCreateNameTag(User user) {
         if (!this.isNameTagEnabled()) {
             return Option.none();
