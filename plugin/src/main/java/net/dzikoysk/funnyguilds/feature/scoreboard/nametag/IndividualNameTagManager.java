@@ -71,7 +71,7 @@ public class IndividualNameTagManager {
                 .flatMap(target -> this.userManager.findByUuid(target.getUniqueId()))
                 .forEach(target -> {
                     this.getOrCreateNameTag(target).peek(nameTag -> nameTag.updatePlayer(observer));
-                    // Also update target to observer (so relational placeholders could be as much real-time as possible
+                    // Also update target to observer (so relational placeholders could be as much real-time as possible)
                     observerNameTag.peek(nameTag -> nameTag.updatePlayer(target));
                 });
     }
