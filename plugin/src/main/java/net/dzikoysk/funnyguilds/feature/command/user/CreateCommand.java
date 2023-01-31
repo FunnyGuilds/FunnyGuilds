@@ -33,7 +33,6 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -238,10 +237,10 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         guild.getRegion().peek(region -> this.regionManager.addRegion(region));
 
-        this.plugin.scheduleFunnyTasks(
-                new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
-                new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild)
-        );
+        this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
+        this.plugin.getIndividualNameTagManager()
+                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, user))
+                .peek(this.plugin::scheduleFunnyTasks);
 
         SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));
 

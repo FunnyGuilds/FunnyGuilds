@@ -496,10 +496,8 @@ public class FunnyGuilds extends JavaPlugin {
             user.getCache().setPlayerList(individualPlayerList);
         }
 
-        this.scheduleFunnyTasks(
-            new NameTagGlobalUpdateSyncTask(this.getIndividualNameTagManager()),
-            new DummyGlobalUpdateSyncTask(this.getDummyManager())
-        );
+        this.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getDummyManager().map(DummyGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }

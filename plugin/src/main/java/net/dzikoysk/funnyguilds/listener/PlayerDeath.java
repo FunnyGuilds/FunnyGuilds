@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildPointsAsyncTask;
-import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateUserPointsAsyncTask;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.damage.Damage;
 import net.dzikoysk.funnyguilds.damage.DamageState;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildPointsAsyncTask;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateUserPointsAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
@@ -26,6 +25,7 @@ import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
@@ -201,14 +201,13 @@ public class PlayerDeath extends AbstractFunnyListener {
             );
         }
 
-        this.plugin.scheduleFunnyTasks(
-                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), victim),
-                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), attacker)
-        );
-
-        calculatedAssists.keySet().forEach(user ->
-                this.plugin.scheduleFunnyTasks(new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user))
-        );
+        this.plugin.getDummyManager().peek(manager -> {
+            this.plugin.scheduleFunnyTasks(
+                    new DummyGlobalUpdateUserSyncTask(manager, victim),
+                    new DummyGlobalUpdateUserSyncTask(manager, attacker)
+            );
+            calculatedAssists.keySet().forEach(user -> this.plugin.scheduleFunnyTasks(new DummyGlobalUpdateUserSyncTask(manager, user)));
+        });
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());

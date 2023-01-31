@@ -174,10 +174,8 @@ public class FlatDataModel implements DataModel {
             FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
         }
 
-        this.plugin.scheduleFunnyTasks(
-            new DatabaseFixAlliesAsyncTask(guildManager),
-            new NameTagGlobalUpdateSyncTask(this.plugin.getIndividualNameTagManager())
-        );
+        this.plugin.scheduleFunnyTasks(new DatabaseFixAlliesAsyncTask(guildManager));
+        this.plugin.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }

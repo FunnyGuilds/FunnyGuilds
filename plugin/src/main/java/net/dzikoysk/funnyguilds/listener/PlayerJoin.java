@@ -51,10 +51,12 @@ public class PlayerJoin extends AbstractFunnyListener {
             cache.setPlayerList(individualPlayerList);
         }
 
-        this.plugin.scheduleFunnyTasks(
-                new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
-                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user)
-        );
+        this.plugin.getIndividualNameTagManager()
+                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, user))
+                .peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getDummyManager()
+                .map(manager -> new DummyGlobalUpdateUserSyncTask(manager, user))
+                .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
         inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(this.plugin, user));
