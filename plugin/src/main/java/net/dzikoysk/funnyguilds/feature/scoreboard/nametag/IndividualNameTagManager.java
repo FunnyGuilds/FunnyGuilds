@@ -20,13 +20,6 @@ public class IndividualNameTagManager {
         this.pluginConfiguration = plugin.getPluginConfiguration();
         this.userManager = plugin.getUserManager();
         this.scoreboardService = scoreboardService;
-
-        Bukkit.getScheduler().runTaskTimer(
-                plugin,
-                this::updatePlayers,
-                100,
-                this.pluginConfiguration.scoreboard.nametag.updateRate.getSeconds() * 20L
-        );
     }
 
     private Option<IndividualNameTag> getOrCreateNameTag(User user) {
