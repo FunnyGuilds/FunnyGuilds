@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.LogoutsChangeEvent;
+import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,10 +38,12 @@ public class PlayerQuit extends AbstractFunnyListener {
                 }
             }
 
-            this.plugin.scheduleFunnyTasks(
-                    new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
-                    new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user)
-            );
+            this.plugin.getIndividualNameTagManager()
+                    .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, user))
+                    .peek(this.plugin::scheduleFunnyTasks);
+            this.plugin.getDummyManager()
+                    .map(manager -> new DummyGlobalUpdateUserSyncTask(manager, user))
+                    .peek(this.plugin::scheduleFunnyTasks);
 
             cache.setIndividualNameTag(null);
             cache.setScoreboard(null);

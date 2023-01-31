@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.dummy;
 
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.SyncFunnyTask;
 
 public class DummyGlobalUpdateSyncTask extends SyncFunnyTask {

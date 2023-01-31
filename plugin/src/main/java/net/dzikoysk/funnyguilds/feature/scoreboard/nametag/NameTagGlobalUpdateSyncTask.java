@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.SyncFunnyTask;
 
 public class NameTagGlobalUpdateSyncTask extends SyncFunnyTask {

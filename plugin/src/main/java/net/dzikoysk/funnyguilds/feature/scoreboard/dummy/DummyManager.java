@@ -14,34 +14,19 @@ public class DummyManager {
     private final UserManager userManager;
     private final ScoreboardService scoreboardService;
 
-    public DummyManager(FunnyGuilds plugin) {
+    public DummyManager(FunnyGuilds plugin, ScoreboardService scoreboardService) {
         this.pluginConfiguration = plugin.getPluginConfiguration();
         this.userManager = plugin.getUserManager();
-        this.scoreboardService = plugin.getScoreboardService();
-
-        Bukkit.getScheduler().runTaskTimer(
-                plugin,
-                this::updatePlayers,
-                100,
-                this.pluginConfiguration.scoreboard.dummy.updateRate.getSeconds() * 20L
-        );
+        this.scoreboardService = scoreboardService;
     }
 
     public void updatePlayers() {
-        if (!this.pluginConfiguration.scoreboard.dummy.enabled) {
-            return;
-        }
-
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
                 .forEach(this::updateScore);
     }
 
     public void updateScore(User user) {
-        if (!this.pluginConfiguration.scoreboard.dummy.enabled) {
-            return;
-        }
-
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
                 .forEach(onlineUser -> {
