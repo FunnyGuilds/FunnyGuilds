@@ -57,7 +57,7 @@ dependencies {
 
     /* hooks */
 
-    shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
+    shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.5.2")
     shadow("me.clip:placeholderapi:2.10.9") {
