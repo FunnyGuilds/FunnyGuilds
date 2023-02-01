@@ -33,7 +33,7 @@ dependencies {
     /* general stuff */
 
     @Suppress("GradlePackageUpdate")
-    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     @Suppress("GradlePackageUpdate")
     implementation("com.google.guava:guava:21.0") {
