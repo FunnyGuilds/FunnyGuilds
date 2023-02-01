@@ -41,7 +41,7 @@ dependencies {
     }
 
     @Suppress("GradlePackageUpdate")
-    implementation("com.google.code.gson:gson:2.8.0") {
+    implementation("com.google.code.gson:gson:2.10.1") {
         because("WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it")
     }
 
