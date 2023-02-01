@@ -60,7 +60,7 @@ dependencies {
     shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.5.2")
-    shadow("me.clip:placeholderapi:2.10.9") {
+    shadow("me.clip:placeholderapi:2.11.2") {
         because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
