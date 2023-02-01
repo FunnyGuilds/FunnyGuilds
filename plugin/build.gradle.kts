@@ -80,7 +80,7 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
     testImplementation("org.mockito:mockito-inline:$mockito")
 
-    val junit = "5.9.1"
+    val junit = "5.9.2"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 }
