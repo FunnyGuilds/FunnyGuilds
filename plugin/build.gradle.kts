@@ -36,7 +36,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:4.0.3")
 
     @Suppress("GradlePackageUpdate")
-    implementation("com.google.guava:guava:21.0") {
+    implementation("com.google.guava:guava:31.1-jre") {
         because("WorldEdit defined a constraint that we must use 21.0 and there is no way to ignore it")
     }
 
