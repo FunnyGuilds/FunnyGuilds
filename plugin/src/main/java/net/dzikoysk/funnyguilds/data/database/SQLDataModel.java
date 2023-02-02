@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -11,6 +10,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
+import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
@@ -89,7 +89,7 @@ public class SQLDataModel implements DataModel {
         this.loadRegions();
         this.loadGuilds();
 
-        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateSyncTask(this.plugin.getIndividualNameTagManager()));
+        this.plugin.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
     }
 
     public void loadUsers() {

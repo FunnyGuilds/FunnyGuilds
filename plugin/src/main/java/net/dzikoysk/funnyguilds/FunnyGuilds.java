@@ -8,6 +8,7 @@ import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
+import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -137,9 +138,8 @@ public class FunnyGuilds extends JavaPlugin {
     private RegionManager regionManager;
     private FunnyServer funnyServer;
 
-    private ScoreboardService scoreboardService;
-    private IndividualNameTagManager individualNameTagManager;
-    private DummyManager dummyManager;
+    private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
+    private Option<DummyManager> dummyManager = Option.none();
 
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
@@ -164,6 +164,9 @@ public class FunnyGuilds extends JavaPlugin {
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
     private volatile BukkitTask rankRecalculationTask;
+
+    private volatile BukkitTask nameTagUpdateTask;
+    private volatile BukkitTask dummyUpdateTask;
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -255,9 +258,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
-        this.scoreboardService = new ScoreboardService(this);
-        this.individualNameTagManager = new IndividualNameTagManager(this);
-        this.dummyManager = new DummyManager(this);
+        this.prepareScoreboardServices();
 
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
@@ -318,15 +319,12 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
-            resources.on(ScoreboardService.class).assignInstance(this.scoreboardService);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
-            resources.on(IndividualNameTagManager.class).assignInstance(this.individualNameTagManager);
-            resources.on(DummyManager.class).assignInstance(this.dummyManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
             resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
@@ -516,10 +514,8 @@ public class FunnyGuilds extends JavaPlugin {
             user.getCache().setPlayerList(individualPlayerList);
         }
 
-        this.scheduleFunnyTasks(
-            new NameTagGlobalUpdateSyncTask(this.getIndividualNameTagManager()),
-            new DummyGlobalUpdateSyncTask(this.getDummyManager())
-        );
+        this.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getDummyManager().map(DummyGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
@@ -621,15 +617,11 @@ public class FunnyGuilds extends JavaPlugin {
         return this.funnyServer;
     }
 
-    public ScoreboardService getScoreboardService() {
-        return this.scoreboardService;
-    }
-
-    public IndividualNameTagManager getIndividualNameTagManager() {
+    public Option<IndividualNameTagManager> getIndividualNameTagManager() {
         return this.individualNameTagManager;
     }
 
-    public DummyManager getDummyManager() {
+    public Option<DummyManager> getDummyManager() {
         return this.dummyManager;
     }
 
@@ -682,6 +674,42 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistConfiguration.load();
         this.messageService.reload();
         this.hookManager.callConfigUpdated();
+        this.prepareScoreboardServices();
+    }
+
+    private void prepareScoreboardServices() {
+        if (this.nameTagUpdateTask != null) {
+            this.nameTagUpdateTask.cancel();
+        }
+
+        if (this.dummyUpdateTask != null) {
+            this.dummyUpdateTask.cancel();
+        }
+
+        ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
+        if (scoreboardConfig.enabled) {
+            ScoreboardService scoreboardService = new ScoreboardService(this);
+
+            if (scoreboardConfig.nametag.enabled) {
+                this.individualNameTagManager = Option.of(new IndividualNameTagManager(this, scoreboardService))
+                        .peek(manager -> this.nameTagUpdateTask = Bukkit.getScheduler().runTaskTimer(
+                                plugin,
+                                manager::updatePlayers,
+                                100,
+                                scoreboardConfig.nametag.updateRate.getSeconds() * 20L
+                        ));
+            }
+
+            if (scoreboardConfig.dummy.enabled) {
+                this.dummyManager = Option.of(new DummyManager(this, scoreboardService))
+                        .peek(manager -> this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
+                                plugin,
+                                manager::updatePlayers,
+                                100,
+                                scoreboardConfig.dummy.updateRate.getSeconds() * 20L
+                        ));
+            }
+        }
     }
 
     public static FunnyGuilds getInstance() {

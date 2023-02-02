@@ -41,7 +41,9 @@ public final class KickCommand extends AbstractFunnyCommand {
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
-        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), formerUser));
+        this.plugin.getIndividualNameTagManager()
+                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, formerUser))
+                .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", formerUser.getName())

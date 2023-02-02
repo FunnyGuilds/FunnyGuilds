@@ -82,7 +82,9 @@ public final class JoinCommand extends AbstractFunnyCommand {
         user.setGuild(guild);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user));
+        this.plugin.getIndividualNameTagManager()
+                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, user))
+                .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())

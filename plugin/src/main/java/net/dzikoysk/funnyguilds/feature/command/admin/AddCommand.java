@@ -39,7 +39,9 @@ public final class AddCommand extends AbstractFunnyCommand {
 
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
-        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), userToAdd));
+        this.plugin.getIndividualNameTagManager()
+                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, userToAdd))
+                .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())

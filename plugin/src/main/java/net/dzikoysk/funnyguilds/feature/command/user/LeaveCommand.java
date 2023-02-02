@@ -34,7 +34,9 @@ public final class LeaveCommand extends AbstractFunnyCommand {
 
         guild.removeMember(member);
         member.removeGuild();
-        this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member));
+        this.plugin.getIndividualNameTagManager()
+                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, member))
+                .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())

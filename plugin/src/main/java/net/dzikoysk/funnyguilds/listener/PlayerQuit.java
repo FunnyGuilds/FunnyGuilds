@@ -38,10 +38,12 @@ public class PlayerQuit extends AbstractFunnyListener {
                 }
             }
 
-            this.plugin.scheduleFunnyTasks(
-                    new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), user),
-                    new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user)
-            );
+            this.plugin.getIndividualNameTagManager()
+                    .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, user))
+                    .peek(this.plugin::scheduleFunnyTasks);
+            this.plugin.getDummyManager()
+                    .map(manager -> new DummyGlobalUpdateUserSyncTask(manager, user))
+                    .peek(this.plugin::scheduleFunnyTasks);
 
             cache.setIndividualNameTag(null);
             cache.setScoreboard(null);

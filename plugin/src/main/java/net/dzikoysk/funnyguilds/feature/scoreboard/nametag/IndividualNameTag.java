@@ -7,31 +7,28 @@ import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class IndividualNameTag {
 
-    private final FunnyGuilds plugin;
     private final PluginConfiguration pluginConfiguration;
     private final User user;
 
-    public IndividualNameTag(FunnyGuilds plugin, User user) {
-        this.plugin = plugin;
-        this.pluginConfiguration = plugin.getPluginConfiguration();
+    IndividualNameTag(PluginConfiguration pluginConfiguration, User user) {
+        this.pluginConfiguration = pluginConfiguration;
         this.user = user;
     }
 
-    public void initialize() {
+    void initialize() {
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to initialize NameTag, but scoreboard hasn't been initialized.");
@@ -41,16 +38,6 @@ public class IndividualNameTag {
 
         Team team = this.prepareTeam(scoreboard, this.user.getName());
         team.setPrefix(this.user.getName());
-
-        this.updatePlayers();
-    }
-
-    // Update every player for this user
-    public void updatePlayers() {
-        UserManager userManager = this.plugin.getUserManager();
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(player -> userManager.findByUuid(player.getUniqueId()))
-                .forEach(this::updatePlayer);
     }
 
     // Update specific player for this user
@@ -107,8 +94,8 @@ public class IndividualNameTag {
     }
 
     private String prepareValue(RawString value, User target) {
-        String formatted = decorateValue(value.getValue(), target);
-        if (formatted.length() > 16) {
+        String formatted = this.decorateValue(value.getValue(), target);
+        if (Reflections.USE_PRE_13_METHODS && formatted.length() > 16) {
             formatted = formatted.substring(0, 16);
         }
         return formatted;

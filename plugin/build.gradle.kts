@@ -13,11 +13,11 @@ dependencies {
     project(":nms").dependencyProject.subprojects.forEach {
         implementation(it)
     }
-    implementation("net.dzikoysk:funnycommands:0.6.0")
+    implementation("net.dzikoysk:funnycommands:0.6.1")
 
     /* std */
 
-    val expressible = "1.2.2"
+    val expressible = "1.3.1"
     api("org.panda-lang:expressible:$expressible")
     testImplementation("org.panda-lang:expressible-junit:$expressible")
 
@@ -28,7 +28,7 @@ dependencies {
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
     // okaeri holographicdisplays commons
-    implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.21")
+    implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.22")
 
     /* messages library */
 
@@ -74,7 +74,6 @@ dependencies {
 
     shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
-    shadow("codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.5.2")
     shadow("me.clip:placeholderapi:2.10.9") {
         because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
@@ -86,16 +85,16 @@ dependencies {
     /* tests */
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.0")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.12.3")
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.13")
     testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 
-    val mockito = "4.11.0"
+    val mockito = "5.1.1"
     testImplementation("org.mockito:mockito-core:$mockito")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
     testImplementation("org.mockito:mockito-inline:$mockito")
 
-    val junit = "5.9.1"
+    val junit = "5.9.2"
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 }

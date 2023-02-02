@@ -138,13 +138,10 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .receiver(invitedOwner)
                 .send();
 
-        guild.getMembers().forEach(member ->
-            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
-        );
-
-        invitedGuild.getMembers().forEach(member ->
-            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
-        );
+        this.plugin.getIndividualNameTagManager().peek(manager -> {
+            guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(manager, member)));
+            invitedGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(manager, member)));
+        });
     }
 
     private void revokeInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {

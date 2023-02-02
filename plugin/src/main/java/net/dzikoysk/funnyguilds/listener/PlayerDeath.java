@@ -204,14 +204,13 @@ public class PlayerDeath extends AbstractFunnyListener {
             );
         }
 
-        this.plugin.scheduleFunnyTasks(
-                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), victim),
-                new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), attacker)
-        );
-
-        calculatedAssists.keySet().forEach(user ->
-                this.plugin.scheduleFunnyTasks(new DummyGlobalUpdateUserSyncTask(this.plugin.getDummyManager(), user))
-        );
+        this.plugin.getDummyManager().peek(manager -> {
+            this.plugin.scheduleFunnyTasks(
+                    new DummyGlobalUpdateUserSyncTask(manager, victim),
+                    new DummyGlobalUpdateUserSyncTask(manager, attacker)
+            );
+            calculatedAssists.keySet().forEach(user -> this.plugin.scheduleFunnyTasks(new DummyGlobalUpdateUserSyncTask(manager, user)));
+        });
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());

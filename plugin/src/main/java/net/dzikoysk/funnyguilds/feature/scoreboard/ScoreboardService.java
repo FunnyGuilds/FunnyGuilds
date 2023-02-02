@@ -30,7 +30,7 @@ public class ScoreboardService {
 
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
-                .forEach(user -> this.updatePlayer(user));
+                .forEach(this::updatePlayer);
     }
 
     public void updatePlayer(User user) {

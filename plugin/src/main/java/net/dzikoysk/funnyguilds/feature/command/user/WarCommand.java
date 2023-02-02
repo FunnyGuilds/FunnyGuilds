@@ -64,13 +64,10 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .receiver(enemyGuild.getOwner())
                 .send();
 
-        guild.getMembers().forEach(member ->
-            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
-        );
-
-        enemyGuild.getMembers().forEach(member ->
-            this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(this.plugin.getIndividualNameTagManager(), member))
-        );
+        this.plugin.getIndividualNameTagManager().peek(manager -> {
+            guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(manager, member)));
+            enemyGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(manager, member)));
+        });
     }
 
 }
