@@ -75,7 +75,7 @@ dependencies {
     testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 
-    val mockito = "4.11.0"
+    val mockito = "5.1.1"
     testImplementation("org.mockito:mockito-core:$mockito")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
     testImplementation("org.mockito:mockito-inline:$mockito")
