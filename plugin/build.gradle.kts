@@ -28,7 +28,7 @@ dependencies {
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
     // okaeri holographicdisplays commons
-    implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.21")
+    implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.22")
 
     /* general stuff */
 
