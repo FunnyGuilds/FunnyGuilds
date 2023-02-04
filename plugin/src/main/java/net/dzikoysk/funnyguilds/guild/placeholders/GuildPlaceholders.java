@@ -42,7 +42,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
         Instant endTime = timeFunction.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? noValue
-                : TimeUtils.formatTime(Duration.between(endTime, Instant.now()));
+                : TimeUtils.formatTime(Duration.between(Instant.now(), endTime));
     }
     @Override
     public GuildPlaceholders create() {
