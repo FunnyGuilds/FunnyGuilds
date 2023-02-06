@@ -26,6 +26,7 @@ import pl.peridot.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
 import pl.peridot.yetanothermessageslibrary.message.holder.impl.ChatHolder;
 import pl.peridot.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
+// TODO: [5.0] Remove this madness
 public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
 
     public M0001_Migrate_old_region_notification_keys() {
