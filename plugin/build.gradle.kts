@@ -30,7 +30,7 @@ dependencies {
     // okaeri holographicdisplays commons
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.22")
 
-    /* messages library */
+    /* messages libraries */
 
     val adventureVersion = "4.12.0"
     implementation("net.kyori:adventure-api:$adventureVersion")
