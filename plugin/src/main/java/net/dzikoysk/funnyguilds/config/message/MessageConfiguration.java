@@ -138,6 +138,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             .actionBar("&7Opusciles teren gildii &c{TAG}&7!")
             .addHolders(BossBarHolder.builder("&7Opusciles teren gildii &c{TAG}&7!")
                     .color(BossBar.Color.GREEN)
+                    .overlay(BossBar.Overlay.PROGRESS)
                     .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
                     .stay(15 * 20)
                     .clearOtherBars(true)
