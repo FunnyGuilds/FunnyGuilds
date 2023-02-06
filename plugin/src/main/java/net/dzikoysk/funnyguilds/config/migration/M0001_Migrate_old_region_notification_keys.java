@@ -7,6 +7,7 @@ import eu.okaeri.configs.migrate.view.RawConfigView;
 import eu.okaeri.configs.schema.GenericsDeclaration;
 import eu.okaeri.configs.serdes.SerdesContext;
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -125,6 +126,19 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         BossBarHolder.Builder builder = BossBarHolder.builder(getRawComponent(view, key));
         builder.clearOtherBars(true);
 
+        String time = (String) getConfigValueOrDefault("region-notification-time", "15s");
+        if (time != null) {
+            Configurer configurer = getConfigurer();
+            Duration stay = configurer.resolveType(
+                    time,
+                    GenericsDeclaration.of(String.class),
+                    Duration.class,
+                    GenericsDeclaration.of(Duration.class),
+                    SerdesContext.of(configurer)
+            );
+            builder.stay((int) stay.toMillis() / 50);
+        }
+
         String color = (String) getConfigValueOrDefault("notification-boss-bar-color", "PINK");
         if (color != null) {
             builder.color(BossBar.Color.valueOf(color.toUpperCase()));
@@ -196,9 +210,13 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         return MiniComponent.of(message);
     }
 
-    private static Object getConfigValueOrDefault(String key, Object defaultValue) {
+    private static PluginConfiguration getPluginConfiguration() {
         File configurationFile = FunnyGuilds.getInstance().getPluginConfigurationFile();
-        PluginConfiguration pluginConfig = ConfigurationFactory.createPluginConfiguration(configurationFile);
+        return ConfigurationFactory.createPluginConfiguration(configurationFile);
+    }
+
+    private static Object getConfigValueOrDefault(String key, Object defaultValue) {
+        PluginConfiguration pluginConfig = getPluginConfiguration();
         RawConfigView configView = new RawConfigView(pluginConfig);
 
         Object value = configView.get(key);
@@ -207,6 +225,10 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         }
         pluginConfig.save();
         return value;
+    }
+
+    private static Configurer getConfigurer() {
+        return getPluginConfiguration().getConfigurer();
     }
 
 }
