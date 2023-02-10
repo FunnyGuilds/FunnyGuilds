@@ -21,6 +21,10 @@ public class ScoreboardService {
             return;
         }
 
+        if (player == null) {
+            return;
+        }
+
         UserCache cache = user.getCache();
         cache.getScoreboard().peek(scoreboard -> {
             try {
