@@ -673,10 +673,10 @@ public class FunnyGuilds extends JavaPlugin {
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
         if (scoreboardConfig.enabled) {
-            ScoreboardService scoreboardService = new ScoreboardService(this);
+            ScoreboardService scoreboardService = new ScoreboardService(this.pluginConfiguration);
 
             if (scoreboardConfig.nametag.enabled) {
-                this.individualNameTagManager = Option.of(new IndividualNameTagManager(this, scoreboardService))
+                this.individualNameTagManager = Option.of(new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService))
                         .peek(manager -> this.nameTagUpdateTask = Bukkit.getScheduler().runTaskTimer(
                                 plugin,
                                 manager::updatePlayers,
@@ -686,7 +686,7 @@ public class FunnyGuilds extends JavaPlugin {
             }
 
             if (scoreboardConfig.dummy.enabled) {
-                this.dummyManager = Option.of(new DummyManager(this, scoreboardService))
+                this.dummyManager = Option.of(new DummyManager(this.userManager, scoreboardService))
                         .peek(manager -> this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
                                 plugin,
                                 manager::updatePlayers,

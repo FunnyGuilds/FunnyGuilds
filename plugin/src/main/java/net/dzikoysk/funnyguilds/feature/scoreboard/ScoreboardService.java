@@ -4,42 +4,20 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
-import panda.std.stream.PandaStream;
 
 public class ScoreboardService {
 
-    private final FunnyGuilds plugin;
-
     private final PluginConfiguration pluginConfiguration;
-    private final UserManager userManager;
 
-    public ScoreboardService(FunnyGuilds plugin) {
-        this.plugin = plugin;
-        this.pluginConfiguration = plugin.getPluginConfiguration();
-        this.userManager = plugin.getUserManager();
+    public ScoreboardService(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
     }
 
-    public void updatePlayers() {
+    public void updatePlayer(Player player, User user) {
         if (!this.pluginConfiguration.scoreboard.enabled) {
-            return;
-        }
-
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(player -> this.userManager.findByUuid(player.getUniqueId()))
-                .forEach(this::updatePlayer);
-    }
-
-    public void updatePlayer(User user) {
-        if (!this.pluginConfiguration.scoreboard.enabled) {
-            return;
-        }
-
-        Player player = Bukkit.getPlayer(user.getUUID());
-        if (player == null) {
             return;
         }
 
