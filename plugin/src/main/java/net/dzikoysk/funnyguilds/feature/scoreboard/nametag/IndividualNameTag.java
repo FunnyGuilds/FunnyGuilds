@@ -22,6 +22,7 @@ import panda.std.Option;
 public class IndividualNameTag {
 
     private final PluginConfiguration pluginConfiguration;
+
     private WeakReference<Player> playerReference;
     private final User user;
 

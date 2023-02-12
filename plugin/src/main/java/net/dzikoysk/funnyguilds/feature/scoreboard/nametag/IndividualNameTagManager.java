@@ -58,9 +58,9 @@ public class IndividualNameTagManager {
                 : Option.none();
 
         PandaStream.of(this.getOnlinePlayersToUpdate()).forEach(targetData -> {
-            targetData.getThird().peek(nameTag -> nameTag.updatePlayer(observerPlayer, observerUser));
+            targetData.getNameTag().peek(nameTag -> nameTag.updatePlayer(observerPlayer, observerUser));
             // Also update target to observer (so relational placeholders could be as much real-time as possible)
-            observerNameTag.peek(nameTag -> nameTag.updatePlayer(targetData.getFirst(), targetData.getSecond()));
+            observerNameTag.peek(nameTag -> nameTag.updatePlayer(targetData.getPlayer(), targetData.getUser()));
         });
     }
 

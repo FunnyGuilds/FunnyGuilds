@@ -16,7 +16,7 @@ public class DummyGlobalUpdateUserSyncTask extends SyncFunnyTask {
 
     @Override
     public void execute() {
-        this.dummyManager.updateScore(Bukkit.getPlayer(this.user.getUUID()), this.user);
+        this.dummyManager.updatePlayer(Bukkit.getPlayer(this.user.getUUID()), this.user);
     }
 
 }

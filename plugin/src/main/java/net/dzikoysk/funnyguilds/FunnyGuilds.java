@@ -686,7 +686,7 @@ public class FunnyGuilds extends JavaPlugin {
             }
 
             if (scoreboardConfig.dummy.enabled) {
-                this.dummyManager = Option.of(new DummyManager(this.userManager, scoreboardService))
+                this.dummyManager = Option.of(new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService))
                         .peek(manager -> this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
                                 plugin,
                                 manager::updatePlayers,
