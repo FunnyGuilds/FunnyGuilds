@@ -166,8 +166,8 @@ public class FunnyGuilds extends JavaPlugin {
     private volatile BukkitTask tablistBroadcastTask;
     private volatile BukkitTask rankRecalculationTask;
 
-    private volatile BukkitTask nameTagUpdateTask;
-    private volatile BukkitTask dummyUpdateTask;
+    private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
+    private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -663,13 +663,8 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void prepareScoreboardServices() {
-        if (this.nameTagUpdateTask != null) {
-            this.nameTagUpdateTask.cancel();
-        }
-
-        if (this.dummyUpdateTask != null) {
-            this.dummyUpdateTask.cancel();
-        }
+        this.nameTagUpdateTask.peek(BukkitTask::cancel);
+        this.dummyUpdateTask.peek(BukkitTask::cancel);
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
         if (!scoreboardConfig.enabled) {
@@ -686,7 +681,7 @@ public class FunnyGuilds extends JavaPlugin {
                 manager::updatePlayers,
                 100,
                 scoreboardConfig.nametag.updateRate.getSeconds() * 20L
-        )).orNull();
+        ));
 
         this.dummyManager = Option.when(
                 scoreboardConfig.dummy.enabled,
@@ -697,7 +692,7 @@ public class FunnyGuilds extends JavaPlugin {
                 manager::updatePlayers,
                 100,
                 scoreboardConfig.dummy.updateRate.getSeconds() * 20L
-        )).orNull();
+        ));
     }
 
     public static FunnyGuilds getInstance() {
