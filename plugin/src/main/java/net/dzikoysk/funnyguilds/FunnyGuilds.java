@@ -677,21 +677,27 @@ public class FunnyGuilds extends JavaPlugin {
         }
         ScoreboardService scoreboardService = new ScoreboardService(this.pluginConfiguration);
 
-        this.individualNameTagManager = Option.when(scoreboardConfig.nametag.enabled, new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService))
-                .peek(manager -> this.nameTagUpdateTask = Bukkit.getScheduler().runTaskTimer(
-                        plugin,
-                        manager::updatePlayers,
-                        100,
-                        scoreboardConfig.nametag.updateRate.getSeconds() * 20L
-                ));
+        this.individualNameTagManager = Option.when(scoreboardConfig.nametag.enabled, () -> {
+            IndividualNameTagManager manager = new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService);
+            this.nameTagUpdateTask = Bukkit.getScheduler().runTaskTimer(
+                    plugin,
+                    manager::updatePlayers,
+                    100,
+                    scoreboardConfig.nametag.updateRate.getSeconds() * 20L
+            );
+            return manager;
+        });
 
-        this.dummyManager = Option.when(scoreboardConfig.dummy.enabled, new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService))
-                .peek(manager -> this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
-                        plugin,
-                        manager::updatePlayers,
-                        100,
-                        scoreboardConfig.dummy.updateRate.getSeconds() * 20L
-                ));
+        this.dummyManager = Option.when(scoreboardConfig.dummy.enabled, () -> {
+            DummyManager manager = new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService);
+            this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
+                    plugin,
+                    manager::updatePlayers,
+                    100,
+                    scoreboardConfig.dummy.updateRate.getSeconds() * 20L
+            );
+            return manager;
+        });
     }
 
     public static FunnyGuilds getInstance() {
