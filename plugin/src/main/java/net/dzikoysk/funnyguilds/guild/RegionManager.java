@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -30,14 +31,14 @@ import panda.std.stream.PandaStream;
 public class RegionManager {
 
     private final PluginConfiguration pluginConfiguration;
-    private final Map<String, Region> regionsMap = new ConcurrentHashMap<>();
+    private final Map<Long, Set<Region>> regions = new ConcurrentHashMap<>();
 
     public RegionManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
     }
 
     public int countRegions() {
-        return this.regionsMap.size();
+        return this.regions.size();
     }
 
     /**
@@ -46,14 +47,16 @@ public class RegionManager {
      * @return set of regions
      */
     public Set<Region> getRegions() {
-        return new HashSet<>(this.regionsMap.values());
+        return this.regions.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     /**
      * Deletes all loaded regions data
      */
     public void clearRegions() {
-        this.regionsMap.clear();
+        this.regions.clear();
     }
 
     /**
@@ -64,15 +67,9 @@ public class RegionManager {
      * @return the guild
      */
     public Option<Region> findByName(String name, boolean ignoreCase) {
-        Region foundRegion = this.regionsMap.get(name);
-
-        if (foundRegion == null && ignoreCase) {
-            foundRegion = PandaStream.of(this.regionsMap.values())
-                    .find(region -> region.getName().equalsIgnoreCase(name))
-                    .orNull();
-        }
-
-        return Option.of(foundRegion);
+        return PandaStream.of(this.regions.values())
+                .flatMap(r -> r)
+                .find(region -> ignoreCase ? region.getName().equalsIgnoreCase(name) : region.getName().equals(name));
     }
 
     /**
@@ -92,7 +89,13 @@ public class RegionManager {
      * @return the region
      */
     public Option<Region> findRegionAtLocation(Location location) {
-        return PandaStream.of(this.regionsMap.values()).find(region -> region.isIn(location));
+        Set<Region> applicableRegions = this.regions.get(packChunkPosition(location.getChunk().getX(), location.getChunk().getZ()));
+
+        if (applicableRegions == null || applicableRegions.isEmpty()) {
+            return Option.none();
+        }
+
+        return PandaStream.of(applicableRegions).find(region -> region.isIn(location));
     }
 
     /**
@@ -148,7 +151,10 @@ public class RegionManager {
         }
 
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
-        return PandaStream.of(this.regionsMap.values())
+
+        // TODO: Use sparse storage properly instead of iterating through all of the regions to speed it up.
+        return PandaStream.of(this.regions.values())
+                .flatMap(r -> r)
                 .map(Region::getCenter)
                 .filterNot(regionCenter -> regionCenter.equals(center))
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
@@ -179,23 +185,37 @@ public class RegionManager {
     }
 
     /**
-     * Add region to storage. If you think you should use this method you probably shouldn't.
+     * Add region to storage.
+     * If you think you should use this method you probably shouldn't.
      *
      * @param region region to add
      */
     public void addRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
-        this.regionsMap.put(region.getName(), region);
+
+        forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
+            long packedPos = packChunkPosition(chunkX, chunkZ);
+
+            Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
+            regionsAtChunk.add(region);
+        });
     }
 
     /**
-     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(DataModel, Region)}.
+     * Remove region from storage.
+     * If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(DataModel, Region)}.
      *
      * @param region region to remove
      */
     public void removeRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
-        this.regionsMap.remove(region.getName());
+
+        forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
+            long packedPos = packChunkPosition(chunkX, chunkZ);
+
+            Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
+            regionsAtChunk.remove(region);
+        });
     }
 
     /**
@@ -230,4 +250,31 @@ public class RegionManager {
         return this.findByName(name).isPresent();
     }
 
+    /**
+     * Calculates chunks that are in the bounds of the given region
+     * and applies given function for every chunk position.
+     */
+    private void forEachChunkPositionInRegion(Region region, BiConsumer<Integer, Integer> chunkPosFunc) {
+        int firstX = region.getFirstCorner().getChunk().getX();
+        int firstZ = region.getFirstCorner().getChunk().getZ();
+
+        int secondX = region.getSecondCorner().getChunk().getX();
+        int secondZ = region.getSecondCorner().getChunk().getZ();
+
+        int startX = Math.min(firstX, secondX);
+        int startZ = Math.min(firstZ, secondZ);
+
+        int endX = Math.max(firstX, secondX);
+        int endZ = Math.max(firstZ, secondZ);
+
+        for (int chunkX = startX; chunkX <= endX; chunkX++) {
+            for (int chunkZ = startZ; chunkZ <= endZ; chunkZ++) {
+                chunkPosFunc.accept(chunkX, chunkZ);
+            }
+        }
+    }
+
+    private long packChunkPosition(int chunkX, int chunkZ) {
+        return (long) chunkX & 0xFFFFFFFFL | ((long) chunkZ & 0xFFFFFFFFL) << 32;
+    }
 }
