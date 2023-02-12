@@ -672,29 +672,26 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
-        if (scoreboardConfig.enabled) {
-            ScoreboardService scoreboardService = new ScoreboardService(this.pluginConfiguration);
-
-            if (scoreboardConfig.nametag.enabled) {
-                this.individualNameTagManager = Option.of(new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService))
-                        .peek(manager -> this.nameTagUpdateTask = Bukkit.getScheduler().runTaskTimer(
-                                plugin,
-                                manager::updatePlayers,
-                                100,
-                                scoreboardConfig.nametag.updateRate.getSeconds() * 20L
-                        ));
-            }
-
-            if (scoreboardConfig.dummy.enabled) {
-                this.dummyManager = Option.of(new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService))
-                        .peek(manager -> this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
-                                plugin,
-                                manager::updatePlayers,
-                                100,
-                                scoreboardConfig.dummy.updateRate.getSeconds() * 20L
-                        ));
-            }
+        if (!scoreboardConfig.enabled) {
+            return;
         }
+        ScoreboardService scoreboardService = new ScoreboardService(this.pluginConfiguration);
+
+        this.individualNameTagManager = Option.when(scoreboardConfig.nametag.enabled, new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService))
+                .peek(manager -> this.nameTagUpdateTask = Bukkit.getScheduler().runTaskTimer(
+                        plugin,
+                        manager::updatePlayers,
+                        100,
+                        scoreboardConfig.nametag.updateRate.getSeconds() * 20L
+                ));
+
+        this.dummyManager = Option.when(scoreboardConfig.dummy.enabled, new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService))
+                .peek(manager -> this.dummyUpdateTask = Bukkit.getScheduler().runTaskTimer(
+                        plugin,
+                        manager::updatePlayers,
+                        100,
+                        scoreboardConfig.dummy.updateRate.getSeconds() * 20L
+                ));
     }
 
     public static FunnyGuilds getInstance() {
