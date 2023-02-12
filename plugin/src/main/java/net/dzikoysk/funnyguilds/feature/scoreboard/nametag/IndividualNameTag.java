@@ -23,12 +23,12 @@ public class IndividualNameTag {
 
     private final PluginConfiguration pluginConfiguration;
 
-    private WeakReference<Player> playerReference;
+    private WeakReference<Player> playerRef;
     private final User user;
 
     IndividualNameTag(PluginConfiguration pluginConfiguration, Player player, User user) {
         this.pluginConfiguration = pluginConfiguration;
-        this.playerReference = new WeakReference<>(player);
+        this.playerRef = new WeakReference<>(player);
         this.user = user;
     }
 
@@ -45,10 +45,10 @@ public class IndividualNameTag {
     }
 
     private Player getPlayer() {
-        Player player = this.playerReference.get();
+        Player player = this.playerRef.get();
         if (player == null) {
             player = Bukkit.getPlayer(this.user.getUUID());
-            this.playerReference = new WeakReference<>(player);
+            this.playerRef = new WeakReference<>(player);
         }
         return player;
     }
