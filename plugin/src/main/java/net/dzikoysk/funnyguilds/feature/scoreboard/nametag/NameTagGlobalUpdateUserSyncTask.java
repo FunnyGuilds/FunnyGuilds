@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 
 import net.dzikoysk.funnyguilds.shared.FunnyTask.SyncFunnyTask;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Bukkit;
 
 public class NameTagGlobalUpdateUserSyncTask extends SyncFunnyTask {
 
@@ -15,7 +16,7 @@ public class NameTagGlobalUpdateUserSyncTask extends SyncFunnyTask {
 
     @Override
     public void execute() throws Exception {
-        this.individualNameTagManager.updatePlayer(this.user);
+        this.individualNameTagManager.updatePlayer(Bukkit.getPlayer(this.user.getUUID()), this.user);
     }
 
 }

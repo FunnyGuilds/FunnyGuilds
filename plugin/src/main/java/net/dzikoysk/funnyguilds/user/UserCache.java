@@ -15,9 +15,9 @@ public class UserCache {
     private final User user;
 
     private IndividualPlayerList playerList;
-    private Scoreboard scoreboard;
+    private Option<Scoreboard> scoreboard = Option.none();
     private Option<IndividualNameTag> nameTag = Option.none();
-    private Dummy dummy;
+    private Option<Dummy> dummy = Option.none();
 
     private BukkitTask teleportation;
     private long notificationTime;
@@ -41,6 +41,14 @@ public class UserCache {
         this.playerList = playerList;
     }
 
+    public synchronized Option<Scoreboard> getScoreboard() {
+        return this.scoreboard;
+    }
+
+    public synchronized void setScoreboard(@Nullable Scoreboard scoreboard) {
+        this.scoreboard = Option.of(scoreboard);
+    }
+
     public Option<IndividualNameTag> getIndividualNameTag() {
         return this.nameTag;
     }
@@ -49,24 +57,12 @@ public class UserCache {
         this.nameTag = Option.of(nameTag);
     }
 
-    public synchronized Option<Scoreboard> getScoreboard() {
-        return Option.of(this.scoreboard);
-    }
-
-    public synchronized void setScoreboard(Scoreboard sb) {
-        this.scoreboard = sb;
-    }
-
-    public Dummy getDummy() {
-        if (this.dummy == null) {
-            this.dummy = new Dummy(this.user);
-        }
-
+    public Option<Dummy> getDummy() {
         return this.dummy;
     }
 
-    public void setDummy(Dummy dummy) {
-        this.dummy = dummy;
+    public void setDummy(@Nullable Dummy dummy) {
+        this.dummy = Option.of(dummy);
     }
 
     public BukkitTask getTeleportation() {
