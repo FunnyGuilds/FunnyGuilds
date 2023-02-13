@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.dummy;
 
 import net.dzikoysk.funnyguilds.shared.FunnyTask.SyncFunnyTask;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Bukkit;
 
 public class DummyGlobalUpdateUserSyncTask extends SyncFunnyTask {
 
@@ -15,7 +16,7 @@ public class DummyGlobalUpdateUserSyncTask extends SyncFunnyTask {
 
     @Override
     public void execute() {
-        this.dummyManager.updateScore(this.user);
+        this.dummyManager.updatePlayer(Bukkit.getPlayer(this.user.getUUID()), this.user);
     }
 
 }

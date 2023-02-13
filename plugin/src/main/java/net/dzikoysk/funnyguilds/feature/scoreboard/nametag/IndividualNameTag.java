@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 
+import java.lang.ref.WeakReference;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.RawString;
@@ -21,10 +22,13 @@ import panda.std.Option;
 public class IndividualNameTag {
 
     private final PluginConfiguration pluginConfiguration;
+
+    private WeakReference<Player> playerRef;
     private final User user;
 
-    IndividualNameTag(PluginConfiguration pluginConfiguration, User user) {
+    IndividualNameTag(PluginConfiguration pluginConfiguration, Player player, User user) {
         this.pluginConfiguration = pluginConfiguration;
+        this.playerRef = new WeakReference<>(player);
         this.user = user;
     }
 
@@ -40,14 +44,23 @@ public class IndividualNameTag {
         team.setPrefix(this.user.getName());
     }
 
+    private Player getPlayer() {
+        Player player = this.playerRef.get();
+        if (player == null) {
+            player = Bukkit.getPlayer(this.user.getUUID());
+            this.playerRef = new WeakReference<>(player);
+        }
+        return player;
+    }
+
     // Update specific player for this user
-    public void updatePlayer(User target) {
-        if (!target.isOnline()) {
-            this.removePlayer(target);
+    public void updatePlayer(Player targetPlayer, User targetUser) {
+        if (!targetUser.isOnline()) {
+            this.removePlayer(targetUser);
             return;
         }
 
-        FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + target.getName() + " for " + this.user.getName());
+        FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + targetUser.getName() + " for " + this.user.getName());
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
@@ -56,11 +69,11 @@ public class IndividualNameTag {
         }
         Scoreboard scoreboard = scoreboardOption.get();
 
-        Team targetTeam = this.prepareTeam(scoreboard, target.getName());
+        Team targetTeam = this.prepareTeam(scoreboard, targetUser.getName());
 
         ScoreboardConfiguration.NameTag nameTagConfig = this.pluginConfiguration.scoreboard.nametag;
-        targetTeam.setPrefix(this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, target), target));
-        targetTeam.setSuffix(this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, target), target));
+        targetTeam.setPrefix(this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, targetUser), targetPlayer, targetUser));
+        targetTeam.setSuffix(this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, targetUser), targetPlayer, targetUser));
     }
 
     public void removePlayer(User target) {
@@ -93,31 +106,26 @@ public class IndividualNameTag {
         return team;
     }
 
-    private String prepareValue(RawString value, User target) {
-        String formatted = this.decorateValue(value.getValue(), target);
+    private String prepareValue(RawString value, Player targetPlayer, User targetUser) {
+        String formatted = this.decorateValue(value.getValue(), targetPlayer, targetUser);
         if (Reflections.USE_PRE_13_METHODS && formatted.length() > 16) {
             formatted = formatted.substring(0, 16);
         }
         return formatted;
     }
 
-    private String decorateValue(String value, User target) {
-        Player player = Bukkit.getPlayer(this.user.getUUID());
+    private String decorateValue(String value, Player targetPlayer, User targetUser) {
+        Player player = this.getPlayer();
         if (player == null) {
             return value;
         }
 
-        Player targetPlayer = Bukkit.getPlayer(target.getUUID());
-        if (targetPlayer == null) {
-            return value;
-        }
-
         Guild guild = this.user.getGuild().orNull();
-        Guild targetGuild = target.getGuild().orNull();
+        Guild targetGuild = targetUser.getGuild().orNull();
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
-                .register("{POS}", UserUtils.getUserPosition(this.pluginConfiguration, target));
+                .register("{POS}", UserUtils.getUserPosition(this.pluginConfiguration, targetUser));
         value = formatter.format(value);
 
         String finalValue = value;
