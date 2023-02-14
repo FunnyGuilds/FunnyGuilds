@@ -1,12 +1,20 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-library`
     application
     `maven-publish`
 
-    id("idea")
+    val kotlinVersion = "1.8.0"
+    kotlin("jvm") version kotlinVersion
+    id("com.google.devtools.ksp") version "1.8.0-1.0.8"
+
     id("org.ajoberstar.grgit") version "4.1.1"
-    id("org.jetbrains.kotlin.jvm") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+
+    id("io.gitlab.arturbosch.detekt").version("1.21.0")
+    id("idea")
+
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
 
@@ -16,10 +24,9 @@ idea {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.11.1-SNAPSHOT"
+    version = "5.0.0"
 
     apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
     apply(plugin = "kotlin")
     apply(plugin = "application")
     apply(plugin = "com.github.johnrengelman.shadow")
@@ -30,37 +37,17 @@ allprojects {
 
     repositories {
         /* Libs */
-        maven("https://maven.reposilite.com/releases")
-        maven("https://storehouse.okaeri.eu/repository/maven-public")
-
-        /* Servers */
-        maven("https://libraries.minecraft.net")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
-        maven("https://repo.papermc.io/repository/maven-public/")
+        mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
-
-        /* Hooks */
-        maven("https://maven.enginehub.org/repo")
-        maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
-        maven("https://nexus.codecrafter47.de/content/repositories/public")
-        maven("https://repo.codemc.io/repository/maven-public")
-        maven("https://jitpack.io")
-    }
-}
-
-subprojects {
-    java {
-        withSourcesJar()
-        withJavadocJar()
+        maven("https://maven.reposilite.com/releases")
     }
 
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
 
-    tasks.withType<JavaCompile> {
-        options.encoding = "UTF-8"
+        withSourcesJar()
+        withJavadocJar()
     }
 
     tasks.withType<Javadoc> {
@@ -69,34 +56,20 @@ subprojects {
         }
     }
 
-    publishing {
-        repositories {
-            maven {
-                name = "reposilite"
-                url = uri("https://maven.reposilite.com/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
-                credentials {
-                    username = System.getenv("MAVEN_NAME") ?: property("mavenUser").toString()
-                    password = System.getenv("MAVEN_TOKEN") ?: property("mavenPassword").toString()
-                }
-            }
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            languageVersion = "1.8"
+            freeCompilerArgs = listOf(
+                "-Xjvm-default=all", // For generating default methods in interfaces
+                "-Xcontext-receivers"
+            )
         }
-        publications {
-            create<MavenPublication>("library") {
-                from(components.getByName("java"))
+    }
+}
 
-                // Add external repositories to published artifacts
-                // ~ btw: pls don't touch this
-                pom.withXml {
-                    val repositories = asNode().appendNode("repositories")
-                    project.repositories.findAll(closureOf<Any> {
-                        if (this is MavenArtifactRepository && this.url.toString().startsWith("https")) {
-                            val repository = repositories.appendNode("repository")
-                            repository.appendNode("id", this.url.toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
-                            repository.appendNode("url", this.url.toString().trim())
-                        }
-                    })
-                }
-            }
-        }
+subprojects {
+    tasks.test {
+        useJUnitPlatform()
     }
 }
