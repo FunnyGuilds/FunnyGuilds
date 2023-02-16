@@ -31,12 +31,12 @@ public final class SecurityUtils {
                 .register("{CHEAT}", cheatType.getName());
 
         FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.securitySystemInfo)
+                .broadcast()
                 .with(formatter)
                 .with(
                         CommandSender.class,
                         receiver -> Replacement.of("{NOTE}", messageService.get(receiver, cheatType.getNoteSupplier(), noteReplacements))
                 )
-                .broadcast()
                 .permission("funnyguilds.admin")
                 .send();
     }

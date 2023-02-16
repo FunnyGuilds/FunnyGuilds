@@ -36,8 +36,8 @@ public final class InfoCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
         this.messageService.getMessage(config -> config.infoList)
-                .with(this.guildPlaceholdersService.getFormatters(guild))
                 .receiver(sender)
+                .with(this.guildPlaceholdersService.getFormatters(guild))
                 .send();
     }
 

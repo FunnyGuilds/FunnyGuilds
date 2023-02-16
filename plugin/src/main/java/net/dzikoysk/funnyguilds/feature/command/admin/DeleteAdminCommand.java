@@ -38,16 +38,16 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.deleteSuccessful)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.adminGuildBroken)
-                .with(formatter)
                 .receiver(guild.getOwner())
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastDelete)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

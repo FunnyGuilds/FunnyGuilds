@@ -34,8 +34,8 @@ public final class TntCommand extends AbstractFunnyCommand {
                 .register("{PROTECTION_END}", this.config.tntProtection.time.endTime.getFormattedTime());
 
         this.messageService.getMessage(config -> config.tntInfo)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(isWithinTimeframe
                         ? config -> config.tntNowDisabled

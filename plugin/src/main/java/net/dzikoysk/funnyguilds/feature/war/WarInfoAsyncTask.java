@@ -86,8 +86,8 @@ public class WarInfoAsyncTask extends AsyncFunnyTask {
         }
         catch (InternalValidationException validatorException) {
             this.messageService.getMessage(validatorException.getMessageSupplier())
-                    .with(validatorException.getReplacements())
                     .receiver(player)
+                    .with(validatorException.getReplacements())
                     .send();
         }
     }

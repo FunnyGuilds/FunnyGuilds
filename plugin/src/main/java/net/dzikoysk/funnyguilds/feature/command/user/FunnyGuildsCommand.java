@@ -58,8 +58,8 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 break;
             default:
                 this.messageService.getMessage(config -> config.funnyguildsVersion)
-                        .with("{VERSION}", this.plugin.getVersion().getFullVersion())
                         .receiver(sender)
+                        .with("{VERSION}", this.plugin.getVersion().getFullVersion())
                         .send();
                 break;
         }
@@ -86,8 +86,8 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
         String time = TimeUtils.formatTimeSimple(Duration.between(startTime, Instant.now()));
         this.messageService.getMessage(config -> config.saveallSaved)
-                .with(FunnyFormatter.of("{TIME}", time))
                 .receiver(sender)
+                .with("{TIME}", time)
                 .send();
     }
 
@@ -153,8 +153,8 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
             String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
             FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.reloadTime)
-                    .with("{TIME}", time)
                     .receiver(this.sender)
+                    .with("{TIME}", time)
                     .send();
         }
 

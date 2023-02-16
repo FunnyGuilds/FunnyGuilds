@@ -90,8 +90,8 @@ public final class BaseCommand extends AbstractFunnyCommand {
         }, 0L, 10L));
 
         this.messageService.getMessage(config -> config.baseDontMove)
-                .with("{TIME}", time.getSeconds())
                 .receiver(member)
+                .with("{TIME}", time.getSeconds())
                 .send();
     }
 

@@ -48,8 +48,8 @@ public final class KillsCommand extends AbstractFunnyCommand {
                 .register("{KILLS}", finalKills);
 
         this.messageService.getMessage(config -> config.adminKillsChanged)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

@@ -48,8 +48,8 @@ public final class DeathsCommand extends AbstractFunnyCommand {
                 .register("{DEATHS}", finalDeaths);
 
         this.messageService.getMessage(config -> config.adminDeathsChanged)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

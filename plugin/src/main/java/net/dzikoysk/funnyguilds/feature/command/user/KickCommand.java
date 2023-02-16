@@ -51,16 +51,16 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.kickToOwner)
-                .with(formatter)
                 .receiver(deputy)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.kickToPlayer)
-                .with(formatter)
                 .receiver(formerUser)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastKick)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

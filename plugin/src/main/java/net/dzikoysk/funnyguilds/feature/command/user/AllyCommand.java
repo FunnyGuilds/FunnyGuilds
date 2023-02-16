@@ -44,8 +44,8 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String guildNames = FunnyStringUtils.join(this.allyInvitationList.getInvitationGuildNames(guild), true);
 
             this.messageService.getMessage(config -> config.allyInvitationList)
-                    .with("{GUILDS}", guildNames)
                     .receiver(owner)
+                    .with("{GUILDS}", guildNames)
                     .send();
 
             return;
@@ -71,8 +71,8 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{AMOUNT}", this.config.maxAlliesBetweenGuilds);
 
             this.messageService.getMessage(config -> config.inviteAllyTargetAmount)
-                    .with(formatter)
                     .receiver(owner)
+                    .with(formatter)
                     .send();
             return;
         }
@@ -102,12 +102,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.enemyEnd)
-                .with(allyFormatter)
                 .receiver(owner)
+                .with(allyFormatter)
                 .send();
         this.messageService.getMessage(config -> config.enemyIEnd)
-                .with(allyIFormatter)
                 .receiver(invitedOwner)
+                .with(allyIFormatter)
                 .send();
     }
 
@@ -130,12 +130,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.allyDone)
-                .with(allyFormatter)
                 .receiver(owner)
+                .with(allyFormatter)
                 .send();
         this.messageService.getMessage(config -> config.allyIDone)
-                .with(allyIFormatter)
                 .receiver(invitedOwner)
+                .with(allyIFormatter)
                 .send();
 
         this.plugin.getIndividualNameTagManager().peek(manager -> {
@@ -160,12 +160,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.allyReturn)
-                .with(allyFormatter)
                 .receiver(owner)
+                .with(allyFormatter)
                 .send();
         this.messageService.getMessage(config -> config.allyIReturn)
-                .with(allyIFormatter)
                 .receiver(invitedOwner)
+                .with(allyIFormatter)
                 .send();
     }
 
@@ -185,12 +185,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.allyInviteDone)
-                .with(allyFormatter)
                 .receiver(owner)
+                .with(allyFormatter)
                 .send();
         this.messageService.getMessage(config -> config.allyToInvited)
-                .with(allyIFormatter)
                 .receiver(invitedOwner)
+                .with(allyIFormatter)
                 .send();
     }
 

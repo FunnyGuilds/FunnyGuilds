@@ -69,8 +69,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
             when(nearbyPlayers.isEmpty(), config -> config.inviteNoOneIsNearby);
 
             this.messageService.getMessage(config -> config.inviteAllCommand)
-                    .with(FunnyFormatter.of("{RANGE}", range))
                     .receiver(sender)
+                    .with("{RANGE}", range)
                     .send();
 
             PandaStream.of(nearbyPlayers)
@@ -91,12 +91,12 @@ public final class InviteCommand extends AbstractFunnyCommand {
             }
 
             this.messageService.getMessage(config -> config.inviteCancelled)
-                    .with("{PLAYER}", invitedUser.getName())
                     .receiver(deputy)
+                    .with("{PLAYER}", invitedUser.getName())
                     .send();
             this.messageService.getMessage(config -> config.inviteCancelledToInvited)
-                    .with(formatter)
                     .receiver(invitedUser)
+                    .with(formatter)
                     .send();
 
             this.guildInvitationList.expireInvitation(guild, invitedUser);
@@ -112,12 +112,12 @@ public final class InviteCommand extends AbstractFunnyCommand {
         this.guildInvitationList.createInvitation(guild, invitedUser);
 
         this.messageService.getMessage(config -> config.inviteToOwner)
-                .with(FunnyFormatter.of("{PLAYER}", invitedUser.getName()))
                 .receiver(deputy)
+                .with("{PLAYER}", invitedUser.getName())
                 .send();
         this.messageService.getMessage(config -> config.inviteToInvited)
-                .with(formatter)
                 .receiver(invitedUser)
+                .with(formatter)
                 .send();
     }
 

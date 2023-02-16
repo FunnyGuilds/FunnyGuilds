@@ -18,11 +18,11 @@ public final class RankingCommand extends AbstractFunnyCommand {
     )
     public void execute(CommandSender sender) {
         this.messageService.getMessage(config -> config.rankingList)
+                .receiver(sender)
                 .with(CommandSender.class, receiver -> {
                     User targetUser = this.userManager.findByName(sender.getName()).orNull();
                     return this.rankPlaceholdersService.prepareReplacement(targetUser);
                 })
-                .receiver(sender)
                 .send();
     }
 

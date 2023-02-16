@@ -33,8 +33,8 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             this.messageService.getMessage(config -> config.breakAlliesList)
-                    .with("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true))
                     .receiver(owner)
+                    .with("{GUILDS}", FunnyStringUtils.join(Entity.names(guild.getAllies()), true))
                     .send();
             return;
         }
@@ -67,12 +67,12 @@ public final class BreakCommand extends AbstractFunnyCommand {
         });
 
         this.messageService.getMessage(config -> config.breakDone)
-                .with(breakFormatter)
                 .receiver(owner)
+                .with(breakFormatter)
                 .send();
         this.messageService.getMessage(config -> config.breakIDone)
-                .with(breakIFormatter)
                 .receiver(oppositeGuild.getOwner())
+                .with(breakIFormatter)
                 .send();
     }
 

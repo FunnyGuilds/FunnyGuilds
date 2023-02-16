@@ -46,8 +46,8 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
                 .register("{DATE}", protectionDateAsString);
 
         this.messageService.getMessage(config -> config.adminProtectionSetSuccessfully)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

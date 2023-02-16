@@ -44,12 +44,12 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", member.getName());
 
         this.messageService.getMessage(config -> config.leaveToUser)
-                .with(formatter)
                 .receiver(member)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastLeave)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

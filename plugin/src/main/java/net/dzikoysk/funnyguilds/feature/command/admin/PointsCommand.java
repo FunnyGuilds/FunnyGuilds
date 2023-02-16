@@ -50,8 +50,8 @@ public final class PointsCommand extends AbstractFunnyCommand {
                 .register("{POINTS}", finalPoints);
 
         this.messageService.getMessage(config -> config.adminPointsChanged)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

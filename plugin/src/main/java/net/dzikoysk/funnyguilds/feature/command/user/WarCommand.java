@@ -39,8 +39,8 @@ public final class WarCommand extends AbstractFunnyCommand {
 
         if (enemyGuild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds) {
             this.messageService.getMessage(config -> config.enemyMaxTargetAmount)
-                    .with(formatter)
                     .receiver(owner)
+                    .with(formatter)
                     .send();
             return;
         }
@@ -56,12 +56,12 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.enemyDone)
-                .with(enemyFormatter)
                 .receiver(owner)
+                .with(enemyFormatter)
                 .send();
         this.messageService.getMessage(config -> config.enemyIDone)
-                .with(enemyIFormatter)
                 .receiver(enemyGuild.getOwner())
+                .with(enemyIFormatter)
                 .send();
 
         this.plugin.getIndividualNameTagManager().peek(manager -> {

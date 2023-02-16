@@ -93,8 +93,8 @@ public final class FunnyGuildsVersion {
                 .register("{DISCORD_LINK}", DISCORD_URL);
 
         FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.newVersionAvailable)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

@@ -57,8 +57,8 @@ public final class StatsResetCommand extends AbstractFunnyCommand {
                 .register("{CURRENT-LOGOUTS}", rank.getLogouts());
 
         this.messageService.getMessage(config -> config.statsResetItems)
-                .with(formatter)
                 .receiver(player)
+                .with(formatter)
                 .send();
     }
 

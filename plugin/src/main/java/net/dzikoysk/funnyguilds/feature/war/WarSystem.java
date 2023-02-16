@@ -73,8 +73,8 @@ public class WarSystem {
 
         if (!guild.canBeAttacked()) {
             messageService.getMessage(config -> config.warWait)
-                    .with("{TIME}", TimeUtils.formatTime(Duration.between(guild.getProtection(), Instant.now())))
                     .receiver(player)
+                    .with("{TIME}", TimeUtils.formatTime(Duration.between(guild.getProtection(), Instant.now())))
                     .send();
             return;
         }
@@ -89,12 +89,12 @@ public class WarSystem {
             this.conquer(attacker, guild, user);
         } else {
             messageService.getMessage(config -> config.warAttacker)
-                    .with("{GUILD}", guild.getName())
                     .receiver(attacker)
+                    .with("{GUILD}", guild.getName())
                     .send();
             messageService.getMessage(config -> config.warAttacked)
-                    .with("{GUILD}", attacker.getName())
                     .receiver(guild)
+                    .with("{GUILD}", attacker.getName())
                     .send();
         }
     }
@@ -113,20 +113,20 @@ public class WarSystem {
                 .register("{LOSER}", loser.getTag());
 
         messageService.getMessage(config -> config.warWin)
-                .with(formatter)
                 .receiver(conqueror)
+                .with(formatter)
                 .send();
         messageService.getMessage(config -> config.warLose)
-                .with(formatter)
                 .receiver(loser)
+                .with(formatter)
                 .send();
 
         plugin.getGuildManager().deleteGuild(plugin, loser);
         conqueror.updateLives(lives -> lives + 1);
 
         messageService.getMessage(config -> config.broadcastWar)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

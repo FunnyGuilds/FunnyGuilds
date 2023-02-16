@@ -58,19 +58,19 @@ public final class EscapeCommand extends AbstractFunnyCommand {
 
         if (time.getSeconds() >= 1) {
             this.messageService.getMessage(config -> config.escapeStartedUser)
-                    .with(formatter)
                     .receiver(player)
+                    .with(formatter)
                     .send();
             this.messageService.getMessage(config -> config.escapeStartedOpponents)
-                    .with(formatter)
                     .receiver(region.getGuild())
+                    .with(formatter)
                     .send();
         }
 
         guild.getHome().peek(home -> this.scheduleTeleportation(player, user, home, time, () -> {
             this.messageService.getMessage(config -> config.escapeSuccessfulUser)
-                    .with(formatter)
                     .receiver(region.getGuild())
+                    .with(formatter)
                     .send();
         }));
     }

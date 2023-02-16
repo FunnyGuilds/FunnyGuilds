@@ -53,6 +53,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 .register("{RANK}", rank.getPosition(DefaultTops.USER_POINTS_TOP));
 
         this.messageService.getMessage(baseMessage)
+                .receiver(messageTarget)
                 .with(formatter)
                 .with(CommandSender.class, receiver -> {
                     FunnyFormatter guildFormatter = new FunnyFormatter();
@@ -66,7 +67,6 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                     }
                     return guildFormatter;
                 })
-                .receiver(messageTarget)
                 .send();
     }
 

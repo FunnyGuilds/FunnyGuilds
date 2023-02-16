@@ -49,16 +49,16 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", userToAdd.getName());
 
         this.messageService.getMessage(config -> config.joinToMember)
-                .with(formatter)
                 .receiver(userToAdd)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.joinToOwner)
-                .with(formatter)
                 .receiver(guild.getOwner())
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastJoin)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

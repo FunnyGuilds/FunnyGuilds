@@ -43,8 +43,8 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
                 .receiver(user)
                 .send();
         this.messageService.getMessage(config -> config.leaderMembers)
-                .with("{PLAYER}", user.getName())
                 .receiver(guild)
+                .with("{PLAYER}", user.getName())
                 .send();
     }
 

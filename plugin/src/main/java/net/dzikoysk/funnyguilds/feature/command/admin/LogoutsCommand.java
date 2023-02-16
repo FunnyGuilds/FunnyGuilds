@@ -48,8 +48,8 @@ public final class LogoutsCommand extends AbstractFunnyCommand {
                 .register("{LOGOUTS}", finalLogouts);
 
         this.messageService.getMessage(config -> config.adminLogoutsChanged)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

@@ -32,8 +32,8 @@ public final class PvPCommand extends AbstractFunnyCommand {
 
             boolean newPvpValue = guild.toggleAllyPvP(targetAlliedGuild);
             this.messageService.getMessage(config -> newPvpValue ? config.pvpAllyOn : config.pvpAllyOff)
-                    .with(guildTagFormatter)
                     .receiver(deputy)
+                    .with(guildTagFormatter)
                     .send();
 
             return;

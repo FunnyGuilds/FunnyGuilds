@@ -30,6 +30,7 @@ public final class ValidityUtils {
         boolean hasCenter = regionOption.isPresent() && regionOption.get().getCenter() != null;
 
         messageService.getMessage(config -> config.broadcastValidity)
+                .broadcast()
                 .with(formatter)
                 .with(CommandSender.class, receiver -> {
                     FunnyFormatter cordFormatter = new FunnyFormatter();
@@ -47,7 +48,6 @@ public final class ValidityUtils {
                     }
                     return cordFormatter;
                 })
-                .broadcast()
                 .send();
     }
 

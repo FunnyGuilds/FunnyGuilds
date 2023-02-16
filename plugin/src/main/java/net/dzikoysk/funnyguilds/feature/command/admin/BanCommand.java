@@ -52,12 +52,12 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .register("{REASON}", ChatUtils.colored(reason));
 
         this.messageService.getMessage(config -> config.adminGuildBan)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastBan)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

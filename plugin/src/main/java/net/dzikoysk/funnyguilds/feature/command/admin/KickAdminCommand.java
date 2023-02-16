@@ -46,16 +46,16 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName());
 
         this.messageService.getMessage(config -> config.kickToOwner)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.kickToPlayer)
-                .with(formatter)
                 .receiver(user)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastKick)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

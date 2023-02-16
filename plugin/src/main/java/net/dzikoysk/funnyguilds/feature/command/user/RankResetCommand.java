@@ -36,8 +36,8 @@ public final class RankResetCommand extends AbstractFunnyCommand {
                 .register("{CURRENT-RANK}", user.getRank().getPoints());
 
         this.messageService.getMessage(config -> config.rankResetMessage)
-                .with(formatter)
                 .receiver(player)
+                .with(formatter)
                 .send();
     }
 

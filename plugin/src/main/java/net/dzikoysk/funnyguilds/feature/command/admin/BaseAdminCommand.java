@@ -36,12 +36,12 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
 
         userToTeleport.getProfile().teleport(PositionConverter.adapt(guildHome));
         this.messageService.getMessage(config -> config.adminTeleportedToBase)
-                .with(formatter)
                 .receiver(userToTeleport)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.adminTargetTeleportedToBase)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
     }
 

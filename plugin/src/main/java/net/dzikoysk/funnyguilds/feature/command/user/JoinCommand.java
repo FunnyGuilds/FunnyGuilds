@@ -49,8 +49,8 @@ public final class JoinCommand extends AbstractFunnyCommand {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", guildNames);
 
             this.messageService.getMessage(config -> config.joinInvitationList)
-                    .with(formatter)
                     .receiver(player)
+                    .with(formatter)
                     .send();
             return;
         }
@@ -92,17 +92,17 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", player.getName());
 
         this.messageService.getMessage(config -> config.joinToMember)
-                .with(formatter)
                 .receiver(player)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastJoin)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
 
         this.messageService.getMessage( config -> config.joinToOwner)
-                .with(formatter)
                 .receiver(guild.getOwner())
+                .with(formatter)
                 .send();
     }
 

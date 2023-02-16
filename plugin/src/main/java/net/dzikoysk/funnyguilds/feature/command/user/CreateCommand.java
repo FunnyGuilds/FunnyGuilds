@@ -121,8 +121,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
                         .register("{POINTS}", points);
 
                 this.messageService.getMessage(config -> config.createRank)
-                        .with(formatter)
                         .receiver(player)
+                        .with(formatter)
                         .send();
                 return;
             }
@@ -140,16 +140,16 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         if (player.getTotalExperience() < requiredExperience) {
             this.messageService.getMessage(config -> config.createExperience)
-                    .with("{EXP}", requiredExperience)
                     .receiver(player)
+                    .with("{EXP}", requiredExperience)
                     .send();
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
             this.messageService.getMessage(config -> config.createMoney)
-                    .with("{MONEY}", requiredMoney)
                     .receiver(player)
+                    .with("{MONEY}", requiredMoney)
                     .send();
             return;
         }
@@ -191,8 +191,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {
                 this.messageService.getMessage(config -> config.createNotEnoughDistanceFromBorder)
-                        .with("{BORDER-MIN-DISTANCE}", this.config.createMinDistanceFromBorder)
                         .receiver(player)
+                        .with("{BORDER-MIN-DISTANCE}", this.config.createMinDistanceFromBorder)
                         .send();
                 return;
             }
@@ -210,8 +210,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             if (!withdrawResult.transactionSuccess()) {
                 this.messageService.getMessage(config -> config.withdrawError)
-                        .with(FunnyFormatter.of("{ERROR}", withdrawResult.errorMessage))
                         .receiver(player)
+                        .with("{ERROR}", withdrawResult.errorMessage)
                         .send();
                 return;
             }
@@ -268,12 +268,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", player.getName());
 
         this.messageService.getMessage(config -> config.createGuild)
-                .with(formatter)
                 .receiver(player)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastCreate)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
 
         if (!this.config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {

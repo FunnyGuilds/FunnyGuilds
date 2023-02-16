@@ -42,12 +42,12 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", owner.getName());
 
         this.messageService.getMessage(config -> config.deleteSuccessful)
-                .with(formatter)
                 .receiver(owner)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastDelete)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 

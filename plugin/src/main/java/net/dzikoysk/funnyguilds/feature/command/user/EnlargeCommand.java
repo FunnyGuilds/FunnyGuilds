@@ -52,8 +52,8 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
                 .register("{LEVEL}", region.getEnlarge());
 
         this.messageService.getMessage(config -> config.enlargeDone)
-                .with(formatter)
                 .receiver(guild)
+                .with(formatter)
                 .send();
     }
 

@@ -89,8 +89,8 @@ public final class MoveCommand extends AbstractFunnyCommand {
                 .register("{REGION}", region.getName());
 
         this.messageService.getMessage(config -> config.adminGuildRelocated)
-                .with(formatter)
                 .receiver(player)
+                .with(formatter)
                 .send();
     }
 

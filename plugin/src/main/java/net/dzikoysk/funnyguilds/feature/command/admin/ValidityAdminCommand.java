@@ -47,12 +47,12 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
         Instant finalValidity = validity;
         this.messageService.getMessage(config -> config.adminNewValidity)
+                .receiver(sender)
                 .with("{GUILD}", guild.getName())
                 .with(CommandSender.class, receiver -> Replacement.of(
                         "{VALIDITY}",
                         this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity)
                 ))
-                .receiver(sender)
                 .send();
     }
 

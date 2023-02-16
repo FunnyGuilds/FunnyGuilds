@@ -62,9 +62,9 @@ public final class ItemUtils {
             }
 
             FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
+                    .receiver(player)
                     .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
                     .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
-                    .receiver(player)
                     .send();
 
             return false;

@@ -39,12 +39,12 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .register("{ADMIN}", sender.getName());
 
         this.messageService.getMessage(config -> config.adminGuildUnban)
-                .with(formatter)
                 .receiver(sender)
+                .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastUnban)
-                .with(formatter)
                 .broadcast()
+                .with(formatter)
                 .send();
     }
 
