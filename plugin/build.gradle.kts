@@ -38,10 +38,10 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0") // adventure-platform has other versioning than adventure-api
 
-    val yamlVersion = "4.2.1"
-    implementation("pl.peridot.yetanothermessageslibrary:core:$yamlVersion")
-    implementation("pl.peridot.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
-    implementation("pl.peridot.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
+    val yamlVersion = "5.0.0"
+    implementation("dev.peri.yetanothermessageslibrary:core:$yamlVersion")
+    implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
+    implementation("dev.peri.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
 
     implementation("com.github.PikaMug:LocaleLib:3.1")
 
