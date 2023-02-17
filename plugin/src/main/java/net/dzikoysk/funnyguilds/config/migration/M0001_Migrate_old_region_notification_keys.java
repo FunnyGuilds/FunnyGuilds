@@ -17,14 +17,14 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.kyori.adventure.bossbar.BossBar;
 import org.jetbrains.annotations.Nullable;
-import pl.peridot.yetanothermessageslibrary.adventure.MiniComponent;
-import pl.peridot.yetanothermessageslibrary.adventure.RawComponent;
-import pl.peridot.yetanothermessageslibrary.message.SendableMessage;
-import pl.peridot.yetanothermessageslibrary.message.holder.SendableHolder;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.ActionBarHolder;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.ChatHolder;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.TitleHolder;
+import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
+import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
+import dev.peri.yetanothermessageslibrary.message.SendableMessage;
+import dev.peri.yetanothermessageslibrary.message.holder.SendableHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.ActionBarHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.ChatHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
 // TODO: [5.0] Remove this madness
 public class M0001_Migrate_old_region_notification_keys extends NamedMigration {

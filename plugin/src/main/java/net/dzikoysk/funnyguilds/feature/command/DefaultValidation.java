@@ -3,8 +3,8 @@ package net.dzikoysk.funnyguilds.feature.command;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import panda.std.Option;
-import pl.peridot.yetanothermessageslibrary.message.Sendable;
-import pl.peridot.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public final class DefaultValidation {
 

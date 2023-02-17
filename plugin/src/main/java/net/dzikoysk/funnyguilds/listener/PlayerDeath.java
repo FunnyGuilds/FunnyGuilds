@@ -40,8 +40,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
-import pl.peridot.yetanothermessageslibrary.replace.Replaceable;
-import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public class PlayerDeath extends AbstractFunnyListener {
 

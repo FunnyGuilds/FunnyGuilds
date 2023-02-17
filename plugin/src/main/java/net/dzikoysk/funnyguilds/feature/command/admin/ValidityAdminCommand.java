@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class ValidityAdminCommand extends AbstractFunnyCommand {

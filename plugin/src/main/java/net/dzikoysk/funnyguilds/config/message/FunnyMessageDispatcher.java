@@ -6,10 +6,10 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pl.peridot.yetanothermessageslibrary.message.BukkitMessageDispatcher;
-import pl.peridot.yetanothermessageslibrary.message.Sendable;
-import pl.peridot.yetanothermessageslibrary.viewer.Viewer;
-import pl.peridot.yetanothermessageslibrary.viewer.ViewerService;
+import dev.peri.yetanothermessageslibrary.message.BukkitMessageDispatcher;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.viewer.Viewer;
+import dev.peri.yetanothermessageslibrary.viewer.ViewerService;
 
 public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessageDispatcher> {
 

@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityReach {
 

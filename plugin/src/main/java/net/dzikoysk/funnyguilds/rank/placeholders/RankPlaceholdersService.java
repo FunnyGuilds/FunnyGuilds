@@ -26,8 +26,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
-import pl.peridot.yetanothermessageslibrary.adventure.AdventureHelper;
-import pl.peridot.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.adventure.AdventureHelper;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public class RankPlaceholdersService implements PlaceholdersService<User> {
 

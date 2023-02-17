@@ -11,11 +11,11 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.kyori.adventure.bossbar.BossBar;
-import pl.peridot.yetanothermessageslibrary.MessageRepository;
-import pl.peridot.yetanothermessageslibrary.message.SendableMessage;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.ChatHolder;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.TitleHolder;
+import dev.peri.yetanothermessageslibrary.MessageRepository;
+import dev.peri.yetanothermessageslibrary.message.SendableMessage;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.ChatHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
 @Header("Dla większości wiadomości poprawny jest format: https://github.com/P3ridot/YetAnotherMessagesLibrary/blob/master/repository/okaeri/FORMAT.md")
 @Header("Pozwala on m.in. na zmianę miejsca wyświetlania wiadomości (np. wyświetlanie danej wiadomość na actionbarze zamiast chacie)")

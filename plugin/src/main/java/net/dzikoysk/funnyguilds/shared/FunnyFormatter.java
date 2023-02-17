@@ -10,7 +10,7 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Pair;
-import pl.peridot.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public final class FunnyFormatter implements Replaceable {
 

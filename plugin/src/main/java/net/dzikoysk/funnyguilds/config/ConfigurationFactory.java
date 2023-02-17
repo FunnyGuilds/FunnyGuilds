@@ -34,7 +34,7 @@ import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
-import pl.peridot.yetanothermessageslibrary.config.serdes.SerdesMessages;
+import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 
 public final class ConfigurationFactory {
 

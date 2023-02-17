@@ -22,7 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.stream.PandaStream;
-import pl.peridot.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public final class ItemComponentHelper {
 

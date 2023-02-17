@@ -29,8 +29,8 @@ import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
-import pl.peridot.yetanothermessageslibrary.message.Sendable;
-import pl.peridot.yetanothermessageslibrary.replace.StringReplacer;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 
 public final class ItemUtils {
 

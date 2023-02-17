@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.Triple;
-import pl.peridot.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
 
 public final class ProtectionSystem {
 

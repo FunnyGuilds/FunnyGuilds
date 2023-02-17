@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocaleHelper;
 import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.peridot.yetanothermessageslibrary.locale.LocaleProvider;
+import dev.peri.yetanothermessageslibrary.locale.LocaleProvider;
 
 public class UserLocaleProvider implements LocaleProvider<User> {
 

@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import pl.peridot.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent

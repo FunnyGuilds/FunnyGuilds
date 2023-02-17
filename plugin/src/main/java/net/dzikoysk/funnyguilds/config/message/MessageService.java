@@ -13,10 +13,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
-import pl.peridot.yetanothermessageslibrary.SimpleSendableMessageService;
-import pl.peridot.yetanothermessageslibrary.viewer.BukkitViewerDataSupplier;
-import pl.peridot.yetanothermessageslibrary.viewer.SimpleViewer;
-import pl.peridot.yetanothermessageslibrary.viewer.SimpleViewerService;
+import dev.peri.yetanothermessageslibrary.SimpleSendableMessageService;
+import dev.peri.yetanothermessageslibrary.viewer.BukkitViewerDataSupplier;
+import dev.peri.yetanothermessageslibrary.viewer.SimpleViewer;
+import dev.peri.yetanothermessageslibrary.viewer.SimpleViewerService;
 
 public class MessageService extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> {
 

@@ -12,10 +12,10 @@ import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.jetbrains.annotations.Nullable;
-import pl.peridot.yetanothermessageslibrary.adventure.MiniComponent;
-import pl.peridot.yetanothermessageslibrary.adventure.RawComponent;
-import pl.peridot.yetanothermessageslibrary.message.SendableMessage;
-import pl.peridot.yetanothermessageslibrary.message.holder.impl.TitleHolder;
+import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
+import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
+import dev.peri.yetanothermessageslibrary.message.SendableMessage;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
 public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
 

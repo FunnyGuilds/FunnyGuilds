@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocaleHelper;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.peridot.yetanothermessageslibrary.locale.LocaleProvider;
+import dev.peri.yetanothermessageslibrary.locale.LocaleProvider;
 
 public class PlayerLocaleProvider implements LocaleProvider<Player> {
 

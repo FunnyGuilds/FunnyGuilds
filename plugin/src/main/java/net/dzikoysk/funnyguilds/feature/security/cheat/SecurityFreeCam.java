@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 import panda.utilities.text.Joiner;
-import pl.peridot.yetanothermessageslibrary.replace.replacement.Replacement;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import static java.util.stream.Collectors.toList;
 
 public final class SecurityFreeCam {
