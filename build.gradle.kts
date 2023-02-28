@@ -45,6 +45,7 @@ allprojects {
         maven("https://nexus.codecrafter47.de/content/repositories/public")
         maven("https://repo.codemc.io/repository/maven-public")
         maven("https://jitpack.io")
+        maven("https://repo.viaversion.com")
     }
 }
 
