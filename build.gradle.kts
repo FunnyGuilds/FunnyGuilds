@@ -5,7 +5,7 @@ plugins {
 
     id("idea")
     id("org.ajoberstar.grgit") version "4.1.1"
-    id("org.jetbrains.kotlin.jvm") version "1.8.0"
+    id("org.jetbrains.kotlin.jvm") version "1.8.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
