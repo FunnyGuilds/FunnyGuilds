@@ -53,7 +53,7 @@ dependencies {
 
     // bukkit stuff
     shadow("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
-    shadow("org.apache.logging.log4j:log4j-core:2.19.0")
+    shadow("org.apache.logging.log4j:log4j-core:2.20.0")
 
     /* hooks */
 
