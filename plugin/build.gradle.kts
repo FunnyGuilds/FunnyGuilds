@@ -1,6 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("xyz.jpenilla.run-paper")
@@ -68,20 +66,8 @@ dependencies {
     shadow("com.github.decentsoftware-eu:decentholograms:2.7.11")
 
     /* tests */
-
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.0")
-    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14")
     testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
-
-    val mockito = "5.1.1"
-    testImplementation("org.mockito:mockito-core:$mockito")
-    testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
-    testImplementation("org.mockito:mockito-inline:$mockito")
-
-    val junit = "5.9.2"
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 }
 
 tasks.processResources {
@@ -121,20 +107,5 @@ tasks.withType<ShadowJar> {
 tasks {
     runServer {
         minecraftVersion("1.19.3")
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-    setForkEvery(1)
-    maxParallelForks = 4
-
-    testLogging {
-        events(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
-        exceptionFormat = TestExceptionFormat.FULL
-        showExceptions = true
-        showCauses = true
-        showStackTraces = true
-        showStandardStreams = true
     }
 }

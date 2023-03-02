@@ -1,3 +1,7 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `java-library`
     application
@@ -6,7 +10,7 @@ plugins {
     id("idea")
     id("org.ajoberstar.grgit") version "4.1.1"
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
 
@@ -50,14 +54,33 @@ allprojects {
 }
 
 subprojects {
-    java {
-        withSourcesJar()
-        withJavadocJar()
+    dependencies {
+        /* general */
+
+        compileOnly("org.jetbrains:annotations:24.0.1")
+        testImplementation(kotlin("stdlib-jdk8"))
+
+        /* tests */
+
+        val junit = "5.9.2"
+        testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
+
+        val mockito = "5.1.1"
+        testImplementation("org.mockito:mockito-core:$mockito")
+        testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
+        testImplementation("org.mockito:mockito-inline:$mockito")
+
+        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.10")
+        testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14")
     }
 
     java {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
+        withSourcesJar()
+        withJavadocJar()
     }
 
     tasks.withType<JavaCompile> {
@@ -67,6 +90,14 @@ subprojects {
     tasks.withType<Javadoc> {
         options {
             (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet") // mute warnings
+        }
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            languageVersion = "1.8"
+            freeCompilerArgs = listOf("-Xjvm-default=all") // Generate default methods in interfaces by default
         }
     }
 
@@ -98,6 +129,21 @@ subprojects {
                     })
                 }
             }
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        setForkEvery(1)
+        maxParallelForks = 4
+
+        testLogging {
+            events(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+            exceptionFormat = TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
         }
     }
 }
