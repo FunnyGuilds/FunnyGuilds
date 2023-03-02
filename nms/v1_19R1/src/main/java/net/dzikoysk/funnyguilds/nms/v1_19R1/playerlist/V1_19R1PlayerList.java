@@ -5,6 +5,8 @@ import com.mojang.authlib.GameProfile;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
@@ -41,10 +43,13 @@ public class V1_19R1PlayerList implements PlayerList {
 
         try {
             for (int i = 0; i < this.cellCount; i++) {
+                String paddedIdentifier = StringUtils.leftPad(String.valueOf(i), 2, '0');
+                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier, " ");
+
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
-                            UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, StringUtils.leftPad(String.valueOf(i), 2, '0'))),
-                            " "
+                            UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
+                            gameProfileName
                     );
                 }
 

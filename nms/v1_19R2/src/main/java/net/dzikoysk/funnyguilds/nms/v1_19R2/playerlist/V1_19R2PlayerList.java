@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.nms.v1_19R2.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
@@ -60,11 +61,12 @@ public class V1_19R2PlayerList implements PlayerList {
         try {
             for (int i = 0; i < this.cellCount; i++) {
                 String paddedIdentifier = StringUtils.leftPad(String.valueOf(i), 2, '0');
+                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier, paddedIdentifier);
+
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
-                            UUID.fromString(String.format(
-                                    PlayerListConstants.UUID_PATTERN, paddedIdentifier)
-                            ), paddedIdentifier
+                            UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
+                            gameProfileName
                     );
                 }
 
