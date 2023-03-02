@@ -40,11 +40,13 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Set<AllyInvitation> invitations = this.allyInvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when(invitations.isEmpty(), this.messages.allyHasNotInvitation);
+            when(invitations.isEmpty(), config -> config.allyHasNotInvitation);
             String guildNames = FunnyStringUtils.join(this.allyInvitationList.getInvitationGuildNames(guild), true);
 
-            FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
-            this.messages.allyInvitationList.forEach(line -> owner.sendMessage(formatter.format(line)));
+            this.messageService.getMessage(config -> config.allyInvitationList)
+                    .receiver(owner)
+                    .with("{GUILDS}", guildNames)
+                    .send();
 
             return;
         }
@@ -52,15 +54,15 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
         User invitedOwner = invitedGuild.getOwner();
 
-        when(guild.equals(invitedGuild), this.messages.allySame);
-        when(guild.isAlly(invitedGuild), this.messages.allyAlly);
+        when(guild.equals(invitedGuild), config -> config.allySame);
+        when(guild.isAlly(invitedGuild), config -> config.allyAlly);
 
         if (guild.isEnemy(invitedGuild)) {
             this.endWar(owner, invitedOwner, guild, invitedGuild);
         }
 
         when(guild.getAllies().size() >= this.config.maxAlliesBetweenGuilds,
-                FunnyFormatter.format(this.messages.inviteAllyAmount, "{AMOUNT}", this.config.maxAlliesBetweenGuilds));
+                config -> config.inviteAllyAmount, FunnyFormatter.of("{AMOUNT}", this.config.maxAlliesBetweenGuilds));
 
         if (invitedGuild.getAllies().size() >= this.config.maxAlliesBetweenGuilds) {
             FunnyFormatter formatter = new FunnyFormatter()
@@ -68,7 +70,10 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{TAG}", invitedGuild.getTag())
                     .register("{AMOUNT}", this.config.maxAlliesBetweenGuilds);
 
-            owner.sendMessage(formatter.format(this.messages.inviteAllyTargetAmount));
+            this.messageService.getMessage(config -> config.inviteAllyTargetAmount)
+                    .receiver(owner)
+                    .with(formatter)
+                    .send();
             return;
         }
 
@@ -96,8 +101,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.enemyEnd));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.enemyIEnd));
+        this.messageService.getMessage(config -> config.enemyEnd)
+                .receiver(owner)
+                .with(allyFormatter)
+                .send();
+        this.messageService.getMessage(config -> config.enemyIEnd)
+                .receiver(invitedOwner)
+                .with(allyIFormatter)
+                .send();
     }
 
     private void acceptInvitation(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
@@ -118,8 +129,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.allyDone));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIDone));
+        this.messageService.getMessage(config -> config.allyDone)
+                .receiver(owner)
+                .with(allyFormatter)
+                .send();
+        this.messageService.getMessage(config -> config.allyIDone)
+                .receiver(invitedOwner)
+                .with(allyIFormatter)
+                .send();
 
         this.plugin.getIndividualNameTagManager().peek(manager -> {
             guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(manager, member)));
@@ -142,8 +159,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.allyReturn));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyIReturn));
+        this.messageService.getMessage(config -> config.allyReturn)
+                .receiver(owner)
+                .with(allyFormatter)
+                .send();
+        this.messageService.getMessage(config -> config.allyIReturn)
+                .receiver(invitedOwner)
+                .with(allyIFormatter)
+                .send();
     }
 
     private void invite(User owner, User invitedOwner, Guild guild, Guild invitedGuild) {
@@ -161,8 +184,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(allyFormatter.format(this.messages.allyInviteDone));
-        invitedOwner.sendMessage(allyIFormatter.format(this.messages.allyToInvited));
+        this.messageService.getMessage(config -> config.allyInviteDone)
+                .receiver(owner)
+                .with(allyFormatter)
+                .send();
+        this.messageService.getMessage(config -> config.allyToInvited)
+                .receiver(invitedOwner)
+                .with(allyIFormatter)
+                .send();
     }
 
 }

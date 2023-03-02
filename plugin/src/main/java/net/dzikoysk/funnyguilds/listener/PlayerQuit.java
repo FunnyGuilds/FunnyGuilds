@@ -50,8 +50,9 @@ public class PlayerQuit extends AbstractFunnyListener {
             cache.setDummy(null);
             cache.setPlayerList(null);
             damageState.clear();
-            this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification();
         });
+
+        this.messageService.playerQuit(player);
     }
 
 }

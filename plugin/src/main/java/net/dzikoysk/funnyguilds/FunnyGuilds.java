@@ -3,10 +3,11 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
+import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
@@ -19,7 +20,6 @@ import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
@@ -89,7 +89,6 @@ import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
@@ -117,7 +116,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
-    private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
+    private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
 
     private FunnyGuildsVersion version;
@@ -125,7 +124,9 @@ public class FunnyGuilds extends JavaPlugin {
 
     private PluginConfiguration pluginConfiguration;
     private TablistConfiguration tablistConfiguration;
-    private MessageConfiguration messageConfiguration;
+
+    private MessageService messageService;
+    private LocaleManager localeManager;
 
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
@@ -152,8 +153,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
-
-    private BossBarService bossBarService;
 
     private Database database;
     private DataModel dataModel;
@@ -200,7 +199,6 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile);
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
@@ -236,6 +234,21 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
+        try {
+            Result<File, String> createResult = FunnyIOUtils.createFile(this.pluginLanguageFolderFile, true);
+            if (createResult.isErr()) {
+                this.shutdown(createResult.getError());
+                return;
+            }
+            this.messageService = MessageService.prepareMessageService(this, this.pluginLanguageFolderFile);
+        }
+        catch (Exception exception) {
+            logger.error("Could not initialize message service", exception);
+            this.shutdown("Critical error has been encountered!");
+            return;
+        }
+        this.localeManager = new LocaleManager();
+
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
@@ -267,8 +280,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankPlaceholdersService = new RankPlaceholdersService(
                 this.pluginConfiguration,
-                this.messageConfiguration,
                 this.tablistConfiguration,
+                this.messageService,
                 this.userRankManager,
                 this.guildRankManager
         );
@@ -279,7 +292,6 @@ public class FunnyGuilds extends JavaPlugin {
                 this.guildPlaceholdersService
         );
 
-        this.bossBarService = new BossBarService();
         this.database = new Database();
 
         try {
@@ -305,8 +317,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
-            resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
+            resources.on(MessageService.class).assignInstance(this.messageService);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
@@ -323,7 +335,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
-            resources.on(BossBarService.class).assignInstance(this.bossBarService);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
@@ -420,7 +431,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.hookManager.init();
 
         if (NmsUtils.getReloadCount() > 0) {
-            Bukkit.broadcast(ChatUtils.colored(this.messageConfiguration.reloadWarn), "funnyguilds.admin");
+            this.messageService.getMessage(config -> config.reloadWarn)
+                    .broadcast()
+                    .permission("funnyguilds.admin")
+                    .send();
         }
 
         logger.info("~ Created by FunnyGuilds Team ~");
@@ -442,8 +456,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        this.userManager.getUsers().forEach(user -> this.bossBarService.getBossBarProvider(this.funnyServer, user).removeNotification());
-
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
 
@@ -452,6 +464,9 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.getServer().getScheduler().cancelTasks(this);
         this.database.shutdown();
+
+        this.messageService.close();
+
         plugin = null;
     }
 
@@ -562,8 +577,12 @@ public class FunnyGuilds extends JavaPlugin {
         return this.tablistConfigurationFile;
     }
 
-    public MessageConfiguration getMessageConfiguration() {
-        return this.messageConfiguration;
+    public MessageService getMessageService() {
+        return this.messageService;
+    }
+
+    public LocaleManager getLocaleManager() {
+        return this.localeManager;
     }
 
     public DynamicListenerManager getDynamicListenerManager() {
@@ -646,10 +665,6 @@ public class FunnyGuilds extends JavaPlugin {
         return this.guildEntityHelper;
     }
 
-    public BossBarService getBossBarService() {
-        return this.bossBarService;
-    }
-
     public Injector getInjector() {
         return this.injector;
     }
@@ -657,7 +672,7 @@ public class FunnyGuilds extends JavaPlugin {
     public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
-        this.messageConfiguration.load();
+        this.messageService.reload();
         this.hookManager.callConfigUpdated();
         this.prepareScoreboardServices();
     }

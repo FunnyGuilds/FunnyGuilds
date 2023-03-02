@@ -24,7 +24,7 @@ public final class WarCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, this.messages.enemyCorrectUse);
+        when(args.length < 1, config -> config.enemyCorrectUse);
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
         FunnyFormatter formatter = new FunnyFormatter()
@@ -32,13 +32,16 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{TAG}", enemyGuild.getTag())
                 .register("{AMOUNT}", this.config.maxEnemiesBetweenGuilds);
 
-        when(guild.equals(enemyGuild), this.messages.enemySame);
-        when(guild.isAlly(enemyGuild), this.messages.enemyAlly);
-        when(guild.isEnemy(enemyGuild), this.messages.enemyAlready);
-        when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, formatter.format(this.messages.enemyMaxAmount));
+        when(guild.equals(enemyGuild), config -> config.enemySame);
+        when(guild.isAlly(enemyGuild), config -> config.enemyAlly);
+        when(guild.isEnemy(enemyGuild), config -> config.enemyAlready);
+        when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, config -> config.enemyMaxAmount, formatter);
 
         if (enemyGuild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds) {
-            owner.sendMessage(formatter.format(this.messages.enemyMaxTargetAmount));
+            this.messageService.getMessage(config -> config.enemyMaxTargetAmount)
+                    .receiver(owner)
+                    .with(formatter)
+                    .send();
             return;
         }
 
@@ -52,8 +55,14 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        owner.sendMessage(enemyFormatter.format(this.messages.enemyDone));
-        enemyGuild.getOwner().sendMessage(enemyIFormatter.format(this.messages.enemyIDone));
+        this.messageService.getMessage(config -> config.enemyDone)
+                .receiver(owner)
+                .with(enemyFormatter)
+                .send();
+        this.messageService.getMessage(config -> config.enemyIDone)
+                .receiver(enemyGuild.getOwner())
+                .with(enemyIFormatter)
+                .send();
 
         this.plugin.getIndividualNameTagManager().peek(manager -> {
             guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new NameTagGlobalUpdateUserSyncTask(manager, member)));

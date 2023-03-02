@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class DeleteAdminCommand extends AbstractFunnyCommand {
@@ -21,7 +20,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 1, config -> config.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -38,9 +37,18 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        guild.getOwner().sendMessage(formatter.format(this.messages.adminGuildBroken));
-        this.sendMessage(sender, formatter.format(this.messages.deleteSuccessful));
-        this.broadcastMessage(formatter.format(this.messages.broadcastDelete));
+        this.messageService.getMessage(config -> config.deleteSuccessful)
+                .receiver(sender)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.adminGuildBroken)
+                .receiver(guild.getOwner())
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.broadcastDelete)
+                .broadcast()
+                .with(formatter)
+                .send();
     }
 
 }

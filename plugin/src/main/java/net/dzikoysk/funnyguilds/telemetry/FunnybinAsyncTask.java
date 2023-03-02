@@ -13,11 +13,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
@@ -35,7 +34,7 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
 
     @Override
     public void execute() throws Exception {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        MessageService messageService = FunnyGuilds.getInstance().getMessageService();
         List<FunnybinResponse> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < this.files.size(); i++) {
@@ -49,7 +48,10 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                     .register("{TOTAL}", this.files.size())
                     .register("{FILE}", fileName);
 
-            ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinSendingFile));
+            messageService.getMessage(config -> config.funnybinSendingFile)
+                    .with(formatter)
+                    .receiver(this.sender)
+                    .send();
 
             if ("log".equals(fileName)) {
                 file = new File("logs/latest.log");
@@ -81,11 +83,17 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                     content = Files.asCharSource(file, StandardCharsets.UTF_8).read();
                 }
                 catch (FileNotFoundException e) {
-                    ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinFileNotFound));
+                    messageService.getMessage(config -> config.funnybinFileNotFound)
+                            .with(formatter)
+                            .receiver(this.sender)
+                            .send();
                     continue;
                 }
                 catch (IOException e) {
-                    ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinFileNotOpened));
+                    messageService.getMessage(config -> config.funnybinFileNotOpened)
+                            .with(formatter)
+                            .receiver(this.sender)
+                            .send();
                     FunnyGuilds.getPluginLogger().error("Failed to open a file: " + fileName, e);
                     continue;
                 }
@@ -95,18 +103,25 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                 sentPastes.add(FunnyTelemetry.postToFunnybin(content, type, fileName));
             }
             catch (IOException exception) {
-                ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinFileNotSent));
+                messageService.getMessage(config -> config.funnybinFileNotSent)
+                        .with(formatter)
+                        .receiver(this.sender)
+                        .send();
                 FunnyGuilds.getPluginLogger().error("Failed to submit a paste: " + fileName, exception);
             }
         }
 
         if (sentPastes.size() == 1) {
-            String message = FunnyFormatter.format(messages.funnybinFileSent, "{LINK}", sentPastes.get(0).getShortUrl());
-            ChatUtils.sendMessage(this.sender, message);
+            messageService.getMessage(config -> config.funnybinFileSent)
+                    .with("{LINK}", sentPastes.get(0).getShortUrl())
+                    .receiver(this.sender)
+                    .send();
             return;
         }
 
-        ChatUtils.sendMessage(this.sender, messages.funnybinBuildingBundle);
+        messageService.getMessage(config -> config.funnybinBuildingBundle)
+                .receiver(this.sender)
+                .send();
 
         try {
             Option<FunnybinResponse> response = FunnyTelemetry.createBundle(
@@ -119,11 +134,15 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                 throw new IOException("Response for FunnyTelemetry bundle is null");
             }
 
-            String message = FunnyFormatter.format(messages.funnybinBundleSent, "{LINK}", response.get().getShortUrl());
-            ChatUtils.sendMessage(this.sender, message);
+            messageService.getMessage(config -> config.funnybinBundleSent)
+                    .with("{LINK}", response.get().getShortUrl())
+                    .receiver(this.sender)
+                    .send();
         }
         catch (IOException exception) {
-            ChatUtils.sendMessage(this.sender, messages.funnybinBundleNotBuilt);
+            messageService.getMessage(config -> config.funnybinBundleNotBuilt)
+                    .receiver(this.sender)
+                    .send();
             FunnyGuilds.getPluginLogger().error("Failed to submit a bundle. Files: " + this.files, exception);
         }
     }

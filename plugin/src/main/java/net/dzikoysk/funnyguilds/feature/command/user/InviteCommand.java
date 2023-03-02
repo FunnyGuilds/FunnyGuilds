@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -11,6 +10,7 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberRevokeInviteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -21,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -46,8 +45,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        when(args.length < 1, this.messages.generalNoNickGiven);
-        when(guild.getMembers().size() >= this.config.maxMembersInGuild, formatter.format(this.messages.inviteAmount));
+        when(args.length < 1, config -> config.generalNoNickGiven);
+        when(guild.getMembers().size() >= this.config.maxMembersInGuild, config -> config.inviteAmount, formatter);
 
         boolean checkArgument = this.config.inviteCommandAllArgumentIgnoreCase
                 ? args[0].equalsIgnoreCase(this.config.inviteCommandAllArgument)
@@ -56,20 +55,23 @@ public final class InviteCommand extends AbstractFunnyCommand {
         if (checkArgument) {
             double range = args.length >= 2
                     ? Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1]))
-                        .orThrow(() -> new ValidationException(this.messages.inviteAllArgumentIsNotNumber))
+                        .orThrow(() -> new InternalValidationException(config -> config.inviteAllArgumentIsNotNumber))
                     : this.config.inviteCommandAllDefaultRange;
 
-            when(range > this.config.inviteCommandAllMaxRange, FunnyFormatter.format(this.messages.inviteRangeToBig, "{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
+            when(range > this.config.inviteCommandAllMaxRange, config -> config.inviteRangeToBig, FunnyFormatter.of("{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
 
             List<Player> nearbyPlayers = PandaStream.of(Bukkit.getServer().getOnlinePlayers())
                     .filter(player -> range >= player.getLocation().distance(sender.getLocation()))
                     .filterNot(player -> player.equals(sender))
                     .collect(Collectors.toList());
 
-            when(guild.getMembers().size() + nearbyPlayers.size() > this.config.maxMembersInGuild, formatter.format(this.messages.inviteAmount));
-            when(nearbyPlayers.isEmpty(), this.messages.inviteNoOneIsNearby);
+            when(guild.getMembers().size() + nearbyPlayers.size() > this.config.maxMembersInGuild, config -> config.inviteAmount, formatter);
+            when(nearbyPlayers.isEmpty(), config -> config.inviteNoOneIsNearby);
 
-            sender.sendMessage(FunnyFormatter.format(this.messages.inviteAllCommand, "{RANGE}", range));
+            this.messageService.getMessage(config -> config.inviteAllCommand)
+                    .receiver(sender)
+                    .with("{RANGE}", range)
+                    .send();
 
             PandaStream.of(nearbyPlayers)
                     .mapOpt(this.userManager::findByPlayer)
@@ -83,20 +85,25 @@ public final class InviteCommand extends AbstractFunnyCommand {
     }
 
     private void inviteUserToGuild(User deputy, Guild guild, User invitedUser, FunnyFormatter formatter) {
-
         if (this.guildInvitationList.hasInvitation(guild, invitedUser)) {
             if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, deputy, guild, invitedUser))) {
                 return;
             }
 
-            deputy.sendMessage(FunnyFormatter.format(this.messages.inviteCancelled, "{PLAYER}", invitedUser.getName()));
-            invitedUser.sendMessage(formatter.format(this.messages.inviteCancelledToInvited));
+            this.messageService.getMessage(config -> config.inviteCancelled)
+                    .receiver(deputy)
+                    .with("{PLAYER}", invitedUser.getName())
+                    .send();
+            this.messageService.getMessage(config -> config.inviteCancelledToInvited)
+                    .receiver(invitedUser)
+                    .with(formatter)
+                    .send();
 
             this.guildInvitationList.expireInvitation(guild, invitedUser);
             return;
         }
 
-        when(invitedUser.hasGuild(), this.messages.generalUserHasGuild);
+        when(invitedUser.hasGuild(), config -> config.generalUserHasGuild);
 
         if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, deputy, guild, invitedUser))) {
             return;
@@ -104,8 +111,14 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
         this.guildInvitationList.createInvitation(guild, invitedUser);
 
-        deputy.sendMessage(FunnyFormatter.format(this.messages.inviteToOwner, "{PLAYER}", invitedUser.getName()));
-        invitedUser.sendMessage(formatter.format(this.messages.inviteToInvited));
+        this.messageService.getMessage(config -> config.inviteToOwner)
+                .receiver(deputy)
+                .with("{PLAYER}", invitedUser.getName())
+                .send();
+        this.messageService.getMessage(config -> config.inviteToInvited)
+                .receiver(invitedUser)
+                .with(formatter)
+                .send();
     }
 
 }

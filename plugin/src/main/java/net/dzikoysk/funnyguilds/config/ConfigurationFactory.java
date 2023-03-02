@@ -6,6 +6,9 @@ import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.migration.M0001_Migrate_old_region_notification_keys;
+import net.dzikoysk.funnyguilds.config.migration.M0002_Migrate_old_rank_kill_message;
 import net.dzikoysk.funnyguilds.config.migration.P0001_Fix_freecam_compensation_key_case;
 import net.dzikoysk.funnyguilds.config.migration.P0002_Migrate_old_heart_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0003_Migrate_old_tnt_protection_configuration;
@@ -14,6 +17,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_c
 import net.dzikoysk.funnyguilds.config.migration.P0006_Migrate_old_scoreboard_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0007_Migrate_old_relational_tag_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0008_Migrate_old_heart_center_configuration;
+import net.dzikoysk.funnyguilds.config.migration.P0009_Migrate_old_killer_notification_key;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.migration.T0002_Update_tablist_keys;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
@@ -30,6 +34,7 @@ import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
+import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 
 public final class ConfigurationFactory {
 
@@ -42,11 +47,17 @@ public final class ConfigurationFactory {
             it.withSerdesPack(registry -> {
                 registry.register(new DecolorTransformer());
                 registry.register(new FunnyTimeFormatterTransformer());
+                registry.register(new SerdesMessages());
             });
 
             it.withBindFile(messageConfigurationFile);
             it.saveDefaults();
             it.load(true);
+
+            it.migrate(
+                    new M0001_Migrate_old_region_notification_keys(),
+                    new M0002_Migrate_old_rank_kill_message()
+            );
         });
     }
 
@@ -77,7 +88,8 @@ public final class ConfigurationFactory {
                     new P0005_Fix_heart_configuration_centery_key(),
                     new P0006_Migrate_old_scoreboard_configuration(),
                     new P0007_Migrate_old_relational_tag_configuration(),
-                    new P0008_Migrate_old_heart_center_configuration()
+                    new P0008_Migrate_old_heart_center_configuration(),
+                    new P0009_Migrate_old_killer_notification_key()
             );
         });
     }

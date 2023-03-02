@@ -21,12 +21,27 @@ dependencies {
 
     /* okaeri config library */
 
-    val okaeriConfigs = "4.0.9"
+    val okaeriConfigs = "5.0.0-beta.2"
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
     // okaeri holographicdisplays commons
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.22")
+
+    /* messages libraries */
+
+    val adventureVersion = "4.12.0"
+    implementation("net.kyori:adventure-api:$adventureVersion")
+    implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
+    implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
+    implementation("net.kyori:adventure-platform-bukkit:4.2.0") // adventure-platform has other versioning than adventure-api
+
+    val yamlVersion = "5.0.0"
+    implementation("dev.peri.yetanothermessageslibrary:core:$yamlVersion")
+    implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
+    implementation("dev.peri.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
+
+    implementation("com.github.PikaMug:LocaleLib:3.1")
 
     /* general stuff */
 
@@ -93,6 +108,9 @@ tasks.withType<ShadowJar> {
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
     relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
+    relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
+    relocate("pl.peridot", "net.dzikoysk.funnyguilds.libs.pl.peridot")
+    relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
 
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")

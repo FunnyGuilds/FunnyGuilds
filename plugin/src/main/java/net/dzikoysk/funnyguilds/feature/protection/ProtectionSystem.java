@@ -2,15 +2,14 @@ package net.dzikoysk.funnyguilds.feature.protection;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
@@ -19,6 +18,7 @@ import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.Triple;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
 
 public final class ProtectionSystem {
 
@@ -88,32 +88,37 @@ public final class ProtectionSystem {
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
         Player player = result.getFirst();
         ProtectionType protectionType = result.getThird();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
+        Function<MessageConfiguration, Sendable> messageSupplier;
         switch (protectionType) {
             case UNAUTHORIZED:
-                ChatUtils.sendMessage(player, messages.regionUnauthorized);
+                messageSupplier = config -> config.regionUnauthorized;
                 break;
             case HEART:
-                ChatUtils.sendMessage(player, messages.regionCenter);
+                messageSupplier = config -> config.regionCenter;
                 break;
             case HEART_INTERACTION:
-                ChatUtils.sendMessage(player, messages.regionInteract);
+                messageSupplier = config -> config.regionInteract;
                 break;
             case LOCKED:
                 ProtectionSystem.sendRegionExplodeMessage(player, result.getSecond());
-                break;
+                return;
             default:
-                ChatUtils.sendMessage(player, messages.regionOther);
+                messageSupplier = config -> config.regionOther;
                 break;
         }
+        FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
+                .receiver(player)
+                .send();
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
         guild.getBuild().peek(build -> {
             Duration time = Duration.between(Instant.now(), build);
-            MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-            ChatUtils.sendMessage(player, FunnyFormatter.format(messages.regionExplodeInteract, "{TIME}", time.getSeconds()));
+            FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.regionExplodeInteract)
+                    .with(FunnyFormatter.of("{TIME}", time.getSeconds()))
+                    .receiver(player)
+                    .send();
         });
     }
 

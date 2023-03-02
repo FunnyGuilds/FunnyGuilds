@@ -17,7 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class MoveCommand extends AbstractFunnyCommand {
@@ -30,8 +29,8 @@ public final class MoveCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User admin, String[] args) {
-        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
-        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(!this.config.regionsEnabled, config -> config.regionsDisabled);
+        when(args.length < 1, config -> config.generalNoTagGiven);
 
         HeartConfiguration heartConfig = this.config.heart;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
@@ -50,8 +49,8 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                FunnyFormatter.format(this.messages.createSpawn, "{DISTANCE}", distance));
-        when(this.regionManager.isNearRegion(location), this.messages.createIsNear);
+                config -> config.createSpawn, FunnyFormatter.of("{DISTANCE}", distance));
+        when(this.regionManager.isNearRegion(location), config -> config.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
             return;
@@ -89,7 +88,10 @@ public final class MoveCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{REGION}", region.getName());
 
-        admin.sendMessage(formatter.format(this.messages.adminGuildRelocated));
+        this.messageService.getMessage(config -> config.adminGuildRelocated)
+                .receiver(player)
+                .with(formatter)
+                .send();
     }
 
 }

@@ -17,12 +17,13 @@ public final class TopCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        User targetUser = this.userManager.findByName(sender.getName()).orNull();
-
-        this.messages.topList.forEach(line -> {
-            String parsedRank = this.rankPlaceholdersService.format(line, targetUser);
-            this.sendMessage(sender, (parsedRank == null ? line : parsedRank));
-        });
+        this.messageService.getMessage(config -> config.topList)
+                .receiver(sender)
+                .with(CommandSender.class, receiver -> {
+                    User targetUser = this.userManager.findByName(sender.getName()).orNull();
+                    return this.rankPlaceholdersService.prepareReplacement(targetUser);
+                })
+                .send();
     }
 
 }

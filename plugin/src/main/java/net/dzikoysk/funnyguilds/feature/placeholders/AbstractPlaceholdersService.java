@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.plugin.java.JavaPlugin;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -74,8 +76,13 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatCustom(text, data, prefix, suffix, nameModifier);
         }
-
         return text;
+    }
+
+    public List<FunnyFormatter> getFormatters(T data) {
+        return PandaStream.of(this.placeholders.values())
+                .map(placeholders -> placeholders.toVariablesFormatter(data))
+                .toList();
     }
 
 }

@@ -2,11 +2,17 @@ package net.dzikoysk.funnyguilds.shared;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Supplier;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Pair;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
-public final class FunnyFormatter {
+public final class FunnyFormatter implements Replaceable {
 
     private final List<Pair<String, Supplier<?>>> placeholders = new ArrayList<>();
 
@@ -41,6 +47,31 @@ public final class FunnyFormatter {
         }
 
         return FunnyStringUtils.replace(message, placeholder, Objects.toString(value));
+    }
+
+    @Override
+    public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
+        return this.format(text);
+    }
+
+    @Override
+    public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
+        for (Pair<String, Supplier<?>> placeholderPair : this.placeholders) {
+            String placeholder = placeholderPair.getFirst();
+            Object value = placeholderPair.getSecond().get();
+            if (value == null) {
+                throw new NullPointerException("Placeholder " + placeholder + " returns null value");
+            }
+
+            TextReplacementConfig replacement = TextReplacementConfig.builder()
+                    .matchLiteral(placeholder)
+                    .replacement(Objects.toString(value))
+                    .build();
+
+            text = text.replaceText(replacement);
+        }
+
+        return text;
     }
 
     public FunnyFormatter register(String placeholder, Object value) {

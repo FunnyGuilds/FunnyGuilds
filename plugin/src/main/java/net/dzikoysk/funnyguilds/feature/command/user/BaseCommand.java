@@ -9,7 +9,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsMember;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -18,7 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -33,15 +31,15 @@ public final class BaseCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsMember User member, Guild guild) {
-        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
-        when(!this.config.baseEnable, this.messages.baseTeleportationDisabled);
-        when(member.getCache().getTeleportation() != null, this.messages.baseIsTeleportation);
+        when(!this.config.regionsEnabled, config -> config.regionsDisabled);
+        when(!this.config.baseEnable, config -> config.baseTeleportationDisabled);
+        when(member.getCache().getTeleportation() != null, config -> config.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()
                 : this.config.baseItems;
 
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, this.messages.baseItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, config -> config.baseItems)) {
             return;
         }
 
@@ -50,7 +48,9 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
         if (this.config.baseDelay.isZero()) {
             guild.teleportHome(player);
-            member.sendMessage(this.messages.baseTeleport);
+            this.messageService.getMessage(config -> config.baseTeleport)
+                    .receiver(member)
+                    .send();
             return;
         }
 
@@ -71,7 +71,9 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                member.sendMessage(this.messages.baseMove);
+                this.messageService.getMessage(config -> config.baseMove)
+                        .receiver(member)
+                        .send();
                 cache.setTeleportation(null);
                 player.getInventory().addItem(items);
                 return;
@@ -79,13 +81,18 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
-                member.sendMessage(this.messages.baseTeleport);
+                this.messageService.getMessage(config -> config.baseTeleport)
+                        .receiver(member)
+                        .send();
                 guild.teleportHome(player);
                 cache.setTeleportation(null);
             }
         }, 0L, 10L));
 
-        member.sendMessage(FunnyFormatter.format(this.messages.baseDontMove, "{TIME}", time.getSeconds()));
+        this.messageService.getMessage(config -> config.baseDontMove)
+                .receiver(member)
+                .with("{TIME}", time.getSeconds())
+                .send();
     }
 
 }

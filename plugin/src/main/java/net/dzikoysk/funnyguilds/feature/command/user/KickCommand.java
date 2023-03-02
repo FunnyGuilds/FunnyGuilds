@@ -28,12 +28,12 @@ public final class KickCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild, String[] args) {
-        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 1, config -> config.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
-        when(!formerUser.hasGuild(), this.messages.generalPlayerHasNoGuild);
-        when(!guild.equals(formerUser.getGuild().get()), this.messages.kickOtherGuild);
-        when(formerUser.isOwner(), this.messages.kickOwner);
+        when(!formerUser.hasGuild(), config -> config.generalPlayerHasNoGuild);
+        when(!guild.equals(formerUser.getGuild().get()), config -> config.kickOtherGuild);
+        when(formerUser.isOwner(), config -> config.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, deputy, guild, formerUser))) {
             return;
@@ -50,9 +50,18 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        deputy.sendMessage(formatter.format(this.messages.kickToOwner));
-        this.broadcastMessage(formatter.format(this.messages.broadcastKick));
-        formerUser.sendMessage(formatter.format(this.messages.kickToPlayer));
+        this.messageService.getMessage(config -> config.kickToOwner)
+                .receiver(deputy)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.kickToPlayer)
+                .receiver(formerUser)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.broadcastKick)
+                .broadcast()
+                .with(formatter)
+                .send();
     }
 
 }

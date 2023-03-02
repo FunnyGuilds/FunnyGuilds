@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -68,7 +69,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
 
                 if (!this.config.guiItemsName.isEmpty()) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), null, item));
+                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), Collections.emptySet(), item));
                 }
 
                 meta.setLore(lore);

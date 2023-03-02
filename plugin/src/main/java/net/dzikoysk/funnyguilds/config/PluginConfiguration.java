@@ -15,7 +15,6 @@ import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
 import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
-import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
 import java.time.Duration;
@@ -27,6 +26,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -38,10 +38,7 @@ import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
-import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -88,6 +85,16 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy informacje o aktualizacji wersji nightly mają być widoczne podczas wejścia na serwer")
     @Comment("Ta opcja działa tylko wtedy, gdy włączona jest opcja 'update-info'")
     public boolean updateNightlyInfo = true;
+
+    @Comment("")
+    @Comment("Domyślny używany język używany przez plugin jeżeli nie można znaleźć języka gracza")
+    public Locale defaultLocale = Locale.forLanguageTag("pl");
+
+    @Comment("")
+    @Comment("Lista języków używanych przez plugin")
+    @Comment("Jeżeli chcesz dodać nowy język dodaj go tutaj - utworzy to nowy plik z domyślnymi wartościami, które możesz później edytować")
+    @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
+    public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl"), Locale.forLanguageTag("en")));
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
@@ -184,8 +191,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czy wiadomości o braku potrzebnych przedmiotów maja zawierać elementy, na które można najechać")
     @Comment("Takie elementy pokazują informacje o przedmiocie, np. jego typ, nazwę czy opis")
-    @Comment("Funkcja jest obecnie trochę niedopracowana i może powodować problemy na niektórych wersjach MC, np. 1.8.8")
-    public boolean enableItemComponent = false;
+    public boolean enableItemComponent = true;
 
     @Comment("")
     @Comment("Przedmioty wymagane do założenia gildii")
@@ -452,11 +458,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Minimalna odległość między terenami gildii")
     public int regionMinDistance = 10;
 
-    @Positive
-    @Comment("")
-    @Comment("Czas wyświetlania powiadomienia na pasku powiadomień, w sekundach")
-    public Duration regionNotificationTime = Duration.ofSeconds(15);
-
     @Min(1)
     @Comment("")
     @Comment("Co ile może byc wywoływany pasek powiadomień przez jednego gracza, w sekundach")
@@ -614,9 +615,8 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean broadcastDeathMessage = true;
 
     @Comment("")
-    @Comment("Czy wiadomość o zabiciu gracza powinna być wyświetlana bez względu na wyłączone wiadomości o śmierci")
-    @CustomKey("ignore-death-messages-disabled")
-    public boolean ignoreDisabledDeathMessages = false;
+    @Comment("Czy wyłączyć wyświetlanie domyślnej wiadomości o śmierci gracza")
+    public boolean disableDefaultDeathMessage = true;
 
     @Comment("")
     @Comment("Ranking, od którego rozpoczyna gracz")
@@ -1045,19 +1045,24 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean translatedMaterialsEnable = true;
 
     @Comment("")
+    @Comment("Czy do tłumaczenia nazw przedmiotów plugin ma używać tzw. TranslatableComponents - nazwy przedmiotów będą wyświetlane wtedy w języku gracza")
+    @Comment("Jeśli opcja będzie włączona opcja 'translated-materials-name' nie będzie miała wpływu na nazwy przedmiotów")
+    public boolean useTranslatableComponentsForMaterials = false;
+
+    @Comment("")
     @Comment("Tłumaczenia nazw przedmiotów dla znaczników {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
     @Comment("Wpisywać w formacie - nazwa_przedmiotu: \"tłumaczona nazwa przedmiotu\"")
     @CustomKey("translated-materials-name")
     public Map<Material, String> translatedMaterials = ImmutableMap.<Material, String>builder()
             .put(Material.DIAMOND_SWORD, "&3diamentowy miecz")
             .put(Material.IRON_SWORD, "&7zelazny miecz")
-            .put(Material.GOLD_INGOT, "&eZloto")
+            .put(Material.GOLD_INGOT, "&ezloto")
             .build();
 
     @Comment("")
     @Comment("Wygląd znaczników {ITEM} i {ITEMS} za liczbą przedmiotu")
-    @Comment("Dla np. item-amount-suffix: \"szt.\" otrzymamy 1szt. golden_apple")
-    public RawString itemAmountSuffix = new RawString("x");
+    @Comment("Dla np. item-amount-suffix: \"szt. \" otrzymamy 1szt. golden_apple")
+    public RawString itemAmountSuffix = new RawString("x ");
 
     @Comment("")
     @Comment("Czy sprawdzanie zakazanych nazw i tagów gildii powinno być włączone")
@@ -1082,64 +1087,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
     @Comment("")
-    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy jako title")
-    @CustomKey("display-title-notification-for-killer")
-    public boolean displayTitleNotificationForKiller = false;
+    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy")
+    public boolean displayNotificationForKiller = false;
 
     @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
     @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;
-
-    @Comment("")
-    @Comment("Gdzie mają pojawiać się wiadomości związane z poruszaniem się po terenach gildii")
-    @Comment("Możliwe miejsca wyświetlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
-    @CustomKey("region-move-notification-style")
-    public List<NotificationStyle> regionEnterNotificationStyle = Arrays.asList(NotificationStyle.ACTIONBAR, NotificationStyle.BOSSBAR);
-
-    @Min(1)
-    @Comment("")
-    @Comment("Jak długo title/subtitle powinien się pojawiać")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @CustomKey("notification-title-fade-in")
-    public int notificationTitleFadeIn = 10;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Jak długo title/subtitle powinien pozostać na ekranie gracza")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @CustomKey("notification-title-stay")
-    public int notificationTitleStay = 10;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Jak długo title/subtitle powinien znikać")
-    @Comment("Czas podawany w tickach (20 tickow = 1 sekunda)")
-    @CustomKey("notification-title-fade-out")
-    public int notificationTitleFadeOut = 10;
-
-    @Pattern("PINK|BLUE|RED|GREEN|YELLOW|PURPLE|WHITE")
-    @Comment("")
-    @Comment("Jakiego koloru powinien byc boss bar podczas wyświetlania powiadomienia")
-    @Comment("Dostępne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
-    @CustomKey("notification-boss-bar-color")
-    public String bossBarColor = "RED";
-
-    @Pattern("SOLID|SEGMENTED_6|SEGMENTED_10|SEGMENTED_12|SEGMENTED_20")
-    @Comment("")
-    @Comment("Jakiego stylu powinien byc boss bar podczas wyświetlania powiadomienia")
-    @Comment("Dostępne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
-    @CustomKey("notification-boss-bar-style")
-    public String bossBarStyle = "SOLID";
-
-    @Comment("")
-    @Comment("Jakie flagi powinny być nałożone na byc boss bar podczas wyświetlania powiadomienia")
-    @Comment("Dostępne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
-    @CustomKey("notification-boss-bar-flags")
-    public List<String> bossBarFlags = Collections.singletonList("CREATE_FOG");
-
-    @Exclude
-    public BossBarOptions bossBarOptions_;
 
     @Comment("")
     @Comment("Czy osoba, która założyła pierwszą gildię na serwerze powinna dostać nagrodę")
@@ -1303,6 +1257,10 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
+        if (this.availableLocales.add(this.defaultLocale)) {
+            FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' hasn't been added in available locales, adding it automatically");
+        }
+
         this.guiItems = this.loadGUI(this.guiItems_);
 
         if (!this.useCommonGUI) {
@@ -1357,14 +1315,6 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
-
-        if (!"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
-            this.bossBarOptions_ = BossBarOptions.builder()
-                    .color(this.bossBarColor)
-                    .style(this.bossBarStyle)
-                    .flags(this.bossBarFlags)
-                    .build();
-        }
     }
 
     public enum DataModel {

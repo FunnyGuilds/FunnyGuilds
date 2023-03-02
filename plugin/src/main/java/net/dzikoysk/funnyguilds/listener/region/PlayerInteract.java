@@ -1,18 +1,17 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -107,8 +106,11 @@ public class PlayerInteract extends AbstractFunnyListener {
         try {
             this.infoExecutor.execute(player, new String[] {guild.getTag()});
         }
-        catch (ValidationException validatorException) {
-            validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
+        catch (InternalValidationException validatorException) {
+            this.messageService.getMessage(validatorException.getMessageSupplier())
+                    .with(validatorException.getReplacements())
+                    .receiver(player)
+                    .send();
         }
     }
 

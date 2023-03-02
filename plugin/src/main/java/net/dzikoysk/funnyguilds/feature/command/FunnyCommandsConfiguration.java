@@ -8,7 +8,6 @@ import java.util.function.Function;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
@@ -76,7 +75,6 @@ public final class FunnyCommandsConfiguration {
         Server server = plugin.getServer();
 
         PluginConfiguration config = plugin.getPluginConfiguration();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
 
         CommandsConfiguration commands = config.commands;
         CommandsConfiguration.FunnyCommand enlargeCommand = commands.enlarge;
@@ -146,18 +144,19 @@ public final class FunnyCommandsConfiguration {
                 .placeholders(adminCommands.placeholders)
                 .injector(plugin.getInjector().fork(resources -> {}))
                 .bind(new UserBind(userManager))
-                .bind(new GuildBind(messages, userManager))
+                .bind(new GuildBind(userManager))
                 .type(new PlayerType(server))
                 .completer(new MembersCompleter(userManager))
                 .completer(new GuildsCompleter(guildManager))
                 .completer(new AlliesCompleter(userManager))
                 .completer(new GuildInvitationsCompleter(userManager, plugin.getGuildInvitationList()))
                 .completer(new InvitePlayersCompleter(config, userManager))
-                .validator(new MemberValidator(messages))
-                .validator(new ManageValidator(messages))
-                .validator(new OwnerValidator(messages))
+                .validator(new MemberValidator())
+                .validator(new ManageValidator())
+                .validator(new OwnerValidator())
                 .commands(userCommands.commands)
                 .commands(adminCommands.commands)
+                .exceptionHandler(new InternalValidationExceptionHandler(plugin.getMessageService()))
                 .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()))
                 .install();
     }

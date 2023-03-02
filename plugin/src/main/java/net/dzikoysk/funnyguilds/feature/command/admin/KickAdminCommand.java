@@ -21,11 +21,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 1, config -> config.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
-        when(!user.hasGuild(), this.messages.generalPlayerHasNoGuild);
-        when(user.isOwner(), this.messages.adminGuildOwner);
+        when(!user.hasGuild(), config -> config.generalPlayerHasNoGuild);
+        when(user.isOwner(), config -> config.adminGuildOwner);
 
         Guild guild = user.getGuild().get();
         User admin = AdminUtils.getAdminUser(sender);
@@ -45,9 +45,18 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        this.sendMessage(sender, formatter.format(this.messages.kickToOwner));
-        this.broadcastMessage(formatter.format(this.messages.broadcastKick));
-        user.sendMessage(formatter.format(this.messages.kickToPlayer));
+        this.messageService.getMessage(config -> config.kickToOwner)
+                .receiver(sender)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.kickToPlayer)
+                .receiver(user)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.broadcastKick)
+                .broadcast()
+                .with(formatter)
+                .send();
     }
 
 }

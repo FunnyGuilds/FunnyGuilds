@@ -6,13 +6,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
-import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -29,6 +29,8 @@ import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 
 public final class ItemUtils {
 
@@ -53,55 +55,37 @@ public final class ItemUtils {
     private ItemUtils() {
     }
 
-    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, String message) {
-        boolean enableItemComponent = FunnyGuilds.getInstance().getPluginConfiguration().enableItemComponent;
-
+    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, Function<MessageConfiguration, Sendable> messageSupplier) {
         for (ItemStack requiredItem : requiredItems) {
             if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                 continue;
             }
 
-            if (message.isEmpty()) {
-                return false;
-            }
-
-            if (enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(message, requiredItems, requiredItem));
-            }
-            else {
-                player.sendMessage(translateTextPlaceholder(message, requiredItems, requiredItem));
-            }
+            FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
+                    .receiver(player)
+                    .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
+                    .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
+                    .send();
 
             return false;
         }
-
         return true;
     }
 
-    public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        FunnyFormatter formatter = new FunnyFormatter();
+    public static String translateTextPlaceholder(String text, Collection<ItemStack> items, ItemStack item) {
+        return StringReplacer.replace(
+                text,
+                ItemComponentHelper.prepareItemReplacement(item),
+                ItemComponentHelper.prepareItemsReplacement(items)
+        );
+    }
 
-        if (message.contains("{ITEM}")) {
-            formatter.register("{ITEM}", item.getAmount() + config.itemAmountSuffix.getValue() + " " +
-                    MaterialUtils.getMaterialName(item.getType()));
+    public static String itemAsString(ItemStack item, boolean displayAmount) {
+        String materialName = MaterialUtils.getMaterialName(item.getType());
+        if (!displayAmount) {
+            return materialName;
         }
-
-        if (message.contains("{ITEMS}")) {
-            formatter.register("{ITEMS}", FunnyStringUtils.join(
-                    PandaStream.of(items)
-                            .map(itemStack -> itemStack.getAmount() + config.itemAmountSuffix.getValue() + " " +
-                                    MaterialUtils.getMaterialName(itemStack.getType()))
-                            .toList(),
-                    true)
-            );
-        }
-
-        if (message.contains("{ITEM-NO-AMOUNT}")) {
-            formatter.register("{ITEM-NO-AMOUNT}", MaterialUtils.getMaterialName(item.getType()));
-        }
-
-        return formatter.format(message);
+        return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
     }
 
     public static ItemStack parseItem(String itemString) {

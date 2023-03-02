@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class UnbanCommand extends AbstractFunnyCommand {
@@ -22,10 +21,10 @@ public final class UnbanCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 1, config -> config.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guild.isBanned(), this.messages.adminGuildNotBanned);
+        when(!guild.isBanned(), config -> config.adminGuildNotBanned);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {
@@ -39,8 +38,14 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getName())
                 .register("{ADMIN}", sender.getName());
 
-        this.sendMessage(sender, formatter.format(this.messages.adminGuildUnban));
-        this.broadcastMessage(formatter.format(this.messages.broadcastUnban));
+        this.messageService.getMessage(config -> config.adminGuildUnban)
+                .receiver(sender)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.broadcastUnban)
+                .broadcast()
+                .with(formatter)
+                .send();
     }
 
 }

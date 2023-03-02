@@ -26,7 +26,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsMember User member, Guild guild) {
-        when(member.isOwner(), this.messages.leaveIsOwner);
+        when(member.isOwner(), config -> config.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, member, guild, member))) {
             return;
@@ -43,8 +43,14 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", member.getName());
 
-        member.sendMessage(formatter.format(this.messages.leaveToUser));
-        this.broadcastMessage(formatter.format(this.messages.broadcastLeave));
+        this.messageService.getMessage(config -> config.leaveToUser)
+                .receiver(member)
+                .with(formatter)
+                .send();
+        this.messageService.getMessage(config -> config.broadcastLeave)
+                .broadcast()
+                .with(formatter)
+                .send();
     }
 
 }

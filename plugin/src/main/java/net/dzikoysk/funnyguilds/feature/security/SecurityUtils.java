@@ -2,11 +2,15 @@ package net.dzikoysk.funnyguilds.feature.security;
 
 import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
+import net.dzikoysk.funnyguilds.feature.security.cheat.CheatType;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityUtils {
 
@@ -19,18 +23,22 @@ public final class SecurityUtils {
         return millisecond * COMPENSATION_RATIO;
     }
 
-    public static void sendToOperator(Player player, String cheat, String note) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        String message = messages.securitySystemPrefix + messages.securitySystemInfo;
-        String messageNote = messages.securitySystemPrefix + messages.securitySystemNote;
+    public static void sendToOperator(Player player, CheatType cheatType, Replaceable... noteReplacements) {
+        MessageService messageService = FunnyGuilds.getInstance().getMessageService();
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", player.getName())
-                .register("{CHEAT}", cheat)
-                .register("{NOTE}", note);
+                .register("{CHEAT}", cheatType.getName());
 
-        Bukkit.broadcast(formatter.format(message), "funnyguilds.admin");
-        Bukkit.broadcast(formatter.format(messageNote), "funnyguilds.admin");
+        FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.securitySystemInfo)
+                .broadcast()
+                .with(formatter)
+                .with(
+                        CommandSender.class,
+                        receiver -> Replacement.of("{NOTE}", messageService.get(receiver, cheatType.getNoteSupplier(), noteReplacements))
+                )
+                .permission("funnyguilds.admin")
+                .send();
     }
 
     public static void addViolationLevel(User user) {
