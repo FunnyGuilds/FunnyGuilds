@@ -1,21 +1,20 @@
 package net.dzikoysk.funnyguilds.config.message;
 
-import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.Header;
-import eu.okaeri.configs.exception.OkaeriException;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.kyori.adventure.bossbar.BossBar;
 import dev.peri.yetanothermessageslibrary.MessageRepository;
 import dev.peri.yetanothermessageslibrary.message.SendableMessage;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.ChatHolder;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
+import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Header;
+import eu.okaeri.configs.exception.OkaeriException;
+import java.lang.reflect.Field;
+import java.util.List;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.kyori.adventure.bossbar.BossBar;
 
 @Header("Dla większości wiadomości poprawny jest format: https://github.com/P3ridot/YetAnotherMessagesLibrary/blob/master/repository/okaeri/FORMAT.md")
 @Header("Pozwala on m.in. na zmianę miejsca wyświetlania wiadomości (np. wyświetlanie danej wiadomość na actionbarze zamiast chacie)")
@@ -82,7 +81,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
     public SendableMessage statsResetItems = ChatHolder.message("&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}");
     @Comment("Dostępne zmienne: {LAST-POINTS}, {CURRENT-POINTS}, {LAST-KILLS}, {CURRENT-KILLS}, {LAST-DEATHS}, {CURRENT-DEATHS}, {LAST-ASSISTS}, {CURRENT-ASSISTS}, {LAST-LOGOUTS}, {CURRENT-LOGOUTS}")
-    public List<String> statsResetMessage = Arrays.asList(
+    public SendableMessage statsResetMessage = ChatHolder.message(
             "&7Zresetowales swoje statystyki do podstawowych",
             " &7Punkty: &c{LAST-POINTS} &8-> &a{CURRENT-POINTS}",
             " &7Zabójstwa: &c{LAST-KILLS} &8-> &a{CURRENT-KILLS}",
