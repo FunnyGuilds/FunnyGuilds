@@ -24,7 +24,7 @@ import org.bukkit.entity.Player;
 public class V1_18R2PlayerList implements PlayerList {
 
     private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
-    private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
+    private static final IChatBaseComponent EMPTY_COMPONENT = CraftChatMessage.fromString("")[0];
 
     private final int cellCount;
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
@@ -44,7 +44,7 @@ public class V1_18R2PlayerList implements PlayerList {
         try {
             for (int i = 0; i < this.cellCount; i++) {
                 String paddedIdentifier = StringUtils.leftPad(String.valueOf(i), 2, '0');
-                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier, " ");
+                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier);
 
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
@@ -55,7 +55,7 @@ public class V1_18R2PlayerList implements PlayerList {
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
+                IChatBaseComponent component = CraftChatMessage.fromString(text, false)[0];
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];

@@ -63,7 +63,7 @@ public class V1_8R3PlayerList implements PlayerList {
 
             for (int i = 0; i < this.cellCount; i++) {
                 String paddedIdentifier = StringUtils.leftPad(String.valueOf(i), 2, '0');
-                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier, " ");
+                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier);
 
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
