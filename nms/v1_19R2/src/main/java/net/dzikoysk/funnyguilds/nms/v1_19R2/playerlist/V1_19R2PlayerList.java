@@ -2,13 +2,17 @@ package net.dzikoysk.funnyguilds.nms.v1_19R2.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.IChatBaseComponent;
-import net.minecraft.network.chat.IChatMutableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.a;
@@ -19,17 +23,10 @@ import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R2.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 public class V1_19R2PlayerList implements PlayerList {
 
     private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
-    private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
+    private static final IChatBaseComponent EMPTY_COMPONENT = CraftChatMessage.fromString("", false)[0];
 
     private static final Field playerInfoEntriesField;
 
@@ -72,13 +69,7 @@ public class V1_19R2PlayerList implements PlayerList {
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
-
-                // NOTE: always force client to use display name instead of using name from the GameProfile
-                //       by providing empty component if the resulting component is null (this might happen if text is empty).
-                if (component == null) {
-                    component = IChatMutableComponent.a(ComponentContents.a);
-                }
+                IChatBaseComponent component = CraftChatMessage.fromString(text, false)[0];
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];
@@ -110,7 +101,7 @@ public class V1_19R2PlayerList implements PlayerList {
             }
 
             ClientboundPlayerInfoUpdatePacket addPlayerPacket = createPlayerInfoPacket(
-                    EnumSet.of(a.a, a.c, a.d, a.e), // add player, update gamemode, update listed, update latency
+                    EnumSet.of(a.a, a.c, a.d, a.e, a.f), // add player, update gamemode, update listed, update latency, update display name
                     addPlayerList
             );
             packets.add(addPlayerPacket);
@@ -121,8 +112,8 @@ public class V1_19R2PlayerList implements PlayerList {
             );
             packets.add(updatePlayerPacket);
 
-            boolean headerNotEmpty = ! header.isEmpty();
-            boolean footerNotEmpty = ! footer.isEmpty();
+            boolean headerNotEmpty = !header.isEmpty();
+            boolean footerNotEmpty = !footer.isEmpty();
 
             if (headerNotEmpty || footerNotEmpty) {
                 IChatBaseComponent headerComponent = EMPTY_COMPONENT;
