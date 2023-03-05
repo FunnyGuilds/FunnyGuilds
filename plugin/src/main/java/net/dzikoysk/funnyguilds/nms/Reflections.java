@@ -68,8 +68,10 @@ public final class Reflections {
     }
 
     public static Class<?> getNMSClass(String name, String subPackage) {
-        subPackage = NEED_ADDITIONAL_NMS_PACKAGE ? subPackage + "." : "";
-        return getClass("net.minecraft.server." + subPackage + SERVER_VERSION + "." + name);
+        subPackage = NEED_ADDITIONAL_NMS_PACKAGE 
+            ? subPackage
+            : "server." + SERVER_VERSION;
+        return getClass("net.minecraft." + subPackage + "." + name);
     }
 
     public static Class<?> getCraftBukkitClass(String name) {
