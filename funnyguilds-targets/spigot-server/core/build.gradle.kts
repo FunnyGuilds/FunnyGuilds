@@ -12,6 +12,7 @@ dependencies {
         implementation("com.google.guava:guava:21.0") { because("WorldEdit defined a constraint that we must use 21.0 and there is no way to ignore it") }
         implementation("com.google.code.gson:gson:2.8.0") { because("WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it") }
 
+        compileOnly("org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT")
         shadow("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
         shadow("org.apache.logging.log4j:log4j-core:2.19.0")
         implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.19.0")

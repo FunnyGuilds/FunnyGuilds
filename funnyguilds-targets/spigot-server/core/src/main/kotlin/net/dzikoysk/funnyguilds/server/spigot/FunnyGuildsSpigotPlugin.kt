@@ -5,6 +5,7 @@ import com.dzikoysk.sqiffy.Sqiffy
 import com.dzikoysk.sqiffy.createHikariDataSource
 import com.dzikoysk.sqiffy.shared.createTestDatabaseFile
 import net.dzikoysk.funnyguilds.FunnyGuilds
+import net.dzikoysk.funnyguilds.guild.GuildModule
 import net.dzikoysk.funnyguilds.user.UserModule
 import org.bukkit.plugin.java.JavaPlugin
 import org.slf4j.LoggerFactory
@@ -25,7 +26,8 @@ class FunnyGuildsSpigotPlugin : JavaPlugin() {
                 logger = Slf4JSqiffyLogger(LoggerFactory.getLogger(Sqiffy::class.java))
             ),
             modules = listOf(
-                UserModule()
+                UserModule(),
+                GuildModule()
             ),
         )
 

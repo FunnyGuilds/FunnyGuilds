@@ -18,12 +18,13 @@ class UserModule : FunnyModule {
         val userFacade = UserService(
             userRepository = SqlUserRepository(funnyGuilds.sqiffy)
         )
+
         funnyGuilds.registerComponent(userFacade)
 
         context.registerListener(NORMAL) { event: FunnyJoinEvent ->
-            when (val user = userFacade.getUser(event.player.uniqueId)) {
+            when (val user = userFacade.getUser(UserId(event.player.uniqueId))) {
                 null -> {
-                    val createdUser = userFacade.createUser(event.player.uniqueId, event.player.name)
+                    val createdUser = userFacade.createUser(UserId(event.player.uniqueId), event.player.name)
                     event.player.sendMessage("Hello, ${createdUser.name}! Your UUID is ${createdUser.id}.")
                 }
                 else -> event.player.sendMessage("Hello again, ${user.name}! Your UUID is ${user.id}.")

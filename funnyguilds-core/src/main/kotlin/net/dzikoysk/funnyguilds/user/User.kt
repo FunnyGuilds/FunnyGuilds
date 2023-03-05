@@ -11,43 +11,51 @@ import com.dzikoysk.sqiffy.DefinitionVersion
 import com.dzikoysk.sqiffy.Property
 import java.util.UUID
 import com.dzikoysk.sqiffy.Sqiffy
-import net.dzikoysk.funnyguilds.FunnyGuildsVersion
+import net.dzikoysk.funnyguilds.FunnyGuildsVersion.V_5_0_0
+import net.dzikoysk.funnyguilds.server.entity.FunnyPlayer
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
-interface UserRepository {
-
-    fun createUser(playerId: UUID, name: String): User
-
-    fun findUserById(id: UUID): User?
-
-}
-
 @Definition([
     DefinitionVersion(
-        version = FunnyGuildsVersion.V_5_0_0,
-        name = "funnyguilds_users",
+        version = V_5_0_0,
+        name = "users",
         properties = [
             Property(name = "id", type = UUID_BINARY),
             Property(name = "name", type = VARCHAR, details = "48"),
         ],
         constraints = [
-            Constraint(type = PRIMARY_KEY, name = "pk_id", on = "id"),
+            Constraint(type = PRIMARY_KEY, name = "pk_users_id", on = "id"),
         ]
     )
 ])
 object UserDefinition
 
+@JvmInline
+value class UserId(val value: UUID) {
+
+    companion object {
+        fun FunnyPlayer.toUserId() = UserId(uniqueId)
+    }
+
+}
+
+interface UserRepository {
+
+    fun createUser(playerId: UserId, name: String): User
+
+    fun findUserById(id: UserId): User?
+
+}
+
 class SqlUserRepository(private val sqiffy: Sqiffy) : UserRepository {
 
-    override fun createUser(playerId: UUID, name: String): User =
+    override fun createUser(playerId: UserId, name: String): User =
         sqiffy.transaction {
             val user = User(
-                id = playerId,
+                id = playerId.value,
                 name = name
             )
-
-            println()
 
             val result = UserTable.insert {
                 it[UserTable.id] = user.id
@@ -59,9 +67,9 @@ class SqlUserRepository(private val sqiffy: Sqiffy) : UserRepository {
         }
 
 
-    override fun findUserById(id: UUID): User? =
+    override fun findUserById(id: UserId): User? =
         sqiffy.transaction {
-            UserTable.select { UserTable.id eq id }
+            UserTable.select { UserTable.id eq id.value }
                 .firstOrNull()
                 ?.let {
                     User(
