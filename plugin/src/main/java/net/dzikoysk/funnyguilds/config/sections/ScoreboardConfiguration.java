@@ -116,4 +116,17 @@ public class ScoreboardConfiguration extends OkaeriConfig {
 
     }
 
+    @Comment("")
+    public Queue queue = new Queue();
+
+    public static class Queue extends OkaeriConfig {
+
+        public int updateRate = 5;
+
+        @Comment("")
+        public int maxUpdatesInTick = 10;
+
+
+    }
+
 }

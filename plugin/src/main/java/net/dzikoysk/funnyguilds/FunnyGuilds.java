@@ -167,6 +167,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
     private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
+    private volatile Option<BukkitTask> scoreboardQueueUpdateTask = Option.none();
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -680,6 +681,7 @@ public class FunnyGuilds extends JavaPlugin {
     private void prepareScoreboardServices() {
         this.nameTagUpdateTask.peek(BukkitTask::cancel);
         this.dummyUpdateTask.peek(BukkitTask::cancel);
+        this.scoreboardQueueUpdateTask.peek(BukkitTask::cancel);
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
         if (!scoreboardConfig.enabled) {
@@ -708,6 +710,24 @@ public class FunnyGuilds extends JavaPlugin {
                 100,
                 scoreboardConfig.dummy.updateRate.getSeconds() * 20L
         ));
+
+        this.scoreboardQueueUpdateTask = Option.when(
+                scoreboardConfig.nametag.enabled || scoreboardConfig.dummy.enabled,
+                () -> Bukkit.getScheduler().runTaskTimer(
+                        plugin,
+                        () -> {
+                            for (int i = 0; i < scoreboardConfig.queue.maxUpdatesInTick; i++) {
+                                boolean nameTagUpdated = this.individualNameTagManager.map(IndividualNameTagManager::popAndUpdate).orElseGet(false);
+                                boolean dummyUpdated = this.dummyManager.map(DummyManager::popAndUpdate).orElseGet(false);
+                                if (!nameTagUpdated && !dummyUpdated) {
+                                    break;
+                                }
+                            }
+                        },
+                        100,
+                        scoreboardConfig.queue.updateRate
+                )
+        );
     }
 
     public static FunnyGuilds getInstance() {
