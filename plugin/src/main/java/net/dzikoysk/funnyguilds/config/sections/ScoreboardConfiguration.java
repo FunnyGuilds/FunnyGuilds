@@ -121,12 +121,14 @@ public class ScoreboardConfiguration extends OkaeriConfig {
 
     public static class Queue extends OkaeriConfig {
 
-        @Comment("Częstotliwość update'owania nametagów/dummy graczy w kolejce")
-        @Comment("Podana w tickach (1 sekunda = 20 ticków)")
+        @Comment("Co jaki czas kolejka (nametagów/dummy) powinna być odświeżana")
+        @Comment("Wartość podawana w tickach (1 sekunda = 20 ticków)")
+        @Comment("Wyższe wartości mogą powodować opóźnienia w aktualizacji nametagów/dummy")
         public int updateRate = 5;
 
         @Comment("")
-        @Comment("Maksymalna liczba update'ów nametagów/dummy graczy w kolejce w jednym trakcie 1 ticku")
+        @Comment("Maksymalna liczba update'ów w trakcie jednego ticku")
+        @Comment("Wyższe wartości zmniejszają ryzyko opóźnień w aktualizacji nametagów/dummy, ale mogą powodować problemy z wydajnością")
         public int maxUpdatesInTick = 10;
 
 
