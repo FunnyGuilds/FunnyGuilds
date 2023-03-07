@@ -109,7 +109,7 @@ tasks.withType<ShadowJar> {
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
     relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
     relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
-    relocate("pl.peridot", "net.dzikoysk.funnyguilds.libs.pl.peridot")
+    relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
 
     exclude("org/checkerframework/**")
