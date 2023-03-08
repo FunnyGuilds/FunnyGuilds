@@ -20,7 +20,7 @@ idea {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.11.1-SNAPSHOT"
+    version = "4.12.1-SNAPSHOT"
 
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
