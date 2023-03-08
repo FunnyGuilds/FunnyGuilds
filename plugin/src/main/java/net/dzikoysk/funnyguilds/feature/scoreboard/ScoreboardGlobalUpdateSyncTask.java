@@ -13,7 +13,7 @@ public class ScoreboardGlobalUpdateSyncTask extends SyncFunnyTask {
     }
 
     public ScoreboardGlobalUpdateSyncTask(AbstractScoreboardHandler<?> scoreboardHandler) {
-        this(scoreboardHandler, false);
+        this(scoreboardHandler, true);
     }
 
     @Override
