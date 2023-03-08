@@ -6,11 +6,12 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class AddCommand extends AbstractFunnyCommand {
@@ -40,7 +41,7 @@ public final class AddCommand extends AbstractFunnyCommand {
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
         this.plugin.getIndividualNameTagManager()
-                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, userToAdd))
+                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, userToAdd))
                 .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()

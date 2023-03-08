@@ -1,14 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard;
 
 import java.lang.ref.WeakReference;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
+import java.util.Objects;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.Pair;
@@ -20,7 +22,12 @@ public abstract class AbstractScoreboardHandler<T> {
     protected final UserManager userManager;
     protected final ScoreboardService scoreboardService;
 
-    private final Queue<Pair<UpdateData, UpdateData>> updateQueue = new LinkedList<>();
+    private final Deque<Pair<UpdateData, UpdateData>> updateQueue = new ArrayDeque<Pair<UpdateData, UpdateData>>() {
+        @Override
+        public boolean add(@NotNull Pair<UpdateData, UpdateData> pair) {
+            return !this.contains(pair) && super.add(pair);
+        }
+    };
 
     protected AbstractScoreboardHandler(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
         this.pluginConfiguration = pluginConfiguration;
@@ -31,6 +38,15 @@ public abstract class AbstractScoreboardHandler<T> {
     protected abstract T getOrCreateData(Player player, User user);
 
     protected abstract void update(UpdateData observerData, UpdateData targetData);
+
+    private void queueUpdate(UpdateData observerData, UpdateData targetData, boolean priority) {
+        Pair<UpdateData, UpdateData> pair = Pair.of(observerData, targetData);
+        if (priority) {
+            this.updateQueue.addFirst(pair);
+        } else {
+            this.updateQueue.add(pair);
+        }
+    }
 
     public boolean popAndUpdate() {
         Pair<UpdateData, UpdateData> updatePair = this.updateQueue.poll();
@@ -48,7 +64,7 @@ public abstract class AbstractScoreboardHandler<T> {
             UpdateData observerData = toUpdate.get(observerIndex);
             for (int targetIndex = observerIndex; targetIndex < toUpdate.size(); targetIndex++) {
                 UpdateData targetData = toUpdate.get(targetIndex);
-                this.updateQueue.add(Pair.of(observerData, targetData));
+                this.queueUpdate(observerData, targetData, false);
             }
         }
     }
@@ -59,7 +75,7 @@ public abstract class AbstractScoreboardHandler<T> {
                 ? new UpdateData(observerUser, observerPlayer, this.getOrCreateData(observerPlayer, observerUser))
                 : new UpdateData(observerUser, null, null);
 
-        this.getOnlinePlayersToUpdate().forEach(targetData -> this.updateQueue.add(Pair.of(observerData, targetData)));
+        this.getOnlinePlayersToUpdate().forEach(targetData -> this.queueUpdate(observerData, targetData, false));
     }
 
     private List<UpdateData> getOnlinePlayersToUpdate() {
@@ -76,7 +92,7 @@ public abstract class AbstractScoreboardHandler<T> {
         private final WeakReference<Player> playerRef;
         private final WeakReference<T> dataRef;
 
-        public UpdateData(User user, Player player, T data) {
+        public UpdateData(User user, @Nullable Player player, @Nullable T data) {
             this.user = user;
             this.playerRef = new WeakReference<>(player);
             this.dataRef = new WeakReference<>(data);
@@ -86,13 +102,31 @@ public abstract class AbstractScoreboardHandler<T> {
             return this.user;
         }
 
-        @Nullable
-        public Player getPlayer() {
-            return this.playerRef.get();
+        public Option<Player> getPlayer() {
+            return Option.of(this.playerRef.get());
         }
 
         public Option<T> getData() {
             return Option.of(this.dataRef.get());
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+
+            if (!(obj instanceof AbstractScoreboardHandler.UpdateData)) {
+                return false;
+            }
+
+            UpdateData updateData = (UpdateData) obj;
+            return this.user.equals(updateData.user);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.user);
         }
 
     }

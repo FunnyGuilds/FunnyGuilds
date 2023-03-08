@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -40,8 +42,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -206,10 +206,10 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         this.plugin.getDummyManager().peek(manager -> {
             this.plugin.scheduleFunnyTasks(
-                    new DummyGlobalUpdateUserSyncTask(manager, victim),
-                    new DummyGlobalUpdateUserSyncTask(manager, attacker)
+                    new ScoreboardGlobalUpdateUserSyncTask(manager, victim),
+                    new ScoreboardGlobalUpdateUserSyncTask(manager, attacker)
             );
-            calculatedAssists.keySet().forEach(user -> this.plugin.scheduleFunnyTasks(new DummyGlobalUpdateUserSyncTask(manager, user)));
+            calculatedAssists.keySet().forEach(user -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, user)));
         });
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();

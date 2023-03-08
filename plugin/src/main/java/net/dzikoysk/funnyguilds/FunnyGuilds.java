@@ -22,11 +22,10 @@ import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
@@ -515,8 +514,8 @@ public class FunnyGuilds extends JavaPlugin {
             user.getCache().setPlayerList(individualPlayerList);
         }
 
-        this.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
-        this.getDummyManager().map(DummyGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getDummyManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
