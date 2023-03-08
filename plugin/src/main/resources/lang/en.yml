@@ -7,24 +7,24 @@
 #   - &X -> legacy formatowanie kolorów np. &c
 #   - &#XXXXXX -> formatowanie kolorów HEX np. &#FF0000
 # <------- Global Date Format -------> #
-dateFormat: dd.MM.yyyy HH:mm:ss
+dateFormat: yyyy.MM.dd HH:mm:ss
 
 # <------- No Value Messages -------> #
-gNameNoValue: Brak (G-NAME/NAME)
-gTagNoValue: Brak (G-TAG/TAG)
-gOwnerNoValue: Brak (G-OWNER)
-gDeputiesNoValue: Brak (G-DEPUTIES)
-gDeputyNoValue: Brak (G-DEPUTY)
-gValidityNoValue: Brak (G-VALIDITY)
-gProtectionNoValue: Brak (G-PROTECTION)
-gRegionSizeNoValue: Brak (G-REGION-SIZE)
-livesNoValue: Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)
-alliesNoValue: Brak (ALLIES)
-enemiesNoValue: Brak (ENEMIES)
-gtopNoValue: Brak (GTOP-x)
-ptopNoValue: Brak (PTOP-x)
-wgRegionNoValue: Brak (WG-REGION)
-minMembersToIncludeNoValue: Brak (guild-min-members w config.yml)
+gNameNoValue: None (G-NAME/NAME)
+gTagNoValue: None (G-TAG/TAG)
+gOwnerNoValue: None (G-OWNER)
+gDeputiesNoValue: None (G-DEPUTIES)
+gDeputyNoValue: None (G-DEPUTY)
+gValidityNoValue: None (G-VALIDITY)
+gProtectionNoValue: None (G-PROTECTION)
+gRegionSizeNoValue: None (G-REGION-SIZE)
+livesNoValue: None (LIVES-SYMBOL/LIVES-SYMBOL-ALL)
+alliesNoValue: None (ALLIES)
+enemiesNoValue: None (ENEMIES)
+gtopNoValue: None (GTOP-x)
+ptopNoValue: None (PTOP-x)
+wgRegionNoValue: None (WG-REGION)
+minMembersToIncludeNoValue: None (guild-min-members in config.yml)
 
 # <------- Permission Messages -------> #
 permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
