@@ -711,7 +711,7 @@ public class FunnyGuilds extends JavaPlugin {
         ));
 
         this.scoreboardQueueUpdateTask = Option.when(
-                scoreboardConfig.nametag.enabled || scoreboardConfig.dummy.enabled,
+                this.individualNameTagManager.isPresent() || this.dummyManager.isPresent(),
                 () -> Bukkit.getScheduler().runTaskTimer(
                         plugin,
                         () -> {
