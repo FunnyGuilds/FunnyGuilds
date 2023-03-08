@@ -715,7 +715,7 @@ public class FunnyGuilds extends JavaPlugin {
                 () -> Bukkit.getScheduler().runTaskTimer(
                         plugin,
                         () -> {
-                            for (int i = 0; i < scoreboardConfig.queue.maxUpdatesInTick; i++) {
+                            for (int i = 0; i < scoreboardConfig.queueConfiguration.maxUpdatesInTick; i++) {
                                 boolean nameTagUpdated = this.individualNameTagManager.map(IndividualNameTagManager::popAndUpdate).orElseGet(false);
                                 boolean dummyUpdated = this.dummyManager.map(DummyManager::popAndUpdate).orElseGet(false);
                                 if (!nameTagUpdated && !dummyUpdated) {
@@ -724,7 +724,7 @@ public class FunnyGuilds extends JavaPlugin {
                             }
                         },
                         100,
-                        scoreboardConfig.queue.updateRate
+                        scoreboardConfig.queueConfiguration.updateRate
                 )
         );
     }
