@@ -694,7 +694,7 @@ public class FunnyGuilds extends JavaPlugin {
         );
         this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
-                manager::updatePlayers,
+                () -> manager.updatePlayers(false),
                 100,
                 scoreboardConfig.nametag.updateRate.getSeconds() * 20L
         ));
@@ -705,7 +705,7 @@ public class FunnyGuilds extends JavaPlugin {
         );
         this.dummyUpdateTask = this.dummyManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
-                manager::updatePlayers,
+                () -> manager.updatePlayers(false),
                 100,
                 scoreboardConfig.dummy.updateRate.getSeconds() * 20L
         ));

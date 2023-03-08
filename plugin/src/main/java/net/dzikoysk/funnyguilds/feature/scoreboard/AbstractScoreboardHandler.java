@@ -39,9 +39,9 @@ public abstract class AbstractScoreboardHandler<T> {
 
     protected abstract void update(UpdateData observerData, UpdateData targetData);
 
-    private void queueUpdate(UpdateData observerData, UpdateData targetData, boolean priority) {
+    private void queueUpdate(UpdateData observerData, UpdateData targetData, boolean highPriority) {
         Pair<UpdateData, UpdateData> pair = Pair.of(observerData, targetData);
-        if (priority) {
+        if (highPriority) {
             this.updateQueue.addFirst(pair);
         } else {
             this.updateQueue.add(pair);
@@ -58,24 +58,24 @@ public abstract class AbstractScoreboardHandler<T> {
     }
 
     // Update everyone to everyone
-    public void updatePlayers() {
+    public void updatePlayers(boolean highPriority) {
         List<UpdateData> toUpdate = this.getOnlinePlayersToUpdate();
         for (int observerIndex = 0; observerIndex < toUpdate.size(); observerIndex++) {
             UpdateData observerData = toUpdate.get(observerIndex);
             for (int targetIndex = observerIndex; targetIndex < toUpdate.size(); targetIndex++) {
                 UpdateData targetData = toUpdate.get(targetIndex);
-                this.queueUpdate(observerData, targetData, false);
+                this.queueUpdate(observerData, targetData, highPriority);
             }
         }
     }
 
     // Update specific observer to everyone (targets) and everyone to specific observer
-    public void updatePlayer(Player observerPlayer, User observerUser) {
+    public void updatePlayer(Player observerPlayer, User observerUser, boolean highPriority) {
         UpdateData observerData = observerPlayer != null && observerUser.isOnline()
                 ? new UpdateData(observerUser, observerPlayer, this.getOrCreateData(observerPlayer, observerUser))
                 : new UpdateData(observerUser, null, null);
 
-        this.getOnlinePlayersToUpdate().forEach(targetData -> this.queueUpdate(observerData, targetData, false));
+        this.getOnlinePlayersToUpdate().forEach(targetData -> this.queueUpdate(observerData, targetData, highPriority));
     }
 
     private List<UpdateData> getOnlinePlayersToUpdate() {
