@@ -24,7 +24,7 @@ public class PlayerMove extends AbstractFunnyListener {
         if (event.getTo() != null) {
             this.userManager.findByUuid(event.getPlayer().getUniqueId())
                     .map(User::getCache)
-                    .peek(userCache -> userCache.setEnter(this.regionManager.findRegionAtLocation(event.getTo()).isEmpty()));
+                    .peek(userCache -> userCache.setEnter(!this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()))));
 
             this.onMove(event);
         }
@@ -53,8 +53,9 @@ public class PlayerMove extends AbstractFunnyListener {
             User user = userOption.get();
             UserCache cache = user.getCache();
 
-            Option<Region> regionOption = this.regionManager.findRegionAtLocation(to);
-            if (regionOption.isEmpty() && user.getCache().getEnter()) {
+            Option<Region> regionOptionTo = this.regionManager.findRegionAtLocation(to);
+            Option<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
+            if (!regionOptionTo.equals(regionOptionFrom) && user.getCache().getEnter()) {
                 cache.setEnter(false);
 
                 this.regionManager.findRegionAtLocation(from)
@@ -76,7 +77,7 @@ public class PlayerMove extends AbstractFunnyListener {
                         });
             }
             else if (!cache.getEnter()) {
-                regionOption.map(Region::getGuild)
+                regionOptionTo.map(Region::getGuild)
                         .peek(guild -> {
                             if (guild.getName() == null) {
                                 return;
