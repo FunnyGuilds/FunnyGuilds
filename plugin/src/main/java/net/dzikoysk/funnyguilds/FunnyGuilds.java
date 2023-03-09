@@ -22,11 +22,10 @@ import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
-import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
@@ -167,6 +166,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
     private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
+    private volatile Option<BukkitTask> scoreboardQueueUpdateTask = Option.none();
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -514,8 +514,8 @@ public class FunnyGuilds extends JavaPlugin {
             user.getCache().setPlayerList(individualPlayerList);
         }
 
-        this.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
-        this.getDummyManager().map(DummyGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getDummyManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
@@ -680,6 +680,7 @@ public class FunnyGuilds extends JavaPlugin {
     private void prepareScoreboardServices() {
         this.nameTagUpdateTask.peek(BukkitTask::cancel);
         this.dummyUpdateTask.peek(BukkitTask::cancel);
+        this.scoreboardQueueUpdateTask.peek(BukkitTask::cancel);
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
         if (!scoreboardConfig.enabled) {
@@ -693,7 +694,7 @@ public class FunnyGuilds extends JavaPlugin {
         );
         this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
-                manager::updatePlayers,
+                () -> manager.updatePlayers(false),
                 100,
                 scoreboardConfig.nametag.updateRate.getSeconds() * 20L
         ));
@@ -704,10 +705,28 @@ public class FunnyGuilds extends JavaPlugin {
         );
         this.dummyUpdateTask = this.dummyManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
-                manager::updatePlayers,
+                () -> manager.updatePlayers(false),
                 100,
                 scoreboardConfig.dummy.updateRate.getSeconds() * 20L
         ));
+
+        this.scoreboardQueueUpdateTask = Option.when(
+                this.individualNameTagManager.isPresent() || this.dummyManager.isPresent(),
+                () -> Bukkit.getScheduler().runTaskTimer(
+                        plugin,
+                        () -> {
+                            for (int i = 0; i < scoreboardConfig.queueConfiguration.maxUpdatesInTick; i++) {
+                                boolean nameTagUpdated = this.individualNameTagManager.is(IndividualNameTagManager::popAndUpdate);
+                                boolean dummyUpdated = this.dummyManager.is(DummyManager::popAndUpdate);
+                                if (!nameTagUpdated && !dummyUpdated) {
+                                    break;
+                                }
+                            }
+                        },
+                        100,
+                        scoreboardConfig.queueConfiguration.updateRate
+                )
+        );
     }
 
     public static FunnyGuilds getInstance() {

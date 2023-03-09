@@ -16,7 +16,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -33,6 +33,7 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -257,7 +258,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
         this.plugin.getIndividualNameTagManager()
-                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, user))
+                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
                 .peek(this.plugin::scheduleFunnyTasks);
 
         SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));

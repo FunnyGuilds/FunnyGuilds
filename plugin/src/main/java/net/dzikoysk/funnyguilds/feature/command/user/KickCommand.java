@@ -8,11 +8,12 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -42,7 +43,7 @@ public final class KickCommand extends AbstractFunnyCommand {
         guild.removeMember(formerUser);
         formerUser.removeGuild();
         this.plugin.getIndividualNameTagManager()
-                .map(manager -> new NameTagGlobalUpdateUserSyncTask(manager, formerUser))
+                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, formerUser))
                 .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()

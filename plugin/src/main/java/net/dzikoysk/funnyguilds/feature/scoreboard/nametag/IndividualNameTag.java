@@ -54,11 +54,12 @@ public class IndividualNameTag {
     }
 
     // Update specific player for this user
-    public void updatePlayer(Player targetPlayer, User targetUser) {
-        if (!targetUser.isOnline()) {
+    public void updatePlayer(Option<Player> targetPlayerOption, User targetUser) {
+        if (targetPlayerOption.isEmpty() || !targetUser.isOnline()) {
             this.removePlayer(targetUser);
             return;
         }
+        Player targetPlayer = targetPlayerOption.get();
 
         FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + targetUser.getName() + " for " + this.user.getName());
 

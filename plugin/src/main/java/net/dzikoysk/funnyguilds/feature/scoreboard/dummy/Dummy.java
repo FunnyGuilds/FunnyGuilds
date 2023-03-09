@@ -34,7 +34,7 @@ public class Dummy {
         Scoreboard scoreboard = scoreboardOption.get();
 
         Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
-        if (objective != null && objective.getName().equals(OBJECTIVE_NAME)) {
+        if (objective != null) {
             return Option.of(objective);
         }
 
@@ -47,10 +47,6 @@ public class Dummy {
 
     // Update specific player for this user
     public void updatePlayer(User target) {
-        if (target == null) {
-            return;
-        }
-
         if (target.hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }
@@ -62,7 +58,6 @@ public class Dummy {
         }
         scoreboardOption
                 .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
-                .filter(objective -> objective.getName().equals(OBJECTIVE_NAME))
                 .orElse(this::initialize)
                 .peek(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
     }

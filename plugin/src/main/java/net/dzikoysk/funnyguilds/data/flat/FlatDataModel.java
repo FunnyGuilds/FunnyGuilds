@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseFixAlliesAsyncTask;
-import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.NameTagGlobalUpdateSyncTask;
+import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -175,7 +175,7 @@ public class FlatDataModel implements DataModel {
         }
 
         this.plugin.scheduleFunnyTasks(new DatabaseFixAlliesAsyncTask(guildManager));
-        this.plugin.getIndividualNameTagManager().map(NameTagGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
