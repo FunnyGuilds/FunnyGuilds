@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -44,8 +45,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         }
 
         player.getInventory().removeItem(need);
-        region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + this.config.enlargeSize);
+        this.regionManager.enlargeRegion(region, ++enlarge);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{SIZE}", region.getSize())

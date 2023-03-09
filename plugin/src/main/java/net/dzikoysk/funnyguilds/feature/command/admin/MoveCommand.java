@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class MoveCommand extends AbstractFunnyCommand {
@@ -67,7 +68,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
                                 .peek(heart -> Bukkit.getScheduler().runTask(this.plugin, () -> heart.setType(Material.AIR)));
                     }
 
-                    peekRegion.setCenter(location);
+                    this.regionManager.moveRegionCenter(peekRegion, location);
                     guild.getEnderCrystal()
                             .map(Location::clone)
                             .map(homeLocation -> homeLocation.subtract(0.0D, 1.0D, 0.0D))
