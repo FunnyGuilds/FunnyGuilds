@@ -129,7 +129,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Maksymalna liczba update'ów w trakcie trwania jednego ticku")
         @Comment("Wyższe wartości zmniejszają ryzyko opóźnień podczas aktualizacji nametagów/dummy, ale mogą powodować lagi")
-        public int maxUpdatesInTick = 30;
+        public int maxUpdatesInTick = 250;
 
 
     }
