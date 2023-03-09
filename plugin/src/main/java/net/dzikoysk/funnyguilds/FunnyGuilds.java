@@ -716,8 +716,8 @@ public class FunnyGuilds extends JavaPlugin {
                         plugin,
                         () -> {
                             for (int i = 0; i < scoreboardConfig.queueConfiguration.maxUpdatesInTick; i++) {
-                                boolean nameTagUpdated = this.individualNameTagManager.map(IndividualNameTagManager::popAndUpdate).orElseGet(false);
-                                boolean dummyUpdated = this.dummyManager.map(DummyManager::popAndUpdate).orElseGet(false);
+                                boolean nameTagUpdated = this.individualNameTagManager.is(IndividualNameTagManager::popAndUpdate);
+                                boolean dummyUpdated = this.dummyManager.is(DummyManager::popAndUpdate);
                                 if (!nameTagUpdated && !dummyUpdated) {
                                     break;
                                 }
