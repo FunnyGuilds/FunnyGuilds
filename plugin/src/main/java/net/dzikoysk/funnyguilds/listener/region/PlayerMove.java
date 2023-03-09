@@ -21,11 +21,13 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        this.userManager.findByUuid(event.getPlayer().getUniqueId())
-                .map(User::getCache)
-                .peek(userCache -> userCache.setEnter(false));
+        if (event.getTo() != null) {
+            this.userManager.findByUuid(event.getPlayer().getUniqueId())
+                    .map(User::getCache)
+                    .peek(userCache -> userCache.setEnter(this.regionManager.findRegionAtLocation(event.getTo()).isEmpty()));
 
-        this.onMove(event);
+            this.onMove(event);
+        }
     }
 
     @EventHandler
