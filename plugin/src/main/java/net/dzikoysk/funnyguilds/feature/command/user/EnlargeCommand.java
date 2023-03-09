@@ -45,7 +45,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         }
 
         player.getInventory().removeItem(need);
-        this.regionManager.enlargeRegion(region, ++enlarge);
+        this.regionManager.changeRegionEnlargement(region, ++enlarge);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{SIZE}", region.getSize())

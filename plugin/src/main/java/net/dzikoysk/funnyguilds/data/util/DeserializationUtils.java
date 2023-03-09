@@ -99,7 +99,7 @@ public final class DeserializationUtils {
         String regionName = (String) values[0];
         Region region = regionManager.findByName(regionName).orElseGet(new Region(regionName, (Location) values[1]));
 
-        regionManager.enlargeRegion(region, (int) values[3]);
+        regionManager.changeRegionEnlargement(region, (int) values[3]);
         region.update();
 
         region.markUnchanged();

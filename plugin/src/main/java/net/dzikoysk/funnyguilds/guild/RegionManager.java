@@ -235,7 +235,7 @@ public class RegionManager {
         this.addRegion(region);
     }
 
-    public void enlargeRegion(Region region, int level) {
+    public void changeRegionEnlargement(Region region, int level) {
         Validate.notNull(region, "region can't be null!");
         Validate.isTrue(level >= 0, "level can't be negative!");
 
