@@ -58,7 +58,7 @@ public final class DatabaseRegionSerializer {
         statement.set("name", region.getName());
         statement.set("center", LocationUtils.toString(region.getCenter()));
         statement.set("size", region.getSize());
-        statement.set("enlarge", region.getEnlarge());
+        statement.set("enlarge", region.getEnlargementLevel());
 
         statement.executeUpdate();
         region.markUnchanged();

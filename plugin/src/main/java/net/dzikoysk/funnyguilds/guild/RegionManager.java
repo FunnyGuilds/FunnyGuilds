@@ -245,7 +245,7 @@ public class RegionManager {
         }
 
         this.removeRegion(region);
-        region.setEnlarge(level);
+        region.setEnlargementLevel(level);
         region.setSize(this.pluginConfiguration.regionSize + (level * this.pluginConfiguration.enlargeSize));
         this.addRegion(region);
     }
@@ -287,11 +287,11 @@ public class RegionManager {
      * and applies given function for every chunk position.
      */
     private void forEachChunkPositionInRegion(Region region, BiConsumer<Integer, Integer> chunkPosFunc) {
-        int firstX = region.getFirstCorner().getBlockX() >> 4;
-        int firstZ = region.getFirstCorner().getBlockZ() >> 4;
+        int firstX = region.getFirstCorner().getBlockX() / 16;
+        int firstZ = region.getFirstCorner().getBlockZ() / 16;
 
-        int secondX = region.getSecondCorner().getBlockX() >> 4;
-        int secondZ = region.getSecondCorner().getBlockZ() >> 4;
+        int secondX = region.getSecondCorner().getBlockX() / 16;
+        int secondZ = region.getSecondCorner().getBlockZ() / 16;
 
         int startX = Math.min(firstX, secondX);
         int startZ = Math.min(firstZ, secondZ);

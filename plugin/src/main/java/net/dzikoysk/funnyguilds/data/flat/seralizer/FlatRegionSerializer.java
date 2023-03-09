@@ -68,7 +68,7 @@ public final class FlatRegionSerializer {
         wrapper.set("name", region.getName());
         wrapper.set("center", LocationUtils.toString(region.getCenter()));
         wrapper.set("size", region.getSize());
-        wrapper.set("enlarge", region.getEnlarge());
+        wrapper.set("enlarge", region.getEnlargementLevel());
 
         wrapper.save();
         region.markUnchanged();

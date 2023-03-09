@@ -18,7 +18,7 @@ public class Region extends AbstractMutableEntity {
 
     private World world;
     private Location center;
-    private int enlarge;
+    private int enlargementLevel;
     private int size;
 
     private Location firstCorner;
@@ -134,12 +134,12 @@ public class Region extends AbstractMutableEntity {
         this.update();
     }
 
-    public int getEnlarge() {
-        return this.enlarge;
+    public int getEnlargementLevel() {
+        return this.enlargementLevel;
     }
 
-    void setEnlarge(int enlarge) {
-        this.enlarge = enlarge;
+    void setEnlargementLevel(int enlargementLevel) {
+        this.enlargementLevel = enlargementLevel;
         super.markChanged();
     }
 
