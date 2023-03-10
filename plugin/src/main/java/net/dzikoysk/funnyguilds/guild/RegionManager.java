@@ -215,6 +215,10 @@ public class RegionManager {
      */
     public void removeRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
+        
+        if (!this.regionExists(region.getName())) {
+            return;
+        }
 
         this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
