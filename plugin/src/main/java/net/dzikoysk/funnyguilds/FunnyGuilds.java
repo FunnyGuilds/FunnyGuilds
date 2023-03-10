@@ -65,7 +65,6 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerTeleport;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
@@ -325,7 +324,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(GuildPlaceholdersService.class).assignInstance(this.guildPlaceholdersService);
             resources.on(RankPlaceholdersService.class).assignInstance(this.rankPlaceholdersService);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
-            resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
