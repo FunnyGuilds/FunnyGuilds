@@ -31,11 +31,6 @@ public class TopConfiguration extends OkaeriConfig {
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")
-    @Comment("Czy placeholdery {PTOP-x} oraz {GTOP-x} mają byc właczone na tabie oraz w PlaceholderAPI")
-    @Comment("Wyłączenie tej funkcji może minimalnie odciążyć serwer")
-    public boolean enableLegacyPlaceholders = false;
-
-    @Comment("")
     public Format format = new Format();
 
     public static class Format extends OkaeriConfig {
