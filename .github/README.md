@@ -17,7 +17,7 @@ Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/
 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.17.1, 1.18.2, 1.19.2, 1.19.3
 
 #### Download
-Get the latest stable version: [FunnyGuilds Primrose 4.12.0 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
+Get the latest stable version: [FunnyGuilds Snowdrop 4.12.0 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
 Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.12.1+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
