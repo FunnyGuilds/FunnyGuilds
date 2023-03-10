@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -38,7 +38,7 @@ public class RegionManager {
     }
 
     public int countRegions() {
-        return this.regions.size();
+        return this.getRegions().size();
     }
 
     /**
@@ -120,6 +120,8 @@ public class RegionManager {
                 .isPresent();
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public boolean isAnyPlayerInRegion(Region region) {
         return this.isAnyPlayerInRegion(region, Collections.emptySet());
     }
@@ -130,6 +132,8 @@ public class RegionManager {
                 .collect(Collectors.toSet()));
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
         return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers)).orElseGet(false);
     }
@@ -162,6 +166,8 @@ public class RegionManager {
                 .isPresent();
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public boolean isNearRegion(Option<Location> center) {
         return center.map(this::isNearRegion).orElseGet(false);
     }
@@ -193,7 +199,7 @@ public class RegionManager {
     public void addRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
 
-        forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
+        this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
 
             Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
@@ -210,12 +216,38 @@ public class RegionManager {
     public void removeRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
 
-        forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
+        this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
 
-            Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
-            regionsAtChunk.remove(region);
+            this.regions.computeIfPresent(packedPos, (key, set) -> {
+                set.remove(region);
+                return set;
+            });
         });
+    }
+
+    public void moveRegionCenter(Region region, Location center) {
+        Validate.notNull(region, "region can't be null!");
+        Validate.notNull(center, "center can't be null!");
+
+        this.removeRegion(region);
+        region.setCenter(center);
+        this.addRegion(region);
+    }
+
+    public void changeRegionEnlargement(Region region, int level) {
+        Validate.notNull(region, "region can't be null!");
+        Validate.isTrue(level >= 0, "level can't be negative!");
+
+        int maxEnlargeLevel = this.pluginConfiguration.enlargeItems.size() - 1;
+        if (level > maxEnlargeLevel) {
+            level = maxEnlargeLevel;
+        }
+
+        this.removeRegion(region);
+        region.setEnlargementLevel(level);
+        region.setSize(this.pluginConfiguration.regionSize + (level * this.pluginConfiguration.enlargeSize));
+        this.addRegion(region);
     }
 
     /**
@@ -255,11 +287,11 @@ public class RegionManager {
      * and applies given function for every chunk position.
      */
     private void forEachChunkPositionInRegion(Region region, BiConsumer<Integer, Integer> chunkPosFunc) {
-        int firstX = region.getFirstCorner().getChunk().getX();
-        int firstZ = region.getFirstCorner().getChunk().getZ();
+        int firstX = region.getFirstCorner().getBlockX() / 16;
+        int firstZ = region.getFirstCorner().getBlockZ() / 16;
 
-        int secondX = region.getSecondCorner().getChunk().getX();
-        int secondZ = region.getSecondCorner().getChunk().getZ();
+        int secondX = region.getSecondCorner().getBlockX() / 16;
+        int secondZ = region.getSecondCorner().getBlockZ() / 16;
 
         int startX = Math.min(firstX, secondX);
         int startZ = Math.min(firstZ, secondZ);
@@ -274,7 +306,7 @@ public class RegionManager {
         }
     }
 
-    private long packChunkPosition(int chunkX, int chunkZ) {
+    private static long packChunkPosition(int chunkX, int chunkZ) {
         return (long) chunkX & 0xFFFFFFFFL | ((long) chunkZ & 0xFFFFFFFFL) << 32;
     }
 }

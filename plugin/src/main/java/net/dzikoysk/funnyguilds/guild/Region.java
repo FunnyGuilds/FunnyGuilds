@@ -18,8 +18,8 @@ public class Region extends AbstractMutableEntity {
 
     private World world;
     private Location center;
+    private int enlargementLevel;
     private int size;
-    private int enlarge;
 
     private Location firstCorner;
     private Location secondCorner;
@@ -30,11 +30,11 @@ public class Region extends AbstractMutableEntity {
         this.center = center;
     }
 
-    public Region(Guild guild, Location center, int size) {
+    public Region(Guild guild, Location center, int defaultSize) {
         this(guild.getName(), center);
 
         this.guild = guild;
-        this.size = size;
+        this.size = defaultSize;
 
         this.update();
     }
@@ -128,28 +128,28 @@ public class Region extends AbstractMutableEntity {
                 .map(block -> block.getRelative(BlockFace.DOWN));
     }
 
-    public void setCenter(Location location) {
+    void setCenter(Location location) {
         this.center = location;
         this.world = location.getWorld();
         this.update();
+    }
+
+    public int getEnlargementLevel() {
+        return this.enlargementLevel;
+    }
+
+    void setEnlargementLevel(int enlargementLevel) {
+        this.enlargementLevel = enlargementLevel;
+        super.markChanged();
     }
 
     public int getSize() {
         return this.size;
     }
 
-    public void setSize(int size) {
+    void setSize(int size) {
         this.size = size;
         this.update();
-    }
-
-    public int getEnlarge() {
-        return this.enlarge;
-    }
-
-    public void setEnlarge(int enlarge) {
-        this.enlarge = enlarge;
-        super.markChanged();
     }
 
     public int getUpperX() {

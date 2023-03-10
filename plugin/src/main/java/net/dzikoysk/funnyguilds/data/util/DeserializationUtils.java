@@ -99,8 +99,8 @@ public final class DeserializationUtils {
         String regionName = (String) values[0];
         Region region = regionManager.findByName(regionName).orElseGet(new Region(regionName, (Location) values[1]));
 
-        region.setSize((int) values[2]);
-        region.setEnlarge((int) values[3]);
+        // region.setSize((int) values[2]); // We don't set size here like before, now region size is calculated from region enlargement level (method below)
+        regionManager.changeRegionEnlargement(region, (int) values[3]);
         region.update();
 
         region.markUnchanged();

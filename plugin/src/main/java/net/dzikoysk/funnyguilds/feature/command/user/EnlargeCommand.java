@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -31,10 +32,10 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
 
         Region region = when(guild.getRegion(), config -> config.regionsDisabled);
 
-        int enlarge = region.getEnlarge();
-        when(enlarge > this.config.enlargeItems.size() - 1, config -> config.enlargeMaxSize);
+        int currentEnlargementLevel = region.getEnlargementLevel();
+        when(currentEnlargementLevel > this.config.enlargeItems.size() - 1, config -> config.enlargeMaxSize);
 
-        ItemStack need = this.config.enlargeItems.get(enlarge);
+        ItemStack need = this.config.enlargeItems.get(currentEnlargementLevel);
         when(!player.getInventory().containsAtLeast(need, need.getAmount()), config -> config.enlargeItem,
                 FunnyFormatter.of("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT)));
         when(this.regionManager.isNearRegion(region.getCenter()), config -> config.enlargeIsNear);
@@ -44,12 +45,11 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         }
 
         player.getInventory().removeItem(need);
-        region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + this.config.enlargeSize);
+        this.regionManager.changeRegionEnlargement(region, currentEnlargementLevel + 1);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{SIZE}", region.getSize())
-                .register("{LEVEL}", region.getEnlarge());
+                .register("{LEVEL}", region.getEnlargementLevel());
 
         this.messageService.getMessage(config -> config.enlargeDone)
                 .receiver(guild)
