@@ -21,13 +21,15 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
+        boolean enter = false;
         if (event.getTo() != null) {
-            this.userManager.findByUuid(event.getPlayer().getUniqueId())
-                    .map(User::getCache)
-                    .peek(userCache -> userCache.setEnter(!this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()))));
-
-            this.onMove(event);
+            enter = !this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()));
         }
+        this.userManager.findByUuid(event.getPlayer().getUniqueId())
+                .map(User::getCache)
+                .peek(userCache -> userCache.setEnter(enter));
+        
+        this.onMove(event);
     }
 
     @EventHandler
@@ -54,11 +56,16 @@ public class PlayerMove extends AbstractFunnyListener {
             UserCache cache = user.getCache();
 
             Option<Region> regionOptionTo = this.regionManager.findRegionAtLocation(to);
-            Option<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
-            if (!regionOptionTo.equals(regionOptionFrom) && user.getCache().getEnter()) {
+            
+            if (cache.getEnter()) {
+                Option<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
+                if (regionOptionTo.equals(regionOptionFrom)) {
+                    return;
+                }
+                
                 cache.setEnter(false);
 
-                this.regionManager.findRegionAtLocation(from)
+                regionOptionFrom
                         .map(Region::getGuild)
                         .peek(guild -> {
                             if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
@@ -76,13 +83,10 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .send();
                         });
             }
-            else if (!cache.getEnter()) {
-                regionOptionTo.map(Region::getGuild)
+            else {
+                regionOptionTo
+                        .map(Region::getGuild)
                         .peek(guild -> {
-                            if (guild.getName() == null) {
-                                return;
-                            }
-
                             if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
                                 event.setCancelled(true);
                                 return;
