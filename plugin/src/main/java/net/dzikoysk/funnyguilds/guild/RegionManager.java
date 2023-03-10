@@ -239,7 +239,7 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
         Validate.isTrue(level >= 0, "level can't be negative!");
 
-        int maxEnlargeLevel = this.pluginConfiguration.enlargeItems.size() - 1;
+        int maxEnlargeLevel = this.pluginConfiguration.enlargeItems.size();
         if (level > maxEnlargeLevel) {
             level = maxEnlargeLevel;
         }
