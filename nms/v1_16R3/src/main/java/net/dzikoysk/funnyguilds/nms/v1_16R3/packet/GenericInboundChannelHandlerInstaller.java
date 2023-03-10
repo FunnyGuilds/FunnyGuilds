@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_8R3.packet;
+package net.dzikoysk.funnyguilds.nms.v1_16R3.packet;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;

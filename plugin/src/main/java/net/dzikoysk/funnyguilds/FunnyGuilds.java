@@ -70,19 +70,11 @@ import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
-import net.dzikoysk.funnyguilds.nms.v1_10R1.V1_10R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_11R1.V1_11R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_12R1.V1_12R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_13R2.V1_13R2NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_14R1.V1_14R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_15R1.V1_15R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_16R3.V1_16R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R2.V1_18R2NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R1.V1_19R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R2.V1_19R2NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
@@ -739,22 +731,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
         switch (Reflections.SERVER_VERSION) {
-            case "v1_8_R3":
-                return new V1_8R3NmsAccessor();
-            case "v1_9_R2":
-                return new V1_9R2NmsAccessor();
-            case "v1_10_R1":
-                return new V1_10R1NmsAccessor();
-            case "v1_11_R1":
-                return new V1_11R1NmsAccessor();
-            case "v1_12_R1":
-                return new V1_12R1NmsAccessor();
-            case "v1_13_R2":
-                return new V1_13R2NmsAccessor();
-            case "v1_14_R1":
-                return new V1_14R1NmsAccessor();
-            case "v1_15_R1":
-                return new V1_15R1NmsAccessor();
             case "v1_16_R3":
                 return new V1_16R3NmsAccessor();
             case "v1_17_R1":

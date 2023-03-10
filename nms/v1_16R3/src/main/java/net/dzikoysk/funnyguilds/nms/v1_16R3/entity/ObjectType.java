@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_8R3.entity;
+package net.dzikoysk.funnyguilds.nms.v1_16R3.entity;
 
 import org.bukkit.entity.EntityType;
 
