@@ -21,14 +21,13 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        boolean enter = false;
-        if (event.getTo() != null) {
-            enter = !this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()));
-        }
+        boolean enter = event.getTo() != null
+                ? !this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()))
+                : false;
         this.userManager.findByUuid(event.getPlayer().getUniqueId())
                 .map(User::getCache)
                 .peek(userCache -> userCache.setEnter(enter));
-        
+
         this.onMove(event);
     }
 
