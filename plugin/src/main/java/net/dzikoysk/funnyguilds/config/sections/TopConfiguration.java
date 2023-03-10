@@ -104,4 +104,8 @@ public class TopConfiguration extends OkaeriConfig {
 
     }
 
+    @Comment("")
+    @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
+    public boolean useRelationshipColors = false;
+
 }

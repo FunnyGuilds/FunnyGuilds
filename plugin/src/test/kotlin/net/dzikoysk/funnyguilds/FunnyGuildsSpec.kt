@@ -87,7 +87,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         rankPlaceholdersService = RankPlaceholdersService(
             config,
-            tablistConfig,
             messages,
             userRankManager,
             guildRankManager

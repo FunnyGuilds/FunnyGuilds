@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
 import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
@@ -31,23 +30,19 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
     private static final Pattern TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
     private static final Pattern TOP_POSITION_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z_]+)}");
-    private static final Pattern LEGACY_TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([0-9]+)}");
 
     private final PluginConfiguration config;
-    private final TablistConfiguration tablistConfig;
     private final MessageService messageService;
     private final UserRankManager userRankManager;
     private final GuildRankManager guildRankManager;
 
     public RankPlaceholdersService(
             PluginConfiguration config,
-            TablistConfiguration tablistConfig,
             MessageService messageService,
             UserRankManager userRankManager,
             GuildRankManager guildRankManager
     ) {
         this.config = config;
-        this.tablistConfig = tablistConfig;
         this.messageService = messageService;
         this.userRankManager = userRankManager;
         this.guildRankManager = guildRankManager;
@@ -58,6 +53,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
      *
      * @param text       text to format
      * @param targetUser user for which text will be formatted
+     *
      * @return formatted text
      */
     @Override
@@ -72,6 +68,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
      *
      * @param text       text to format
      * @param targetUser user for which text will be formatted
+     *
      * @return formatted text
      */
     public String formatTop(String text, @Nullable User targetUser) {
@@ -160,6 +157,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
      *
      * @param text       text to format
      * @param targetUser user for which text will be formatted
+     *
      * @return formatted text
      */
     public String formatTopPosition(String text, @Nullable User targetUser) {
@@ -216,7 +214,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
     private String formatGuildRank(String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
         String prefix = "{TAG}";
 
-        if (this.tablistConfig.useRelationshipColors) {
+        if (this.config.top.useRelationshipColors) {
             Guild viewerGuild = targetUser != null ? targetUser.getGuild().orNull() : null;
             prefix = this.config.relationalTag.chooseAndPrepareTag(viewerGuild, guild);
         }

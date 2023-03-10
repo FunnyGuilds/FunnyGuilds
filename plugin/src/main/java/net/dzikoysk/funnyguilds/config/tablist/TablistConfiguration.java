@@ -312,8 +312,4 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("Co ile ticków lista graczy powinna zostać odświeżona (20 ticków = 1 sekunda)")
     public int updateInterval = 20;
 
-    @Comment("")
-    @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
-    public boolean useRelationshipColors = false;
-
 }
