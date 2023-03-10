@@ -21,9 +21,12 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
+        boolean enter = event.getTo() != null
+                ? !this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()))
+                : false;
         this.userManager.findByUuid(event.getPlayer().getUniqueId())
                 .map(User::getCache)
-                .peek(userCache -> userCache.setEnter(false));
+                .peek(userCache -> userCache.setEnter(enter));
 
         this.onMove(event);
     }
@@ -51,11 +54,17 @@ public class PlayerMove extends AbstractFunnyListener {
             User user = userOption.get();
             UserCache cache = user.getCache();
 
-            Option<Region> regionOption = this.regionManager.findRegionAtLocation(to);
-            if (regionOption.isEmpty() && user.getCache().getEnter()) {
+            Option<Region> regionOptionTo = this.regionManager.findRegionAtLocation(to);
+            
+            if (cache.getEnter()) {
+                Option<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
+                if (regionOptionTo.equals(regionOptionFrom)) {
+                    return;
+                }
+                
                 cache.setEnter(false);
 
-                this.regionManager.findRegionAtLocation(from)
+                regionOptionFrom
                         .map(Region::getGuild)
                         .peek(guild -> {
                             if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
@@ -73,13 +82,10 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .send();
                         });
             }
-            else if (!cache.getEnter()) {
-                regionOption.map(Region::getGuild)
+            else {
+                regionOptionTo
+                        .map(Region::getGuild)
                         .peek(guild -> {
-                            if (guild.getName() == null) {
-                                return;
-                            }
-
                             if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
                                 event.setCancelled(true);
                                 return;
