@@ -76,7 +76,6 @@ dependencies {
         because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    shadow("net.kyori:adventure-api:4.12.0")
     shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
     shadow("com.github.decentsoftware-eu:decentholograms:2.7.11")
 
