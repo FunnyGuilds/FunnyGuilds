@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Set;
@@ -111,25 +110,11 @@ public final class MaterialUtils {
 
     @Nullable
     public static Material matchMaterial(String materialName) {
-        try {
-            if (Reflections.USE_PRE_13_METHODS) {
-                return Material.matchMaterial(materialName);
-            }
-
-            if (MATCH_MATERIAL_METHOD == null) {
-                return null;
-            }
-
-            Material material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, false);
-            if (material == null) {
-                material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, true);
-            }
-
-            return material;
+        Material material = Material.matchMaterial(materialName, false);
+        if (material == null) {
+            material = Material.matchMaterial(materialName, true);
         }
-        catch (IllegalAccessException | InvocationTargetException ex) {
-            return null;
-        }
+        return material;
     }
 
 }

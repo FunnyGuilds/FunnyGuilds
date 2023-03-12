@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -10,11 +10,11 @@ import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -29,28 +29,8 @@ import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
-import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 
 public final class ItemUtils {
-
-    private static Method BY_IN_GAME_NAME_ENCHANT;
-    private static Method CREATE_NAMESPACED_KEY;
-
-    private static Method GET_IN_GAME_NAME_ENCHANT;
-    private static Method GET_NAMESPACED_KEY;
-
-    static {
-        if (!Reflections.USE_PRE_12_METHODS) {
-            Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
-
-            BY_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getByKey");
-            CREATE_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "minecraft", String.class);
-
-            GET_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getKey");
-            GET_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "getKey");
-        }
-    }
 
     private ItemUtils() {
     }
@@ -277,37 +257,11 @@ public final class ItemUtils {
     }
 
     private static Enchantment matchEnchant(String enchantName) {
-        if (BY_IN_GAME_NAME_ENCHANT != null && CREATE_NAMESPACED_KEY != null) {
-            try {
-                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase(Locale.ROOT));
-                Object enchantment = BY_IN_GAME_NAME_ENCHANT.invoke(null, namespacedKey);
-
-                if (enchantment != null) {
-                    return (Enchantment) enchantment;
-                }
-            }
-            catch (IllegalAccessException | InvocationTargetException ignored) {
-            }
-        }
-
-        return Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
+        return Enchantment.getByKey(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
     }
 
     private static String getEnchantName(Enchantment enchantment) {
-        if (GET_IN_GAME_NAME_ENCHANT != null && GET_NAMESPACED_KEY != null) {
-            try {
-                Object enchantmentName = GET_IN_GAME_NAME_ENCHANT.invoke(enchantment);
-                Object namespacedKey = GET_NAMESPACED_KEY.invoke(enchantmentName);
-
-                if (namespacedKey != null) {
-                    return (String) namespacedKey;
-                }
-            }
-            catch (InvocationTargetException | IllegalAccessException ignored) {
-            }
-        }
-
-        return enchantment.getName();
+        return enchantment.getKey().getKey();
     }
 
     private static Pair<Enchantment, Integer> parseEnchant(String enchantString) {

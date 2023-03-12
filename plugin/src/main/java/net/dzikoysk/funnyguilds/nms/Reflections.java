@@ -16,9 +16,6 @@ public final class Reflections {
 
     public static String SERVER_VERSION = "1_0";
     public static boolean NEED_ADDITIONAL_NMS_PACKAGE;
-    public static boolean USE_PRE_13_METHODS;
-    public static boolean USE_PRE_12_METHODS;
-    public static boolean USE_PRE_9_METHODS;
 
     private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
     private static final Map<String, Field> FIELD_CACHE = new HashMap<>();
@@ -38,9 +35,6 @@ public final class Reflections {
         int versionNumber = Integer.parseInt(SERVER_VERSION.split("_")[1]);
 
         NEED_ADDITIONAL_NMS_PACKAGE = versionNumber >= 17;
-        USE_PRE_13_METHODS = versionNumber < 13;
-        USE_PRE_12_METHODS = versionNumber < 12;
-        USE_PRE_9_METHODS = versionNumber < 9;
     }
 
     public static Class<?> getClassOmitCache(String className) {

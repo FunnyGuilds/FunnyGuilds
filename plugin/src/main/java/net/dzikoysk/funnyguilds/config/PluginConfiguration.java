@@ -1267,7 +1267,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
-        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
+        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial)) {
             this.eventPhysics = true;
         }
 

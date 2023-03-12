@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,18 +61,7 @@ public class BlockPlace extends AbstractFunnyListener {
         returnItem.setAmount(1);
 
         // remove one item from the player's inventory
-        if ((itemInHand.getAmount() - 1) == 0) {
-            // wondering why? because bukkit and you probably don't want dupe glitches
-            if (Reflections.USE_PRE_9_METHODS) {
-                player.setItemInHand(null);
-            }
-            else {
-                itemInHand.setAmount(0);
-            }
-        }
-        else {
-            itemInHand.setAmount(itemInHand.getAmount() - 1);
-        }
+        itemInHand.setAmount(itemInHand.getAmount() - 1);
 
         // if the player is standing on the placed block add some velocity to prevent glitching
         // side effect: velocity with +y0.4 is like equivalent to jumping while building, just hold right click, that's real fun!
