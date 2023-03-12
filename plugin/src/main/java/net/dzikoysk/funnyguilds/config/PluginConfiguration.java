@@ -339,41 +339,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Typy bloków, z którymi osoba spoza gildii NIE może prowadzić interakcji na terenie innej gildii")
     public List<Material> blockedInteract = Arrays.asList(Material.CHEST, Material.TRAPPED_CHEST);
 
-    @Comment("")
-    @Comment("Czy funkcja efektu 'zbugowanych' klocków ma byc włączona (działa tylko na terenie wrogiej gildii)")
-    public boolean buggedBlocks = false;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Czas po którym 'zbugowane' klocki maja zostać usunięte")
-    @Comment("Czas podawany w tickach (20 ticków = 1 sekunda)")
-    public long buggedBlocksTimer = 20L;
-
-    @Comment("")
-    @Comment("Bloki, których nie można 'bugować'")
-    @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
-            // Ban basic
-            "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
-            // Ban TNT Minecart placement
-            "RAILS", "DETECTOR_RAIL", "ACTIVATOR_RAIL", "POWERED_RAIL",
-            // Ban gravity blocks that won't be removed when fallen
-            "ANVIL", "GRAVEL", "SAND", "DRAGON_EGG",
-            // Ban pistons and other components that may produce redstone output or interact with it
-            "PISTON_BASE", "PISTON_STICKY_BASE",
-            "REDSTONE_BLOCK", "REDSTONE_TORCH_ON", "REDSTONE_TORCH_OFF", "DIODE", "REDSTONE_COMPARATOR", "DAYLIGHT_DETECTOR",
-            "DISPENSER", "HOPPER", "DROPPER", "OBSERVER",
-            "STONE_PLATE", "WOOD_PLATE", "GOLD_PLATE", "IRON_PLATE", "LEVER", "TRIPWIRE_HOOK", "TRAP_DOOR", "IRON_TRAPDOOR", "WOOD_BUTTON", "STONE_BUTTON",
-            "WOOD_DOOR", "IRON_DOOR", "SPRUCE_DOOR_ITEM", "BIRCH_DOOR_ITEM", "JUNGLE_DOOR_ITEM", "ACACIA_DOOR_ITEM", "DARK_OAK_DOOR_ITEM",
-            "FENCE_GATE", "SPRUCE_FENCE_GATE", "JUNGLE_FENCE_GATE", "DARK_OAK_FENCE_GATE", "BIRCH_FENCE_GATE",
-            "REDSTONE_LAMP_ON", "REDSTONE_LAMP_OFF",
-            "TRAPPED_CHEST", "CHEST"
-    );
-
-    @Comment("")
-    @Comment("Czy klocki po 'zbugowaniu' mają zostać oddane")
-    public boolean buggedBlocksReturn = false;
-
     @Min(1)
     @Comment("")
     @Comment("Maksymalna liczba członków w gildii")
