@@ -69,7 +69,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
 
-    @Comment("")
+    @Comment(" ")
     @Comment("Wyświetlana nazwa pluginu")
     public String pluginName = "FunnyGuilds";
 
