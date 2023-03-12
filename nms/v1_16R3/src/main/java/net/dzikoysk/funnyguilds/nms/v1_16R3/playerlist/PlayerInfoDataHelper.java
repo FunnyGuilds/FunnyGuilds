@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_16R3.playerlist;
 
 import com.mojang.authlib.GameProfile;
 import java.lang.reflect.Constructor;

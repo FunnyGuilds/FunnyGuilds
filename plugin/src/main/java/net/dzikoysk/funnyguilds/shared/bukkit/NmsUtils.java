@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.bukkit.entity.Player;
 
 public final class NmsUtils {
 
@@ -26,10 +25,6 @@ public final class NmsUtils {
         } catch (Exception ex) {
             return -1;
         }
-    }
-
-    public static int getPing(Player player) {
-        return Math.max(0, FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getPlayerPing(player));
     }
 
 }

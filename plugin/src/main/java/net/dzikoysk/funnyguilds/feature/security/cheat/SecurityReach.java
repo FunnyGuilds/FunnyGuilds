@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -8,7 +9,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityReach {
 
@@ -26,7 +26,7 @@ public final class SecurityReach {
         PluginConfiguration config = funnyGuilds.getPluginConfiguration();
         UserManager userManager = funnyGuilds.getUserManager();
 
-        double ping = NmsUtils.getPing(player);
+        double ping = player.getPing();
         double tpsDelayMs = (1000.0 / NmsUtils.getTpsInLastMinute() - 50.0);
         double compensation = player.getGameMode() == GameMode.CREATIVE ? CREATIVE_REACH : SURVIVAL_REACH;
 
