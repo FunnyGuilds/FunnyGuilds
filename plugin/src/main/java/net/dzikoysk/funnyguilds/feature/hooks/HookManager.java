@@ -6,7 +6,6 @@ import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.decentholograms.DecentHologramsHook;
-import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
@@ -24,7 +23,6 @@ public class HookManager {
 
     public static Option<WorldGuardHook> WORLD_GUARD = Option.none();
     public static Option<WorldEditHook> WORLD_EDIT = Option.none();
-    public static Option<FunnyTabHook> FUNNY_TAB = Option.none();
     public static Option<VaultHook> VAULT = Option.none();
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
     public static Option<HologramsHook> HOLOGRAMS = Option.none();
@@ -38,9 +36,6 @@ public class HookManager {
 
     public void setupEarlyHooks() {
         this.<WorldGuardHook>setupHook("WorldGuard", false, WorldGuard7Hook::new, true).subscribe(hook -> WORLD_GUARD = hook);
-
-        this.setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, this.plugin), false)
-                .subscribe(hook -> FUNNY_TAB = hook);
     }
 
     public void setupHooks() {
