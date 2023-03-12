@@ -35,11 +35,11 @@ public class HookManager {
     }
 
     public void setupEarlyHooks() {
-        this.<WorldGuardHook>setupHook("WorldGuard", false, WorldGuard7Hook::new, true).subscribe(hook -> WORLD_GUARD = hook);
+        this.<WorldGuardHook>setupHook("WorldGuard", false, pluginName -> new WorldGuard7Hook(pluginName), true).subscribe(hook -> WORLD_GUARD = hook);
     }
 
     public void setupHooks() {
-        this.<WorldEditHook>setupHook("WorldEdit", true, WorldEdit7Hook::new, true).subscribe(hook -> WORLD_EDIT = hook);
+        this.<WorldEditHook>setupHook("WorldEdit", true, pluginName -> new WorldEdit7Hook(pluginName), true).subscribe(hook -> WORLD_EDIT = hook);
 
         this.setupHook("Vault", true, VaultHook::new, true)
                 .subscribe(hook -> VAULT = hook);
@@ -76,12 +76,8 @@ public class HookManager {
 
         PandaStream<String> disabledHooks = PandaStream.of(this.plugin.getPluginConfiguration().disabledHooks);
         if (disabledHooks.find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName)).isPresent()) {
-            if (!pluginName.equalsIgnoreCase("FunnyTab")) {
-                FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
-                return Completable.completed(Option.none());
-            }
-
-            FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
+            FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
+            return Completable.completed(Option.none());
         }
 
         Completable<Option<T>> hookCompletable = new Completable<>();
