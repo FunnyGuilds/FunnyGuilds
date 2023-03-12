@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.config.message;
 
+import dev.peri.yetanothermessageslibrary.SimpleSendableMessageService;
+import dev.peri.yetanothermessageslibrary.viewer.BukkitViewerDataSupplier;
+import dev.peri.yetanothermessageslibrary.viewer.SimpleViewer;
+import dev.peri.yetanothermessageslibrary.viewer.SimpleViewerService;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.BiConsumer;
@@ -13,10 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
-import dev.peri.yetanothermessageslibrary.SimpleSendableMessageService;
-import dev.peri.yetanothermessageslibrary.viewer.BukkitViewerDataSupplier;
-import dev.peri.yetanothermessageslibrary.viewer.SimpleViewer;
-import dev.peri.yetanothermessageslibrary.viewer.SimpleViewerService;
 
 public class MessageService extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> {
 
@@ -56,13 +56,6 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         messageService.setDefaultLocale(config.defaultLocale);
         messageService.registerLocaleProvider(new PlayerLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(plugin.getFunnyServer()));
-
-        // TODO: Remove in 5.0
-        File oldMessagesFile = new File(plugin.getDataFolder(), "messages.yml");
-        File newMessagesFile = new File(languageFolder, config.defaultLocale.toString() + ".yml");
-        if (oldMessagesFile.exists() && !newMessagesFile.exists() && !oldMessagesFile.renameTo(newMessagesFile)) {
-            logger.warning("Could not copy legacy messages.yml to new lang directory");
-        }
 
         PandaStream.of(config.availableLocales).forEach(locale -> {
             String localeName = locale.toString();
