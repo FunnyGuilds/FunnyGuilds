@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.config;
 
+import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
@@ -34,7 +35,6 @@ import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
-import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 
 public final class ConfigurationFactory {
 
