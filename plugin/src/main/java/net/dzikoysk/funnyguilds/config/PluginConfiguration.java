@@ -826,8 +826,8 @@ public class PluginConfiguration extends OkaeriConfig {
     public TopConfiguration top = new TopConfiguration();
 
     @Comment("")
-    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zależności od wartości punktów")
-    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS}, jest używane jedynie na liście graczy")
+    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-AVG-POINTS-FORMAT} w zależności od wartości punktów")
+    @Comment("{G-AVG-POINTS-FORMAT}, tak samo jak {G-AVG-POINTS}, jest używane jedynie na liście graczy")
     @Comment("Lista powinna być podana od najmniejszych do największych rankingów i zawierać tylko liczby naturalne, z zerem włącznie")
     @Comment("Elementy listy powinny być postaci: \"minRank-maxRank wygląd\", np.: \"0-750 &4{POINTS}\"")
     @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
@@ -838,18 +838,6 @@ public class PluginConfiguration extends OkaeriConfig {
             new RangeFormatting(1000, 1499, "&a{POINTS}"),
             new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
     );
-
-    @Comment("")
-    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam nick - nie podawaj tu nic")
-    public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
-
-    @Comment("")
-    @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam tag - nie podawaj tu nic")
-    public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
 
     @Comment("")
     @Comment("Wygląd znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED}, w zależności od wartości zmiany w rankingu")
@@ -1201,7 +1189,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             if (item == null) {
-                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14)
+                item = new ItemBuilder(Material.matchMaterial("stained_glass_pane"), 1, 14)
                         .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
             }
 
@@ -1232,7 +1220,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
-        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
+        if (this.heart.createMaterial != null && this.heart.createMaterial.hasGravity()) {
             this.eventPhysics = true;
         }
 

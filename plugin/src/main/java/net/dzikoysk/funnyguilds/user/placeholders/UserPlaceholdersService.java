@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -30,7 +29,6 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                 .property("ping-format", user -> FunnyFormatter.format(NumberRange.inRangeToString(user.getPing(),
                         config.pingFormat), "{PING}", user.getPing()))
                 .property("guild-position", user -> UserUtils.getUserPosition(config, user))
-                .property("position", (user, rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
                 .property("points", (user, rank) -> rank.getPoints())
                 .property("points-format", (user, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getPoints(),
                         config.pointsFormat), "{POINTS}", rank.getPoints()))
