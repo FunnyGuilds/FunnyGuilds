@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
@@ -29,7 +28,7 @@ public final class MaterialUtils {
         }
 
         String materialName = FunnyFormatter.format(materialString.toUpperCase(Locale.ROOT), " ", "_");
-        Material material = matchMaterial(materialName);
+        Material material = Material.matchMaterial(materialName);
 
         if (material == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: " + materialString);
@@ -43,24 +42,6 @@ public final class MaterialUtils {
         return PandaStream.of(materialStrings)
                 .map(materialString -> parseMaterial(materialString, allowNullReturn))
                 .toSet();
-    }
-
-    @Nullable
-    public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
-        if (string == null) {
-            FunnyGuilds.getPluginLogger().parser("Unknown material data: null");
-            return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
-        }
-
-        String[] data = string.split(":");
-        Material material = parseMaterial(data[0], allowNullReturn);
-
-        if (material == null) {
-            FunnyGuilds.getPluginLogger().parser("Unknown material in material data: " + string);
-            return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
-        }
-
-        return Pair.of(material, data.length == 2 ? Byte.parseByte(data[1]) : (byte) 0);
     }
 
     public static boolean hasGravity(Material material) {
@@ -106,15 +87,6 @@ public final class MaterialUtils {
         }
 
         return itemMeta.getDisplayName();
-    }
-
-    @Nullable
-    public static Material matchMaterial(String materialName) {
-        Material material = Material.matchMaterial(materialName, false);
-        if (material == null) {
-            material = Material.matchMaterial(materialName, true);
-        }
-        return material;
     }
 
 }

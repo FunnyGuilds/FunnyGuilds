@@ -1224,7 +1224,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             if (item == null) {
-                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14)
+                item = new ItemBuilder(Material.matchMaterial("stained_glass_pane"), 1, 14)
                         .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
             }
 
