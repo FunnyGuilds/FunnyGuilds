@@ -72,10 +72,6 @@ public final class Reflections {
         return getClass("org.bukkit.craftbukkit." + SERVER_VERSION + "." + name);
     }
 
-    public static Class<?> getBukkitClass(String name) {
-        return getClass("org.bukkit." + name);
-    }
-
     public static Object getHandle(Entity entity) {
         try {
             return getMethod(entity.getClass(), "getHandle").invoke(entity);
