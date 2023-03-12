@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,8 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
-
-    private static final Method MATCH_MATERIAL_METHOD = Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
 
     private MaterialUtils() {
     }
@@ -43,20 +39,6 @@ public final class MaterialUtils {
                 .map(materialString -> parseMaterial(materialString, allowNullReturn))
                 .toSet();
     }
-
-    public static boolean hasGravity(Material material) {
-        switch (material.toString()) {
-            case "DRAGON_EGG":
-            case "SAND":
-            case "GRAVEL":
-            case "ANVIL":
-            case "CONCRETE_POWDER":
-                return true;
-            default:
-                return false;
-        }
-    }
-
 
     public static String getMaterialName(Material material) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
