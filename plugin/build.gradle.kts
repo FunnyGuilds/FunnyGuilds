@@ -80,7 +80,7 @@ dependencies {
     shadow("com.github.decentsoftware-eu:decentholograms:2.7.11")
 
     /* tests */
-    testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
+    testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 }
 
