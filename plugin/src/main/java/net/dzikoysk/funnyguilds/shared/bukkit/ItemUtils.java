@@ -70,19 +70,14 @@ public final class ItemUtils {
 
     public static ItemStack parseItem(String itemString) {
         String[] split = itemString.split(" ");
-        String[] typeSplit = split[1].split(":");
-        String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
+        String type = split[1];
 
-        Material material = MaterialUtils.parseMaterial(typeSplit[0], false);
+        Material material = MaterialUtils.parseMaterial(type, false);
         Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
             FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
         });
 
-        Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
-        });
-
-        ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
+        ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1));
         FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {

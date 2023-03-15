@@ -501,7 +501,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
-            "enchantment_table", 20.0,
+            "enchanting_table", 20.0,
             "obsidian", 20.0,
             "water", 33.0,
             "lava", 33.0
@@ -1189,7 +1189,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             if (item == null) {
-                item = new ItemBuilder(Material.matchMaterial("stained_glass_pane"), 1, 14)
+                item = new ItemBuilder(Material.RED_STAINED_GLASS_PANE, 1)
                         .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
             }
 
