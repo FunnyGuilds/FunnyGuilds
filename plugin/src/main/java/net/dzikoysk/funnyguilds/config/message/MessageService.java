@@ -1,12 +1,9 @@
 package net.dzikoysk.funnyguilds.config.message;
 
 import dev.peri.yetanothermessageslibrary.SimpleSendableMessageService;
-import dev.peri.yetanothermessageslibrary.viewer.BukkitViewerDataSupplier;
-import dev.peri.yetanothermessageslibrary.viewer.SimpleViewer;
-import dev.peri.yetanothermessageslibrary.viewer.SimpleViewerService;
+import dev.peri.yetanothermessageslibrary.viewer.BukkitViewerService;
 import java.io.File;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -22,12 +19,9 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
 
     private final BukkitAudiences adventure;
 
-    public MessageService(BukkitAudiences adventure, BiConsumer<Runnable, Long> schedule) {
+    public MessageService(FunnyGuilds plugin, BukkitAudiences adventure) {
         super(
-                new SimpleViewerService<>(
-                        new BukkitViewerDataSupplier(adventure),
-                        (receiver, audience, console) -> new SimpleViewer(audience, console, schedule)
-                ),
+                new BukkitViewerService(plugin, adventure),
                 (viewerService, localeSupplier, messageSupplier) -> new FunnyMessageDispatcher(viewerService, localeSupplier, messageSupplier, user -> Bukkit.getPlayer(user.getUUID()))
         );
         this.adventure = adventure;
@@ -50,8 +44,8 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         MessageService messageService = new MessageService(
-                BukkitAudiences.create(plugin),
-                (runnable, delay) -> Bukkit.getScheduler().runTaskLater(plugin, runnable, delay)
+                plugin,
+                BukkitAudiences.create(plugin)
         );
         messageService.setDefaultLocale(config.defaultLocale);
         messageService.registerLocaleProvider(new PlayerLocaleProvider());
