@@ -36,7 +36,7 @@ allprojects {
         /* Libs */
         maven("https://maven.reposilite.com/releases")
         maven("https://storehouse.okaeri.eu/repository/maven-public")
-        maven("https://repo.titanvale.net/snapshots")
+        maven("https://repo.titanvale.net/releases")
 
         /* Servers */
         maven("https://libraries.minecraft.net")

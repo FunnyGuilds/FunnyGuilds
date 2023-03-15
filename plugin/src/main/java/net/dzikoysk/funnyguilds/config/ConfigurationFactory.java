@@ -1,17 +1,13 @@
 package net.dzikoysk.funnyguilds.config;
 
-import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyPatternTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeFormatterTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.ItemStackTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
@@ -26,21 +22,6 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 public final class ConfigurationFactory {
 
     private ConfigurationFactory() {
-    }
-
-    public static MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
-        return ConfigManager.create(MessageConfiguration.class, (it) -> {
-            it.withConfigurer(new YamlBukkitConfigurer());
-            it.withSerdesPack(registry -> {
-                registry.register(new DecolorTransformer());
-                registry.register(new FunnyTimeFormatterTransformer());
-                registry.register(new SerdesMessages());
-            });
-
-            it.withBindFile(messageConfigurationFile);
-            it.saveDefaults();
-            it.load(true);
-        });
     }
 
     public static PluginConfiguration createPluginConfiguration(File pluginConfigurationFile) {
