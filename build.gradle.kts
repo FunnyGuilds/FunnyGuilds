@@ -77,8 +77,8 @@ subprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_16
+        targetCompatibility = JavaVersion.VERSION_16
 
         withSourcesJar()
         withJavadocJar()
@@ -96,7 +96,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11.toString()
+            jvmTarget = JavaVersion.VERSION_16.toString()
             languageVersion = "1.8"
             freeCompilerArgs = listOf("-Xjvm-default=all") // Generate default methods in interfaces by default
         }
