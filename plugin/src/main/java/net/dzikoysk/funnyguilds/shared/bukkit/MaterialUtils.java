@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Contract;
 import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
@@ -16,7 +16,7 @@ public final class MaterialUtils {
     private MaterialUtils() {
     }
 
-    @Nullable
+    @Contract("_, false -> !null")
     public static Material parseMaterial(String materialString, boolean allowNullReturn) {
         if (materialString == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: null");
