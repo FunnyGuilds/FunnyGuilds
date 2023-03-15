@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -92,6 +93,19 @@ public final class ItemUtils {
             String attributeValue = itemAttributes[1];
 
             switch (attributeName.toLowerCase(Locale.ROOT)) {
+                case "damage":
+                case "durability":
+                    if (!(item.getMeta() instanceof Damageable)) {
+                        FunnyGuilds.getPluginLogger().parser("Cannot set durability for " + material.name());
+                        continue;
+                    }
+
+                    Option<Integer> damage = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(attributeValue)).onEmpty(() -> {
+                        FunnyGuilds.getPluginLogger().parser("Unknown durability: " + attributeValue);
+                    });
+
+                    ((Damageable) item.getMeta()).setDamage(damage.orElseGet(0));
+                    continue;
                 case "name":
                 case "displayname":
                     item.setName(formatter.format(attributeValue), true);
@@ -183,16 +197,20 @@ public final class ItemUtils {
     }
 
     public static String toString(ItemStack item) {
-        String material = item.getType().toString().toLowerCase(Locale.ROOT);
-        short durability = item.getDurability();
         int amount = item.getAmount();
+        String material = item.getType().toString().toLowerCase(Locale.ROOT);
 
-        StringBuilder itemString = new StringBuilder(amount + " " + material + (durability > 0 ? ":" + durability : ""));
+        StringBuilder itemString = new StringBuilder(amount + " " + material);
         FunnyFormatter formatter = new FunnyFormatter().register(" ", "_").register("#", "{HASH}");
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             return itemString.toString();
+        }
+
+        if (meta instanceof Damageable) {
+            Damageable damageable = (Damageable) meta;
+            itemString.append(" damage:").append(damageable.getDamage());
         }
 
         if (meta.hasDisplayName()) {
