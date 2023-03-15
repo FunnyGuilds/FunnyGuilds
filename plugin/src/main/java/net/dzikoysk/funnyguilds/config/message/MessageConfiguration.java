@@ -247,13 +247,13 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage infoTag = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage infoExists = ChatHolder.message("&cGildia o takim tagu nie istnieje!");
 
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public SendableMessage infoList = ChatHolder.message(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
             "&7Zalozyciel: &c{OWNER}",
             "&7Zastepcy: &c{DEPUTIES}",
-            "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
+            "&7Punkty: &c{POINTS} &8[&c{POSITION-AVG_POINTS}&8]",
             "&7Ochrona: &c{PROTECTION}",
             "&7Zycia: &4{LIVES}",
             "&7Waznosc: &c{VALIDITY}",

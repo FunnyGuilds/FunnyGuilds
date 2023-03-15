@@ -94,7 +94,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista języków używanych przez plugin")
     @Comment("Jeżeli chcesz dodać nowy język dodaj go tutaj - utworzy to nowy plik z domyślnymi wartościami, które możesz później edytować")
     @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
-    public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl"), Locale.forLanguageTag("en")));
+    public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl")));
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
@@ -339,41 +339,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Typy bloków, z którymi osoba spoza gildii NIE może prowadzić interakcji na terenie innej gildii")
     public List<Material> blockedInteract = Arrays.asList(Material.CHEST, Material.TRAPPED_CHEST);
 
-    @Comment("")
-    @Comment("Czy funkcja efektu 'zbugowanych' klocków ma byc włączona (działa tylko na terenie wrogiej gildii)")
-    public boolean buggedBlocks = false;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Czas po którym 'zbugowane' klocki maja zostać usunięte")
-    @Comment("Czas podawany w tickach (20 ticków = 1 sekunda)")
-    public long buggedBlocksTimer = 20L;
-
-    @Comment("")
-    @Comment("Bloki, których nie można 'bugować'")
-    @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
-            // Ban basic
-            "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
-            // Ban TNT Minecart placement
-            "RAILS", "DETECTOR_RAIL", "ACTIVATOR_RAIL", "POWERED_RAIL",
-            // Ban gravity blocks that won't be removed when fallen
-            "ANVIL", "GRAVEL", "SAND", "DRAGON_EGG",
-            // Ban pistons and other components that may produce redstone output or interact with it
-            "PISTON_BASE", "PISTON_STICKY_BASE",
-            "REDSTONE_BLOCK", "REDSTONE_TORCH_ON", "REDSTONE_TORCH_OFF", "DIODE", "REDSTONE_COMPARATOR", "DAYLIGHT_DETECTOR",
-            "DISPENSER", "HOPPER", "DROPPER", "OBSERVER",
-            "STONE_PLATE", "WOOD_PLATE", "GOLD_PLATE", "IRON_PLATE", "LEVER", "TRIPWIRE_HOOK", "TRAP_DOOR", "IRON_TRAPDOOR", "WOOD_BUTTON", "STONE_BUTTON",
-            "WOOD_DOOR", "IRON_DOOR", "SPRUCE_DOOR_ITEM", "BIRCH_DOOR_ITEM", "JUNGLE_DOOR_ITEM", "ACACIA_DOOR_ITEM", "DARK_OAK_DOOR_ITEM",
-            "FENCE_GATE", "SPRUCE_FENCE_GATE", "JUNGLE_FENCE_GATE", "DARK_OAK_FENCE_GATE", "BIRCH_FENCE_GATE",
-            "REDSTONE_LAMP_ON", "REDSTONE_LAMP_OFF",
-            "TRAPPED_CHEST", "CHEST"
-    );
-
-    @Comment("")
-    @Comment("Czy klocki po 'zbugowaniu' mają zostać oddane")
-    public boolean buggedBlocksReturn = false;
-
     @Min(1)
     @Comment("")
     @Comment("Maksymalna liczba członków w gildii")
@@ -536,7 +501,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
-            "enchantment_table", 20.0,
+            "enchanting_table", 20.0,
             "obsidian", 20.0,
             "water", 33.0,
             "lava", 33.0
@@ -861,8 +826,8 @@ public class PluginConfiguration extends OkaeriConfig {
     public TopConfiguration top = new TopConfiguration();
 
     @Comment("")
-    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zależności od wartości punktów")
-    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS}, jest używane jedynie na liście graczy")
+    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-AVG-POINTS-FORMAT} w zależności od wartości punktów")
+    @Comment("{G-AVG-POINTS-FORMAT}, tak samo jak {G-AVG-POINTS}, jest używane jedynie na liście graczy")
     @Comment("Lista powinna być podana od najmniejszych do największych rankingów i zawierać tylko liczby naturalne, z zerem włącznie")
     @Comment("Elementy listy powinny być postaci: \"minRank-maxRank wygląd\", np.: \"0-750 &4{POINTS}\"")
     @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
@@ -873,18 +838,6 @@ public class PluginConfiguration extends OkaeriConfig {
             new RangeFormatting(1000, 1499, "&a{POINTS}"),
             new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
     );
-
-    @Comment("")
-    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam nick - nie podawaj tu nic")
-    public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
-
-    @Comment("")
-    @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam tag - nie podawaj tu nic")
-    public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
 
     @Comment("")
     @Comment("Wygląd znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED}, w zależności od wartości zmiany w rankingu")
@@ -1236,7 +1189,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             if (item == null) {
-                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14)
+                item = new ItemBuilder(Material.RED_STAINED_GLASS_PANE, 1)
                         .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
             }
 
@@ -1267,7 +1220,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
-        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
+        if (this.heart.createMaterial != null && this.heart.createMaterial.hasGravity()) {
             this.eventPhysics = true;
         }
 

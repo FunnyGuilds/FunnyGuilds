@@ -24,7 +24,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
-import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public class RegionManager {
@@ -160,8 +159,8 @@ public class RegionManager {
      * @return if given block is guild's heart
      */
     public boolean isGuildHeart(Block block) {
-        Pair<Material, Byte> md = this.pluginConfiguration.heart.createMaterial;
-        if (md == null || block.getType() != md.getFirst()) {
+        Material heartMaterial = this.pluginConfiguration.heart.createMaterial;
+        if (heartMaterial == null || block.getType() != heartMaterial) {
             return false;
         }
 
