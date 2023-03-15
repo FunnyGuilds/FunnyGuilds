@@ -71,12 +71,11 @@ public final class ItemUtils {
 
     public static ItemStack parseItem(String itemString) {
         String[] split = itemString.split(" ");
-        String type = split[1];
 
-        Material material = MaterialUtils.parseMaterial(type, false);
         Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
             FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
         });
+        Material material = MaterialUtils.parseMaterial(split[1], false);
 
         ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1));
         FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
