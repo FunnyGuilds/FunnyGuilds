@@ -77,7 +77,7 @@ dependencies {
         exclude(group = "com.google.code.gson", module = "gson")
     }
     shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
-    shadow("com.github.decentsoftware-eu:decentholograms:2.7.11")
+    shadow("com.github.decentsoftware-eu:decentholograms:2.8.0")
 
     /* tests */
     testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
