@@ -30,7 +30,7 @@ dependencies {
 
     /* messages libraries */
 
-    val adventureVersion = "4.12.0"
+    val adventureVersion = "4.13.0"
     implementation("net.kyori:adventure-api:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
