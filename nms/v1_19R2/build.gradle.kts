@@ -7,6 +7,6 @@ dependencies {
     shadow("org.apache.commons:commons-lang3:3.12.0")
     shadow("io.netty:netty-all:4.1.89.Final")
     shadow("com.mojang:authlib:3.2.38")
-    shadow("it.unimi.dsi:fastutil:8.5.11")
+    shadow("it.unimi.dsi:fastutil:8.5.12")
     shadow("com.mojang:brigadier:1.0.500")
 }
