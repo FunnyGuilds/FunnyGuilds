@@ -30,18 +30,18 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
         String noValue = Objects.toString(messages.get(fallbackSupplier), "");
         SimpleResolver fallbackResolver = () -> noValue;
         return this.property(name, guild -> formatDate(guild, timeSupplier, messages.get(config -> config.dateFormat), noValue), fallbackResolver)
-                .property(name + "-time", guild -> formatTime( guild, timeSupplier, noValue), fallbackResolver);
+                .property(name + "-time", guild -> formatTime(guild, timeSupplier, noValue), fallbackResolver);
     }
 
-    private static String formatDate(Guild guild, Function<Guild, Instant> timeFunction, FunnyTimeFormatter formatter, String noValue) {
-        Instant endTime = timeFunction.apply(guild);
+    private static String formatDate(Guild guild, Function<Guild, Instant> timeSupplier, FunnyTimeFormatter formatter, String noValue) {
+        Instant endTime = timeSupplier.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? noValue
                 : formatter.format(endTime);
     }
 
-    private static String formatTime(Guild guild, Function<Guild, Instant> timeFunction, String noValue) {
-        Instant endTime = timeFunction.apply(guild);
+    private static String formatTime(Guild guild, Function<Guild, Instant> timeSupplier, String noValue) {
+        Instant endTime = timeSupplier.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? noValue
                 : TimeUtils.formatTime(Duration.between(Instant.now(), endTime));
