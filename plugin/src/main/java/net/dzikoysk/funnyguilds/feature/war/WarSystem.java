@@ -74,7 +74,7 @@ public class WarSystem {
         if (!guild.canBeAttacked()) {
             messageService.getMessage(config -> config.warWait)
                     .receiver(player)
-                    .with("{TIME}", TimeUtils.formatTime(Duration.between(guild.getProtection(), Instant.now())))
+                    .with("{TIME}", TimeUtils.formatTime(Duration.between(Instant.now(), guild.getProtection())))
                     .send();
             return;
         }
