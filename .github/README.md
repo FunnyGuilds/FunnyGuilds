@@ -14,7 +14,7 @@ Website: [FunnyGuilds](https://funnyguilds.dzikoysk.net)</br>
 Community: [Discord](https://discord.gg/CYvyq3u)</br>
 Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
-:poland:  Potrzebujesz polskiej wersji tego opisu? Znajdziesz ją [tutaj](README-PL.md)  :poland:
+:poland:&ensp;Potrzebujesz polskiej wersji tego opisu? Znajdziesz ją [tutaj](README-PL.md)&ensp;:poland:
 
 ---
 
@@ -95,7 +95,7 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 
 ### :chart_with_upwards_trend: Usage stats
 
-Current statistics (since FunnyGuilds 3.9.x) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)</br>
+Current statistics (since FunnyGuilds 3.9.x): [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)</br>
 The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
 
 | Servers | Players | Users     | Guilds |

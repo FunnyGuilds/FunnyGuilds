@@ -14,7 +14,7 @@ Strona: [FunnyGuilds](https://funnyguilds.dzikoysk.net)</br>
 Społeczność: [Discord](https://discord.gg/CYvyq3u)</br>
 Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
-:gb:  Looking for an English description? Take a look [here](README.md)  :us:
+:gb:&ensp;Looking for an English description? Take a look [here](README.md)&ensp;:us:
 
 ---
 
