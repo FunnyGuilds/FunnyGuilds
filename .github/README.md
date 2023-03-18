@@ -14,7 +14,7 @@ Website: [FunnyGuilds](https://funnyguilds.dzikoysk.net)</br>
 Community: [Discord](https://discord.gg/CYvyq3u)</br>
 Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
-:poland: Potrzebujesz polskiej wersji tego opisu? Znajdziesz ją [tutaj](README-PL.md) :poland:
+:poland:  Potrzebujesz polskiej wersji tego opisu? Znajdziesz ją [tutaj](README-PL.md)  :poland:
 
 ---
 
@@ -40,7 +40,7 @@ Spigot, Paper, Purpur
 
 - get the latest stable version [here](https://github.com/FunnyGuilds/FunnyGuilds/releases) (for now the last FunnyGuilds 4.x release)
 - or explore the newest features and fixes of the [nightly versions](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
-- BE AWARE — nighly versions may be unstable, use them at your own risk
+- BE AWARE — nightly versions may be unstable, use them at your own risk
 
 ---
 
@@ -65,7 +65,8 @@ FunnyGuilds hooks (optionally) into plugins listed below:
     <id>reposilite-repository</id>
     <url>https://maven.reposilite.com/releases</url>
 </repository>
-<!-- Snapshots (Nightly) -->
+
+<!-- Snapshots (nightly) -->
 <repository>
     <id>reposilite-snapshots-repository</id>
     <url>https://maven.reposilite.com/snapshots</url>
@@ -73,12 +74,18 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 ```
 
 ```xml
+<!-- Release -->
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <!-- Release -->
     <version>5.0.0</version>
-    <!-- Snapshots (Nightly) -->
+    <scope>provided</scope>
+</dependency>
+
+<!-- Snapshot (nightly) -->
+<dependency>
+    <groupId>net.dzikoysk.funnyguilds</groupId>
+    <artifactId>plugin</artifactId>
     <version>5.0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>

@@ -14,7 +14,7 @@ Strona: [FunnyGuilds](https://funnyguilds.dzikoysk.net)</br>
 Społeczność: [Discord](https://discord.gg/CYvyq3u)</br>
 Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
-:gb: Looking for an English description? Take a look [here](README.md) :us:
+:gb:  Looking for an English description? Take a look [here](README.md)  :us:
 
 ---
 
@@ -65,6 +65,7 @@ FunnyGuilds może (opcjonalnie) integrować się z poniższymi pluginami:
     <id>reposilite-repository</id>
     <url>https://maven.reposilite.com/releases</url>
 </repository>
+
 <!-- Snapshoty (wersje nightly) -->
 <repository>
     <id>reposilite-snapshots-repository</id>
@@ -73,12 +74,18 @@ FunnyGuilds może (opcjonalnie) integrować się z poniższymi pluginami:
 ```
 
 ```xml
+<!-- Stabilne wydanie -->
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <!-- Stabilne wydanie -->
     <version>5.0.0</version>
-    <!-- Snapshot (wersja nightly) -->
+    <scope>provided</scope>
+</dependency>
+
+<!-- Snapshoty (wersja nightly) -->
+<dependency>
+    <groupId>net.dzikoysk.funnyguilds</groupId>
+    <artifactId>plugin</artifactId>
     <version>5.0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
