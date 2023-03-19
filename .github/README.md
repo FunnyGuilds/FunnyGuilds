@@ -78,7 +78,7 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>5.0.0</version>
+    <version>4.12.0</version>
     <scope>provided</scope>
 </dependency>
 
@@ -86,7 +86,7 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>5.0.1-SNAPSHOT</version>
+    <version>4.12.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
