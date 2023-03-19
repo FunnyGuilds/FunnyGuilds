@@ -6,47 +6,47 @@
 [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open")
 
-### :clipboard: About
+### :clipboard: O projekcie
 
-FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to create guilds
+FunnyGuilds to wspaniały, w pełni konfigurowalny plugin RPG, który umożliwia stworzenie systemu gildii
 
-Website: [FunnyGuilds](https://funnyguilds.dzikoysk.net)</br>
-Community: [Discord](https://discord.gg/CYvyq3u)</br>
+Strona: [FunnyGuilds](https://funnyguilds.dzikoysk.net)</br>
+Społeczność: [Discord](https://discord.gg/CYvyq3u)</br>
 Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
-:poland:&ensp;Potrzebujesz polskiej wersji tego opisu? Znajdziesz ją [tutaj](README-PL.md)&ensp;:poland:
+:gb:&ensp;Looking for an English description? Take a look [here](README.md)&ensp;:us:
 
 ---
 
-### :video_game: Supported MC versions
+### :video_game: Wspierane wersje MC
 
 1.16.5, 1.17.1, 1.18.2, 1.19.2, 1.19.3
 
-### :desktop_computer: Supported server platforms
+### :desktop_computer: Wspierane silniki
 
 Spigot, Paper, Purpur
 
 ---
 
-### :rocket: Download
+### :rocket: Pobieranie
 
-#### :hourglass: For MC versions 1.8.8 - 1.15.2
+#### :hourglass: Dla wersji MC 1.8.8 - 1.15.2
 
-- support for these versions (and FunnyGuilds 4.x) has been discontinued
-- you can still use [the latest 4.x build](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/)
-- only severe security related issues will likely cause an update for FunnyGuilds 4.x, no new features will be added
+- wsparcie dla tych wersji (i FunnyGuilds 4.x) zostało zakończone
+- możesz nadal używać [najnowszego jara 4.x](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/)
+- jedynie poważniejsze problemy spowodują jakąkolwiek aktualizację FunnyGuilds 4.x, nowe funkcjonalności nie będą dodawane
 
-#### :hourglass_flowing_sand: For MC versions 1.16.5 - 1.19.3
+#### :hourglass_flowing_sand: Dla wersji MC 1.16.5 - 1.19.3
 
-- get the latest stable version [here](https://github.com/FunnyGuilds/FunnyGuilds/releases) (for now the last FunnyGuilds 4.x release)
-- or explore the newest features and fixes of the [nightly versions](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
-- BE AWARE — nightly versions may be unstable, use them at your own risk
+- pobierz najnowsze stabilne wydanie [tutaj](https://github.com/FunnyGuilds/FunnyGuilds/releases) (obecnie najnowsze wydanie FunnyGuilds 4.x)
+- lub przetestuj najnowsze funkcjonalności i poprawki [w wersji nigtly](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
+- UWAGA — wersje nightly mogą być niestabilne, używasz ich na własne ryzyko
 
 ---
 
-### :hook: Hooks
+### :hook: Integracje z innymi pluginami
 
-FunnyGuilds hooks (optionally) into plugins listed below:
+FunnyGuilds może (opcjonalnie) integrować się z poniższymi pluginami:
 
 - [WorldEdit](https://dev.bukkit.org/projects/worldedit)
 - [WorldGuard](https://dev.bukkit.org/projects/worldguard)
@@ -60,13 +60,13 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 ### :gear: Maven
 
 ```xml
-<!-- Releases -->
+<!-- Stabilne wydania -->
 <repository>
     <id>reposilite-repository</id>
     <url>https://maven.reposilite.com/releases</url>
 </repository>
 
-<!-- Snapshots (nightly) -->
+<!-- Snapshoty (wersje nightly) -->
 <repository>
     <id>reposilite-snapshots-repository</id>
     <url>https://maven.reposilite.com/snapshots</url>
@@ -74,7 +74,7 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 ```
 
 ```xml
-<!-- Release -->
+<!-- Stabilne wydanie -->
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
@@ -82,7 +82,7 @@ FunnyGuilds hooks (optionally) into plugins listed below:
     <scope>provided</scope>
 </dependency>
 
-<!-- Snapshot (nightly) -->
+<!-- Snapshoty (wersja nightly) -->
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
@@ -93,11 +93,11 @@ FunnyGuilds hooks (optionally) into plugins listed below:
 
 ---
 
-### :chart_with_upwards_trend: Usage stats
+### :chart_with_upwards_trend: Statystyki użycia
 
-Current statistics (since FunnyGuilds 3.9.x): [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)</br>
-The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
+Obecne statystyki (od FunnyGuilds 3.9.x): [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)</br>
+Najlepsze zanotowane statystyki (na [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
 
-| Servers | Players | Users     | Guilds |
-|---------|---------|-----------|--------|
-| 1158    | 12 336  | 1 034 312 | 16 973 |
+| Serwery | Gracze | Użytkownicy | Gildie |
+|---------|--------|-------------|--------|
+| 1158    | 12 336 | 1 034 312   | 16 973 |
