@@ -21,7 +21,7 @@ dependencies {
 
     /* okaeri config library */
 
-    val okaeriConfigs = "5.0.0-beta.2"
+    val okaeriConfigs = "5.0.0-beta.5"
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
@@ -30,18 +30,18 @@ dependencies {
 
     /* messages libraries */
 
-    val adventureVersion = "4.12.0"
+    val adventureVersion = "4.13.0"
     implementation("net.kyori:adventure-api:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
     implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
     implementation("net.kyori:adventure-platform-bukkit:4.2.0") // adventure-platform has other versioning than adventure-api
 
-    val yamlVersion = "5.0.0"
+    val yamlVersion = "6.3.2"
     implementation("dev.peri.yetanothermessageslibrary:core:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
 
-    implementation("com.github.PikaMug:LocaleLib:3.1")
+    implementation("com.github.PikaMug:LocaleLib:3.2")
 
     /* general stuff */
 
@@ -76,12 +76,11 @@ dependencies {
         because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    shadow("net.kyori:adventure-api:4.12.0")
     shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
-    shadow("com.github.decentsoftware-eu:decentholograms:2.7.11")
+    shadow("com.github.decentsoftware-eu:decentholograms:2.8.0")
 
     /* tests */
-    testImplementation("org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT")
+    testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 }
 
@@ -93,7 +92,7 @@ tasks.processResources {
 }
 
 tasks.withType<ShadowJar> {
-    archiveFileName.set("FunnyGuilds ${project.version}.${grgit.log().size} (MC 1.8-1.19).jar")
+    archiveFileName.set("FunnyGuilds ${project.version}.${grgit.log().size} (MC 1.16-1.19).jar")
     mergeServiceFiles()
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")

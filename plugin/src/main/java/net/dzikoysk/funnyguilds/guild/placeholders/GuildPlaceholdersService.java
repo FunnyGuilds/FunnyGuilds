@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -109,21 +108,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("lives-symbol-all",
                         guild -> StringUtils.repeated(guild.getLives(), pluginConfiguration.livesRepeatingSymbol.full.getValue()),
                         () -> messages.get(config -> config.livesNoValue))
-                .property("position",
-                        (guild, rank) -> rankManager.isRankedGuild(guild)
-                                ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
-                                : messages.get(config -> config.minMembersToIncludeNoValue),
-                        () -> messages.get(config -> config.minMembersToIncludeNoValue))
-                .property("rank",
-                        (guild, rank) -> rankManager.isRankedGuild(guild)
-                                ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
-                                : messages.get(config -> config.minMembersToIncludeNoValue),
-                        () -> messages.get(config -> config.minMembersToIncludeNoValue))
-                //TODO total-points -> points (I know this will break up backwards compatibility so I'm not doing it now)
-                .property("total-points", (guild, rank) -> rank.getPoints(), () -> 0)
+                .property("points", (guild, rank) -> rank.getPoints(), () -> 0)
                 .property("avg-points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
-                .property("points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
-                .property("points-format",
+                .property("avg-points-format",
                         (guild, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getAveragePoints(),
                                 pluginConfiguration.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
                         () -> FunnyFormatter.format(NumberRange.inRangeToString(0, pluginConfiguration.pointsFormat), "{POINTS}", 0))

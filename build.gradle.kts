@@ -20,7 +20,7 @@ idea {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "4.12.1-SNAPSHOT"
+    version = "5.0.0-SNAPSHOT"
 
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
@@ -67,7 +67,7 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 
-        val mockito = "5.1.1"
+        val mockito = "5.2.0"
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
         testImplementation("org.mockito:mockito-inline:$mockito")
@@ -77,8 +77,8 @@ subprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_16
+        targetCompatibility = JavaVersion.VERSION_16
 
         withSourcesJar()
         withJavadocJar()
@@ -96,7 +96,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_1_8.toString()
+            jvmTarget = JavaVersion.VERSION_16.toString()
             languageVersion = "1.8"
             freeCompilerArgs = listOf("-Xjvm-default=all") // Generate default methods in interfaces by default
         }

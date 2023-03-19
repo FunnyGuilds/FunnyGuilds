@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.shared.adventure;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -18,31 +19,17 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.stream.PandaStream;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public final class ItemComponentHelper {
-
-    private static Class<?> NAMESPACED_KEY;
-    private static Method GET_NAMESPACED_KEY;
-    private static Method GET_NAMESPACE;
-    private static Method GET_KEY;
 
     private static final Class<?> NMS_ITEM_STACK = Reflections.getNMSClass("ItemStack", "world.item");
     private static final Method CRAFT_ITEM_STACK_AS_NMS_COPY = Reflections.getMethod(Reflections.getCraftBukkitClass("inventory.CraftItemStack"), "asNMSCopy", ItemStack.class);
     private static final Method NMS_ITEM_STACK_GET_TAG = Reflections.getMethod(NMS_ITEM_STACK, "getTag");
-
-    static {
-        if (!Reflections.USE_PRE_13_METHODS) {
-            NAMESPACED_KEY = Reflections.getBukkitClass("NamespacedKey");
-            GET_NAMESPACED_KEY = Reflections.getMethod(Material.class, "getKey");
-            GET_NAMESPACE = Reflections.getMethod(NAMESPACED_KEY, "getNamespace");
-            GET_KEY = Reflections.getMethod(NAMESPACED_KEY, "getKey");
-        }
-    }
 
     private ItemComponentHelper() {
     }
@@ -73,16 +60,9 @@ public final class ItemComponentHelper {
         return itemComponent;
     }
 
-    public static Key getMaterialKey(Material material) throws InvocationTargetException, IllegalAccessException {
-        if (NAMESPACED_KEY == null || GET_NAMESPACED_KEY == null) {
-            return Key.key(material.name().toLowerCase());
-        }
-
-        Object namespacedKey = GET_NAMESPACED_KEY.invoke(material);
-        String namespace = (String) GET_NAMESPACE.invoke(namespacedKey);
-        String key = (String) GET_KEY.invoke(namespacedKey);
-
-        return Key.key(namespace, key);
+    public static Key getMaterialKey(Material material) {
+        NamespacedKey namespacedKey = material.getKey();
+        return Key.key(namespacedKey.getNamespace(), namespacedKey.getKey());
     }
 
     @Nullable
