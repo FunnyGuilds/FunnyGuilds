@@ -24,6 +24,11 @@ public class PlayerMove extends AbstractFunnyListener {
         boolean enter = event.getTo() != null
                 ? !this.regionManager.findRegionAtLocation(event.getTo()).equals(this.regionManager.findRegionAtLocation(event.getFrom()))
                 : false;
+
+        if (!enter) {
+            return;
+        }
+
         this.userManager.findByUuid(event.getPlayer().getUniqueId())
                 .map(User::getCache)
                 .peek(userCache -> userCache.setEnter(enter));
