@@ -20,7 +20,7 @@ Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
 ### :video_game: Wspierane wersje MC
 
-1.16.5, 1.17.1, 1.18.2, 1.19.2, 1.19.3
+1.16.5, 1.17.1, 1.18.2, 1.19.2, 1.19.3, 1.19.4
 
 ### :desktop_computer: Wspierane silniki
 
@@ -36,7 +36,7 @@ Spigot, Paper, Purpur
 - możesz nadal używać [najnowszego jara 4.x](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/)
 - jedynie poważniejsze problemy spowodują jakąkolwiek aktualizację FunnyGuilds 4.x, nowe funkcjonalności nie będą dodawane
 
-#### :hourglass_flowing_sand: Dla wersji MC 1.16.5 - 1.19.3
+#### :hourglass_flowing_sand: Dla wersji MC 1.16.5 - 1.19.4
 
 - pobierz najnowsze stabilne wydanie [tutaj](https://github.com/FunnyGuilds/FunnyGuilds/releases) (obecnie najnowsze wydanie FunnyGuilds 4.x)
 - lub przetestuj najnowsze funkcjonalności i poprawki [w wersji nigtly](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
