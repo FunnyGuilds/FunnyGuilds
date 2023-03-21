@@ -33,6 +33,9 @@ allprojects {
     }
 
     repositories {
+        /* Local */
+        mavenLocal()
+
         /* Libs */
         maven("https://maven.reposilite.com/releases")
         maven("https://storehouse.okaeri.eu/repository/maven-public")
