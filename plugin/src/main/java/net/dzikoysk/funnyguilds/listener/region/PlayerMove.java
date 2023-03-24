@@ -21,7 +21,7 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        this.onMove(event);
+        this.onMove(event); // We have to manually call onMove when player teleports - in other case the move event won't be called
     }
 
     @EventHandler
