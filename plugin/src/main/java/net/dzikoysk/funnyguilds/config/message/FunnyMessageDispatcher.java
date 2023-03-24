@@ -1,22 +1,21 @@
 package net.dzikoysk.funnyguilds.config.message;
 
+import dev.peri.yetanothermessageslibrary.message.BukkitMessageDispatcher;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.viewer.ViewerService;
 import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import dev.peri.yetanothermessageslibrary.message.BukkitMessageDispatcher;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
-import dev.peri.yetanothermessageslibrary.viewer.Viewer;
-import dev.peri.yetanothermessageslibrary.viewer.ViewerService;
 
 public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessageDispatcher> {
 
     private final Function<User, CommandSender> supplyReceiver;
 
     public FunnyMessageDispatcher(
-            ViewerService<CommandSender, ? extends Viewer> viewerService,
+            ViewerService<CommandSender> viewerService,
             Function<Object, Locale> localeSupplier,
             Function<Object, Sendable> messageSupplier,
             Function<User, CommandSender> supplyReceiver
