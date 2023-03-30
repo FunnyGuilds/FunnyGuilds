@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a player enters a guild region by crossing the border or teleports into it
+ * Called when a player enters a guild region by crossing it's border or teleports into it
  */
 public class GuildRegionEnterEvent extends GuildEvent {
 
