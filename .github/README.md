@@ -20,7 +20,7 @@ Wiki: [Wiki (PL/EN)](https://github.com/FunnyGuilds/FunnyGuilds/wiki)
 
 ### :video_game: Supported MC versions
 
-1.16.5, 1.17.1, 1.18.2, 1.19.2, 1.19.3
+1.16.5, 1.17.1, 1.18.2, 1.19.2, 1.19.3, 1.19.4
 
 ### :desktop_computer: Supported server platforms
 
@@ -36,7 +36,7 @@ Spigot, Paper, Purpur
 - you can still use [the latest 4.x build](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/)
 - only severe security related issues will likely cause an update for FunnyGuilds 4.x, no new features will be added
 
-#### :hourglass_flowing_sand: For MC versions 1.16.5 - 1.19.3
+#### :hourglass_flowing_sand: For MC versions 1.16.5 - 1.19.4
 
 - get the latest stable version [here](https://github.com/FunnyGuilds/FunnyGuilds/releases) (for now the last FunnyGuilds 4.x release)
 - or explore the newest features and fixes of the [nightly versions](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
