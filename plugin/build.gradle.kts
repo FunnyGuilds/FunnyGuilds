@@ -59,7 +59,7 @@ dependencies {
     }
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.bstats:bstats-bukkit:3.0.1")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
 
     // probably fix for some exception?
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
