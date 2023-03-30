@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a player leaves a guild region by crossing the border or teleports out of it
+ * Called when a player leaves a guild region by crossing it's border or teleports out of it
  */
 public class GuildRegionLeaveEvent extends GuildEvent {
 
