@@ -21,7 +21,6 @@ public class UserCache {
 
     private BukkitTask teleportation;
     private long notificationTime;
-    private boolean enter;
     private boolean spy;
 
     public UserCache(User user) {
@@ -79,14 +78,6 @@ public class UserCache {
 
     public void setNotificationTime(long notification) {
         this.notificationTime = notification;
-    }
-
-    public boolean getEnter() {
-        return this.enter;
-    }
-
-    public void setEnter(boolean enter) {
-        this.enter = enter;
     }
 
     public boolean isSpy() {
