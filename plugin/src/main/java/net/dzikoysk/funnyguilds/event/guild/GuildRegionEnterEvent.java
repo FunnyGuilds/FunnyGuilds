@@ -5,6 +5,9 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called when a player enters a guild region by crossing it's border or teleporting into it
+ */
 public class GuildRegionEnterEvent extends GuildEvent {
 
     private static final HandlerList handlers = new HandlerList();
