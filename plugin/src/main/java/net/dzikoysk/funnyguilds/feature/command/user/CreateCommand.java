@@ -249,7 +249,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
             this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
             //player.teleport(guildLocation);
 
-
             if(this.config.heart.teleportToHeartOnCreate){
                 guild.teleportHome(player);
             }
