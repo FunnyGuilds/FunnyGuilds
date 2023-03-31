@@ -33,8 +33,9 @@ public class HeartConfiguration extends OkaeriConfig {
     public String createType = "ender_crystal";
 
     @Comment("")
-    @Comment("Czy gracz powinien byc teleportowany do serca gildii przy jej zakładaniu")
+    @Comment("Czy gracz powinien być teleportowany do serca gildii przy jej zakładaniu.")
     public boolean teleportToHeartOnCreate = true;
+    
     @Exclude
     public Material createMaterial;
     @Exclude
