@@ -144,8 +144,7 @@ public class RegionManager {
             });
         });
 
-        int requiredDistance = 2 * this.calculateMaxRegionSize();
-
+        float requiredDistance = 2 * this.calculateMaxRegionSize();
         return PandaStream.of(regions)
                 .map(Region::getCenter)
                 .filterNot(regionCenter -> regionCenter.equals(center))
@@ -269,7 +268,7 @@ public class RegionManager {
      * and applies given function for every chunk position.
      */
     private void forEachChunkPositionInRegion(Location regionCenter, BiConsumer<Integer, Integer> chunkPosFunc) {
-        int maxRegionSize = this.calculateMaxRegionSize();
+        float maxRegionSize = this.calculateMaxRegionSize();
         FunnyBox box = FunnyBox.of(regionCenter.getBlock()).expand(maxRegionSize);
 
         int firstX = (int) (box.getMinX() / 16);
@@ -291,9 +290,9 @@ public class RegionManager {
         }
     }
 
-    private int calculateMaxRegionSize() {
+    private float calculateMaxRegionSize() {
         int enlargementsSize = this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize;
-        return this.pluginConfiguration.regionSize + enlargementsSize + (this.pluginConfiguration.regionMinDistance / 2);
+        return this.pluginConfiguration.regionSize + enlargementsSize + (this.pluginConfiguration.regionMinDistance / 2F);
     }
 
     private static long packChunkPosition(int chunkX, int chunkZ) {
