@@ -135,37 +135,16 @@ public class RegionManager {
             return false;
         }
 
-        int size = this.pluginConfiguration.regionSize;
-        if (this.pluginConfiguration.enlargeItems != null) {
-            size += (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
-        }
-
-        int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
-
-        FunnyBox box = FunnyBox.of(center.getBlock()).expand(requiredDistance);
-
-        int firstX = (int) (box.getMinX() / 16);
-        int firstZ = (int) (box.getMinZ() / 16);
-
-        int secondX = (int) (box.getMaxZ()/ 16);
-        int secondZ = (int) (box.getMaxZ() / 16);
-
-        int startX = Math.min(firstX, secondX);
-        int startZ = Math.min(firstZ, secondZ);
-
-        int endX = Math.max(firstX, secondX);
-        int endZ = Math.max(firstZ, secondZ);
-
         Set<Region> regions = new HashSet<>();
-        for (int chunkX = startX; chunkX <= endX; chunkX++) {
-            for (int chunkZ = startZ; chunkZ <= endZ; chunkZ++) {
-                long packedPos = packChunkPosition(chunkX, chunkZ);
-                this.regions.computeIfPresent(packedPos, (key, value) -> {
-                    regions.addAll(value);
-                    return value;
-                });
-            }
-        }
+        this.forEachChunkPositionInRegion(center, (chunkX, chunkZ) -> {
+            long packedPos = packChunkPosition(chunkX, chunkZ);
+            this.regions.computeIfPresent(packedPos, (pos, regionsAtChunk) -> {
+                regions.addAll(regionsAtChunk);
+                return regionsAtChunk;
+            });
+        });
+
+        int requiredDistance = 2 * this.calculateMaxRegionSize();
 
         return PandaStream.of(regions)
                 .map(Region::getCenter)
@@ -202,7 +181,7 @@ public class RegionManager {
     public void addRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
 
-        this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
+        this.forEachChunkPositionInRegion(region.getCenter(), (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
             Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
             regionsAtChunk.add(region);
@@ -222,7 +201,7 @@ public class RegionManager {
             return;
         }
 
-        this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
+        this.forEachChunkPositionInRegion(region.getCenter(), (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
             this.regions.computeIfPresent(packedPos, (key, set) -> {
                 set.remove(region);
@@ -249,10 +228,8 @@ public class RegionManager {
             level = maxEnlargeLevel;
         }
 
-        this.removeRegion(region);
         region.setEnlargementLevel(level);
         region.setSize(this.pluginConfiguration.regionSize + (level * this.pluginConfiguration.enlargeSize));
-        this.addRegion(region);
     }
 
     /**
@@ -291,12 +268,15 @@ public class RegionManager {
      * Calculates chunks that are in the bounds of the given region
      * and applies given function for every chunk position.
      */
-    private void forEachChunkPositionInRegion(Region region, BiConsumer<Integer, Integer> chunkPosFunc) {
-        int firstX = region.getFirstCorner().getBlockX() / 16;
-        int firstZ = region.getFirstCorner().getBlockZ() / 16;
+    private void forEachChunkPositionInRegion(Location regionCenter, BiConsumer<Integer, Integer> chunkPosFunc) {
+        int maxRegionSize = this.calculateMaxRegionSize();
+        FunnyBox box = FunnyBox.of(regionCenter.getBlock()).expand(maxRegionSize);
 
-        int secondX = region.getSecondCorner().getBlockX() / 16;
-        int secondZ = region.getSecondCorner().getBlockZ() / 16;
+        int firstX = (int) (box.getMinX() / 16);
+        int firstZ = (int) (box.getMinZ() / 16);
+
+        int secondX = (int) (box.getMaxZ() / 16);
+        int secondZ = (int) (box.getMaxZ() / 16);
 
         int startX = Math.min(firstX, secondX);
         int startZ = Math.min(firstZ, secondZ);
@@ -309,6 +289,11 @@ public class RegionManager {
                 chunkPosFunc.accept(chunkX, chunkZ);
             }
         }
+    }
+
+    private int calculateMaxRegionSize() {
+        int enlargementsSize = this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize;
+        return this.pluginConfiguration.regionSize + enlargementsSize + (this.pluginConfiguration.regionMinDistance / 2);
     }
 
     private static long packChunkPosition(int chunkX, int chunkZ) {
