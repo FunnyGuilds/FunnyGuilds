@@ -31,11 +31,6 @@ public class HeartConfiguration extends OkaeriConfig {
     @Comment("UWAGA: Jeśli jako serca gildii chcesz użyć bloku, który spada pod wpływem grawitacji - upewnij się, ze będzie on stał na jakimś innym bloku!")
     @Comment("Jeśli pojawi sie w powietrzu - spadnie i plugin nie będzie odczytywał go poprawnie!")
     public String createType = "ender_crystal";
-
-    @Comment("")
-    @Comment("Czy gracz powinien być teleportowany do serca gildii przy jej zakładaniu.")
-    public boolean teleportToHeartOnCreate = true;
-    
     @Exclude
     public Material createMaterial;
     @Exclude
@@ -116,6 +111,10 @@ public class HeartConfiguration extends OkaeriConfig {
 
     @Exclude
     public File guildSchematicFile;
+
+    @Comment("")
+    @Comment("Czy gracz powinien być teleportowany do serca gildii przy jej zakładaniu.")
+    public boolean teleportToHeartOnCreate = true;
 
     @Comment("")
     @Comment("Przesunięcie domyślnego home gildii względem serca gildii")
