@@ -142,9 +142,32 @@ public class RegionManager {
 
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
-        // TODO: Use sparse storage properly instead of iterating through all of the regions to speed it up.
-        return PandaStream.of(this.regions.values())
-                .flatMap(r -> r)
+        FunnyBox box = FunnyBox.of(center.getBlock()).expand(requiredDistance);
+
+        int firstX = (int) (box.getMinX() / 16);
+        int firstZ = (int) (box.getMinZ() / 16);
+
+        int secondX = (int) (box.getMaxZ()/ 16);
+        int secondZ = (int) (box.getMaxZ() / 16);
+
+        int startX = Math.min(firstX, secondX);
+        int startZ = Math.min(firstZ, secondZ);
+
+        int endX = Math.max(firstX, secondX);
+        int endZ = Math.max(firstZ, secondZ);
+
+        Set<Region> regions = new HashSet<>();
+        for (int chunkX = startX; chunkX <= endX; chunkX++) {
+            for (int chunkZ = startZ; chunkZ <= endZ; chunkZ++) {
+                long packedPos = packChunkPosition(chunkX, chunkZ);
+                this.regions.computeIfPresent(packedPos, (key, value) -> {
+                    regions.addAll(value);
+                    return value;
+                });
+            }
+        }
+
+        return PandaStream.of(regions)
                 .map(Region::getCenter)
                 .filterNot(regionCenter -> regionCenter.equals(center))
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
@@ -181,7 +204,6 @@ public class RegionManager {
 
         this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
-
             Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
             regionsAtChunk.add(region);
         });
@@ -202,7 +224,6 @@ public class RegionManager {
 
         this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
-
             this.regions.computeIfPresent(packedPos, (key, set) -> {
                 set.remove(region);
                 return set;
