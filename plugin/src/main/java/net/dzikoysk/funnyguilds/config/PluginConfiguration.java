@@ -436,16 +436,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<ItemStack> joinItems = ItemUtils.parseItems("1 diamond");
 
     @Comment("")
-    @Comment("Możliwość powiększania gildii")
-    public boolean enlargeEnable = true;
-
-    @Comment("")
     @Comment("O ile powiększany jest teren gildii przy zwiększeniu poziomu")
     public int enlargeSize = 5;
 
     @Comment("")
     @Comment("Koszt powiększania gildii")
     @Comment("Każdy myślnik to 1 poziom powiększenia")
+    @Comment("Aby wyłączyć możliwość powiększanie gildii - wystarczy wpisać: enlarge-items: []")
     public List<ItemStack> enlargeItems = ItemUtils.parseItems("8 diamond", "16 diamond", "24 diamond", "32 diamond", "40 diamond", "48 diamond", "56 diamond", "64 diamond", "72 diamond", "80 diamond");
 
     @Min(1)
@@ -1269,11 +1266,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
             this.eventPhysics = true;
-        }
-
-        if (!this.enlargeEnable) {
-            this.enlargeSize = 0;
-            this.enlargeItems = null;
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {

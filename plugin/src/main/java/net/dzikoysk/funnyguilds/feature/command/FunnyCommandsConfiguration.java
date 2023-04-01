@@ -78,7 +78,7 @@ public final class FunnyCommandsConfiguration {
 
         CommandsConfiguration commands = config.commands;
         CommandsConfiguration.FunnyCommand enlargeCommand = commands.enlarge;
-        enlargeCommand.enabled = enlargeCommand.enabled && config.enlargeEnable;
+        enlargeCommand.enabled = enlargeCommand.enabled && !config.enlargeItems.isEmpty();
 
         UserManager userManager = plugin.getUserManager();
         GuildManager guildManager = plugin.getGuildManager();
