@@ -135,14 +135,9 @@ public class RegionManager {
             return false;
         }
 
-        int size = this.pluginConfiguration.regionSize;
-        if (this.pluginConfiguration.enlargeItems != null) {
-            size += (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
-        }
-
+        int size = this.pluginConfiguration.regionSize + (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
-        // TODO: Use sparse storage properly instead of iterating through all of the regions to speed it up.
         return PandaStream.of(this.regions.values())
                 .flatMap(r -> r)
                 .map(Region::getCenter)
