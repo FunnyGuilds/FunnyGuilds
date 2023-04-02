@@ -1,23 +1,19 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.user.UserManager;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.stream.PandaStream;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Locale;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -113,29 +109,6 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             this.plugin.reloadConfiguration();
             this.plugin.getDataPersistenceHandler().reloadHandler();
             this.plugin.getDynamicListenerManager().reloadAll();
-
-            if (this.plugin.getTablistConfiguration().enabled) {
-                TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
-                UserManager userManager = this.plugin.getUserManager();
-
-                PandaStream.of(Bukkit.getOnlinePlayers())
-                        .flatMap(userManager::findByPlayer)
-                        .forEach(user -> {
-                            IndividualPlayerList playerList = new IndividualPlayerList(
-                                    user,
-                                    this.plugin.getNmsAccessor().getPlayerListAccessor(),
-                                    this.plugin.getFunnyServer(),
-                                    tablistConfig.cells,
-                                    tablistConfig.header, tablistConfig.footer,
-                                    tablistConfig.animated, tablistConfig.pages,
-                                    tablistConfig.heads.textures,
-                                    tablistConfig.cellsPing,
-                                    tablistConfig.fillCells
-                            );
-
-                            user.getCache().setPlayerList(playerList);
-                        });
-            }
 
             String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
             FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.reloadTime)

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
-import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
@@ -32,23 +31,6 @@ public class PlayerJoin extends AbstractFunnyListener {
         }
 
         UserCache cache = user.getCache();
-
-        if (this.tablistConfig.enabled) {
-            IndividualPlayerList individualPlayerList = new IndividualPlayerList(
-                    user,
-                    this.nmsAccessor.getPlayerListAccessor(),
-                    this.funnyServer,
-                    this.tablistConfig.cells,
-                    this.tablistConfig.header, this.tablistConfig.footer,
-                    this.tablistConfig.animated, this.tablistConfig.pages,
-                    this.tablistConfig.heads.textures,
-                    this.tablistConfig.cellsPing,
-                    this.tablistConfig.fillCells
-            );
-
-            individualPlayerList.send();
-            cache.setPlayerList(individualPlayerList);
-        }
 
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))

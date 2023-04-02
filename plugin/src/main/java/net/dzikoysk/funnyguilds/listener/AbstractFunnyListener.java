@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
@@ -29,8 +28,6 @@ public abstract class AbstractFunnyListener implements Listener {
 
     @Inject
     public PluginConfiguration config;
-    @Inject
-    public TablistConfiguration tablistConfig;
 
     @Inject
     public MessageService messageService;

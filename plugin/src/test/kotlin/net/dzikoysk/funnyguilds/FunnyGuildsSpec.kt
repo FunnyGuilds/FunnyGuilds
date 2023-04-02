@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.message.MessageService
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
@@ -42,7 +41,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
     private val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
 
     protected lateinit var config: PluginConfiguration
-    private lateinit var tablistConfig: TablistConfiguration
     private lateinit var messages: MessageService
 
     protected lateinit var userManager: UserManager
@@ -60,7 +58,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
         mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
         config = PluginConfiguration()
-        tablistConfig = TablistConfiguration()
         messages = MessageService(null, null)
         messages.defaultLocale = Locale.forLanguageTag("pl")
         messages.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
@@ -68,7 +65,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
         preparePluginConfiguration()
 
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
-        lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
         lenient().`when`(funnyGuilds.messageService).thenReturn(messages)
 
         userManager = UserManager(config)

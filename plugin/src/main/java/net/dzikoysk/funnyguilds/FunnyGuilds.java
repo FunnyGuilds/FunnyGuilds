@@ -2,14 +2,12 @@ package net.dzikoysk.funnyguilds;
 
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
-import java.io.File;
 import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
@@ -21,47 +19,21 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.GeneralPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
-import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
-import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.listener.BlockFlow;
-import net.dzikoysk.funnyguilds.listener.EntityDamage;
-import net.dzikoysk.funnyguilds.listener.EntityInteract;
-import net.dzikoysk.funnyguilds.listener.PistonUse;
-import net.dzikoysk.funnyguilds.listener.PlayerChat;
-import net.dzikoysk.funnyguilds.listener.PlayerDeath;
-import net.dzikoysk.funnyguilds.listener.PlayerJoin;
-import net.dzikoysk.funnyguilds.listener.PlayerLogin;
-import net.dzikoysk.funnyguilds.listener.PlayerQuit;
-import net.dzikoysk.funnyguilds.listener.TntProtection;
+import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
-import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
-import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
-import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
-import net.dzikoysk.funnyguilds.listener.region.BucketAction;
-import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
-import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
-import net.dzikoysk.funnyguilds.listener.region.EntityProtect;
-import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
-import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
-import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
-import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
-import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
-import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
-import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
-import net.dzikoysk.funnyguilds.listener.region.PlayerTeleport;
+import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
@@ -100,13 +72,14 @@ import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
 
+import java.io.File;
+
 public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds plugin;
     private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
-    private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
 
@@ -114,7 +87,6 @@ public class FunnyGuilds extends JavaPlugin {
     private FunnyCommands funnyCommands;
 
     private PluginConfiguration pluginConfiguration;
-    private TablistConfiguration tablistConfiguration;
 
     private MessageService messageService;
     private LocaleManager localeManager;
@@ -140,7 +112,7 @@ public class FunnyGuilds extends JavaPlugin {
     private UserPlaceholdersService userPlaceholdersService;
     private GuildPlaceholdersService guildPlaceholdersService;
     private RankPlaceholdersService rankPlaceholdersService;
-    private TablistPlaceholdersService tablistPlaceholdersService;
+    private GeneralPlaceholdersService generalPlaceholdersService;
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
@@ -153,7 +125,6 @@ public class FunnyGuilds extends JavaPlugin {
     private Injector injector;
 
     private volatile BukkitTask guildValidationTask;
-    private volatile BukkitTask tablistBroadcastTask;
     private volatile BukkitTask rankRecalculationTask;
 
     private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
@@ -192,7 +163,6 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
-            this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);
@@ -276,7 +246,7 @@ public class FunnyGuilds extends JavaPlugin {
                 this.userRankManager,
                 this.guildRankManager
         );
-        this.tablistPlaceholdersService = new TablistPlaceholdersService(
+        this.generalPlaceholdersService = new GeneralPlaceholdersService(
                 this.basicPlaceholdersService,
                 this.timePlaceholdersService,
                 this.userPlaceholdersService,
@@ -308,7 +278,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
-            resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
@@ -332,7 +301,6 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
@@ -443,7 +411,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildEntityHelper.despawnGuildEntities(this.guildManager);
 
         this.guildValidationTask.cancel();
-        this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
         this.dataModel.save(false);
@@ -484,24 +451,6 @@ public class FunnyGuilds extends JavaPlugin {
             FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
             outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
-
-            if (!this.tablistConfiguration.enabled) {
-                continue;
-            }
-
-            IndividualPlayerList individualPlayerList = new IndividualPlayerList(
-                    user,
-                    this.nmsAccessor.getPlayerListAccessor(),
-                    this.funnyServer,
-                    this.tablistConfiguration.cells,
-                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
-                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
-                    this.tablistConfiguration.heads.textures,
-                    this.tablistConfiguration.cellsPing,
-                    this.tablistConfiguration.fillCells
-            );
-
-            user.getCache().setPlayerList(individualPlayerList);
         }
 
         this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
@@ -557,14 +506,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public File getPluginConfigurationFile() {
         return this.pluginConfigurationFile;
-    }
-
-    public TablistConfiguration getTablistConfiguration() {
-        return this.tablistConfiguration;
-    }
-
-    public File getTablistConfigurationFile() {
-        return this.tablistConfigurationFile;
     }
 
     public MessageService getMessageService() {
@@ -643,8 +584,8 @@ public class FunnyGuilds extends JavaPlugin {
         return this.rankPlaceholdersService;
     }
 
-    public TablistPlaceholdersService getTablistPlaceholdersService() {
-        return this.tablistPlaceholdersService;
+    public GeneralPlaceholdersService getGeneralPlaceholdersService() {
+        return this.generalPlaceholdersService;
     }
 
     public NmsAccessor getNmsAccessor() {
@@ -661,7 +602,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
-        this.tablistConfiguration.load();
         this.messageService.reload();
         this.hookManager.callConfigUpdated();
         this.prepareScoreboardServices();

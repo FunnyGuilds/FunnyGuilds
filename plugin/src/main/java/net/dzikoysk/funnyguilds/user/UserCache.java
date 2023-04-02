@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.Dummy;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTag;
-import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
@@ -11,8 +10,6 @@ import panda.std.Option;
 public class UserCache {
 
     private final User user;
-
-    private IndividualPlayerList playerList;
     private Option<Scoreboard> scoreboard = Option.none();
     private Option<IndividualNameTag> nameTag = Option.none();
     private Option<Dummy> dummy = Option.none();
@@ -23,14 +20,6 @@ public class UserCache {
 
     public UserCache(User user) {
         this.user = user;
-    }
-
-    public Option<IndividualPlayerList> getPlayerList() {
-        return Option.of(this.playerList);
-    }
-
-    public void setPlayerList(IndividualPlayerList playerList) {
-        this.playerList = playerList;
     }
 
     public synchronized Option<Scoreboard> getScoreboard() {

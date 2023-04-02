@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.hooks.placeholderapi;
 
-import java.util.Locale;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
@@ -12,6 +11,8 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
+
+import java.util.Locale;
 
 public class PlaceholderAPIHook extends AbstractPluginHook {
 
@@ -69,7 +70,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
             }
             else {
-                return this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
+                return this.plugin.getGeneralPlaceholdersService().formatIdentifier(identifier, user);
             }
         }
 

@@ -1,26 +1,24 @@
-package net.dzikoysk.funnyguilds.feature.tablist;
+package net.dzikoysk.funnyguilds.feature.placeholders;
+
+import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
+import panda.std.stream.PandaStream;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
-import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
-import panda.std.stream.PandaStream;
 
-public class TablistPlaceholdersService implements PlaceholdersService<User> {
+public class GeneralPlaceholdersService implements PlaceholdersService<User> {
 
     private final BasicPlaceholdersService basicPlaceholdersService;
     private final TimePlaceholdersService timePlaceholdersService;
     private final UserPlaceholdersService userPlaceholdersService;
     private final GuildPlaceholdersService guildPlaceholdersService;
 
-    public TablistPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService, TimePlaceholdersService timePlaceholdersService,
+    public GeneralPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService, TimePlaceholdersService timePlaceholdersService,
                                       UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService) {
         this.basicPlaceholdersService = basicPlaceholdersService;
         this.timePlaceholdersService = timePlaceholdersService;
