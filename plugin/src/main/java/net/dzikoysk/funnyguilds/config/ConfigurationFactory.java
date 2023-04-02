@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.config;
 
+import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
@@ -18,6 +19,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0006_Migrate_old_scoreboard_co
 import net.dzikoysk.funnyguilds.config.migration.P0007_Migrate_old_relational_tag_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0008_Migrate_old_heart_center_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0009_Migrate_old_killer_notification_key;
+import net.dzikoysk.funnyguilds.config.migration.P0010_Migrate_old_enlarge_enable_option;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.migration.T0002_Update_tablist_keys;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
@@ -34,7 +36,6 @@ import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
-import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
 
 public final class ConfigurationFactory {
 
@@ -89,7 +90,8 @@ public final class ConfigurationFactory {
                     new P0006_Migrate_old_scoreboard_configuration(),
                     new P0007_Migrate_old_relational_tag_configuration(),
                     new P0008_Migrate_old_heart_center_configuration(),
-                    new P0009_Migrate_old_killer_notification_key()
+                    new P0009_Migrate_old_killer_notification_key(),
+                    new P0010_Migrate_old_enlarge_enable_option()
             );
         });
     }
