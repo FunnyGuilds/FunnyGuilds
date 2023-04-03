@@ -87,9 +87,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                         () -> messages.get(config -> config.gRegionSizeNoValue))
                 .property("pvp",
                         guild -> guild.hasPvPEnabled()
-                                ? messages.get(config -> config.pvpStatusOn)
-                                : messages.get(config -> config.pvpStatusOff),
-                        () -> messages.get(config -> config.pvpStatusOff))
+                                ? messages.get(config -> config.guild.commands.pvp.enabledStatus)
+                                : messages.get(config -> config.guild.commands.pvp.disabledStatus),
+                        () -> messages.get(config -> config.guild.commands.pvp.disabledStatus))
                 .timeProperty("validity", Guild::getValidity, messages, config -> config.gValidityNoValue)
                 .timeProperty("protection", Guild::getProtection, messages, config -> config.gProtectionNoValue)
                 .property("lives", Guild::getLives, () -> 0)
