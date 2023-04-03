@@ -1069,12 +1069,15 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     public static class System extends OkaeriConfig {
 
+        public String loginNickTooShort = "&cNick jest za krotki!";
+        public String loginNickTooLong = "&cNick jest za długi!";
+        public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
+
         public SendableMessage commandHelp = ChatHolder.message(
                 "&aFunnyGuilds Help:",
                 "&b/funnyguilds (reload|rl) &7- przeładuj plugin",
                 "&b/funnyguilds (update|check) &7- sprawdź dostępność aktualizacji",
-                "&b/funnyguilds save-all &7- zapisz wszystko",
-                "&b/funnyguilds funnybin &7- zapisz konfigurację online (~ usprawnia pomoc na &ahttps://github.com/FunnyGuilds/FunnyGuilds/issues&7)"
+                "&b/funnyguilds save-all &7- zapisz wszystko"
         );
 
         public SendableMessage reloadWarn = ChatHolder.message("&cDziałanie pluginu FunnyGuilds po reloadzie może byc zaburzone, zalecane jest przeprowadzenie restartu serwera!");
@@ -1096,11 +1099,6 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
         );
 
     }
-
-
-    public String loginNickTooShort = "&cNick jest za krotki!";
-    public String loginNickTooLong = "&cNick jest za dlugi!";
-    public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
 
     @Override
     public OkaeriConfig load() throws OkaeriException {
