@@ -67,7 +67,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 .register("{GUILD}", guild.getName())
                                 .register("{TAG}", guild.getTag());
 
-                        this.messageService.getMessage(config -> config.region.move.leave)
+                        this.messageService.getMessage(config -> config.guild.region.move.leave)
                                 .with(formatter)
                                 .receiver(player)
                                 .send();
@@ -94,7 +94,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 .register("{TAG}", guild.getTag())
                                 .register("{PLAYER}", player.getName());
 
-                        this.messageService.getMessage(config -> config.region.move.enter)
+                        this.messageService.getMessage(config -> config.guild.region.move.enter)
                                 .with(formatter)
                                 .receiver(player)
                                 .send();
@@ -112,7 +112,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             return;
                         }
 
-                        this.messageService.getMessage(config -> config.region.move.intruderEnter)
+                        this.messageService.getMessage(config -> config.guild.region.move.intruderEnter)
                                 .with(formatter)
                                 .receiver(guild)
                                 .send();

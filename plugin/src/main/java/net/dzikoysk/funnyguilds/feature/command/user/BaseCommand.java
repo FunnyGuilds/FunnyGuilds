@@ -31,7 +31,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsMember User member, Guild guild) {
-        when(!this.config.regionsEnabled, config -> config.region.disabled);
+        when(!this.config.regionsEnabled, config -> config.guild.region.disabled);
         when(!this.config.baseEnable, config -> config.guild.commands.base.disabled);
         when(member.getCache().getTeleportation() != null, config -> config.guild.commands.base.alreadyTeleporting);
 

@@ -28,7 +28,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
-        Region region = when(guild.getRegion(), config -> config.region.disabled);
+        Region region = when(guild.getRegion(), config -> config.guild.region.disabled);
 
         int currentEnlargementLevel = region.getEnlargementLevel();
         when(currentEnlargementLevel > this.config.enlargeItems.size() - 1, config -> config.guild.commands.enlarge.maxSize);

@@ -28,7 +28,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
-        when(!this.config.regionsEnabled, config -> config.region.disabled);
+        when(!this.config.regionsEnabled, config -> config.guild.region.disabled);
 
         Region region = this.regionManager.findByName(guild.getName()).orNull();
         Location location = player.getLocation();

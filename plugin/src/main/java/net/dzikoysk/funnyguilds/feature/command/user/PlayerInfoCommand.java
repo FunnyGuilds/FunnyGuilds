@@ -1,18 +1,15 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
 import dev.peri.yetanothermessageslibrary.message.Sendable;
-import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -38,32 +35,19 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
     }
 
     public void sendInfoMessage(Function<MessageConfiguration, Sendable> baseMessage, User infoUser, CommandSender messageTarget) {
-        UserRank rank = infoUser.getRank();
-
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", infoUser.getName())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), this.config.pointsFormat))
-                .register("{POINTS}", rank.getPoints())
-                .register("{KILLS}", rank.getKills())
-                .register("{DEATHS}", rank.getDeaths())
-                .register("{ASSISTS}", rank.getAssists())
-                .register("{LOGOUTS}", rank.getLogouts())
-                .register("{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()))
-                .register("{KDA}", String.format(Locale.US, "%.2f", rank.getKDA()))
-                .register("{RANK}", rank.getPosition(DefaultTops.USER_POINTS_TOP));
-
         this.messageService.getMessage(baseMessage)
                 .receiver(messageTarget)
-                .with(formatter)
+                .with(this.userPlaceholdersService.getFormatters(infoUser))
+                .with("{RANK}", infoUser.getRank().getPosition(DefaultTops.USER_POINTS_TOP))
                 .with(CommandSender.class, receiver -> {
                     FunnyFormatter guildFormatter = new FunnyFormatter();
                     if (infoUser.hasGuild()) {
                         Guild guild = infoUser.getGuild().get();
-                        guildFormatter.register("{GUILD}", guild.getName());
+                        guildFormatter.register("{NAME}", guild.getName());
                         guildFormatter.register("{TAG}", guild.getTag());
                     } else {
-                        guildFormatter.register("{GUILD}", this.messageService.<String>get(receiver, config -> config.gNameNoValue));
-                        guildFormatter.register("{TAG}", this.messageService.<String>get(receiver, config -> config.gTagNoValue));
+                        guildFormatter.register("{NAME}", this.messageService.<String>get(receiver, config -> config.noValue.guild.name));
+                        guildFormatter.register("{TAG}", this.messageService.<String>get(receiver, config -> config.noValue.guild.tag));
                     }
                     return guildFormatter;
                 })

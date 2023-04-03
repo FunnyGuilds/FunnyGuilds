@@ -19,7 +19,7 @@ public final class TeleportCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
-        when(!this.config.regionsEnabled, config -> config.region.disabled);
+        when(!this.config.regionsEnabled, config -> config.guild.region.disabled);
         when(args.length < 1, config -> config.commands.validation.noTagGiven);
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 

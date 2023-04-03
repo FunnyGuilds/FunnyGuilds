@@ -29,7 +29,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User user) {
-        when(!this.config.regionsEnabled, config -> config.region.disabled);
+        when(!this.config.regionsEnabled, config -> config.guild.region.disabled);
         when(!this.config.escapeEnable || !this.config.baseEnable, config -> config.guild.commands.escape.disabled);
         when(user.getCache().getTeleportation() != null, config -> config.guild.commands.escape.alreadyEscaping);
 

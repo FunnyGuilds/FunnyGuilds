@@ -47,7 +47,7 @@ public class PlayerCommand extends AbstractFunnyListener {
         }
 
         event.setCancelled(true);
-        this.messageService.getMessage(config -> config.region.protection.command)
+        this.messageService.getMessage(config -> config.guild.region.protection.command)
                 .receiver(player)
                 .send();
     }

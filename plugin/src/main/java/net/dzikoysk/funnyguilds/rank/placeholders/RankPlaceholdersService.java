@@ -122,7 +122,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
                         }
                         return this.formatUserRank(text, placeholder, user, topFormat);
                     })
-                    .orElseGet(() -> FunnyFormatter.format(text, placeholder, this.messageService.<String>get(targetUser, config -> config.ptopNoValue)));
+                    .orElseGet(() -> FunnyFormatter.format(text, placeholder, this.messageService.<String>get(targetUser, config -> config.noValue.player.top)));
         }
 
         if (topType.equalsIgnoreCase("GTOP")) {
@@ -146,7 +146,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
                         }
                         return this.formatGuildRank(text, placeholder, targetUser, guild, topFormat);
                     })
-                    .orElseGet(() -> FunnyFormatter.format(text, placeholder, this.messageService.<String>get(targetUser, config -> config.gtopNoValue)));
+                    .orElseGet(() -> FunnyFormatter.format(text, placeholder, this.messageService.<String>get(targetUser, config -> config.noValue.guild.top)));
         }
 
         return text;
