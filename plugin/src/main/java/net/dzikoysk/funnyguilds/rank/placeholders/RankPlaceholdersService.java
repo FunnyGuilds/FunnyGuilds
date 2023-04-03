@@ -193,7 +193,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
                     .filter(this.guildRankManager::isRankedGuild)
                     .map(guild -> guild.getRank().getPosition(comparatorType))
                     .map(Objects::toString)
-                    .orElseGet(this.messageService.<String>get(targetUser, config -> config.minMembersToIncludeNoValue));
+                    .orElseGet(this.messageService.<String>get(targetUser, config -> config.noValue.guild.minMembersToInclude));
 
             return FunnyFormatter.format(text, "{G-POSITION-" + comparatorType + "}", replacement);
         }
