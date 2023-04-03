@@ -1105,22 +1105,26 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
         super.load();
 
         try {
-            //TODO Support multi-level fields
-            for (Field field : this.getClass().getDeclaredFields()) {
-                if (field.getType().equals(String.class)) {
-                    field.set(this, ChatUtils.colored((String) field.get(this)));
-                }
-
-                if (field.getType().equals(List.class)) {
-                    List<String> list = (List<String>) field.get(this);
-                    list.replaceAll(ChatUtils::colored);
-                }
-            }
+            this.colorFields(this);
         } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
 
         return this;
+    }
+
+    private void colorFields(OkaeriConfig section) throws IllegalAccessException {
+        for (Field field : section.getClass().getDeclaredFields()) {
+            Class<?> type = field.getType();
+            if (type.equals(String.class)) {
+                field.set(this, ChatUtils.colored((String) field.get(this)));
+            } else if (type.equals(List.class)) {
+                List<String> list = (List<String>) field.get(this);
+                list.replaceAll(ChatUtils::colored);
+            } else if (type.equals(OkaeriConfig.class)) {
+                this.colorFields((OkaeriConfig) field.get(this));
+            }
+        }
     }
 
 }
