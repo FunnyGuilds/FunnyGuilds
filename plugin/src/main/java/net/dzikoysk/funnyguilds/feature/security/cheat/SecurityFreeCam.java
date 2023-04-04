@@ -4,6 +4,7 @@ import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -17,7 +18,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import panda.std.Option;
 import panda.utilities.text.Joiner;
 
 public final class SecurityFreeCam {
@@ -33,14 +33,13 @@ public final class SecurityFreeCam {
         Vector directionToHitPoint = hitPoint.clone().subtract(origin);
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, directionToHitPoint, 0, Math.max((int) distance, 1));
 
-        Option<Block> heartBlock = guild.getEnderCrystal().map(Location::getBlock);
         List<Block> blocks = StreamSupport.stream(Spliterators.spliteratorUnknownSize(blockIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE), false)
                 .filter(block -> !block.isLiquid())
                 .filter(block -> block.getType().isSolid())
                 .filter(block -> block.getType().isOccluding() || block.getType() == Material.GLASS)
-                .filter(block -> !heartBlock.contentEquals(block))
                 .limit(8)
-                .toList();
+                .collect(Collectors.toList());
+        guild.getEnderCrystal().map(Location::getBlock).peek(blocks::remove);
 
         if (blocks.size() <= config.freeCamCompensation) {
             return;
