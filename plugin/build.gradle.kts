@@ -86,6 +86,7 @@ tasks.withType<ShadowJar> {
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
+    relocate("org.panda_lang.utilities.inject", "net.dzikoysk.funnyguilds.libs.panda.injector")
     relocate("javassist", "net.dzikoysk.funnyguilds.libs.javassist")
     relocate("com.zaxxer", "net.dzikoysk.funnyguilds.libs.com.zaxxer")
     relocate("org.apache.logging", "net.dzikoysk.funnyguilds.libs.org.apache.logging")
@@ -96,13 +97,14 @@ tasks.withType<ShadowJar> {
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
 
+    exclude("kotlin/**")
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")
     exclude("org/jetbrains/annotations/**")
+    exclude("javax/annotation/**")
 
     minimize {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
-        exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
     }
 }
 
