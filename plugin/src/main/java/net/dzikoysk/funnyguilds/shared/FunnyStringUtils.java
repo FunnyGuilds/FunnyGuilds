@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import panda.utilities.text.Joiner;
 
@@ -29,8 +30,9 @@ public final class FunnyStringUtils {
         return string == null || string.isEmpty();
     }
 
-    public static String replace(@Nullable String string, @Nullable String pattern, @Nullable String replacement) {
-        if (isEmpty(string) || isEmpty(pattern) || replacement == null) {
+    @Contract("null, _, _ -> null; !null, null, _ -> !null;")
+    public static String replace(@Nullable String string, @Nullable String pattern, String replacement) {
+        if (isEmpty(string) || isEmpty(pattern))  {
             return string;
         }
         return string.replace(pattern, replacement);

@@ -58,7 +58,6 @@ dependencies {
         because("WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it")
     }
 
-    implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
     // probably fix for some exception?
@@ -102,7 +101,6 @@ tasks.withType<ShadowJar> {
     relocate("com.google", "net.dzikoysk.funnyguilds.libs.com.google") {
         exclude("com.google.gson.**")
     }
-    relocate("org.apache.commons.lang3", "net.dzikoysk.funnyguilds.libs.org.apache.commons.lang3")
     relocate("org.apache.logging", "net.dzikoysk.funnyguilds.libs.org.apache.logging")
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
