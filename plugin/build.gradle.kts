@@ -48,16 +48,6 @@ dependencies {
     @Suppress("GradlePackageUpdate")
     implementation("com.zaxxer:HikariCP:4.0.3")
 
-    @Suppress("GradlePackageUpdate")
-    implementation("com.google.guava:guava:21.0") {
-        because("WorldEdit defined a constraint that we must use 21.0 and there is no way to ignore it")
-    }
-
-    @Suppress("GradlePackageUpdate")
-    implementation("com.google.code.gson:gson:2.8.0") {
-        because("WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it")
-    }
-
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
     // probably fix for some exception?
@@ -98,9 +88,6 @@ tasks.withType<ShadowJar> {
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
     relocate("javassist", "net.dzikoysk.funnyguilds.libs.javassist")
     relocate("com.zaxxer", "net.dzikoysk.funnyguilds.libs.com.zaxxer")
-    relocate("com.google", "net.dzikoysk.funnyguilds.libs.com.google") {
-        exclude("com.google.gson.**")
-    }
     relocate("org.apache.logging", "net.dzikoysk.funnyguilds.libs.org.apache.logging")
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
