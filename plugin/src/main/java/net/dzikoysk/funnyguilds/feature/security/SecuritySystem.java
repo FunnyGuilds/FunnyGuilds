@@ -1,7 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.base.Ticker;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
@@ -20,7 +21,10 @@ public final class SecuritySystem {
 
     private static final double RAYCAST_STEP_SIZE = 0.1D;
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
-    private static final Map<User, Integer> PLAYERS_VIOLATION_LEVEL = new HashMap<>();
+    private static final Cache<User, Integer> PLAYERS_VIOLATION_LEVEL = CacheBuilder.newBuilder()
+            .ticker(Ticker.systemTicker())
+            .expireAfterWrite(10, java.util.concurrent.TimeUnit.MINUTES)
+            .build();
 
     private SecuritySystem() {
     }
@@ -71,7 +75,7 @@ public final class SecuritySystem {
         SecurityReach.on(player, distance);
     }
 
-    static Map<User, Integer> getPlayersViolationLevel() {
+    static Cache<User, Integer> getPlayersViolationLevel() {
         return PLAYERS_VIOLATION_LEVEL;
     }
 

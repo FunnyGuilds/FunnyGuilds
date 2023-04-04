@@ -1134,6 +1134,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy System Security ma byc włączony?")
     public boolean systemSecurityEnable = true;
 
+    @Min(0)
+    @Comment("")
+    @Comment("Maksymalna liczba naruszeń (reach/freecam) w ciągu 10 minutach, po których graczowi zostanie zablokowane wchodzenie w interakcje z sercem gildii")
+    public int systemSecurityMaxViolations = 10;
+
     @DecimalMin("0")
     @Comment("")
     @Comment("Margines sprawdzania z jak daleka gracz uderzył serce gildii")

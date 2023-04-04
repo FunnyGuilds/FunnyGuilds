@@ -1,16 +1,15 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
-import java.util.Map;
+import com.google.common.cache.Cache;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.security.cheat.CheatType;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityUtils {
 
@@ -42,13 +41,12 @@ public final class SecurityUtils {
     }
 
     public static void addViolationLevel(User user) {
-        Map<User, Integer> playersViolationLevel = SecuritySystem.getPlayersViolationLevel();
-        playersViolationLevel.put(user, playersViolationLevel.getOrDefault(user, 0) + 1);
-        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> playersViolationLevel.remove(user), 18000);
+        Cache<User, Integer> playersViolationLevel = SecuritySystem.getPlayersViolationLevel();
+        playersViolationLevel.put(user, playersViolationLevel.asMap().getOrDefault(user, 0) + 1);
     }
 
     public static boolean isBlocked(User user) {
-        return SecuritySystem.getPlayersViolationLevel().getOrDefault(user, 0) > 1;
+        return SecuritySystem.getPlayersViolationLevel().asMap().getOrDefault(user, 0) >= FunnyGuilds.getInstance().getPluginConfiguration().systemSecurityMaxViolations;
     }
 
 }
