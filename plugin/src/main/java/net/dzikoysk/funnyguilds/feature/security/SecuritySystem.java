@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import panda.std.Option;
 
 public final class SecuritySystem {
 
@@ -24,14 +25,13 @@ public final class SecuritySystem {
     }
 
     public static boolean onHitCrystal(Player player, Guild guild) {
-        scan(player, SecurityType.GUILD, guild);
+        scan(player, guild);
         return SecurityUtils.isBlocked(FunnyGuilds.getInstance().getUserManager().findByPlayer(player).orNull());
     }
 
-    private static void scan(Player player, SecurityType securityType, Object... values) {
+    private static void scan(Player player, Guild guild) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!config.regionsEnabled) {
             return;
         }
 
@@ -39,52 +39,36 @@ public final class SecuritySystem {
             return;
         }
 
-        Guild guild = null;
-        for (Object value : values) {
-            if (value instanceof Guild) {
-                guild = (Guild) value;
-            }
-        }
-
-        if (securityType == SecurityType.GUILD) {
-            if (guild == null) {
-                return;
-            }
-
-            if (!guild.hasRegion()) {
-                return;
-            }
-
-            Region region = guild.getRegion().get();
-            Location center = region.getCenter();
-
-            double x = center.getX() + 0.5;
-            double y = center.getY();
-            double z = center.getZ() + 0.5;
-
-            Location eye = player.getEyeLocation();
-            Vector direction = eye.getDirection();
-            Vector origin = (player.isSneaking() && !Reflections.USE_PRE_9_METHODS)
-                    ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
-                    : eye.toVector();
-            FunnyBox funnyBox = "ender_crystal".equalsIgnoreCase(config.heart.createType)
-                    ? new FunnyBox(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0)
-                    : FunnyBox.of(player.getWorld().getBlockAt(center));
-
-            FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
-            Vector hitPoint = rayTraceResult == null
-                    ? center.toVector()
-                    : rayTraceResult.getHitPosition();
-
-            double distance = hitPoint.distance(origin);
-
-            SecurityFreeCam.on(player, origin, hitPoint, distance);
-            SecurityReach.on(player, distance);
-
+        Option<Region> regionOption = guild.getRegion();
+        if (regionOption.isEmpty()) {
             return;
         }
+        Region region = regionOption.get();
+        Location center = region.getCenter();
 
-        throw new IllegalArgumentException("unknown securityType: " + securityType);
+        double x = center.getX() + 0.5;
+        double y = center.getY();
+        double z = center.getZ() + 0.5;
+
+        Location eye = player.getEyeLocation();
+        Vector direction = eye.getDirection();
+        Vector origin = (player.isSneaking() && !Reflections.USE_PRE_9_METHODS)
+                ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
+                : eye.toVector();
+
+        FunnyBox funnyBox = config.heart.createEntityType != null
+                ? new FunnyBox(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0)
+                : FunnyBox.of(player.getWorld().getBlockAt(center));
+
+        FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
+        Vector hitPoint = rayTraceResult == null
+                ? center.toVector()
+                : rayTraceResult.getHitPosition();
+
+        double distance = hitPoint.distance(origin);
+
+        SecurityFreeCam.on(player, guild, origin, hitPoint, distance);
+        SecurityReach.on(player, distance);
     }
 
     static Map<User, Integer> getPlayersViolationLevel() {

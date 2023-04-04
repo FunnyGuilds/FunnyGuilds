@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -42,7 +43,7 @@ public final class EntityUtils {
         }
 
         EntityType entityType = Option.attempt(IllegalArgumentException.class, () -> {
-            return EntityType.valueOf(stringEntity.toUpperCase(Locale.ROOT));
+            return EntityType.valueOf(FunnyFormatter.format(stringEntity.toUpperCase(Locale.ROOT), " ", "_"));
         }).orNull();
 
         if (entityType != null) {

@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
-import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
