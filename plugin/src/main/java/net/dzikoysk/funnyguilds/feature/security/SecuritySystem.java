@@ -18,6 +18,7 @@ import panda.std.Option;
 
 public final class SecuritySystem {
 
+    private static final double RAYCAST_STEP_SIZE = 0.1D;
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
     private static final Map<User, Integer> PLAYERS_VIOLATION_LEVEL = new HashMap<>();
 
@@ -60,11 +61,10 @@ public final class SecuritySystem {
                 ? new FunnyBox(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0)
                 : FunnyBox.of(player.getWorld().getBlockAt(center));
 
-        FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
-        Vector hitPoint = rayTraceResult == null
-                ? center.toVector()
-                : rayTraceResult.getHitPosition();
-
+        Vector hitPoint = funnyBox.rayTrace(origin, direction, RAYCAST_STEP_SIZE, 6);
+        if (hitPoint == null) {
+            hitPoint = center.toVector();
+        }
         double distance = hitPoint.distance(origin);
 
         SecurityFreeCam.on(player, guild, origin, hitPoint, distance);

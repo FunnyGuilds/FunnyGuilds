@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.war;
 
 import java.util.Map.Entry;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
@@ -53,9 +54,14 @@ public class WarAttackAsyncTask extends AsyncFunnyTask {
                 Click.LEFT,
                 !SecuritySystem.onHitCrystal(player, guild)
         );
-
         SimpleEventHandler.handle(interactEvent);
-        if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
+
+        if (interactEvent.isCancelled()) {
+            return;
+        }
+
+        if (!interactEvent.isSecurityCheckPassed()) {
+            FunnyGuilds.getPluginLogger().debug("Security check failed for " + player.getName() + " when attacking " + guild.getName());
             return;
         }
 
