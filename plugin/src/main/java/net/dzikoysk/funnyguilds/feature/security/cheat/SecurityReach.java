@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -8,13 +9,12 @@ import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityReach {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
     private static final double CREATIVE_REACH = 4.5;
-    private static final double SURVIVAL_REACH = 3.0;
+    private static final double SURVIVAL_REACH = 3.75;
     private static final double IMPORTANCE_OF_PING = 0.93;
     private static final double IMPORTANCE_OF_TPS = 10.0;
 
