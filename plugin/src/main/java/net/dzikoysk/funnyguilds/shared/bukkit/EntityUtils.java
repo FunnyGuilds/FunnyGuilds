@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.entity.Entity;
@@ -10,10 +13,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
-
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
 
 public final class EntityUtils {
 
