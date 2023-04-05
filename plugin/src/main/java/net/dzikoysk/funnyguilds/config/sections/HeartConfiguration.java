@@ -1,7 +1,12 @@
 package net.dzikoysk.funnyguilds.config.sections;
 
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.*;
+import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Exclude;
+import eu.okaeri.configs.annotation.NameModifier;
+import eu.okaeri.configs.annotation.NameStrategy;
+import eu.okaeri.configs.annotation.Names;
+import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
@@ -13,8 +18,6 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
 import panda.std.Pair;
-
-import java.io.File;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
