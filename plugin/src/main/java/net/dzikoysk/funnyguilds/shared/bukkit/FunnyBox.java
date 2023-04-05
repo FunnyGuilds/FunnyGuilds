@@ -8,7 +8,6 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
@@ -488,7 +487,7 @@ public class FunnyBox {
     }
 
     @Nullable
-    public RayTraceResult rayTrace(Vector start, Vector direction, double maxDistance) {
+    public Vector rayTrace(Vector start, Vector direction, double stepSize, double maxDistance) {
         Validate.notNull(start, "start cannot be null");
         checkFinite(start);
 
@@ -500,201 +499,15 @@ public class FunnyBox {
             return null;
         }
 
-        double startX = start.getX();
-        double startY = start.getY();
-        double startZ = start.getZ();
-
-        Vector dir = normalizeZeros(direction.clone()).normalize();
-        double dirX = dir.getX();
-        double dirY = dir.getY();
-        double dirZ = dir.getZ();
-
-        double divX = 1.0d / dirX;
-        double divY = 1.0d / dirY;
-        double divZ = 1.0d / dirZ;
-
-        double tMin;
-        double tMax;
-        BlockFace hitBlockFaceMin;
-        BlockFace hitBlockFaceMax;
-
-        if (dirX >= 0.0d) {
-            tMin = (this.minX - startX) * divX;
-            tMax = (this.maxX - startX) * divX;
-            hitBlockFaceMin = BlockFace.WEST;
-            hitBlockFaceMax = BlockFace.EAST;
+        Vector delta = direction.clone().normalize().multiply(stepSize);
+        Vector current = start.clone();
+        for (double step = 1; step <= Math.floor(maxDistance / stepSize); step++) {
+            current.add(delta);
+            if (this.contains(current)) {
+                return current;
+            }
         }
-        else {
-            tMin = (this.maxX - startX) * divX;
-            tMax = (this.minX - startX) * divX;
-            hitBlockFaceMin = BlockFace.EAST;
-            hitBlockFaceMax = BlockFace.WEST;
-        }
-
-        double tyMin;
-        double tyMax;
-        BlockFace hitBlockFaceYMin;
-        BlockFace hitBlockFaceYMax;
-
-        if (dirY >= 0.0d) {
-            tyMin = (this.minY - startY) * divY;
-            tyMax = (this.maxY - startY) * divY;
-            hitBlockFaceYMin = BlockFace.DOWN;
-            hitBlockFaceYMax = BlockFace.UP;
-        }
-        else {
-            tyMin = (this.maxY - startY) * divY;
-            tyMax = (this.minY - startY) * divY;
-            hitBlockFaceYMin = BlockFace.UP;
-            hitBlockFaceYMax = BlockFace.DOWN;
-        }
-
-        if ((tMin > tyMax) || (tMax < tyMin)) {
-            return null;
-        }
-
-        if (tyMin > tMin) {
-            tMin = tyMin;
-            hitBlockFaceMin = hitBlockFaceYMin;
-        }
-
-        if (tyMax < tMax) {
-            tMax = tyMax;
-            hitBlockFaceMax = hitBlockFaceYMax;
-        }
-
-        double tzMin;
-        double tzMax;
-        BlockFace hitBlockFaceZMin;
-        BlockFace hitBlockFaceZMax;
-
-        if (dirZ >= 0.0d) {
-            tzMin = (this.minZ - startZ) * divZ;
-            tzMax = (this.maxZ - startZ) * divZ;
-            hitBlockFaceZMin = BlockFace.NORTH;
-            hitBlockFaceZMax = BlockFace.SOUTH;
-        }
-        else {
-            tzMin = (this.maxZ - startZ) * divZ;
-            tzMax = (this.minZ - startZ) * divZ;
-            hitBlockFaceZMin = BlockFace.SOUTH;
-            hitBlockFaceZMax = BlockFace.NORTH;
-        }
-
-        if ((tMin > tzMax) || (tMax < tzMin)) {
-            return null;
-        }
-
-        if (tzMin > tMin) {
-            tMin = tzMin;
-            hitBlockFaceMin = hitBlockFaceZMin;
-        }
-
-        if (tzMax < tMax) {
-            tMax = tzMax;
-            hitBlockFaceMax = hitBlockFaceZMax;
-        }
-
-        if (tMax < 0.0d) {
-            return null;
-        }
-
-        if (tMin > maxDistance) {
-            return null;
-        }
-
-        double t;
-        BlockFace hitBlockFace;
-
-        if (tMin < 0.0d) {
-            t = tMax;
-            hitBlockFace = hitBlockFaceMax;
-        }
-        else {
-            t = tMin;
-            hitBlockFace = hitBlockFaceMin;
-        }
-
-        Vector hitPosition = dir.multiply(t).add(start);
-        return new RayTraceResult(hitPosition, hitBlockFace);
-    }
-
-    private static Vector normalizeZeros(Vector vector) {
-        double x = vector.getX();
-        double y = vector.getY();
-        double z = vector.getZ();
-
-        if (x == -0.0D) {
-            x = 0.0D;
-        }
-
-        if (y == -0.0D) {
-            y = 0.0D;
-        }
-
-        if (z == -0.0D) {
-            z = 0.0D;
-        }
-
-        vector.setX(x);
-        vector.setY(y);
-        vector.setZ(z);
-
-        return vector;
-    }
-
-    public static class RayTraceResult {
-
-        private final Vector hitPosition;
-        private final Block hitBlock;
-        private final BlockFace hitBlockFace;
-        private final Entity hitEntity;
-
-        private RayTraceResult(Vector hitPosition, Block hitBlock, BlockFace hitBlockFace, Entity hitEntity) {
-            Validate.notNull(hitPosition, "hitPosition cannot be null");
-
-            this.hitPosition = hitPosition.clone();
-            this.hitBlock = hitBlock;
-            this.hitBlockFace = hitBlockFace;
-            this.hitEntity = hitEntity;
-        }
-
-        public RayTraceResult(Vector hitPosition) {
-            this(hitPosition, null, null, null);
-        }
-
-        public RayTraceResult(Vector hitPosition, BlockFace hitBlockFace) {
-            this(hitPosition, null, hitBlockFace, null);
-        }
-
-        public RayTraceResult(Vector hitPosition, Block hitBlock, BlockFace hitBlockFace) {
-            this(hitPosition, hitBlock, hitBlockFace, null);
-        }
-
-        public RayTraceResult(Vector hitPosition, Entity hitEntity) {
-            this(hitPosition, null, null, hitEntity);
-        }
-
-        public RayTraceResult(Vector hitPosition, Entity hitEntity, BlockFace hitBlockFace) {
-            this(hitPosition, null, hitBlockFace, hitEntity);
-        }
-
-        public Vector getHitPosition() {
-            return this.hitPosition.clone();
-        }
-
-        public Block getHitBlock() {
-            return this.hitBlock;
-        }
-
-        public BlockFace getHitBlockFace() {
-            return this.hitBlockFace;
-        }
-
-        public Entity getHitEntity() {
-            return this.hitEntity;
-        }
-
+        return null;
     }
 
     private static void checkFinite(Vector vector) throws IllegalArgumentException {

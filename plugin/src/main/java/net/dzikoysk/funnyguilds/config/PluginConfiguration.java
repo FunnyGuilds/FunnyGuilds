@@ -36,6 +36,7 @@ import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -511,7 +512,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Lista entity, których wybuch nie powoduje blokady budowania na terenie gildii")
     @Comment("Nazwy entity muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchają)")
-    public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
+    public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true, "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
 
     @Comment("")
     @Comment("Czy blokada po wybuchu ma obejmować rownież niszczenie bloków")
@@ -1131,20 +1132,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean eventPhysics;
 
     @Comment("")
-    @Comment("Czy System Security ma byc włączony?")
-    public boolean systemSecurityEnable = true;
-
-    @DecimalMin("0")
-    @Comment("")
-    @Comment("Margines sprawdzania z jak daleka gracz uderzył serce gildii")
-    @Comment("Jeśli dostajesz fałszywe alarmy od Security - zwiększ tę wartość do około 0.50 lub więcej")
-    public double reachCompensation = 0.26;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Margines sprawdzania przez ile bloków gracz uderzył serce gildii")
-    @CustomKey("freecam-compensation")
-    public int freeCamCompensation = 0;
+    public SecuritySystemConfiguration securitySystem = new SecuritySystemConfiguration();
 
     @Min(1)
     @Comment("")

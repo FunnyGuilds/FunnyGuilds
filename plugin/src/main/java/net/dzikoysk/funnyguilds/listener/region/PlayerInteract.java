@@ -52,7 +52,7 @@ public class PlayerInteract extends AbstractFunnyListener {
         Region region = regionOption.get();
         boolean returnMethod = region.getHeartBlock()
                 .filter(heart -> heart.equals(clicked))
-                .peek(heart -> this.handleHeartClick(player, eventAction, region, event))
+                .peek(heart -> this.handleHeartClick(player, eventAction, region.getGuild(), event))
                 .isPresent();
 
         if (returnMethod) {
@@ -75,15 +75,13 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
     }
 
-    private void handleHeartClick(Player player, Action eventAction, Region region, Cancellable event) {
+    private void handleHeartClick(Player player, Action eventAction, Guild guild, Cancellable event) {
         event.setCancelled(true);
 
         Option<User> userOption = this.userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
             return;
         }
-
-        Guild guild = region.getGuild();
         User user = userOption.get();
 
         GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild,
