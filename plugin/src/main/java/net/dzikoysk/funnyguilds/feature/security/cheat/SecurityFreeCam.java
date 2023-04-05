@@ -7,7 +7,7 @@ import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
@@ -27,7 +27,7 @@ public final class SecurityFreeCam {
 
     public static void on(Player player, Guild guild, Vector origin, Vector hitPoint, double distance) {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
-        PluginConfiguration config = funnyGuilds.getPluginConfiguration();
+        SecuritySystemConfiguration.FreeCam config = funnyGuilds.getPluginConfiguration().securitySystem.freeCam;
         UserManager userManager = funnyGuilds.getUserManager();
 
         Vector directionToHitPoint = hitPoint.clone().subtract(origin);
@@ -41,7 +41,8 @@ public final class SecurityFreeCam {
                 .collect(Collectors.toList());
         guild.getEnderCrystal().map(Location::getBlock).peek(blocks::remove);
 
-        if (blocks.size() <= config.freeCamCompensation) {
+        int compensationSneaking = player.isSneaking() ? 1 : 0;
+        if (blocks.size() <= config.compensation + compensationSneaking) {
             return;
         }
 

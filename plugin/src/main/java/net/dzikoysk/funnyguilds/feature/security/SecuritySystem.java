@@ -40,7 +40,7 @@ public final class SecuritySystem {
             return;
         }
 
-        if (!config.systemSecurityEnable) {
+        if (!config.securitySystem.enabled) {
             return;
         }
 
