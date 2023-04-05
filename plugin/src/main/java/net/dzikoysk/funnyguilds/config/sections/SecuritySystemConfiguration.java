@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config.sections;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
@@ -42,6 +43,7 @@ public class SecuritySystemConfiguration extends OkaeriConfig {
     }
 
     @Comment("")
+    @CustomKey("freecam")
     public FreeCam freeCam = new FreeCam();
 
     public static class FreeCam extends OkaeriConfig {
