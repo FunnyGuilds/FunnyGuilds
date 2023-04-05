@@ -843,6 +843,17 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
                                 .build())
                         .build();
 
+                @Comment("Dostępne zmienne: {PLAYER}, {X}, {Y}, {Z}")
+                public SendableMessage helpRequest = SendableMessage.builder()
+                        .chat("&7Gracz &a{PLAYER} &7poprosił o pomoc&7! &aX: {X} Y: {Y} Z: {Z}")
+                        .addHolders(BossBarHolder.builder("&7Gracz &a{PLAYER} &7poprosił o pomoc&7! &aX: {X} Y: {Y} Z: {Z}")
+                                .color(BossBar.Color.RED)
+                                .addFlag(BossBar.Flag.CREATE_WORLD_FOG)
+                                .stay(15 * 20)
+                                .clearOtherBars(true)
+                                .build())
+                        .build();
+
             }
 
         }
