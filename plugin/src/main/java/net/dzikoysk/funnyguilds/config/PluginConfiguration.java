@@ -771,7 +771,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @PositiveOrZero
     @Comment("")
     @Comment("Co ile można użyć komendy /helprequest")
-    @CustomKey("help-request-cooldown")
     public Duration helpRequestCooldown = Duration.ofSeconds(1);
 
     @Comment("")
