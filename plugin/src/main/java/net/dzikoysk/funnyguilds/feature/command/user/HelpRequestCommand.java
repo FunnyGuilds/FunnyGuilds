@@ -10,21 +10,21 @@ import org.bukkit.entity.Player;
 public class HelpRequestCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.pp.name}",
-            description = "${user.pp.description}",
-            aliases = "${user.pp.aliases}",
+            name = "${user.helprequest.name}",
+            description = "${user.helprequest.description}",
+            aliases = "${user.helprequest.aliases}",
             permission = "funnyguilds.helprequest",
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @IsMember User member){
+    public void execute(Player player, @IsMember User member) {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", player.getName())
                 .register("{X}", player.getLocation().getBlockX())
                 .register("{Y}", player.getLocation().getBlockY())
                 .register("{Z}", player.getLocation().getBlockZ());
 
-        this.messageService.getMessage(config -> config.guild.region.move.helpRequest)
+        this.messageService.getMessage(config -> config.guild.helpRequest)
                 .with(formatter)
                 .receiver(player)
                 .send();

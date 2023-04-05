@@ -113,7 +113,7 @@ public final class FunnyCommandsConfiguration {
                 .command("validity", commands.validity, ValidityCommand.class)
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class)
-                .command("pp", commands.helpRequest, HelpRequestCommand.class);
+                .command("helprequest", commands.helpRequest, HelpRequestCommand.class);
 
         CommandComponents adminCommands = new CommandComponents("admin")
                 .command("add", commands.admin.add, AddCommand.class)
