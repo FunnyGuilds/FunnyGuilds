@@ -704,6 +704,12 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
             }
 
+            @Comment("Dostępne zmienne: {PLAYER}, {X}, {Y}, {Z}")
+            public SendableMessage helpRequest = SendableMessage.builder()
+                    .chat("&7Gracz &a{PLAYER} &7poprosił o pomoc&7! &aX: {X} Y: {Y} Z: {Z}")
+                    .actionBar("&7Gracz &a{PLAYER} &7poprosił o pomoc&7! &aX: {X} Y: {Y} Z: {Z}")
+                    .build();
+
             @Comment("")
             public Escape escape = new Escape();
 
@@ -846,12 +852,6 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             }
 
         }
-
-        @Comment("Dostępne zmienne: {PLAYER}, {X}, {Y}, {Z}")
-        public SendableMessage helpRequest = SendableMessage.builder()
-                .chat("&7Gracz &a{PLAYER} &7poprosił o pomoc&7! &aX: {X} Y: {Y} Z: {Z}")
-                .actionBar("&7Gracz &a{PLAYER} &7poprosił o pomoc&7! &aX: {X} Y: {Y} Z: {Z}")
-                .build();
 
     }
 

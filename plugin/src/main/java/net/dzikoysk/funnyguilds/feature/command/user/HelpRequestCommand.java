@@ -24,7 +24,7 @@ public class HelpRequestCommand extends AbstractFunnyCommand {
                 .register("{Y}", player.getLocation().getBlockY())
                 .register("{Z}", player.getLocation().getBlockZ());
 
-        this.messageService.getMessage(config -> config.guild.helpRequest)
+        this.messageService.getMessage(config -> config.guild.commands.helpRequest)
                 .with(formatter)
                 .receiver(player)
                 .send();
