@@ -90,11 +90,11 @@ public class WarSystem {
         } else {
             messageService.getMessage(config -> config.warAttacker)
                     .receiver(attacker)
-                    .with("{GUILD}", guild.getName())
+                    .with("{ATTACKED}", guild.getName())
                     .send();
             messageService.getMessage(config -> config.warAttacked)
                     .receiver(guild)
-                    .with("{GUILD}", attacker.getName())
+                    .with("{ATTACKER}", attacker.getName())
                     .send();
         }
     }

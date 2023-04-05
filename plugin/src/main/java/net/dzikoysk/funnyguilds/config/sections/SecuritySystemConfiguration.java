@@ -18,7 +18,7 @@ public class SecuritySystemConfiguration extends OkaeriConfig {
     @Min(0)
     @Comment("")
     @Comment("Maksymalna liczba naruszeń (reach/freecam) w ciągu 10 minutach, po których graczowi zostanie zablokowane wchodzenie w interakcje z sercem gildii")
-    public int maxViolations = 10;
+    public int maxViolations = 1;
 
     @Comment("")
     public Reach reach = new Reach();
