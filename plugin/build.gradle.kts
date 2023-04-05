@@ -48,17 +48,6 @@ dependencies {
     @Suppress("GradlePackageUpdate")
     implementation("com.zaxxer:HikariCP:4.0.3")
 
-    @Suppress("GradlePackageUpdate")
-    implementation("com.google.guava:guava:21.0") {
-        because("WorldEdit defined a constraint that we must use 21.0 and there is no way to ignore it")
-    }
-
-    @Suppress("GradlePackageUpdate")
-    implementation("com.google.code.gson:gson:2.8.0") {
-        because("WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it")
-    }
-
-    implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
     // probably fix for some exception?
@@ -97,12 +86,9 @@ tasks.withType<ShadowJar> {
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
+    relocate("org.panda_lang.utilities.inject", "net.dzikoysk.funnyguilds.libs.panda.injector")
     relocate("javassist", "net.dzikoysk.funnyguilds.libs.javassist")
     relocate("com.zaxxer", "net.dzikoysk.funnyguilds.libs.com.zaxxer")
-    relocate("com.google", "net.dzikoysk.funnyguilds.libs.com.google") {
-        exclude("com.google.gson.**")
-    }
-    relocate("org.apache.commons.lang3", "net.dzikoysk.funnyguilds.libs.org.apache.commons.lang3")
     relocate("org.apache.logging", "net.dzikoysk.funnyguilds.libs.org.apache.logging")
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
@@ -111,13 +97,14 @@ tasks.withType<ShadowJar> {
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
 
+    exclude("kotlin/**")
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")
     exclude("org/jetbrains/annotations/**")
+    exclude("javax/annotation/**")
 
     minimize {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
-        exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
     }
 }
 
