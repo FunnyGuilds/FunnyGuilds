@@ -11,8 +11,12 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
-import eu.okaeri.validator.annotation.*;
-
+import eu.okaeri.validator.annotation.Min;
+import eu.okaeri.validator.annotation.NotBlank;
+import eu.okaeri.validator.annotation.Positive;
+import eu.okaeri.validator.annotation.PositiveOrZero;
+import eu.okaeri.validator.annotation.DecimalMax;
+import eu.okaeri.validator.annotation.DecimalMin;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -764,7 +768,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("damage-ally")
     public boolean damageAlly = false;
 
-    @NegativeOrZero
+    @PositiveOrZero
     @Comment("")
     @Comment("Co ile można użyć komendy /helprequest")
     @CustomKey("help-request-cooldown")

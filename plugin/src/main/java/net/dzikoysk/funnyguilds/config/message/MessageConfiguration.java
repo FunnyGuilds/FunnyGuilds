@@ -849,6 +849,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
                                 .clearOtherBars(true)
                                 .build())
                         .build();
+
             }
 
         }
