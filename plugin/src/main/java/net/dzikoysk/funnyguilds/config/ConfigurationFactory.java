@@ -4,6 +4,7 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
+import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
@@ -13,8 +14,6 @@ import net.dzikoysk.funnyguilds.config.serdes.ItemStackTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
-
-import java.io.File;
 
 public final class ConfigurationFactory {
 
