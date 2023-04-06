@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
-import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
-import panda.std.stream.PandaStream;
-
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
+import panda.std.stream.PandaStream;
 
 public class GeneralPlaceholdersService implements PlaceholdersService<User> {
 

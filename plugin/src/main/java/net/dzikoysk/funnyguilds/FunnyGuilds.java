@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds;
 
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
+import java.io.File;
 import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -95,8 +96,6 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-
-import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
