@@ -33,7 +33,7 @@ public class HelpRequestCommand extends AbstractFunnyCommand {
 
         this.messageService.getMessage(config -> config.guild.commands.helpRequest)
                 .with(formatter)
-                .receiver(player)
+                .receiver(member.getGuild().get())
                 .send();
     }
 }
