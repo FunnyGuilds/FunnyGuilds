@@ -413,7 +413,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.hookManager.init();
 
         if (NmsUtils.getReloadCount() > 0) {
-            this.messageService.getMessage(config -> config.reloadWarn)
+            this.messageService.getMessage(config -> config.system.reloadWarn)
                     .broadcast()
                     .permission("funnyguilds.admin")
                     .send();

@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
@@ -9,8 +11,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 
 public final class SecurityUtils {
 
@@ -30,7 +30,7 @@ public final class SecurityUtils {
                 .register("{PLAYER}", player.getName())
                 .register("{CHEAT}", cheatType.getName());
 
-        FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.securitySystemInfo)
+        FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.admin.securitySystem.info)
                 .broadcast()
                 .with(formatter)
                 .with(

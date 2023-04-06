@@ -11,12 +11,12 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
-import eu.okaeri.validator.annotation.DecimalMax;
-import eu.okaeri.validator.annotation.DecimalMin;
 import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
+import eu.okaeri.validator.annotation.DecimalMax;
+import eu.okaeri.validator.annotation.DecimalMin;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -768,6 +768,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("damage-ally")
     public boolean damageAlly = false;
 
+    @PositiveOrZero
+    @Comment("")
+    @Comment("Co ile można użyć komendy /helprequest")
+    public Duration helpRequestCooldown = Duration.ofSeconds(1);
+
     @Comment("")
     public LivesRepeatingSymbol livesRepeatingSymbol = new LivesRepeatingSymbol();
 
@@ -1035,10 +1040,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wyrażenia zakazane/dozwolone do użycia jako tag gildii")
     @CustomKey("restricted-guild-tags")
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
-
-    @Comment("")
-    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy")
-    public boolean displayNotificationForKiller = false;
 
     @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")

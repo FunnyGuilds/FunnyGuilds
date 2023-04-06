@@ -56,4 +56,5 @@ public abstract class AbstractFunnyCommand {
     public GuildPlaceholdersService guildPlaceholdersService;
     @Inject
     public RankPlaceholdersService rankPlaceholdersService;
+
 }
