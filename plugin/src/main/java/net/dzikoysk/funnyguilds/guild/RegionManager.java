@@ -87,7 +87,8 @@ public class RegionManager {
      * @return the region
      */
     public Option<Region> findRegionAtLocation(Location location) {
-        Set<Region> applicableRegions = this.regions.get(packChunkPosition(location.getChunk().getX(), location.getChunk().getZ()));
+        long packedPos = packChunkPosition(location.getBlockX() / 16, location.getBlockZ() / 16);
+        Set<Region> applicableRegions = this.regions.get(packedPos);
 
         if (applicableRegions == null || applicableRegions.isEmpty()) {
             return Option.none();
