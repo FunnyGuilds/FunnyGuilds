@@ -392,6 +392,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Format dla wartości: <uprawnienie> <czas>")
     @Comment(" ")
     @Comment("Format finalne uprawnienie jakie należy nadać graczu: funnyguilds.base.teleportTime.<uprawnienie>")
+    @Comment("WAŻNE: Jeśli dany gracz nie będzie miał żadnego z podanych uprawnień to czas zawsze będzie wynosił 0 sekund!")
+    @Comment(" ")
     @Comment("Format czasu: <wartość><jednostka><wartość><jednostka><...>")
     @Comment("Jednostki: s - sekundy, m - minuty, h - godziny")
     @Comment("Przykład: 1m30s")
