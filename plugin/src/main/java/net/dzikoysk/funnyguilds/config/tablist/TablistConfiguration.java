@@ -106,6 +106,7 @@ public class TablistConfiguration extends OkaeriConfig {
             .put(15, " &7TPS: &b{TPS}")
             .put(17, " &7Online: &b{ONLINE}")
             .put(19, " &7Godzina: &b{HOUR}:{MINUTE}:{SECOND}")
+            .put(20, " &7Data: &b{DAY_OF_WEEK}, {DAY_OF_MONTH} {MONTH} {YEAR}")
             .put(22, " &b&lSTATYSTYKI GILDII")
             .put(24, " &7Gildia: &b{G-TAG}")
             .put(26, " &7Punkty: &b{G-AVG-POINTS}")

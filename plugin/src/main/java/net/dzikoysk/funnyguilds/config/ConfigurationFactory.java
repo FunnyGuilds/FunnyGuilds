@@ -6,16 +6,7 @@ import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.FunnyPatternTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.ItemStackTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.NumberRangeTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
-import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
+import net.dzikoysk.funnyguilds.config.serdes.*;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 
@@ -36,6 +27,7 @@ public final class ConfigurationFactory {
                 registry.register(new FunnyTimeTransformer());
                 registry.register(new FunnyPatternTransformer());
                 registry.register(new RangeFormattingTransformer());
+                registry.register(new ZoneIdTransformer());
             });
 
             it.withBindFile(pluginConfigurationFile);

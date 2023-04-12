@@ -18,19 +18,11 @@ import eu.okaeri.validator.annotation.PositiveOrZero;
 import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -85,6 +77,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy informacje o aktualizacji wersji nightly mają być widoczne podczas wejścia na serwer")
     @Comment("Ta opcja działa tylko wtedy, gdy włączona jest opcja 'update-info'")
     public boolean updateNightlyInfo = true;
+
+    @Comment("")
+    @Comment("Strefa czasowa używana przez plugin")
+    @Comment("Możesz znaleźć listę stref czasowych tutaj: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones")
+    public ZoneId timeZone = ZoneId.of("Europe/Warsaw");
+
+    @Comment("")
+    @Comment("Domyślny format daty używany przez plugin")
+    public Locale timeFormatLocale = Locale.forLanguageTag("pl");
 
     @Comment("")
     @Comment("Domyślny używany język używany przez plugin jeżeli nie można znaleźć języka gracza")
