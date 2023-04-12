@@ -7,7 +7,9 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class TimePlaceholdersService extends AbstractPlaceholdersService<OffsetDateTime, OffsetDateTimePlaceholders> {
+
     private static final Locale LOCALE = FunnyGuilds.getInstance().getPluginConfiguration().timeFormatLocale;
+
     public static OffsetDateTimePlaceholders createTimePlaceholders() {
         return new OffsetDateTimePlaceholders()
                 .timeProperty("hour", OffsetDateTime::getHour)
