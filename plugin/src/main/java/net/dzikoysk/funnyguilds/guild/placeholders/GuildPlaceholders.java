@@ -34,7 +34,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
             MessageService messages,
             Function<MessageConfiguration, String> fallbackSupplier
     ) {
-        FunnyTimeFormatter dateFormat = messages.get(messageConfig -> messageConfig.dateFormat);
+        FunnyTimeFormatter dateFormat = messages.get(config -> config.dateFormat);
         String noValue = Objects.toString(messages.get(fallbackSupplier), "");
         SimpleResolver fallbackResolver = () -> noValue;
         return this.property(name, guild -> formatDate(guild, timeSupplier, timeZone, dateFormat,  noValue), fallbackResolver)
