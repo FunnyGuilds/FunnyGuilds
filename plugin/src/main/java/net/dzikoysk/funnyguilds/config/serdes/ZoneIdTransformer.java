@@ -1,27 +1,25 @@
 package net.dzikoysk.funnyguilds.config.serdes;
 
-import eu.okaeri.configs.schema.GenericsDeclaration;
-import eu.okaeri.configs.serdes.DeserializationData;
-import eu.okaeri.configs.serdes.ObjectSerializer;
-import eu.okaeri.configs.serdes.SerializationData;
-import org.jetbrains.annotations.NotNull;
-
+import eu.okaeri.configs.schema.GenericsPair;
+import eu.okaeri.configs.serdes.BidirectionalTransformer;
+import eu.okaeri.configs.serdes.SerdesContext;
 import java.time.ZoneId;
 
-public class ZoneIdTransformer implements ObjectSerializer<ZoneId> {
+public class ZoneIdTransformer extends BidirectionalTransformer<String, ZoneId> {
 
     @Override
-    public boolean supports(@NotNull Class<? super ZoneId> type) {
-        return ZoneId.class.isAssignableFrom(type);
+    public GenericsPair<String, ZoneId> getPair() {
+        return this.genericsPair(String.class, ZoneId.class);
     }
 
     @Override
-    public void serialize(ZoneId object, SerializationData data, @NotNull GenericsDeclaration generics) {
-        data.add("time-zone", object.getId());
+    public ZoneId leftToRight(String data, SerdesContext serdesContext) {
+        return ZoneId.of(data);
     }
 
     @Override
-    public ZoneId deserialize(DeserializationData data, @NotNull GenericsDeclaration generics) {
-        return ZoneId.of(data.get("time-zone", String.class));
+    public String rightToLeft(ZoneId data, SerdesContext serdesContext) {
+        return data.getId();
     }
+
 }

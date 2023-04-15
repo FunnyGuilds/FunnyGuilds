@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.config;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -21,9 +20,10 @@ public class FunnyTimeFormatter {
         return this.format;
     }
 
-    public String format(Instant instant) {
-        return this.formatter.format(ZonedDateTime.ofInstant(instant,
-                FunnyGuilds.getInstance().getPluginConfiguration().timeZone
+    public String format(Instant instant, ZoneId timeZone) {
+        return this.formatter.format(ZonedDateTime.ofInstant(
+                instant,
+                timeZone
         ));
     }
 
