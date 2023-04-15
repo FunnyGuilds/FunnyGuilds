@@ -90,8 +90,8 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                                 ? messages.get(config -> config.guild.commands.pvp.enabledStatus)
                                 : messages.get(config -> config.guild.commands.pvp.disabledStatus),
                         () -> messages.get(config -> config.guild.commands.pvp.disabledStatus))
-                .timeProperty("validity", Guild::getValidity, messages, config -> config.noValue.guild.validity)
-                .timeProperty("protection", Guild::getProtection, messages, config -> config.noValue.guild.protection)
+                .timeProperty("validity", Guild::getValidity, pluginConfiguration.timeZone, messages, config -> config.noValue.guild.validity)
+                .timeProperty("protection", Guild::getProtection, pluginConfiguration.timeZone, messages, config -> config.noValue.guild.protection)
                 .property("lives", Guild::getLives, () -> 0)
                 .property("lives-symbol",
                         guild -> {
