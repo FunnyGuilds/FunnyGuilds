@@ -11,13 +11,14 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
+import eu.okaeri.validator.annotation.DecimalMax;
+import eu.okaeri.validator.annotation.DecimalMin;
 import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
-import eu.okaeri.validator.annotation.DecimalMax;
-import eu.okaeri.validator.annotation.DecimalMin;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +96,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jeżeli chcesz dodać nowy język dodaj go tutaj - utworzy to nowy plik z domyślnymi wartościami, które możesz później edytować")
     @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
     public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl")));
+
+    @Comment("")
+    @Comment("Strefa czasowa używana przez plugin do wyświetlania dat (np. na tabliście)")
+    @Comment("Możesz znaleźć listę stref czasowych tutaj: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones")
+    public ZoneId timeZone = ZoneId.of("Europe/Warsaw");
+
+    @Comment("")
+    @Comment("Domyślny format daty używany przez plugin (do wyświetlania nazw dni tygodnia/miesięcy)")
+    public Locale timeFormatLocale = Locale.forLanguageTag("pl"); //TODO Use player's locale (see GH-2346)
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")

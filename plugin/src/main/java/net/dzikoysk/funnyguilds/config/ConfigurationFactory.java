@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
+import net.dzikoysk.funnyguilds.config.serdes.ZoneIdTransformer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 
@@ -36,6 +37,7 @@ public final class ConfigurationFactory {
                 registry.register(new FunnyTimeTransformer());
                 registry.register(new FunnyPatternTransformer());
                 registry.register(new RangeFormattingTransformer());
+                registry.register(new ZoneIdTransformer());
             });
 
             it.withBindFile(pluginConfigurationFile);

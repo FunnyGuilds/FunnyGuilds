@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.guild.placeholders;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Objects;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
@@ -26,18 +27,31 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
         return this.property(name, guild -> resolver.resolve(guild, guild.getRank()), fallbackResolver);
     }
 
-    public GuildPlaceholders timeProperty(String name, Function<Guild, Instant> timeSupplier, MessageService messages, Function<MessageConfiguration, String> fallbackSupplier) {
+    public GuildPlaceholders timeProperty(
+            String name,
+            Function<Guild, Instant> timeSupplier,
+            ZoneId timeZone,
+            MessageService messages,
+            Function<MessageConfiguration, String> fallbackSupplier
+    ) {
+        FunnyTimeFormatter dateFormat = messages.get(config -> config.dateFormat);
         String noValue = Objects.toString(messages.get(fallbackSupplier), "");
         SimpleResolver fallbackResolver = () -> noValue;
-        return this.property(name, guild -> formatDate(guild, timeSupplier, messages.get(config -> config.dateFormat), noValue), fallbackResolver)
+        return this.property(name, guild -> formatDate(guild, timeSupplier, timeZone, dateFormat,  noValue), fallbackResolver)
                 .property(name + "-time", guild -> formatTime(guild, timeSupplier, noValue), fallbackResolver);
     }
 
-    private static String formatDate(Guild guild, Function<Guild, Instant> timeSupplier, FunnyTimeFormatter formatter, String noValue) {
+    private static String formatDate(
+            Guild guild,
+            Function<Guild, Instant> timeSupplier,
+            ZoneId timeZone,
+            FunnyTimeFormatter formatter,
+            String noValue
+    ) {
         Instant endTime = timeSupplier.apply(guild);
         return endTime.isBefore(Instant.now())
                 ? noValue
-                : formatter.format(endTime);
+                : formatter.format(endTime, timeZone);
     }
 
     private static String formatTime(Guild guild, Function<Guild, Instant> timeSupplier, String noValue) {
