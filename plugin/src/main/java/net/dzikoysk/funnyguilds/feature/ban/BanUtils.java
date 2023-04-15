@@ -44,18 +44,17 @@ public final class BanUtils {
     }
 
     public static String getBanMessage(User user) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        ZoneId timeZone = plugin.getPluginConfiguration().timeZone;
-        MessageService messageService = plugin.getMessageService();
-
         return user.getBan()
                 .map(ban -> {
+                    FunnyGuilds plugin = FunnyGuilds.getInstance();
+                    ZoneId timeZone = plugin.getPluginConfiguration().timeZone;
+                    MessageService messageService = plugin.getMessageService();
+
                     FunnyFormatter formatter = new FunnyFormatter()
                             .register("{NEWLINE}", ChatColor.RESET + "\n")
                             .register("{DATE}", messageService.get(user, config -> config.dateFormat).format(ban.getTime(), timeZone))
                             .register("{REASON}", ban.getReason())
                             .register("{PLAYER}", user.getName());
-
                     return messageService.get(user, config -> config.admin.commands.guild.ban.bannedKick, formatter);
                 })
                 .orElseGet("");
