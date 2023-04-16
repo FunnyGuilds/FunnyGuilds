@@ -23,6 +23,7 @@ permissions:
       funnyguilds.admin.teleport: true
       funnyguilds.admin.notification: true
       funnyguilds.admin.disabledummy: false
+      funnyguilds.base.teleportTime.admin: true
 
   funnyguilds.vip:
     default: op
@@ -30,13 +31,14 @@ permissions:
       funnyguilds.vip.items: true
       funnyguilds.vip.rank: true
       funnyguilds.vip.base: true
-      funnyguilds.vip.baseTeleportTime: true
+      funnyguilds.base.teleportTime.vip: true
 
   funnyguilds.player:
     default: true
     children:
       funnyguilds.ally: true
       funnyguilds.base: true
+      funnyguilds.base.teleportTime.default: true
       funnyguilds.break: true
       funnyguilds.create: true
       funnyguilds.delete: true
