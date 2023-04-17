@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.nms.v1_19R3.packet;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
+import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
@@ -11,8 +12,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.server.level.EntityPlayer;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-
-import java.lang.reflect.Field;
 
 public class V1_19R3PacketAccessor implements PacketAccessor {
     

@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,14 +36,16 @@ public final class EntityUtils {
     }
 
     @Nullable
-    public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn) {
+    public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn, boolean logUnknown) {
         if (stringEntity == null) {
-            FunnyGuilds.getPluginLogger().parser("Unknown entity: null");
+            if (logUnknown) {
+                FunnyGuilds.getPluginLogger().parser("Unknown entity: null");
+            }
             return allowNullReturn ? null : EntityType.UNKNOWN;
         }
 
         EntityType entityType = Option.attempt(IllegalArgumentException.class, () -> {
-            return EntityType.valueOf(stringEntity.toUpperCase(Locale.ROOT));
+            return EntityType.valueOf(FunnyFormatter.format(stringEntity.toUpperCase(Locale.ROOT), " ", "_"));
         }).orNull();
 
         if (entityType != null) {
@@ -54,8 +57,15 @@ public final class EntityUtils {
             return entityType;
         }
 
-        FunnyGuilds.getPluginLogger().parser("Unknown entity: " + stringEntity);
+        if (logUnknown) {
+            FunnyGuilds.getPluginLogger().parser("Unknown entity: " + stringEntity);
+        }
         return allowNullReturn ? null : EntityType.UNKNOWN;
+    }
+
+    @Nullable
+    public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn) {
+        return parseEntityType(stringEntity, allowNullReturn, true);
     }
 
     public static Set<EntityType> parseEntityTypes(boolean allowNullReturn, String... stringEntities) {

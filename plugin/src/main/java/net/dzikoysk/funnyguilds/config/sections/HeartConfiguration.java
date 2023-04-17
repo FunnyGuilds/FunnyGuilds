@@ -7,10 +7,9 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.io.File;
-import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Location;
@@ -168,10 +167,8 @@ public class HeartConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
-        try {
-            this.createEntityType = EntityType.valueOf(FunnyFormatter.format(this.createType.toUpperCase(Locale.ROOT), " ", "_"));
-        }
-        catch (IllegalArgumentException materialThen) {
+        this.createEntityType = EntityUtils.parseEntityType(this.createType, true, false);
+        if (this.createEntityType == null) {
             this.createMaterial = MaterialUtils.parseMaterial(this.createType, true);
         }
 

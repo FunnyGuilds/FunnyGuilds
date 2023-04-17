@@ -1,48 +1,48 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.message.MessageService;
+import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 import panda.utilities.text.Joiner;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
-import static java.util.stream.Collectors.toList;
 
 public final class SecurityFreeCam {
 
     private SecurityFreeCam() {
     }
 
-    public static void on(Player player, Vector origin, Vector hitPoint, double distance) {
+    public static void on(Player player, Guild guild, Vector origin, Vector hitPoint, double distance) {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
-        MessageService messages = funnyGuilds.getMessageService();
-        PluginConfiguration config = funnyGuilds.getPluginConfiguration();
+        SecuritySystemConfiguration.FreeCam config = funnyGuilds.getPluginConfiguration().securitySystem.freeCam;
         UserManager userManager = funnyGuilds.getUserManager();
 
         Vector directionToHitPoint = hitPoint.clone().subtract(origin);
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, directionToHitPoint, 0, Math.max((int) distance, 1));
 
-        //TODO: compensationSneaking will be removed after add the cursor height check on each client version.
-        int compensationSneaking = player.isSneaking() ? 1 : 0;
         List<Block> blocks = StreamSupport.stream(Spliterators.spliteratorUnknownSize(blockIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE), false)
                 .filter(block -> !block.isLiquid())
                 .filter(block -> block.getType().isSolid())
                 .filter(block -> block.getType().isOccluding() || block.getType() == Material.GLASS)
                 .limit(8)
-                .collect(toList());
+                .collect(Collectors.toList());
+        guild.getEnderCrystal().map(Location::getBlock).peek(blocks::remove);
 
-        if (blocks.size() <= config.freeCamCompensation + compensationSneaking) {
+        int compensationSneaking = player.isSneaking() ? 1 : 0;
+        if (blocks.size() <= config.compensation + compensationSneaking) {
             return;
         }
 
