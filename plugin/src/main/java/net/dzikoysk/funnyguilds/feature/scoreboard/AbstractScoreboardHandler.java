@@ -1,16 +1,18 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.Set;
+
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.Pair;
@@ -22,7 +24,9 @@ public abstract class AbstractScoreboardHandler<T> {
     protected final UserManager userManager;
     protected final ScoreboardService scoreboardService;
 
-    private final Deque<Pair<UpdateData, UpdateData>> updateQueue = new ArrayDeque<>();
+    private final Set<Pair<UpdateData, UpdateData>> usersToUpdate = new HashSet<>();
+    private final Queue<Pair<UpdateData, UpdateData>> updateQueue = new LinkedList<>();
+    private final Queue<Pair<UpdateData, UpdateData>> highPriorityUpdateQueue = new LinkedList<>();
 
     protected AbstractScoreboardHandler(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
         this.pluginConfiguration = pluginConfiguration;
@@ -36,18 +40,28 @@ public abstract class AbstractScoreboardHandler<T> {
 
     private void queueUpdate(UpdateData observerData, UpdateData targetData, boolean highPriority) {
         Pair<UpdateData, UpdateData> pair = Pair.of(observerData, targetData);
+
         if (highPriority) {
-            this.updateQueue.addFirst(pair);
-        } else {
+            this.highPriorityUpdateQueue.add(pair);
+        } else if (!this.usersToUpdate.contains(pair)) {
             this.updateQueue.add(pair);
+            this.usersToUpdate.add(pair);
         }
     }
 
     public boolean popAndUpdate() {
-        Pair<UpdateData, UpdateData> updatePair = this.updateQueue.poll();
+        Pair<UpdateData, UpdateData> updatePair = this.highPriorityUpdateQueue.poll();
+
         if (updatePair == null) {
-            return false;
+            updatePair = this.updateQueue.poll();
+
+            if (updatePair == null) {
+                return false;
+            }
+
+            this.usersToUpdate.remove(updatePair);
         }
+
         this.update(updatePair.getFirst(), updatePair.getSecond());
         return true;
     }
