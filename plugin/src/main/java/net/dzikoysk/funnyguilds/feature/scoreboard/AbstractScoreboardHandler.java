@@ -22,12 +22,7 @@ public abstract class AbstractScoreboardHandler<T> {
     protected final UserManager userManager;
     protected final ScoreboardService scoreboardService;
 
-    private final Deque<Pair<UpdateData, UpdateData>> updateQueue = new ArrayDeque<Pair<UpdateData, UpdateData>>() {
-        @Override
-        public boolean add(@NotNull Pair<UpdateData, UpdateData> pair) {
-            return !this.contains(pair) && super.add(pair);
-        }
-    };
+    private final Deque<Pair<UpdateData, UpdateData>> updateQueue = new ArrayDeque<>();
 
     protected AbstractScoreboardHandler(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
         this.pluginConfiguration = pluginConfiguration;
