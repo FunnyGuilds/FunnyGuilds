@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -51,17 +50,13 @@ public abstract class AbstractScoreboardHandler<T> {
 
     public boolean popAndUpdate() {
         Pair<UpdateData, UpdateData> updatePair = this.highPriorityUpdateQueue.poll();
-
         if (updatePair == null) {
             updatePair = this.updateQueue.poll();
-
             if (updatePair == null) {
                 return false;
             }
-
             this.usersToUpdate.remove(updatePair);
         }
-
         this.update(updatePair.getFirst(), updatePair.getSecond());
         return true;
     }
