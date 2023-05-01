@@ -67,7 +67,7 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 
-        val mockito = "5.3.1"
+        val mockito = "5.2.0"
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
         testImplementation("org.mockito:mockito-inline:$mockito")
@@ -115,7 +115,11 @@ subprojects {
         }
         publications {
             create<MavenPublication>("library") {
-                from(components.getByName("java"))
+                artifact(tasks["shadowJar"]) {
+                    classifier = ""
+                }
+                artifact(tasks["sourcesJar"])
+                artifact(tasks["javadocJar"])
 
                 // Add external repositories to published artifacts
                 // ~ btw: pls don't touch this
