@@ -67,10 +67,9 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 
-        val mockito = "5.2.0"
+        val mockito = "5.3.1"
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
-        testImplementation("org.mockito:mockito-inline:$mockito")
 
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.21")
         testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14.1")
@@ -89,8 +88,13 @@ subprojects {
     }
 
     tasks.withType<Javadoc> {
-        options {
-            (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet") // mute warnings
+        (options as StandardJavadocDocletOptions).let {
+            it.addStringOption("Xdoclint:none", "-quiet") // mute warnings
+            it.links(
+                "https://spigotdocs.okaeri.cloud/1.16.5",
+                "https://javadoc.io/doc/org.panda-lang/expressible/latest",
+            )
+            it.encoding = "UTF-8"
         }
     }
 
