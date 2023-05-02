@@ -91,8 +91,8 @@ subprojects {
         (options as StandardJavadocDocletOptions).let {
             it.addStringOption("Xdoclint:none", "-quiet") // mute warnings
             it.links(
-                "https://spigotdocs.okaeri.cloud/1.16.5",
-                "https://javadoc.io/doc/org.panda-lang/expressible/latest",
+                "https://spigotdocs.okaeri.cloud/1.16.5/",
+                "https://javadoc.io/doc/org.panda-lang/expressible/1.3.4/",
             )
             it.encoding = "UTF-8"
         }
