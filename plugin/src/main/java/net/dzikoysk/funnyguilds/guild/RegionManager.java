@@ -89,7 +89,7 @@ public class RegionManager {
      * @return the region
      */
     public Option<Region> findRegionAtLocation(Location location) {
-        long packedPos = packChunkPosition(location.getBlockX() / 16, location.getBlockZ() / 16);
+        long packedPos = packChunkPosition(location.getBlockX() >> 4, location.getBlockZ() >> 4);
         Set<Region> applicableRegions = this.regions.get(packedPos);
 
         if (applicableRegions == null || applicableRegions.isEmpty()) {
@@ -287,11 +287,11 @@ public class RegionManager {
      * and applies given function for every chunk position.
      */
     private void forEachChunkPositionInRegion(Region region, BiConsumer<Integer, Integer> chunkPosFunc) {
-        int firstX = region.getFirstCorner().getBlockX() / 16;
-        int firstZ = region.getFirstCorner().getBlockZ() / 16;
+        int firstX = region.getFirstCorner().getBlockX() >> 4;
+        int firstZ = region.getFirstCorner().getBlockZ() >> 4;
 
-        int secondX = region.getSecondCorner().getBlockX() / 16;
-        int secondZ = region.getSecondCorner().getBlockZ() / 16;
+        int secondX = region.getSecondCorner().getBlockX() >> 4;
+        int secondZ = region.getSecondCorner().getBlockZ() >> 4;
 
         int startX = Math.min(firstX, secondX);
         int startZ = Math.min(firstZ, secondZ);
