@@ -70,7 +70,6 @@ subprojects {
         val mockito = "5.3.1"
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
-        testImplementation("org.mockito:mockito-inline:$mockito")
 
         testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.21")
         testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14.1")
@@ -89,8 +88,13 @@ subprojects {
     }
 
     tasks.withType<Javadoc> {
-        options {
-            (this as CoreJavadocOptions).addStringOption("Xdoclint:none", "-quiet") // mute warnings
+        (options as StandardJavadocDocletOptions).let {
+            it.addStringOption("Xdoclint:none", "-quiet") // mute warnings
+            it.links(
+                "https://spigotdocs.okaeri.cloud/1.16.5/",
+                "https://javadoc.io/doc/org.panda-lang/expressible/1.3.4/",
+            )
+            it.encoding = "UTF-8"
         }
     }
 
@@ -115,7 +119,11 @@ subprojects {
         }
         publications {
             create<MavenPublication>("library") {
-                from(components.getByName("java"))
+                artifact(tasks["shadowJar"]) {
+                    classifier = ""
+                }
+                artifact(tasks["sourcesJar"])
+                artifact(tasks["javadocJar"])
 
                 // Add external repositories to published artifacts
                 // ~ btw: pls don't touch this
