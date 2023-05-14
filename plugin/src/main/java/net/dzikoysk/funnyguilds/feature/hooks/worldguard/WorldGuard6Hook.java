@@ -44,6 +44,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
     private StateFlag noGuildsFlag;
+    private StateFlag friendlyFireFlag;
 
     public WorldGuard6Hook(String name) {
         super(name);
@@ -54,6 +55,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
         this.worldGuard = WorldGuardPlugin.inst();
         this.noPointsFlag = new StateFlag("fg-no-points", false);
         this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
+        this.friendlyFireFlag = new StateFlag("fg-friendly-fire", false);
 
         Class<?> worldGuardPluginClass = Reflections.getClass("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
 
@@ -63,6 +65,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
         try {
             ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.noPointsFlag);
             ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.noGuildsFlag);
+            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.friendlyFireFlag);
         }
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
@@ -93,6 +96,18 @@ public class WorldGuard6Hook extends WorldGuardHook {
 
         return PandaStream.of(regionSet.get().getRegions())
                 .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
+                .isPresent();
+    }
+
+    @Override
+    public boolean isInFriendlyFireRegion(Location location) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
+            return false;
+        }
+
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> region.getFlag(this.friendlyFireFlag) == StateFlag.State.ALLOW)
                 .isPresent();
     }
 

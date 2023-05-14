@@ -20,6 +20,7 @@ public class WorldGuard7Hook extends WorldGuardHook {
     private WorldGuard worldGuard;
     private StateFlag noPointsFlag;
     private StateFlag noGuildsFlag;
+    private StateFlag friendlyFireFlag;
 
     public WorldGuard7Hook(String name) {
         super(name);
@@ -30,9 +31,11 @@ public class WorldGuard7Hook extends WorldGuardHook {
         this.worldGuard = WorldGuard.getInstance();
         this.noPointsFlag = new StateFlag("fg-no-points", false);
         this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
+        this.friendlyFireFlag = new StateFlag("fg-friendly-fire", false);
 
         this.worldGuard.getFlagRegistry().register(this.noPointsFlag);
         this.worldGuard.getFlagRegistry().register(this.noGuildsFlag);
+        this.worldGuard.getFlagRegistry().register(this.friendlyFireFlag);
         return HookInitResult.SUCCESS;
     }
 
@@ -57,6 +60,18 @@ public class WorldGuard7Hook extends WorldGuardHook {
 
         return PandaStream.of(regionSet.get().getRegions())
                 .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
+                .isPresent();
+    }
+
+    @Override
+    public boolean isInFriendlyFireRegion(Location location) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
+            return false;
+        }
+
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> region.getFlag(this.friendlyFireFlag) == StateFlag.State.ALLOW)
                 .isPresent();
     }
 

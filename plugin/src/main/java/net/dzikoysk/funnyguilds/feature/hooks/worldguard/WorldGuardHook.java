@@ -18,6 +18,8 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
 
     public abstract boolean isInNonGuildsRegion(Location location);
 
+    public abstract boolean isInFriendlyFireRegion(Location location);
+
     public abstract boolean isInRegion(Location location);
 
     public abstract Option<ApplicableRegionSet> getRegionSet(Location location);
