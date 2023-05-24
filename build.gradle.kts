@@ -35,6 +35,7 @@ allprojects {
     repositories {
         /* Libs */
         maven("https://maven.reposilite.com/releases")
+        maven("https://maven.reposilite.com/jitpack")
         maven("https://storehouse.okaeri.eu/repository/maven-public")
         maven("https://repo.titanvale.net/releases")
 
@@ -49,7 +50,6 @@ allprojects {
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
         maven("https://nexus.codecrafter47.de/content/repositories/public")
         maven("https://repo.codemc.io/repository/maven-public")
-        maven("https://jitpack.io")
         maven("https://repo.viaversion.com")
     }
 }
