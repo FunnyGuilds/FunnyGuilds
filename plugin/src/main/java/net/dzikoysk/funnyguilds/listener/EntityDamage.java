@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook.FriendlyFireStatus;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
@@ -56,21 +57,35 @@ public class EntityDamage extends AbstractFunnyListener {
                 Guild attackerGuild = attackerUser.getGuild().get();
 
                 boolean shouldReturn = HookManager.WORLD_GUARD
-                        .map(hook -> hook.isInFriendlyFireRegion(victim.getLocation()) && hook.isInFriendlyFireRegion(attacker.getLocation()))
-                        .orElse(false)
-                        .map(forceFriendlyFire -> {
-                            if (forceFriendlyFire) {
+                        .map(hook -> {
+                            FriendlyFireStatus victimFriendlyFire = hook.getFriendlyFireStatus(victim.getLocation());
+                            FriendlyFireStatus attackerFriendlyFire = hook.getFriendlyFireStatus(attacker.getLocation());
+
+                            if (victimFriendlyFire == FriendlyFireStatus.ALLOW && attackerFriendlyFire == FriendlyFireStatus.ALLOW) {
+                                return FriendlyFireStatus.ALLOW;
+                            } else if (victimFriendlyFire == FriendlyFireStatus.DENY || attackerFriendlyFire == FriendlyFireStatus.DENY) {
+                                return FriendlyFireStatus.DENY;
+                            }
+
+                            return FriendlyFireStatus.INHERIT;
+                        })
+                        .orElse(FriendlyFireStatus.INHERIT)
+                        .map(friendlyFire -> {
+                            if (friendlyFire == FriendlyFireStatus.ALLOW) {
                                 return false;
                             }
 
-                            if (victimGuild.equals(attackerGuild)) {
-                                if (!victimGuild.hasPvPEnabled()) {
-                                    event.setCancelled(true);
-                                    return true;
-                                }
+                            if (victimGuild.equals(attackerGuild) && (!victimGuild.hasPvPEnabled() || friendlyFire == FriendlyFireStatus.DENY)) {
+                                event.setCancelled(true);
+                                return true;
                             }
 
                             if (victimGuild.isAlly(attackerGuild)) {
+                                if (friendlyFire == FriendlyFireStatus.DENY) {
+                                    event.setCancelled(true);
+                                    return true;
+                                }
+
                                 if (!this.config.damageAlly) {
                                     event.setCancelled(true);
                                     return true;

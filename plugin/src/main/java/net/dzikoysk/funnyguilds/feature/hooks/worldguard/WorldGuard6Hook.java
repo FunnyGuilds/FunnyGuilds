@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.worldguard;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.EnumFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
@@ -19,6 +20,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -44,7 +46,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
     private StateFlag noGuildsFlag;
-    private StateFlag friendlyFireFlag;
+    private EnumFlag<FriendlyFireStatus> friendlyFireFlag;
 
     public WorldGuard6Hook(String name) {
         super(name);
@@ -55,7 +57,12 @@ public class WorldGuard6Hook extends WorldGuardHook {
         this.worldGuard = WorldGuardPlugin.inst();
         this.noPointsFlag = new StateFlag("fg-no-points", false);
         this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
-        this.friendlyFireFlag = new StateFlag("fg-friendly-fire", false);
+        this.friendlyFireFlag = new EnumFlag<FriendlyFireStatus>("fg-friendly-fire", FriendlyFireStatus.class) {
+            @Override
+            public @NotNull FriendlyFireStatus getDefault() {
+                return FriendlyFireStatus.INHERIT;
+            }
+        };
 
         Class<?> worldGuardPluginClass = Reflections.getClass("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
 
@@ -100,15 +107,13 @@ public class WorldGuard6Hook extends WorldGuardHook {
     }
 
     @Override
-    public boolean isInFriendlyFireRegion(Location location) {
-        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
-        if (regionSet.isEmpty()) {
-            return false;
-        }
-
-        return PandaStream.of(regionSet.get().getRegions())
-                .find(region -> region.getFlag(this.friendlyFireFlag) == StateFlag.State.ALLOW)
-                .isPresent();
+    public FriendlyFireStatus getFriendlyFireStatus(Location location) {
+        return this.getRegionSet(location).toStream()
+                .flatMap(ApplicableRegionSet::getRegions)
+                .map(region -> region.getFlag(this.friendlyFireFlag))
+                .filter(friendlyFireStatus -> friendlyFireStatus != FriendlyFireStatus.INHERIT)
+                .head()
+                .orElseGet(FriendlyFireStatus.INHERIT);
     }
 
     @Override
