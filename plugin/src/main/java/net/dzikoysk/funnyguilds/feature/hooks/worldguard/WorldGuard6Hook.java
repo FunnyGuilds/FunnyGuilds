@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.worldguard;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.EnumFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
@@ -19,6 +20,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -44,6 +46,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
     private StateFlag noGuildsFlag;
+    private EnumFlag<FriendlyFireStatus> friendlyFireFlag;
 
     public WorldGuard6Hook(String name) {
         super(name);
@@ -54,6 +57,12 @@ public class WorldGuard6Hook extends WorldGuardHook {
         this.worldGuard = WorldGuardPlugin.inst();
         this.noPointsFlag = new StateFlag("fg-no-points", false);
         this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
+        this.friendlyFireFlag = new EnumFlag<FriendlyFireStatus>("fg-friendly-fire", FriendlyFireStatus.class) {
+            @Override
+            public @NotNull FriendlyFireStatus getDefault() {
+                return FriendlyFireStatus.INHERIT;
+            }
+        };
 
         Class<?> worldGuardPluginClass = Reflections.getClass("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
 
@@ -63,6 +72,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
         try {
             ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.noPointsFlag);
             ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.noGuildsFlag);
+            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.friendlyFireFlag);
         }
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
@@ -94,6 +104,16 @@ public class WorldGuard6Hook extends WorldGuardHook {
         return PandaStream.of(regionSet.get().getRegions())
                 .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
                 .isPresent();
+    }
+
+    @Override
+    public FriendlyFireStatus getFriendlyFireStatus(Location location) {
+        return this.getRegionSet(location).toStream()
+                .flatMap(ApplicableRegionSet::getRegions)
+                .map(region -> region.getFlag(this.friendlyFireFlag))
+                .filter(friendlyFireStatus -> friendlyFireStatus != FriendlyFireStatus.INHERIT)
+                .head()
+                .orElseGet(FriendlyFireStatus.INHERIT);
     }
 
     @Override
