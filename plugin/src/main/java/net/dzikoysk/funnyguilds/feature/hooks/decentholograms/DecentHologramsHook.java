@@ -118,7 +118,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
     }
 
     private static String prepareHologramName(Guild guild) {
-        return "funnyguilds:guild:" + guild.getName();
+        return "funnyguilds-guild-" + guild.getUUID();
     }
 
 }
