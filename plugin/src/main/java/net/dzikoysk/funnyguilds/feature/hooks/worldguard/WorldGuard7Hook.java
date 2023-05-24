@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.EnumFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -12,6 +13,7 @@ import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -20,6 +22,7 @@ public class WorldGuard7Hook extends WorldGuardHook {
     private WorldGuard worldGuard;
     private StateFlag noPointsFlag;
     private StateFlag noGuildsFlag;
+    private EnumFlag<FriendlyFireStatus> friendlyFireFlag;
 
     public WorldGuard7Hook(String name) {
         super(name);
@@ -30,9 +33,16 @@ public class WorldGuard7Hook extends WorldGuardHook {
         this.worldGuard = WorldGuard.getInstance();
         this.noPointsFlag = new StateFlag("fg-no-points", false);
         this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
+        this.friendlyFireFlag = new EnumFlag<FriendlyFireStatus>("fg-friendly-fire", FriendlyFireStatus.class) {
+            @Override
+            public @NotNull FriendlyFireStatus getDefault() {
+                return FriendlyFireStatus.INHERIT;
+            }
+        };
 
         this.worldGuard.getFlagRegistry().register(this.noPointsFlag);
         this.worldGuard.getFlagRegistry().register(this.noGuildsFlag);
+        this.worldGuard.getFlagRegistry().register(this.friendlyFireFlag);
         return HookInitResult.SUCCESS;
     }
 
@@ -58,6 +68,16 @@ public class WorldGuard7Hook extends WorldGuardHook {
         return PandaStream.of(regionSet.get().getRegions())
                 .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
                 .isPresent();
+    }
+
+    @Override
+    public FriendlyFireStatus getFriendlyFireStatus(Location location) {
+        return this.getRegionSet(location).toStream()
+                .flatMap(ApplicableRegionSet::getRegions)
+                .map(region -> region.getFlag(this.friendlyFireFlag))
+                .filter(friendlyFireStatus -> friendlyFireStatus != FriendlyFireStatus.INHERIT)
+                .head()
+                .orElseGet(FriendlyFireStatus.INHERIT);
     }
 
     @Override
