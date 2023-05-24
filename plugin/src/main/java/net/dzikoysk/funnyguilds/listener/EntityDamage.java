@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
-import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
@@ -52,32 +51,43 @@ public class EntityDamage extends AbstractFunnyListener {
                 if (victimUser.getUUID().equals(attackerUser.getUUID())) {
                     return;
                 }
-                
-                if (HookManager.WORLD_GUARD.isPresent()) {
-                    WorldGuardHook worldGuard = HookManager.WORLD_GUARD.get();
-                    if (!worldGuard.isInFriendlyFireRegion(victim.getLocation()) && !worldGuard.isInNonPointsRegion(attacker.getLocation())) {
-                        Guild victimGuild = victimUser.getGuild().get();
-                        Guild attackerGuild = attackerUser.getGuild().get();
 
-                        if (victimGuild.equals(attackerGuild)) {
-                            if (!victimGuild.hasPvPEnabled()) {
-                                event.setCancelled(true);
-                                return;
-                            }
-                        }
+                Guild victimGuild = victimUser.getGuild().get();
+                Guild attackerGuild = attackerUser.getGuild().get();
 
-                        if (victimGuild.isAlly(attackerGuild)) {
-                            if (!this.config.damageAlly) {
-                                event.setCancelled(true);
-                                return;
+                boolean shouldReturn = HookManager.WORLD_GUARD
+                        .map(hook -> hook.isInFriendlyFireRegion(victim.getLocation()) && hook.isInFriendlyFireRegion(attacker.getLocation()))
+                        .orElse(false)
+                        .map(forceFriendlyFire -> {
+                            if (forceFriendlyFire) {
+                                return false;
                             }
 
-                            if (!(attackerGuild.hasAllyPvPEnabled(victimGuild) && victimGuild.hasAllyPvPEnabled(attackerGuild))) {
-                                event.setCancelled(true);
-                                return;
+                            if (victimGuild.equals(attackerGuild)) {
+                                if (!victimGuild.hasPvPEnabled()) {
+                                    event.setCancelled(true);
+                                    return true;
+                                }
                             }
-                        }
-                    }
+
+                            if (victimGuild.isAlly(attackerGuild)) {
+                                if (!this.config.damageAlly) {
+                                    event.setCancelled(true);
+                                    return true;
+                                }
+
+                                if (!(attackerGuild.hasAllyPvPEnabled(victimGuild) && victimGuild.hasAllyPvPEnabled(attackerGuild))) {
+                                    event.setCancelled(true);
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        })
+                        .get();
+
+                if (shouldReturn) {
+                    return;
                 }
             }
 
