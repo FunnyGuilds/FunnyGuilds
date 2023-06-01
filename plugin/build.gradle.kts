@@ -15,7 +15,7 @@ dependencies {
 
     /* std */
 
-    val expressible = "1.3.4"
+    val expressible = "1.3.5"
     api("org.panda-lang:expressible:$expressible")
     testImplementation("org.panda-lang:expressible-junit:$expressible")
 
