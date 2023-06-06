@@ -4,7 +4,8 @@
     "config:base"
   ],
   "ignoreDeps": [
-    "me.clip:placeholderapi"
+    "me.clip:placeholderapi",
+    "com.sk89q.worldguard:worldguard-bukkit"
   ],
   "schedule": [
     "every 1 month on the first day of the month"
