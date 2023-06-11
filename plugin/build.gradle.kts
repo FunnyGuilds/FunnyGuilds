@@ -41,7 +41,7 @@ dependencies {
     implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
 
-    implementation("com.github.PikaMug:LocaleLib:3.4")
+    implementation("com.github.PikaMug:LocaleLib:3.5")
 
     /* general stuff */
 
