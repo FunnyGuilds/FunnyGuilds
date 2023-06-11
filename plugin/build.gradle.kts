@@ -59,7 +59,9 @@ dependencies {
 
     /* hooks */
 
-    shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.8")
+    shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.7") {
+        because("WorldGuard 7.0.7 is the latest version that supports Java 16 - newer version requires Java 17")
+    }
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("me.clip:placeholderapi:2.10.9") {
         because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
