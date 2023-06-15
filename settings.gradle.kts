@@ -1,12 +1,24 @@
 rootProject.name = "FunnyGuilds"
 
 include(
-    ":plugin",
-    ":nms:api",
-    ":nms:v1_16R3",
-    ":nms:v1_17R1",
-    ":nms:v1_18R2",
-    ":nms:v1_19R1",
-    ":nms:v1_19R2",
-    ":nms:v1_19R3",
+    // Server API
+    "funnyguilds-server-api",
+    // Core
+    "funnyguilds-core",
+    // Engines
+    "funnyguilds-targets",
+    "funnyguilds-targets:fake-server",
+    "funnyguilds-targets:spigot-server",
+    "funnyguilds-targets:spigot-server:core",
+    "funnyguilds-targets:spigot-server:nms",
+    "funnyguilds-targets:spigot-server:nms:api",
+    "funnyguilds-targets:spigot-server:nms:v1_19R2",
+    // Features
+    "funnyguilds-regions",
+    "funnyguilds-rank",
+    // Integrations
+    "funnyguilds-hooks",
+    "funnyguilds-hooks:placeholderapi",
+    // Tests
+    "funnyguilds-tests",
 )
