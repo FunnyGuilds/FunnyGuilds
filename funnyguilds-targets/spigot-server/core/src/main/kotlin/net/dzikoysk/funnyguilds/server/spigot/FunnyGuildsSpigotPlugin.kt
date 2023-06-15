@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.server.spigot
 
 import com.dzikoysk.sqiffy.Slf4JSqiffyLogger
 import com.dzikoysk.sqiffy.Sqiffy
-import com.dzikoysk.sqiffy.createHikariDataSource
+import com.dzikoysk.sqiffy.shared.createHikariDataSource
 import com.dzikoysk.sqiffy.shared.createTestDatabaseFile
 import net.dzikoysk.funnyguilds.FunnyGuilds
 import net.dzikoysk.funnyguilds.guild.GuildModule
@@ -17,7 +17,7 @@ class FunnyGuildsSpigotPlugin : JavaPlugin() {
 
     override fun onLoad() {
         this.funnyGuilds = FunnyGuilds(
-            sqiffy = Sqiffy(
+            database = Sqiffy.createDatabase(
                 dataSource = createHikariDataSource(
                     driver = "org.h2.Driver",
                     url = "jdbc:h2:${createTestDatabaseFile("test-database").absolutePathString()};MODE=MYSQL",

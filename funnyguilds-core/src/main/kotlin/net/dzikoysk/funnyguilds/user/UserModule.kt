@@ -7,6 +7,9 @@ import net.dzikoysk.funnyguilds.server.ServerContext
 import net.dzikoysk.funnyguilds.server.event.FunnyEventPriority.NORMAL
 import net.dzikoysk.funnyguilds.server.event.FunnyJoinEvent
 import net.dzikoysk.funnyguilds.server.registerListener
+import net.dzikoysk.funnyguilds.user.model.SqlUserRepository
+import net.dzikoysk.funnyguilds.user.model.UserDefinition
+import net.dzikoysk.funnyguilds.user.model.UserId
 
 class UserModule : FunnyModule {
 
@@ -16,7 +19,7 @@ class UserModule : FunnyModule {
 
     override fun onEnable(context: ServerContext, funnyGuilds: FunnyGuilds) {
         val userFacade = UserService(
-            userRepository = SqlUserRepository(funnyGuilds.sqiffy)
+            userRepository = SqlUserRepository(funnyGuilds.database)
         )
 
         funnyGuilds.registerComponent(userFacade)

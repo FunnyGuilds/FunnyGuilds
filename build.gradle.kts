@@ -5,9 +5,9 @@ plugins {
     application
     `maven-publish`
 
-    val kotlinVersion = "1.8.0"
+    val kotlinVersion = "1.8.22"
     kotlin("jvm") version kotlinVersion
-    id("com.google.devtools.ksp") version "1.8.0-1.0.8"
+    id("com.google.devtools.ksp") version "1.8.22-1.0.11"
 
     id("org.ajoberstar.grgit") version "4.1.1"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -24,7 +24,7 @@ idea {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "5.0.0"
+    version = "6.0.0"
 
     apply(plugin = "java-library")
     apply(plugin = "kotlin")

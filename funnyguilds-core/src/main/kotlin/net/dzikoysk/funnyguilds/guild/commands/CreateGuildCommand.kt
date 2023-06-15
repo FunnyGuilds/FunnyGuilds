@@ -4,8 +4,8 @@ import net.dzikoysk.funnyguilds.guild.GuildService
 import net.dzikoysk.funnyguilds.guild.model.GuildName
 import net.dzikoysk.funnyguilds.server.command.FunnyCommandEntry
 import net.dzikoysk.funnyguilds.server.command.FunnyCommandFactory
-import net.dzikoysk.funnyguilds.user.UserId
-import net.dzikoysk.funnyguilds.user.UserId.Companion.toUserId
+import net.dzikoysk.funnyguilds.user.model.UserId
+import net.dzikoysk.funnyguilds.user.model.UserId.Companion.toUserId
 import net.dzikoysk.funnyguilds.user.UserService
 
 const val CREATE_GUILD_PERMISSION = "funnyguilds.commands.create"
@@ -40,10 +40,7 @@ class CreateGuildCommand(
                 owner = UserId(callingUser.id)
             )
 
-            createdGuild.consume(
-                { guild -> sendMessage("Created guild ${guild.name}!") },
-                { error -> sendMessage("Failed to create guild: $error") }
-            )
+            sendMessage("Created guild ${createdGuild.name}!")
         }
 
 }

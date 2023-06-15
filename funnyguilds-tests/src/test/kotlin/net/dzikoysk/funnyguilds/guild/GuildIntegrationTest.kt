@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.guild
 
 import net.dzikoysk.funnyguilds.IntegrationTestSpecification
-import net.dzikoysk.funnyguilds.user.UserId.Companion.toUserId
+import net.dzikoysk.funnyguilds.user.model.UserId.Companion.toUserId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

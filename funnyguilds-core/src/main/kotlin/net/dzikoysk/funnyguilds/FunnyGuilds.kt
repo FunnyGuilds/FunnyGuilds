@@ -1,12 +1,13 @@
 package net.dzikoysk.funnyguilds
 
 import com.dzikoysk.sqiffy.Sqiffy
+import com.dzikoysk.sqiffy.SqiffyDatabase
 import net.dzikoysk.funnyguilds.server.ServerContext
 import net.dzikoysk.funnyguilds.server.ServerPlugin
 import kotlin.reflect.KClass
 
 class FunnyGuilds(
-    val sqiffy: Sqiffy,
+    val database: SqiffyDatabase,
     val modules: List<FunnyModule> = emptyList()
 ) {
 
@@ -33,10 +34,8 @@ class FunnyGuilds(
                 it.onLoad(initContext)
             }
 
-            sqiffy.transaction {
-                val changeLog = sqiffy.generateChangeLog(*initContext.definitions.map { it::class }.toTypedArray())
-                sqiffy.runMigrations(changeLog)
-            }
+            val changeLog = database.generateChangeLog(*initContext.definitions.map { it::class }.toTypedArray())
+            database.runMigrations(changeLog)
         }
 
         override fun onEnable(context: ServerContext) {

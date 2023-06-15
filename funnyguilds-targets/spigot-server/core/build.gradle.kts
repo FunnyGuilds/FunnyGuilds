@@ -20,8 +20,10 @@ dependencies {
     }
     locked()
 
-    implementation("org.bstats:bstats-bukkit:3.0.0")
+    implementation(kotlin("reflect"))
     implementation("com.h2database:h2:2.1.214")
+    implementation("org.bstats:bstats-bukkit:3.0.0")
+
 }
 
 tasks {

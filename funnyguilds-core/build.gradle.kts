@@ -7,15 +7,14 @@ plugins {
 dependencies {
     api(project(":funnyguilds-server-api"))
 
-    val expressible = "1.3.0"
+    val expressible = "1.3.5"
     implementation("org.panda-lang:expressible:$expressible") // Core library
     implementation("org.panda-lang:expressible-kt:$expressible") // Kotlin extensions
     testImplementation("org.panda-lang:expressible-junit:$expressible") // JUnit extensions
 
-    val sqiffy = "1.0.0-alpha.6"
+    val sqiffy = "1.0.0-alpha.20"
     ksp("com.dzikoysk.sqiffy:sqiffy-symbol-processor:$sqiffy")
-    api("com.dzikoysk.sqiffy:sqiffy-specification:$sqiffy")
-    api("com.dzikoysk.sqiffy:sqiffy-library:$sqiffy")
+    api("com.dzikoysk.sqiffy:sqiffy:$sqiffy")
 }
 
 sourceSets.configureEach {

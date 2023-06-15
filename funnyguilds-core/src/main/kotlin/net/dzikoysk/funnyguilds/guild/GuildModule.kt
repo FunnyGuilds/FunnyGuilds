@@ -24,8 +24,8 @@ class GuildModule : FunnyModule {
 
     override fun onEnable(context: ServerContext, funnyGuilds: FunnyGuilds) {
         val guildService = GuildService(
-            guildRepository = SqlGuildRepository(funnyGuilds.sqiffy),
-            membershipRepository = SqlMembershipRepository(funnyGuilds.sqiffy)
+            guildRepository = SqlGuildRepository(funnyGuilds.database),
+            membershipRepository = SqlMembershipRepository(funnyGuilds.database)
         )
 
         funnyGuilds.registerComponent(guildService)

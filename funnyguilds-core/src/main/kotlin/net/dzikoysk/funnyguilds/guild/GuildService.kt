@@ -7,17 +7,16 @@ import net.dzikoysk.funnyguilds.guild.model.GuildName
 import net.dzikoysk.funnyguilds.guild.model.GuildRepository
 import net.dzikoysk.funnyguilds.guild.model.MembershipRepository
 import net.dzikoysk.funnyguilds.guild.model.MembershipRole
-import net.dzikoysk.funnyguilds.user.UserId
-import panda.std.Result
+import net.dzikoysk.funnyguilds.user.model.UserId
 
 class GuildService(
     private val guildRepository: GuildRepository,
     private val membershipRepository: MembershipRepository
 ) : FunnyComponent {
 
-    fun createGuild(name: GuildName, owner: UserId): Result<Guild, String> =
+    fun createGuild(name: GuildName, owner: UserId): Guild =
         guildRepository.createGuild(name)
-            .peek { // TODO: replace with flatMap
+            .also { // TODO: replace with flatMap
                 membershipRepository.createMembership(
                     guildId = GuildId(it.id),
                     userId = owner,

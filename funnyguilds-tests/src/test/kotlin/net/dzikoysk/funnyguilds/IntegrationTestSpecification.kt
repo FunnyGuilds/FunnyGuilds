@@ -2,11 +2,11 @@ package net.dzikoysk.funnyguilds
 
 import com.dzikoysk.sqiffy.Slf4JSqiffyLogger
 import com.dzikoysk.sqiffy.Sqiffy
-import com.dzikoysk.sqiffy.createHikariDataSource
+import com.dzikoysk.sqiffy.shared.createHikariDataSource
 import com.dzikoysk.sqiffy.shared.createTestDatabaseFile
 import net.dzikoysk.funnyguilds.guild.GuildModule
 import net.dzikoysk.funnyguilds.server.FakeServerContext
-import net.dzikoysk.funnyguilds.user.UserId.Companion.toUserId
+import net.dzikoysk.funnyguilds.user.model.UserId.Companion.toUserId
 import net.dzikoysk.funnyguilds.user.UserModule
 import net.dzikoysk.funnyguilds.user.UserService
 import org.junit.jupiter.api.AfterEach
@@ -25,7 +25,7 @@ internal sealed class FakeFunnyGuildsRunner {
         this.server = FakeServerContext()
 
         this.funnyGuilds = FunnyGuilds(
-            sqiffy = Sqiffy(
+            database = Sqiffy.createDatabase(
                 dataSource = createHikariDataSource(
                     driver = "org.h2.Driver",
                     url = "jdbc:h2:${createTestDatabaseFile("test-database").absolutePathString()};MODE=MYSQL",
@@ -47,7 +47,7 @@ internal sealed class FakeFunnyGuildsRunner {
     @AfterEach
     fun cleanup() {
         funnyGuilds.getServerPlugin().onLoad(server)
-        funnyGuilds.sqiffy.close()
+        funnyGuilds.database.close()
     }
 
 }
