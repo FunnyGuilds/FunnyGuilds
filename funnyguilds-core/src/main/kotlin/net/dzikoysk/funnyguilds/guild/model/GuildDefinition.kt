@@ -1,8 +1,5 @@
-@file:Suppress("RemoveRedundantQualifierName")
-
 package net.dzikoysk.funnyguilds.guild.model
 
-import com.dzikoysk.sqiffy.Sqiffy
 import com.dzikoysk.sqiffy.SqiffyDatabase
 import com.dzikoysk.sqiffy.definition.Constraint
 import com.dzikoysk.sqiffy.definition.ConstraintType.PRIMARY_KEY
@@ -14,7 +11,6 @@ import com.dzikoysk.sqiffy.definition.Property
 import com.dzikoysk.sqiffy.dsl.Row
 import com.dzikoysk.sqiffy.dsl.eq
 import net.dzikoysk.funnyguilds.FunnyGuildsVersion.V_5_0_0
-import panda.std.Result
 import java.util.UUID
 
 private const val MAX_GUILD_NAME_LENGTH = 64

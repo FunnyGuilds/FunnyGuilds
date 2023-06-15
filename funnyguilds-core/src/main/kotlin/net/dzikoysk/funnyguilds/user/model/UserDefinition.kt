@@ -1,5 +1,3 @@
-@file:Suppress("RemoveRedundantQualifierName")
-
 package net.dzikoysk.funnyguilds.user.model
 
 import java.util.UUID

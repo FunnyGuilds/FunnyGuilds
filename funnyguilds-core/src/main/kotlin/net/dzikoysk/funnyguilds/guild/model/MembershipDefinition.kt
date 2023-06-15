@@ -1,5 +1,3 @@
-@file:Suppress("RemoveRedundantQualifierName")
-
 package net.dzikoysk.funnyguilds.guild.model
 
 import com.dzikoysk.sqiffy.SqiffyDatabase
