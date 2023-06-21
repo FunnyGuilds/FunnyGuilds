@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_19R3.entity;
+package net.dzikoysk.funnyguilds.nms.v1_20R1.entity;
 
 import com.google.common.base.Preconditions;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;

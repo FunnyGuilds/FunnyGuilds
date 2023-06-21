@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_19R3.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_20R1.playerlist;
 
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;

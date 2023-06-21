@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_19R3.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_20R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;

@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_19R3.message;
+package net.dzikoysk.funnyguilds.nms.v1_20R1.message;
 
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;

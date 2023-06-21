@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_19R3.statistics;
+package net.dzikoysk.funnyguilds.nms.v1_20R1.statistics;
 
 import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
 import org.bukkit.Bukkit;
