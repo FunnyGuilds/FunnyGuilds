@@ -82,6 +82,7 @@ import net.dzikoysk.funnyguilds.nms.v1_18R2.V1_18R2NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R1.V1_19R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R2.V1_19R2NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R3.V1_19R3NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_19R3.V1_20R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -768,6 +769,8 @@ public class FunnyGuilds extends JavaPlugin {
                 return new V1_19R2NmsAccessor();
             case "v1_19_R3":
                 return new V1_19R3NmsAccessor();
+            case "v1_20_R1":
+                return new V1_20R1NmsAccessor();
             default:
                 throw new IllegalStateException(String.format(
                         "Could not find applicable NmsAccessor. Unsupported server version: %s", Reflections.SERVER_VERSION
