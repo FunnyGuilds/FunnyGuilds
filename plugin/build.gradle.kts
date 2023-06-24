@@ -41,7 +41,7 @@ dependencies {
     implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:platform-bukkit:$yamlVersion")
 
-    implementation("com.github.PikaMug:LocaleLib:3.4")
+    implementation("com.github.PikaMug:LocaleLib:3.5")
 
     /* general stuff */
 
@@ -83,7 +83,7 @@ tasks.processResources {
 }
 
 tasks.withType<ShadowJar> {
-    archiveFileName.set("FunnyGuilds ${project.version}.${grgit.log().size} (MC 1.16-1.19).jar")
+    archiveFileName.set("FunnyGuilds ${project.version}.${grgit.log().size} (MC 1.16-1.20).jar")
     mergeServiceFiles()
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
@@ -112,6 +112,6 @@ tasks.withType<ShadowJar> {
 
 tasks {
     runServer {
-        minecraftVersion("1.19.4")
+        minecraftVersion("1.20.1")
     }
 }
