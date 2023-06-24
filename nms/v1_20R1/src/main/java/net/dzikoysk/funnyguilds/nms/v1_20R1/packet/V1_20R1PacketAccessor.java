@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_19R3.packet;
+package net.dzikoysk.funnyguilds.nms.v1_20R1.packet;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -10,15 +10,15 @@ import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericInboundChannelHandlerIn
 import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericOutboundChannelHandlerInstaller;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.level.EntityPlayer;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class V1_19R3PacketAccessor implements PacketAccessor {
+public class V1_20R1PacketAccessor implements PacketAccessor {
     
-    private final GenericInboundChannelHandlerInstaller<V1_19R3FunnyGuildsInboundChannelHandler> inboundChannelHandlerInstaller =
-            new GenericInboundChannelHandlerInstaller<>(V1_19R3FunnyGuildsInboundChannelHandler::new);
-    private final GenericOutboundChannelHandlerInstaller<V1_19R3FunnyGuildsOutboundChannelHandler> outboundChannelHandlerInstaller =
-            new GenericOutboundChannelHandlerInstaller<>(V1_19R3FunnyGuildsOutboundChannelHandler::new);
+    private final GenericInboundChannelHandlerInstaller<V1_20R1FunnyGuildsInboundChannelHandler> inboundChannelHandlerInstaller =
+            new GenericInboundChannelHandlerInstaller<>(V1_20R1FunnyGuildsInboundChannelHandler::new);
+    private final GenericOutboundChannelHandlerInstaller<V1_20R1FunnyGuildsOutboundChannelHandler> outboundChannelHandlerInstaller =
+            new GenericOutboundChannelHandlerInstaller<>(V1_20R1FunnyGuildsOutboundChannelHandler::new);
     
     @Override
     public FunnyGuildsInboundChannelHandler getOrInstallInboundChannelHandler(Player player) {
@@ -43,16 +43,16 @@ public class V1_19R3PacketAccessor implements PacketAccessor {
     private NetworkManager getNetworkManager(EntityPlayer entityPlayer) {
         Field networkManagerField;
         try {
-            networkManagerField = entityPlayer.b.getClass().getDeclaredField("h");
+            networkManagerField = entityPlayer.c.getClass().getDeclaredField("h");
             networkManagerField.setAccessible(true);
         } catch (NoSuchFieldException exception) {
             throw new RuntimeException("missing 'h' field in PlayerConnection", exception);
         }
     
         try {
-            return (NetworkManager) networkManagerField.get(entityPlayer.b);
+            return (NetworkManager) networkManagerField.get(entityPlayer.c);
         } catch (IllegalAccessException exception) {
-            throw new RuntimeException("Failed to initialise V1_19R3PacketAccessor", exception);
+            throw new RuntimeException("Failed to initialise V1_20R1PacketAccessor", exception);
         }
     }
 
