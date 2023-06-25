@@ -697,8 +697,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")
     @Comment("UWAGA: wymagany plugin WorldGuard")
-    @CustomKey("assists-regions-ignored")
-    public List<String> assistsRegionsIgnored = Collections.singletonList("spawnGuildHeart");
+    @Comment("Zamiast tej opcji w configu, zalecamy ustawienie flagi 'fg-no-assists' na regionach, na których asysty nie powinny być naliczane")
+    @Comment("Ta opcja konfiguracji zniknie z configu w przyszłych wydaniach i nie powinna być używana")
+    public Set<String> assistsRegionsIgnored = Collections.emptySet(); //TODO [5.0]: Remove
 
     @Comment("")
     @Comment("System rankingowy używany przez plugin, do wyboru:")
