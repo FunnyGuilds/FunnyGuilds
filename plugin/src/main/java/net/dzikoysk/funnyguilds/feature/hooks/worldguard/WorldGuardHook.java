@@ -18,6 +18,7 @@ import panda.std.stream.PandaStream;
 public abstract class WorldGuardHook extends AbstractPluginHook {
 
     protected StateFlag noPointsFlag;
+    protected StateFlag noAssistsFlag;
     protected StateFlag noGuildsFlag;
     protected EnumFlag<FriendlyFireStatus> friendlyFireFlag;
 
@@ -27,6 +28,7 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
 
     protected void initFlags() {
         this.noPointsFlag = new StateFlag("fg-no-points", false);
+        this.noAssistsFlag = new StateFlag("fg-no-assists", false);
         this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
         this.friendlyFireFlag = new EnumFlag<FriendlyFireStatus>("fg-friendly-fire", FriendlyFireStatus.class) {
             @Override
@@ -34,7 +36,7 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
                 return FriendlyFireStatus.INHERIT;
             }
         };
-        this.registerFlags(this.noPointsFlag, this.noGuildsFlag, this.friendlyFireFlag);
+        this.registerFlags(this.noPointsFlag, this.noAssistsFlag, this.noGuildsFlag, this.friendlyFireFlag);
     }
 
     protected abstract void registerFlags(Flag<?>... flags);
@@ -68,16 +70,17 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
                 .isPresent();
     }
 
-    public boolean isInNonGuildsRegion(Location location) {
+    public boolean isInNonAssistsRegion(Location location) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         return PandaStream.of(this.getRegions(location))
-                .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
+                .find(region -> region.getFlag(this.noAssistsFlag) == StateFlag.State.ALLOW
+                        || config.assistsRegionsIgnored.contains(region.getId()))
                 .isPresent();
     }
 
-    public boolean isInIgnoredRegion(Location location) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    public boolean isInNonGuildsRegion(Location location) {
         return PandaStream.of(this.getRegions(location))
-                .find(region -> config.assistsRegionsIgnored.contains(region.getId()))
+                .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
                 .isPresent();
     }
 
