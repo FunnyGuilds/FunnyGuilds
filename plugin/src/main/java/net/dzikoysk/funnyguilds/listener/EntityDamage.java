@@ -114,13 +114,12 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            if (HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.isInIgnoredRegion(victim.getLocation()))
+            if (HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.isInNonAssistsRegion(victim.getLocation()))
                     .orElseGet(false)) {
                 return;
             }
 
-            DamageState damageState = damageManager.getDamageState(victimUser.getUUID());
-
+            DamageState damageState = this.damageManager.getDamageState(victimUser.getUUID());
             damageState.addDamage(attackerUser, event.getDamage());
         });
     }
