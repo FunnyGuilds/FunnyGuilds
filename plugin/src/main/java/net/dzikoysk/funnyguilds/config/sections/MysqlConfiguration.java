@@ -35,13 +35,5 @@ public class MysqlConfiguration extends OkaeriConfig {
     public String guildsTableName = "guilds";
     @Variable("FG_MYSQL_REGIONS_TABLE_NAME")
     public String regionsTableName = "regions";
-    @Variable("FG_MYSQL_DRIVER_VERSION")
-    @Comment({
-            "",
-            "Sprawdzenie najnowszej wersji drivera MySQL",
-            "https://mvnrepository.com/artifact/com.mysql/mysql-connector-j/",
-            ""
-    })
-    public String mysqlDriverVersion = "8.0.33";
 
 }

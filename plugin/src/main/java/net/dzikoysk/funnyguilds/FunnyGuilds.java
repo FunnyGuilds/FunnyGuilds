@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
-import net.dzikoysk.funnyguilds.data.util.DriverDownloadUtil;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -294,15 +293,6 @@ public class FunnyGuilds extends JavaPlugin {
                 this.userPlaceholdersService,
                 this.guildPlaceholdersService
         );
-        if (plugin.pluginConfiguration.dataModel == PluginConfiguration.DataModel.MYSQL) {
-            try {
-                DriverDownloadUtil.loadDependency(pluginConfiguration.mysql.mysqlDriverVersion);
-            } catch (Exception ex) {
-                logger.error("Could not load database driver.", ex);
-                this.shutdown("Critical error has been encountered!");
-                return;
-            }
-        }
 
         this.database = new Database();
 

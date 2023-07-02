@@ -1,17 +1,27 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Database {
 
     private final HikariDataSource dataSource;
 
     public Database() {
+        String jdbcClassName = FunnyGuilds.getInstance().getPluginConfiguration().dataModel.getJDBCClassName();
+        if (jdbcClassName != null) {
+            try {
+                Class.forName(jdbcClassName);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         this.dataSource = new HikariDataSource();
         MysqlConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
@@ -26,7 +36,9 @@ public class Database {
 
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + characterEncoding);
+
+        String jdbc = FunnyGuilds.getInstance().getPluginConfiguration().dataModel.getJDBC();
+        this.dataSource.setJdbcUrl("jdbc:" + (jdbc == null ? "mysql" : jdbc) + "://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + characterEncoding);
         this.dataSource.setUsername(c.user);
 
         if (!FunnyStringUtils.isEmpty(c.password)) {

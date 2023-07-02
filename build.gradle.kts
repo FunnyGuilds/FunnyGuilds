@@ -34,6 +34,7 @@ allprojects {
 
     repositories {
         /* Libs */
+        mavenCentral()
         maven("https://maven.reposilite.com/releases")
         maven("https://maven.reposilite.com/jitpack")
         maven("https://storehouse.okaeri.eu/repository/maven-public")
@@ -59,6 +60,7 @@ subprojects {
         /* general */
 
         compileOnly("org.jetbrains:annotations:24.0.1")
+        implementation("org.mariadb.jdbc:mariadb-java-client:3.1.4")
         testImplementation(kotlin("stdlib-jdk8"))
 
         /* tests */
