@@ -71,7 +71,7 @@ subprojects {
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
 
-        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.21")
+        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.22")
         testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14.3")
     }
 
