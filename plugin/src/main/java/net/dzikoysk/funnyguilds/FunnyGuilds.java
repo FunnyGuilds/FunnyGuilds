@@ -293,6 +293,7 @@ public class FunnyGuilds extends JavaPlugin {
                 this.userPlaceholdersService,
                 this.guildPlaceholdersService
         );
+if(pluginConfiguration.dataModel != PluginConfiguration.DataModel.FLAT){
         try {
             this.database = Option.of(new Database());
         } catch (Exception ex) {
@@ -300,6 +301,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.shutdown("Critical error has been encountered!");
             return;
         }
+}
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
