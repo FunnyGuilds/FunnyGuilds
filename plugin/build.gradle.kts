@@ -113,6 +113,7 @@ tasks.withType<ShadowJar> {
     relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
+    relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")
 
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")

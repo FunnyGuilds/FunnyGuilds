@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import kotlin.OptIn;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.database.Database;
+import panda.std.Option;
 import panda.std.function.ThrowingConsumer;
 
 public class SQLNamedStatement {
@@ -36,7 +40,12 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate(boolean ignoreFails) {
-        try (Connection connection = FunnyGuilds.getInstance().getDatabase().getConnection()) {
+        Option<Database> database = FunnyGuilds.getInstance().getDatabase();
+        if (database.isEmpty()) {
+            FunnyGuilds.getPluginLogger().error("Could not execute update (database is null)");
+            return;
+        }
+        try (Connection connection = database.get().getConnection()) {
             if (connection == null) {
                 throw new SQLException("Connection is null");
             }
@@ -60,7 +69,12 @@ public class SQLNamedStatement {
     }
 
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer, boolean ignoreFails) {
-        try (Connection connection = FunnyGuilds.getInstance().getDatabase().getConnection()) {
+        Option<Database> database = FunnyGuilds.getInstance().getDatabase();
+        if (database.isEmpty()) {
+            FunnyGuilds.getPluginLogger().error("Could not execute query (database is null)");
+            return;
+        }
+        try (Connection connection = database.get().getConnection()) {
             if (connection == null) {
                 throw new SQLException("Connection is null");
             }
