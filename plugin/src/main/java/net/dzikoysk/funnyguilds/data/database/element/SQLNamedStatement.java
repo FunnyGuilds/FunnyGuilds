@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import kotlin.OptIn;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import panda.std.Option;

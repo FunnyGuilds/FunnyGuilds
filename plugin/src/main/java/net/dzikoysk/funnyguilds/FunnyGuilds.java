@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds;
 
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
+import java.io.File;
 import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -34,9 +35,33 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.listener.*;
+import net.dzikoysk.funnyguilds.listener.BlockFlow;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PistonUse;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
+import net.dzikoysk.funnyguilds.listener.PlayerDeath;
+import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerLogin;
+import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.TntProtection;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
+import net.dzikoysk.funnyguilds.listener.region.BucketAction;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
+import net.dzikoysk.funnyguilds.listener.region.EntityProtect;
+import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
+import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
+import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
+import net.dzikoysk.funnyguilds.listener.region.PlayerTeleport;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
@@ -84,8 +109,6 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-
-import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -150,53 +173,6 @@ public class FunnyGuilds extends JavaPlugin {
     private boolean isDisabling;
     private boolean forceDisabling;
 
-    public static FunnyGuilds getInstance() {
-        return plugin;
-    }
-
-    public static FunnyGuildsLogger getPluginLogger() {
-        return logger;
-    }
-
-    private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
-        switch (Reflections.SERVER_VERSION) {
-            case "v1_8_R3":
-                return new V1_8R3NmsAccessor();
-            case "v1_9_R2":
-                return new V1_9R2NmsAccessor();
-            case "v1_10_R1":
-                return new V1_10R1NmsAccessor();
-            case "v1_11_R1":
-                return new V1_11R1NmsAccessor();
-            case "v1_12_R1":
-                return new V1_12R1NmsAccessor();
-            case "v1_13_R2":
-                return new V1_13R2NmsAccessor();
-            case "v1_14_R1":
-                return new V1_14R1NmsAccessor();
-            case "v1_15_R1":
-                return new V1_15R1NmsAccessor();
-            case "v1_16_R3":
-                return new V1_16R3NmsAccessor();
-            case "v1_17_R1":
-                return new V1_17R1NmsAccessor();
-            case "v1_18_R2":
-                return new V1_18R2NmsAccessor();
-            case "v1_19_R1":
-                return new V1_19R1NmsAccessor();
-            case "v1_19_R2":
-                return new V1_19R2NmsAccessor();
-            case "v1_19_R3":
-                return new V1_19R3NmsAccessor();
-            case "v1_20_R1":
-                return new V1_20R1NmsAccessor();
-            default:
-                throw new IllegalStateException(String.format(
-                        "Could not find applicable NmsAccessor. Unsupported server version: %s", Reflections.SERVER_VERSION
-                ));
-        }
-    }
-
     @Override
     public void onLoad() {
         Reflections.prepareServerVersion();
@@ -208,7 +184,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
-        } catch (Exception spigotNeeded) {
+        }
+        catch (Exception spigotNeeded) {
             logger.error("FunnyGuilds requires spigot to work, your server seems to be using something else");
             logger.error("If you think that is not true - contact plugin developers");
             logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
@@ -226,7 +203,8 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -234,7 +212,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.nmsAccessor = prepareNmsAccessor();
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             logger.error(String.format("Unsupported server version: %s", Reflections.SERVER_VERSION), exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -264,7 +243,8 @@ public class FunnyGuilds extends JavaPlugin {
                 return;
             }
             this.messageService = MessageService.prepareMessageService(this, this.pluginLanguageFolderFile);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             logger.error("Could not initialize message service", exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -313,20 +293,19 @@ public class FunnyGuilds extends JavaPlugin {
                 this.userPlaceholdersService,
                 this.guildPlaceholdersService
         );
-        if (pluginConfiguration.dataModel != PluginConfiguration.DataModel.FLAT) {
-            try {
-                this.database = Option.of(new Database());
-            } catch (Exception ex) {
-                logger.error("Could not create data from database", ex);
-                this.shutdown("Critical error has been encountered!");
-                return;
-            }
+        try {
+            this.database = Option.of(new Database());
+        } catch (Exception ex) {
+            logger.error("Could not create data from database", ex);
+            this.shutdown("Critical error has been encountered!");
+            return;
         }
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.error("Could not load data from database", ex);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -375,7 +354,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             logger.error("Could not register commands", exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -403,7 +383,8 @@ public class FunnyGuilds extends JavaPlugin {
 
             if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
                 setBuilder.add(EntityPlace.class);
-            } else {
+            }
+            else {
                 logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
             }
 
@@ -443,7 +424,8 @@ public class FunnyGuilds extends JavaPlugin {
             );
 
             this.dynamicListenerManager.reloadAll();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             logger.error("Could not register listeners", throwable);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -488,7 +470,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.stopHandler();
 
         this.getServer().getScheduler().cancelTasks(this);
-        this.database.peek(db -> db.shutdown());
+        this.database.peek(Database::shutdown);
 
         this.messageService.close();
 
@@ -752,6 +734,53 @@ public class FunnyGuilds extends JavaPlugin {
                         scoreboardConfig.queueConfiguration.updateRate
                 )
         );
+    }
+
+    public static FunnyGuilds getInstance() {
+        return plugin;
+    }
+
+    public static FunnyGuildsLogger getPluginLogger() {
+        return logger;
+    }
+
+    private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
+        switch (Reflections.SERVER_VERSION) {
+            case "v1_8_R3":
+                return new V1_8R3NmsAccessor();
+            case "v1_9_R2":
+                return new V1_9R2NmsAccessor();
+            case "v1_10_R1":
+                return new V1_10R1NmsAccessor();
+            case "v1_11_R1":
+                return new V1_11R1NmsAccessor();
+            case "v1_12_R1":
+                return new V1_12R1NmsAccessor();
+            case "v1_13_R2":
+                return new V1_13R2NmsAccessor();
+            case "v1_14_R1":
+                return new V1_14R1NmsAccessor();
+            case "v1_15_R1":
+                return new V1_15R1NmsAccessor();
+            case "v1_16_R3":
+                return new V1_16R3NmsAccessor();
+            case "v1_17_R1":
+                return new V1_17R1NmsAccessor();
+            case "v1_18_R2":
+                return new V1_18R2NmsAccessor();
+            case "v1_19_R1":
+                return new V1_19R1NmsAccessor();
+            case "v1_19_R2":
+                return new V1_19R2NmsAccessor();
+            case "v1_19_R3":
+                return new V1_19R3NmsAccessor();
+            case "v1_20_R1":
+                return new V1_20R1NmsAccessor();
+            default:
+                throw new IllegalStateException(String.format(
+                        "Could not find applicable NmsAccessor. Unsupported server version: %s", Reflections.SERVER_VERSION
+                ));
+        }
     }
 
 }
