@@ -155,7 +155,7 @@ public class FunnyGuilds extends JavaPlugin {
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
 
-    private Option<Database> database;
+    private Option<Database> database = Option.none();
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
@@ -250,7 +250,6 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
         this.localeManager = new LocaleManager();
-        this.database = Option.none();
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
