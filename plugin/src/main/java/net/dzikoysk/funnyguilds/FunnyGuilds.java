@@ -155,7 +155,7 @@ public class FunnyGuilds extends JavaPlugin {
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
 
-    private Database database;
+    private Option<Database> database = Option.none();
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
@@ -250,7 +250,6 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
         this.localeManager = new LocaleManager();
-
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
@@ -293,12 +292,15 @@ public class FunnyGuilds extends JavaPlugin {
                 this.userPlaceholdersService,
                 this.guildPlaceholdersService
         );
-        try {
-            this.database = new Database();
-        } catch (Exception ex) {
-            logger.error("Could not create data from database", ex);
-            this.shutdown("Critical error has been encountered!");
-            return;
+
+        if (pluginConfiguration.dataModel.isSQL()) {
+            try {
+                this.database = Option.of(new Database());
+            } catch (Exception ex) {
+                logger.error("Could not create data from database", ex);
+                this.shutdown("Critical error has been encountered!");
+                return;
+            }
         }
 
         try {
@@ -470,7 +472,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.stopHandler();
 
         this.getServer().getScheduler().cancelTasks(this);
-        this.database.shutdown();
+        this.database.peek(Database::shutdown);
 
         this.messageService.close();
 
@@ -552,7 +554,7 @@ public class FunnyGuilds extends JavaPlugin {
         return this.pluginDataFolderFile;
     }
 
-    public Database getDatabase() {
+    public Option<Database> getDatabase() {
         return this.database;
     }
 

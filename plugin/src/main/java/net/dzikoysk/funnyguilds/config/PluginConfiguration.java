@@ -1166,6 +1166,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Typ zapisu danych:")
     @Comment(" FLAT - lokalne pliki")
     @Comment(" MYSQL - baza danych, kompatybilna z MySQL")
+    @Comment(" MARIADB - baza danych, kompatybilna z MariaDB")
     public DataModel dataModel = DataModel.FLAT;
 
     @Comment("")
@@ -1299,21 +1300,25 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public enum DataModel {
+
         FLAT(null),
         MYSQL("com.mysql.cj.jdbc.Driver"),
         MARIADB("org.mariadb.jdbc.Driver");
 
-        private final String jdbcClassName;
+        private final @Nullable String jdbcClassName;
 
-        DataModel( String jdbcClassName) {
+        DataModel(@Nullable String jdbcClassName) {
             this.jdbcClassName = jdbcClassName;
         }
 
-
+        public boolean isSQL() {
+            return this.jdbcClassName != null;
+        }
 
         public String getJDBCClassName() {
             return jdbcClassName;
         }
+
     }
 
 }

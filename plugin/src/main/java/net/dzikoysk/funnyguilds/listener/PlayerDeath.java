@@ -186,7 +186,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         victimDamageState.clear();
 
-        if (this.config.dataModel == DataModel.MYSQL) {
+        if (this.config.dataModel.isSQL()) {
             victim.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
             attacker.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
 
