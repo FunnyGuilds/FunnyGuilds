@@ -13,13 +13,7 @@ public class Database {
     private final HikariDataSource dataSource;
 
     public Database() throws ClassNotFoundException {
-        String jdbcClassName = FunnyGuilds.getInstance().getPluginConfiguration().dataModel.getJDBCClassName();
-        if (jdbcClassName != null) {
-
-                Class.forName(jdbcClassName);
-
-        }
-
+        Class.forName(FunnyGuilds.getInstance().getPluginConfiguration().dataModel.getJDBCClassName());
         this.dataSource = new HikariDataSource();
         MysqlConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
