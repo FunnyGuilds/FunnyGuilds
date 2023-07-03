@@ -60,7 +60,6 @@ subprojects {
         /* general */
 
         compileOnly("org.jetbrains:annotations:24.0.1")
-        implementation("org.mariadb.jdbc:mariadb-java-client:3.1.4")
         testImplementation(kotlin("stdlib-jdk8"))
 
         /* tests */

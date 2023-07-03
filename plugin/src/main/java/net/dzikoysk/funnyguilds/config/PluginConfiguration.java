@@ -1299,21 +1299,17 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public enum DataModel {
-        FLAT(null, null),
-        MYSQL("mysql", "com.mysql.cj.jdbc.Driver"),
-        MARIADB("mariadb", "org.mariadb.jdbc.Driver");
+        FLAT(null),
+        MYSQL("com.mysql.cj.jdbc.Driver"),
+        MARIADB("org.mariadb.jdbc.Driver");
 
-        private final String jdbc;
         private final String jdbcClassName;
 
-        DataModel(String jdbc, String jdbcClassName) {
-            this.jdbc = jdbc;
+        DataModel( String jdbcClassName) {
             this.jdbcClassName = jdbcClassName;
         }
 
-        public String getJDBC() {
-            return jdbc;
-        }
+
 
         public String getJDBCClassName() {
             return jdbcClassName;
