@@ -61,7 +61,7 @@ public interface DataModel {
     }
 
     static DataModel create(FunnyGuilds plugin, PluginConfiguration.DataModel modelType) {
-        if (modelType != PluginConfiguration.DataModel.FLAT) {
+        if (modelType.isSQL()) {
             return new SQLDataModel(plugin);
         }
 

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.config.sections;
 
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.annotation.Variable;
