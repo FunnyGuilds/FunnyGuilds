@@ -283,8 +283,13 @@ public class FunnyGuilds extends JavaPlugin {
                 this.userPlaceholdersService,
                 this.guildPlaceholdersService
         );
-
-        this.database = new Database();
+        try {
+            this.database = new Database();
+        } catch (Exception ex) {
+            logger.error("Could not create data from database", ex);
+            this.shutdown("Critical error has been encountered!");
+            return;
+        }
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
