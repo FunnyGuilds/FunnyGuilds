@@ -70,22 +70,6 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                         .orElseGet(""));
     }
 
-    @Override
-    public String format(@Nullable Object entity, String text, User user) {
-        if (entity == null) {
-            entity = user;
-        }
-        return super.format(entity, text, user);
-    }
-
-    @Override
-    public String formatCustom(@Nullable Object entity, @Nullable String text, @Nullable User user, String prefix, String suffix, Function<String, String> nameModifier) {
-        if (entity == null) {
-            entity = user;
-        }
-        return super.formatCustom(entity, text, user, prefix, suffix, nameModifier);
-    }
-
     private static List<String> getWorldGuardRegionNames(Player player) {
         if (player == null) {
             return Collections.emptyList();
