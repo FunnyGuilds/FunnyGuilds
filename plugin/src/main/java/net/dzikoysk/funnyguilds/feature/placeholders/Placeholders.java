@@ -33,10 +33,6 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         return this.property(name, (entity, data) -> resolver.resolve(data));
     }
 
-    public P property(String name, LocaleSimpleResolver resolver) {
-        return this.property(name, (entity, data) -> resolver.resolve(entity));
-    }
-
     public P property(String name, SimpleResolver resolver) {
         return this.property(name, (entity, data) -> resolver.resolve());
     }
