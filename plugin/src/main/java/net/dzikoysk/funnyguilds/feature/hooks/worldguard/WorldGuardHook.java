@@ -45,9 +45,10 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
     public abstract Option<ApplicableRegionSet> getRegionSet(Location location);
 
     public Set<ProtectedRegion> getRegions(Location location) {
-        return this.getRegionSet(location)
-                .map(ApplicableRegionSet::getRegions)
-                .orElseGet(Collections::emptySet);
+        return this.getRegionSet(location).toStream()
+                .flatMap(ApplicableRegionSet::getRegions)
+                .filter(Objects::nonNull)
+                .toSet();
     }
 
     public List<String> getRegionNames(Location location) {
