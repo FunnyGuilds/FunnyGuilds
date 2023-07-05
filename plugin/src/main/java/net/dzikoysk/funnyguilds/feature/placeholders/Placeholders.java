@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
@@ -32,8 +33,12 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         return this.property(name, (entity, data) -> resolver.resolve(data));
     }
 
+    public P property(String name, LocaleSimpleResolver resolver) {
+        return this.property(name, (entity, data) -> resolver.resolve(entity));
+    }
+
     public P property(String name, SimpleResolver resolver) {
-        return this.property(name, (entity, object) -> resolver.resolve());
+        return this.property(name, (entity, data) -> resolver.resolve());
     }
 
     public P property(Map<String, Placeholder<T>> placeholders) {
