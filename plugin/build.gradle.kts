@@ -109,6 +109,8 @@ tasks.withType<ShadowJar> {
 
     minimize {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
+        exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
+        exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
     }
 }
 
