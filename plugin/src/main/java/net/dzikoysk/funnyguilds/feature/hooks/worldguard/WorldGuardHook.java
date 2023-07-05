@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -44,9 +45,10 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
     public abstract Option<ApplicableRegionSet> getRegionSet(Location location);
 
     public Set<ProtectedRegion> getRegions(Location location) {
-        return this.getRegionSet(location)
-                .map(ApplicableRegionSet::getRegions)
-                .orElseGet(Collections::emptySet);
+        return this.getRegionSet(location).toStream()
+                .flatMap(ApplicableRegionSet::getRegions)
+                .filter(Objects::nonNull)
+                .toSet();
     }
 
     public List<String> getRegionNames(Location location) {
@@ -86,6 +88,7 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
     public FriendlyFireStatus getFriendlyFireStatus(Location location) {
         return PandaStream.of(this.getRegions(location))
                 .map(region -> region.getFlag(this.friendlyFireFlag))
+                .filter(Objects::nonNull)
                 .filter(friendlyFireStatus -> friendlyFireStatus != FriendlyFireStatus.INHERIT)
                 .head()
                 .orElseGet(FriendlyFireStatus.INHERIT);
