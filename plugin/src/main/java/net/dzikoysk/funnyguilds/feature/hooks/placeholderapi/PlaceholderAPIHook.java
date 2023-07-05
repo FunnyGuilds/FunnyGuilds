@@ -70,11 +70,10 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
                     temp = this.rankPlaceholdersService.formatRank(temp, user);
                 }
-
                 return temp;
             }
             else {
-                return this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
+                return this.plugin.getTablistPlaceholdersService().formatIdentifier(user, identifier, user);
             }
         }
 

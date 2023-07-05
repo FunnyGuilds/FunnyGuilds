@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class TimePlaceholdersService extends AbstractPlaceholdersService<OffsetDateTime, OffsetDateTimePlaceholders> {
+public class TimePlaceholdersService extends StaticPlaceholdersService<OffsetDateTime, OffsetDateTimePlaceholders> {
 
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 

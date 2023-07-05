@@ -3,23 +3,26 @@ package net.dzikoysk.funnyguilds.user.placeholders;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRank;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 import panda.utilities.text.Joiner;
 
-public class UserPlaceholdersService extends AbstractPlaceholdersService<User, UserPlaceholders> {
+public class UserPlaceholdersService extends StaticPlaceholdersService<User, UserPlaceholders> {
 
     public static UserPlaceholders createUserPlaceholders(FunnyGuilds plugin) {
         PluginConfiguration config = plugin.getPluginConfiguration();
@@ -30,16 +33,16 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                 .property("ping-format", user -> FunnyFormatter.format(NumberRange.inRangeToString(user.getPing(),
                         config.pingFormat), "{PING}", user.getPing()))
                 .property("guild-position", user -> UserUtils.getUserPosition(config, user))
-                .property("position", (user, rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
-                .property("points", (user, rank) -> rank.getPoints())
-                .property("points-format", (user, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getPoints(),
+                .rankProperty("position", (rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
+                .rankProperty("points", UserRank::getPoints)
+                .rankProperty("points-format", (UserRank rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getPoints(),
                         config.pointsFormat), "{POINTS}", rank.getPoints()))
-                .property("kills", (user, rank) -> rank.getKills())
-                .property("deaths", (user, rank) -> rank.getDeaths())
-                .property("kdr", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()))
-                .property("kda", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDA()))
-                .property("assists", (user, rank) -> rank.getAssists())
-                .property("logouts", (user, rank) -> rank.getLogouts());
+                .rankProperty("kills", UserRank::getKills)
+                .rankProperty("deaths", UserRank::getDeaths)
+                .rankProperty("kdr", UserRank::getKDR)
+                .rankProperty("kda", UserRank::getKDA)
+                .rankProperty("assists", UserRank::getAssists)
+                .rankProperty("logouts", UserRank::getLogouts);
     }
 
     public static UserPlaceholders createPlayerPlaceholders(FunnyGuilds plugin) {
@@ -65,6 +68,22 @@ public class UserPlaceholdersService extends AbstractPlaceholdersService<User, U
                         .map(VaultHook::accountBalance)
                         .map(value -> String.format(Locale.US, "%.2f", value))
                         .orElseGet(""));
+    }
+
+    @Override
+    public String format(@Nullable Object entity, String text, User user) {
+        if (entity == null) {
+            entity = user;
+        }
+        return super.format(entity, text, user);
+    }
+
+    @Override
+    public String formatCustom(@Nullable Object entity, @Nullable String text, @Nullable User user, String prefix, String suffix, Function<String, String> nameModifier) {
+        if (entity == null) {
+            entity = user;
+        }
+        return super.formatCustom(entity, text, user, prefix, suffix, nameModifier);
     }
 
     private static List<String> getWorldGuardRegionNames(Player player) {

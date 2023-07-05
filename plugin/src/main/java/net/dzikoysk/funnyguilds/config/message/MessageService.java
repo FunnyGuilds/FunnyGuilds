@@ -51,7 +51,7 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
                 BukkitAudiences.create(plugin)
         );
         messageService.setDefaultLocale(config.defaultLocale);
-        messageService.registerLocaleProvider(new PlayerLocaleProvider());
+        messageService.registerLocaleProvider(new CommandSenderLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(plugin.getFunnyServer()));
 
         // TODO: Remove in 5.0
