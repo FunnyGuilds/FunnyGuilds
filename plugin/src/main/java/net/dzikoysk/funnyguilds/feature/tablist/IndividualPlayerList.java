@@ -140,7 +140,7 @@ public class IndividualPlayerList {
     }
 
     private String putTop(String cell) {
-        return FunnyGuilds.getInstance().getRankPlaceholdersService().format(cell, this.user);
+        return FunnyGuilds.getInstance().getRankPlaceholdersService().format(this.user, cell, this.user);
     }
 
     private String putVars(String cell) {
@@ -152,7 +152,7 @@ public class IndividualPlayerList {
         }
         Player player = playerOption.get();
 
-        formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(formatted, this.user);
+        formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, formatted, this.user);
         formatted = ChatUtils.colored(formatted);
         formatted = HookUtils.replacePlaceholders(player, formatted);
 

@@ -82,7 +82,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             lines.add("#ICON:" + HologramItem.fromItemStack(new ItemStack(holoConfig.item)).getContent());
         }
         lines.addAll(PandaStream.of(holoConfig.displayedLines)
-                .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
+                .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
                 .map(ChatUtils::colored)
                 .toList());
         DHAPI.setHologramLines(holo, lines);

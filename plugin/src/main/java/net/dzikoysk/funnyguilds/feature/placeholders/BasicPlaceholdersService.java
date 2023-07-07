@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import org.bukkit.ChatColor;
 
-public class BasicPlaceholdersService extends AbstractPlaceholdersService<Object, BasicPlaceholders<Object>> {
+public class BasicPlaceholdersService extends StaticPlaceholdersService<Object, BasicPlaceholders<Object>> {
 
     public static final BasicPlaceholders<String> ONLINE = new BasicPlaceholders<String>()
             .property("<online>", () -> ChatColor.GREEN)

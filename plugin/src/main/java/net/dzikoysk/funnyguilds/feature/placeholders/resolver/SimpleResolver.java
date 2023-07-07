@@ -1,13 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.resolver;
 
-import java.util.function.Supplier;
+import org.jetbrains.annotations.Nullable;
 
-public interface SimpleResolver extends Supplier<Object> {
+@FunctionalInterface
+public interface SimpleResolver extends LocaleSimpleResolver {
 
     Object resolve();
 
     @Override
-    default Object get() {
+    default Object resolve(@Nullable Object entity) {
         return this.resolve();
     }
 
