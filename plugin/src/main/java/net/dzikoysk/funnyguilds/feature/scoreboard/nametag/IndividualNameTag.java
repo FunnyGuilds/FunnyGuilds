@@ -131,7 +131,7 @@ public class IndividualNameTag {
 
         String finalValue = value;
         value = GuildPlaceholdersService.getSimplePlaceholders()
-                .map(placeholders -> placeholders.formatVariables(finalValue, targetGuild))
+                .map(placeholders -> placeholders.formatVariables(targetPlayer, finalValue, targetGuild))
                 .orElseGet(value);
 
         value = HookUtils.replacePlaceholders(targetPlayer, value);

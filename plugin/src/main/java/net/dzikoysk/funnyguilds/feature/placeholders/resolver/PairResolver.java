@@ -1,14 +1,15 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.resolver;
 
-import java.util.function.BiFunction;
+import org.jetbrains.annotations.Nullable;
 
-public interface PairResolver<T, U> extends BiFunction<T, U, Object> {
+@FunctionalInterface
+public interface PairResolver<T, U> extends LocalePairResolver<T, U> {
 
-    Object resolve(T dataFirst, U dataSecond);
+    Object resolve(T firstData, U secondData);
 
     @Override
-    default Object apply(T dataFirst, U dataSecond) {
-        return this.resolve(dataFirst, dataSecond);
+    default Object resolve(@Nullable Object entity, T firstData, U secondData) {
+        return this.resolve(firstData, secondData);
     }
 
 }

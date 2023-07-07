@@ -63,7 +63,11 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
      * @return formatted text
      */
     @Override
-    public String format(String text, User targetUser) {
+    public String format(@Nullable Object entity, String text, User targetUser) {
+        if (entity == null) {
+            entity = targetUser;
+        }
+
         text = this.formatTop(text, targetUser);
         text = this.formatTopPosition(text, targetUser);
 
@@ -358,7 +362,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         return new Replaceable() {
             @Override
             public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
-                return RankPlaceholdersService.this.format(text, targetUser);
+                return RankPlaceholdersService.this.format(targetUser, text, targetUser);
             }
 
             @Override
@@ -366,7 +370,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
                 TextReplacementConfig topReplacement = TextReplacementConfig.builder()
                         .match(PLACEHOLDER_PATTERN)
                         .replacement(((result, input) -> {
-                            String replacement = RankPlaceholdersService.this.format(result.group(), targetUser);
+                            String replacement = RankPlaceholdersService.this.format(targetUser, result.group(), targetUser);
                             return AdventureHelper.legacyToComponent(replacement);
                         }))
                         .build();
