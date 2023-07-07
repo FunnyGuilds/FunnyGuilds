@@ -66,7 +66,7 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
         }
 
         holo.appendTexts(PandaStream.of(holoConfig.displayedLines)
-                .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
+                .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
                 .map(ChatUtils::colored)
                 .toList());
 

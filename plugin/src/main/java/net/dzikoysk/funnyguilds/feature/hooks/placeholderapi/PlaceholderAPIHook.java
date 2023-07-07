@@ -69,7 +69,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
             }
             else {
-                return this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
+                return this.plugin.getTablistPlaceholdersService().formatIdentifier(user, identifier, user);
             }
         }
 

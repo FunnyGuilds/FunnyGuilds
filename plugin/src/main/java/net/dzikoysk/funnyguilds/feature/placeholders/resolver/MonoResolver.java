@@ -1,13 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.resolver;
 
-import java.util.function.Function;
+import org.jetbrains.annotations.Nullable;
 
-public interface MonoResolver<T> extends Function<T, Object> {
+@FunctionalInterface
+public interface MonoResolver<T> extends LocaleMonoResolver<T> {
 
     Object resolve(T data);
 
     @Override
-    default Object apply(T data) {
+    default Object resolve(@Nullable Object entity, T data) {
         return this.resolve(data);
     }
 
