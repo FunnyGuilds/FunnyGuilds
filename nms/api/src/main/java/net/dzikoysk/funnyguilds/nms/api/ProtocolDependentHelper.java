@@ -29,10 +29,13 @@ public final class ProtocolDependentHelper {
 
         int playerProtocolVersion = getPlayerProtocolVersion(player);
         if (playerProtocolVersion >= V1_19_3_PROTOCOL_VERSION) {
-            return paddedIdentifier;
+            return "~" + paddedIdentifier;
         }
 
-        return defaultIdentifier;
+        if (defaultIdentifier.trim().isEmpty()) {
+            return defaultIdentifier;
+        }
+        return "~" + defaultIdentifier;
     }
 
     private static int getPlayerProtocolVersion(Player player) {
