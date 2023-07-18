@@ -42,8 +42,8 @@ Spigot, Paper, Purpur
 
 #### :hourglass_flowing_sand: Branch 5.x (1.16.5-1.19.4)
 
-- ⚠️ nightly versions may be unstable, use them at your own risk
-- ⚠️ FunnyGuilds *5.x* is incompatible with FunnyGuilds *4.x* - use only if you are building your server from the grounds up using FunnyGuilds *5.x* - updating from *4.x* could cause **data corruption or loss**
+- ⚠️ nightly versions may be unstable, use them at your own risk - you can check current list of problems related to *5.x* [here](https://github.com/FunnyGuilds/FunnyGuilds/issues/2455)
+- ⚠️ FunnyGuilds *5.x* is incompatible with FunnyGuilds *4.x* - use only if you are building your server from the grounds up using FunnyGuilds *5.x* - updating from *4.x* could cause **data corruption or it's loss**
 - explore the newest features and fixes of the [nightly versions](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
 
 ---
