@@ -30,17 +30,21 @@ Spigot, Paper, Purpur
 
 ### :rocket: Download
 
-#### :hourglass: For MC versions 1.8.8 - 1.15.2
-
-- support for these versions (and FunnyGuilds 4.x) has been discontinued
-- you can still use [the latest 4.x build](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/)
-- only severe security related issues will likely cause an update for FunnyGuilds 4.x, no new features will be added
-
-#### :hourglass_flowing_sand: For MC versions 1.16.5 - 1.19.4
+#### ⚓ Releases (1.8.8-1.19.3)
 
 - get the latest stable version [here](https://github.com/FunnyGuilds/FunnyGuilds/releases) (for now the last FunnyGuilds 4.x release)
-- or explore the newest features and fixes of the [nightly versions](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
-- BE AWARE — nightly versions may be unstable, use them at your own risk
+
+#### :hourglass: Branch 4.x (1.8.8-1.20.1)
+
+- support for FunnyGuilds *4.x* has been discontinued and will be completely dropped when FunnyGuilds *5.x* will be released
+- only severe security related issues and bugs will likely cause an update for FunnyGuilds *4.x*, no new features will be added
+- you can still use [the latest 4.x build](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/)
+
+#### :hourglass_flowing_sand: Branch 5.x (1.16.5-1.19.4)
+
+- ⚠️ nightly versions may be unstable, use them at your own risk - you can check current list of problems related to *5.x* [here](https://github.com/FunnyGuilds/FunnyGuilds/issues/2455)
+- ⚠️ FunnyGuilds *5.x* is incompatible with FunnyGuilds *4.x* - use only if you are building your server from the grounds up using FunnyGuilds *5.x* - updating from *4.x* could cause **data corruption or it's loss**
+- explore the newest features and fixes of the [nightly versions](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/)
 
 ---
 
