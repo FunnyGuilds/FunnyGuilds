@@ -32,10 +32,9 @@ public final class ProtocolDependentHelper {
             return "~" + paddedIdentifier;
         }
 
-        if (defaultIdentifier.trim().isEmpty()) {
-            return defaultIdentifier;
-        }
-        return "~" + defaultIdentifier;
+        return defaultIdentifier.trim().isEmpty()
+                    ? defaultIdentifier
+                    : "~" + defaultIdentifier;
     }
 
     private static int getPlayerProtocolVersion(Player player) {
