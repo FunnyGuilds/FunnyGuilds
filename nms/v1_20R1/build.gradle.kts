@@ -3,7 +3,7 @@ dependencies {
     implementation(project(":nms:v1_16R3"))
 
     shadow("org.spigotmc:spigot:1.20.1-R0.1-SNAPSHOT")
-    shadow("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
+    shadow("org.spigotmc:spigot-api:1.20.1-experimental-SNAPSHOT")
     shadow("org.apache.commons:commons-lang3:3.12.0")
     shadow("io.netty:netty-all:4.1.90.Final")
     shadow("com.mojang:authlib:3.2.38")
