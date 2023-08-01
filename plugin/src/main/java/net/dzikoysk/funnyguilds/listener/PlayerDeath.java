@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
 import net.dzikoysk.funnyguilds.damage.DamageState;
@@ -145,12 +144,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         RankSystem.RankResult result = this.rankSystem.calculate(this.config.rankSystem, attackerPoints, victimPoints);
 
-        List<User> messageReceivers = new ArrayList<>();
-
-        messageReceivers.add(attacker);
-        messageReceivers.add(victim);
-
-        Map<User, Assist> calculatedAssists = this.handleAssists(victim, victimDamageState, attacker, result, messageReceivers);
+        Map<User, Assist> calculatedAssists = this.handleAssists(victim, victimDamageState, attacker, result);
 
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && calculatedAssists.isEmpty())
                 ? result.getAttackerPoints()
@@ -268,7 +262,10 @@ public class PlayerDeath extends AbstractFunnyListener {
                     }
                     return Replacement.of("{ASSISTS}", assistsMessage);
                 })
-                .receivers(messageReceivers);
+                .receiver(attacker)
+                .receiver(victim)
+                .receivers(calculatedAssists.keySet())
+                .console();
 
         if (this.config.broadcastDeathMessage) {
             deathMessage.receivers(event.getEntity().getWorld().getPlayers());
@@ -386,7 +383,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
     // This method calculate how many points assisting players should receive
     // Returns a map of players that were assisting
-    private Map<User, Assist> handleAssists(User victim, DamageState victimDamageState, User attacker, RankSystem.RankResult result, List<User> messageReceivers) {
+    private Map<User, Assist> handleAssists(User victim, DamageState victimDamageState, User attacker, RankSystem.RankResult result) {
         Map<User, Assist> calculatedAssists = new HashMap<>();
 
         if (!this.config.assistEnable) {
@@ -429,8 +426,6 @@ public class PlayerDeath extends AbstractFunnyListener {
             if (SimpleEventHandler.handle(assistsChangeEvent)) {
                 assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
             }
-
-            messageReceivers.add(assistUser);
         }
 
         return calculatedAssists;
