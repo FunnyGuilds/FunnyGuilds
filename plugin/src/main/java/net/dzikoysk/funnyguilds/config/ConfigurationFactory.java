@@ -23,6 +23,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0010_Migrate_old_enlarge_enabl
 import net.dzikoysk.funnyguilds.config.migration.P0011_Migrate_old_security_system_keys;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.migration.T0002_Update_tablist_keys;
+import net.dzikoysk.funnyguilds.config.serdes.ColorSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyPatternTransformer;
@@ -68,6 +69,7 @@ public final class ConfigurationFactory {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
                 registry.register(new RawStringTransformer());
+                registry.register(new ColorSerializer());
                 registry.register(new MaterialTransformer());
                 registry.register(new ItemStackTransformer());
                 registry.register(new EntityTypeTransformer());

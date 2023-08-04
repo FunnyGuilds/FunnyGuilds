@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.decentholograms.DecentHologramsHook;
+import net.dzikoysk.funnyguilds.feature.hooks.dynmap.DynmapHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
@@ -30,6 +32,7 @@ public class HookManager {
     public static Option<VaultHook> VAULT = Option.none();
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
     public static Option<HologramsHook> HOLOGRAMS = Option.none();
+    public static Option<DynmapHook> DYNMAP = Option.none();
 
     private final FunnyGuilds plugin;
     private final Map<String, CompletableHook<?>> pluginHooks = new HashMap<>();
@@ -79,6 +82,9 @@ public class HookManager {
 
         this.<HologramsHook>setupHook("DecentHolograms", true, pluginName -> new DecentHologramsHook(pluginName, this.plugin), true)
                 .subscribe(hook -> hook.peek(dhHook -> HOLOGRAMS = Option.of(dhHook)));
+
+        this.setupHook("dynmap", true, pluginName -> new DynmapHook(pluginName, this.plugin), true)
+                .subscribe(hook -> DYNMAP = hook);
     }
 
     public <T extends PluginHook> Completable<Option<T>> setupHook(String pluginName, boolean requireEnabled,

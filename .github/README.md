@@ -27,6 +27,7 @@ FunnyGuilds hooks into those plugins:
 - [WorldGuard](https://dev.bukkit.org/projects/worldguard)
 - [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#funnyguilds)
+- [dynmap](https://github.com/webbukkit/dynmap)
 
 #### Maven
 ```xml

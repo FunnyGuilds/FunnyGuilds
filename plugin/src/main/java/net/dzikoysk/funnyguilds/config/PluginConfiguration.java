@@ -48,6 +48,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -1158,9 +1159,102 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
-    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, HolographicDisplays, DecentHolograms")
+    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, HolographicDisplays, DecentHolograms, dynmap")
     @Comment("Aby zostawić wszystkie hooki włączone wystarczy wpisać: disabled-hooks: []")
     public Set<String> disabledHooks = new HashSet<>();
+
+    @Comment("")
+    @Comment("Konfiguracja hooku do pluginy 'dynmap'")
+    public DynmapHook dynmapHook = new DynmapHook();
+
+    public static class DynmapHook extends OkaeriConfig {
+
+        @Comment("")
+        @Comment("Co ile ticków etykiety znaczników mają być odświeżane (20 ticków = 1 sekunda)")
+        public long updateInterval = 60 * 20;
+
+        @Comment("")
+        @Comment("Oznaczenie listy gildii na mapie")
+        public String guildSetLabel = "Gildie";
+
+        @Comment("")
+        public Center center = new Center();
+
+        public static class Center extends OkaeriConfig {
+
+            @Comment("Czy wskaźnik środka gildii ma być widoczny na mapie")
+            public boolean enabled = true;
+
+            @Comment("")
+            @Comment("Etykieta środka gildii")
+            @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+            public String label = "{NAME} ({TAG})";
+
+            @Comment("")
+            @Comment("Ikona oznaczenia środka gildii")
+            @Comment("Lista domyślnie wbudowanych w plugin 'dynmap': https://github.com/FunnyGuilds/FunnyGuilds/tree/4.x/assets/dynmap-markers.png-")
+            public String icon = "shield";
+
+        }
+
+        @Comment("")
+        public Area area = new Area();
+
+        public static class Area extends OkaeriConfig {
+
+            @Comment("Czy obszar gildii ma być widoczny na mapie")
+            public boolean enabled = true;
+
+            @Comment("")
+            @Comment("Etykieta obszaru gildii")
+            @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+            @Comment("Wspierane są tutaj znaczniki HTML")
+            public String label = "<b>{NAME} ({TAG})</b><br><br>" +
+                    "<b>Właściciel:</b> {OWNER}<br>" +
+                    "<b>Gracze (ONL/ALL):</b> {MEMBERS-ONLINE}/{MEMBERS-ALL}<br><br>" +
+                    "<b>Punkty (Średnio):</b> {AVG-POINTS}";
+
+            @Comment("")
+            @Comment("Konfiguracja wyglądu wypełnienia obszaru gildii")
+            public Fill fill = new Fill();
+
+            public static class Fill extends OkaeriConfig {
+
+                @Comment("Przezroczystość wypełnienia:")
+                @Comment(" > 0 - całkowicie przezroczyste")
+                @Comment(" > 1 - całkowicie wypełnione")
+                public double opacity = 0.6;
+
+                @Comment("")
+                @Comment("Kolor wypełnienia")
+                public Color color = Color.fromRGB(25, 25, 25);
+
+            }
+
+            @Comment("")
+            @Comment("Konfiguracja linii (granic) obszaru gildii")
+            public Line line = new Line();
+
+            public static class Line extends OkaeriConfig {
+
+                @Comment("Przezroczystość linii:")
+                @Comment(" > 0 - całkowicie przezroczyste")
+                @Comment(" > 1 - całkowicie wypełnione")
+                public double opacity = 1;
+
+                @Comment("")
+                @Comment("Grubość linii (w pikselach)")
+                public int weight = 3;
+
+                @Comment("")
+                @Comment("Kolor linii")
+                public Color color = Color.fromRGB(10, 10, 10);
+
+            }
+
+        }
+
+    }
 
     @Comment("")
     @Comment("Typ zapisu danych:")
@@ -1195,30 +1289,25 @@ public class PluginConfiguration extends OkaeriConfig {
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
-            }
-            else if (guiEntry.contains("VIPITEM-")) {
+            } else if (guiEntry.contains("VIPITEM-")) {
                 try {
                     int index = LegacyUtils.getIndex(guiEntry);
                     if (index > 0 && index <= this.createItemsVip.size()) {
                         item = this.createItemsVip.get(index - 1);
                     }
-                }
-                catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItemsVip.size() + " or <= 0");
                 }
-            }
-            else if (guiEntry.contains("ITEM-")) {
+            } else if (guiEntry.contains("ITEM-")) {
                 try {
                     int index = LegacyUtils.getIndex(guiEntry);
                     if (index > 0 && index <= this.createItems.size()) {
                         item = this.createItems.get(index - 1);
                     }
-                }
-                catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItems.size() + " or <= 0");
                 }
-            }
-            else {
+            } else {
                 item = ItemUtils.parseItem(guiEntry);
             }
 
