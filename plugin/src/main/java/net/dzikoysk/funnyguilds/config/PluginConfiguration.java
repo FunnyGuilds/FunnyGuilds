@@ -1300,7 +1300,8 @@ public class PluginConfiguration extends OkaeriConfig {
                     if (index > 0 && index <= this.createItemsVip.size()) {
                         item = this.createItemsVip.get(index - 1);
                     }
-                } catch (IndexOutOfBoundsException e) {
+                }
+                catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItemsVip.size() + " or <= 0");
                 }
             }
