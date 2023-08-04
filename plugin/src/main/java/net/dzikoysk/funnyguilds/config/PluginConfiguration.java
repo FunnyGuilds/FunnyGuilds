@@ -1185,6 +1185,10 @@ public class PluginConfiguration extends OkaeriConfig {
             @Comment("Czy wskaźnik środka gildii ma być widoczny na mapie")
             public boolean enabled = true;
 
+            @Comment("Czy wskaźnik środka powinien używać współrzędnych Y najwyższego punktu zamiast rzeczywistej wysokości")
+            @Comment("Zmiana ta pozwala ukryć rzeczywistą wysokość środka gildii, gdy używamy mapy 3D")
+            public boolean hideCenterY = false;
+
             @Comment("")
             @Comment("Etykieta środka gildii")
             @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")

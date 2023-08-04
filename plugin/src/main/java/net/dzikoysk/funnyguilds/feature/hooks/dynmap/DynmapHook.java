@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.dynmap.DynmapAPI;
@@ -94,9 +95,13 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
                 return null;
             }
             Region region = regionOption.get();
+            World world = region.getWorld();
 
             Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> {
                 Location center = LocationUtils.toCenter(region.getCenter());
+                if (this.hookConfig.center.hideCenterY) {
+                    center.setY(world.getHighestBlockYAt(center) + 0.5);
+                }
 
                 return this.guildsMarkerSet.createMarker(
                         "fg_guild_center_" + guild.getName(),
