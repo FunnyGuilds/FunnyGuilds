@@ -1289,7 +1289,8 @@ public class PluginConfiguration extends OkaeriConfig {
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
-            } else if (guiEntry.contains("VIPITEM-")) {
+            }
+            else if (guiEntry.contains("VIPITEM-")) {
                 try {
                     int index = LegacyUtils.getIndex(guiEntry);
                     if (index > 0 && index <= this.createItemsVip.size()) {
@@ -1298,16 +1299,19 @@ public class PluginConfiguration extends OkaeriConfig {
                 } catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItemsVip.size() + " or <= 0");
                 }
-            } else if (guiEntry.contains("ITEM-")) {
+            }
+            else if (guiEntry.contains("ITEM-")) {
                 try {
                     int index = LegacyUtils.getIndex(guiEntry);
                     if (index > 0 && index <= this.createItems.size()) {
                         item = this.createItems.get(index - 1);
                     }
-                } catch (IndexOutOfBoundsException e) {
+                }
+                catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItems.size() + " or <= 0");
                 }
-            } else {
+            }
+            else {
                 item = ItemUtils.parseItem(guiEntry);
             }
 

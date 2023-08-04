@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -94,22 +95,25 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
             }
             Region region = regionOption.get();
 
-            Location center = region.getCenter();
-            Location firstCorner = region.getFirstCorner();
-            Location secondCorner = region.getSecondCorner();
+            Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> {
+                Location center = LocationUtils.toCenter(region.getCenter());
 
-            Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> this.guildsMarkerSet.createMarker(
-                    "fg_guild_center_" + guild.getName(),
-                    this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
-                    region.getWorld().getName(),
-                    center.getX(),
-                    center.getY(),
-                    center.getZ(),
-                    this.markerApi.getMarkerIcon(this.hookConfig.center.icon),
-                    false
-            ));
+                return this.guildsMarkerSet.createMarker(
+                        "fg_guild_center_" + guild.getName(),
+                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
+                        region.getWorld().getName(),
+                        center.getX(),
+                        center.getY(),
+                        center.getZ(),
+                        this.markerApi.getMarkerIcon(this.hookConfig.center.icon),
+                        false
+                );
+            });
 
             Option<AreaMarker> areaMarker = Option.when(this.hookConfig.area.enabled, () -> {
+                Location firstCorner = region.getFirstCorner();
+                Location secondCorner = region.getSecondCorner();
+
                 AreaMarker marker = this.guildsMarkerSet.createAreaMarker(
                         "fg_guild_area_" + guild.getName(),
                         this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild),
