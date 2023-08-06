@@ -52,6 +52,7 @@ allprojects {
         maven("https://nexus.codecrafter47.de/content/repositories/public")
         maven("https://repo.codemc.io/repository/maven-public")
         maven("https://repo.viaversion.com")
+        maven("https://repo.mikeprimm.com")
     }
 }
 
