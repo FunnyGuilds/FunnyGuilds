@@ -47,7 +47,7 @@ dependencies {
 
     @Suppress("GradlePackageUpdate")
     implementation("com.zaxxer:HikariCP:4.0.3")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.1.4")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.2.0")
 
     implementation("org.bstats:bstats-bukkit:3.0.2")
 
