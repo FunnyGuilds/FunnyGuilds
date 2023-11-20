@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.config.sections;
+package net.dzikoysk.funnyguilds.rank.config;
 
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
