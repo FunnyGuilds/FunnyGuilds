@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
-import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
+import net.dzikoysk.funnyguilds.feature.command.user.GuildInfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -24,10 +24,10 @@ import panda.std.Option;
 
 public class PlayerInteract extends AbstractFunnyListener {
 
-    private final InfoCommand infoExecutor;
+    private final GuildInfoCommand infoExecutor;
 
     public PlayerInteract(FunnyGuilds plugin) throws Throwable {
-        this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
+        this.infoExecutor = plugin.getInjector().newInstanceWithFields(GuildInfoCommand.class);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.config.message;
 
 import dev.peri.yetanothermessageslibrary.MessageRepository;
 import dev.peri.yetanothermessageslibrary.message.SendableMessage;
-import dev.peri.yetanothermessageslibrary.message.holder.impl.ActionBarHolder;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.ChatHolder;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
@@ -69,8 +68,6 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
         }
 
     }
-
-
 
     @Comment("")
     @Comment("<------- General Commands Messages -------> #")

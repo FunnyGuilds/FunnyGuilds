@@ -35,7 +35,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
@@ -1093,11 +1092,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkość znaków jego nicku")
     @CustomKey("player-lookup-ignorecase")
     public boolean playerLookupIgnorecase = false;
-
-    @Comment("")
-    @Comment("Nazwy komend")
-    @CustomKey("commands")
-    public CommandsConfiguration commands = new CommandsConfiguration();
 
     @Comment("")
     @Comment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyświetlanie powiadomień o wejściu na teren gildii)")

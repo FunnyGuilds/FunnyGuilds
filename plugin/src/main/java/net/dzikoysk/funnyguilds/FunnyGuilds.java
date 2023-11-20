@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.config.CommandConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
@@ -107,6 +108,7 @@ public class FunnyGuilds extends JavaPlugin {
     private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
+    private final File commandConfigurationFile = new File(this.getDataFolder(), "commands.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
@@ -115,6 +117,7 @@ public class FunnyGuilds extends JavaPlugin {
     private FunnyCommands funnyCommands;
 
     private PluginConfiguration pluginConfiguration;
+    private CommandConfiguration commandConfiguration;
     private TablistConfiguration tablistConfiguration;
 
     private MessageService messageService;
@@ -193,6 +196,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
+            this.commandConfiguration = ConfigurationFactory.createCommandConfiguration(this.commandConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
@@ -283,7 +287,7 @@ public class FunnyGuilds extends JavaPlugin {
                 this.guildPlaceholdersService
         );
 
-        if (pluginConfiguration.dataModel.isSQL()) {
+        if (this.pluginConfiguration.dataModel.isSQL()) {
             try {
                 this.database = Option.of(new Database());
             } catch (Exception ex) {
@@ -311,13 +315,19 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.startHandler();
 
         this.injector = DependencyInjection.createInjector(resources -> {
+            // Bukkit
             resources.on(Server.class).assignInstance(this.getServer());
+            // General
             resources.on(FunnyServer.class).assignInstance(this.funnyServer);
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
+            // Config
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
+            resources.on(CommandConfiguration.class).assignInstance(this.commandConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
+            // Services, Managers etc.
+            resources.on(DataModel.class).assignInstance(this.dataModel);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
@@ -326,14 +336,15 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(DamageManager.class).assignInstance(this.damageManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
+            // Placeholders
             resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
             resources.on(TimePlaceholdersService.class).assignInstance(this.timePlaceholdersService);
             resources.on(UserPlaceholdersService.class).assignInstance(this.userPlaceholdersService);
             resources.on(GuildPlaceholdersService.class).assignInstance(this.guildPlaceholdersService);
             resources.on(RankPlaceholdersService.class).assignInstance(this.rankPlaceholdersService);
+            // NMS
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
-            resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
         MetricsCollector collector = new MetricsCollector(this);
@@ -563,16 +574,12 @@ public class FunnyGuilds extends JavaPlugin {
         return this.pluginConfiguration;
     }
 
-    public File getPluginConfigurationFile() {
-        return this.pluginConfigurationFile;
+    public CommandConfiguration getCommandConfiguration() {
+        return this.commandConfiguration;
     }
 
     public TablistConfiguration getTablistConfiguration() {
         return this.tablistConfiguration;
-    }
-
-    public File getTablistConfigurationFile() {
-        return this.tablistConfigurationFile;
     }
 
     public MessageService getMessageService() {
