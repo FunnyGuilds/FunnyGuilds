@@ -64,7 +64,7 @@ subprojects {
 
         /* tests */
 
-        val junit = "5.10.0"
+        val junit = "5.10.1"
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 
