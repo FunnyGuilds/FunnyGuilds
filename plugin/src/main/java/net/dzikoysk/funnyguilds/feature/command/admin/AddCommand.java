@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.command.admin;
+ package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -20,7 +20,7 @@ public final class AddCommand extends AbstractFunnyCommand {
             permission = "funnyguilds.admin",
             completer = "guilds:3 online-players:3",
             acceptsExceeded = true,
-            playerOnly = true
+            
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.commands.validation.noTagGiven);
