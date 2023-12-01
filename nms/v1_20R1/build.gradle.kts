@@ -4,7 +4,7 @@ dependencies {
 
     shadow("org.spigotmc:spigot:1.20.1-R0.1-SNAPSHOT")
     shadow("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
-    shadow("org.apache.commons:commons-lang3:3.13.0")
+    shadow("org.apache.commons:commons-lang3:3.14.0")
     shadow("io.netty:netty-all:4.1.101.Final")
     shadow("com.mojang:authlib:3.2.38")
     shadow("it.unimi.dsi:fastutil:8.5.12")
