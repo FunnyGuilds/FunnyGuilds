@@ -19,8 +19,7 @@ public final class AddCommand extends AbstractFunnyCommand {
             name = "${admin.add.name}",
             permission = "funnyguilds.admin",
             completer = "guilds:3 online-players:3",
-            acceptsExceeded = true,
-            
+            acceptsExceeded = true,            
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.commands.validation.noTagGiven);
@@ -34,7 +33,7 @@ public final class AddCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(AdminUtils.getCause(admin), admin, guild, userToAdd))) {
             return;
         }
-
+  
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
         this.plugin.getIndividualNameTagManager()
