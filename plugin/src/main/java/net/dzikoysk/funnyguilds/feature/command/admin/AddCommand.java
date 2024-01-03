@@ -31,6 +31,7 @@ public final class AddCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(AdminUtils.getCause(admin), admin, guild, userToAdd))) {
             return;
         }
+     
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
         this.plugin.getIndividualNameTagManager()
