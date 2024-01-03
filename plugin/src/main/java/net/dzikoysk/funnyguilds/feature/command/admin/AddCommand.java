@@ -58,5 +58,4 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
     }
-
 }
