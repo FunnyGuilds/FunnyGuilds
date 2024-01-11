@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_20R2.entity;
+package net.dzikoysk.funnyguilds.nms.v1_20R3.entity;
 
 import com.google.common.base.Preconditions;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;
@@ -7,12 +7,12 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
 import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_20_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-public class V1_20R2EntityAccessor implements EntityAccessor {
+public class V1_20R3EntityAccessor implements EntityAccessor {
 
     @Override
     public FakeEntity createFakeEntity(EntityType entityType, Location location) {
@@ -30,7 +30,7 @@ public class V1_20R2EntityAccessor implements EntityAccessor {
 
         spawnEntityPacket = new PacketPlayOutSpawnEntity(entity);
 
-        return new FakeEntity(entity.ah(), location, spawnEntityPacket); // ah() zwraca getId
+        return new FakeEntity(entity.aj(), location, spawnEntityPacket); // aj() zwraca getId (:pray:)
     }
 
     @Override
