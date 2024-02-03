@@ -9,9 +9,9 @@ plugins {
 
     id("idea")
     id("org.ajoberstar.grgit") version "4.1.1"
-    id("org.jetbrains.kotlin.jvm") version "1.8.10"
+    id("org.jetbrains.kotlin.jvm") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.0"
-    id("xyz.jpenilla.run-paper") version "2.0.1"
+    id("xyz.jpenilla.run-paper") version "2.2.3"
 }
 
 idea {
@@ -74,7 +74,7 @@ subprojects {
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
         testImplementation("org.mockito:mockito-inline:$mockito")
 
-        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.8.10")
+        testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.22")
         testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14")
     }
 
