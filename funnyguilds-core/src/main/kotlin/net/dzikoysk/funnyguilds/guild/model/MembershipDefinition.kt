@@ -56,7 +56,7 @@ class SqlMembershipRepository(private val database: SqiffyDatabase) : Membership
                 it[MembershipTable.userId] = userId.value
                 it[MembershipTable.role] = role.name
             }
-            .map { }
+            .execute()
             .let {
                 Membership(
                     guildId = guildId.value,

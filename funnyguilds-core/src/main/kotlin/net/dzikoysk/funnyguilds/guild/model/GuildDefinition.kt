@@ -60,13 +60,13 @@ class SqlGuildRepository(private val database: SqiffyDatabase) : GuildRepository
                         it[GuildTable.id] = guildId
                         it[GuildTable.name] = name.value
                     }
-                    .map {
+                    .execute()
+                    .let {
                         Guild(
                             id = guildId,
                             name = name.value
                         )
                     }
-                    .first()
             }
 
     override fun findGuildById(id: GuildId): Guild? =

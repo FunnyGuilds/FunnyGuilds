@@ -53,14 +53,13 @@ class SqlUserRepository(private val database: SqiffyDatabase) : UserRepository {
                 it[UserTable.id] = playerId.value
                 it[UserTable.name] = name
             }
-            .map {
+            .execute()
+            .let {
                 User(
                     id = playerId.value,
                     name = name
                 )
             }
-            .first()
-
 
     override fun findUserById(id: UserId): User? =
         database.select(UserTable)

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds
 
 import com.dzikoysk.sqiffy.Sqiffy
 import com.dzikoysk.sqiffy.SqiffyDatabase
+import com.dzikoysk.sqiffy.migrator.SqiffyMigrator
 import net.dzikoysk.funnyguilds.server.ServerContext
 import net.dzikoysk.funnyguilds.server.ServerPlugin
 import kotlin.reflect.KClass
@@ -34,8 +35,8 @@ class FunnyGuilds(
                 it.onLoad(initContext)
             }
 
-            val changeLog = database.generateChangeLog(*initContext.definitions.map { it::class }.toTypedArray())
-            database.runMigrations(changeLog)
+            val changeLog = database.generateChangeLog(tables = initContext.definitions.map { it::class })
+            database.runMigrations(SqiffyMigrator(changeLog = changeLog))
         }
 
         override fun onEnable(context: ServerContext) {
