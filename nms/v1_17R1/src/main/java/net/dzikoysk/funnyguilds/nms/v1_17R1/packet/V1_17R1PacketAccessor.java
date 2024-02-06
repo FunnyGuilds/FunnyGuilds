@@ -2,28 +2,27 @@ package net.dzikoysk.funnyguilds.nms.v1_17R1.packet;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
+import net.dzikoysk.funnyguilds.nms.api.network.GenericInboundChannelHandlerInstaller;
+import net.dzikoysk.funnyguilds.nms.api.network.GenericOutboundChannelHandlerInstaller;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericInboundChannelHandlerInstaller;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericOutboundChannelHandlerInstaller;
-import net.minecraft.server.level.EntityPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class V1_17R1PacketAccessor implements PacketAccessor {
 
-    private final GenericInboundChannelHandlerInstaller<V1_17R1FunnyGuildsInboundChannelHandler> inboundChannelHandlerInstaller =
+    private final GenericInboundChannelHandlerInstaller<?> inboundChannelHandlerInstaller =
             new GenericInboundChannelHandlerInstaller<>(V1_17R1FunnyGuildsInboundChannelHandler::new);
-    private final GenericOutboundChannelHandlerInstaller<V1_17R1FunnyGuildsOutboundChannelHandler> outboundChannelHandlerInstaller =
+    private final GenericOutboundChannelHandlerInstaller<?> outboundChannelHandlerInstaller =
             new GenericOutboundChannelHandlerInstaller<>(V1_17R1FunnyGuildsOutboundChannelHandler::new);
 
     @Override
     public FunnyGuildsInboundChannelHandler getOrInstallInboundChannelHandler(Player player) {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        // entityPlayer.playerConnection.networkManager.channel
-        Channel channel = entityPlayer.b.a.k;
+        Channel channel = serverPlayer.connection.connection.channel;
         ChannelPipeline pipeline = channel.pipeline();
 
         return this.inboundChannelHandlerInstaller.installChannelHandlerInPipeline(pipeline);
@@ -31,10 +30,9 @@ public class V1_17R1PacketAccessor implements PacketAccessor {
 
     @Override
     public FunnyGuildsOutboundChannelHandler getOrInstallOutboundChannelHandler(Player player) {
-        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-        // entityPlayer.playerConnection.networkManager.channel
-        Channel channel = entityPlayer.b.a.k;
+        Channel channel = serverPlayer.connection.connection.channel;
         ChannelPipeline pipeline = channel.pipeline();
 
         return this.outboundChannelHandlerInstaller.installChannelHandlerOutPipeline(pipeline);

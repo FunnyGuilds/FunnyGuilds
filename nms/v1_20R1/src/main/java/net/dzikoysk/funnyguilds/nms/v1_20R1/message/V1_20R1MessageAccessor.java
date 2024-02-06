@@ -7,10 +7,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 
 public class V1_20R1MessageAccessor implements MessageAccessor {
-
     @Override
     public void sendTitleMessage(TitleMessage titleMessage, Player... players) {
         for (Player player : players) {
+            // TODO: replace with adventure API
             player.sendTitle(titleMessage.getText(), titleMessage.getSubText(), titleMessage.getFadeInDuration(), titleMessage.getStayDuration(), titleMessage.getFadeOutDuration());
         }
     }
@@ -18,8 +18,8 @@ public class V1_20R1MessageAccessor implements MessageAccessor {
     @Override
     public void sendActionBarMessage(String text, Player... players) {
         for (Player player : players) {
+            // TODO: replace with adventure API
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text));
         }
     }
-
 }

@@ -2,29 +2,30 @@ package net.dzikoysk.funnyguilds.nms.v1_17R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
-import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
-import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.world.level.EnumGamemode;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.Action;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket.PlayerUpdate;
+import net.minecraft.network.protocol.game.ClientboundTabListPacket;
+import net.minecraft.world.level.GameType;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 public class V1_17R1PlayerList implements PlayerList {
 
-    private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
-    private static final IChatBaseComponent EMPTY_COMPONENT = CraftChatMessage.fromString("", false)[0];
+    private static final GameType DEFAULT_GAME_MODE = GameType.SURVIVAL;
+    private static final Component EMPTY_COMPONENT = CraftChatMessage.fromString("", false)[0];
 
     private final int cellCount;
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
@@ -38,8 +39,8 @@ public class V1_17R1PlayerList implements PlayerList {
     public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures,
                      int ping, Set<Integer> forceUpdateSlots) {
         List<Packet<?>> packets = Lists.newArrayList();
-        List<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
-        List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
+        List<PlayerUpdate> addPlayerList = Lists.newArrayList();
+        List<PlayerUpdate> updatePlayerList = Lists.newArrayList();
 
         try {
             for (int i = 0; i < this.cellCount; i++) {
@@ -55,7 +56,7 @@ public class V1_17R1PlayerList implements PlayerList {
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                IChatBaseComponent component = CraftChatMessage.fromString(text, false)[0];
+                Component component = CraftChatMessage.fromString(text, false)[0];
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];
@@ -65,7 +66,7 @@ public class V1_17R1PlayerList implements PlayerList {
                     }
                 }
 
-                PacketPlayOutPlayerInfo.PlayerInfoData playerInfoData = new PacketPlayOutPlayerInfo.PlayerInfoData(
+                PlayerUpdate playerInfoData = new PlayerUpdate(
                         gameProfile,
                         ping,
                         DEFAULT_GAME_MODE,
@@ -83,20 +84,20 @@ public class V1_17R1PlayerList implements PlayerList {
                 this.firstPacket = false;
             }
 
-            PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.a);
-            addPlayerPacket.b().addAll(addPlayerList);
+            ClientboundPlayerInfoPacket addPlayerPacket = new ClientboundPlayerInfoPacket(Action.ADD_PLAYER);
+            addPlayerPacket.getEntries().addAll(addPlayerList);
             packets.add(addPlayerPacket);
 
-            PacketPlayOutPlayerInfo updatePlayerPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.d);
-            updatePlayerPacket.b().addAll(updatePlayerList);
+            ClientboundPlayerInfoPacket updatePlayerPacket = new ClientboundPlayerInfoPacket(Action.UPDATE_DISPLAY_NAME);
+            updatePlayerPacket.getEntries().addAll(updatePlayerList);
             packets.add(updatePlayerPacket);
 
             boolean headerNotEmpty = !header.isEmpty();
             boolean footerNotEmpty = !footer.isEmpty();
 
             if (headerNotEmpty || footerNotEmpty) {
-                IChatBaseComponent headerComponent = EMPTY_COMPONENT;
-                IChatBaseComponent footerComponent = EMPTY_COMPONENT;
+                Component headerComponent = EMPTY_COMPONENT;
+                Component footerComponent = EMPTY_COMPONENT;
 
                 if (headerNotEmpty) {
                     headerComponent = CraftChatMessage.fromStringOrNull(header, true);
@@ -106,12 +107,12 @@ public class V1_17R1PlayerList implements PlayerList {
                     footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
                 }
 
-                PacketPlayOutPlayerListHeaderFooter headerFooterPacket = new PacketPlayOutPlayerListHeaderFooter(headerComponent, footerComponent);
+                ClientboundTabListPacket headerFooterPacket = new ClientboundTabListPacket(headerComponent, footerComponent);
                 packets.add(headerFooterPacket);
             }
 
             for (Packet<?> packet : packets) {
-                ((CraftPlayer) player).getHandle().b.sendPacket(packet);
+                ((CraftPlayer) player).getHandle().connection.send(packet);
             }
         }
         catch (Exception exception) {

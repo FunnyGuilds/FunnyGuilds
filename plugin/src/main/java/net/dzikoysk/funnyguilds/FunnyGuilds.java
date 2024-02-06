@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds;
 
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
-import java.io.File;
 import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -70,23 +69,8 @@ import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
-import net.dzikoysk.funnyguilds.nms.v1_10R1.V1_10R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_11R1.V1_11R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_12R1.V1_12R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_13R2.V1_13R2NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_14R1.V1_14R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_15R1.V1_15R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_16R3.V1_16R3NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_18R2.V1_18R2NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_19R1.V1_19R1NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_19R2.V1_19R2NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_19R3.V1_19R3NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_20R1.V1_20R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_20R2.V1_20R2NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_20R3.V1_20R3NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
@@ -111,6 +95,10 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
+
+import java.io.File;
+
+import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -215,8 +203,8 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.nmsAccessor = prepareNmsAccessor();
         }
-        catch (Exception exception) {
-            logger.error(String.format("Unsupported server version: %s", Reflections.SERVER_VERSION), exception);
+        catch (Throwable th) {
+            logger.error(format("Version '%s' is not supported yet, please reach us on issue tracker or on Discord that can be found here: https://github.com/FunnyGuilds/FunnyGuilds", Reflections.SERVER_VERSION), th);
             this.shutdown("Critical error has been encountered!");
             return;
         }
@@ -749,46 +737,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private static NmsAccessor prepareNmsAccessor() throws IllegalStateException {
-        switch (Reflections.SERVER_VERSION) {
-            case "v1_8_R3":
-                return new V1_8R3NmsAccessor();
-            case "v1_9_R2":
-                return new V1_9R2NmsAccessor();
-            case "v1_10_R1":
-                return new V1_10R1NmsAccessor();
-            case "v1_11_R1":
-                return new V1_11R1NmsAccessor();
-            case "v1_12_R1":
-                return new V1_12R1NmsAccessor();
-            case "v1_13_R2":
-                return new V1_13R2NmsAccessor();
-            case "v1_14_R1":
-                return new V1_14R1NmsAccessor();
-            case "v1_15_R1":
-                return new V1_15R1NmsAccessor();
-            case "v1_16_R3":
-                return new V1_16R3NmsAccessor();
-            case "v1_17_R1":
-                return new V1_17R1NmsAccessor();
-            case "v1_18_R2":
-                return new V1_18R2NmsAccessor();
-            case "v1_19_R1":
-                return new V1_19R1NmsAccessor();
-            case "v1_19_R2":
-                return new V1_19R2NmsAccessor();
-            case "v1_19_R3":
-                return new V1_19R3NmsAccessor();
-            case "v1_20_R1":
-                return new V1_20R1NmsAccessor();
-            case "v1_20_R2":
-                return new V1_20R2NmsAccessor();
-            case "v1_20_R3":
-                return new V1_20R3NmsAccessor();
-            default:
-                throw new IllegalStateException(String.format(
-                        "Could not find applicable NmsAccessor. Unsupported server version: %s", Reflections.SERVER_VERSION
-                ));
-        }
+        return NmsAccessor.instance();
     }
 
 }

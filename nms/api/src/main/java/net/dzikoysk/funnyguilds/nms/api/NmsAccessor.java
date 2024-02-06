@@ -8,6 +8,10 @@ import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
 
 public interface NmsAccessor {
 
+    static NmsAccessor instance() {
+        return NmsAccessorHolder.INSTANCE;
+    }
+
     PacketAccessor getPacketAccessor();
 
     PlayerListAccessor getPlayerListAccessor();

@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy;
-import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
@@ -20,32 +20,31 @@ public class V1_19R3EntityAccessor implements EntityAccessor {
         Preconditions.checkNotNull(location, "location can't be null!");
         Preconditions.checkArgument(entityType.isSpawnable(), "entity type is not spawnable!");
 
-        CraftWorld world = ((CraftWorld) location.getWorld());
+        var world = ((CraftWorld) location.getWorld());
+
         if (world == null) {
             throw new IllegalStateException("location's world is null!");
         }
 
-        net.minecraft.world.entity.Entity entity = world.createEntity(location, entityType.getEntityClass());
-        Packet<?> spawnEntityPacket;
+        var entity = world.createEntity(location, entityType.getEntityClass());
+        var spawnEntityPacket = new ClientboundAddEntityPacket(entity);
 
-        spawnEntityPacket = new PacketPlayOutSpawnEntity(entity);
-
-        return new FakeEntity(entity.af(), location, spawnEntityPacket); // af() zwraca q czyli chyba getId
+        return new FakeEntity(entity.getId(), location, spawnEntityPacket);
     }
 
     @Override
     public void spawnFakeEntityFor(FakeEntity entity, Player... players) {
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.a((Packet<?>) entity.getSpawnPacket()); // sendPacket -> a
+            ((CraftPlayer) player).getHandle().connection.send((Packet<?>) entity.getSpawnPacket());
         }
     }
 
     @Override
     public void despawnFakeEntityFor(FakeEntity entity, Player... players) {
-        PacketPlayOutEntityDestroy destroyEntityPacket = new PacketPlayOutEntityDestroy(entity.getId());
+        var destroyEntityPacket = new ClientboundRemoveEntitiesPacket(entity.getId());
 
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.a(destroyEntityPacket); // sendPacket -> a
+            ((CraftPlayer) player).getHandle().connection.send(destroyEntityPacket);
         }
     }
 

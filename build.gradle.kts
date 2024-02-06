@@ -9,9 +9,10 @@ plugins {
 
     id("idea")
     id("org.ajoberstar.grgit") version "4.1.1"
-    id("org.jetbrains.kotlin.jvm") version "1.9.22"
+    id("org.jetbrains.kotlin.jvm") version "1.9.22" apply false
     id("com.github.johnrengelman.shadow") version "8.1.0"
-    id("xyz.jpenilla.run-paper") version "2.2.3"
+    id("xyz.jpenilla.run-paper") version "2.2.3" apply false
+    id("io.papermc.paperweight.userdev") version "1.5.10" apply false
 }
 
 idea {
@@ -24,7 +25,6 @@ allprojects {
 
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "kotlin")
     apply(plugin = "application")
     apply(plugin = "com.github.johnrengelman.shadow")
 
@@ -149,4 +149,31 @@ subprojects {
             showStandardStreams = true
         }
     }
+}
+
+
+project(":nms").subprojects {
+    dependencies {
+        implementation("xyz.jpenilla:reflection-remapper:0.1.0")
+    }
+
+    if (isEligibleForUserdev(name)) {
+        apply(plugin = "io.papermc.paperweight.userdev")
+
+        java {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+fun isEligibleForUserdev(projectName: String): Boolean {
+    val minorPatchPart = projectName.split("_").getOrNull(1) // v1_20R3 -> 20R3
+    val minorVersion = minorPatchPart?.split("R")?.getOrNull(0)?.toIntOrNull() ?: 0 // 20R3 -> 20
+
+    // paperweight only supports 1.17+
+    return minorVersion >= 17
 }

@@ -2,20 +2,20 @@ package net.dzikoysk.funnyguilds.nms.v1_9R2.packet;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
+import net.dzikoysk.funnyguilds.nms.api.network.GenericInboundChannelHandlerInstaller;
+import net.dzikoysk.funnyguilds.nms.api.network.GenericOutboundChannelHandlerInstaller;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericInboundChannelHandlerInstaller;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericOutboundChannelHandlerInstaller;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class V1_9R2PacketAccessor implements PacketAccessor {
 
-    private final GenericInboundChannelHandlerInstaller<V1_9R2FunnyGuildsInboundChannelHandler> inboundChannelHandlerInstaller =
+    private final GenericInboundChannelHandlerInstaller<?> inboundChannelHandlerInstaller =
             new GenericInboundChannelHandlerInstaller<>(V1_9R2FunnyGuildsInboundChannelHandler::new);
-    private final GenericOutboundChannelHandlerInstaller<V1_9R2FunnyGuildsOutboundChannelHandler> outboundChannelHandlerInstaller =
+    private final GenericOutboundChannelHandlerInstaller<?> outboundChannelHandlerInstaller =
             new GenericOutboundChannelHandlerInstaller<>(V1_9R2FunnyGuildsOutboundChannelHandler::new);
 
     @Override

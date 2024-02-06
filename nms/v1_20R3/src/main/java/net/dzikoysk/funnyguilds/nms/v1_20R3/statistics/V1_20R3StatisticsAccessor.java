@@ -9,7 +9,7 @@ public class V1_20R3StatisticsAccessor implements StatisticsAccessor {
 
     @Override
     public double getTpsInLastMinute() {
-        return ((CraftServer) Bukkit.getServer()).getServer().recentTps[0];
+        return ((CraftServer) Bukkit.getServer()).getServer().tps1.getAverage();
     }
 
     @Override
