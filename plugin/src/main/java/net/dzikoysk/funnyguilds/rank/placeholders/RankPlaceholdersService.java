@@ -137,13 +137,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             if (!topFormat.isEmpty()) {
                 List<RangeFormatting> formats = this.config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT));
-                String valueFormat = formats == null ? topValue.toString() : NumberRange.inRangeToString(topValue, formats);
-
-                FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{VALUE-FORMAT}", valueFormat)
-                        .register("{VALUE}", topValue.toString());
-
-                topFormat = formatter.format(topFormat);
+                topFormat = formatTopValue(topValue, topFormat, formats);
             }
 
             return this.formatUserRank(text, placeholder, user, topFormat);
@@ -171,13 +165,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             if (!topFormat.isEmpty()) {
                 List<RangeFormatting> formats = this.config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT));
-                String valueFormat = formats == null ? topValue.toString() : NumberRange.inRangeToString(topValue, formats);
-
-                FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{VALUE-FORMAT}", valueFormat)
-                        .register("{VALUE}", topValue.toString());
-
-                topFormat = formatter.format(topFormat);
+                topFormat = formatTopValue(topValue, topFormat, formats);
             }
 
             return this.formatGuildRank(text, placeholder, targetUser, guild, topFormat);
@@ -332,6 +320,21 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         }
 
         return text;
+    }
+
+    private static String formatTopValue(Number topValue, String topFormat, @Nullable List<RangeFormatting> formats) {
+        String valueString = topValue instanceof Float || topValue instanceof Double
+                ? String.format(Locale.US, "%.2f", topValue.floatValue())
+                : topValue.toString();
+        String valueFormat = formats == null
+                ? valueString
+                : NumberRange.inRangeToString(topValue, formats);
+
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{VALUE-FORMAT}", valueFormat)
+                .register("{VALUE}", valueString);
+
+        return formatter.format(topFormat);
     }
 
     private String formatUserRank(String text, String placeholder, User user, String topFormat) {
