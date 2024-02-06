@@ -204,7 +204,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.nmsAccessor = prepareNmsAccessor();
         }
         catch (Throwable th) {
-            logger.error(format("version '%s' is not supported yet, please reach us on issue tracker or on Discord that can be found here: https://github.com/FunnyGuilds/FunnyGuilds", Reflections.SERVER_VERSION), th);
+            logger.error(format("Version '%s' is not supported yet, please reach us on issue tracker or on Discord that can be found here: https://github.com/FunnyGuilds/FunnyGuilds", Reflections.SERVER_VERSION), th);
             this.shutdown("Critical error has been encountered!");
             return;
         }
