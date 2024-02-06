@@ -16,6 +16,10 @@ public class WarPacketCallbacks implements PacketCallbacks {
 
     @Override
     public void handleRightClickEntity(int entityId, boolean isMainHand) {
+        if (!isMainHand) {
+            return;
+        }
+
         this.plugin.scheduleFunnyTasks(new WarInfoAsyncTask(this.plugin, this.plugin.getGuildEntityHelper(), this.user, entityId));
     }
 

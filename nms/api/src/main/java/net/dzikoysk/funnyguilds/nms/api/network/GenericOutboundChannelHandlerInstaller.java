@@ -1,13 +1,14 @@
-package net.dzikoysk.funnyguilds.nms.v1_8R3.packet;
+package net.dzikoysk.funnyguilds.nms.api.network;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
-import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
+
+import java.util.function.Supplier;
 
 import static net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessorConstants.FUNNY_GUILDS_OUT_HANDLER_ID;
 
-public class GenericOutboundChannelHandlerInstaller<T extends ChannelHandler & FunnyGuildsOutboundChannelHandler> {
+public class GenericOutboundChannelHandlerInstaller<T extends FunnyGuildsOutboundChannelHandler & ChannelHandler> {
 
     private final Supplier<T> channelHandlerSupplier;
 

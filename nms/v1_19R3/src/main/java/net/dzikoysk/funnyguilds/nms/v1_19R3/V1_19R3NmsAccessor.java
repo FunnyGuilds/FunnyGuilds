@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R3.entity.V1_19R3EntityAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R3.message.V1_19R3MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_19R3.packet.V1_19R3PacketAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_19R3.playerlist.V1_19R3PlayerListAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_19R3.playerlist.V1_19R3PlayerList;
 import net.dzikoysk.funnyguilds.nms.v1_19R3.statistics.V1_19R3StatisticsAccessor;
 
 public class V1_19R3NmsAccessor implements NmsAccessor {
@@ -21,7 +21,7 @@ public class V1_19R3NmsAccessor implements NmsAccessor {
 
     @Override
     public PlayerListAccessor getPlayerListAccessor() {
-        return new V1_19R3PlayerListAccessor();
+        return V1_19R3PlayerList::new;
     }
 
     @Override

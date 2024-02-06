@@ -2,31 +2,29 @@ package net.dzikoysk.funnyguilds.nms.v1_20R2.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
-import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.a;
-import net.minecraft.network.protocol.game.PacketPlayOutPlayerListHeaderFooter;
-import net.minecraft.world.level.EnumGamemode;
+import net.minecraft.network.protocol.game.ClientboundTabListPacket;
+import net.minecraft.world.level.GameType;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.v1_20_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_20_R2.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-public class V1_20R2PlayerList implements PlayerList {
+import java.lang.reflect.Field;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-    private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
-    private static final IChatBaseComponent EMPTY_COMPONENT = CraftChatMessage.fromString("", false)[0];
+public class V1_20R2PlayerList implements PlayerList {
+    private static final GameType DEFAULT_GAME_MODE = GameType.SURVIVAL;
+    private static final Component EMPTY_COMPONENT = Component.empty();
 
     private static final Field playerInfoEntriesField;
 
@@ -52,8 +50,8 @@ public class V1_20R2PlayerList implements PlayerList {
     public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping,
                      Set<Integer> forceUpdateSlots) {
         List<Packet<?>> packets = Lists.newArrayList();
-        List<ClientboundPlayerInfoUpdatePacket.b> addPlayerList = Lists.newArrayList();
-        List<ClientboundPlayerInfoUpdatePacket.b> updatePlayerList = Lists.newArrayList();
+        List<ClientboundPlayerInfoUpdatePacket.Entry> addPlayerList = Lists.newArrayList();
+        List<ClientboundPlayerInfoUpdatePacket.Entry> updatePlayerList = Lists.newArrayList();
 
         try {
             for (int i = 0; i < this.cellCount; i++) {
@@ -69,7 +67,7 @@ public class V1_20R2PlayerList implements PlayerList {
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                IChatBaseComponent component = CraftChatMessage.fromString(text, false)[0];
+                Component component = CraftChatMessage.fromString(text, false)[0];
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];
@@ -79,7 +77,7 @@ public class V1_20R2PlayerList implements PlayerList {
                     }
                 }
 
-                ClientboundPlayerInfoUpdatePacket.b playerInfoData = new ClientboundPlayerInfoUpdatePacket.b(
+                ClientboundPlayerInfoUpdatePacket.Entry playerInfoData = new ClientboundPlayerInfoUpdatePacket.Entry(
                         gameProfile.getId(),
                         gameProfile,
                         true,
@@ -101,13 +99,19 @@ public class V1_20R2PlayerList implements PlayerList {
             }
 
             ClientboundPlayerInfoUpdatePacket addPlayerPacket = createPlayerInfoPacket(
-                    EnumSet.of(a.a, a.c, a.d, a.e, a.f), // add player, update gamemode, update listed, update latency, update display name
+                    EnumSet.of(
+                            ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER,
+                            ClientboundPlayerInfoUpdatePacket.Action.UPDATE_GAME_MODE,
+                            ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED,
+                            ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY,
+                            ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME
+                    ),
                     addPlayerList
             );
             packets.add(addPlayerPacket);
 
             ClientboundPlayerInfoUpdatePacket updatePlayerPacket = createPlayerInfoPacket(
-                    EnumSet.of(a.e, a.f), // update latency, update display name
+                    EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY, ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME),
                     updatePlayerList
             );
             packets.add(updatePlayerPacket);
@@ -116,8 +120,8 @@ public class V1_20R2PlayerList implements PlayerList {
             boolean footerNotEmpty = !footer.isEmpty();
 
             if (headerNotEmpty || footerNotEmpty) {
-                IChatBaseComponent headerComponent = EMPTY_COMPONENT;
-                IChatBaseComponent footerComponent = EMPTY_COMPONENT;
+                Component headerComponent = EMPTY_COMPONENT;
+                Component footerComponent = EMPTY_COMPONENT;
 
                 if (headerNotEmpty) {
                     headerComponent = CraftChatMessage.fromStringOrNull(header, true);
@@ -127,13 +131,13 @@ public class V1_20R2PlayerList implements PlayerList {
                     footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
                 }
 
-                PacketPlayOutPlayerListHeaderFooter headerFooterPacket =
-                        new PacketPlayOutPlayerListHeaderFooter(headerComponent, footerComponent);
+                ClientboundTabListPacket headerFooterPacket =
+                        new ClientboundTabListPacket(headerComponent, footerComponent);
                 packets.add(headerFooterPacket);
             }
 
             for (Packet<?> packet : packets) {
-                ((CraftPlayer) player).getHandle().c.a(packet);
+                ((CraftPlayer) player).getHandle().connection.send(packet);
             }
         }
         catch (Exception exception) {
@@ -141,11 +145,12 @@ public class V1_20R2PlayerList implements PlayerList {
         }
     }
 
-    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(EnumSet<ClientboundPlayerInfoUpdatePacket.a> actions, List<ClientboundPlayerInfoUpdatePacket.b> entries) {
+    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions,
+                                                                     List<ClientboundPlayerInfoUpdatePacket.Entry> entries) {
         // NOTE: this whole hack exists just because Mojang does stupid things and collects list of entries
         //       into an immutable list without any ability to modify or pass direct entries through constructor.
         ClientboundPlayerInfoUpdatePacket playerInfoPacket =
-                new ClientboundPlayerInfoUpdatePacket(actions, Collections.emptyList());
+                new ClientboundPlayerInfoUpdatePacket(actions, List.<ClientboundPlayerInfoUpdatePacket.Entry>of());
 
         try {
             playerInfoEntriesField.set(playerInfoPacket, entries);
@@ -156,5 +161,4 @@ public class V1_20R2PlayerList implements PlayerList {
 
         return playerInfoPacket;
     }
-
 }

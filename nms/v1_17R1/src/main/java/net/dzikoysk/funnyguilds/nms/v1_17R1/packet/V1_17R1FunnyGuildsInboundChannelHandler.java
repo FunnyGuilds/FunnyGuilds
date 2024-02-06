@@ -2,60 +2,30 @@ package net.dzikoysk.funnyguilds.nms.v1_17R1.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
-import net.minecraft.network.protocol.game.PacketPlayInUseEntity;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class V1_17R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
-
-    private static final Field ENTITY_ID;
-    private static final Field ACTION_TYPE;
-    private static final Field HAND_TYPE_FIELD;
-    private static final Method GET_ACTION_ENUM;
-
-    static {
-        try {
-            ENTITY_ID = PacketPlayInUseEntity.class.getDeclaredField("a");
-            ENTITY_ID.setAccessible(true);
-
-            ACTION_TYPE = PacketPlayInUseEntity.class.getDeclaredField("b");
-            ACTION_TYPE.setAccessible(true);
-
-            Class<?> ACTION_INTERFACE = ACTION_TYPE.getType();
-            GET_ACTION_ENUM = ACTION_INTERFACE.getDeclaredMethod("a");
-            GET_ACTION_ENUM.setAccessible(true);
-
-            HAND_TYPE_FIELD = findInteractionAtLocationClass().getDeclaredField("a");
-            HAND_TYPE_FIELD.setAccessible(true);
-
-        }
-        catch (NoSuchFieldException | NoSuchMethodException exception) {
-            throw new RuntimeException("Failed to initialise V1_17R1FunnyGuildsChannelHandler", exception);
-        }
-    }
 
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof PacketPlayInUseEntity) {
-            PacketPlayInUseEntity packetPlayInUseEntity = (PacketPlayInUseEntity) msg;
-            int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
+    public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
+        if (msg instanceof ServerboundInteractPacket interactPacket) {
+            int entityId = interactPacket.getEntityId();
 
-            Object actionType = ACTION_TYPE.get(packetPlayInUseEntity);
-            Enum<?> actionTypeEnum = (Enum<?>) GET_ACTION_ENUM.invoke(actionType);
-
-            if (actionTypeEnum.ordinal() == 1) {
-                //attack
+            if (interactPacket.getActionType() == ServerboundInteractPacket.ActionType.ATTACK) {
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
             }
-            else if (actionTypeEnum.ordinal() == 2) {
-                // interact_at
-                Enum<?> handTypeEnum = (Enum<?>) HAND_TYPE_FIELD.get(actionType);
+            else if (interactPacket.getActionType() == ServerboundInteractPacket.ActionType.INTERACT_AT) {
+                InteractionHand interactionHand = getInteractionHand(interactPacket);
+                boolean isMainHand = interactionHand == InteractionHand.MAIN_HAND;
 
-                boolean isMainHand = handTypeEnum.ordinal() == 0;
                 this.packetCallbacksRegistry.handleRightClickEntity(entityId, isMainHand);
             }
         }
@@ -68,14 +38,28 @@ public class V1_17R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
         return this.packetCallbacksRegistry;
     }
 
-    private static Class<?> findInteractionAtLocationClass() {
-        for (Class<?> declaredClass : PacketPlayInUseEntity.class.getDeclaredClasses()) {
-            if (declaredClass.getDeclaredFields().length == 2) {
-                return declaredClass;
-            }
-        }
+    private @Nullable InteractionHand getInteractionHand(ServerboundInteractPacket interactPacket) {
+        InteractionHand[] interactHand = new InteractionHand[1];
 
-        throw new IllegalStateException("Can't find InteractionAtLocationAction class");
+        interactPacket.dispatch(new ServerboundInteractPacket.Handler() {
+            @Override
+            public void onInteraction(InteractionHand interactionHand) {
+                // no-op
+            }
+
+            @Override
+            public void onInteraction(InteractionHand interactionHand, Vec3 vec3) {
+                // interact at
+                interactHand[0] = interactionHand;
+            }
+
+            @Override
+            public void onAttack() {
+                // no-op
+            }
+        });
+
+        return interactHand[0];
     }
 
 }
