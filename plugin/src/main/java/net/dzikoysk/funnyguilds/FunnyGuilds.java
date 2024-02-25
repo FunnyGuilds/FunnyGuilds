@@ -34,6 +34,8 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.config.GuildConfiguration;
+import net.dzikoysk.funnyguilds.guild.config.RegionConfiguration;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -46,6 +48,7 @@ import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.TntProtection;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
+import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerStorage;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
 import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
@@ -78,6 +81,7 @@ import net.dzikoysk.funnyguilds.nms.v1_19R3.V1_19R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_20R1.V1_20R1NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
+import net.dzikoysk.funnyguilds.rank.config.RankConfiguration;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
@@ -88,6 +92,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.config.ScoreboardConfiguration;
+import net.dzikoysk.funnyguilds.user.config.UserConfiguration;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -100,7 +105,6 @@ import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
-import panda.utilities.ClassUtils;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -109,6 +113,9 @@ public class FunnyGuilds extends JavaPlugin {
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File commandConfigurationFile = new File(this.getDataFolder(), "commands.yml");
+    private final File userConfigurationFile = new File(this.getDataFolder(), "users.yml");
+    private final File guildConfigurationFile = new File(this.getDataFolder(), "guilds.yml");
+    private final File rankConfigurationFile = new File(this.getDataFolder(), "ranking.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
@@ -118,6 +125,9 @@ public class FunnyGuilds extends JavaPlugin {
 
     private PluginConfiguration pluginConfiguration;
     private CommandConfiguration commandConfiguration;
+    private UserConfiguration userConfiguration;
+    private GuildConfiguration guildConfiguration;
+    private RankConfiguration rankConfiguration;
     private TablistConfiguration tablistConfiguration;
 
     private MessageService messageService;
@@ -178,8 +188,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
-        }
-        catch (Exception spigotNeeded) {
+        } catch (Exception spigotNeeded) {
             logger.error("FunnyGuilds requires spigot to work, your server seems to be using something else");
             logger.error("If you think that is not true - contact plugin developers");
             logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
@@ -197,9 +206,11 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.commandConfiguration = ConfigurationFactory.createCommandConfiguration(this.commandConfigurationFile);
+            this.userConfiguration = ConfigurationFactory.createUserConfiguration(this.userConfigurationFile);
+            this.guildConfiguration = ConfigurationFactory.createGuildConfiguration(this.guildConfigurationFile);
+
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -207,8 +218,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.nmsAccessor = prepareNmsAccessor();
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error(String.format("Unsupported server version: %s", Reflections.SERVER_VERSION), exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -238,21 +248,20 @@ public class FunnyGuilds extends JavaPlugin {
                 return;
             }
             this.messageService = MessageService.prepareMessageService(this, this.pluginLanguageFolderFile);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("Could not initialize message service", exception);
             this.shutdown("Critical error has been encountered!");
             return;
         }
         this.localeManager = new LocaleManager();
         this.userManager = new UserManager(this.pluginConfiguration);
-        this.guildManager = new GuildManager(this.pluginConfiguration);
+        this.guildManager = new GuildManager(this.guildConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
         this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
         this.guildRankManager = new GuildRankManager(this.pluginConfiguration);
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.damageManager = new DamageManager();
-        this.regionManager = new RegionManager(this.pluginConfiguration);
+        this.regionManager = new RegionManager(this.guildConfiguration);
 
         this.prepareScoreboardServices();
 
@@ -275,7 +284,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
 
         this.rankPlaceholdersService = new RankPlaceholdersService(
-                this.pluginConfiguration,
+                this.guildConfiguration,
+                this.rankConfiguration,
                 this.messageService,
                 this.userRankManager,
                 this.guildRankManager
@@ -300,8 +310,7 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Could not load data from database", ex);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -324,6 +333,10 @@ public class FunnyGuilds extends JavaPlugin {
             // Config
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
             resources.on(CommandConfiguration.class).assignInstance(this.commandConfiguration);
+            resources.on(UserConfiguration.class).assignInstance(this.userConfiguration);
+            resources.on(GuildConfiguration.class).assignInstance(this.guildConfiguration);
+            resources.on(RegionConfiguration.class).assignInstance(this.guildConfiguration.region);
+            resources.on(RankConfiguration.class).assignInstance(this.rankConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
             // Services, Managers etc.
@@ -356,8 +369,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("Could not register commands", exception);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -371,6 +383,7 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuiActionHandler.class)
                     .add(EntityDamage.class)
                     .add(EntityInteract.class)
+                    .add(EntityPlace.class)
                     .add(PlayerChat.class)
                     .add(PlayerDeath.class)
                     .add(PlayerJoin.class)
@@ -379,55 +392,49 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuildHeartProtectionHandler.class)
                     .add(TntProtection.class);
 
-            if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
-                setBuilder.add(BlockFlow.class);
-            }
-
-            if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
-                setBuilder.add(EntityPlace.class);
-            }
-            else {
-                logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
-            }
-
             for (Class<? extends Listener> listenerClass : setBuilder.build()) {
                 pluginManager.registerEvents(this.injector.newInstanceWithFields(listenerClass), this);
             }
 
-            this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled,
-                    this.injector.newInstanceWithFields(BlockBreak.class),
-                    this.injector.newInstanceWithFields(BlockIgnite.class),
-                    this.injector.newInstanceWithFields(BlockPlace.class),
-                    this.injector.newInstanceWithFields(PistonUse.class),
-                    this.injector.newInstanceWithFields(BucketAction.class),
-                    this.injector.newInstanceWithFields(EntityExplode.class),
-                    this.injector.newInstanceWithFields(HangingBreak.class),
-                    this.injector.newInstanceWithFields(HangingPlace.class),
-                    this.injector.newInstanceWithFields(PlayerCommand.class),
-                    this.injector.newInstanceWithFields(PlayerInteract.class),
-                    this.injector.newInstanceWithFields(EntityProtect.class)
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.guildConfiguration.isRegionsEnabled(),
+                    this.injector,
+                    BlockBreak.class,
+                    BlockIgnite.class,
+                    BlockPlace.class,
+                    PistonUse.class,
+                    BucketAction.class,
+                    EntityExplode.class,
+                    HangingBreak.class,
+                    HangingPlace.class,
+                    PlayerCommand.class,
+                    PlayerInteract.class,
+                    EntityProtect.class
             );
 
             this.dynamicListenerManager.registerDynamic(
-                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventMove,
+                    () -> this.guildConfiguration.isRegionsEnabled() && DynamicListenerStorage.moveEvent,
                     this.injector.newInstanceWithFields(PlayerMove.class)
             );
             this.dynamicListenerManager.registerDynamic(
-                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventPhysics,
-                    this.injector.newInstanceWithFields(BlockPhysics.class)
+                    () -> this.guildConfiguration.isRegionsEnabled() && DynamicListenerStorage.teleportEvent,
+                    this.injector.newInstanceWithFields(PlayerTeleport.class)
             );
             this.dynamicListenerManager.registerDynamic(
-                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.respawnInBase,
+                    () -> this.guildConfiguration.isRegionsEnabled() && DynamicListenerStorage.respawnEvent,
                     this.injector.newInstanceWithFields(PlayerRespawn.class)
             );
             this.dynamicListenerManager.registerDynamic(
-                    () -> this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.eventTeleport,
-                    this.injector.newInstanceWithFields(PlayerTeleport.class)
+                    () -> this.guildConfiguration.isRegionsEnabled() && DynamicListenerStorage.physicsEvent,
+                    this.injector.newInstanceWithFields(BlockPhysics.class)
+            );
+            this.dynamicListenerManager.registerDynamic(
+                    () -> this.guildConfiguration.isRegionsEnabled() && DynamicListenerStorage.fluidFlowEvent,
+                    this.injector.newInstanceWithFields(BlockFlow.class)
             );
 
             this.dynamicListenerManager.reloadAll();
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             logger.error("Could not register listeners", throwable);
             this.shutdown("Critical error has been encountered!");
             return;
@@ -578,6 +585,18 @@ public class FunnyGuilds extends JavaPlugin {
         return this.commandConfiguration;
     }
 
+    public UserConfiguration getUserConfiguration() {
+        return this.userConfiguration;
+    }
+
+    public GuildConfiguration getGuildConfiguration() {
+        return this.guildConfiguration;
+    }
+
+    public RankConfiguration getRankConfiguration() {
+        return this.rankConfiguration;
+    }
+
     public TablistConfiguration getTablistConfiguration() {
         return this.tablistConfiguration;
     }
@@ -687,15 +706,15 @@ public class FunnyGuilds extends JavaPlugin {
         this.dummyUpdateTask.peek(BukkitTask::cancel);
         this.scoreboardQueueUpdateTask.peek(BukkitTask::cancel);
 
-        ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
+        ScoreboardConfiguration scoreboardConfig = this.userConfiguration.scoreboard;
         if (!scoreboardConfig.enabled) {
             return;
         }
-        ScoreboardService scoreboardService = new ScoreboardService(this.pluginConfiguration);
+        ScoreboardService scoreboardService = new ScoreboardService(this.userConfiguration.scoreboard);
 
         this.individualNameTagManager = Option.when(
                 scoreboardConfig.nametag.enabled,
-                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService)
+                () -> new IndividualNameTagManager(this.userConfiguration.scoreboard, this.guildConfiguration, this.userManager, scoreboardService)
         );
         this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
@@ -706,7 +725,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.dummyManager = Option.when(
                 scoreboardConfig.dummy.enabled,
-                () -> new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService)
+                () -> new DummyManager(this.userConfiguration.scoreboard, this.userManager, scoreboardService)
         );
         this.dummyUpdateTask = this.dummyManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,

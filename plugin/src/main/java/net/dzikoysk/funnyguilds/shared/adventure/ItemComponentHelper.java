@@ -40,7 +40,7 @@ public final class ItemComponentHelper {
 
         Component itemComponent = Component.empty();
         if (displayAmount) {
-            itemComponent = itemComponent.append(Component.text(item.getAmount() + config.itemAmountSuffix.getValue()));
+            itemComponent = itemComponent.append(Component.text(item.getAmount() + config.itemAmountSuffix));
         }
 
         Material material = item.getType();
@@ -50,9 +50,9 @@ public final class ItemComponentHelper {
             itemComponent = itemComponent.append(Component.text(MaterialUtils.getMaterialName(material)));
         }
 
-        if (config.enableItemComponent) {
+        if (config.chatItemComponents) {
             try {
-                HoverEvent.ShowItem showItem = HoverEvent.ShowItem.of(getMaterialKey(material), item.getAmount(), getBinaryTagHolder(item));
+                HoverEvent.ShowItem showItem = HoverEvent.ShowItem.showItem(getMaterialKey(material), item.getAmount(), getBinaryTagHolder(item));
                 itemComponent = itemComponent.hoverEvent(HoverEvent.showItem(showItem));
             } catch (Exception ignored) {
             }

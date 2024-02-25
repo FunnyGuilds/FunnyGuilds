@@ -32,7 +32,7 @@ public final class FunnyCommandsConfiguration {
         CommandConfiguration.UserCommands userCommands = commands.user;
 
         CommandConfiguration.FunnyCommand enlargeCommand = userCommands.guild.enlarge;
-        enlargeCommand.enabled = enlargeCommand.enabled && !config.enlargeItems.isEmpty();
+        enlargeCommand.enabled = enlargeCommand.enabled && !plugin.getGuildConfiguration().region.enlarge.requirements.isEmpty();
 
         CommandComponents generalComponents = CommandComponents.collect("user.general", userCommands.general);
         CommandComponents playerComponents = CommandComponents.collect("user.player", userCommands.player);

@@ -1,7 +1,9 @@
 package net.dzikoysk.funnyguilds.rank.config;
 
-import eu.okaeri.configs.OkaeriConfig;
+import net.dzikoysk.funnyguilds.config.ConfigSection;
 
-public class RankConfiguration extends OkaeriConfig {
+public class RankConfiguration extends ConfigSection {
+
+    public TopConfiguration top = new TopConfiguration();
 
 }

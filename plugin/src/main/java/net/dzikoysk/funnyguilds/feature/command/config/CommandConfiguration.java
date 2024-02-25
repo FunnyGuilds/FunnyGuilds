@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.config;
 
-import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
@@ -8,6 +7,7 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.util.Collections;
 import java.util.List;
+import net.dzikoysk.funnyguilds.config.ConfigSection;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.AssistsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
@@ -58,17 +58,17 @@ import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 
 @Header("Konfiguracja nazw komend i ich aliasów")
-public class CommandConfiguration extends OkaeriConfig {
+public class CommandConfiguration extends ConfigSection {
 
     @Comment
     @Comment("Komendy użytkownika")
     public UserCommands user = new UserCommands();
 
-    public static class UserCommands extends OkaeriConfig {
+    public static class UserCommands extends ConfigSection {
 
         public General general = new General();
 
-        public static class General extends OkaeriConfig {
+        public static class General extends ConfigSection {
 
             @Comment
             @CommandRegister(key = "tnt", as = TntCommand.class)
@@ -86,7 +86,7 @@ public class CommandConfiguration extends OkaeriConfig {
 
         public Player player = new Player();
 
-        public static class Player extends OkaeriConfig {
+        public static class Player extends ConfigSection {
 
             @Comment
             @CommandRegister(key = "info", as = PlayerInfoCommand.class)
@@ -104,7 +104,7 @@ public class CommandConfiguration extends OkaeriConfig {
 
         public Guild guild = new Guild();
 
-        public static class Guild extends OkaeriConfig {
+        public static class Guild extends ConfigSection {
 
             @Comment
             @CommandRegister(key = "help", as = GuildCommand.class)
@@ -203,8 +203,7 @@ public class CommandConfiguration extends OkaeriConfig {
     @Comment("Komendy administratora")
     public AdminCommands admin = new AdminCommands();
 
-    @Names(strategy = NameStrategy.IDENTITY)
-    public static class AdminCommands extends OkaeriConfig {
+    public static class AdminCommands extends ConfigSection {
 
         @CommandRegister(key = "funnyguilds", as = FunnyGuildsCommand.class)
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
@@ -303,8 +302,7 @@ public class CommandConfiguration extends OkaeriConfig {
 
     }
 
-    @Names(strategy = NameStrategy.IDENTITY)
-    public static class FunnyCommand extends OkaeriConfig {
+    public static class FunnyCommand extends ConfigSection {
 
         public String name;
         public List<String> aliases;
