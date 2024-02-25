@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.util.List;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,8 +22,8 @@ public final class LocationUtils {
     }
 
     public static boolean checkWorld(Player player) {
-        List<String> blockedWorlds = FunnyGuilds.getInstance().getPluginConfiguration().blockedWorlds;
-        return blockedWorlds != null && !blockedWorlds.isEmpty() && blockedWorlds.contains(player.getWorld().getName());
+        Set<String> blockedWorlds = FunnyGuilds.getInstance().getGuildConfiguration().create.blockedWorlds;
+        return !blockedWorlds.isEmpty() && blockedWorlds.contains(player.getWorld().getName());
     }
 
     @Nullable
