@@ -10,7 +10,7 @@ plugins {
     id("idea")
     id("org.ajoberstar.grgit") version "4.1.1"
     id("org.jetbrains.kotlin.jvm") version "1.9.22" apply false
-    id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("xyz.jpenilla.run-paper") version "2.2.3" apply false
     id("io.papermc.paperweight.userdev") version "1.5.10" apply false
 }
