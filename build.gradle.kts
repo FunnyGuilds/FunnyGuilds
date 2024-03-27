@@ -12,7 +12,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.22" apply false
     id("com.github.johnrengelman.shadow") version "8.1.0"
     id("xyz.jpenilla.run-paper") version "2.2.3" apply false
-    id("io.papermc.paperweight.userdev") version "1.5.10" apply false
+    id("io.papermc.paperweight.userdev") version "1.5.12" apply false
 }
 
 idea {
