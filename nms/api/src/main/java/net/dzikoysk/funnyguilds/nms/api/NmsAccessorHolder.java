@@ -15,6 +15,7 @@ public final class NmsAccessorHolder {
     private static final TreeMap<Integer, String> NMS_VERSION_MAPPING = new TreeMap<>(ImmutableMap.<Integer, String>builder()
             .put(3837, "v1_20R5") // Version can be found in server jar in version.json under `world_version` key
             .put(3953, "v1_21R1")
+            .put(4189, "v1_21_4")
             .build());
 
     static final NmsAccessor INSTANCE = newAccessorInstance();
@@ -43,7 +44,6 @@ public final class NmsAccessorHolder {
             }
         }
         catch (NoSuchMethodException ignored) {
-            version = null;
         }
         catch(IllegalAccessException | InvocationTargetException ex) {
             throw new RuntimeException("Could not get minecraft version", ex);
