@@ -1,5 +1,4 @@
 dependencies {
-    implementation(project(":nms:api"))
-
+    compileOnly(project(":nms:api"))
     paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }

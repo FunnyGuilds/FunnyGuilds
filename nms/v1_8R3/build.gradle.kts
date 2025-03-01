@@ -1,5 +1,4 @@
 dependencies {
-    implementation(project(":nms:api"))
-
-    shadow("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
+    compileOnly(project(":nms:api"))
+    compileOnly("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
 }

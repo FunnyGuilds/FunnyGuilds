@@ -5,8 +5,11 @@ import org.bukkit.entity.Player;
 
 public final class ProtocolDependentHelper {
 
-    private static final String EMPTY_IDENTIFIER = " ";
+    public static final String EMPTY_IDENTIFIER = " ";
+    
     private static final int V1_19_3_PROTOCOL_VERSION = 761;
+    private static final int V1_21_4_PROTOCOL_VERSION = 769;
+    
     private static boolean viaApiAvailable;
 
     static {
@@ -28,7 +31,10 @@ public final class ProtocolDependentHelper {
         //       we're checking the protocol version that player uses and return proper identifier for specific version.
 
         int playerProtocolVersion = getPlayerProtocolVersion(player);
-        if (playerProtocolVersion >= V1_19_3_PROTOCOL_VERSION) {
+        if (playerProtocolVersion >= V1_21_4_PROTOCOL_VERSION) {
+            return EMPTY_IDENTIFIER;
+        }
+        else if (playerProtocolVersion >= V1_19_3_PROTOCOL_VERSION) {
             return "~" + paddedIdentifier;
         }
 

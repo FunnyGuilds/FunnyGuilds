@@ -1,14 +1,20 @@
-rootProject.name = "FunnyGuilds"
-
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
         maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+}
+
+rootProject.name = "FunnyGuilds"
+
 include(
     ":plugin",
+    ":nms",
     ":nms:api",
     ":nms:v1_8R3",
     ":nms:v1_9R2",
@@ -19,12 +25,12 @@ include(
     ":nms:v1_14R1",
     ":nms:v1_15R1",
     ":nms:v1_16R3",
-//    ":nms:v1_18R2",
+    ":nms:v1_18R2",
     ":nms:v1_19R3",
     ":nms:v1_20R1",
     ":nms:v1_20R2",
     ":nms:v1_20R3",
     ":nms:v1_20R5",
     ":nms:v1_21R1",
-    ":nms:v1_21_4",
+    ":nms:v1_21R4"
 )

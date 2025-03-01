@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.nms.v1_13R2.entity;
 import com.google.common.base.Preconditions;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.entity.ObjectType;
+import net.dzikoysk.funnyguilds.nms.api.entity.ObjectType;
 import net.minecraft.server.v1_13_R2.Entity;
 import net.minecraft.server.v1_13_R2.EntityLiving;
 import net.minecraft.server.v1_13_R2.Packet;

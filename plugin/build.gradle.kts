@@ -1,48 +1,139 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import xyz.jpenilla.resourcefactory.bukkit.Permission
 
 plugins {
-    id("xyz.jpenilla.run-paper")
     kotlin("jvm")
+    id("org.ajoberstar.grgit")
+    id("xyz.jpenilla.resource-factory-bukkit-convention")
+    id("xyz.jpenilla.run-paper")
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "reposilite"
-            url = uri("https://maven.reposilite.com/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
-            credentials {
-                username = System.getenv("MAVEN_NAME") ?: property("mavenUser").toString()
-                password = System.getenv("MAVEN_TOKEN") ?: property("mavenPassword").toString()
-            }
-        }
-    }
-    publications {
-        create<MavenPublication>("library") {
-            from(components["shadow"])
+val pluginPackage = "net.dzikoysk.funnyguilds"
+val libsPackage = "$pluginPackage.libs"
+val pluginMain = "$pluginPackage.FunnyGuilds"
 
-            // Add external repositories to published artifacts
-            // ~ btw: pls don't touch this
-            pom.withXml {
-                val repositories = asNode().appendNode("repositories")
-                project.repositories.findAll(closureOf<Any> {
-                    if (this is MavenArtifactRepository && this.url.toString().startsWith("https")) {
-                        val repository = repositories.appendNode("repository")
-                        repository.appendNode("id", this.url.toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
-                        repository.appendNode("url", this.url.toString().trim())
-                    }
-                })
-            }
+bukkitPluginYaml {
+    main = pluginMain
+    version = "${rootProject.version} Snowdrop-${grgit.head().abbreviatedId}"
+    author = "FunnyGuilds Team"
+    website = "https://github.com/FunnyGuilds"
+    softDepend = listOf(
+        "WorldEdit",
+        "WorldGuard",
+        "Vault",
+        "PlaceholderAPI",
+        "FunnyTab",
+        "HolographicDisplays",
+        "DecentHolograms",
+        "Multiverse-Core",
+        "dynmap"
+    )
+    apiVersion = "1.13"
+
+    permissions {
+        register("funnyguilds.*") {
+            default = Permission.Default.OP
+            children(
+                "funnyguilds.player",
+                "funnyguilds.vip",
+                "funnyguilds.admin"
+            )
+        }
+        register("funnyguilds.admin") {
+            default = Permission.Default.OP
+            children(
+                "funnyguilds.reload",
+                "funnyguilds.admin.build",
+                "funnyguilds.admin.interact",
+                "funnyguilds.admin.teleport",
+                "funnyguilds.admin.notification",
+            )
+            children.put(
+                "funnyguilds.admin.disabledummy",
+                false
+            )
+        }
+        register("funnyguilds.vip") {
+            default = Permission.Default.OP
+            children(
+                "funnyguilds.vip.items",
+                "funnyguilds.vip.rank",
+                "funnyguilds.vip.base",
+                "funnyguilds.vip.baseTeleportTime"
+            )
+        }
+        register("funnyguilds.player") {
+            default = Permission.Default.TRUE
+            children(
+                "funnyguilds.ally",
+                "funnyguilds.base",
+                "funnyguilds.break",
+                "funnyguilds.create",
+                "funnyguilds.delete",
+                "funnyguilds.deputy",
+                "funnyguilds.enlarge",
+                "funnyguilds.escape",
+                "funnyguilds.guild",
+                "funnyguilds.info",
+                "funnyguilds.invite",
+                "funnyguilds.items",
+                "funnyguilds.join",
+                "funnyguilds.kick",
+                "funnyguilds.leader",
+                "funnyguilds.leave",
+                "funnyguilds.playerinfo",
+                "funnyguilds.pvp",
+                "funnyguilds.ranking",
+                "funnyguilds.rankreset",
+                "funnyguilds.statsreset",
+                "funnyguilds.setbase",
+                "funnyguilds.tnt",
+                "funnyguilds.top",
+                "funnyguilds.validity",
+                "funnyguilds.war"
+            )
         }
     }
+}
+
+repositories {
+    /* Libs */
+    maven("https://storehouse.okaeri.eu/repository/maven-public") {
+        mavenContent {
+            releasesOnly()
+        }
+    }
+    maven("https://repo.titanvale.net/releases") {
+        mavenContent {
+            releasesOnly()
+        }
+    }
+    maven("https://repo.titanvale.net/snapshots") {
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+    maven("https://maven.reposilite.com/jitpack")
+
+    /* Hooks */
+    maven("https://maven.enginehub.org/repo")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
+    maven("https://nexus.codecrafter47.de/content/repositories/public")
+    maven("https://repo.codemc.io/repository/maven-public")
+    maven("https://repo.mikeprimm.com")
 }
 
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     /* funnyguilds */
 
-    project(":nms").dependencyProject.subprojects.forEach {
-        implementation(it)
+    rootProject.project(":nms").subprojects.forEach {
+        implementation(project(":${it.path}", configuration = "shadow"))
     }
+
     implementation("net.dzikoysk:funnycommands:0.8.0")
 
     /* std */
@@ -107,50 +198,84 @@ dependencies {
     shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("me.clip:placeholderapi:2.11.6") {
-//        because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
-        exclude(group = "com.google.code.gson", module = "gson")
+        //because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
+        exclude(
+            group = "com.google.code.gson",
+            module = "gson"
+        )
     }
     shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
     shadow("us.dynmap:DynmapCoreAPI:3.6")
 
     /* tests */
+    testImplementation(kotlin("test"))
+
+    val junit = "5.10.2"
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
+
+    val mockito = "5.12.0"
+    testImplementation("org.mockito:mockito-core:$mockito")
+    testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
+
+    testImplementation(kotlin("test"))
+    testImplementation("nl.jqno.equalsverifier:equalsverifier:3.14")
+
     testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 }
 
-tasks.processResources {
-    expand(
-        "funnyGuildsVersion" to version,
-        "funnyGuildsCommit" to grgit.head().abbreviatedId
-    )
+tasks.compileJava {
+    options.release = 8
+}
+
+tasks.withType<KotlinCompile> {
+    compilerOptions {
+        // Generate default methods in interfaces by default
+        freeCompilerArgs = listOf("-Xjvm-default=all")
+    }
 }
 
 tasks.withType<ShadowJar> {
-    archiveFileName.set("FunnyGuilds ${project.version}.${grgit.log().size} (MC 1.8-1.21).jar")
-    mergeServiceFiles()
+    archiveFileName.set("${rootProject.name} ${rootProject.version}.${grgit.log().size} (MC 1.8-1.21).jar")
 
-    relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
-    relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
-    relocate("javassist", "net.dzikoysk.funnyguilds.libs.javassist")
-    relocate("com.zaxxer", "net.dzikoysk.funnyguilds.libs.com.zaxxer")
-    relocate("com.google", "net.dzikoysk.funnyguilds.libs.com.google") {
+    setOf(
+        "net.dzikoysk.funnycommands",
+        "panda.utilities",
+        "javassist",
+        "com.zaxxer",
+        "org.apache.commons.lang3",
+        "org.apache.logging",
+        "org.slf4j",
+        "org.bstats",
+        "eu.okaeri",
+        "net.kyori",
+        "dev.peri",
+        "me.pikamug",
+        "org.mariadb"
+    ).forEach {
+        relocate(
+            it,
+            "$libsPackage.$it"
+        )
+    }
+
+    relocate(
+        "com.google",
+        "$libsPackage.com.google"
+    ) {
         exclude("com.google.gson.**")
     }
-    relocate("org.apache.commons.lang3", "net.dzikoysk.funnyguilds.libs.org.apache.commons.lang3")
-    relocate("org.apache.logging", "net.dzikoysk.funnyguilds.libs.org.apache.logging")
-    relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
-    relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
-    relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
-    relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
-    relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
-    relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
-    relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")
 
-    exclude("org/checkerframework/**")
-    exclude("org/intellij/lang/annotations/**")
-    exclude("org/jetbrains/annotations/**")
-    exclude("META-INF/services/javax.annotation.processing.Processor")
+    /* exclusions */
+
+    setOf(
+        "org/checkerframework/**",
+        "org/intellij/lang/annotations/**",
+        "org/jetbrains/annotations/**",
+        "META-INF/services/javax.annotation.processing.Processor"
+    ).forEach { exclude(it) }
 
     minimize {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
@@ -158,8 +283,93 @@ tasks.withType<ShadowJar> {
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
 
         // nms implementation modules are not referenced in the project but are required at runtime
-        parent!!.project(":nms").subprojects.forEach {
+        rootProject.project(":nms").subprojects.forEach {
             exclude(project(it.path))
+        }
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+
+    /**
+     * https://github.com/mockito/mockito/issues/3037
+     * https://github.com/mockito/mockito/issues/3111
+     */
+    jvmArgs(
+        "-XX:+EnableDynamicAgentLoading",
+        "-Xshare:off"
+    )
+
+    setForkEvery(1)
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+
+    testLogging {
+        events(
+            TestLogEvent.STARTED,
+            TestLogEvent.PASSED,
+            TestLogEvent.FAILED,
+            TestLogEvent.SKIPPED
+        )
+        exceptionFormat = TestExceptionFormat.FULL
+        showExceptions = true
+        showCauses = true
+        showStackTraces = true
+        showStandardStreams = true
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "reposilite"
+            url = uri(
+                "https://maven.reposilite.com/${
+                    if (version.toString().endsWith("-SNAPSHOT")) "snapshots"
+                    else "releases"
+                }"
+            )
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                    ?: property("mavenUser").toString()
+                password = System.getenv("MAVEN_TOKEN")
+                    ?: property("mavenPassword").toString()
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("library") {
+            from(components["shadow"])
+            artifact(tasks["javadocJar"])
+            artifact(tasks["sourcesJar"])
+
+            // Add external repositories to published artifacts
+            // ~ btw: pls don't touch this
+            pom.withXml {
+                val repositories = asNode().appendNode("repositories")
+                project.repositories.findAll(closureOf<Any> {
+                    if (this is MavenArtifactRepository && this.url.toString().startsWith("https")) {
+                        val repository = repositories.appendNode("repository")
+                        repository.appendNode(
+                            "id",
+                            this.url.toString().replace(
+                                "https://",
+                                ""
+                            ).replace(
+                                "/",
+                                "-"
+                            ).replace(
+                                ".",
+                                "-"
+                            ).trim()
+                        )
+                        repository.appendNode(
+                            "url",
+                            this.url.toString().trim()
+                        )
+                    }
+                })
+            }
         }
     }
 }

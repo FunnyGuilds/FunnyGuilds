@@ -1,9 +1,11 @@
-package net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist;
+package net.dzikoysk.funnyguilds.nms.api.playerlist;
 
 import com.mojang.authlib.GameProfile;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public class PlayerInfoDataHelper {
 
     private final Constructor<?> playerInfoDataConstructor;

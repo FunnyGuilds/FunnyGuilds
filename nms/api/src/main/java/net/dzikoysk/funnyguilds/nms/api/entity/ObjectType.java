@@ -1,7 +1,9 @@
-package net.dzikoysk.funnyguilds.nms.v1_8R3.entity;
+package net.dzikoysk.funnyguilds.nms.api.entity;
 
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 public enum ObjectType {
 
     BOAT(1),

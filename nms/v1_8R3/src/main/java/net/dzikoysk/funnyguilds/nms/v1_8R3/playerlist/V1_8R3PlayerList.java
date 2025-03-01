@@ -6,8 +6,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerInfoDataHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
