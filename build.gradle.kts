@@ -6,7 +6,7 @@ plugins {
     `maven-publish`
 
     id("idea")
-    id("org.ajoberstar.grgit") version "5.0.0" apply false
+    id("org.ajoberstar.grgit.service") version "5.3.0" apply false
     id("com.gradleup.shadow") version "9.0.0-beta2"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
     id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.2.0" apply false
@@ -37,7 +37,6 @@ allprojects {
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
         options.isFork = true
-        options.isFailOnError = true
         options.compilerArgs.add("-Xlint:-options") // mute warnings about use of an obsolete version
     }
 

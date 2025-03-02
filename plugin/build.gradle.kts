@@ -6,7 +6,7 @@ import xyz.jpenilla.resourcefactory.bukkit.Permission
 
 plugins {
     kotlin("jvm")
-    id("org.ajoberstar.grgit")
+    id("org.ajoberstar.grgit.service")
     id("xyz.jpenilla.resource-factory-bukkit-convention")
     id("xyz.jpenilla.run-paper")
 }
@@ -16,8 +16,14 @@ val libsPackage = "$pluginPackage.libs"
 val pluginMain = "$pluginPackage.FunnyGuilds"
 
 bukkitPluginYaml {
+    val grgit = grgitService.service.get().grgit
+    val isCiServer = System.getenv().containsKey("CI")
+    
+    val projectVersion = "${project.version}${if (isCiServer) "+CI" else ""}"
+    val commitId = grgit.head().abbreviatedId
+    
     main = pluginMain
-    version = "${rootProject.version} Snowdrop-${grgit.head().abbreviatedId}"
+    version = "$projectVersion Snowdrop-$commitId"
     author = "FunnyGuilds Team"
     website = "https://github.com/FunnyGuilds"
     softDepend = listOf(
@@ -238,11 +244,13 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<ShadowJar> {
-    archiveFileName.set("${rootProject.name} ${rootProject.version}.${grgit.log().size} (MC 1.8-1.21).jar")
+    val commitCount = grgitService.service.get().grgit.log().size
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.8-1.21).jar"
 
     setOf(
         "net.dzikoysk.funnycommands",
         "panda.utilities",
+        "org.panda_lang.utilities.inject",
         "javassist",
         "com.zaxxer",
         "org.apache.commons.lang3",
@@ -253,7 +261,10 @@ tasks.withType<ShadowJar> {
         "net.kyori",
         "dev.peri",
         "me.pikamug",
-        "org.mariadb"
+        "org.mariadb",
+        "com.sun.jna",
+        "com.github.benmanes",
+        "waffle"
     ).forEach {
         relocate(
             it,
@@ -261,10 +272,7 @@ tasks.withType<ShadowJar> {
         )
     }
 
-    relocate(
-        "com.google",
-        "$libsPackage.com.google"
-    ) {
+    relocate("com.google", "$libsPackage.com.google") {
         exclude("com.google.gson.**")
     }
 
@@ -350,23 +358,8 @@ publishing {
                 project.repositories.findAll(closureOf<Any> {
                     if (this is MavenArtifactRepository && this.url.toString().startsWith("https")) {
                         val repository = repositories.appendNode("repository")
-                        repository.appendNode(
-                            "id",
-                            this.url.toString().replace(
-                                "https://",
-                                ""
-                            ).replace(
-                                "/",
-                                "-"
-                            ).replace(
-                                ".",
-                                "-"
-                            ).trim()
-                        )
-                        repository.appendNode(
-                            "url",
-                            this.url.toString().trim()
-                        )
+                        repository.appendNode("id", this.url.toString().replace("https://", "").replace("/", "-").replace(".", "-").trim())
+                        repository.appendNode("url", this.url.toString().trim())
                     }
                 })
             }
