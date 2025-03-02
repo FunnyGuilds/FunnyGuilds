@@ -19,7 +19,7 @@ jobs:
       - uses: burrunan/gradle-cache-action@v2
         name: Publish FunnyGuilds
         with:
-          arguments: clean build :plugin:publish --stacktrace
+          arguments: build :plugin:publish --stacktrace
         env:
           MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
