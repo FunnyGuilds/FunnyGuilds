@@ -121,9 +121,15 @@ dependencies {
 }
 
 tasks.processResources {
+    val grgit = grgitService.service.get().grgit
+    val isCiServer = System.getenv().containsKey("CI")
+    
+    val version = "${project.version}${if (isCiServer) "+${grgit.branch.current().name}" else ""}"
+    val commitId = grgit.head().abbreviatedId
+    
     expand(
         "funnyGuildsVersion" to version,
-        "funnyGuildsCommit" to grgitService.service.get().grgit.head().abbreviatedId
+        "funnyGuildsCommit" to commitId
     )
 }
 
