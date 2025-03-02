@@ -6,33 +6,20 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Maven cache
-        uses: actions/cache@v3
+      - uses: actions/checkout@v4
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Setup Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          fetch-depth: 0
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 21
-          cache: 'gradle'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Publish with Gradle
-        run: ./gradlew clean build :plugin:publish --stacktrace
+      - uses: burrunan/gradle-cache-action@v2
+        name: Publish FunnyGuilds
+        with:
+          arguments: build :plugin:publish --stacktrace
         env:
           MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}

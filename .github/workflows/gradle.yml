@@ -12,30 +12,60 @@ jobs:
       matrix:
         jdk: [ 21 ]
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup Maven cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-    - name: Setup Gradle cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.jdk }}
-        cache: 'gradle'
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew clean build shadowJar --stacktrace -i
+      - name: Find comment with artifact link
+        uses: peter-evans/find-comment@v3
+        if: github.event_name == 'pull_request'
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+      - name: Create initial comment for artifact link
+        uses: peter-evans/create-or-update-comment@v4
+        id: create-comment
+        if: |
+          github.event_name == 'pull_request' &&
+          steps.find-comment.outputs.comment-id == ''
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ### 📦 Dev Build
+
+            ⏳ Tutaj dostępna będzie testowa wersja **FunnyGuilds**, posiadająca zmiany z tego Pull Requesta.
+          edit-mode: replace
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.jdk }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - uses: burrunan/gradle-cache-action@v2
+        name: Build FunnyGuilds
+        with:
+          arguments: build --stacktrace -i
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        id: upload-artifact
+        with:
+          name: FunnyGuilds Dev Build
+          path: plugin/build/libs/FunnyGuilds*.jar
+          retention-days: 30
+          overwrite: true
+      - name: Update comment with artifact link
+        uses: peter-evans/create-or-update-comment@v4
+        if: github.event_name == 'pull_request'
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          body: |
+            ### 📦 Dev Build
+            
+            Możesz pobrać testową wersję **FunnyGuilds**, ze zmianami z tego Pull Requesta [tutaj](${{ steps.upload-artifact.outputs.artifact-url }})
+            
+            **⚠️ Uwaga!** Jest to wersja testowa, nie powinno się jej używać na serwerze produkcyjnym. Może posiadać 
+            błędy mogące powodować utratę danych graczy i gildii, konfiguracji pluginu itp.
+          edit-mode: replace
+          reactions: rocket
+        
