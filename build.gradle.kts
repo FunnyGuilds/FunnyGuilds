@@ -11,10 +11,10 @@ plugins {
 
     kotlin("jvm") version "2.0.0" apply false
     id("idea")
-    id("org.ajoberstar.grgit") version "4.1.1"
+    id("org.ajoberstar.grgit.service") version "5.3.0" apply false
     id("com.gradleup.shadow") version "9.0.0-beta2" // https://github.com/Goooler/shadow (fork of com.github.johnrengelman.shadow)
     id("xyz.jpenilla.run-paper") version "2.2.4" apply false
-    id("io.papermc.paperweight.userdev") version "1.7.3" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
 }
 
 idea {
@@ -138,6 +138,9 @@ subprojects {
 
 
 project(":nms").subprojects {
+    tasks.withType<Javadoc>().configureEach { 
+        enabled = false
+    }
     dependencies {
         implementation("xyz.jpenilla:reflection-remapper:0.1.1")
     }

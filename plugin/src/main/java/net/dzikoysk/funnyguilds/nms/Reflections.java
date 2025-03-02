@@ -49,6 +49,9 @@ public final class Reflections {
         if (versionNumber < 17) {
             NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE + ".server." + CRAFTBUKKIT_PACKAGE.split("\\.")[3];
         }
+        else {
+            NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE;
+        }
     }
 
     public static Class<?> getClassOmitCache(String className) {
@@ -77,7 +80,7 @@ public final class Reflections {
 
     public static Class<?> getNMSClass(String name, String subPackage) {
         String nmsPackage = Objects.requireNonNull(NMS_WITH_VERSION_PACKAGE, () -> NMS_PACKAGE + "." + subPackage);
-        return getClass(nmsPackage + "." + name);
+        return getClass(nmsPackage + "." + subPackage + "." + name);
     }
 
     public static Class<?> getCraftBukkitClass(String name) {

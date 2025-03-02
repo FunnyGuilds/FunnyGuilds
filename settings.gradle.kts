@@ -19,11 +19,20 @@ include(
     ":nms:v1_14R1",
     ":nms:v1_15R1",
     ":nms:v1_16R3",
-//    ":nms:v1_18R2",
+    ":nms:v1_18R2",
     ":nms:v1_19R3",
     ":nms:v1_20R1",
     ":nms:v1_20R2",
     ":nms:v1_20R3",
     ":nms:v1_20R5",
     ":nms:v1_21R1",
+    ":nms:v1_21_4",
 )
+
+val isCiServer = System.getenv().containsKey("CI")
+// Cache build artifacts, so expensive operations do not need to be re-computed
+buildCache {
+   local {
+       isEnabled = !isCiServer
+   }
+}
