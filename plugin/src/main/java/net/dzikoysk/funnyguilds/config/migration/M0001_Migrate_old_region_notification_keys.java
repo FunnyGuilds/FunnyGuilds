@@ -14,7 +14,7 @@ import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.bossbar.BossBar;
 import org.jetbrains.annotations.Nullable;
 import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;

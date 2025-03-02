@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.shared
 
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

@@ -15,7 +15,7 @@ import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;

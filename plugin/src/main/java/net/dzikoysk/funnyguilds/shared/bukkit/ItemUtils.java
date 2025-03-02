@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import org.bukkit.Color;
 import org.bukkit.Material;
