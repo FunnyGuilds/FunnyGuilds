@@ -124,7 +124,7 @@ tasks.processResources {
     val grgit = grgitService.service.get().grgit
     val isCiServer = System.getenv().containsKey("CI")
     
-    val version = "${project.version}${if (isCiServer) "+${grgit.branch.current().name}" else ""}"
+    val version = "${project.version}${if (isCiServer) "+${grgit.branch.current().trackingBranch.name}" else ""}"
     val commitId = grgit.head().abbreviatedId
     
     expand(
