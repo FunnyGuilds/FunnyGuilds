@@ -15,7 +15,7 @@ jobs:
       - name: Find comment with artifact link
         uses: peter-evans/find-comment@v3
         if: github.event_name == 'pull_request'
-        id: find-comment
+        id: init-find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
@@ -24,7 +24,7 @@ jobs:
         id: create-comment
         if: |
           github.event_name == 'pull_request' &&
-          steps.find-comment.outputs.comment-id == ''
+          steps.init-find-comment.outputs.comment-id == ''
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
@@ -32,6 +32,7 @@ jobs:
 
             ⏳ Tutaj dostępna będzie testowa wersja **FunnyGuilds**, posiadająca zmiany z tego Pull Requesta.
           edit-mode: replace
+          
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -54,6 +55,14 @@ jobs:
           path: plugin/build/libs/FunnyGuilds*.jar
           retention-days: 30
           overwrite: true
+          
+      - name: Find comment with artifact link
+        uses: peter-evans/find-comment@v3
+        if: github.event_name == 'pull_request'
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
       - name: Update comment with artifact link
         uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request'
@@ -68,4 +77,3 @@ jobs:
             błędy mogące powodować utratę danych graczy i gildii, konfiguracji pluginu itp.
           edit-mode: replace
           reactions: rocket
-        
