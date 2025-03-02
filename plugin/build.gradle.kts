@@ -127,7 +127,7 @@ tasks.processResources {
     val version = project.version.toString().let { version ->
         takeIf { isCiServer }
             ?.let {
-                grgit.branch.current().trackingBranch.name.let { branchName -> grgit.remote.list()
+                grgit.branch.current().name.let { branchName -> grgit.remote.list()
                     .map { it.name }
                     .find { remote -> branchName.startsWith(remote) }
                     ?.let { remote -> branchName.removePrefix("$remote/") }
