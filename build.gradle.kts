@@ -11,7 +11,7 @@ plugins {
 
     kotlin("jvm") version "2.0.0" apply false
     id("idea")
-    id("org.ajoberstar.grgit") version "4.1.1"
+    id("net.kyori.indra.git") version "3.1.3" apply false
     id("com.gradleup.shadow") version "9.0.0-beta2" // https://github.com/Goooler/shadow (fork of com.github.johnrengelman.shadow)
     id("xyz.jpenilla.run-paper") version "2.2.4" apply false
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
