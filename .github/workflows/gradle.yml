@@ -12,7 +12,9 @@ jobs:
       matrix:
         jdk: [ 21 ]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        ref: branch
     - name: Setup Maven cache
       uses: actions/cache@v3
       with:
@@ -38,7 +40,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew clean build shadowJar --stacktrace -i
+      run: ./gradlew clean build --stacktrace -i
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:

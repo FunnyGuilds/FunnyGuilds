@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     kotlin("jvm")
-    id("net.kyori.indra.git")
     id("xyz.jpenilla.run-paper")
+    id("org.ajoberstar.grgit.service")
 }
 
 publishing {
@@ -120,18 +120,16 @@ dependencies {
     testImplementation("com.mojang:authlib:3.2.38")
 }
 
-
 tasks.processResources {
     expand(
-        "funnyGuildsVersion" to version.toString(),
-        "funnyGuildsCommit" to indraGit.commit().toString().take(7)
+        "funnyGuildsVersion" to version,
+        "funnyGuildsCommit" to grgitService.service.get().grgit.head().abbreviatedId
     )
 }
 
 tasks.withType<ShadowJar> {
-    val commitCount = indraGit.git()!!.log().call().count()
-    archiveFileName.set("FunnyGuilds ${project.version} $commitCount (MC 1.8-1.21).jar")
-    mergeServiceFiles()
+    val commitCount = grgitService.service.get().grgit.log().size
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.8-1.21).jar"
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
