@@ -19,7 +19,7 @@ include(
     ":nms:v1_14R1",
     ":nms:v1_15R1",
     ":nms:v1_16R3",
-//    ":nms:v1_18R2",
+    ":nms:v1_18R2",
     ":nms:v1_19R3",
     ":nms:v1_20R1",
     ":nms:v1_20R2",
