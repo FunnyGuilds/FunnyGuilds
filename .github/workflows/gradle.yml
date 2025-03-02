@@ -58,7 +58,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request'
         with:
-          comment-id: ${{ steps.create-comment.outputs.comment-id }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
           body: |
             ### 📦 Dev Build
             
