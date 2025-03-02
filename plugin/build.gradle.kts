@@ -266,10 +266,7 @@ tasks.withType<ShadowJar> {
         "com.github.benmanes",
         "waffle"
     ).forEach {
-        relocate(
-            it,
-            "$libsPackage.$it"
-        )
+        relocate(it, "$libsPackage.$it")
     }
 
     relocate("com.google", "$libsPackage.com.google") {
@@ -283,7 +280,7 @@ tasks.withType<ShadowJar> {
         "org/intellij/lang/annotations/**",
         "org/jetbrains/annotations/**",
         "META-INF/services/javax.annotation.processing.Processor"
-    ).forEach { exclude(it) }
+    ).forEach(::exclude)
 
     minimize {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
