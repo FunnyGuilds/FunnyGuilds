@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.shared.formatter;
 
+import java.util.Objects;
+import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.function.Supplier;
 
 public abstract class Replacement<T> {
 

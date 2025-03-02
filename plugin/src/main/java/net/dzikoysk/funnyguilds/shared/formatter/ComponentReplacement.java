@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.shared.formatter;
 
+import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-
-import java.util.function.Supplier;
 
 public final class ComponentReplacement extends Replacement<Component> {
 

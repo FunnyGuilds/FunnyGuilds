@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.shared.formatter;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public final class FunnyFormatter implements Replaceable {
 

@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.formatter;
 
-import net.kyori.adventure.text.TextReplacementConfig;
-
 import java.util.function.Supplier;
+import net.kyori.adventure.text.TextReplacementConfig;
 
 public final class StringReplacement extends Replacement<String> {
 
