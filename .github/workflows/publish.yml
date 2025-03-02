@@ -9,25 +9,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Setup Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 21
-          cache: 'gradle'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Publish with Gradle
-        run: ./gradlew clean build :plugin:publish --stacktrace
+      - uses: burrunan/gradle-cache-action@v2
+        name: Publish FunnyGuilds
+        with:
+          arguments: clean build :plugin:publish --stacktrace
         env:
           MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
