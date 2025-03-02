@@ -138,6 +138,9 @@ subprojects {
 
 
 project(":nms").subprojects {
+    tasks.withType<Javadoc>().configureEach { 
+        enabled = false
+    }
     dependencies {
         implementation("xyz.jpenilla:reflection-remapper:0.1.1")
     }
