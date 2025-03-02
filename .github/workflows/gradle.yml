@@ -54,7 +54,7 @@ jobs:
           path: plugin/build/libs/FunnyGuilds*.jar
           retention-days: 30
           overwrite: true
-      - name: Create or update comment with artifact link
+      - name: Update comment with artifact link
         uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request'
         with:
