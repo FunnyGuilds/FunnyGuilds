@@ -39,3 +39,11 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew clean build shadowJar --stacktrace -i
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: FunnyGuilds-jar
+        path: plugin/build/libs/FunnyGuilds*.jar
+        retention-days: 30
+        overwrite: true
+        
