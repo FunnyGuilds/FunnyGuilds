@@ -13,7 +13,6 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.Action;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket.Entry;
 import net.minecraft.network.protocol.game.ClientboundTabListPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
