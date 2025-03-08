@@ -5,6 +5,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket.ActionType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public class V1_20R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
         if (msg instanceof ServerboundInteractPacket interactPacket) {
             int entityId = interactPacket.getEntityId();
 
-            if (interactPacket.isAttack()) {
+            if (interactPacket.getActionType() == ActionType.ATTACK) {
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
             }
             else {

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.nms.v1_20R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import java.util.Collections;
 import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
@@ -152,7 +153,7 @@ public class V1_20R1PlayerList implements PlayerList {
         // NOTE: this whole hack exists just because Mojang does stupid things and collects list of entries
         //       into an immutable list without any ability to modify or pass direct entries through constructor.
         ClientboundPlayerInfoUpdatePacket playerInfoPacket =
-                new ClientboundPlayerInfoUpdatePacket(actions, List.<Entry>of());
+                new ClientboundPlayerInfoUpdatePacket(actions, Collections.emptyList());
 
         try {
             playerInfoEntriesField.set(playerInfoPacket, entries);
