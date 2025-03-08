@@ -6,10 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Placeholders<T, P extends Placeholders<T, P>> {

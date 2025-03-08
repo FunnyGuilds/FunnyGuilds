@@ -31,11 +31,13 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -219,12 +221,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{VICTIM}", victim.getName())
                 .register("{+}", attackerPointsChange)
                 .register("{-}", victimPointsChange)
-                .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(attackerPointsChange, this.config.killPointsChangeFormat, true))
+                .register("{PLUS-FORMATTED}", formatChangeWithRange(attackerPointsChange))
                 .register("{CHANGE}", Math.abs(attackerPointsChange))
-                .register("{MINUS-FORMATTED}", NumberRange.inRangeToString(victimPointsChange, this.config.killPointsChangeFormat, true))
+                .register("{MINUS-FORMATTED}", formatChangeWithRange(victimPointsChange))
                 .register("{CHANGE}", Math.abs(victimPointsChange))
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, this.config.pointsFormat, true))
-                .register("{POINTS}", victim.getRank().getPoints())
+                .register("{POINTS-FORMAT}", formatPointsWithRange(victimPoints))
+                .register("{POINTS}", victimPoints)
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
@@ -454,7 +456,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             FunnyFormatter formatter = new FunnyFormatter()
                     .register("{PLAYER}", user.getName())
                     .register("{+}", points)
-                    .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(points, this.config.killPointsChangeFormat, true))
+                    .register("{PLUS-FORMATTED}", formatChangeWithRange(points))
                     .register("{CHANGE}", Math.abs(points))
                     .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
             formattedAssists.add(this.messageService.get(receiver, config -> config.rankAssistEntry, formatter));
@@ -462,4 +464,15 @@ public class PlayerDeath extends AbstractFunnyListener {
         return formattedAssists;
     }
 
+    private Component formatChangeWithRange(int change) {
+        String format = NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true);
+        String value = FunnyFormatter.format(format, "{CHANGE}", Math.abs(change));
+        return LegacyComponentSerializer.legacySection().deserialize(value);
+    }
+
+    private Component formatPointsWithRange(int points) {
+        String format = NumberRange.inRangeToString(points, this.config.pointsFormat, true);
+        String value = FunnyFormatter.format(format, "{POINTS}", points);
+        return LegacyComponentSerializer.legacySection().deserialize(value);
+    }
 }

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.config;
 
 import java.util.List;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import panda.std.stream.PandaStream;
 
 public class RawString {

@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.user.placeholders;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
-import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -19,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 import panda.utilities.text.Joiner;
 
 public class UserPlaceholdersService extends StaticPlaceholdersService<User, UserPlaceholders> {
