@@ -178,7 +178,6 @@ tasks.withType<ShadowJar> {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
         exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
-        //exclude(dependency("net.kyori:adventure-platform-bukkit:.*"))
 
         // nms implementation modules are not referenced in the project but are required at runtime
         parent!!.project(":nms").subprojects.forEach {
