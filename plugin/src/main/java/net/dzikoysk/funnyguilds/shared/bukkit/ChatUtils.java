@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import panda.std.stream.PandaStream;
 import panda.utilities.StringUtils;
@@ -49,4 +51,11 @@ public final class ChatUtils {
         return ChatColor.getLastColors(StringUtils.split(text, before)[0]);
     }
 
+    public static Component deserializeSection(String text) {
+        return LegacyComponentSerializer.legacySection().deserialize(text);
+    }
+
+    public static Component deserializeAmpersand(String text) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+    }
 }
