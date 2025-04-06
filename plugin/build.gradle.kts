@@ -100,7 +100,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
 
     // bukkit stuff
-    shadow("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    shadow("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
     shadow("org.apache.logging.log4j:log4j-core:2.20.0")
 
     /* hooks */
@@ -134,8 +134,12 @@ tasks.processResources {
 }
 
 tasks.withType<ShadowJar> {
+    val legacyAdventure = System.getProperty("legacyAdventure")?.toBoolean() ?: false
+    val minMcVersion = System.getProperty("minMcVersion") ?: "1.16.5"
+    val maxMcVersion = System.getProperty("maxMcVersion") ?: "1.21.4"
+
     val commitCount = grgitService.service.get().grgit.log().size
-    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.8-1.21).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC $minMcVersion-$maxMcVersion).jar"
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
@@ -149,20 +153,32 @@ tasks.withType<ShadowJar> {
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
     relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
-    relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
     relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")
+
+    if (legacyAdventure) {
+        relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
+    }
 
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")
     exclude("org/jetbrains/annotations/**")
     exclude("META-INF/services/javax.annotation.processing.Processor")
 
+    if (!legacyAdventure) {
+        dependencies {
+            exclude(dependency("net.kyori:adventure-api:.*"))
+            exclude(dependency("net.kyori:adventure-text-serializer-legacy:.*"))
+            exclude(dependency("net.kyori:adventure-text-minimessage:.*"))
+        }
+    }
+
     minimize {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
         exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
+        //exclude(dependency("net.kyori:adventure-platform-bukkit:.*"))
 
         // nms implementation modules are not referenced in the project but are required at runtime
         parent!!.project(":nms").subprojects.forEach {

@@ -13,21 +13,22 @@ public final class FunnyFormatter implements Replaceable {
 
     private final List<Replacement<?>> replacements = new ArrayList<>();
 
+    @Deprecated
     public String format(String message) {
-        if (FunnyStringUtils.isEmpty(message)) {
-            return "";
-        }
-
-        for (Replacement<?> replacement : this.replacements) {
-            message = replacement.replaceInString(message);
-        }
-
-        return message;
+        return this.replace(message);
     }
 
     @Override
     public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
-        return this.format(text);
+        if (FunnyStringUtils.isEmpty(text)) {
+            return "";
+        }
+
+        for (Replacement<?> replacement : this.replacements) {
+            text = replacement.replaceInString(text);
+        }
+
+        return text;
     }
 
     @Override
