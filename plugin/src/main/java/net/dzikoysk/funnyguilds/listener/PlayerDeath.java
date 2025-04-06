@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
@@ -22,6 +23,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent;
+import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent.CombatTable;
 import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent.CombatTable.Assist;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
@@ -31,12 +33,14 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -255,20 +259,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         FunnyMessageDispatcher deathMessage = this.messageService.getMessage(config -> config.rankDeathMessage)
                 .with(killFormatter)
                 .with(itemReplacement)
-                .with(CommandSender.class, receiver -> {
-                    String assistsMessage = "";
-                    CombatPointsChangeEvent.CombatTable combatTable = combatPointsChangeEvent.getAssistsMap();
-                    if (!combatTable.isEmpty()) {
-                        List<String> formattedAssists = this.formatAssists(receiver, combatTable.getAssistsMap());
-                        String assistsDelimiter = this.messageService.get(receiver, config -> config.rankAssistDelimiter);
-                        assistsMessage = this.messageService.get(
-                                receiver,
-                                config -> config.rankAssistMessage,
-                                Replacement.of("{ASSISTS}", FunnyStringUtils.join(formattedAssists, assistsDelimiter))
-                        );
-                    }
-                    return Replacement.of("{ASSISTS}", assistsMessage);
-                })
+                .with(buildAssistsFormatter(combatPointsChangeEvent.getAssistsMap()))
                 .receiver(attacker)
                 .receiver(victim)
                 .receivers(calculatedAssists.keySet())
@@ -447,32 +438,48 @@ public class PlayerDeath extends AbstractFunnyListener {
         return calculatedAssists;
     }
 
-    private List<String> formatAssists(CommandSender receiver, Map<User, Assist> assists) {
-        List<String> formattedAssists = new ArrayList<>();
-        assists.forEach((user, assist) -> {
-            int points = assist.getPointsChange();
-            double damageShare = assist.getDamageShare();
-
-            FunnyFormatter formatter = new FunnyFormatter()
-                    .register("{PLAYER}", user.getName())
-                    .register("{+}", points)
-                    .register("{PLUS-FORMATTED}", formatChangeWithRange(points))
-                    .register("{CHANGE}", Math.abs(points))
-                    .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
-            formattedAssists.add(this.messageService.get(receiver, config -> config.rankAssistEntry, formatter));
-        });
-        return formattedAssists;
-    }
-
     private Component formatChangeWithRange(int change) {
         String format = NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true);
         String value = FunnyFormatter.format(format, "{CHANGE}", Math.abs(change));
-        return LegacyComponentSerializer.legacySection().deserialize(value);
+        return ChatUtils.deserializeSection(value);
     }
 
     private Component formatPointsWithRange(int points) {
         String format = NumberRange.inRangeToString(points, this.config.pointsFormat, true);
         String value = FunnyFormatter.format(format, "{POINTS}", points);
-        return LegacyComponentSerializer.legacySection().deserialize(value);
+        return ChatUtils.deserializeSection(value);
+    }
+
+    private Component formatAssist(User user, Assist assist) {
+        int points = assist.getPointsChange();
+        double damageShare = assist.getDamageShare();
+
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{PLAYER}", user.getName())
+                .register("{+}", points)
+                .register("{PLUS-FORMATTED}", formatChangeWithRange(points))
+                .register("{CHANGE}", Math.abs(points))
+                .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
+        Component entryComponent = ChatUtils.deserializeAmpersand(this.messageService.get(config -> config.rankAssistEntry));
+
+        return formatter.replace(entryComponent);
+    }
+
+    private FunnyFormatter buildAssistsFormatter(CombatTable combatTable) {
+        if (combatTable.isEmpty()) {
+            return FunnyFormatter.of("{ASSISTS}", "");
+        }
+
+        List<Component> assists = combatTable.getAssistsMap().entrySet().stream()
+                .map(entry -> formatAssist(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+        Component delimiterComponent = ChatUtils.deserializeSection(this.messageService.get(config -> config.rankAssistDelimiter));
+        Component messageComponent = ChatUtils.deserializeSection(this.messageService.get(config -> config.rankAssistMessage));
+        JoinConfiguration joinConfiguration = JoinConfiguration.separator(delimiterComponent);
+
+        return FunnyFormatter.of(
+                "{ASSISTS}",
+                FunnyFormatter.of("{ASSISTS}", Component.join(joinConfiguration, assists)).replace(messageComponent)
+        );
     }
 }
