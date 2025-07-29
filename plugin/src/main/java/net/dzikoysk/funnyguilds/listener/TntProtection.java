@@ -17,6 +17,10 @@ public class TntProtection extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
+        if (this.config.tntProtection.time.allowedEntities.contains(event.getEntityType())) {
+            return;
+        }
+
         if (this.tntCanExplode()) {
             return;
         }
