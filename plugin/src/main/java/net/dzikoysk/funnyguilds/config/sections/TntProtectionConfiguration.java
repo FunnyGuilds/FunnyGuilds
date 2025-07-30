@@ -27,7 +27,7 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         public boolean enabledGlobal = false;
 
         @Comment("")
-        @Comment("Lista entity, przed którymi nie jest włączona ochrona przed wybuchami")
+        @Comment("Lista entity, dla których NIE JEST włączona ochrona przed wybuchami")
         public Set<EntityType> allowedEntities = EntityUtils.parseEntityTypes(true);
 
         @Comment("")
