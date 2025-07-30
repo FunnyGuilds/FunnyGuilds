@@ -28,7 +28,7 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Lista entity, dla których NIE JEST włączona ochrona przed wybuchami")
-        public Set<EntityType> allowedEntities = EntityUtils.parseEntityTypes(true);
+        public Set<EntityType> exemptEntities = EntityUtils.parseEntityTypes(true);
 
         @Comment("")
         @Comment("O której godzinie ma sie zacząć ochrona przed TNT")
