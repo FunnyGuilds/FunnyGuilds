@@ -24,12 +24,10 @@ final class HasGuildPermissionValidator implements Validator<HasGuildPermission,
         }
 
         GuildCommandPermission permission = annotation.value();
-        if (!this.permissionController.canPerformAction(user, permission)) {
-            // TODO: customizable message
-            throw new InternalValidationException(config -> config.generalDoesNotHasPermission);
-        }
-
-        return true;
+        return this.permissionController.canPerformAction(
+                user,
+                permission
+        );
     }
 
     @Override

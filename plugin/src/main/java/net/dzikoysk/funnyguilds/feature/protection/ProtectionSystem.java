@@ -105,8 +105,8 @@ public final class ProtectionSystem {
         Function<MessageConfiguration, Sendable> messageSupplier;
         switch (protectionType) {
             case UNAUTHORIZED:
-                messageSupplier = config -> config.regionUnauthorized;
-                break;
+                // Do nothing, message is sent in GuildProtectionPermissionHandler
+                return;
             case HEART:
                 messageSupplier = config -> config.regionCenter;
                 break;

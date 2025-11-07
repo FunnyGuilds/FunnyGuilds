@@ -303,7 +303,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalNoNameGiven = ChatHolder.message("&cPodaj nazwe gildii!");
     public SendableMessage generalHasNoGuild = ChatHolder.message("&cNie masz gildii!");
     public SendableMessage generalIsNotOwner = ChatHolder.message("&cNie jestes zalozycielem gildii!");
-    public SendableMessage generalDoesNotHasPermission = ChatHolder.message("&cNie posiadasz wystarczających uprawnień jako członek gildii!");
+    public SendableMessage generalInsufficientGuildPermission = ChatHolder.message("&cNie posiadasz wystarczających uprawnień jako członek gildii!");
     public SendableMessage generalNoTagGiven = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage generalNoNickGiven = ChatHolder.message("&cPodaj nick gracza!");
     public SendableMessage generalUserHasGuild = ChatHolder.message("&cTen gracz ma juz gildie!");
@@ -317,6 +317,12 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalPlayerHasNoGuild = ChatHolder.message("&cTen gracz nie ma gildii!");
     public SendableMessage generalCommandDisabled = ChatHolder.message("&cTa komenda jest wylaczona!");
     public SendableMessage generalAllyPvpDisabled = ChatHolder.message("&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!");
+    
+    @Comment("")
+    @Comment("<------- Guild Chat Messages -------> #")
+    public SendableMessage guildChatPrivateInsufficientPermission = ChatHolder.message("&cNie masz uprawnień do używania czatu gildii!");
+    public SendableMessage guildChatAlliesInsufficientPermission = ChatHolder.message("&cNie masz uprawnień do używania czatu sojuszniczego!");
+    public SendableMessage guildChatGlobalInsufficientPermission = ChatHolder.message("&cNie masz uprawnień do używania czatu globalnego!");
 
     @Comment("")
     @Comment("<------- Escape Messages -------> #")
