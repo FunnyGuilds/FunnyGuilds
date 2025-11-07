@@ -1,29 +1,41 @@
 package net.dzikoysk.funnyguilds.guild.permission.event;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.block.BlockEvent;
 import org.jetbrains.annotations.NotNull;
+import panda.std.Option;
 
-/**
- * Called when the permission value is being checked (e.g., in command execution).
- */
-public final class GuildPermissionCheckEvent extends GuildPermissionEvent {
+public final class GuildBlockPermissionProtectionEvent extends GuildPermissionProtectionEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    public GuildPermissionCheckEvent(
+    private final Reference<BlockEvent> blockEventReference;
+
+    public GuildBlockPermissionProtectionEvent(
+            EventCause eventCause,
             Guild guild,
             User doer,
-            GuildPermission<?> permission
+            GuildPermission<?> permission,
+            BlockEvent blockEvent
     ) {
         super(
-                EventCause.SYSTEM,
+                eventCause,
                 guild,
                 doer,
-                permission
+                permission,
+                blockEvent.getBlock().getLocation()
         );
+        this.blockEventReference = new WeakReference<>(blockEvent);
+    }
+
+    @Override
+    public Option<BlockEvent> getInternalEvent() {
+        return Option.of(this.blockEventReference.get());
     }
 
     @Override
@@ -36,6 +48,8 @@ public final class GuildPermissionCheckEvent extends GuildPermissionEvent {
                guild.getName() +
                " by user " +
                doer.getName() +
+               " for block protection at location " +
+               this.getLocation() +
                " has been cancelled by the server!";
     }
 
@@ -47,4 +61,5 @@ public final class GuildPermissionCheckEvent extends GuildPermissionEvent {
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
+
 }
