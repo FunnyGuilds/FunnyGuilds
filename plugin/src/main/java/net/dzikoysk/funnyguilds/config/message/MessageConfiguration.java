@@ -303,6 +303,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalNoNameGiven = ChatHolder.message("&cPodaj nazwe gildii!");
     public SendableMessage generalHasNoGuild = ChatHolder.message("&cNie masz gildii!");
     public SendableMessage generalIsNotOwner = ChatHolder.message("&cNie jestes zalozycielem gildii!");
+    public SendableMessage generalDoesNotHasPermission = ChatHolder.message("&cNie posiadasz wystarczających uprawnień jako członek gildii!");
     public SendableMessage generalNoTagGiven = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage generalNoNickGiven = ChatHolder.message("&cPodaj nick gracza!");
     public SendableMessage generalUserHasGuild = ChatHolder.message("&cTen gracz ma juz gildie!");

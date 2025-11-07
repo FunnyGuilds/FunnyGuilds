@@ -10,11 +10,11 @@ import org.panda_lang.utilities.inject.Property;
 @FunnyComponent
 final class OwnerValidator implements Validator<IsOwner, User, ValidationException> {
 
-    private final MemberValidator memberValidator = new MemberValidator();
-
     @Override
     public boolean validate(Context context, IsOwner annotation, Property property, User user) throws ValidationException {
-        this.memberValidator.isMember(user);
+        if (!user.hasGuild()) {
+            throw new InternalValidationException(config -> config.generalHasNoGuild);
+        }
 
         if (!user.isOwner()) {
             throw new InternalValidationException(config -> config.generalIsNotOwner);
