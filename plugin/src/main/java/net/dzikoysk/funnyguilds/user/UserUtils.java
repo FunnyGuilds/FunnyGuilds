@@ -13,6 +13,8 @@ import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissions;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.StringUtils;
@@ -117,20 +119,12 @@ public final class UserUtils {
         return set;
     }
 
-    public static String getUserPosition(PluginConfiguration pluginConfiguration, @Nullable User user) {
+    public static String getUserPosition(GuildPermissionController permissionController, @Nullable User user) {
         if (user == null) {
             return "";
         }
-
-        if (user.isOwner()) {
-            return pluginConfiguration.chatPositionLeader.getValue();
-        }
-
-        if (user.isDeputy()) {
-            return pluginConfiguration.chatPositionDeputy.getValue();
-        }
-
-        return pluginConfiguration.chatPositionMember.getValue();
+        return permissionController.getPermissionValue(user, GuildPermissions.USER_POSITION)
+                .orElseGet("");
     }
 
     /**

@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreChatEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
@@ -30,6 +31,9 @@ public class PlayerChat extends AbstractFunnyListener {
 
     @Inject
     private GuildManager guildManager;
+    
+    @Inject
+    private GuildPermissionController permissionController;
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
@@ -68,7 +72,7 @@ public class PlayerChat extends AbstractFunnyListener {
                     formatter.register("{TAG}", this.config.chatGuild.getValue());
                     formatter.register("{TAG}", guild.getTag());
                     formatter.register("{POS}", this.config.chatPosition.getValue());
-                    formatter.register("{POS}", UserUtils.getUserPosition(this.config, user));
+                    formatter.register("{POS}", UserUtils.getUserPosition(this.permissionController, user));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -152,7 +156,7 @@ public class PlayerChat extends AbstractFunnyListener {
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())
                 .register("{POS}", this.config.chatPosition.getValue())
-                .register("{POS}", UserUtils.getUserPosition(this.config, user))
+                .register("{POS}", UserUtils.getUserPosition(this.permissionController, user))
                 .register("{MESSAGE}", message);
 
         return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));

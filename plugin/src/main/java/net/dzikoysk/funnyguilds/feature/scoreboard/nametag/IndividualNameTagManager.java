@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.scoreboard.AbstractScoreboardHandler;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -10,8 +11,11 @@ import org.bukkit.entity.Player;
 
 public class IndividualNameTagManager extends AbstractScoreboardHandler<IndividualNameTag> {
 
-    public IndividualNameTagManager(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
+    private final GuildPermissionController permissionController;
+    
+    public IndividualNameTagManager(PluginConfiguration pluginConfiguration, UserManager userManager, GuildPermissionController permissionController, ScoreboardService scoreboardService) {
         super(pluginConfiguration, userManager, scoreboardService);
+        this.permissionController = permissionController;
     }
 
     @Override
@@ -21,7 +25,7 @@ public class IndividualNameTagManager extends AbstractScoreboardHandler<Individu
             // Ensure user has their own scoreboard
             this.scoreboardService.updatePlayer(player, user);
 
-            IndividualNameTag nameTag = new IndividualNameTag(this.pluginConfiguration, player, user);
+            IndividualNameTag nameTag = new IndividualNameTag(this.pluginConfiguration, this.permissionController, player, user);
             nameTag.initialize();
             userCache.setIndividualNameTag(nameTag);
             return nameTag;

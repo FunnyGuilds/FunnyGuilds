@@ -702,7 +702,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.individualNameTagManager = Option.when(
                 scoreboardConfig.nametag.enabled,
-                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService)
+                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, this.guildPermissionController, scoreboardService)
         );
         this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
