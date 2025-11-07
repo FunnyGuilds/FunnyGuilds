@@ -11,15 +11,6 @@ public interface GuildPermission<T> {
     
     String PLUGIN_NAMESPACE = "funnyguilds"; // TODO: Retrieve from plugin instance
     
-    GuildPermission<Boolean> BLOCK_BREAK_PROTECTION = booleanPermission("block-break-protection");
-    GuildPermission<Boolean> BLOCK_PLACE_PROTECTION = booleanPermission("block-place-protection");
-    GuildPermission<Boolean> BLOCK_IGNITE_PROTECTION = booleanPermission("block-ignite-protection");
-    GuildPermission<Boolean> BUCKET_FILL_PROTECTION = booleanPermission("bucket-fill-protection");
-    GuildPermission<Boolean> BUCKET_EMPTY_PROTECTION = booleanPermission("bucket-empty-protection");
-    GuildPermission<Boolean> HANGING_PLACE_PROTECTION = booleanPermission("hanging-place-protection");
-    GuildPermission<Boolean> HANGING_BREAK_PROTECTION = booleanPermission("hanging-break-protection");
-    GuildPermission<Boolean> ENTITY_PLACE_PROTECTION = booleanPermission("entity-place-protection");
-    
     /**
      * @return the unique key of the permission
      */
