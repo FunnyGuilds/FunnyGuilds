@@ -13,8 +13,8 @@ import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissions;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.StringUtils;
@@ -123,7 +123,7 @@ public final class UserUtils {
         if (user == null) {
             return "";
         }
-        return permissionController.getPermissionValue(user, GuildPermissions.USER_POSITION)
+        return permissionController.getPermissionValue(user, GenericGuildPermissions.USER_POSITION)
                 .orElseGet("");
     }
 

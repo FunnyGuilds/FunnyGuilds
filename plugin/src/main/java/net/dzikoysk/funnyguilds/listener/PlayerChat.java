@@ -13,6 +13,8 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreChatEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
@@ -117,6 +119,11 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = prefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
+            if (!this.checkUsePermission(user, playerGuild, type)) {
+                // TODO: send custom message when no permission
+                return true;
+            }
+            
             String subMessage = message.substring(prefixLength).trim();
             String resultMessage = this.formatChatDesign(user, player, playerGuild, chatDesign, subMessage);
 
@@ -126,7 +133,7 @@ public class PlayerChat extends AbstractFunnyListener {
             }
 
             this.spy(user, player, playerGuild, subMessage);
-            preChatEvent.getReceivers().forEach(guild -> sendMessageToGuild(guild, resultMessage));
+            preChatEvent.getReceivers().forEach(guild -> sendMessageToGuild(guild, resultMessage, type));
 
             SimpleEventHandler.handle(new GuildChatEvent(EventCause.USER, user, playerGuild, type, receivers, resultMessage));
 
@@ -136,12 +143,58 @@ public class PlayerChat extends AbstractFunnyListener {
         return false;
     }
 
-    private static void sendMessageToGuild(Guild guild, String message) {
+    private void sendMessageToGuild(Guild guild, String message, Type type) {
         PandaStream.of(guild.getMembers())
                 .filterNot(member -> member.getCache().isSpy())
+                .filter(member -> this.checkSeePermission(member, guild, type))
                 .forEach(member -> member.sendMessage(message));
     }
+    
+    private boolean checkSeePermission(User user, Guild guild, Type type) {
+        GuildPermission<Boolean> seePermission;
+        switch (type) {
+            case PRIVATE:
+                seePermission = GenericGuildPermissions.GUILD_CHAT_SEE;
+                break;
+            case ALLY:
+                seePermission = GenericGuildPermissions.ALLY_CHAT_SEE;
+                break;
+            case ALL:
+                seePermission = GenericGuildPermissions.GLOBAL_CHAT_SEE;
+                break;
+            default:
+                return false;
+        }
+        boolean canPerformAction = this.permissionController.canPerformAction(
+                guild,
+                user,
+                seePermission
+        );
+        if (canPerformAction) {
+            return true;
+        }
 
+        return this.checkUsePermission(user, guild, type);
+    }
+    
+    private boolean checkUsePermission(User user, Guild guild, Type type) {
+        GuildPermission<Boolean> permission;
+        switch (type) {
+            case PRIVATE:
+                permission = GenericGuildPermissions.GUILD_CHAT_USE;
+                break;
+            case ALLY:
+                permission = GenericGuildPermissions.ALLY_CHAT_USE;
+                break;
+            case ALL:
+                permission = GenericGuildPermissions.GLOBAL_CHAT_USE;
+                break;
+            default:
+                return false;
+        }
+        return this.permissionController.canPerformAction(guild, user, permission);
+    }
+    
     private void spy(User user, Player player, Guild playerGuild, String message) {
         String spyMessage = this.formatChatDesign(user, player, playerGuild, this.config.chatSpyDesign.getValue(), message);
 
