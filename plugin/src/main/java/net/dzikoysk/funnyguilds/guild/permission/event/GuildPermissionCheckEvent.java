@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,16 +14,19 @@ public class GuildPermissionCheckEvent extends GuildPermissionEvent {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
+    @ApiStatus.Internal
     public GuildPermissionCheckEvent(
             Guild guild,
             User doer,
-            GuildPermission<?> permission
+            GuildPermission<?> permission,
+            panda.std.Result<?, Runnable> permissionResult
     ) {
         super(
                 EventCause.SYSTEM,
                 guild,
                 doer,
-                permission
+                permission,
+                permissionResult
         );
     }
 

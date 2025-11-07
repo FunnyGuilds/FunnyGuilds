@@ -5,17 +5,19 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.user.User;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuildPermissionEvent extends GuildEvent {
 
     private final GuildPermission<?> permission;
-    private panda.std.Result<?, Runnable> permissionResult = panda.std.Result.error(() -> {});
+    private panda.std.Result<?, Runnable> permissionResult;
 
     GuildPermissionEvent(
             EventCause eventCause,
             Guild guild,
             User doer,
-            GuildPermission<?> permission
+            GuildPermission<?> permission,
+            panda.std.Result<?, Runnable> permissionResult
     ) {
         super(
                 eventCause,
@@ -27,18 +29,19 @@ public abstract class GuildPermissionEvent extends GuildEvent {
                 false
         );
         this.permission = permission;
+        this.permissionResult = permissionResult;
     }
     
     public GuildPermission<?> getPermission() {
         return this.permission;
     }
     
-    public panda.std.Result<?, Runnable> getPermissionResult() {
+    public @Nullable panda.std.Result<?, Runnable> getPermissionResult() {
         return this.permissionResult;
     }
     
     public boolean hasPermissionResult() {
-        return this.permissionResult.isOk();
+        return this.permissionResult != null;
     }
     
     public void setPermissionResult(panda.std.Result<?, Runnable> permissionResult) {

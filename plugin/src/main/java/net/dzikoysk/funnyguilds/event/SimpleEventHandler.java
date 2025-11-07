@@ -21,5 +21,10 @@ public final class SimpleEventHandler {
 
         return true;
     }
+    
+    public static <T extends FunnyEvent> T handleAndReturn(T event) {
+        Bukkit.getPluginManager().callEvent(event);
+        return event;
+    }
 
 }

@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.guild.permission;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionCheckEvent;
+import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionEvent;
 import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionProtectionCheckEvent;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
@@ -11,21 +12,23 @@ import panda.std.Result;
 
 public class EventGuildPermissionController implements GuildPermissionController {
 
-    @SuppressWarnings("unchecked")
+    private static final Runnable EMPTY_ACTION = () -> {
+    };
+
     @Override
     public <T> Option<T> getPermissionValue(
             Guild guild,
             User user,
             GuildPermission<T> permission
     ) {
-        GuildPermissionCheckEvent event = new GuildPermissionCheckEvent(
-                guild,
-                user,
-                permission
-        );
-        SimpleEventHandler.handle(event);
-        return event.getPermissionResult()
-                .map(result -> (T) result)
+        return handleAndReturnResult(
+                new GuildPermissionCheckEvent(
+                        guild,
+                        user,
+                        permission,
+                        null
+                ), permission)
+                .mapErr(ignored -> null)
                 .toOption();
     }
 
@@ -35,14 +38,15 @@ public class EventGuildPermissionController implements GuildPermissionController
             User user,
             GuildPermission<Boolean> permission
     ) {
-        GuildPermissionCheckEvent event = new GuildPermissionCheckEvent(
-                guild,
-                user,
+        return handleAndReturnResult(
+                new GuildPermissionCheckEvent(
+                        guild,
+                        user,
+                        permission,
+                        null
+                ),
                 permission
         );
-        SimpleEventHandler.handle(event);
-        return event.getPermissionResult()
-                .map(result -> (Boolean) result);
     }
 
     @Override
@@ -52,27 +56,37 @@ public class EventGuildPermissionController implements GuildPermissionController
             GuildPermission<Boolean> permission,
             Event event
     ) {
-        return Result.<GuildPermissionProtectionCheckEvent, Runnable>ok(new GuildPermissionProtectionCheckEvent(
+        return handleAndReturn(
+                new GuildPermissionProtectionCheckEvent(
                         guild,
                         user,
                         permission,
                         event
                 ))
-                .peek(SimpleEventHandler::handle)
-                .map(EventGuildPermissionController::toCheckEvent)
-                .peek(SimpleEventHandler::handle)
-                .flatMap(GuildPermissionCheckEvent::getPermissionResult)
-                .map(result -> (Boolean) result);
+                .flatMap(protectionEvent -> handleAndReturnResult(
+                        new GuildPermissionCheckEvent(
+                                guild,
+                                user,
+                                permission,
+                                protectionEvent.getPermissionResult()
+                        ),
+                        permission
+                ));
     }
-    
-    private static GuildPermissionCheckEvent toCheckEvent(GuildPermissionProtectionCheckEvent protectionEvent) {
-        GuildPermissionCheckEvent checkEvent = new GuildPermissionCheckEvent(
-                protectionEvent.getGuild(),
-                protectionEvent.getDoer().get(),
-                protectionEvent.getPermission()
-        );
-        checkEvent.setPermissionResult(protectionEvent.getPermissionResult());
-        return checkEvent;
+
+    private static Result<GuildPermissionEvent, Runnable> handleAndReturn(GuildPermissionEvent event) {
+        return Result
+                .<GuildPermissionEvent, Runnable>ok(event)
+                .map(SimpleEventHandler::handleAndReturn);
+    }
+
+    private static <T> Result<T, Runnable> handleAndReturnResult(
+            GuildPermissionEvent event,
+            GuildPermission<T> permission
+    ) {
+        return handleAndReturn(event)
+                .flatMap(GuildPermissionEvent::getPermissionResult)
+                .is(permission.getValueType(), value -> EMPTY_ACTION);
     }
 
 }

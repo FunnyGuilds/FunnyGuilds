@@ -7,7 +7,9 @@ import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 /**
@@ -19,6 +21,7 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
 
     private final Reference<Event> internalEventReference;
 
+    @ApiStatus.Internal
     public GuildPermissionProtectionCheckEvent(
             Guild guild,
             User doer,
@@ -29,7 +32,8 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
                 GuildPermissionEvent.EventCause.SYSTEM,
                 guild,
                 doer,
-                permission
+                permission,
+                null
         );
         this.internalEventReference = new WeakReference<>(event);
     }
@@ -41,9 +45,12 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
     }
 
     @Override
-    public panda.std.Result<Boolean, Runnable> getPermissionResult() {
-        return super.getPermissionResult()
-                .map(result -> (Boolean) result);
+    public @Nullable panda.std.Result<Boolean, Runnable> getPermissionResult() {
+        panda.std.Result<?, Runnable> permissionResult = super.getPermissionResult();
+        if (permissionResult == null) {
+            return null;
+        }
+        return permissionResult.map(result -> (Boolean) result);
     }
 
     /**
