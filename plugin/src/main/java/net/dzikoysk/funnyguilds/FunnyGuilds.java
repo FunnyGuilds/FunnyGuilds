@@ -9,7 +9,6 @@ import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.config.sections.PermissionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
@@ -105,7 +104,6 @@ public class FunnyGuilds extends JavaPlugin {
     private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
-    private final File permissionConfigurationFile = new File(this.getDataFolder(), "permissions.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
@@ -114,7 +112,6 @@ public class FunnyGuilds extends JavaPlugin {
     private FunnyCommands funnyCommands;
 
     private PluginConfiguration pluginConfiguration;
-    private PermissionConfiguration permissionConfiguration;
     private TablistConfiguration tablistConfiguration;
 
     private MessageService messageService;
@@ -194,7 +191,6 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
-            this.permissionConfiguration = ConfigurationFactory.createPermissionConfiguration(this.permissionConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
@@ -329,7 +325,6 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
-            resources.on(PermissionConfiguration.class).assignInstance(this.permissionConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
             resources.on(UserManager.class).assignInstance(this.userManager);

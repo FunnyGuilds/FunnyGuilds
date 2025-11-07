@@ -24,7 +24,6 @@ import net.dzikoysk.funnyguilds.config.migration.P0011_Migrate_old_security_syst
 import net.dzikoysk.funnyguilds.config.migration.P0012_Migrate_old_broadcast_death_message_key;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.migration.T0002_Update_tablist_keys;
-import net.dzikoysk.funnyguilds.config.sections.PermissionConfiguration;
 import net.dzikoysk.funnyguilds.config.serdes.ColorSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
@@ -100,20 +99,6 @@ public final class ConfigurationFactory {
                     new P0011_Migrate_old_security_system_keys(),
                     new P0012_Migrate_old_broadcast_death_message_key()
             );
-        });
-    }
-    
-    public static PermissionConfiguration createPermissionConfiguration(File permissionConfigurationFile) {
-        return ConfigManager.create(PermissionConfiguration.class, (it) -> {
-            it.withConfigurer(new YamlBukkitConfigurer());
-            it.withSerdesPack(registry -> {
-                registry.register(new SerdesCommons());
-            });
-
-            it.withBindFile(permissionConfigurationFile);
-            it.withLogger(FunnyGuilds.getInstance().getLogger());
-            it.saveDefaults();
-            it.load(true);
         });
     }
 
