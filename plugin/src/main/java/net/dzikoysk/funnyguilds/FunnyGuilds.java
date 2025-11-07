@@ -35,6 +35,8 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.permission.FunnyGuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -94,7 +96,6 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -125,6 +126,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
+    private final GuildPermissionController guildPermissionController = new FunnyGuildPermissionController();
 
     private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
     private Option<DummyManager> dummyManager = Option.none();
@@ -330,6 +332,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(GuildPermissionController.class).assignInstance(this.guildPermissionController);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
@@ -620,6 +623,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public FunnyServer getFunnyServer() {
         return this.funnyServer;
+    }
+    
+    public GuildPermissionController getGuildPermissionController() {
+        return this.guildPermissionController;
     }
 
     public Option<IndividualNameTagManager> getIndividualNameTagManager() {
