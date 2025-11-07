@@ -120,10 +120,9 @@ public final class UserUtils {
     }
 
     public static String getUserPosition(GuildPermissionController permissionController, @Nullable User user) {
-        if (user == null) {
-            return "";
-        }
-        return permissionController.getPermissionValue(user, GenericGuildPermissions.USER_POSITION)
+        return Option.of(user)
+                .flatMap(User::getGuild)
+                .flatMap(guild -> permissionController.getPermissionValue(guild, user, GenericGuildPermissions.USER_POSITION))
                 .orElseGet("");
     }
 

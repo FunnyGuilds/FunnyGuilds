@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.guild.permission;
 
+import com.google.common.collect.ImmutableSet;
+import java.util.Collection;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 
@@ -40,6 +42,15 @@ public final class GenericGuildPermissions {
      * Allow to see global chat.
      */
     public static final GuildPermission<Boolean> GLOBAL_CHAT_SEE = GuildPermission.booleanPermission("global.chat.see");
+    
+    public static final Collection<GuildPermission<Boolean>> CHAT_PERMISSIONS = ImmutableSet.of(
+            GUILD_CHAT_USE,
+            GUILD_CHAT_SEE,
+            ALLY_CHAT_USE,
+            ALLY_CHAT_SEE,
+            GLOBAL_CHAT_USE,
+            GLOBAL_CHAT_SEE
+    );
     
     private GenericGuildPermissions() {
     }

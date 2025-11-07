@@ -5,11 +5,11 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.user.User;
-import panda.std.Option;
 
 public abstract class GuildPermissionEvent extends GuildEvent {
 
     private final GuildPermission<?> permission;
+    private panda.std.Result<?, Runnable> permissionResult = panda.std.Result.error(() -> {});
 
     GuildPermissionEvent(
             EventCause eventCause,
@@ -33,5 +33,40 @@ public abstract class GuildPermissionEvent extends GuildEvent {
         return this.permission;
     }
     
-    public abstract Option<?> getPermissionValue();
+    public panda.std.Result<?, Runnable> getPermissionResult() {
+        return this.permissionResult;
+    }
+    
+    public boolean hasPermissionResult() {
+        return this.permissionResult.isOk();
+    }
+    
+    public void setPermissionResult(panda.std.Result<?, Runnable> permissionResult) {
+        this.permissionResult = Objects.requireNonNull(permissionResult, "Permission result cannot be null");
+    }
+    
+    public void setSuccessResult(Object successResult) {
+        Objects.requireNonNull(successResult, "Success result cannot be null");
+
+        Class<?> valueType = this.permission.getValueType();
+        if (!valueType.isInstance(successResult)) {
+            throw new IllegalArgumentException("Permission result must be of type " + valueType.getSimpleName());
+        }
+        
+        this.permissionResult = panda.std.Result.ok(successResult);
+    }
+    
+    public void setErrorResult(Runnable action) {
+        this.permissionResult = panda.std.Result.error(Objects.requireNonNull(action, "Action cannot be null"));
+    }
+    
+    @Override
+    public String getDefaultCancelMessage() {
+        throw new UnsupportedOperationException("GuildPermissionEvent cannot be cancelled directly. Use permission value setting instead.");
+    }
+
+    @Override
+    public void setCancelled(boolean cancelled) {
+        throw new UnsupportedOperationException("GuildPermissionEvent cannot be cancelled directly. Use permission value setting instead.");
+    }
 }

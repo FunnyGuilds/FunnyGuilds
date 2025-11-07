@@ -146,7 +146,7 @@ public class PlayerChat extends AbstractFunnyListener {
     private void sendMessageToGuild(Guild guild, String message, Type type) {
         PandaStream.of(guild.getMembers())
                 .filterNot(member -> member.getCache().isSpy())
-                .filter(member -> this.checkSeePermission(member, guild, type))
+                .filter(member -> this.checkSeePermission(member, guild, type) || this.checkUsePermission(member, guild, type))
                 .forEach(member -> member.sendMessage(message));
     }
     
@@ -165,34 +165,27 @@ public class PlayerChat extends AbstractFunnyListener {
             default:
                 return false;
         }
-        boolean canPerformAction = this.permissionController.canPerformAction(
-                guild,
-                user,
-                seePermission
-        );
-        if (canPerformAction) {
-            return true;
-        }
-
-        return this.checkUsePermission(user, guild, type);
+        return this.permissionController.getPermissionValue(guild, user, seePermission)
+                .orElseGet(true);
     }
     
     private boolean checkUsePermission(User user, Guild guild, Type type) {
-        GuildPermission<Boolean> permission;
+        GuildPermission<Boolean> usePermission;
         switch (type) {
             case PRIVATE:
-                permission = GenericGuildPermissions.GUILD_CHAT_USE;
+                usePermission = GenericGuildPermissions.GUILD_CHAT_USE;
                 break;
             case ALLY:
-                permission = GenericGuildPermissions.ALLY_CHAT_USE;
+                usePermission = GenericGuildPermissions.ALLY_CHAT_USE;
                 break;
             case ALL:
-                permission = GenericGuildPermissions.GLOBAL_CHAT_USE;
+                usePermission = GenericGuildPermissions.GLOBAL_CHAT_USE;
                 break;
             default:
                 return false;
         }
-        return this.permissionController.canPerformAction(guild, user, permission);
+        return this.permissionController.getPermissionValue(guild, user, usePermission)
+                .orElseGet(true);
     }
     
     private void spy(User user, Player player, Guild playerGuild, String message) {

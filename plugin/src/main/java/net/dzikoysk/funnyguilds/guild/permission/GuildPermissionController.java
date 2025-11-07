@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
 import panda.std.Option;
+import panda.std.Result;
 
 public interface GuildPermissionController {
 
@@ -16,63 +17,52 @@ public interface GuildPermissionController {
      * @param <T> the type of the permission value
      */
     <T> Option<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission);
-    
-    default <T> Option<T> getPermissionValue(User user, GuildPermission<T> permission) {
-        return user.getGuild()
-                .flatMap(guild -> this.getPermissionValue(guild, user, permission));
-    }
-    
+
     /**
-     * Check if a user has a specific protection-related permission
+     * Get the value of a specific protection permission for a user, or fallback acton if user lacks permission
+     * @param guild the guild to check
+     * @param user the user to check
+     * @param permission the permission to check
+     * @return result containing the value of the permission or a runnable action to execute if permission is denied
+     */
+    Result<Boolean, Runnable> getPermissionResult(Guild guild, User user, GuildPermission<Boolean> permission);
+
+    /**
+     * Get the value of a specific protection permission for a user, or fallback action if user lacks permission
      * @param guild the guild to check
      * @param user the user to check
      * @param permission the permission to check
      * @param event the event related to the protection action
-     * @return the value of the permission, or an empty option if not set
+     * @return result containing the value of the permission or a runnable action to execute if permission is denied
      */
-    Option<Boolean> getProtectionPermissionValue(Guild guild, User user, GuildPermission<Boolean> permission, Event event);
-    
-    default Option<Boolean> getProtectionPermissionValue(User user, GuildPermission<Boolean> permission, Event event) {
-        return user.getGuild()
-                .flatMap(guild -> this.getProtectionPermissionValue(guild, user, permission, event));
-    }
+    Result<Boolean, Runnable> getProtectionPermissionResult(Guild guild, User user, GuildPermission<Boolean> permission, Event event);
     
     /**
-     * Check if a user can perform an action based on a boolean permission
+     * Handle the permission check for a user, returning a boolean result and sending appropriate messages
      * @param guild the guild to check
      * @param user the user to check
      * @param permission the permission to check
-     * @return true if the user can perform the action, false otherwise
+     * @return true if the user has the permission, false otherwise
      */
-    default boolean canPerformAction(Guild guild, User user, GuildPermission<Boolean> permission) {
-        return this.getPermissionValue(guild, user, permission)
-                .filter(value -> value)
-                .isPresent();
-    }
-    
-    default boolean canPerformAction(User user, GuildPermission<Boolean> permission) {
-        return this.getPermissionValue(user, permission)
-                .filter(value -> value)
-                .isPresent();
+    default boolean handlePermission(Guild guild, User user, GuildPermission<Boolean> permission) {
+        return this.getPermissionResult(guild, user, permission)
+                .onError(Runnable::run)
+                .mapErr(ignored -> false)
+                .get();
     }
     
     /**
-     * Check if a user can perform a protection-related action based on a boolean permission
+     * Handle the protection permission check for a user, returning a boolean result and sending appropriate messages
      * @param guild the guild to check
      * @param user the user to check
      * @param permission the permission to check
      * @param event the event related to the protection action
-     * @return true if the user can perform the action, false otherwise
+     * @return true if the user has the permission, false otherwise
      */
-    default boolean canPerformProtectionAction(Guild guild, User user, GuildPermission<Boolean> permission, Event event) {
-        return this.getProtectionPermissionValue(guild, user, permission, event)
-                .filter(value -> value)
-                .isPresent();
-    }
-    
-    default boolean canPerformProtectionAction(User user, GuildPermission<Boolean> permission, Event event) {
-        return this.getProtectionPermissionValue(user, permission, event)
-                .filter(value -> value)
-                .isPresent();
+    default boolean handleProtectionPermission(Guild guild, User user, GuildPermission<Boolean> permission, Event event) {
+        return this.getProtectionPermissionResult(guild, user, permission, event)
+                .onError(Runnable::run)
+                .mapErr(ignored -> false)
+                .get();
     }
 }

@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionProtection
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
 import panda.std.Option;
+import panda.std.Result;
 
 public class EventGuildPermissionController implements GuildPermissionController {
 
@@ -17,39 +18,61 @@ public class EventGuildPermissionController implements GuildPermissionController
             User user,
             GuildPermission<T> permission
     ) {
-        GuildPermissionCheckEvent permissionEvent = new GuildPermissionCheckEvent(
+        GuildPermissionCheckEvent event = new GuildPermissionCheckEvent(
                 guild,
                 user,
                 permission
         );
-        SimpleEventHandler.handle(permissionEvent);
-        return (Option<T>) permissionEvent.getPermissionValue();
+        SimpleEventHandler.handle(event);
+        return event.getPermissionResult()
+                .map(result -> (T) result)
+                .toOption();
     }
 
     @Override
-    public Option<Boolean> getProtectionPermissionValue(
+    public Result<Boolean, Runnable> getPermissionResult(
+            Guild guild,
+            User user,
+            GuildPermission<Boolean> permission
+    ) {
+        GuildPermissionCheckEvent event = new GuildPermissionCheckEvent(
+                guild,
+                user,
+                permission
+        );
+        SimpleEventHandler.handle(event);
+        return event.getPermissionResult()
+                .map(result -> (Boolean) result);
+    }
+
+    @Override
+    public Result<Boolean, Runnable> getProtectionPermissionResult(
             Guild guild,
             User user,
             GuildPermission<Boolean> permission,
             Event event
     ) {
-        GuildPermissionProtectionCheckEvent protectionEvent = new GuildPermissionProtectionCheckEvent(
-                guild,
-                user,
-                permission,
-                event
+        return Result.<GuildPermissionProtectionCheckEvent, Runnable>ok(new GuildPermissionProtectionCheckEvent(
+                        guild,
+                        user,
+                        permission,
+                        event
+                ))
+                .peek(SimpleEventHandler::handle)
+                .map(EventGuildPermissionController::toCheckEvent)
+                .peek(SimpleEventHandler::handle)
+                .flatMap(GuildPermissionCheckEvent::getPermissionResult)
+                .map(result -> (Boolean) result);
+    }
+    
+    private static GuildPermissionCheckEvent toCheckEvent(GuildPermissionProtectionCheckEvent protectionEvent) {
+        GuildPermissionCheckEvent checkEvent = new GuildPermissionCheckEvent(
+                protectionEvent.getGuild(),
+                protectionEvent.getDoer().get(),
+                protectionEvent.getPermission()
         );
-        boolean wasNotCancelled = SimpleEventHandler.handle(protectionEvent);
-
-        GuildPermissionCheckEvent permissionEvent = new GuildPermissionCheckEvent(
-                guild,
-                user,
-                permission
-        );
-        permissionEvent.setPermissionValue(wasNotCancelled);
-        SimpleEventHandler.handle(permissionEvent);
-
-        return permissionEvent.getPermissionValue().is(Boolean.class);
+        checkEvent.setPermissionResult(protectionEvent.getPermissionResult());
+        return checkEvent;
     }
 
 }

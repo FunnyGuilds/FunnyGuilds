@@ -41,8 +41,9 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
     }
 
     @Override
-    public Option<Boolean> getPermissionValue() {
-        return Option.of(this.isCancelled());
+    public panda.std.Result<Boolean, Runnable> getPermissionResult() {
+        return super.getPermissionResult()
+                .map(result -> (Boolean) result);
     }
 
     /**
@@ -50,18 +51,6 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
      */
     public Option<Event> getInternalEvent() {
         return Option.of(this.internalEventReference.get());
-    }
-
-    @Override
-    public String getDefaultCancelMessage() {
-        Guild guild = this.getGuild();
-        User doer = this.getDoer().get();
-        return String.format(
-                "[FunnyGuilds] Checking guild permission '%s' for user '%s' in guild '%s' was cancelled.",
-                this.getPermission(),
-                doer.getName(),
-                guild.getName()
-        );
     }
 
     @Override

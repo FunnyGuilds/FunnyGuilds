@@ -57,8 +57,8 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
         User user = userOption.get();
-
-        boolean canPerformAction = plugin.getGuildPermissionController().canPerformProtectionAction(
+        
+        boolean canPerformAction = plugin.getGuildPermissionController().handleProtectionPermission(
                 guild,
                 user,
                 permission,
@@ -104,6 +104,9 @@ public final class ProtectionSystem {
 
         Function<MessageConfiguration, Sendable> messageSupplier;
         switch (protectionType) {
+            case FAILURE:
+                messageSupplier = config -> config.regionUnauthorized;
+                break;
             case UNAUTHORIZED:
                 // Do nothing, message is sent in GuildProtectionPermissionHandler
                 return;
@@ -137,6 +140,7 @@ public final class ProtectionSystem {
 
     public enum ProtectionType {
 
+        FAILURE,
         UNAUTHORIZED,
         LOCKED,
         HEART,
