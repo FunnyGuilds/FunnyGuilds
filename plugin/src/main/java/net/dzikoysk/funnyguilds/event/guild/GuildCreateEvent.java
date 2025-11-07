@@ -21,14 +21,14 @@ public class GuildCreateEvent extends GuildEvent {
     public GuildCreateEvent(EventCause eventCause, User doer, Guild guild) {
         super(eventCause, doer, guild);
     }
-
+    
     @Override
-    public void setCancelled(boolean cancelled) {
+    public String getDefaultCancelMessage() {
         throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent");
     }
 
     @Override
-    public String getDefaultCancelMessage() {
+    public void setCancelled(boolean cancelled) {
         throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent");
     }
 

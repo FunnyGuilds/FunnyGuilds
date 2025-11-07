@@ -23,17 +23,16 @@ public interface GuildPermissionController {
     }
     
     /**
-     * Get the value of a specific protection-related permission for a user
+     * Check if a user has a specific protection-related permission
      * @param guild the guild to check
      * @param user the user to check
      * @param permission the permission to check
      * @param event the event related to the protection action
      * @return the value of the permission, or an empty option if not set
-     * @param <T> the type of the permission value
      */
-    <T> Option<T> getProtectionPermissionValue(Guild guild, User user, GuildPermission<T> permission, Event event);
+    Option<Boolean> getProtectionPermissionValue(Guild guild, User user, GuildPermission<Boolean> permission, Event event);
     
-    default <T> Option<T> getProtectionPermissionValue(User user, GuildPermission<T> permission, Event event) {
+    default Option<Boolean> getProtectionPermissionValue(User user, GuildPermission<Boolean> permission, Event event) {
         return user.getGuild()
                 .flatMap(guild -> this.getProtectionPermissionValue(guild, user, permission, event));
     }
