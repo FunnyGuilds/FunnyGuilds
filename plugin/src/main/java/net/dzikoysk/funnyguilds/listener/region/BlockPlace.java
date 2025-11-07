@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Bukkit;
@@ -35,7 +36,13 @@ public class BlockPlace extends AbstractFunnyListener {
             }
         }
 
-        boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
+        boolean isProtected = ProtectionSystem.isProtected(
+                        player,
+                        blockLocation,
+                        event,
+                        GuildPermission.BLOCK_PLACE_PROTECTION,
+                        true
+                )
                 .peek(ProtectionSystem::defaultResponse)
                 .isPresent();
 

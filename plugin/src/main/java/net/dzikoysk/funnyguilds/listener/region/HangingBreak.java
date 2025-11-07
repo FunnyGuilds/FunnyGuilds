@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,13 @@ public class HangingBreak extends AbstractFunnyListener {
             return;
         }
 
-        ProtectionSystem.isProtected((Player) event.getRemover(), event.getEntity().getLocation(), false)
+        ProtectionSystem.isProtected(
+                        (Player) event.getRemover(),
+                        event.getEntity().getLocation(),
+                        event,
+                        GuildPermission.HANGING_BREAK_PROTECTION,
+                        false
+                )
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
     }
