@@ -17,7 +17,7 @@ import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.player.PlayerBucketEvent;
 import panda.std.Option;
 
-public class FunnyGuildPermissionController implements GuildPermissionController {
+public class EventGuildPermissionController implements GuildPermissionController {
 
     @Override
     public <T> Option<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission) {

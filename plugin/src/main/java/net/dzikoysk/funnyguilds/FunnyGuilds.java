@@ -35,7 +35,7 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
-import net.dzikoysk.funnyguilds.guild.permission.FunnyGuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.EventGuildPermissionController;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
@@ -126,7 +126,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
-    private final GuildPermissionController guildPermissionController = new FunnyGuildPermissionController();
+    private final GuildPermissionController guildPermissionController = new EventGuildPermissionController();
 
     private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
     private Option<DummyManager> dummyManager = Option.none();
