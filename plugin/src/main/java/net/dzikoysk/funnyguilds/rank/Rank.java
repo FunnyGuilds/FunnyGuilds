@@ -7,6 +7,7 @@ import java.util.Objects;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
 
+@Deprecated
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;

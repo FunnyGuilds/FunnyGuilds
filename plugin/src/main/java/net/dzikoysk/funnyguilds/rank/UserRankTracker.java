@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.user;
+package net.dzikoysk.funnyguilds.rank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +10,18 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.dzikoysk.funnyguilds.rank.RankNameProvider;
-import net.dzikoysk.funnyguilds.rank.RankTracker;
-import net.dzikoysk.funnyguilds.rank.StatKey;
+import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 
-public final class UserRankTracker<T extends Number> implements RankTracker<T> {
+final class UserRankTracker<T extends Number> implements RankTracker<User, T> {
 
     private final Executor executor;
 
     private final StatKey<T> statKey;
     private final Function<UUID, String> nameProvider;
+    private final Function<User, Boolean> canBeTrackedFunction;
 
     private final Queue<Runnable> topUpdateQueue = new ConcurrentLinkedQueue<>();
 
@@ -29,14 +29,16 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
     private final List<UUID> rankedUuids = new ArrayList<>();
     private final Map<UUID, Integer> pendingChanges = new ConcurrentHashMap<>();
 
-    public UserRankTracker(
+    UserRankTracker(
             Executor executor,
             StatKey<T> statKey,
-            RankNameProvider nameProvider
+            RankNameProvider nameProvider,
+            Function<User, Boolean> canBeTrackedFunction
     ) {
         this.executor = executor;
         this.statKey = statKey;
         this.nameProvider = nameProvider;
+        this.canBeTrackedFunction = canBeTrackedFunction;
     }
 
     @Override
@@ -45,25 +47,25 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
     }
 
     @Override
-    public boolean canBeTracked(UUID uuid) {
-        return false;
+    public boolean canBeTracked(User entity) {
+        return this.canBeTrackedFunction.apply(entity);
     }
 
     @Override
-    public boolean hasPendingChanges(UUID uuid) {
+    public boolean hasPendingChanges(User entity) {
         return this.pendingChanges.getOrDefault(
-                uuid,
+                entity.getUUID(),
                 0
         ) > 0;
     }
 
     @Override
-    public synchronized Option<Integer> getPosition(UUID uuid) {
-         if (!this.canBeTracked(uuid)) {
+    public synchronized Option<Integer> getPosition(User entity) {
+         if (!this.canBeTracked(entity)) {
             return Option.none();
         }
         
-        int position = this.rankedUuids.indexOf(uuid);
+        int position = this.rankedUuids.indexOf(entity.getUUID());
         return position >= 0
                 ? Option.of(position + 1)
                 : Option.none();
@@ -79,51 +81,54 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
     }
 
     @Override
-    public Option<T> getValue(UUID uuid) {
-        return Option.of(this.valuesByUuid.get(uuid));
+    public Option<T> getValue(User entity) {
+        return Option.of(this.valuesByUuid.get(entity.getUUID()));
     }
 
     @ApiStatus.Internal
-    public void initializeUsers(Map<UUID, T> initialValues) {
+    public synchronized void initializeUsers(Map<User, T> initialValues) {
          if (initialValues.isEmpty()) {
             return;
         }
-    
-        List<UUID> sortedUuids = new ArrayList<>();
-        
-        for (Map.Entry<UUID, T> entry : initialValues.entrySet()) {
-            UUID uuid = entry.getKey();
-            if (this.canBeTracked(uuid)) {
-                sortedUuids.add(uuid);
-            }
-        }
-    
-        sortedUuids.sort((uuid1, uuid2) -> {
-            T value1 = initialValues.get(uuid1);
-            T value2 = initialValues.get(uuid2);
-            return this.compareRankedUsers(uuid1, value1, uuid2, value2);
-        });
-    
-        synchronized (this) {
-            this.valuesByUuid.putAll(initialValues);
-            this.rankedUuids.clear();
-            this.rankedUuids.addAll(sortedUuids);
-        }
-    }
 
-    /**
-     * Update the top value for a user asynchronously.
-     *
-     * @param uuid        the UUID of the user
-     * @param valueChange the value to change (will be aggregated)
-     * @param onComplete  the callback to execute when the update is complete
-     */
+        List<UUID> sortedUsersUuids = initialValues.entrySet()
+                .stream()
+                .filter(entry -> !this.canBeTracked(entry.getKey()))
+                .sorted((entry1, entry2) -> {
+                    User user1 = entry1.getKey();
+                    T value1 = entry1.getValue();
+                    User user2 = entry2.getKey();
+                    T value2 = entry2.getValue();
+                    return this.compareRankedUsers(
+                            user1.getUUID(),
+                            value1,
+                            user2.getUUID(),
+                            value2
+                    );
+                })
+                .map(Map.Entry::getKey)
+                .map(User::getUUID)
+                .collect(Collectors.toList());
+         
+         Map<UUID, T> initialValuesByUuid = initialValues.entrySet()
+                 .stream()
+                 .collect(Collectors.toMap(
+                         entry -> entry.getKey().getUUID(),
+                         Map.Entry::getValue
+                 ));
+         
+            this.valuesByUuid.putAll(initialValuesByUuid);
+            this.rankedUuids.clear();
+            this.rankedUuids.addAll(sortedUsersUuids);
+    }
+    
     @Override
     public void updateValue(
-            UUID uuid,
+            User user,
             T valueChange,
             Consumer<T> onComplete
     ) {
+        UUID uuid = user.getUUID();
         this.pendingChanges.merge(
                 uuid,
                 1,
@@ -138,7 +143,7 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
             );
 
             this.updateRanking(
-                    uuid,
+                    user,
                     currentValue
             );
 
@@ -162,18 +167,11 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
             }
         });
     }
-
-    /**
-     * Updates the ranking position of a user based on their current value.
-     * Uses binary search to find the correct insertion position.
-     * This method must be called while holding the monitor lock.
-     *
-     * @param uuid         the user's UUID
-     * @param currentValue the user's current stat value
-     */
-    private synchronized void updateRanking(UUID uuid, T currentValue) {
+    
+    private synchronized void updateRanking(User user, T currentValue) {
+        UUID uuid = user.getUUID();
         this.rankedUuids.remove(uuid);
-        if (!this.canBeTracked(uuid)) {
+        if (!this.canBeTracked(user)) {
             return;
         }
         
@@ -186,17 +184,7 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
                 uuid
         );
     }
-
-    /**
-     * Finds the correct insertion position for a user in the ranked list using binary search.
-     * This method assumes the ranked list is already sorted according to the comparison logic.
-     * Falls back to linear search if it encounters a null value in the map.
-     *
-     * @param uuid  the UUID of the user to insert
-     * @param value the stat value of the user to insert
-     *
-     * @return the index where the user should be inserted to maintain sort order
-     */
+    
     private int findInsertPositionBinary(UUID uuid, T value) {
         int left = 0;
         int right = this.rankedUuids.size();
@@ -218,19 +206,7 @@ public final class UserRankTracker<T extends Number> implements RankTracker<T> {
         }
         return left;
     }
-
-    /**
-     * Finds the correct insertion position for a user using linear search from a starting index.
-     * This is a fallback method used when binary search encounters null values in the value map,
-     * or when the ranked list is small enough that linear search is more efficient.
-     * Skips over entries with null values.
-     *
-     * @param uuid       the UUID of the user to insert
-     * @param value      the stat value of the user to insert
-     * @param startIndex the index to start searching from
-     *
-     * @return the index where the user should be inserted to maintain sort order
-     */
+    
     private int findInsertPositionLinear(UUID uuid, T value, int startIndex) {
         int size = this.rankedUuids.size();
     

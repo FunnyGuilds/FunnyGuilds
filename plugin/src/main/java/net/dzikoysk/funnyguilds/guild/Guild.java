@@ -10,13 +10,14 @@ import java.util.function.IntFunction;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-public class Guild extends AbstractMutableEntity {
+public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
 
     private final UUID uuid;
 
@@ -75,6 +76,7 @@ public class Guild extends AbstractMutableEntity {
         this.members.forEach(user -> user.setGuild(this));
     }
 
+    @Override
     public UUID getUUID() {
         return this.uuid;
     }
