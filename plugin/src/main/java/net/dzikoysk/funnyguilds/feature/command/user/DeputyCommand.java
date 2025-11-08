@@ -16,13 +16,13 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class DeputyCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.deputy.name}",
-            description = "${user.deputy.description}",
-            aliases = "${user.deputy.aliases}",
-            permission = "funnyguilds.deputy",
-            completer = "members:3",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.deputy.name}",
+        description = "${user.deputy.description}",
+        aliases = "${user.deputy.aliases}",
+        permission = "funnyguilds.deputy",
+        completer = "members:3",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
@@ -38,21 +38,20 @@ public final class DeputyCommand extends AbstractFunnyCommand {
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
             this.messageService.getMessage(config -> config.deputyRemove)
-                    .receiver(owner)
-                    .send();
+                .receiver(owner)
+                .send();
             this.messageService.getMessage(config -> config.deputyMember)
-                    .receiver(deputyUser)
-                    .send();
+                .receiver(deputyUser)
+                .send();
             return;
         }
 
         guild.addDeputy(deputyUser);
         this.messageService.getMessage(config -> config.deputySet)
-                .receiver(owner)
-                .send();
+            .receiver(owner)
+            .send();
         this.messageService.getMessage(config -> config.deputyOwner)
-                .receiver(deputyUser)
-                .send();
+            .receiver(deputyUser)
+            .send();
     }
-
 }

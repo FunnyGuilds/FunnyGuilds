@@ -34,5 +34,4 @@ public class FunnyServer {
     public Option<Player> getPlayer(UUID uuid) {
         return Option.of(this.server.getPlayer(uuid));
     }
-
 }

@@ -6,15 +6,10 @@ import org.bukkit.command.CommandSender;
 
 public final class MainCommand extends AbstractFunnyCommand {
 
-    @FunnyCommand(
-            name = "${admin.main.name}",
-            permission = "funnyguilds.admin",
-            acceptsExceeded = true
-    )
+    @FunnyCommand(name = "${admin.main.name}", permission = "funnyguilds.admin", acceptsExceeded = true)
     public void execute(CommandSender sender) {
         this.messageService.getMessage(config -> config.adminHelpList)
-                .receiver(sender)
-                .send();
+            .receiver(sender)
+            .send();
     }
-
 }

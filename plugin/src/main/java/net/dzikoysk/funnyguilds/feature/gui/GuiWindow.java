@@ -44,7 +44,7 @@ public class GuiWindow {
         entity.openInventory(this.inv);
     }
 
-    //TODO: Use this method in the future. (Add ItemStack to configuration for fill inventory)
+    // TODO: Use this method in the future. (Add ItemStack to configuration for fill inventory)
     public void fillEmpty(ItemStack itemStack) {
         for (int slot = 0; slot < this.inv.getSize(); slot++) {
             if (this.inv.getItem(slot) == null) {
@@ -52,5 +52,4 @@ public class GuiWindow {
             }
         }
     }
-
 }

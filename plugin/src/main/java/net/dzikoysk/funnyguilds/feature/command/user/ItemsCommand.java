@@ -8,9 +8,9 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,12 +20,12 @@ import panda.std.stream.PandaStream;
 public final class ItemsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.items.name}",
-            description = "${user.items.description}",
-            aliases = "${user.items.aliases}",
-            permission = "funnyguilds.items",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.items.name}",
+        description = "${user.items.description}",
+        aliases = "${user.items.aliases}",
+        permission = "funnyguilds.items",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(Player player) {
         List<ItemStack> guiItems = this.config.guiItems;
@@ -40,7 +40,10 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         PandaStream.of(guiItems).forEach(item -> {
             item = item.clone();
 
-            if (this.config.addLoreLines && (this.config.createItems.contains(item) || this.config.createItemsVip.contains(item))) {
+            if (
+                this.config.addLoreLines &&
+                (this.config.createItems.contains(item) || this.config.createItemsVip.contains(item))
+            ) {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta == null) {
@@ -58,18 +61,31 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 }
 
                 FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{REQ-AMOUNT}", requiredAmount)
-                        .register("{PINV-AMOUNT}", inventoryAmount)
-                        .register("{PINV-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount, requiredAmount))
-                        .register("{EC-AMOUNT}", enderChestAmount)
-                        .register("{EC-PERCENT}", FunnyStringUtils.getPercent(enderChestAmount, requiredAmount))
-                        .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
-                        .register("{ALL-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
+                    .register("{REQ-AMOUNT}", requiredAmount)
+                    .register("{PINV-AMOUNT}", inventoryAmount)
+                    .register("{PINV-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount, requiredAmount))
+                    .register("{EC-AMOUNT}", enderChestAmount)
+                    .register("{EC-PERCENT}", FunnyStringUtils.getPercent(enderChestAmount, requiredAmount))
+                    .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
+                    .register(
+                        "{ALL-PERCENT}",
+                        FunnyStringUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount)
+                    );
 
-                lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
+                lore.addAll(
+                    PandaStream.of(this.config.guiItemsLore)
+                        .map(line -> formatter.format(line.getValue()))
+                        .toList()
+                );
 
                 if (!this.config.guiItemsName.isEmpty()) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), Collections.emptySet(), item));
+                    meta.setDisplayName(
+                        ItemUtils.translateTextPlaceholder(
+                            this.config.guiItemsName.getValue(),
+                            Collections.emptySet(),
+                            item
+                        )
+                    );
                 }
 
                 meta.setLore(lore);
@@ -81,5 +97,4 @@ public final class ItemsCommand extends AbstractFunnyCommand {
 
         gui.open(player);
     }
-
 }

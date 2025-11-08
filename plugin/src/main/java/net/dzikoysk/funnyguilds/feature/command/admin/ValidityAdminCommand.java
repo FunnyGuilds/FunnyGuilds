@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Duration;
 import java.time.Instant;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
@@ -11,16 +12,15 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.validity.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.validity.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -47,13 +47,14 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
         Instant finalValidity = validity;
         this.messageService.getMessage(config -> config.adminNewValidity)
-                .receiver(sender)
-                .with("{GUILD}", guild.getName())
-                .with(CommandSender.class, receiver -> Replacement.of(
-                        "{VALIDITY}",
-                        this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity)
-                ))
-                .send();
+            .receiver(sender)
+            .with("{GUILD}", guild.getName())
+            .with(CommandSender.class, receiver ->
+                Replacement.of(
+                    "{VALIDITY}",
+                    this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity)
+                )
+            )
+            .send();
     }
-
 }

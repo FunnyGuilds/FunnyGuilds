@@ -35,18 +35,19 @@ public class EntityDamage extends AbstractFunnyListener {
 
             if (this.config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
                 this.regionManager.findRegionAtLocation(victim.getLocation())
-                        .map(Region::getGuild)
-                        .filterNot(guild -> attackerUser.getGuild()
-                                .map(it -> it.equals(guild))
-                                .orElseGet(false))
-                        .peek(guild -> event.setCancelled(true));
+                    .map(Region::getGuild)
+                    .filterNot(guild ->
+                        attackerUser
+                            .getGuild()
+                            .map(it -> it.equals(guild))
+                            .orElseGet(false)
+                    )
+                    .peek(guild -> event.setCancelled(true));
 
                 return;
             }
 
-            Option<User> victimOption = Option.of(victim)
-                    .is(Player.class)
-                    .flatMap(this.userManager::findByPlayer);
+            Option<User> victimOption = Option.of(victim).is(Player.class).flatMap(this.userManager::findByPlayer);
 
             if (victimOption.isEmpty()) {
                 return;
@@ -61,50 +62,60 @@ public class EntityDamage extends AbstractFunnyListener {
                 Guild victimGuild = victimUser.getGuild().get();
                 Guild attackerGuild = attackerUser.getGuild().get();
 
-                boolean shouldReturn = HookManager.WORLD_GUARD
-                        .map(hook -> {
-                            FriendlyFireStatus victimFriendlyFire = hook.getFriendlyFireStatus(victim.getLocation());
-                            FriendlyFireStatus attackerFriendlyFire = hook.getFriendlyFireStatus(attacker.getLocation());
+                boolean shouldReturn = HookManager.WORLD_GUARD.map(hook -> {
+                    FriendlyFireStatus victimFriendlyFire = hook.getFriendlyFireStatus(victim.getLocation());
+                    FriendlyFireStatus attackerFriendlyFire = hook.getFriendlyFireStatus(attacker.getLocation());
 
-                            if (victimFriendlyFire == FriendlyFireStatus.ALLOW && attackerFriendlyFire == FriendlyFireStatus.ALLOW) {
-                                return FriendlyFireStatus.ALLOW;
-                            } else if (victimFriendlyFire == FriendlyFireStatus.DENY || attackerFriendlyFire == FriendlyFireStatus.DENY) {
-                                return FriendlyFireStatus.DENY;
-                            }
+                    if (
+                        victimFriendlyFire == FriendlyFireStatus.ALLOW &&
+                        attackerFriendlyFire == FriendlyFireStatus.ALLOW
+                    ) {
+                        return FriendlyFireStatus.ALLOW;
+                    } else if (
+                        victimFriendlyFire == FriendlyFireStatus.DENY || attackerFriendlyFire == FriendlyFireStatus.DENY
+                    ) {
+                        return FriendlyFireStatus.DENY;
+                    }
 
-                            return FriendlyFireStatus.INHERIT;
-                        })
-                        .orElse(FriendlyFireStatus.INHERIT)
-                        .map(friendlyFire -> {
-                            if (friendlyFire == FriendlyFireStatus.ALLOW) {
-                                return false;
-                            }
+                    return FriendlyFireStatus.INHERIT;
+                })
+                    .orElse(FriendlyFireStatus.INHERIT)
+                    .map(friendlyFire -> {
+                        if (friendlyFire == FriendlyFireStatus.ALLOW) {
+                            return false;
+                        }
 
-                            if (victimGuild.equals(attackerGuild) && (!victimGuild.hasPvPEnabled() || friendlyFire == FriendlyFireStatus.DENY)) {
+                        if (
+                            victimGuild.equals(attackerGuild) &&
+                            (!victimGuild.hasPvPEnabled() || friendlyFire == FriendlyFireStatus.DENY)
+                        ) {
+                            event.setCancelled(true);
+                            return true;
+                        }
+
+                        if (victimGuild.isAlly(attackerGuild)) {
+                            if (friendlyFire == FriendlyFireStatus.DENY) {
                                 event.setCancelled(true);
                                 return true;
                             }
 
-                            if (victimGuild.isAlly(attackerGuild)) {
-                                if (friendlyFire == FriendlyFireStatus.DENY) {
-                                    event.setCancelled(true);
-                                    return true;
-                                }
-
-                                if (!this.config.damageAlly) {
-                                    event.setCancelled(true);
-                                    return true;
-                                }
-
-                                if (!(attackerGuild.hasAllyPvPEnabled(victimGuild) && victimGuild.hasAllyPvPEnabled(attackerGuild))) {
-                                    event.setCancelled(true);
-                                    return true;
-                                }
+                            if (!this.config.damageAlly) {
+                                event.setCancelled(true);
+                                return true;
                             }
 
-                            return false;
-                        })
-                        .get();
+                            if (
+                                !(attackerGuild.hasAllyPvPEnabled(victimGuild) &&
+                                    victimGuild.hasAllyPvPEnabled(attackerGuild))
+                            ) {
+                                event.setCancelled(true);
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    })
+                    .get();
 
                 if (shouldReturn) {
                     return;
@@ -119,8 +130,11 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            if (HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.isInNonAssistsRegion(victim.getLocation()))
-                    .orElseGet(false)) {
+            if (
+                HookManager.WORLD_GUARD.map(worldGuard ->
+                    worldGuard.isInNonAssistsRegion(victim.getLocation())
+                ).orElseGet(false)
+            ) {
                 return;
             }
 
@@ -128,5 +142,4 @@ public class EntityDamage extends AbstractFunnyListener {
             damageState.addDamage(attackerUser, event.getDamage());
         });
     }
-
 }

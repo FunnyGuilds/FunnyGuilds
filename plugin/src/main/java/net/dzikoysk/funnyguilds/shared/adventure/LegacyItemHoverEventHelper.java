@@ -19,7 +19,11 @@ final class LegacyItemHoverEventHelper {
     private static Method GET_KEY;
 
     private static final Class<?> NMS_ITEM_STACK = Reflections.getNMSClass("ItemStack", "world.item");
-    private static final Method CRAFT_ITEM_STACK_AS_NMS_COPY = Reflections.getMethod(Reflections.getCraftBukkitClass("inventory.CraftItemStack"), "asNMSCopy", ItemStack.class);
+    private static final Method CRAFT_ITEM_STACK_AS_NMS_COPY = Reflections.getMethod(
+        Reflections.getCraftBukkitClass("inventory.CraftItemStack"),
+        "asNMSCopy",
+        ItemStack.class
+    );
     private static final Method NMS_ITEM_STACK_GET_TAG = Reflections.getMethod(NMS_ITEM_STACK, "getTag");
 
     static {
@@ -31,12 +35,15 @@ final class LegacyItemHoverEventHelper {
         }
     }
 
-    private LegacyItemHoverEventHelper() {
-    }
+    private LegacyItemHoverEventHelper() {}
 
     static HoverEventSource<?> getHoverForItem(ItemStack item) {
         try {
-            HoverEvent.ShowItem showItem = HoverEvent.ShowItem.showItem(getMaterialKey(item.getType()), item.getAmount(), getBinaryTagHolder(item));
+            HoverEvent.ShowItem showItem = HoverEvent.ShowItem.showItem(
+                getMaterialKey(item.getType()),
+                item.getAmount(),
+                getBinaryTagHolder(item)
+            );
             return HoverEvent.showItem(showItem);
         } catch (Exception ignored) {
             return null;
@@ -55,8 +62,7 @@ final class LegacyItemHoverEventHelper {
         return Key.key(namespace, key);
     }
 
-    @Nullable
-    static Object getTagCompound(ItemStack item) {
+    @Nullable static Object getTagCompound(ItemStack item) {
         Object nbtTagCompound;
         try {
             Object nsmItemStack = CRAFT_ITEM_STACK_AS_NMS_COPY.invoke(null, item);
@@ -67,13 +73,11 @@ final class LegacyItemHoverEventHelper {
         return nbtTagCompound;
     }
 
-    @Nullable
-    static BinaryTagHolder getBinaryTagHolder(ItemStack item) {
+    @Nullable static BinaryTagHolder getBinaryTagHolder(ItemStack item) {
         Object nbtTagCompound = getTagCompound(item);
         if (nbtTagCompound == null) {
             return null;
         }
         return BinaryTagHolder.binaryTagHolder(nbtTagCompound.toString());
     }
-
 }

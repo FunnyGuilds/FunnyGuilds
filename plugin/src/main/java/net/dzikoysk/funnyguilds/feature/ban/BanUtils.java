@@ -13,14 +13,13 @@ import panda.std.stream.PandaStream;
 
 public final class BanUtils {
 
-    private BanUtils() {
-    }
+    private BanUtils() {}
 
     public static void ban(Guild guild, Duration time, String reason) {
         guild.setBan(Instant.now().plus(time));
         PandaStream.of(guild.getMembers())
-                .map(member -> ban(member, time, reason))
-                .forEach(member -> member.getProfile().kick(getBanMessage(member)));
+            .map(member -> ban(member, time, reason))
+            .forEach(member -> member.getProfile().kick(getBanMessage(member)));
     }
 
     public static User ban(User user, Duration time, String reason) {
@@ -37,25 +36,26 @@ public final class BanUtils {
     }
 
     public static void checkIfBanShouldExpire(User user) {
-        user.getBan()
-                .filterNot(UserBan::isBanned)
-                .peek(time -> user.setBan(null));
+        user
+            .getBan()
+            .filterNot(UserBan::isBanned)
+            .peek(time -> user.setBan(null));
     }
 
     public static String getBanMessage(User user) {
         MessageService messageService = FunnyGuilds.getInstance().getMessageService();
 
-        return user.getBan()
-                .map(ban -> {
-                    FunnyFormatter formatter = new FunnyFormatter()
-                            .register("{NEWLINE}", ChatColor.RESET + "\n")
-                            .register("{DATE}", messageService.get(user, config -> config.dateFormat).format(ban.getTime()))
-                            .register("{REASON}", ban.getReason())
-                            .register("{PLAYER}", user.getName());
+        return user
+            .getBan()
+            .map(ban -> {
+                FunnyFormatter formatter = new FunnyFormatter()
+                    .register("{NEWLINE}", ChatColor.RESET + "\n")
+                    .register("{DATE}", messageService.get(user, config -> config.dateFormat).format(ban.getTime()))
+                    .register("{REASON}", ban.getReason())
+                    .register("{PLAYER}", user.getName());
 
-                    return messageService.get(user, config -> config.banMessage, formatter);
-                })
-                .orElseGet("");
+                return messageService.get(user, config -> config.banMessage, formatter);
+            })
+            .orElseGet("");
     }
-
 }

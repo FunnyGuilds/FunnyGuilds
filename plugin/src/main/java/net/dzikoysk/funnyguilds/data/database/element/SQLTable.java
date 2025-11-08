@@ -92,5 +92,4 @@ public class SQLTable {
 
         return elementsMap;
     }
-
 }

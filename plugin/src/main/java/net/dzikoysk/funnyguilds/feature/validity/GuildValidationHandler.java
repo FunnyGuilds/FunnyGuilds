@@ -34,22 +34,21 @@ public class GuildValidationHandler implements Runnable {
 
     private void validateGuildLifetime() {
         PandaStream.of(this.guildManager.getGuilds())
-                .filterNot(Guild::isValid)
-                .filter(guild -> SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild)))
-                .forEach(guild -> {
-                    ValidityUtils.broadcast(guild);
-                    this.guildManager.deleteGuild(this.plugin, guild);
-                });
+            .filterNot(Guild::isValid)
+            .filter(guild -> SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild)))
+            .forEach(guild -> {
+                ValidityUtils.broadcast(guild);
+                this.guildManager.deleteGuild(this.plugin, guild);
+            });
 
         this.validateGuildsCounter = 0;
     }
 
     private void validateGuildBans() {
         PandaStream.of(this.guildManager.getGuilds())
-                .filterNot(Guild::isBanned)
-                .forEach(guild -> guild.setBan(null));
+            .filterNot(Guild::isBanned)
+            .forEach(guild -> guild.setBan(null));
 
         this.banGuildsCounter = 0;
     }
-
 }

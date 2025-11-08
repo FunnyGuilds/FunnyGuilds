@@ -102,5 +102,4 @@ public abstract class Rank<T extends MutableEntity> {
 
         return o1.getIdentityName().compareTo(o2.getIdentityName());
     }
-
 }

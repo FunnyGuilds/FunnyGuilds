@@ -38,5 +38,4 @@ public class GuildRenameEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild renaming has been cancelled by the server!";
     }
-
 }

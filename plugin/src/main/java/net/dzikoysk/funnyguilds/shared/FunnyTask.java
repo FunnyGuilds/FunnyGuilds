@@ -3,10 +3,9 @@ package net.dzikoysk.funnyguilds.shared;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public interface FunnyTask extends Runnable {
-
     enum Type {
         SYNC,
-        ASYNC
+        ASYNC,
     }
 
     abstract class AsyncFunnyTask implements FunnyTask {
@@ -15,7 +14,6 @@ public interface FunnyTask extends Runnable {
         public final Type getType() {
             return Type.ASYNC;
         }
-
     }
 
     abstract class SyncFunnyTask implements FunnyTask {
@@ -24,7 +22,6 @@ public interface FunnyTask extends Runnable {
         public final Type getType() {
             return Type.SYNC;
         }
-
     }
 
     @Override
@@ -39,5 +36,4 @@ public interface FunnyTask extends Runnable {
     void execute() throws Exception;
 
     Type getType();
-
 }

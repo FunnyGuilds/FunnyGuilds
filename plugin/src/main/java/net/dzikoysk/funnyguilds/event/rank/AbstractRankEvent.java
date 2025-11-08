@@ -19,5 +19,4 @@ public abstract class AbstractRankEvent extends FunnyEvent {
     public User getAffected() {
         return this.affected;
     }
-
 }

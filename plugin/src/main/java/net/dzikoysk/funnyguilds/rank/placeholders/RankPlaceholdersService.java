@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.rank.placeholders;
 
+import dev.peri.yetanothermessageslibrary.adventure.AdventureHelper;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -26,8 +28,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
-import dev.peri.yetanothermessageslibrary.adventure.AdventureHelper;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public class RankPlaceholdersService implements PlaceholdersService<User> {
 
@@ -42,11 +42,11 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
     private final GuildRankManager guildRankManager;
 
     public RankPlaceholdersService(
-            PluginConfiguration config,
-            TablistConfiguration tablistConfig,
-            MessageService messageService,
-            UserRankManager userRankManager,
-            GuildRankManager guildRankManager
+        PluginConfiguration config,
+        TablistConfiguration tablistConfig,
+        MessageService messageService,
+        UserRankManager userRankManager,
+        GuildRankManager guildRankManager
     ) {
         this.config = config;
         this.tablistConfig = tablistConfig;
@@ -136,7 +136,9 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             String topFormat = this.config.top.format.ptop.getValue();
 
             if (!topFormat.isEmpty()) {
-                List<RangeFormatting> formats = this.config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT));
+                List<RangeFormatting> formats = this.config.top.format.ptopValueFormatting.get(
+                    comparatorType.toLowerCase(Locale.ROOT)
+                );
                 topFormat = formatTopValue(topValue, topFormat, formats);
             }
 
@@ -164,7 +166,9 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             String topFormat = this.config.top.format.gtop.getValue();
 
             if (!topFormat.isEmpty()) {
-                List<RangeFormatting> formats = this.config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT));
+                List<RangeFormatting> formats = this.config.top.format.gtopValueFormatting.get(
+                    comparatorType.toLowerCase(Locale.ROOT)
+                );
                 topFormat = formatTopValue(topValue, topFormat, formats);
             }
 
@@ -208,7 +212,9 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         }
 
         if (positionType.equalsIgnoreCase("G-POSITION")) {
-            String minMembersToIncludeNoValue = this.messageService.get(targetUser, config -> config.minMembersToIncludeNoValue);
+            String minMembersToIncludeNoValue = this.messageService.get(targetUser, config ->
+                config.minMembersToIncludeNoValue
+            );
             if (targetUser == null) {
                 return FunnyFormatter.format(text, "{G-POSITION}", minMembersToIncludeNoValue);
             }
@@ -286,8 +292,8 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             if (!pointsFormat.isEmpty()) {
                 FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
-                        .register("{POINTS}", points);
+                    .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
+                    .register("{POINTS}", points);
 
                 pointsFormat = formatter.format(pointsFormat);
             }
@@ -310,8 +316,8 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
             if (!pointsFormat.isEmpty()) {
                 FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
-                        .register("{POINTS}", points);
+                    .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
+                    .register("{POINTS}", points);
 
                 pointsFormat = formatter.format(pointsFormat);
             }
@@ -324,15 +330,13 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
     private static String formatTopValue(Number topValue, String topFormat, @Nullable List<RangeFormatting> formats) {
         String valueString = topValue instanceof Float || topValue instanceof Double
-                ? String.format(Locale.US, "%.2f", topValue.floatValue())
-                : topValue.toString();
-        String valueFormat = formats == null
-                ? valueString
-                : NumberRange.inRangeToString(topValue, formats);
+            ? String.format(Locale.US, "%.2f", topValue.floatValue())
+            : topValue.toString();
+        String valueFormat = formats == null ? valueString : NumberRange.inRangeToString(topValue, formats);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{VALUE-FORMAT}", valueFormat)
-                .register("{VALUE}", valueString);
+            .register("{VALUE-FORMAT}", valueFormat)
+            .register("{VALUE}", valueString);
 
         return formatter.format(topFormat);
     }
@@ -347,7 +351,13 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         return FunnyFormatter.format(text, placeholder, onlineColor + user.getName() + topFormat);
     }
 
-    private String formatGuildRank(String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
+    private String formatGuildRank(
+        String text,
+        String placeholder,
+        @Nullable User targetUser,
+        Guild guild,
+        String topFormat
+    ) {
         String prefix = "{TAG}";
 
         if (this.tablistConfig.useRelationshipColors) {
@@ -371,15 +381,20 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             @Override
             public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
                 TextReplacementConfig topReplacement = TextReplacementConfig.builder()
-                        .match(PLACEHOLDER_PATTERN)
-                        .replacement(((result, input) -> {
-                            String replacement = RankPlaceholdersService.this.format(targetUser, result.group(), targetUser);
+                    .match(PLACEHOLDER_PATTERN)
+                    .replacement(
+                        ((result, input) -> {
+                            String replacement = RankPlaceholdersService.this.format(
+                                targetUser,
+                                result.group(),
+                                targetUser
+                            );
                             return AdventureHelper.legacyToComponent(replacement);
-                        }))
-                        .build();
+                        })
+                    )
+                    .build();
                 return text.replaceText(topReplacement);
             }
         };
     }
-
 }

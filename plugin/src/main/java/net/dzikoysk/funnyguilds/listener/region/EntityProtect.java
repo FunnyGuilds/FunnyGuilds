@@ -24,11 +24,13 @@ public class EntityProtect extends AbstractFunnyListener {
             return;
         }
 
-        if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION && event.getCause() != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) {
+        if (
+            event.getCause() != EntityDamageEvent.DamageCause.ENTITY_EXPLOSION &&
+            event.getCause() != EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
+        ) {
             return;
         }
 
         event.setCancelled(true);
     }
-
 }

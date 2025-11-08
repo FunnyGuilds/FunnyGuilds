@@ -12,8 +12,7 @@ import panda.std.Option;
 
 public final class FlatUserSerializer {
 
-    private FlatUserSerializer() {
-    }
+    private FlatUserSerializer() {}
 
     public static Option<User> deserialize(File file) {
         if (file.isDirectory()) {
@@ -72,15 +71,16 @@ public final class FlatUserSerializer {
         wrapper.set("assists", user.getRank().getAssists());
         wrapper.set("logouts", user.getRank().getLogouts());
 
-        user.getBan().peek(ban -> {
-            wrapper.set("ban", ban.getTime().toEpochMilli());
-            wrapper.set("reason", ban.getReason());
-        });
+        user
+            .getBan()
+            .peek(ban -> {
+                wrapper.set("ban", ban.getTime().toEpochMilli());
+                wrapper.set("reason", ban.getReason());
+            });
 
         wrapper.save();
         user.markUnchanged();
 
         return true;
     }
-
 }

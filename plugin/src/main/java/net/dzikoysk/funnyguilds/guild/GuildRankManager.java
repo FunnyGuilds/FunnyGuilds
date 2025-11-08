@@ -18,17 +18,16 @@ public class GuildRankManager extends RankManager<GuildTop, GuildRank> {
     }
 
     public boolean isRankedGuild(Guild guild) {
-        return guild.getMembers().size() >= this.pluginConfiguration.minMembersToInclude;
+        return (guild.getMembers().size() >= this.pluginConfiguration.minMembersToInclude);
     }
 
     public void register(String id, GuildTop guildTop) {
         PandaStream.of(this.pluginConfiguration.top.enabledGuildTops)
-                .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
-                .peek(enabledTop -> this.addTop(id, guildTop));
+            .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
+            .peek(enabledTop -> this.addTop(id, guildTop));
     }
 
     public void register(Map<String, GuildTop> topsToRegister) {
         topsToRegister.forEach(this::register);
     }
-
 }

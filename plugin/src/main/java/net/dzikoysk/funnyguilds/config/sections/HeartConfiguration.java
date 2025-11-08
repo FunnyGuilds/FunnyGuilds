@@ -25,15 +25,23 @@ public class HeartConfiguration extends OkaeriConfig {
     @Comment("Blok lub entity, które jest sercem gildii")
     @Comment("Zmiana entity wymaga pełnego restartu serwera")
     @Comment("Bloki muszą być podawane w formacie - material:metadata")
-    @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    @Comment("Typ entity musi byc zgodny z tą lista (i zdrowym rozsądkiem) - https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
+    @Comment(
+        "Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html"
+    )
+    @Comment(
+        "Typ entity musi byc zgodny z tą lista (i zdrowym rozsądkiem) - https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html"
+    )
     @Comment("UWAGA: Zmiana bloku, gdy są juz zrobione jakieś gildie, spowoduje nieprawidłowe działanie ich regionów")
     @Comment(" ")
-    @Comment("UWAGA: Jeśli jako serca gildii chcesz użyć bloku, który spada pod wpływem grawitacji - upewnij się, ze będzie on stał na jakimś innym bloku!")
+    @Comment(
+        "UWAGA: Jeśli jako serca gildii chcesz użyć bloku, który spada pod wpływem grawitacji - upewnij się, ze będzie on stał na jakimś innym bloku!"
+    )
     @Comment("Jeśli pojawi sie w powietrzu - spadnie i plugin nie będzie odczytywał go poprawnie!")
     public String createType = "ender_crystal";
+
     @Exclude
     public Pair<Material, Byte> createMaterial;
+
     @Exclude
     public EntityType createEntityType;
 
@@ -51,11 +59,9 @@ public class HeartConfiguration extends OkaeriConfig {
         public Height height = Height.FIXED;
 
         public enum Height {
-
             FIXED,
             PLAYER,
-            GRAVITY
-
+            GRAVITY,
         }
 
         @Comment("")
@@ -64,15 +70,16 @@ public class HeartConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Ostateczne przesunięcie centrum gildii")
-        @Comment("Przydatne m.in. kiedy użyjemy opcji 'GRAVITY' i chcemy żeby serce było np. 10 kratek pod powierzchnią")
+        @Comment(
+            "Przydatne m.in. kiedy użyjemy opcji 'GRAVITY' i chcemy żeby serce było np. 10 kratek pod powierzchnią"
+        )
         public Vector offset = new Vector(0, 0, 0);
 
         public void prepareCenterLocation(Location location) {
             World world = location.getWorld();
             if (this.height == Height.FIXED) {
                 location.setY(this.fixedHeight);
-            }
-            else if (this.height == Height.GRAVITY) {
+            } else if (this.height == Height.GRAVITY) {
                 location.setY(world.getHighestBlockYAt(location));
             }
             location.add(this.offset);
@@ -82,7 +89,6 @@ public class HeartConfiguration extends OkaeriConfig {
                 location.setY(minHeight + 2);
             }
         }
-
     }
 
     @Comment("")
@@ -144,7 +150,6 @@ public class HeartConfiguration extends OkaeriConfig {
             location.setYaw(this.yaw);
             location.setPitch(this.pitch);
         }
-
     }
 
     public InteractionProtection interactionProtection = new InteractionProtection();
@@ -161,7 +166,6 @@ public class HeartConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Przesunięcie drugiego wierzchołka względem serca gildii")
         public Vector secondCorner = new Vector(-2, 3, 2);
-
     }
 
     public void loadProcessedProperties() {
@@ -172,19 +176,24 @@ public class HeartConfiguration extends OkaeriConfig {
 
         if (this.pasteSchematicOnCreation) {
             if (FunnyStringUtils.isEmpty(this.guildSchematicFileName)) {
-                FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field " +
-                        "\"paste-schematic-on-creation\" is set to true!");
+                FunnyGuilds.getPluginLogger().error(
+                    "The field named \"guild-schematic-file-name\" is empty, but field " +
+                        "\"paste-schematic-on-creation\" is set to true!"
+                );
                 this.pasteSchematicOnCreation = false;
-            }
-            else {
-                this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
+            } else {
+                this.guildSchematicFile = new File(
+                    FunnyGuilds.getInstance().getDataFolder(),
+                    this.guildSchematicFileName
+                );
 
                 if (!this.guildSchematicFile.exists()) {
-                    FunnyGuilds.getPluginLogger().error("File with given name in field \"guild-schematic-file-name\" does not exist!");
+                    FunnyGuilds.getPluginLogger().error(
+                        "File with given name in field \"guild-schematic-file-name\" does not exist!"
+                    );
                     this.pasteSchematicOnCreation = false;
                 }
             }
         }
     }
-
 }

@@ -10,16 +10,19 @@ import panda.utilities.StringUtils;
 
 public final class ChatUtils {
 
-    private ChatUtils() {
-    }
+    private ChatUtils() {}
 
     public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
     public static final String DECOLOR_REPLACEMENT = "&$1";
 
-    private static final Pattern HEX_TO_LEGACY_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})");
+    private static final Pattern HEX_TO_LEGACY_PATTERN = Pattern.compile(
+        "&#([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})"
+    );
     private static final String LEGACY_COLOR_REPLACEMENT = "&x&$1&$2&$3&$4&$5&$6";
 
-    private static final Pattern LEGACY_TO_HEX_PATTERN = Pattern.compile("&[xX]&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})");
+    private static final Pattern LEGACY_TO_HEX_PATTERN = Pattern.compile(
+        "&[xX]&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})"
+    );
     private static final String HEX_COLOR_REPLACEMENT = "&#$1$2$3$4$5$6";
 
     public static String colored(String message) {

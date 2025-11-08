@@ -18,5 +18,4 @@ public abstract class AbstractMutableEntity implements MutableEntity {
     public boolean wasChanged() {
         return this.wasChanged;
     }
-
 }

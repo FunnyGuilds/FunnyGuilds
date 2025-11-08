@@ -27,8 +27,7 @@ import panda.std.Option;
 
 public final class DatabaseGuildSerializer {
 
-    private DatabaseGuildSerializer() {
-    }
+    private DatabaseGuildSerializer() {}
 
     public static Option<Guild> deserialize(ResultSet resultSet) {
         if (resultSet == null) {
@@ -50,7 +49,7 @@ public final class DatabaseGuildSerializer {
             boolean pvp = resultSet.getBoolean("pvp");
             Instant born = TimeUtils.positiveOrNullInstant(resultSet.getLong("born"));
             Instant validity = TimeUtils.positiveOrNullInstant(resultSet.getLong("validity"));
-            Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
+            Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("attacked")); // TODO: [FG 5.0] attacked -> protection
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
 
@@ -132,10 +131,16 @@ public final class DatabaseGuildSerializer {
             values[14] = deputies;
             values[15] = pvp;
 
-            return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
-        }
-        catch (Exception exception) {
-            FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", exception);
+            return DeserializationUtils.deserializeGuild(
+                plugin.getPluginConfiguration(),
+                plugin.getGuildManager(),
+                values
+            );
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error(
+                "Could not deserialize guild (id: " + id + ", name: " + name + ")",
+                exception
+            );
         }
 
         return Option.none();
@@ -165,7 +170,7 @@ public final class DatabaseGuildSerializer {
         statement.set("lives", guild.getLives());
         statement.set("born", guild.getBorn().toEpochMilli());
         statement.set("validity", guild.getValidity().toEpochMilli());
-        statement.set("attacked", guild.getProtection().toEpochMilli()); //TODO: [FG 5.0] attacked -> protection
+        statement.set("attacked", guild.getProtection().toEpochMilli()); // TODO: [FG 5.0] attacked -> protection
         statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
@@ -191,5 +196,4 @@ public final class DatabaseGuildSerializer {
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }
-
 }

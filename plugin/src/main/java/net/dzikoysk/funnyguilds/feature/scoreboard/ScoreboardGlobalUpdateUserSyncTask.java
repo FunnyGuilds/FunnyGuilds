@@ -10,7 +10,11 @@ public class ScoreboardGlobalUpdateUserSyncTask extends SyncFunnyTask {
     private final User user;
     private final boolean highPriority;
 
-    public ScoreboardGlobalUpdateUserSyncTask(AbstractScoreboardHandler<?> scoreboardHandler, User user, boolean highPriority) {
+    public ScoreboardGlobalUpdateUserSyncTask(
+        AbstractScoreboardHandler<?> scoreboardHandler,
+        User user,
+        boolean highPriority
+    ) {
         this.scoreboardHandler = scoreboardHandler;
         this.user = user;
         this.highPriority = highPriority;
@@ -24,5 +28,4 @@ public class ScoreboardGlobalUpdateUserSyncTask extends SyncFunnyTask {
     public void execute() throws Exception {
         this.scoreboardHandler.updatePlayer(Bukkit.getPlayer(this.user.getUUID()), this.user, this.highPriority);
     }
-
 }

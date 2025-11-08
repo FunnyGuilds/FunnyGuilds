@@ -15,10 +15,10 @@ public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessage
     private final Function<User, CommandSender> supplyReceiver;
 
     public FunnyMessageDispatcher(
-            ViewerService<CommandSender> viewerService,
-            Function<Object, Locale> localeSupplier,
-            Function<Object, Sendable> messageSupplier,
-            Function<User, CommandSender> supplyReceiver
+        ViewerService<CommandSender> viewerService,
+        Function<Object, Locale> localeSupplier,
+        Function<Object, Sendable> messageSupplier,
+        Function<User, CommandSender> supplyReceiver
     ) {
         super(viewerService, localeSupplier, messageSupplier);
         this.supplyReceiver = supplyReceiver;
@@ -44,5 +44,4 @@ public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessage
     public FunnyMessageDispatcher receiver(Guild guild) {
         return this.receivers(guild.getOnlineMembers());
     }
-
 }

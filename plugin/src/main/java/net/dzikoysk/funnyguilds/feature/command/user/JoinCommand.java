@@ -14,14 +14,13 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.panda_lang.utilities.inject.annotations.Inject;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -31,13 +30,13 @@ public final class JoinCommand extends AbstractFunnyCommand {
     public GuildInvitationList guildInvitationList;
 
     @FunnyCommand(
-            name = "${user.join.name}",
-            description = "${user.join.description}",
-            aliases = "${user.join.aliases}",
-            permission = "funnyguilds.join",
-            completer = "guild-invitations:3",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.join.name}",
+        description = "${user.join.description}",
+        aliases = "${user.join.aliases}",
+        permission = "funnyguilds.join",
+        completer = "guild-invitations:3",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
         when(user.hasGuild(), config -> config.joinHasGuild);
@@ -50,9 +49,9 @@ public final class JoinCommand extends AbstractFunnyCommand {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", guildNames);
 
             this.messageService.getMessage(config -> config.joinInvitationList)
-                    .receiver(player)
-                    .with(formatter)
-                    .send();
+                .receiver(player)
+                .with(formatter)
+                .send();
             return;
         }
 
@@ -65,8 +64,9 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         when(
-                guild.getMembers().size() >= this.config.maxMembersInGuild,
-                config -> config.inviteAmountJoin, FunnyFormatter.of("{AMOUNT}", this.config.maxMembersInGuild)
+            guild.getMembers().size() >= this.config.maxMembersInGuild,
+            config -> config.inviteAmountJoin,
+            FunnyFormatter.of("{AMOUNT}", this.config.maxMembersInGuild)
         );
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
@@ -84,27 +84,26 @@ public final class JoinCommand extends AbstractFunnyCommand {
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         this.plugin.getIndividualNameTagManager()
-                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                .peek(this.plugin::scheduleFunnyTasks);
+            .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
+            .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", player.getName());
+            .register("{GUILD}", guild.getName())
+            .register("{TAG}", guild.getTag())
+            .register("{PLAYER}", player.getName());
 
         this.messageService.getMessage(config -> config.joinToMember)
-                .receiver(player)
-                .with(formatter)
-                .send();
+            .receiver(player)
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.broadcastJoin)
-                .broadcast()
-                .with(formatter)
-                .send();
+            .broadcast()
+            .with(formatter)
+            .send();
 
-        this.messageService.getMessage( config -> config.joinToOwner)
-                .receiver(guild.getOwner())
-                .with(formatter)
-                .send();
+        this.messageService.getMessage(config -> config.joinToOwner)
+            .receiver(guild.getOwner())
+            .with(formatter)
+            .send();
     }
-
 }

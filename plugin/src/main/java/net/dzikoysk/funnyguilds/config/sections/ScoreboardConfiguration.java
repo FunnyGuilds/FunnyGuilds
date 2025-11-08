@@ -55,7 +55,13 @@ public class ScoreboardConfiguration extends OkaeriConfig {
             private RawString enemiesGuild = new RawString("");
             private RawString otherGuild = new RawString("");
 
-            public Value(RawString noGuild, RawString ourGuild, RawString alliesGuild, RawString enemiesGuild, RawString otherGuild) {
+            public Value(
+                RawString noGuild,
+                RawString ourGuild,
+                RawString alliesGuild,
+                RawString enemiesGuild,
+                RawString otherGuild
+            ) {
                 this.noGuild = noGuild;
                 this.ourGuild = ourGuild;
                 this.alliesGuild = alliesGuild;
@@ -67,8 +73,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
                 this(noGuild, anyGuild, anyGuild, anyGuild, anyGuild);
             }
 
-            public Value() {
-            }
+            public Value() {}
 
             public RawString getNoGuild() {
                 return this.noGuild;
@@ -89,9 +94,7 @@ public class ScoreboardConfiguration extends OkaeriConfig {
             public RawString getOtherGuild() {
                 return this.otherGuild;
             }
-
         }
-
     }
 
     @Comment("")
@@ -100,7 +103,9 @@ public class ScoreboardConfiguration extends OkaeriConfig {
     public static class Dummy extends OkaeriConfig {
 
         @Comment("Czy włączyć dummy z punktami (liczbę punktów pod nickiem gracza)")
-        @Comment("UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
+        @Comment(
+            "UWAGA: zalecane jest wyłączenie tej opcji w przypadku konfliktów z BungeeCordem, więcej szczegółów tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769"
+        )
         public boolean enabled = true;
 
         @Comment("")
@@ -113,7 +118,6 @@ public class ScoreboardConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Wygląd nazwy wyświetlanej za punktami")
         public RawString suffix = new RawString("pkt");
-
     }
 
     @Comment("")
@@ -123,15 +127,16 @@ public class ScoreboardConfiguration extends OkaeriConfig {
 
         @Comment("Co jaki czas kolejka (nametagów/dummy) powinna być odświeżana")
         @Comment("Wartość podawana w tickach (1 sekunda = 20 ticków)")
-        @Comment("Wyższe wartości mogą powodować opóźnienia w aktualizacji nametagów/dummy, ale zmniejszają ryzyko lagów")
+        @Comment(
+            "Wyższe wartości mogą powodować opóźnienia w aktualizacji nametagów/dummy, ale zmniejszają ryzyko lagów"
+        )
         public int updateRate = 2;
 
         @Comment("")
         @Comment("Maksymalna liczba update'ów w trakcie trwania jednego ticku")
-        @Comment("Wyższe wartości zmniejszają ryzyko opóźnień podczas aktualizacji nametagów/dummy, ale mogą powodować lagi")
+        @Comment(
+            "Wyższe wartości zmniejszają ryzyko opóźnień podczas aktualizacji nametagów/dummy, ale mogą powodować lagi"
+        )
         public int maxUpdatesInTick = 100;
-
-
     }
-
 }

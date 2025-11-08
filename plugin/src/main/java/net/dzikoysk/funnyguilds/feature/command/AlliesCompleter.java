@@ -23,15 +23,16 @@ final class AlliesCompleter implements Completer {
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
         return this.userManager.findByName(context.getCommandSender().getName())
-                .filter(User::hasGuild)
-                .flatMap(User::getGuild)
-                .map(guild -> CommandUtils.collectCompletions(guild.getAllies(), prefix, limit, ArrayList::new, Guild::getTag))
-                .orElseGet(Collections.emptyList());
+            .filter(User::hasGuild)
+            .flatMap(User::getGuild)
+            .map(guild ->
+                CommandUtils.collectCompletions(guild.getAllies(), prefix, limit, ArrayList::new, Guild::getTag)
+            )
+            .orElseGet(Collections.emptyList());
     }
 
     @Override
     public String getName() {
         return "allies";
     }
-
 }

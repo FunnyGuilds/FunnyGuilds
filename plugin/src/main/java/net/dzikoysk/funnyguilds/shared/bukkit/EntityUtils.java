@@ -16,8 +16,7 @@ import panda.std.stream.PandaStream;
 
 public final class EntityUtils {
 
-    private EntityUtils() {
-    }
+    private EntityUtils() {}
 
     public static Option<Player> getAttacker(Entity damager) {
         if (damager instanceof Player) {
@@ -35,8 +34,7 @@ public final class EntityUtils {
         return Option.none();
     }
 
-    @Nullable
-    public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn, boolean logUnknown) {
+    @Nullable public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn, boolean logUnknown) {
         if (stringEntity == null) {
             if (logUnknown) {
                 FunnyGuilds.getPluginLogger().parser("Unknown entity: null");
@@ -63,16 +61,14 @@ public final class EntityUtils {
         return allowNullReturn ? null : EntityType.UNKNOWN;
     }
 
-    @Nullable
-    public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn) {
+    @Nullable public static EntityType parseEntityType(String stringEntity, boolean allowNullReturn) {
         return parseEntityType(stringEntity, allowNullReturn, true);
     }
 
     public static Set<EntityType> parseEntityTypes(boolean allowNullReturn, String... stringEntities) {
         return PandaStream.of(stringEntities)
-                .map(stringEntity -> parseEntityType(stringEntity, allowNullReturn))
-                .filter(Objects::nonNull)
-                .toSet();
+            .map(stringEntity -> parseEntityType(stringEntity, allowNullReturn))
+            .filter(Objects::nonNull)
+            .toSet();
     }
-
 }

@@ -30,33 +30,43 @@ public class EntityExplode extends AbstractFunnyListener {
         Location explodeLocation = event.getLocation();
         Map<Material, Double> explosiveMaterials = this.config.explodeMaterials;
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
-                explodeLocation,
-                this.config.explodeRadius,
-                this.config.explodeRadius,
-                0,
-                false,
-                true
+            explodeLocation,
+            this.config.explodeRadius,
+            this.config.explodeRadius,
+            0,
+            false,
+            true
         );
 
         explodedBlocks.removeIf(block -> {
             int height = block.getLocation().getBlockY();
-            return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
+            return (
+                height < this.config.tntProtection.explode.minHeight ||
+                height > this.config.tntProtection.explode.maxHeight
+            );
         });
 
         blocksInSphere.removeIf(block -> {
             int height = block.getLocation().getBlockY();
-            return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
+            return (
+                height < this.config.tntProtection.explode.minHeight ||
+                height > this.config.tntProtection.explode.maxHeight
+            );
         });
 
         if (this.config.explodeShouldAffectOnlyGuild) {
-            explodedBlocks.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
+            explodedBlocks.removeIf(block ->
+                this.regionManager.findRegionAtLocation(block.getLocation())
                     .filterNot(region -> region.getGuild() == null)
                     .filter(region -> block.getType() != Material.TNT)
-                    .isEmpty());
+                    .isEmpty()
+            );
 
-            blocksInSphere.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
+            blocksInSphere.removeIf(block ->
+                this.regionManager.findRegionAtLocation(block.getLocation())
                     .filterNot(region -> region.getGuild() == null)
-                    .isEmpty());
+                    .isEmpty()
+            );
         }
 
         this.regionManager.findRegionAtLocation(explodeLocation).peek(region -> {
@@ -71,32 +81,36 @@ public class EntityExplode extends AbstractFunnyListener {
 
                     if (explosionSource instanceof Player) {
                         this.messageService.getMessage(config -> config.regionExplosionHasProtection)
-                                .receiver(explosionSource)
-                                .send();
+                            .receiver(explosionSource)
+                            .send();
                     }
                 }
 
                 return;
             }
 
-            region.getHeart().peek(heart -> {
-                explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
-                blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
-            });
+            region
+                .getHeart()
+                .peek(heart -> {
+                    explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
+                    blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
+                });
         });
 
         if (this.config.warTntProtection) {
             // Remove block if protected
             boolean anyBlockRemovedInSphere = blocksInSphere.removeIf(block ->
-                    this.regionManager.findRegionAtLocation(block.getLocation())
-                            .map(Region::getGuild)
-                            .filterNot(Guild::canBeAttacked)
-                            .isPresent());
+                this.regionManager.findRegionAtLocation(block.getLocation())
+                    .map(Region::getGuild)
+                    .filterNot(Guild::canBeAttacked)
+                    .isPresent()
+            );
             boolean anyBlockRemovedInExplosion = explodedBlocks.removeIf(block ->
-                    this.regionManager.findRegionAtLocation(block.getLocation())
-                            .map(Region::getGuild)
-                            .filterNot(Guild::canBeAttacked)
-                            .isPresent());
+                this.regionManager.findRegionAtLocation(block.getLocation())
+                    .map(Region::getGuild)
+                    .filterNot(Guild::canBeAttacked)
+                    .isPresent()
+            );
 
             if (anyBlockRemovedInSphere || anyBlockRemovedInExplosion) {
                 if (explosionEntity instanceof TNTPrimed) {
@@ -105,8 +119,8 @@ public class EntityExplode extends AbstractFunnyListener {
 
                     if (explosionSource instanceof Player) {
                         this.messageService.getMessage(config -> config.regionExplosionHasProtection)
-                                .receiver(explosionSource)
-                                .send();
+                            .receiver(explosionSource)
+                            .send();
                     }
                 }
             }
@@ -135,14 +149,18 @@ public class EntityExplode extends AbstractFunnyListener {
             }
         }
 
-        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, additionalExplodedBlocks))) {
+        if (
+            !SimpleEventHandler.handle(
+                new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, additionalExplodedBlocks)
+            )
+        ) {
             event.setCancelled(true);
             return;
         }
 
-        additionalExplodedBlocks.stream()
-                .filter(block -> !explodedBlocks.contains(block))
-                .forEach(explodedBlocks::add);
+        additionalExplodedBlocks
+            .stream()
+            .filter(block -> !explodedBlocks.contains(block))
+            .forEach(explodedBlocks::add);
     }
-
 }

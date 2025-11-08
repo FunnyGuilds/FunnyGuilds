@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
@@ -41,9 +41,10 @@ public class WarSystem {
         Option<User> userOp = userManager.findByPlayer(player);
 
         if (!pluginConfiguration.warEnabled) {
-            messageService.getMessage(config -> config.warDisabled)
-                    .receiver(player)
-                    .send();
+            messageService
+                .getMessage(config -> config.warDisabled)
+                .receiver(player)
+                .send();
             return;
         }
 
@@ -53,9 +54,10 @@ public class WarSystem {
         User user = userOp.get();
 
         if (!user.hasGuild()) {
-            messageService.getMessage(config -> config.warHasNotGuild)
-                    .receiver(player)
-                    .send();
+            messageService
+                .getMessage(config -> config.warHasNotGuild)
+                .receiver(player)
+                .send();
             return;
         }
 
@@ -65,37 +67,43 @@ public class WarSystem {
         }
 
         if (attacker.isAlly(guild)) {
-            messageService.getMessage(config -> config.warAlly)
-                    .receiver(player)
-                    .send();
+            messageService
+                .getMessage(config -> config.warAlly)
+                .receiver(player)
+                .send();
             return;
         }
 
         if (!guild.canBeAttacked()) {
-            messageService.getMessage(config -> config.warWait)
-                    .receiver(player)
-                    .with("{TIME}", TimeUtils.formatTime(Duration.between(Instant.now(), guild.getProtection())))
-                    .send();
+            messageService
+                .getMessage(config -> config.warWait)
+                .receiver(player)
+                .with("{TIME}", TimeUtils.formatTime(Duration.between(Instant.now(), guild.getProtection())))
+                .send();
             return;
         }
 
         guild.setProtection(Instant.now().plus(pluginConfiguration.warWait));
 
-        if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
+        if (
+            SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))
+        ) {
             guild.updateLives(lives -> lives - 1);
         }
 
         if (guild.getLives() < 1) {
             this.conquer(attacker, guild, user);
         } else {
-            messageService.getMessage(config -> config.warAttacker)
-                    .receiver(attacker)
-                    .with("{ATTACKED}", guild.getName())
-                    .send();
-            messageService.getMessage(config -> config.warAttacked)
-                    .receiver(guild)
-                    .with("{ATTACKER}", attacker.getName())
-                    .send();
+            messageService
+                .getMessage(config -> config.warAttacker)
+                .receiver(attacker)
+                .with("{ATTACKED}", guild.getName())
+                .send();
+            messageService
+                .getMessage(config -> config.warAttacked)
+                .receiver(guild)
+                .with("{ATTACKER}", attacker.getName())
+                .send();
         }
     }
 
@@ -109,25 +117,27 @@ public class WarSystem {
         MessageService messageService = plugin.getMessageService();
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{WINNER}", conqueror.getTag())
-                .register("{LOSER}", loser.getTag());
+            .register("{WINNER}", conqueror.getTag())
+            .register("{LOSER}", loser.getTag());
 
-        messageService.getMessage(config -> config.warWin)
-                .receiver(conqueror)
-                .with(formatter)
-                .send();
-        messageService.getMessage(config -> config.warLose)
-                .receiver(loser)
-                .with(formatter)
-                .send();
+        messageService
+            .getMessage(config -> config.warWin)
+            .receiver(conqueror)
+            .with(formatter)
+            .send();
+        messageService
+            .getMessage(config -> config.warLose)
+            .receiver(loser)
+            .with(formatter)
+            .send();
 
         plugin.getGuildManager().deleteGuild(plugin, loser);
         conqueror.updateLives(lives -> lives + 1);
 
-        messageService.getMessage(config -> config.broadcastWar)
-                .broadcast()
-                .with(formatter)
-                .send();
+        messageService
+            .getMessage(config -> config.broadcastWar)
+            .broadcast()
+            .with(formatter)
+            .send();
     }
-
 }

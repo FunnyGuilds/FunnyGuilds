@@ -6,5 +6,4 @@ public class BasicPlaceholders<T> extends Placeholders<T, BasicPlaceholders<T>> 
     public BasicPlaceholders<T> create() {
         return new BasicPlaceholders<>();
     }
-
 }

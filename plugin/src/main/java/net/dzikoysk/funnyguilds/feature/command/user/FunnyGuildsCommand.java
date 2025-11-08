@@ -27,10 +27,10 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     public DataModel dataModel;
 
     @FunnyCommand(
-            name = "${user.funnyguilds.name}",
-            description = "${user.funnyguilds.description}",
-            aliases = "${user.funnyguilds.aliases}",
-            acceptsExceeded = true
+        name = "${user.funnyguilds.name}",
+        description = "${user.funnyguilds.description}",
+        aliases = "${user.funnyguilds.aliases}",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         String parameter = args.length > 0 ? args[0].toLowerCase(Locale.ROOT) : "";
@@ -52,60 +52,60 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 break;
             case "help":
                 this.messageService.getMessage(config -> config.funnyguildsHelp)
-                        .receiver(sender)
-                        .send();
+                    .receiver(sender)
+                    .send();
                 break;
             default:
                 this.messageService.getMessage(config -> config.funnyguildsVersion)
-                        .receiver(sender)
-                        .with("{VERSION}", this.plugin.getVersion().getFullVersion())
-                        .send();
+                    .receiver(sender)
+                    .with("{VERSION}", this.plugin.getVersion().getFullVersion())
+                    .send();
                 break;
         }
-
     }
 
     private void saveAll(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.admin"), config -> config.permission);
 
         this.messageService.getMessage(config -> config.saveallSaving)
-                .receiver(sender)
-                .send();
+            .receiver(sender)
+            .send();
         Instant startTime = Instant.now();
 
         DataModel dataModel = this.dataModel;
         try {
             dataModel.save(false);
             this.plugin.getInvitationPersistenceHandler().saveInvitations();
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("An error occurred while saving plugin data!", exception);
             return;
         }
 
         String time = TimeUtils.formatTimeSimple(Duration.between(startTime, Instant.now()));
         this.messageService.getMessage(config -> config.saveallSaved)
-                .receiver(sender)
-                .with("{TIME}", time)
-                .send();
+            .receiver(sender)
+            .with("{TIME}", time)
+            .send();
     }
 
     private void post(CommandSender sender, String[] args) {
         when(!sender.hasPermission("funnyguilds.admin"), config -> config.permission);
 
         FunnybinAsyncTask.of(sender, args)
-                .onEmpty(() -> this.messageService.getMessage(config -> config.funnybinHelp)
-                        .receiver(sender)
-                        .send())
-                .peek(task -> this.plugin.scheduleFunnyTasks(task));
+            .onEmpty(() ->
+                this.messageService.getMessage(config -> config.funnybinHelp)
+                    .receiver(sender)
+                    .send()
+            )
+            .peek(task -> this.plugin.scheduleFunnyTasks(task));
     }
 
     private void reload(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.reload"), config -> config.permission);
 
         this.messageService.getMessage(config -> config.reloadReloading)
-                .receiver(sender)
-                .send();
+            .receiver(sender)
+            .send();
         this.plugin.scheduleFunnyTasks(new ReloadAsyncTask(this.plugin, sender));
     }
 
@@ -132,31 +132,33 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 UserManager userManager = this.plugin.getUserManager();
 
                 PandaStream.of(Bukkit.getOnlinePlayers())
-                        .flatMap(userManager::findByPlayer)
-                        .forEach(user -> {
-                            IndividualPlayerList playerList = new IndividualPlayerList(
-                                    user,
-                                    this.plugin.getNmsAccessor().getPlayerListAccessor(),
-                                    this.plugin.getFunnyServer(),
-                                    tablistConfig.cells,
-                                    tablistConfig.header, tablistConfig.footer,
-                                    tablistConfig.animated, tablistConfig.pages,
-                                    tablistConfig.heads.textures,
-                                    tablistConfig.cellsPing,
-                                    tablistConfig.fillCells
-                            );
+                    .flatMap(userManager::findByPlayer)
+                    .forEach(user -> {
+                        IndividualPlayerList playerList = new IndividualPlayerList(
+                            user,
+                            this.plugin.getNmsAccessor().getPlayerListAccessor(),
+                            this.plugin.getFunnyServer(),
+                            tablistConfig.cells,
+                            tablistConfig.header,
+                            tablistConfig.footer,
+                            tablistConfig.animated,
+                            tablistConfig.pages,
+                            tablistConfig.heads.textures,
+                            tablistConfig.cellsPing,
+                            tablistConfig.fillCells
+                        );
 
-                            user.getCache().setPlayerList(playerList);
-                        });
+                        user.getCache().setPlayerList(playerList);
+                    });
             }
 
             String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
-            FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.reloadTime)
-                    .receiver(this.sender)
-                    .with("{TIME}", time)
-                    .send();
+            FunnyGuilds.getInstance()
+                .getMessageService()
+                .getMessage(config -> config.reloadTime)
+                .receiver(this.sender)
+                .with("{TIME}", time)
+                .send();
         }
-
     }
-
 }

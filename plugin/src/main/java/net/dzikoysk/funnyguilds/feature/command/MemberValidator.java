@@ -11,7 +11,8 @@ import org.panda_lang.utilities.inject.Property;
 final class MemberValidator implements Validator<IsMember, User, ValidationException> {
 
     @Override
-    public boolean validate(Context context, IsMember annotation, Property property, User user) throws ValidationException {
+    public boolean validate(Context context, IsMember annotation, Property property, User user)
+        throws ValidationException {
         return this.isMember(user);
     }
 
@@ -32,5 +33,4 @@ final class MemberValidator implements Validator<IsMember, User, ValidationExcep
     public Class<User> getType() {
         return User.class;
     }
-
 }

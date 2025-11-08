@@ -60,7 +60,14 @@ public final class Position {
     }
 
     public Position add(Position position) {
-        return new Position(this.x + position.x, this.y + position.y, this.z + position.z, this.pitch, this.yaw, this.world);
+        return new Position(
+            this.x + position.x,
+            this.y + position.y,
+            this.z + position.z,
+            this.pitch,
+            this.yaw,
+            this.world
+        );
     }
 
     public Position add(double x, double y, double z) {
@@ -68,7 +75,14 @@ public final class Position {
     }
 
     public Position subtract(Position position) {
-        return new Position(this.x - position.x, this.y - position.y, this.z - position.z, this.pitch, this.yaw, this.world);
+        return new Position(
+            this.x - position.x,
+            this.y - position.y,
+            this.z - position.z,
+            this.pitch,
+            this.yaw,
+            this.world
+        );
     }
 
     public Position subtract(double x, double y, double z) {
@@ -76,7 +90,14 @@ public final class Position {
     }
 
     public Position multiply(Position position) {
-        return new Position(this.x * position.x, this.y * position.y, this.z * position.z, this.pitch, this.yaw, this.world);
+        return new Position(
+            this.x * position.x,
+            this.y * position.y,
+            this.z * position.z,
+            this.pitch,
+            this.yaw,
+            this.world
+        );
     }
 
     public Position multiply(double x, double y, double z) {
@@ -84,7 +105,14 @@ public final class Position {
     }
 
     public Position divide(Position position) {
-        return new Position(this.x / position.x, this.y / position.y, this.z / position.z, this.pitch, this.yaw, this.world);
+        return new Position(
+            this.x / position.x,
+            this.y / position.y,
+            this.z / position.z,
+            this.pitch,
+            this.yaw,
+            this.world
+        );
     }
 
     public Position divide(double x, double y, double z) {
@@ -94,5 +122,4 @@ public final class Position {
     public Position changeWorld(String world) {
         return new Position(this.x, this.y, this.z, this.pitch, this.yaw, world);
     }
-
 }

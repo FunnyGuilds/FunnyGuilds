@@ -20,8 +20,7 @@ import panda.std.Option;
 
 public final class DeserializationUtils {
 
-    private DeserializationUtils() {
-    }
+    private DeserializationUtils() {}
 
     public static Option<User> deserializeUser(UserManager userManager, Object[] values) {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
@@ -46,7 +45,11 @@ public final class DeserializationUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static Option<Guild> deserializeGuild(PluginConfiguration pluginConfiguration, GuildManager guildManager, Object[] values) {
+    public static Option<Guild> deserializeGuild(
+        PluginConfiguration pluginConfiguration,
+        GuildManager guildManager,
+        Object[] values
+    ) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild, caused by: null");
             return Option.none();
@@ -56,16 +59,18 @@ public final class DeserializationUtils {
         String guildName = (String) values[1];
         String rawGuildTag = (String) values[2];
         String guildTag = pluginConfiguration.guildTagKeepCase
-                ? rawGuildTag
-                : pluginConfiguration.guildTagUppercase
+            ? rawGuildTag
+            : pluginConfiguration.guildTagUppercase
                 ? rawGuildTag.toUpperCase(Locale.ROOT)
                 : rawGuildTag.toLowerCase(Locale.ROOT);
 
-        Guild guild = guildManager.findByUuid(guildUuid).orElseGet(() -> {
-            Guild newGuild = new Guild(guildUuid, guildName, guildTag);
-            guildManager.addGuild(newGuild);
-            return newGuild;
-        });
+        Guild guild = guildManager
+            .findByUuid(guildUuid)
+            .orElseGet(() -> {
+                Guild newGuild = new Guild(guildUuid, guildName, guildTag);
+                guildManager.addGuild(newGuild);
+                return newGuild;
+            });
 
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
@@ -99,12 +104,12 @@ public final class DeserializationUtils {
         String regionName = (String) values[0];
         Region region = regionManager.findByName(regionName).orElseGet(new Region(regionName, (Location) values[1]));
 
-        // region.setSize((int) values[2]); // We don't set size here like before, now region size is calculated from region enlargement level (method below)
+        // region.setSize((int) values[2]); // We don't set size here like before, now region size
+        // is calculated from region enlargement level (method below)
         regionManager.changeRegionEnlargement(region, (int) values[3]);
         region.update();
 
         region.markUnchanged();
         return Option.of(region);
     }
-
 }

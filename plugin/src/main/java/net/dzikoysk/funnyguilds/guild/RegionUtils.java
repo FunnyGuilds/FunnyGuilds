@@ -10,8 +10,7 @@ import panda.std.Option;
 
 public final class RegionUtils {
 
-    private RegionUtils() {
-    }
+    private RegionUtils() {}
 
     /**
      * Gets the copied set of regions.
@@ -33,8 +32,7 @@ public final class RegionUtils {
      * @deprecated for removal in the future, in favour of {@link RegionManager#findByName(String)}
      */
     @Deprecated
-    @Nullable
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    @Nullable @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Region get(String name) {
         return FunnyGuilds.getInstance().getRegionManager().findByName(name).getOrNull();
     }
@@ -47,8 +45,7 @@ public final class RegionUtils {
      * @deprecated for removal in the future, in favour of {@link RegionManager#findRegionAtLocation(Location)}
      */
     @Deprecated
-    @Nullable
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    @Nullable @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Region getAt(Location location) {
         return FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location).getOrNull();
     }
@@ -135,5 +132,4 @@ public final class RegionUtils {
     public static String toString(Option<Region> region) {
         return toString(region.orNull());
     }
-
 }

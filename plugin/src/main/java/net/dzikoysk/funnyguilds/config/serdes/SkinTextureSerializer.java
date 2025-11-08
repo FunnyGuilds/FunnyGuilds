@@ -26,5 +26,4 @@ public class SkinTextureSerializer implements ObjectSerializer<SkinTexture> {
         String signature = data.get("signature", String.class);
         return new SkinTexture(value, signature);
     }
-
 }

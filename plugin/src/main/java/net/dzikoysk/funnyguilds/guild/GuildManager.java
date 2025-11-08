@@ -62,9 +62,7 @@ public class GuildManager {
      * @return set of guild
      */
     public Set<Guild> findByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::findByName)
-                .collect(Collectors.toSet());
+        return PandaStream.of(names).flatMap(this::findByName).collect(Collectors.toSet());
     }
 
     /**
@@ -74,9 +72,7 @@ public class GuildManager {
      * @return set of guild
      */
     public Set<Guild> findByTags(Collection<String> tags) {
-        return PandaStream.of(tags)
-                .flatMap(this::findByTag)
-                .collect(Collectors.toSet());
+        return PandaStream.of(tags).flatMap(this::findByTag).collect(Collectors.toSet());
     }
 
     /**
@@ -235,40 +231,47 @@ public class GuildManager {
         }
 
         if (this.pluginConfiguration.regionsEnabled) {
-            guild.getRegion()
-                    .peek(region -> {
-                        if (this.pluginConfiguration.heart.createEntityType != null) {
-                            plugin.getGuildEntityHelper().despawnGuildEntity(guild);
-                        }
-                        else if (this.pluginConfiguration.heart.createMaterial != null &&
-                                this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR) {
-                            Location center = region.getCenter().clone();
+            guild
+                .getRegion()
+                .peek(region -> {
+                    if (this.pluginConfiguration.heart.createEntityType != null) {
+                        plugin.getGuildEntityHelper().despawnGuildEntity(guild);
+                    } else if (
+                        this.pluginConfiguration.heart.createMaterial != null &&
+                        this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR
+                    ) {
+                        Location center = region.getCenter().clone();
 
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                Block block = center.getBlock().getRelative(BlockFace.DOWN);
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            Block block = center.getBlock().getRelative(BlockFace.DOWN);
 
-                                if (block.getLocation().getBlockY() > 1) {
-                                    block.setType(Material.AIR);
-                                }
-                            });
-                        }
+                            if (block.getLocation().getBlockY() > 1) {
+                                block.setType(Material.AIR);
+                            }
+                        });
+                    }
 
-                        plugin.getRegionManager().deleteRegion(plugin.getDataModel(), region);
-                    });
+                    plugin.getRegionManager().deleteRegion(plugin.getDataModel(), region);
+                });
         }
 
         guild.getMembers().forEach(User::removeGuild);
         guild.getAllies().forEach(ally -> ally.removeAlly(guild));
         this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
-        plugin.getIndividualNameTagManager().peek(manager -> {
-            guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
-        });
+        plugin
+            .getIndividualNameTagManager()
+            .peek(manager -> {
+                guild
+                    .getMembers()
+                    .forEach(member ->
+                        plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member))
+                    );
+            });
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
             dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
-        }
-        else if (plugin.getDataModel() instanceof SQLDataModel) {
+        } else if (plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete(guild);
         }
 
@@ -301,17 +304,20 @@ public class GuildManager {
      * @param guild the guild for which heart should be spawned
      */
     public void spawnHeart(GuildEntityHelper guildEntityHelper, Guild guild) {
-        if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR) {
-            guild.getRegion()
-                    .flatMap(Region::getHeartBlock)
-                    .peek(heart -> {
-                        heart.setType(this.pluginConfiguration.heart.createMaterial.getFirst());
-                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getSecond());
-                    });
+        if (
+            this.pluginConfiguration.heart.createMaterial != null &&
+            this.pluginConfiguration.heart.createMaterial.getFirst() != Material.AIR
+        ) {
+            guild
+                .getRegion()
+                .flatMap(Region::getHeartBlock)
+                .peek(heart -> {
+                    heart.setType(this.pluginConfiguration.heart.createMaterial.getFirst());
+                    BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getSecond());
+                });
             return;
         }
 
         guildEntityHelper.spawnGuildEntity(guild);
     }
-
 }

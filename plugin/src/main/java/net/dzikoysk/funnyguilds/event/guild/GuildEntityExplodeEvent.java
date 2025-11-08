@@ -33,5 +33,4 @@ public class GuildEntityExplodeEvent extends FunnyEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Region entity explode has been cancelled by the server!";
     }
-
 }

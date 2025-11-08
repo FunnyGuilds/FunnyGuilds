@@ -20,7 +20,13 @@ public class GuildHeartInteractEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildHeartInteractEvent(EventCause eventCause, User doer, Guild guild, Click click, boolean securityCheckPassed) {
+    public GuildHeartInteractEvent(
+        EventCause eventCause,
+        User doer,
+        Guild guild,
+        Click click,
+        boolean securityCheckPassed
+    ) {
         super(eventCause, doer, guild);
         this.click = click;
         this.securityCheckPassed = securityCheckPassed;
@@ -44,10 +50,7 @@ public class GuildHeartInteractEvent extends GuildEvent {
     }
 
     public enum Click {
-
         LEFT,
-        RIGHT
-
+        RIGHT,
     }
-
 }

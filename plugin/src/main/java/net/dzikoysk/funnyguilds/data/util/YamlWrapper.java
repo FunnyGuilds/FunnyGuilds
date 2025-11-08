@@ -24,8 +24,7 @@ public final class YamlWrapper extends YamlConfiguration {
 
         try {
             super.load(this.file);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Failed to load YAML file", exception);
         }
     }
@@ -40,8 +39,7 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.save(file);
-        }
-        catch (IOException exception) {
+        } catch (IOException exception) {
             FunnyGuilds.getPluginLogger().error("Failed to save YAML file", exception);
         }
     }
@@ -49,5 +47,4 @@ public final class YamlWrapper extends YamlConfiguration {
     public void save() {
         this.save(this.file);
     }
-
 }

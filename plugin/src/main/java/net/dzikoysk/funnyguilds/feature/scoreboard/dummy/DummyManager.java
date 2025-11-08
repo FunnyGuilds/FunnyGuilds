@@ -10,29 +10,36 @@ import org.bukkit.entity.Player;
 
 public class DummyManager extends AbstractScoreboardHandler<Dummy> {
 
-    public DummyManager(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
+    public DummyManager(
+        PluginConfiguration pluginConfiguration,
+        UserManager userManager,
+        ScoreboardService scoreboardService
+    ) {
         super(pluginConfiguration, userManager, scoreboardService);
     }
 
     @Override
     protected Dummy getOrCreateData(Player player, User user) {
         UserCache userCache = user.getCache();
-        return userCache.getDummy().orElseGet(() -> {
-            // Ensure user has their own scoreboard
-            this.scoreboardService.updatePlayer(player, user);
+        return userCache
+            .getDummy()
+            .orElseGet(() -> {
+                // Ensure user has their own scoreboard
+                this.scoreboardService.updatePlayer(player, user);
 
-            Dummy dummy = new Dummy(this.pluginConfiguration, user);
-            dummy.initialize();
-            userCache.setDummy(dummy);
-            return dummy;
-        });
+                Dummy dummy = new Dummy(this.pluginConfiguration, user);
+                dummy.initialize();
+                userCache.setDummy(dummy);
+                return dummy;
+            });
     }
 
     @Override
-    protected void update(AbstractScoreboardHandler<Dummy>.UpdateData observerData, AbstractScoreboardHandler<Dummy>.UpdateData targetData) {
+    protected void update(
+        AbstractScoreboardHandler<Dummy>.UpdateData observerData,
+        AbstractScoreboardHandler<Dummy>.UpdateData targetData
+    ) {
         observerData.getData().peek(dummy -> dummy.updatePlayer(targetData.getUser()));
         targetData.getData().peek(dummy -> dummy.updatePlayer(observerData.getUser()));
     }
-
-
 }

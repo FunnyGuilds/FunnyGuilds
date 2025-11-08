@@ -35,5 +35,4 @@ public class PointsChangeEvent extends AbstractRankEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Points change has been cancelled by the server!";
     }
-
 }

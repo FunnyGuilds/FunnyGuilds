@@ -38,5 +38,4 @@ public class GuildPreTagChangeEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Changing guild tag has been cancelled by the server!";
     }
-
 }

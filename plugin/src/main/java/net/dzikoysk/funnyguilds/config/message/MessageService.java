@@ -17,15 +17,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 
-public class MessageService extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> {
+public class MessageService
+    extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> {
 
     private final BukkitAudiences adventure;
 
     public MessageService(FunnyGuilds plugin, BukkitAudiences adventure) {
         super(
-                new BukkitViewerDataSupplier(adventure),
-                ViewerFactory.create(BukkitMessageService.wrapScheduler(plugin)),
-                (viewerService, localeSupplier, messageSupplier) -> new FunnyMessageDispatcher(viewerService, localeSupplier, messageSupplier, user -> Bukkit.getPlayer(user.getUUID()))
+            new BukkitViewerDataSupplier(adventure),
+            ViewerFactory.create(BukkitMessageService.wrapScheduler(plugin)),
+            (viewerService, localeSupplier, messageSupplier) ->
+                new FunnyMessageDispatcher(viewerService, localeSupplier, messageSupplier, user ->
+                    Bukkit.getPlayer(user.getUUID())
+                )
         );
         this.adventure = adventure;
     }
@@ -46,10 +50,7 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         FunnyGuildsLogger logger = plugin.getPluginLogger();
         PluginConfiguration config = plugin.getPluginConfiguration();
 
-        MessageService messageService = new MessageService(
-                plugin,
-                BukkitAudiences.create(plugin)
-        );
+        MessageService messageService = new MessageService(plugin, BukkitAudiences.create(plugin));
         messageService.setDefaultLocale(config.defaultLocale);
         messageService.registerLocaleProvider(new CommandSenderLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(plugin.getFunnyServer()));
@@ -66,7 +67,11 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
             File localeFile = new File(languageFolder, localeName + ".yml");
             if (!localeFile.exists()) {
                 try {
-                    FunnyIOUtils.copyFileFromResources(FunnyGuilds.class.getResourceAsStream("/lang/" + localeName + ".yml"), localeFile, true);
+                    FunnyIOUtils.copyFileFromResources(
+                        FunnyGuilds.class.getResourceAsStream("/lang/" + localeName + ".yml"),
+                        localeFile,
+                        true
+                    );
                 } catch (IOException | NullPointerException ex) {
                     logger.warning("Could not copy default language file: " + localeName);
                     logger.warning("New language file will be created with default values");
@@ -76,5 +81,4 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         });
         return messageService;
     }
-
 }

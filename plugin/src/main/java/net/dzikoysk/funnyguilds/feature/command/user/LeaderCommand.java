@@ -16,13 +16,13 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class LeaderCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.leader.name}",
-            description = "${user.leader.description}",
-            aliases = "${user.leader.aliases}",
-            permission = "funnyguilds.leader",
-            completer = "members:3",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.leader.name}",
+        description = "${user.leader.description}",
+        aliases = "${user.leader.aliases}",
+        permission = "funnyguilds.leader",
+        completer = "members:3",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
@@ -38,11 +38,10 @@ public final class LeaderCommand extends AbstractFunnyCommand {
         guild.setOwner(leaderUser);
 
         this.messageService.getMessage(config -> config.leaderSet)
-                .receiver(owner)
-                .send();
+            .receiver(owner)
+            .send();
         this.messageService.getMessage(config -> config.leaderOwner)
-                .receiver(leaderUser)
-                .send();
+            .receiver(leaderUser)
+            .send();
     }
-
 }

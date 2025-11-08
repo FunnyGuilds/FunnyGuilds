@@ -55,9 +55,9 @@ public class BukkitUserProfile implements UserProfile {
     public boolean isVanished() {
         // Should work with VanishNoPacket, SuperVanish and PremiumVanish
         return this.getPlayer()
-                .map(player -> player.getMetadata("vanished"))
-                .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
-                .orElseGet(false);
+            .map(player -> player.getMetadata("vanished"))
+            .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
+            .orElseGet(false);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class BukkitUserProfile implements UserProfile {
         this.refreshOfflinePlayerRef();
         OfflinePlayer offlinePlayer = this.offlinePlayerRef.get();
 
-        return offlinePlayer.isOp() || VaultHook.hasPermission(offlinePlayer, permission);
+        return (offlinePlayer.isOp() || VaultHook.hasPermission(offlinePlayer, permission));
     }
 
     @Override
@@ -99,20 +99,18 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public void refresh() {
-        this.funnyServer.getPlayer(this.uuid).peek(player -> {
-            this.playerRef = new WeakReference<>(player);
-            this.offlinePlayerRef = new WeakReference<>(player);
-        }).onEmpty(() -> {
-            this.playerRef = new WeakReference<>(null);
-        });
+        this.funnyServer.getPlayer(this.uuid)
+            .peek(player -> {
+                this.playerRef = new WeakReference<>(player);
+                this.offlinePlayerRef = new WeakReference<>(player);
+            })
+            .onEmpty(() -> {
+                this.playerRef = new WeakReference<>(null);
+            });
     }
 
     @Override
     public Position getPosition() {
-        return this.getPlayer()
-                .map(Player::getLocation)
-                .map(PositionConverter::adapt)
-                .orElseGet(Position.ZERO);
+        return this.getPlayer().map(Player::getLocation).map(PositionConverter::adapt).orElseGet(Position.ZERO);
     }
-
 }

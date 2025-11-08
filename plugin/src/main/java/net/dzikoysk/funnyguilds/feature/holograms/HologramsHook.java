@@ -11,5 +11,4 @@ public abstract class HologramsHook extends AbstractPluginHook {
     }
 
     public abstract void update(@NotNull Guild guild);
-
 }

@@ -35,5 +35,4 @@ public class LogoutsChangeEvent extends AbstractRankEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Logouts change has been cancelled by the server!";
     }
-
 }

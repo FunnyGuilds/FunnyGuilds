@@ -21,9 +21,14 @@ public class DataPersistenceHandler {
             this.dataPersistenceHandlerTask.cancel();
         }
 
-        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
-            this.plugin.scheduleFunnyTasks(new DataSaveAsyncTask(this.plugin.getDataModel(), false));
-        }, interval, interval);
+        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
+            this.plugin,
+            () -> {
+                this.plugin.scheduleFunnyTasks(new DataSaveAsyncTask(this.plugin.getDataModel(), false));
+            },
+            interval,
+            interval
+        );
     }
 
     public void stopHandler() {
@@ -39,5 +44,4 @@ public class DataPersistenceHandler {
         this.stopHandler();
         this.startHandler();
     }
-
 }

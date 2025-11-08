@@ -15,8 +15,7 @@ public final class BlockDataChanger {
         setDataMethod = Reflections.getMethod(craftBlockClass, "setData", byte.class);
     }
 
-    private BlockDataChanger() {
-    }
+    private BlockDataChanger() {}
 
     public static void applyChanges(Block targetBlock, byte newData) {
         if (!Reflections.USE_PRE_13_METHODS) {
@@ -25,10 +24,11 @@ public final class BlockDataChanger {
 
         try {
             setDataMethod.invoke(targetBlock, newData);
-        }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            FunnyGuilds.getPluginLogger().error("Failed to change block data for a block at: " + LocationUtils.toString(targetBlock.getLocation()), ex);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            FunnyGuilds.getPluginLogger().error(
+                "Failed to change block data for a block at: " + LocationUtils.toString(targetBlock.getLocation()),
+                ex
+            );
         }
     }
-
 }

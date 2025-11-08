@@ -13,7 +13,8 @@ final class OwnerValidator implements Validator<IsOwner, User, ValidationExcepti
     private final MemberValidator memberValidator = new MemberValidator();
 
     @Override
-    public boolean validate(Context context, IsOwner annotation, Property property, User user) throws ValidationException {
+    public boolean validate(Context context, IsOwner annotation, Property property, User user)
+        throws ValidationException {
         this.memberValidator.isMember(user);
 
         if (!user.isOwner()) {
@@ -32,5 +33,4 @@ final class OwnerValidator implements Validator<IsOwner, User, ValidationExcepti
     public Class<User> getType() {
         return User.class;
     }
-
 }

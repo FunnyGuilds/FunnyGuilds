@@ -20,7 +20,9 @@ public class WarPacketCallbacks implements PacketCallbacks {
             return;
         }
 
-        this.plugin.scheduleFunnyTasks(new WarInfoAsyncTask(this.plugin, this.plugin.getGuildEntityHelper(), this.user, entityId));
+        this.plugin.scheduleFunnyTasks(
+            new WarInfoAsyncTask(this.plugin, this.plugin.getGuildEntityHelper(), this.user, entityId)
+        );
     }
 
     @Override
@@ -30,8 +32,12 @@ public class WarPacketCallbacks implements PacketCallbacks {
         }
 
         this.plugin.scheduleFunnyTasks(
-                new WarAttackAsyncTask(this.plugin.getFunnyServer(), this.plugin.getGuildEntityHelper(), this.user, entityId)
+            new WarAttackAsyncTask(
+                this.plugin.getFunnyServer(),
+                this.plugin.getGuildEntityHelper(),
+                this.user,
+                entityId
+            )
         );
     }
-
 }

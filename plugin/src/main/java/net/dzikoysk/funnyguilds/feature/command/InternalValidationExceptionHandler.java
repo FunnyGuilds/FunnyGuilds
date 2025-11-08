@@ -20,10 +20,9 @@ class InternalValidationExceptionHandler implements DetailedExceptionHandler<Int
     @Override
     public Boolean apply(Context context, InternalValidationException ex) {
         this.messageService.getMessage(ex.getMessageSupplier())
-                .with(ex.getReplacements())
-                .receiver(context.getCommandSender())
-                .send();
+            .with(ex.getReplacements())
+            .receiver(context.getCommandSender())
+            .send();
         return true;
     }
-
 }

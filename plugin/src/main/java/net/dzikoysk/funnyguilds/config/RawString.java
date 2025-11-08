@@ -31,7 +31,7 @@ public class RawString {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof RawString && this.value.equals(((RawString) obj).value);
+        return (obj instanceof RawString && this.value.equals(((RawString) obj).value));
     }
 
     @Override
@@ -40,10 +40,6 @@ public class RawString {
     }
 
     public static List<RawString> listOf(String... values) {
-        return PandaStream.of(values)
-                .map(RawString::new)
-                .toList();
+        return PandaStream.of(values).map(RawString::new).toList();
     }
-
 }
-

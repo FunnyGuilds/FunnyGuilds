@@ -11,5 +11,4 @@ public abstract class WorldEditHook extends AbstractPluginHook {
     }
 
     public abstract boolean pasteSchematic(File schematicFile, Location location, boolean withAir);
-
 }

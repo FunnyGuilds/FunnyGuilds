@@ -26,5 +26,4 @@ public class GuildMemberLeaveEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member leave has been cancelled by the server!";
     }
-
 }

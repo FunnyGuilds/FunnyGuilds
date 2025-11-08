@@ -54,7 +54,7 @@ public class RangeFormatting {
         }
 
         RangeFormatting rangeFormatting = (RangeFormatting) obj;
-        return this.range.equals(rangeFormatting.range) && this.value.equals(rangeFormatting.value);
+        return (this.range.equals(rangeFormatting.range) && this.value.equals(rangeFormatting.value));
     }
 
     @Override
@@ -65,5 +65,4 @@ public class RangeFormatting {
     public static Map<NumberRange, String> toRangeMap(List<RangeFormatting> formattingList) {
         return PandaStream.of(formattingList).toMap(RangeFormatting::getRange, RangeFormatting::getValue);
     }
-
 }

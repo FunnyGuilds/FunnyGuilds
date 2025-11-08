@@ -10,8 +10,7 @@ import panda.utilities.text.Joiner;
 
 public final class FunnyStringUtils {
 
-    private FunnyStringUtils() {
-    }
+    private FunnyStringUtils() {}
 
     public static String join(Collection<String> strings, boolean insertSpaces) {
         return join(strings, insertSpaces ? ", " : ",");
@@ -57,5 +56,4 @@ public final class FunnyStringUtils {
     public static String getPercent(double fraction) {
         return String.format(Locale.US, "%.1f", 100.0D * fraction);
     }
-
 }

@@ -5,7 +5,6 @@ import panda.std.Option;
 import panda.std.stream.PandaStream;
 
 public enum DefaultRegex {
-
     LOWERCASE("[a-z]+"),
     UPPERCASE("[A-Z]+"),
     DIGITS("[0-9]+"),
@@ -36,5 +35,4 @@ public enum DefaultRegex {
     public static Option<DefaultRegex> findRegex(String name) {
         return PandaStream.of(values()).find(regex -> regex.name().equalsIgnoreCase(name));
     }
-
 }

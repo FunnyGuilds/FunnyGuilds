@@ -24,13 +24,14 @@ public class TablistBroadcastHandler implements Runnable {
             return;
         }
 
-        // Don't remove this toArray - iterating over online players asynchronously without shallow copy could occur with ConcurrentModificationException (See GH-2031).
+        // Don't remove this toArray - iterating over online players asynchronously without shallow
+        // copy could occur with ConcurrentModificationException (See GH-2031).
         PandaStream.of(Bukkit.getOnlinePlayers().toArray(new Player[0]))
-                .flatMap(player -> userManager.findByUuid(player.getUniqueId()))
-                .flatMap(user -> user.getCache().getPlayerList())
-                .forEach(playerList -> {
-                    playerList.updatePageCycle();
-                    playerList.send();
-                });
+            .flatMap(player -> userManager.findByUuid(player.getUniqueId()))
+            .flatMap(user -> user.getCache().getPlayerList())
+            .forEach(playerList -> {
+                playerList.updatePageCycle();
+                playerList.send();
+            });
     }
 }

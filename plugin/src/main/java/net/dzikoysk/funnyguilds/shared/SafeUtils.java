@@ -5,15 +5,12 @@ import org.jetbrains.annotations.Nullable;
 
 public final class SafeUtils {
 
-    private SafeUtils() {
-    }
+    private SafeUtils() {}
 
-    @Nullable
-    public static <T> T safeInit(SafeInitializer<T> initializer) {
+    @Nullable public static <T> T safeInit(SafeInitializer<T> initializer) {
         try {
             return initializer.initialize();
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Something went wrong while handling unsafe", exception);
             return null;
         }
@@ -23,5 +20,4 @@ public final class SafeUtils {
     public interface SafeInitializer<T> {
         T initialize() throws Exception;
     }
-
 }

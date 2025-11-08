@@ -14,22 +14,18 @@ public final class EggTypeChanger {
     static {
         try {
             spawnEggMetaClass = Class.forName("org.bukkit.inventory.meta.SpawnEggMeta");
-        }
-        catch (ClassNotFoundException ignored) {
+        } catch (ClassNotFoundException ignored) {
             spawnEggMetaClass = null;
         }
 
         if (spawnEggMetaClass != null) {
             try {
                 setSpawnedTypeMethod = spawnEggMetaClass.getMethod("setSpawnedType", EntityType.class);
-            }
-            catch (NoSuchMethodException | SecurityException ignored) {
-            }
+            } catch (NoSuchMethodException | SecurityException ignored) {}
         }
     }
 
-    private EggTypeChanger() {
-    }
+    private EggTypeChanger() {}
 
     public static boolean needsSpawnEggMeta() {
         return spawnEggMetaClass != null;
@@ -43,10 +39,8 @@ public final class EggTypeChanger {
 
         try {
             setSpawnedTypeMethod.invoke(meta, type);
-        }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
             FunnyGuilds.getPluginLogger().error("Failed to set entity type for SpawnEggMeta object", exception);
         }
     }
-
 }

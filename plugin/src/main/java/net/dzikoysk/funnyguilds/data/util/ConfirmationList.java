@@ -8,8 +8,7 @@ public final class ConfirmationList {
 
     private static final Set<UUID> CONFIRMATION_LIST = new HashSet<>();
 
-    private ConfirmationList() {
-    }
+    private ConfirmationList() {}
 
     public static void add(UUID uuid) {
         CONFIRMATION_LIST.add(uuid);
@@ -22,5 +21,4 @@ public final class ConfirmationList {
     public static boolean contains(UUID uuid) {
         return CONFIRMATION_LIST.contains(uuid);
     }
-
 }

@@ -30,23 +30,29 @@ public class GuildEntityHelper {
     }
 
     public Option<FakeEntity> getOrCreateGuildEntity(Guild guild) {
-        return Option.of(this.entityMap.computeIfAbsent(guild, key -> {
-            if (this.pluginConfiguration.heart.createEntityType == null) {
-                return null;
-            }
+        return Option.of(
+            this.entityMap.computeIfAbsent(guild, key -> {
+                if (this.pluginConfiguration.heart.createEntityType == null) {
+                    return null;
+                }
 
-            Option<Location> locationOption = guild.getEnderCrystal();
-            if (locationOption.isEmpty()) {
-                return null;
-            }
+                Option<Location> locationOption = guild.getEnderCrystal();
+                if (locationOption.isEmpty()) {
+                    return null;
+                }
 
-            return this.nmsAccessor.getEntityAccessor().createFakeEntity(this.pluginConfiguration.heart.createEntityType, locationOption.get());
-        }));
+                return this.nmsAccessor.getEntityAccessor().createFakeEntity(
+                    this.pluginConfiguration.heart.createEntityType,
+                    locationOption.get()
+                );
+            })
+        );
     }
 
     public void spawnGuildEntity(Guild guild) {
-        this.getOrCreateGuildEntity(guild)
-                .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
+        this.getOrCreateGuildEntity(guild).peek(entity ->
+            this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers())
+        );
     }
 
     public void spawnGuildEntities(GuildManager guildManager) {
@@ -54,12 +60,18 @@ public class GuildEntityHelper {
     }
 
     public void spawnGuildEntity(Guild guild, Player player) {
-        if (guild.getEnderCrystal().map(Location::getWorld).isNot(guildWorld -> guildWorld.equals(player.getWorld()))) {
+        if (
+            guild
+                .getEnderCrystal()
+                .map(Location::getWorld)
+                .isNot(guildWorld -> guildWorld.equals(player.getWorld()))
+        ) {
             return;
         }
 
-        this.getOrCreateGuildEntity(guild)
-                .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
+        this.getOrCreateGuildEntity(guild).peek(entity ->
+            this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player)
+        );
     }
 
     public void despawnGuildEntity(Guild guild) {
@@ -75,5 +87,4 @@ public class GuildEntityHelper {
     public void despawnGuildEntities(GuildManager guildManager) {
         guildManager.getGuilds().forEach(this::despawnGuildEntity);
     }
-
 }

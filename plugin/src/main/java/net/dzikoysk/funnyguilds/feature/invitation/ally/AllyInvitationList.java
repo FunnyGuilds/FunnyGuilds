@@ -37,10 +37,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     public Set<String> getInvitationGuildNames(UUID to) {
-        return PandaStream.of(this.getInvitationsFor(to))
-                .map(AllyInvitation::getFrom)
-                .map(Guild::getName)
-                .toSet();
+        return PandaStream.of(this.getInvitationsFor(to)).map(AllyInvitation::getFrom).map(Guild::getName).toSet();
     }
 
     public Set<String> getInvitationGuildNames(Guild to) {
@@ -48,10 +45,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     public Set<String> getInvitationGuildTags(UUID to) {
-        return PandaStream.of(this.getInvitationsFor(to))
-                .map(AllyInvitation::getFrom)
-                .map(Guild::getTag)
-                .toSet();
+        return PandaStream.of(this.getInvitationsFor(to)).map(AllyInvitation::getFrom).map(Guild::getTag).toSet();
     }
 
     public Set<String> getInvitationGuildTags(Guild to) {
@@ -77,12 +71,11 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     @Override
     public void expireInvitation(UUID from, UUID to) {
         PandaStream.of(this.getInvitationsFrom(from))
-                .filter(invitation -> invitation.getToUUID().equals(to))
-                .forEach(this.invitations::remove);
+            .filter(invitation -> invitation.getToUUID().equals(to))
+            .forEach(this.invitations::remove);
     }
 
     public void expireInvitation(Guild from, Guild to) {
         this.expireInvitation(from.getUUID(), to.getUUID());
     }
-
 }

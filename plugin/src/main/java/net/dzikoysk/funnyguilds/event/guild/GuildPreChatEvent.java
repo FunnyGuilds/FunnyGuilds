@@ -24,7 +24,14 @@ public class GuildPreChatEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildPreChatEvent(EventCause eventCause, @Nullable User doer, Guild guild, GuildChatEvent.Type type, Set<Guild> receivers, String message) {
+    public GuildPreChatEvent(
+        EventCause eventCause,
+        @Nullable User doer,
+        Guild guild,
+        GuildChatEvent.Type type,
+        Set<Guild> receivers,
+        String message
+    ) {
         super(eventCause, doer, guild);
         this.type = type;
         this.receivers = new HashSet<>(receivers);
@@ -51,5 +58,4 @@ public class GuildPreChatEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild chat event has been cancelled by the server!";
     }
-
 }

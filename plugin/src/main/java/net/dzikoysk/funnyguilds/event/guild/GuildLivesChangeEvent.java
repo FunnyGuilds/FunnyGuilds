@@ -32,5 +32,4 @@ public class GuildLivesChangeEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild lives change has been cancelled by the server!";
     }
-
 }

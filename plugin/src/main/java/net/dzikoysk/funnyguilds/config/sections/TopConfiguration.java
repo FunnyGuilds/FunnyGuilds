@@ -27,7 +27,9 @@ public class TopConfiguration extends OkaeriConfig {
     @Comment("Lista topek gildii, które mają być obliczane i parsowane")
     @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
     @Comment("Topek tych można używać w formie placeholderów {GTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts")
+    @Comment(
+        "Dostępne typy topek: points, kills, deaths, assists, logouts, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts"
+    )
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")
@@ -56,57 +58,83 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Lista powinna być podana od najmniejszych do największych rankingów")
         @Comment("Elementy listy powinny być postaci: \"minValue-maxValue wygląd\", np.: \"0-750 &4{VALUE}\"")
         @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment(
+            "* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\""
+        )
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma być używane dane formatowanie")
-        public Map<String, List<RangeFormatting>> ptopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
-                .put("points", Arrays.asList(
-                        new RangeFormatting(0, 749, "&4{VALUE}"),
-                        new RangeFormatting(750, 999, "&c{VALUE}"),
-                        new RangeFormatting(1000, 1499, "&a{VALUE}"),
-                        new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{VALUE}")
-                ))
-                .put("kills", Arrays.asList(
-                        new RangeFormatting(0, 10, "&c{VALUE}"),
-                        new RangeFormatting(11, 25, "&a{VALUE}"),
-                        new RangeFormatting(26, 50, "&e{VALUE}"),
-                        new RangeFormatting(51, Integer.MAX_VALUE, "&6&l{VALUE}")
-                ))
-                .put("deaths", Arrays.asList(
-                        new RangeFormatting(0, 10, "&c{VALUE}"),
-                        new RangeFormatting(11, 25, "&a{VALUE}"),
-                        new RangeFormatting(26, 50, "&e{VALUE}"),
-                        new RangeFormatting(51, Integer.MAX_VALUE, "&6&l{VALUE}")
-                ))
-                .build();
+        public Map<String, List<RangeFormatting>> ptopValueFormatting = ImmutableMap.<
+                String,
+                List<RangeFormatting>
+            >builder()
+            .put(
+                "points",
+                Arrays.asList(
+                    new RangeFormatting(0, 749, "&4{VALUE}"),
+                    new RangeFormatting(750, 999, "&c{VALUE}"),
+                    new RangeFormatting(1000, 1499, "&a{VALUE}"),
+                    new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{VALUE}")
+                )
+            )
+            .put(
+                "kills",
+                Arrays.asList(
+                    new RangeFormatting(0, 10, "&c{VALUE}"),
+                    new RangeFormatting(11, 25, "&a{VALUE}"),
+                    new RangeFormatting(26, 50, "&e{VALUE}"),
+                    new RangeFormatting(51, Integer.MAX_VALUE, "&6&l{VALUE}")
+                )
+            )
+            .put(
+                "deaths",
+                Arrays.asList(
+                    new RangeFormatting(0, 10, "&c{VALUE}"),
+                    new RangeFormatting(11, 25, "&a{VALUE}"),
+                    new RangeFormatting(26, 50, "&e{VALUE}"),
+                    new RangeFormatting(51, Integer.MAX_VALUE, "&6&l{VALUE}")
+                )
+            )
+            .build();
 
         @Comment("")
         @Comment("Wygląd znacznika {VALUE-FORMAT} w zależności od wartości topki gildii")
         @Comment("Lista powinna być podana od najmniejszych do największych rankingów")
         @Comment("Elementy listy powinny być postaci: \"minValue-maxValue wygląd\", np.: \"0-750 &4{VALUE}\"")
         @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment(
+            "* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\""
+        )
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma być używane dane formatowanie")
-        public Map<String, List<RangeFormatting>> gtopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
-                .put("kills", Arrays.asList(
-                        new RangeFormatting(0, 30, "&c{VALUE}"),
-                        new RangeFormatting(31, 75, "&a{VALUE}"),
-                        new RangeFormatting(76, 150, "&e{VALUE}"),
-                        new RangeFormatting(151, Integer.MAX_VALUE, "&6&l{VALUE}")
-                ))
-                .put("deaths", Arrays.asList(
-                        new RangeFormatting(0, 30, "&c{VALUE}"),
-                        new RangeFormatting(31, 75, "&a{VALUE}"),
-                        new RangeFormatting(76, 150, "&e{VALUE}"),
-                        new RangeFormatting(151, Integer.MAX_VALUE, "&6&l{VALUE}")
-                ))
-                .put("avg_points", Arrays.asList(
-                        new RangeFormatting(0, 749, "&4{VALUE}"),
-                        new RangeFormatting(750, 999, "&c{VALUE}"),
-                        new RangeFormatting(1000, 1499, "&a{VALUE}"),
-                        new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{VALUE}")
-                ))
-                .build();
-
+        public Map<String, List<RangeFormatting>> gtopValueFormatting = ImmutableMap.<
+                String,
+                List<RangeFormatting>
+            >builder()
+            .put(
+                "kills",
+                Arrays.asList(
+                    new RangeFormatting(0, 30, "&c{VALUE}"),
+                    new RangeFormatting(31, 75, "&a{VALUE}"),
+                    new RangeFormatting(76, 150, "&e{VALUE}"),
+                    new RangeFormatting(151, Integer.MAX_VALUE, "&6&l{VALUE}")
+                )
+            )
+            .put(
+                "deaths",
+                Arrays.asList(
+                    new RangeFormatting(0, 30, "&c{VALUE}"),
+                    new RangeFormatting(31, 75, "&a{VALUE}"),
+                    new RangeFormatting(76, 150, "&e{VALUE}"),
+                    new RangeFormatting(151, Integer.MAX_VALUE, "&6&l{VALUE}")
+                )
+            )
+            .put(
+                "avg_points",
+                Arrays.asList(
+                    new RangeFormatting(0, 749, "&4{VALUE}"),
+                    new RangeFormatting(750, 999, "&c{VALUE}"),
+                    new RangeFormatting(1000, 1499, "&a{VALUE}"),
+                    new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{VALUE}")
+                )
+            )
+            .build();
     }
-
 }

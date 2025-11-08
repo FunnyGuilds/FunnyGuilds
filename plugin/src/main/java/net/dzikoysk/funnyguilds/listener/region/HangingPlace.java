@@ -10,8 +10,7 @@ public class HangingPlace extends AbstractFunnyListener {
     @EventHandler
     public void onPlace(HangingPlaceEvent event) {
         ProtectionSystem.isProtected(event.getPlayer(), event.getEntity().getLocation(), false)
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+            .peek(result -> event.setCancelled(true))
+            .peek(ProtectionSystem::defaultResponse);
     }
-
 }

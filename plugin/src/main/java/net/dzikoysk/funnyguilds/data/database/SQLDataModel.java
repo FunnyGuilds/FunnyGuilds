@@ -28,7 +28,6 @@ public class SQLDataModel implements DataModel {
     private final SQLTable guildsTable;
     private final SQLTable regionsTable;
 
-
     public SQLDataModel(FunnyGuilds plugin) {
         this.plugin = plugin;
         this.pluginConfiguration = plugin.getPluginConfiguration();
@@ -66,7 +65,7 @@ public class SQLDataModel implements DataModel {
         this.guildsTable.add("born", SQLType.BIGINT, true);
         this.guildsTable.add("validity", SQLType.BIGINT, true);
         this.guildsTable.add("pvp", SQLType.BOOLEAN, true);
-        this.guildsTable.add("attacked", SQLType.BIGINT); //TODO: [FG 5.0] attacked -> protection
+        this.guildsTable.add("attacked", SQLType.BIGINT); // TODO: [FG 5.0] attacked -> protection
         this.guildsTable.add("allies", SQLType.TEXT);
         this.guildsTable.add("enemies", SQLType.TEXT);
         this.guildsTable.add("info", SQLType.TEXT);
@@ -89,7 +88,9 @@ public class SQLDataModel implements DataModel {
         this.loadRegions();
         this.loadGuilds();
 
-        this.plugin.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getIndividualNameTagManager()
+            .map(ScoreboardGlobalUpdateSyncTask::new)
+            .peek(this.plugin::scheduleFunnyTasks);
     }
 
     public void loadUsers() {
@@ -98,7 +99,9 @@ public class SQLDataModel implements DataModel {
                 String userName = result.getString("name");
 
                 if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
+                    FunnyGuilds.getPluginLogger().warning(
+                        "Skipping loading of user '" + userName + "' - name is invalid"
+                    );
                     continue;
                 }
 
@@ -139,9 +142,11 @@ public class SQLDataModel implements DataModel {
             }
         });
 
-        guildManager.getGuilds().stream()
-                .filter(guild -> guild.getOwner() == null)
-                .forEach(guild -> guildManager.deleteGuild(FunnyGuilds.getInstance(), guild));
+        guildManager
+            .getGuilds()
+            .stream()
+            .filter(guild -> guild.getOwner() == null)
+            .forEach(guild -> guildManager.deleteGuild(FunnyGuilds.getInstance(), guild));
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
@@ -165,21 +170,27 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void save(boolean ignoreNotChanged) {
-        this.plugin.getUserManager().getUsers().stream()
-                .filter(user -> !ignoreNotChanged || user.wasChanged())
-                .forEach(DatabaseUserSerializer::serialize);
+        this.plugin.getUserManager()
+            .getUsers()
+            .stream()
+            .filter(user -> !ignoreNotChanged || user.wasChanged())
+            .forEach(DatabaseUserSerializer::serialize);
 
-        this.plugin.getGuildManager().getGuilds().stream()
-                .filter(guild -> !ignoreNotChanged || guild.wasChanged())
-                .forEach(DatabaseGuildSerializer::serialize);
+        this.plugin.getGuildManager()
+            .getGuilds()
+            .stream()
+            .filter(guild -> !ignoreNotChanged || guild.wasChanged())
+            .forEach(DatabaseGuildSerializer::serialize);
 
         if (!this.plugin.getPluginConfiguration().regionsEnabled) {
             return;
         }
 
-        this.plugin.getRegionManager().getRegions().stream()
-                .filter(region -> !ignoreNotChanged || region.wasChanged())
-                .forEach(DatabaseRegionSerializer::serialize);
+        this.plugin.getRegionManager()
+            .getRegions()
+            .stream()
+            .filter(region -> !ignoreNotChanged || region.wasChanged())
+            .forEach(DatabaseRegionSerializer::serialize);
     }
 
     public SQLTable getUsersTable() {
@@ -198,5 +209,4 @@ public class SQLDataModel implements DataModel {
         SQLBasicUtils.getCreate(table).executeUpdate();
         table.getSqlElements().forEach(sqlElement -> SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true));
     }
-
 }

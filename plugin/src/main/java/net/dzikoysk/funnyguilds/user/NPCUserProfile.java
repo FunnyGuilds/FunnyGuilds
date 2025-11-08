@@ -5,5 +5,4 @@ public class NPCUserProfile extends FakeUserProfile {
     public NPCUserProfile() {
         super(false, false, 0);
     }
-
 }

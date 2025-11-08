@@ -10,12 +10,14 @@ import panda.std.Option;
 
 public class UserTop extends Top<UserRank> {
 
-    public UserTop(TopComparator<UserRank> comparator, BiFunction<String, TopComparator<UserRank>, NavigableSet<UserRank>> recalculateFunction) {
+    public UserTop(
+        TopComparator<UserRank> comparator,
+        BiFunction<String, TopComparator<UserRank>, NavigableSet<UserRank>> recalculateFunction
+    ) {
         super(comparator, recalculateFunction);
     }
 
     public Option<User> getUser(int place) {
         return this.get(place).map(UserRank::getUser);
     }
-
 }

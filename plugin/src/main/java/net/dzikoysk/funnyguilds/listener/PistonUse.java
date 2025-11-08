@@ -26,17 +26,14 @@ public class PistonUse extends AbstractFunnyListener {
         BlockFace direction = event.getDirection();
 
         PandaStream.of(blocks)
-                .map(block -> retract
-                        ? block
-                        : block.getRelative(direction))
-                .map(Block::getLocation)
-                .find(ProtectionSystem::isGuildHeartProtectedRegion)
-                .peek(location -> event.setCancelled(true));
+            .map(block -> retract ? block : block.getRelative(direction))
+            .map(Block::getLocation)
+            .find(ProtectionSystem::isGuildHeartProtectedRegion)
+            .peek(location -> event.setCancelled(true));
 
         PandaStream.of(event.getBlock().getRelative(direction))
-                .map(Block::getLocation)
-                .find(ProtectionSystem::isGuildHeartProtectedRegion)
-                .peek(location -> event.setCancelled(true));
+            .map(Block::getLocation)
+            .find(ProtectionSystem::isGuildHeartProtectedRegion)
+            .peek(location -> event.setCancelled(true));
     }
-
 }

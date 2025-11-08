@@ -29,5 +29,4 @@ public class CommandSenderLocaleProvider implements LocaleProvider<CommandSender
         localeString = localeString.replace('_', '-');
         return Locale.forLanguageTag(localeString);
     }
-
 }

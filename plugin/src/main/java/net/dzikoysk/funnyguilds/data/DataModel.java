@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 
 public interface DataModel {
-
     void load() throws SQLException;
 
     void save(boolean ignoreNotChanged);
@@ -67,5 +66,4 @@ public interface DataModel {
 
         return new FlatDataModel(plugin);
     }
-
 }

@@ -10,12 +10,14 @@ import panda.std.Option;
 
 public class GuildTop extends Top<GuildRank> {
 
-    public GuildTop(TopComparator<GuildRank> comparator, BiFunction<String, TopComparator<GuildRank>, NavigableSet<GuildRank>> recalculateFunction) {
+    public GuildTop(
+        TopComparator<GuildRank> comparator,
+        BiFunction<String, TopComparator<GuildRank>, NavigableSet<GuildRank>> recalculateFunction
+    ) {
         super(comparator, recalculateFunction);
     }
 
     public Option<Guild> getGuild(int place) {
         return this.get(place).map(GuildRank::getGuild);
     }
-
 }

@@ -5,25 +5,24 @@ import java.util.UUID;
 import panda.std.stream.PandaStream;
 
 public interface InvitationList<T extends Invitation<?, ?>> {
-
     Set<T> getInvitations();
 
     default Set<T> getInvitationsFrom(UUID from) {
         return PandaStream.of(this.getInvitations())
-                .filter(invitation -> invitation.getFromUUID().equals(from))
-                .toSet();
+            .filter(invitation -> invitation.getFromUUID().equals(from))
+            .toSet();
     }
 
     default Set<T> getInvitationsFor(UUID to) {
         return PandaStream.of(this.getInvitations())
-                .filter(invitation -> invitation.getToUUID().equals(to))
-                .toSet();
+            .filter(invitation -> invitation.getToUUID().equals(to))
+            .toSet();
     }
 
     default boolean hasInvitation(UUID from, UUID to) {
         return PandaStream.of(this.getInvitationsFrom(from))
-                .find(invitation -> invitation.getToUUID().equals(to))
-                .isPresent();
+            .find(invitation -> invitation.getToUUID().equals(to))
+            .isPresent();
     }
 
     default boolean hasInvitationFor(UUID to) {
@@ -33,5 +32,4 @@ public interface InvitationList<T extends Invitation<?, ?>> {
     void createInvitation(UUID from, UUID to);
 
     void expireInvitation(UUID from, UUID to);
-
 }

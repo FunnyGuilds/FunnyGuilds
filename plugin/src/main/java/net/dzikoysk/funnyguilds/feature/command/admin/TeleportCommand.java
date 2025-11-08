@@ -12,11 +12,11 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class TeleportCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.teleport.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${admin.teleport.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
         when(!this.config.regionsEnabled, config -> config.regionsDisabled);
@@ -26,9 +26,8 @@ public final class TeleportCommand extends AbstractFunnyCommand {
         Region region = when(guild.getRegion(), config -> config.adminNoRegionFound);
 
         this.messageService.getMessage(config -> config.baseTeleport)
-                .receiver(player)
-                .send();
+            .receiver(player)
+            .send();
         player.teleport(region.getCenter());
     }
-
 }

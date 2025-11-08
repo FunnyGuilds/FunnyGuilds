@@ -15,6 +15,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.0-beta2" // https://github.com/Goooler/shadow (fork of com.github.johnrengelman.shadow)
     id("xyz.jpenilla.run-paper") version "2.2.4" apply false
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.14" apply false
+    id("com.diffplug.spotless") version "8.0.0"
 }
 
 idea {
@@ -30,6 +31,7 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "application")
     apply(plugin = "com.gradleup.shadow")
+    apply(plugin = "com.diffplug.spotless")
 
     application {
         mainClass.set("net.dzikoysk.funnyguilds.FunnyGuilds")

@@ -4,7 +4,6 @@ import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 
 public enum CheatType {
-
     REACH("Reach", config -> config.securitySystemReach),
     FREE_CAM("FreeCam", config -> config.securitySystemFreeCam);
 
@@ -23,5 +22,4 @@ public enum CheatType {
     public Function<MessageConfiguration, String> getNoteSupplier() {
         return this.noteSupplier;
     }
-
 }

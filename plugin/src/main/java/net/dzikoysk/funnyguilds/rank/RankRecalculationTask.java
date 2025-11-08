@@ -19,5 +19,4 @@ public class RankRecalculationTask implements Runnable {
         this.userRankManager.recalculateTops();
         this.guildRankManager.recalculateTops();
     }
-
 }

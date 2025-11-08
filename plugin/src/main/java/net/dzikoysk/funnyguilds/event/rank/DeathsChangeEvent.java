@@ -35,5 +35,4 @@ public class DeathsChangeEvent extends AbstractRankEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Deaths change has been cancelled by the server!";
     }
-
 }

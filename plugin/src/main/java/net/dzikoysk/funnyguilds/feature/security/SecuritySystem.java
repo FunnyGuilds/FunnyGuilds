@@ -22,12 +22,11 @@ public final class SecuritySystem {
     private static final double RAYCAST_STEP_SIZE = 0.1D;
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
     private static final Cache<User, Integer> PLAYERS_VIOLATION_LEVEL = CacheBuilder.newBuilder()
-            .ticker(Ticker.systemTicker())
-            .expireAfterWrite(10, java.util.concurrent.TimeUnit.MINUTES)
-            .build();
+        .ticker(Ticker.systemTicker())
+        .expireAfterWrite(10, java.util.concurrent.TimeUnit.MINUTES)
+        .build();
 
-    private SecuritySystem() {
-    }
+    private SecuritySystem() {}
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, guild);
@@ -58,12 +57,12 @@ public final class SecuritySystem {
         Location eye = player.getEyeLocation();
         Vector direction = eye.getDirection();
         Vector origin = (player.isSneaking() && !Reflections.USE_PRE_9_METHODS)
-                ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
-                : eye.toVector();
+            ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
+            : eye.toVector();
 
         FunnyBox funnyBox = config.heart.createEntityType != null
-                ? new FunnyBox(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0)
-                : FunnyBox.of(player.getWorld().getBlockAt(center));
+            ? new FunnyBox(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0)
+            : FunnyBox.of(player.getWorld().getBlockAt(center));
 
         Vector hitPoint = funnyBox.rayTrace(origin, direction, RAYCAST_STEP_SIZE, 6);
         if (hitPoint == null) {
@@ -78,5 +77,4 @@ public final class SecuritySystem {
     static Cache<User, Integer> getPlayersViolationLevel() {
         return PLAYERS_VIOLATION_LEVEL;
     }
-
 }

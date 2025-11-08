@@ -16,5 +16,4 @@ public class DatabaseUpdateGuildPointsAsyncTask extends AsyncFunnyTask {
     public void execute() {
         DatabaseGuildSerializer.updatePoints(this.guild);
     }
-
 }

@@ -14,6 +14,7 @@ public abstract class AbstractFunnyListener implements Listener {
 
     @Inject
     public FunnyGuilds plugin;
+
     @Inject
     public FunnyGuildsLogger logger;
 
@@ -28,7 +29,7 @@ public abstract class AbstractFunnyListener implements Listener {
 
     @Inject
     public UserManager userManager;
+
     @Inject
     public RegionManager regionManager;
-
 }

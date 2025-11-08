@@ -20,5 +20,4 @@ public class ScoreboardGlobalUpdateSyncTask extends SyncFunnyTask {
     public void execute() throws Exception {
         this.scoreboardHandler.updatePlayers(this.highPriority);
     }
-
 }

@@ -23,5 +23,4 @@ public class RangeFormattingTransformer extends BidirectionalTransformer<String,
     public String rightToLeft(RangeFormatting data, @NotNull SerdesContext serdesContext) {
         return ChatUtils.decolor(data.toString());
     }
-
 }

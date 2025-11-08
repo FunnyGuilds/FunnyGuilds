@@ -16,9 +16,10 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int getPoints() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getPoints())
-                .sum();
+        return this.entity.getMembers()
+            .stream()
+            .mapToInt(user -> user.getRank().getPoints())
+            .sum();
     }
 
     public int getAveragePoints() {
@@ -27,9 +28,10 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int getKills() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getKills())
-                .sum();
+        return this.entity.getMembers()
+            .stream()
+            .mapToInt(user -> user.getRank().getKills())
+            .sum();
     }
 
     public int getAverageKills() {
@@ -38,9 +40,10 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int getDeaths() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getDeaths())
-                .sum();
+        return this.entity.getMembers()
+            .stream()
+            .mapToInt(user -> user.getRank().getDeaths())
+            .sum();
     }
 
     public int getAverageDeaths() {
@@ -49,9 +52,10 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int getAssists() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getAssists())
-                .sum();
+        return this.entity.getMembers()
+            .stream()
+            .mapToInt(user -> user.getRank().getAssists())
+            .sum();
     }
 
     public int getAverageAssists() {
@@ -60,9 +64,10 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int getLogouts() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getLogouts())
-                .sum();
+        return this.entity.getMembers()
+            .stream()
+            .mapToInt(user -> user.getRank().getLogouts())
+            .sum();
     }
 
     public int getAverageLogouts() {
@@ -71,30 +76,30 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public float getKDR() {
-        return this.getDeaths() == 0
-                ? this.getKills()
-                : 1.0F * this.getKills() / this.getDeaths();
+        return this.getDeaths() == 0 ? this.getKills() : (1.0F * this.getKills()) / this.getDeaths();
     }
 
     public float getAverageKDR() {
-        return (float) this.entity.getMembers().stream()
-                .mapToDouble(user -> user.getRank().getKDR())
-                .average()
-                .orElse(0.0D);
+        return (float) this.entity.getMembers()
+            .stream()
+            .mapToDouble(user -> user.getRank().getKDR())
+            .average()
+            .orElse(0.0D);
     }
 
     @Override
     public float getKDA() {
         return this.getDeaths() == 0
-                ? this.getKills() + this.getAssists()
-                : 1.0F * (this.getKills() + this.getAssists()) / this.getDeaths();
+            ? this.getKills() + this.getAssists()
+            : (1.0F * (this.getKills() + this.getAssists())) / this.getDeaths();
     }
 
     public float getAverageKDA() {
-        return (float) this.entity.getMembers().stream()
-                .mapToDouble(user -> user.getRank().getKDA())
-                .average()
-                .orElse(0.0D);
+        return (float) this.entity.getMembers()
+            .stream()
+            .mapToDouble(user -> user.getRank().getKDA())
+            .average()
+            .orElse(0.0D);
     }
 
     @Override
@@ -110,5 +115,4 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     public String toString() {
         return Integer.toString(this.getAveragePoints());
     }
-
 }

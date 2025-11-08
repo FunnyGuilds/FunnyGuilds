@@ -23,5 +23,4 @@ public class MaterialTransformer extends BidirectionalTransformer<String, Materi
     public String rightToLeft(Material data, @NotNull SerdesContext serdesContext) {
         return data.name();
     }
-
 }

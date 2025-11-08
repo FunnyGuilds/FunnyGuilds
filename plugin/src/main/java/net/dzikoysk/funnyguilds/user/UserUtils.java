@@ -22,8 +22,7 @@ import panda.std.Result;
 
 public final class UserUtils {
 
-    private UserUtils() {
-    }
+    private UserUtils() {}
 
     /**
      * Gets the copied set of users.
@@ -51,9 +50,10 @@ public final class UserUtils {
         Set<User> users = new HashSet<>();
 
         for (String name : names) {
-            userManager.findByName(name)
-                    .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
-                    .peek(users::add);
+            userManager
+                .findByName(name)
+                .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
+                .peek(users::add);
         }
 
         return users;
@@ -66,8 +66,7 @@ public final class UserUtils {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByUuid(UUID)}
      */
-    @Nullable
-    @Deprecated
+    @Nullable @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static User get(UUID uuid) {
         return UserManager.getInstance().findByUuid(uuid).getOrNull();
@@ -80,8 +79,7 @@ public final class UserUtils {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String)}
      */
-    @Nullable
-    @Deprecated
+    @Nullable @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static User get(String nickname) {
         return get(nickname, false);
@@ -95,8 +93,7 @@ public final class UserUtils {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}
      */
-    @Nullable
-    @Deprecated
+    @Nullable @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static User get(String nickname, boolean ignoreCase) {
         return UserManager.getInstance().findByName(nickname, ignoreCase).getOrNull();
@@ -148,8 +145,8 @@ public final class UserUtils {
 
         if (FunnyValidator.validateUsername(config, filenameWithoutExtension) != NameResult.VALID) {
             return migrateUserFile(file)
-                    .onError(error -> FunnyGuilds.getPluginLogger().error(error))
-                    .toOption();
+                .onError(error -> FunnyGuilds.getPluginLogger().error(error))
+                .toOption();
         }
 
         return Option.none();
@@ -176,8 +173,8 @@ public final class UserUtils {
             return Result.ok(target.toFile());
         }
 
-        return Result.attempt(IOException.class, () -> Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile())
-                .mapErr(error -> "Could not move file '" + source + "' to '" + target + "': " + error.getMessage());
+        return Result.attempt(IOException.class, () ->
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile()
+        ).mapErr(error -> "Could not move file '" + source + "' to '" + target + "': " + error.getMessage());
     }
-
 }

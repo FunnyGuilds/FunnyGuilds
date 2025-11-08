@@ -11,9 +11,6 @@ public final class StringReplacement extends Replacement<String> {
 
     @Override
     public TextReplacementConfig prepareReplacementConfig(String value) {
-        return TextReplacementConfig.builder()
-                .matchLiteral(this.placeholder)
-                .replacement(value)
-                .build();
+        return TextReplacementConfig.builder().matchLiteral(this.placeholder).replacement(value).build();
     }
 }

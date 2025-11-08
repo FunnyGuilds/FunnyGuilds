@@ -26,7 +26,8 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        this.onMove(event); // We have to manually call onMove when player teleports - in other case the move event won't be called
+        this.onMove(event); // We have to manually call onMove when player teleports - in other case the
+        // move event won't be called
     }
 
     @EventHandler
@@ -59,70 +60,82 @@ public class PlayerMove extends AbstractFunnyListener {
             }
 
             regionOptionFrom
-                    .map(Region::getGuild)
-                    .peek(guild -> {
-                        this.logger.debug(String.format("Player %s left region of guild %s", player.getName(), guild.getName()));
+                .map(Region::getGuild)
+                .peek(guild -> {
+                    this.logger.debug(
+                        String.format("Player %s left region of guild %s", player.getName(), guild.getName())
+                    );
 
-                        if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
-                            event.setCancelled(true);
-                            return;
-                        }
+                    if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
+                        event.setCancelled(true);
+                        return;
+                    }
 
-                        FunnyFormatter formatter = new FunnyFormatter()
-                                .register("{GUILD}", guild.getName())
-                                .register("{TAG}", guild.getTag());
+                    FunnyFormatter formatter = new FunnyFormatter()
+                        .register("{GUILD}", guild.getName())
+                        .register("{TAG}", guild.getTag());
 
-                        this.messageService.getMessage(config -> config.notificationLeaveGuildRegion)
-                                .with(formatter)
-                                .receiver(player)
-                                .send();
-                    });
+                    this.messageService.getMessage(config -> config.notificationLeaveGuildRegion)
+                        .with(formatter)
+                        .receiver(player)
+                        .send();
+                });
 
             regionOptionTo
-                    .map(Region::getGuild)
-                    .peek(guild -> {
-                        this.logger.debug(String.format("Player %s entered region of guild %s", player.getName(), guild.getName()));
+                .map(Region::getGuild)
+                .peek(guild -> {
+                    this.logger.debug(
+                        String.format("Player %s entered region of guild %s", player.getName(), guild.getName())
+                    );
 
-                        if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
-                            event.setCancelled(true);
-                            return;
-                        }
+                    if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
+                        event.setCancelled(true);
+                        return;
+                    }
 
-                        if (this.config.heart.createEntityType != null) {
-                            Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.guildEntityHelper.spawnGuildEntity(guild, player), 40L);
-                        }
+                    if (this.config.heart.createEntityType != null) {
+                        Bukkit.getScheduler().runTaskLater(
+                            this.plugin,
+                            () -> this.guildEntityHelper.spawnGuildEntity(guild, player),
+                            40L
+                        );
+                    }
 
-                        FunnyFormatter formatter = new FunnyFormatter()
-                                .register("{GUILD}", guild.getName())
-                                .register("{TAG}", guild.getTag())
-                                .register("{PLAYER}", player.getName());
+                    FunnyFormatter formatter = new FunnyFormatter()
+                        .register("{GUILD}", guild.getName())
+                        .register("{TAG}", guild.getTag())
+                        .register("{PLAYER}", player.getName());
 
-                        this.messageService.getMessage(config -> config.notificationEnterGuildRegion)
-                                .with(formatter)
-                                .receiver(player)
-                                .send();
+                    this.messageService.getMessage(config -> config.notificationEnterGuildRegion)
+                        .with(formatter)
+                        .receiver(player)
+                        .send();
 
-                        if (player.hasPermission("funnyguilds.admin.notification")) {
-                            return;
-                        }
+                    if (player.hasPermission("funnyguilds.admin.notification")) {
+                        return;
+                    }
 
-                        if (cache.getNotificationTime() > 0 && System.currentTimeMillis() < cache.getNotificationTime()) {
-                            return;
-                        }
+                    if (cache.getNotificationTime() > 0 && System.currentTimeMillis() < cache.getNotificationTime()) {
+                        return;
+                    }
 
-                        if (!this.config.regionEnterNotificationGuildMember && user.hasGuild() &&
-                                guild.getTag().equals(user.getGuild().get().getTag())) {
-                            return;
-                        }
+                    if (
+                        !this.config.regionEnterNotificationGuildMember &&
+                        user.hasGuild() &&
+                        guild.getTag().equals(user.getGuild().get().getTag())
+                    ) {
+                        return;
+                    }
 
-                        this.messageService.getMessage(config -> config.notificationIntruderEnterGuildRegion)
-                                .with(formatter)
-                                .receiver(guild)
-                                .send();
+                    this.messageService.getMessage(config -> config.notificationIntruderEnterGuildRegion)
+                        .with(formatter)
+                        .receiver(guild)
+                        .send();
 
-                        cache.setNotificationTime(System.currentTimeMillis() + 1000L * this.config.regionNotificationCooldown);
-                    });
+                    cache.setNotificationTime(
+                        System.currentTimeMillis() + 1000L * this.config.regionNotificationCooldown
+                    );
+                });
         });
     }
-
 }

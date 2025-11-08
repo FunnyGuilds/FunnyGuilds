@@ -17,10 +17,8 @@ import panda.utilities.text.Joiner;
 
 public abstract class StaticPlaceholdersService<T, P extends Placeholders<T, P>> implements PlaceholdersService<T> {
 
-    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT =
-            (list, listNoValue) -> list.isEmpty()
-                    ? listNoValue
-                    : Joiner.on(", ").join(list).toString();
+    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT = (list, listNoValue) ->
+        list.isEmpty() ? listNoValue : Joiner.on(", ").join(list).toString();
 
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
@@ -32,7 +30,10 @@ public abstract class StaticPlaceholdersService<T, P extends Placeholders<T, P>>
      * @param placeholders placeholders set
      */
     public void register(JavaPlugin plugin, String name, P placeholders) {
-        this.placeholders.put(plugin.getName().toLowerCase(Locale.ROOT) + "_" + name.toLowerCase(Locale.ROOT), placeholders);
+        this.placeholders.put(
+            plugin.getName().toLowerCase(Locale.ROOT) + "_" + name.toLowerCase(Locale.ROOT),
+            placeholders
+        );
     }
 
     /**
@@ -50,21 +51,33 @@ public abstract class StaticPlaceholdersService<T, P extends Placeholders<T, P>>
         return text;
     }
 
-    public String formatCustom(@Nullable Object entity, @Nullable String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public String formatCustom(
+        @Nullable Object entity,
+        @Nullable String text,
+        T data,
+        String prefix,
+        String suffix,
+        Function<String, String> nameModifier
+    ) {
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatCustom(entity, text, data, prefix, suffix, nameModifier);
         }
         return text;
     }
 
-    public String formatCustom(@Nullable String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public String formatCustom(
+        @Nullable String text,
+        T data,
+        String prefix,
+        String suffix,
+        Function<String, String> nameModifier
+    ) {
         return this.formatCustom(null, text, data, prefix, suffix, nameModifier);
     }
 
     public Set<FunnyFormatter> prepareReplacements(@Nullable Object entity, T data) {
         return PandaStream.of(this.placeholders.values())
-                .map(placeholders -> placeholders.toVariablesFormatter(entity, data))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+            .map(placeholders -> placeholders.toVariablesFormatter(entity, data))
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
 }

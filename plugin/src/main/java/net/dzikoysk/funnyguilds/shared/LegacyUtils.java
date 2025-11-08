@@ -5,8 +5,7 @@ import panda.std.Option;
 
 public final class LegacyUtils {
 
-    private LegacyUtils() {
-    }
+    private LegacyUtils() {}
 
     /**
      * Used to get x from placeholders like {PLACEHOLDER-x}
@@ -44,11 +43,11 @@ public final class LegacyUtils {
             }
         }
 
-        return Option.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString()))
-                .orElseGet(() -> {
-                    FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + indexBuilder);
-                    return -1;
-                });
+        return Option.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString())).orElseGet(
+            () -> {
+                FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + indexBuilder);
+                return -1;
+            }
+        );
     }
-
 }

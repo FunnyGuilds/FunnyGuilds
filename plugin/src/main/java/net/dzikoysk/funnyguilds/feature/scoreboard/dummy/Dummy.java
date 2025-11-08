@@ -28,7 +28,9 @@ public class Dummy {
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to initialize Dummy, but scoreboard hasn't been initialized.");
+            FunnyGuilds.getPluginLogger().debug(
+                "We're trying to initialize Dummy, but scoreboard hasn't been initialized."
+            );
             return Option.none();
         }
         Scoreboard scoreboard = scoreboardOption.get();
@@ -53,13 +55,14 @@ public class Dummy {
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score, but scoreboard hasn't been initialized.");
+            FunnyGuilds.getPluginLogger().debug(
+                "We're trying to update Dummy score, but scoreboard hasn't been initialized."
+            );
             return;
         }
         scoreboardOption
-                .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
-                .orElse(this::initialize)
-                .peek(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
+            .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
+            .orElse(this::initialize)
+            .peek(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
     }
-
 }

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.protection;
 
+import dev.peri.yetanothermessageslibrary.message.Sendable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Function;
@@ -9,8 +10,8 @@ import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,14 +19,16 @@ import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.Triple;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
 
 public final class ProtectionSystem {
 
-    private ProtectionSystem() {
-    }
+    private ProtectionSystem() {}
 
-    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
+    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(
+        Player player,
+        Location location,
+        boolean includeBuildLock
+    ) {
         if (player == null || location == null) {
             return Option.none();
         }
@@ -43,7 +46,10 @@ public final class ProtectionSystem {
         HeartConfiguration heartConfig = config.heart;
         if (region.getHeart().contentEquals(location)) {
             Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
-            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+            return Option.when(
+                heartMaterial != null && heartMaterial.getFirst() != Material.AIR,
+                Triple.of(player, guild, ProtectionType.HEART)
+            );
         }
 
         if (player.hasPermission("funnyguilds.admin.build")) {
@@ -77,12 +83,18 @@ public final class ProtectionSystem {
         Guild guild = region.getGuild();
 
         HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
-        return guild.getEnderCrystal()
-                .map(Location::getBlock)
-                .map(FunnyBox::of)
-                .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
-                .map(box -> box.contains(location))
-                .orElseGet(false);
+        return guild
+            .getEnderCrystal()
+            .map(Location::getBlock)
+            .map(FunnyBox::of)
+            .map(box ->
+                box.expandDirectional(
+                    heartConfig.interactionProtection.firstCorner,
+                    heartConfig.interactionProtection.secondCorner
+                )
+            )
+            .map(box -> box.contains(location))
+            .orElseGet(false);
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
@@ -107,28 +119,27 @@ public final class ProtectionSystem {
                 messageSupplier = config -> config.regionOther;
                 break;
         }
-        FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
-                .receiver(player)
-                .send();
+        FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier).receiver(player).send();
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        guild.getBuild().peek(build -> {
-            Duration time = Duration.between(Instant.now(), build);
-            FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.regionExplodeInteract)
+        guild
+            .getBuild()
+            .peek(build -> {
+                Duration time = Duration.between(Instant.now(), build);
+                FunnyGuilds.getInstance()
+                    .getMessageService()
+                    .getMessage(config -> config.regionExplodeInteract)
                     .with(FunnyFormatter.of("{TIME}", time.getSeconds()))
                     .receiver(player)
                     .send();
-        });
+            });
     }
 
     public enum ProtectionType {
-
         UNAUTHORIZED,
         LOCKED,
         HEART,
-        HEART_INTERACTION
-
+        HEART_INTERACTION,
     }
-
 }

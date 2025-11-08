@@ -6,20 +6,13 @@ import org.bukkit.command.CommandSender;
 
 public final class GuildsEnabledCommand extends AbstractFunnyCommand {
 
-    @FunnyCommand(
-            name = "${admin.guilds-enabled.name}",
-            permission = "funnyguilds.admin",
-            acceptsExceeded = true
-    )
+    @FunnyCommand(name = "${admin.guilds-enabled.name}", permission = "funnyguilds.admin", acceptsExceeded = true)
     public void execute(CommandSender sender) {
         this.config.guildsEnabled = !this.config.guildsEnabled;
-        this.messageService
-                .getMessage(config -> this.config.guildsEnabled
-                        ? config.adminGuildsEnabled
-                        : config.adminGuildsDisabled
-                )
-                .receiver(sender)
-                .send();
+        this.messageService.getMessage(config ->
+                this.config.guildsEnabled ? config.adminGuildsEnabled : config.adminGuildsDisabled
+            )
+            .receiver(sender)
+            .send();
     }
-
 }

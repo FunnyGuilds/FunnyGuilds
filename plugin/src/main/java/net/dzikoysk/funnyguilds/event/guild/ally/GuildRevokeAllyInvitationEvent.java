@@ -26,5 +26,4 @@ public class GuildRevokeAllyInvitationEvent extends GuildAllyEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Alliance revokement has been cancelled by the server!";
     }
-
 }

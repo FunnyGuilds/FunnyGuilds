@@ -64,12 +64,10 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
         if (guildCenterOption.isEmpty()) {
             return;
         }
-        Location holoCenter = guildCenterOption.get()
-                .add(holoConfig.locationCorrection);
+        Location holoCenter = guildCenterOption.get().add(holoConfig.locationCorrection);
 
-        Hologram holo = this.holograms.computeIfAbsent(
-                guild,
-                (g) -> DHAPI.createHologram(prepareHologramName(guild), holoCenter, false)
+        Hologram holo = this.holograms.computeIfAbsent(guild, g ->
+            DHAPI.createHologram(prepareHologramName(guild), holoCenter, false)
         );
 
         if (updateLocation) {
@@ -81,10 +79,12 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             // A little hacky, but prevents from hologram blinking
             lines.add("#ICON:" + HologramItem.fromItemStack(new ItemStack(holoConfig.item)).getContent());
         }
-        lines.addAll(PandaStream.of(holoConfig.displayedLines)
+        lines.addAll(
+            PandaStream.of(holoConfig.displayedLines)
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
                 .map(ChatUtils::colored)
-                .toList());
+                .toList()
+        );
         DHAPI.setHologramLines(holo, lines);
     }
 
@@ -120,5 +120,4 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
     private static String prepareHologramName(Guild guild) {
         return "funnyguilds-guild-" + guild.getUUID();
     }
-
 }

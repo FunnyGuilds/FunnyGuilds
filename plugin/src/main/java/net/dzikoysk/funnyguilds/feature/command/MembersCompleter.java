@@ -22,15 +22,16 @@ final class MembersCompleter implements Completer {
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
         return this.userManager.findByName(context.getCommandSender().getName())
-                .filter(User::hasGuild)
-                .flatMap(User::getGuild)
-                .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))
-                .orElseGet(Collections.emptyList());
+            .filter(User::hasGuild)
+            .flatMap(User::getGuild)
+            .map(guild ->
+                CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName)
+            )
+            .orElseGet(Collections.emptyList());
     }
 
     @Override
     public String getName() {
         return "members";
     }
-
 }

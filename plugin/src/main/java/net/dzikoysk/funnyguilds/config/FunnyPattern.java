@@ -9,9 +9,9 @@ public class FunnyPattern {
 
     public FunnyPattern(String pattern) {
         this.compiledPattern = DefaultRegex.findRegex(pattern)
-                .map(DefaultRegex::getPattern)
-                .map(Pattern::compile)
-                .orElseGet(Pattern.compile(pattern));
+            .map(DefaultRegex::getPattern)
+            .map(Pattern::compile)
+            .orElseGet(Pattern.compile(pattern));
         this.pattern = pattern;
     }
 
@@ -31,5 +31,4 @@ public class FunnyPattern {
     public boolean matches(String string) {
         return this.compiledPattern.matcher(string).matches();
     }
-
 }

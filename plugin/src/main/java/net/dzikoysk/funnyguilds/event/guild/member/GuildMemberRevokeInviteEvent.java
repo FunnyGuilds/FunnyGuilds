@@ -26,5 +26,4 @@ public class GuildMemberRevokeInviteEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member invitation revocation has been cancelled by the server!";
     }
-
 }

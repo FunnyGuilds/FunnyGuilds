@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class Database {
 
@@ -23,13 +22,25 @@ public class Database {
         }
 
         String characterEncoding = c.characterEncoding == null || c.characterEncoding.isEmpty()
-                ? ""
-                : "&characterEncoding=" + c.characterEncoding;
+            ? ""
+            : "&characterEncoding=" + c.characterEncoding;
 
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
-        this.dataSource.setJdbcUrl("jdbc:" + FunnyGuilds.getInstance().getPluginConfiguration().dataModel.name().toLowerCase() + "://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + characterEncoding);
+        this.dataSource.setJdbcUrl(
+            "jdbc:" +
+                FunnyGuilds.getInstance().getPluginConfiguration().dataModel.name().toLowerCase() +
+                "://" +
+                c.hostname +
+                ":" +
+                c.port +
+                "/" +
+                c.database +
+                "?useSSL=" +
+                c.useSSL +
+                characterEncoding
+        );
         this.dataSource.setUsername(c.user);
 
         if (!FunnyStringUtils.isEmpty(c.password)) {
@@ -49,5 +60,4 @@ public class Database {
     public void shutdown() {
         this.dataSource.close();
     }
-
 }

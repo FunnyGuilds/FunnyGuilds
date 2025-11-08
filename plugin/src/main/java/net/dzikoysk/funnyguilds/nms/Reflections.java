@@ -29,12 +29,15 @@ public final class Reflections {
     private static final Map<String, FieldAccessor<?>> FIELD_ACCESSOR_CACHE = new HashMap<>();
     private static final Map<String, Method> METHOD_CACHE = new HashMap<>();
     private static final Class<?> INVALID_CLASS = InvalidMarker.class;
-    private static final Method INVALID_METHOD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredMethod("invalidMethodMaker"));
-    private static final Field INVALID_FIELD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredField("invalidFieldMarker"));
+    private static final Method INVALID_METHOD = SafeUtils.safeInit(() ->
+        InvalidMarker.class.getDeclaredMethod("invalidMethodMaker")
+    );
+    private static final Field INVALID_FIELD = SafeUtils.safeInit(() ->
+        InvalidMarker.class.getDeclaredField("invalidFieldMarker")
+    );
     private static final FieldAccessor<?> INVALID_FIELD_ACCESSOR = getField(INVALID_CLASS, Void.class, 0);
 
-    private Reflections() {
-    }
+    private Reflections() {}
 
     public static void prepareServerVersion() {
         Server server = Bukkit.getServer();
@@ -48,8 +51,7 @@ public final class Reflections {
         CRAFTBUKKIT_PACKAGE = server.getClass().getPackage().getName();
         if (versionNumber < 17) {
             NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE + ".server." + CRAFTBUKKIT_PACKAGE.split("\\.")[3];
-        }
-        else {
+        } else {
             NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE;
         }
     }
@@ -69,8 +71,7 @@ public final class Reflections {
         try {
             c = Class.forName(className);
             CLASS_CACHE.put(className, c);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve class", ex);
 
             CLASS_CACHE.put(className, INVALID_CLASS);
@@ -94,8 +95,7 @@ public final class Reflections {
     public static Object getHandle(Entity entity) {
         try {
             return getMethod(entity.getClass(), "getHandle").invoke(entity);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not get entity handle", ex);
 
             return null;
@@ -105,8 +105,7 @@ public final class Reflections {
     public static Object getHandle(World world) {
         try {
             return getMethod(world.getClass(), "getHandle").invoke(world);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not get world handle", ex);
 
             return null;
@@ -129,8 +128,7 @@ public final class Reflections {
         try {
             field = cl.getDeclaredField(fieldName);
             FIELD_CACHE.put(cacheKey, field);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve field", ex);
 
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
@@ -145,7 +143,8 @@ public final class Reflections {
 
     @SuppressWarnings("unchecked")
     private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
-        String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
+        String cacheKey =
+            target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
 
         FieldAccessor<T> output = (FieldAccessor<T>) FIELD_ACCESSOR_CACHE.get(cacheKey);
 
@@ -158,17 +157,19 @@ public final class Reflections {
         }
 
         for (Field field : target.getDeclaredFields()) {
-            if ((name == null || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType()) && index-- <= 0) {
+            if (
+                (name == null || field.getName().equals(name)) &&
+                fieldType.isAssignableFrom(field.getType()) &&
+                index-- <= 0
+            ) {
                 field.setAccessible(true);
 
                 output = new FieldAccessor<T>() {
-
                     @Override
                     public T get(Object target) {
                         try {
                             return (T) field.get(target);
-                        }
-                        catch (IllegalAccessException e) {
+                        } catch (IllegalAccessException e) {
                             throw new RuntimeException("Cannot access reflection.", e);
                         }
                     }
@@ -177,8 +178,7 @@ public final class Reflections {
                     public void set(Object target, Object value) {
                         try {
                             field.set(target, value);
-                        }
-                        catch (IllegalAccessException e) {
+                        } catch (IllegalAccessException e) {
                             throw new RuntimeException("Cannot access reflection.", e);
                         }
                     }
@@ -218,8 +218,7 @@ public final class Reflections {
             c = cl.getDeclaredField(fieldName);
             c.setAccessible(true);
             FIELD_CACHE.put(cacheKey, c);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve field", ex);
 
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
@@ -292,10 +291,9 @@ public final class Reflections {
     }
 
     private static class InvalidMarker {
+
         public Void invalidFieldMarker;
 
-        public void invalidMethodMaker() {
-        }
+        public void invalidMethodMaker() {}
     }
-
 }

@@ -17,17 +17,20 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class PointsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.points.name}",
-            permission = "funnyguilds.admin",
-            completer = "online-players:3",
-            acceptsExceeded = true
+        name = "${admin.points.name}",
+        permission = "funnyguilds.admin",
+        completer = "online-players:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
         when(args.length < 2, config -> config.adminNoPointsGiven);
 
         int points = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(
+                config -> config.adminErrorInNumber,
+                FunnyFormatter.of("{ERROR}", args[0])
+            );
         });
 
         User user = UserValidation.requireUserByName(args[0]);
@@ -45,14 +48,13 @@ public final class PointsCommand extends AbstractFunnyCommand {
         user.getRank().setPoints(finalPoints);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", user.getName())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, this.config.pointsFormat))
-                .register("{POINTS}", finalPoints);
+            .register("{PLAYER}", user.getName())
+            .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, this.config.pointsFormat))
+            .register("{POINTS}", finalPoints);
 
         this.messageService.getMessage(config -> config.adminPointsChanged)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
     }
-
 }

@@ -16,5 +16,4 @@ public class DatabaseUpdateUserPointsAsyncTask extends AsyncFunnyTask {
     public void execute() {
         DatabaseUserSerializer.updatePoints(this.user);
     }
-
 }

@@ -7,21 +7,43 @@ import net.dzikoysk.funnyguilds.rank.TopComparator;
 
 public final class GuildComparator implements TopComparator<GuildRank> {
 
-    public static final TopComparator<GuildRank> POINTS_COMPARATOR = new GuildComparator(GuildRank::getPoints).reversed();
+    public static final TopComparator<GuildRank> POINTS_COMPARATOR = new GuildComparator(
+        GuildRank::getPoints
+    ).reversed();
     public static final TopComparator<GuildRank> KILLS_COMPARATOR = new GuildComparator(GuildRank::getKills).reversed();
-    public static final TopComparator<GuildRank> DEATHS_COMPARATOR = new GuildComparator(GuildRank::getDeaths).reversed();
+    public static final TopComparator<GuildRank> DEATHS_COMPARATOR = new GuildComparator(
+        GuildRank::getDeaths
+    ).reversed();
     public static final TopComparator<GuildRank> KDR_COMPARATOR = new GuildComparator(GuildRank::getKDR).reversed();
     public static final TopComparator<GuildRank> KDA_COMPARATOR = new GuildComparator(GuildRank::getKDA).reversed();
-    public static final TopComparator<GuildRank> ASSISTS_COMPARATOR = new GuildComparator(GuildRank::getAssists).reversed();
-    public static final TopComparator<GuildRank> LOGOUTS_COMPARATOR = new GuildComparator(GuildRank::getLogouts).reversed();
+    public static final TopComparator<GuildRank> ASSISTS_COMPARATOR = new GuildComparator(
+        GuildRank::getAssists
+    ).reversed();
+    public static final TopComparator<GuildRank> LOGOUTS_COMPARATOR = new GuildComparator(
+        GuildRank::getLogouts
+    ).reversed();
 
-    public static final TopComparator<GuildRank> AVG_POINTS_COMPARATOR = new GuildComparator(GuildRank::getAveragePoints).reversed();
-    public static final TopComparator<GuildRank> AVG_KILLS_COMPARATOR = new GuildComparator(GuildRank::getAverageKills).reversed();
-    public static final TopComparator<GuildRank> AVG_DEATHS_COMPARATOR = new GuildComparator(GuildRank::getAverageDeaths).reversed();
-    public static final TopComparator<GuildRank> AVG_KDR_COMPARATOR = new GuildComparator(GuildRank::getAverageKDR).reversed();
-    public static final TopComparator<GuildRank> AVG_KDA_COMPARATOR = new GuildComparator(GuildRank::getAverageKDA).reversed();
-    public static final TopComparator<GuildRank> AVG_ASSISTS_COMPARATOR = new GuildComparator(GuildRank::getAverageAssists).reversed();
-    public static final TopComparator<GuildRank> AVG_LOGOUTS_COMPARATOR = new GuildComparator(GuildRank::getAverageLogouts).reversed();
+    public static final TopComparator<GuildRank> AVG_POINTS_COMPARATOR = new GuildComparator(
+        GuildRank::getAveragePoints
+    ).reversed();
+    public static final TopComparator<GuildRank> AVG_KILLS_COMPARATOR = new GuildComparator(
+        GuildRank::getAverageKills
+    ).reversed();
+    public static final TopComparator<GuildRank> AVG_DEATHS_COMPARATOR = new GuildComparator(
+        GuildRank::getAverageDeaths
+    ).reversed();
+    public static final TopComparator<GuildRank> AVG_KDR_COMPARATOR = new GuildComparator(
+        GuildRank::getAverageKDR
+    ).reversed();
+    public static final TopComparator<GuildRank> AVG_KDA_COMPARATOR = new GuildComparator(
+        GuildRank::getAverageKDA
+    ).reversed();
+    public static final TopComparator<GuildRank> AVG_ASSISTS_COMPARATOR = new GuildComparator(
+        GuildRank::getAverageAssists
+    ).reversed();
+    public static final TopComparator<GuildRank> AVG_LOGOUTS_COMPARATOR = new GuildComparator(
+        GuildRank::getAverageLogouts
+    ).reversed();
 
     private final Function<GuildRank, Number> valueFunction;
 
@@ -43,5 +65,4 @@ public final class GuildComparator implements TopComparator<GuildRank> {
     public Number getValue(GuildRank rank) {
         return this.valueFunction.apply(rank);
     }
-
 }

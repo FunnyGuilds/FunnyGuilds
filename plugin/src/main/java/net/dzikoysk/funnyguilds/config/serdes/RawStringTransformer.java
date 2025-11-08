@@ -23,5 +23,4 @@ public class RawStringTransformer extends BidirectionalTransformer<String, RawSt
     public String rightToLeft(RawString data, @NotNull SerdesContext serdesContext) {
         return ChatUtils.decolor(data.getValue());
     }
-
 }

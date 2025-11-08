@@ -12,19 +12,18 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class LeaveCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.leave.name}",
-            description = "${user.leave.description}",
-            aliases = "${user.leave.aliases}",
-            permission = "funnyguilds.leave",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.leave.name}",
+        description = "${user.leave.description}",
+        aliases = "${user.leave.aliases}",
+        permission = "funnyguilds.leave",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(Player player, @IsMember User member, Guild guild) {
         when(member.isOwner(), config -> config.leaveIsOwner);
@@ -36,22 +35,21 @@ public final class LeaveCommand extends AbstractFunnyCommand {
         guild.removeMember(member);
         member.removeGuild();
         this.plugin.getIndividualNameTagManager()
-                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, member))
-                .peek(this.plugin::scheduleFunnyTasks);
+            .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, member))
+            .peek(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", member.getName());
+            .register("{GUILD}", guild.getName())
+            .register("{TAG}", guild.getTag())
+            .register("{PLAYER}", member.getName());
 
         this.messageService.getMessage(config -> config.leaveToUser)
-                .receiver(member)
-                .with(formatter)
-                .send();
+            .receiver(member)
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.broadcastLeave)
-                .broadcast()
-                .with(formatter)
-                .send();
+            .broadcast()
+            .with(formatter)
+            .send();
     }
-
 }

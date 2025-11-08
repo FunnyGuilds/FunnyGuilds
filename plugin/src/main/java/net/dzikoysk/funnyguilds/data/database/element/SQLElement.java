@@ -23,7 +23,7 @@ public class SQLElement {
     }
 
     public String getKeyValuesAssignment() {
-        return this.getKeyGraveAccent() + "=VALUES(" + this.getKeyGraveAccent() + ")";
+        return (this.getKeyGraveAccent() + "=VALUES(" + this.getKeyGraveAccent() + ")");
     }
 
     public String getType() {
@@ -37,5 +37,4 @@ public class SQLElement {
     public boolean isNotNull() {
         return this.notNull;
     }
-
 }

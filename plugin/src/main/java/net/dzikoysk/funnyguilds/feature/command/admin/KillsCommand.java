@@ -16,17 +16,20 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class KillsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.kills.name}",
-            permission = "funnyguilds.admin",
-            completer = "online-players:3",
-            acceptsExceeded = true
+        name = "${admin.kills.name}",
+        permission = "funnyguilds.admin",
+        completer = "online-players:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
         when(args.length < 2, config -> config.adminNoKillsGiven);
 
         int kills = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(
+                config -> config.adminErrorInNumber,
+                FunnyFormatter.of("{ERROR}", args[0])
+            );
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -44,13 +47,12 @@ public final class KillsCommand extends AbstractFunnyCommand {
         user.getRank().setKills(finalKills);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", user.getName())
-                .register("{KILLS}", finalKills);
+            .register("{PLAYER}", user.getName())
+            .register("{KILLS}", finalKills);
 
         this.messageService.getMessage(config -> config.adminKillsChanged)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
     }
-
 }

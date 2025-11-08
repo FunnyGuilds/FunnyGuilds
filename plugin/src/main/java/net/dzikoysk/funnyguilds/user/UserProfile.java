@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.user;
 import net.dzikoysk.funnyguilds.shared.Position;
 
 public interface UserProfile {
-
     default boolean isOnline() {
         return false;
     }
@@ -31,5 +30,4 @@ public interface UserProfile {
     default Position getPosition() {
         return Position.ZERO;
     }
-
 }

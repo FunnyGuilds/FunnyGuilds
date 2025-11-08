@@ -51,5 +51,4 @@ public class FunnyTimeTransformer extends BidirectionalTransformer<String, Funny
     public String rightToLeft(@NotNull FunnyTime data, @NotNull SerdesContext serdesContext) {
         return data.getFormattedTime();
     }
-
 }

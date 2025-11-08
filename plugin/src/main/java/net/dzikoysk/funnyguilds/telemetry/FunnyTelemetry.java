@@ -17,8 +17,7 @@ import panda.utilities.IOUtils;
  */
 public final class FunnyTelemetry {
 
-    private FunnyTelemetry() {
-    }
+    private FunnyTelemetry() {}
 
     private static final Gson gson = new Gson();
     public static final String URL = "https://funnytelemetry.dzikoysk.net";
@@ -26,7 +25,11 @@ public final class FunnyTelemetry {
     public static final String FUNNYBIN_POST_BUNDLE = URL + "/funnybin/api/bundle/post";
 
     public static FunnybinResponse postToFunnybin(String paste, PasteType pasteType, String tag) throws IOException {
-        return sendPost(FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag), paste, FunnybinResponse.class);
+        return sendPost(
+            FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag),
+            paste,
+            FunnybinResponse.class
+        );
     }
 
     public static Option<FunnybinResponse> createBundle(List<String> pastes) throws IOException {
@@ -61,8 +64,8 @@ public final class FunnyTelemetry {
         connection.getOutputStream().write(bodyBytes);
 
         return IOUtils.convertStreamToString(connection.getInputStream(), StandardCharsets.UTF_8)
-                .map(input -> gson.fromJson(input, response))
-                .orThrow(exception -> exception);
+            .map(input -> gson.fromJson(input, response))
+            .orThrow(exception -> exception);
     }
 
     private static String encodeUTF8(String str) throws UnsupportedEncodingException {
@@ -82,7 +85,8 @@ public final class FunnyTelemetry {
         return result;
     }
 
-    private static void addQueryElement(String key, String value, StringBuilder builder) throws UnsupportedEncodingException {
+    private static void addQueryElement(String key, String value, StringBuilder builder)
+        throws UnsupportedEncodingException {
         builder.append(encodeUTF8(key));
 
         if (value != null) {
@@ -90,5 +94,4 @@ public final class FunnyTelemetry {
             builder.append(encodeUTF8(value));
         }
     }
-
 }

@@ -18,7 +18,11 @@ public class DynamicListenerManager {
     }
 
     public void registerDynamic(Supplier<Boolean> predicate, Listener... listeners) {
-        DynamicListenerRegistration registration = new DynamicListenerRegistration(this.funnyGuilds, Arrays.asList(listeners), predicate);
+        DynamicListenerRegistration registration = new DynamicListenerRegistration(
+            this.funnyGuilds,
+            Arrays.asList(listeners),
+            predicate
+        );
         registration.reload();
 
         this.registrations.add(registration);
@@ -53,5 +57,4 @@ public class DynamicListenerManager {
         this.registrations.forEach(DynamicListenerRegistration::forceUnregister);
         this.registrations.clear();
     }
-
 }

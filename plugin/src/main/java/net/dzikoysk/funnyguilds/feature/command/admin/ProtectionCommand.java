@@ -18,13 +18,15 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class ProtectionCommand extends AbstractFunnyCommand {
 
-    private static final DateTimeFormatter PROTECTION_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter PROTECTION_DATE_FORMATTER = DateTimeFormatter.ofPattern(
+        "yyyy/MM/dd HH:mm:ss"
+    );
 
     @FunnyCommand(
-            name = "${admin.protection.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.protection.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -42,13 +44,12 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         guild.setProtection(protectionDate.atZone(ZoneId.systemDefault()).toInstant());
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{TAG}", guild.getTag())
-                .register("{DATE}", protectionDateAsString);
+            .register("{TAG}", guild.getTag())
+            .register("{DATE}", protectionDateAsString);
 
         this.messageService.getMessage(config -> config.adminProtectionSetSuccessfully)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
     }
-
 }

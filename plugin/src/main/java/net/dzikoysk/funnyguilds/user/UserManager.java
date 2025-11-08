@@ -57,9 +57,7 @@ public class UserManager {
      * @return set of users
      */
     public Set<User> findByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::findByName)
-                .collect(Collectors.toSet());
+        return PandaStream.of(names).flatMap(this::findByName).collect(Collectors.toSet());
     }
 
     /**
@@ -94,9 +92,9 @@ public class UserManager {
 
         if (foundUser == null && ignoreCase) {
             foundUser = PandaStream.of(this.usersByName.entrySet())
-                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
-                    .map(Map.Entry::getValue)
-                    .orNull();
+                .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
+                .map(Map.Entry::getValue)
+                .orNull();
         }
 
         return Option.of(foundUser);
@@ -145,7 +143,10 @@ public class UserManager {
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
         Validate.notNull(userProfile, "userProfile can't be null!");
-        Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, name) == NameResult.VALID, "name is not valid!");
+        Validate.isTrue(
+            FunnyValidator.validateUsername(this.pluginConfiguration, name) == NameResult.VALID,
+            "name is not valid!"
+        );
 
         User user = new User(uuid, name, userProfile);
         this.addUser(user);
@@ -224,5 +225,4 @@ public class UserManager {
     public static UserManager getInstance() {
         return FunnyGuilds.getInstance().getUserManager();
     }
-
 }

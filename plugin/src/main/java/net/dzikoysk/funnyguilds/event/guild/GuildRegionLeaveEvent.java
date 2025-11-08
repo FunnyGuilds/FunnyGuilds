@@ -29,5 +29,4 @@ public class GuildRegionLeaveEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild region leave has been cancelled by the server!";
     }
-
 }

@@ -46,20 +46,16 @@ public class FakeUserProfile implements UserProfile {
     }
 
     @Override
-    public void sendMessage(String message) {
-    }
+    public void sendMessage(String message) {}
 
     @Override
-    public void kick(String reason) {
-    }
+    public void kick(String reason) {}
 
     @Override
-    public void teleport(Position position) {
-    }
+    public void teleport(Position position) {}
 
     @Override
-    public void refresh() {
-    }
+    public void refresh() {}
 
     @Override
     public boolean hasPermission(String permission) {
@@ -93,5 +89,4 @@ public class FakeUserProfile implements UserProfile {
     public static FakeUserProfile vanished() {
         return new FakeUserProfile(false, true, 0);
     }
-
 }

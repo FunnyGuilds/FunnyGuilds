@@ -8,8 +8,7 @@ public final class NmsUtils {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
-    private NmsUtils() {
-    }
+    private NmsUtils() {}
 
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
     public static String getFormattedTPS() {
@@ -31,5 +30,4 @@ public final class NmsUtils {
     public static int getPing(Player player) {
         return Math.max(0, FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getPlayerPing(player));
     }
-
 }

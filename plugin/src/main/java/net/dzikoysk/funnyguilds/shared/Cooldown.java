@@ -35,5 +35,4 @@ public final class Cooldown<T> {
         this.putOnCooldown(key, cooldown);
         return false;
     }
-
 }

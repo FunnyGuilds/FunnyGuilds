@@ -43,10 +43,19 @@ public class IndividualPlayerList {
     private int cycle;
     private int currentPage;
 
-    public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, FunnyServer funnyServer,
-                                Map<Integer, String> unformattedCells, String header, String footer, boolean animated,
-                                List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
-                                int cellPing, boolean fillCells) {
+    public IndividualPlayerList(
+        User user,
+        PlayerListAccessor playerListAccessor,
+        FunnyServer funnyServer,
+        Map<Integer, String> unformattedCells,
+        String header,
+        String footer,
+        boolean animated,
+        List<TablistPage> pages,
+        Map<NumberRange, SkinTexture> cellTextures,
+        int cellPing,
+        boolean fillCells
+    ) {
         this.user = user;
         this.funnyServer = funnyServer;
 
@@ -63,12 +72,10 @@ public class IndividualPlayerList {
             Entry<Integer, String> entry = MapUtils.findTheMaximumEntryByKey(unformattedCells);
             if (entry != null) {
                 this.cellCount = entry.getKey();
-            }
-            else {
+            } else {
                 this.cellCount = PlayerListConstants.DEFAULT_CELL_COUNT;
             }
-        }
-        else {
+        } else {
             this.cellCount = PlayerListConstants.DEFAULT_CELL_COUNT;
         }
 
@@ -104,7 +111,15 @@ public class IndividualPlayerList {
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
         this.funnyServer.getPlayer(this.user).peek(player -> {
-            this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet());
+            this.playerList.send(
+                player,
+                preparedCells,
+                preparedHeader,
+                preparedFooter,
+                preparedCellsTextures,
+                this.cellPing,
+                Collections.emptySet()
+            );
         });
     }
 
@@ -171,5 +186,4 @@ public class IndividualPlayerList {
 
         return textures;
     }
-
 }

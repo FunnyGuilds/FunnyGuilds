@@ -9,16 +9,15 @@ import org.bukkit.command.CommandSender;
 public final class GuildCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.guild.name}",
-            description = "${user.guild.description}",
-            aliases = "${user.guild.aliases}",
-            permission = "funnyguilds.guild",
-            acceptsExceeded = true
+        name = "${user.guild.name}",
+        description = "${user.guild.description}",
+        aliases = "${user.guild.aliases}",
+        permission = "funnyguilds.guild",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
         this.messageService.getMessage(config -> config.helpList)
-                .receiver(sender)
-                .send();
+            .receiver(sender)
+            .send();
     }
-
 }

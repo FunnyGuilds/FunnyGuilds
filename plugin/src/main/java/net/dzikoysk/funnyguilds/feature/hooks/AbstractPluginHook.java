@@ -12,5 +12,4 @@ public abstract class AbstractPluginHook implements PluginHook {
     public String getName() {
         return this.name;
     }
-
 }

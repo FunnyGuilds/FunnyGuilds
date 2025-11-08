@@ -41,10 +41,7 @@ public class DamageState {
     }
 
     public double getTotalDamage() {
-        return this.damageHistory
-                .stream()
-                .mapToDouble(Damage::getDamage)
-                .sum();
+        return this.damageHistory.stream().mapToDouble(Damage::getDamage).sum();
     }
 
     public double getTotalDamage(User user) {
@@ -69,7 +66,8 @@ public class DamageState {
             return false;
         }
 
-        Duration lastAttackerAsKillerConsiderationTimeout = FunnyGuilds.getInstance().getPluginConfiguration().lastAttackerAsKillerConsiderationTimeout;
+        Duration lastAttackerAsKillerConsiderationTimeout =
+            FunnyGuilds.getInstance().getPluginConfiguration().lastAttackerAsKillerConsiderationTimeout;
         return !lastDamage.isExpired(lastAttackerAsKillerConsiderationTimeout);
     }
 
@@ -99,7 +97,9 @@ public class DamageState {
         DamageTracking trackingConfig = FunnyGuilds.getInstance().getPluginConfiguration().damageTracking;
 
         // Remove expired
-        this.damageHistory.removeIf(damage -> this.damageHistory.size() > 1 && damage.isExpired(trackingConfig.expireTime));
+        this.damageHistory.removeIf(
+            damage -> this.damageHistory.size() > 1 && damage.isExpired(trackingConfig.expireTime)
+        );
 
         // Remove over limit
         if (trackingConfig.maxTracks < 1) {
@@ -114,5 +114,4 @@ public class DamageState {
     public void clear() {
         this.damageHistory.clear();
     }
-
 }

@@ -4,8 +4,8 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -14,10 +14,10 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class BaseAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.base.name}",
-            permission = "funnyguilds.admin",
-            completer = "online-players:3",
-            acceptsExceeded = true
+        name = "${admin.base.name}",
+        permission = "funnyguilds.admin",
+        completer = "online-players:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
@@ -31,18 +31,17 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
 
         Location guildHome = guild.getHome().get();
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{ADMIN}", sender.getName())
-                .register("{PLAYER}", userToTeleport.getName());
+            .register("{ADMIN}", sender.getName())
+            .register("{PLAYER}", userToTeleport.getName());
 
         userToTeleport.getProfile().teleport(PositionConverter.adapt(guildHome));
         this.messageService.getMessage(config -> config.adminTeleportedToBase)
-                .receiver(userToTeleport)
-                .with(formatter)
-                .send();
+            .receiver(userToTeleport)
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.adminTargetTeleportedToBase)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
     }
-
 }

@@ -19,5 +19,4 @@ public class Placeholder<T> {
     public String get(@Nullable Object entity, T data) {
         return Objects.toString(this.getRaw(entity, data), "");
     }
-
 }

@@ -15,7 +15,11 @@ class DynamicListenerRegistration {
     private final Supplier<Boolean> predicate;
     private boolean currentState;
 
-    public DynamicListenerRegistration(FunnyGuilds plugin, Collection<Listener> listeners, Supplier<Boolean> predicate) {
+    public DynamicListenerRegistration(
+        FunnyGuilds plugin,
+        Collection<Listener> listeners,
+        Supplier<Boolean> predicate
+    ) {
         this.plugin = plugin;
 
         this.listeners = Validate.notNull(listeners, "listener");
@@ -30,14 +34,15 @@ class DynamicListenerRegistration {
 
         if (requiredState) {
             this.forceRegister();
-        }
-        else {
+        } else {
             this.forceUnregister();
         }
     }
 
     public void forceRegister() {
-        this.listeners.forEach(listener -> this.plugin.getServer().getPluginManager().registerEvents(listener, this.plugin));
+        this.listeners.forEach(listener ->
+            this.plugin.getServer().getPluginManager().registerEvents(listener, this.plugin)
+        );
         this.currentState = true;
     }
 
@@ -49,5 +54,4 @@ class DynamicListenerRegistration {
     public Collection<Listener> getListeners() {
         return this.listeners;
     }
-
 }

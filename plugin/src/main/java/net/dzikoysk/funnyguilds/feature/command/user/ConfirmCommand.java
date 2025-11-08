@@ -17,15 +17,19 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class ConfirmCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.confirm.name}",
-            description = "${user.confirm.description}",
-            aliases = "${user.confirm.aliases}",
-            permission = "funnyguilds.delete",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.confirm.name}",
+        description = "${user.confirm.description}",
+        aliases = "${user.confirm.aliases}",
+        permission = "funnyguilds.delete",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild) {
-        when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(), guild.getMembers()), config -> config.deleteSomeoneIsNear);
+        when(
+            this.config.guildDeleteCancelIfSomeoneIsOnRegion &&
+                this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(), guild.getMembers()),
+            config -> config.deleteSomeoneIsNear
+        );
         when(!ConfirmationList.contains(owner.getUUID()), config -> config.deleteToConfirm);
 
         ConfirmationList.remove(owner.getUUID());
@@ -37,18 +41,17 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
         this.guildManager.deleteGuild(this.plugin, guild);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", owner.getName());
+            .register("{GUILD}", guild.getName())
+            .register("{TAG}", guild.getTag())
+            .register("{PLAYER}", owner.getName());
 
         this.messageService.getMessage(config -> config.deleteSuccessful)
-                .receiver(owner)
-                .with(formatter)
-                .send();
+            .receiver(owner)
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.broadcastDelete)
-                .broadcast()
-                .with(formatter)
-                .send();
+            .broadcast()
+            .with(formatter)
+            .send();
     }
-
 }

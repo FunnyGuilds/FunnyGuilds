@@ -26,5 +26,4 @@ public class GuildMemberJoinEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member join has been cancelled by the server!";
     }
-
 }

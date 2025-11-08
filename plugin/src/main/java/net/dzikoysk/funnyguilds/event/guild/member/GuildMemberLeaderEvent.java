@@ -26,5 +26,4 @@ public class GuildMemberLeaderEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member leader change has been cancelled by the server!";
     }
-
 }

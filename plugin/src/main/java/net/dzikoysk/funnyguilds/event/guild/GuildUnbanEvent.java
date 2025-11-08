@@ -26,5 +26,4 @@ public class GuildUnbanEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild unban has been cancelled by the server!";
     }
-
 }

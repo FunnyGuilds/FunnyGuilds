@@ -17,5 +17,4 @@ public class BlockFlow extends AbstractFunnyListener {
             event.setCancelled(true);
         }
     }
-
 }

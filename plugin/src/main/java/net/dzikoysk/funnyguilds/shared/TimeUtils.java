@@ -9,15 +9,18 @@ import org.jetbrains.annotations.Nullable;
 
 public final class TimeUtils {
 
-    private static final TimeDivision[] TIME_DIVISIONS = new TimeDivision[]{
-            TimeDivision.YEAR, TimeDivision.MONTH, TimeDivision.DAY, TimeDivision.HOUR, TimeDivision.MINUTE, TimeDivision.SECOND
+    private static final TimeDivision[] TIME_DIVISIONS = new TimeDivision[] {
+        TimeDivision.YEAR,
+        TimeDivision.MONTH,
+        TimeDivision.DAY,
+        TimeDivision.HOUR,
+        TimeDivision.MINUTE,
+        TimeDivision.SECOND,
     };
 
-    private TimeUtils() {
-    }
+    private TimeUtils() {}
 
-    @Nullable
-    public static Instant positiveOrNullInstant(long time) {
+    @Nullable public static Instant positiveOrNullInstant(long time) {
         if (time <= 0) {
             return null;
         }
@@ -73,8 +76,7 @@ public final class TimeUtils {
         long resultTime = 0L;
 
         final char[] stringChars = time.toLowerCase().toCharArray();
-        timeLoop:
-        for (int i = 0; i < stringChars.length; i++) {
+        timeLoop: for (int i = 0; i < stringChars.length; i++) {
             final char c = stringChars[i];
             if (c >= '0' && c <= '9') {
                 tempNumber.append(c);
@@ -82,8 +84,7 @@ public final class TimeUtils {
             }
 
             for (final TimeDivision timeDivision : TimeDivision.values()) {
-                abbreviationLoop:
-                for (final String abbreviation : timeDivision.getAbbreviations()) {
+                abbreviationLoop: for (final String abbreviation : timeDivision.getAbbreviations()) {
                     if (i + abbreviation.length() > stringChars.length) {
                         continue;
                     }
@@ -127,7 +128,6 @@ public final class TimeUtils {
     }
 
     public enum TimeDivision {
-
         SECOND(1000L, "sekunda", "sekundy", "sekund", "s", "sek"),
         MINUTE(60000L, "minuta", "minuty", "minut", "m", "min"),
         HOUR(3600000L, "godzina", "godziny", "godzin", "h", "godz"),
@@ -182,7 +182,5 @@ public final class TimeUtils {
         public String[] getAbbreviations() {
             return Arrays.copyOf(this.abbreviations, this.abbreviations.length);
         }
-
     }
-
 }

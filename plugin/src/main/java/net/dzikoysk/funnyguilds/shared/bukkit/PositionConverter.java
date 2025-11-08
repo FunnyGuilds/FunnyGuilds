@@ -7,21 +7,31 @@ import org.bukkit.World;
 
 public final class PositionConverter {
 
-    private PositionConverter() {
-    }
+    private PositionConverter() {}
 
     public static Position adapt(Location location) {
         World world = location.getWorld();
         String wordName = world == null ? null : world.getName();
 
-        return new Position(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch(), wordName);
+        return new Position(
+            location.getX(),
+            location.getY(),
+            location.getZ(),
+            location.getYaw(),
+            location.getPitch(),
+            wordName
+        );
     }
 
     public static Location adapt(Position position) {
-        World world = position.getWorld()
-                .map(Bukkit::getWorld)
-                .orNull();
-        return new Location(world, position.getX(), position.getY(), position.getZ(), position.getYaw(), position.getPitch());
+        World world = position.getWorld().map(Bukkit::getWorld).orNull();
+        return new Location(
+            world,
+            position.getX(),
+            position.getY(),
+            position.getZ(),
+            position.getYaw(),
+            position.getPitch()
+        );
     }
-
 }

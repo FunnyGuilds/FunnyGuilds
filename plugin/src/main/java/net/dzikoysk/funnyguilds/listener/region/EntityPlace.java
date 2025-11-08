@@ -17,8 +17,7 @@ public class EntityPlace extends AbstractFunnyListener {
         }
 
         ProtectionSystem.isProtected(event.getPlayer(), entity.getLocation(), true)
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+            .peek(result -> event.setCancelled(true))
+            .peek(ProtectionSystem::defaultResponse);
     }
-
 }

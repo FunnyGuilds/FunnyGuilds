@@ -63,16 +63,20 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             String lowerIdentifier = identifier.toLowerCase(Locale.ROOT);
 
             if (lowerIdentifier.contains("position-")) {
-                return this.rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
-            }
-            else if (lowerIdentifier.contains("top-")) {
-                String temp = this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
+                return this.rankPlaceholdersService.formatTopPosition(
+                    "{" + identifier.toUpperCase(Locale.ROOT) + "}",
+                    user
+                );
+            } else if (lowerIdentifier.contains("top-")) {
+                String temp = this.rankPlaceholdersService.formatTop(
+                    "{" + identifier.toUpperCase(Locale.ROOT) + "}",
+                    user
+                );
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
                     temp = this.rankPlaceholdersService.formatRank(temp, user);
                 }
                 return temp;
-            }
-            else {
+            } else {
                 return this.plugin.getTablistPlaceholdersService().formatIdentifier(user, identifier, user);
             }
         }
@@ -80,7 +84,11 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         @Override // one - seeing the placeholder, two - about which the placeholder is
         public String onPlaceholderRequest(Player observer, Player target, String identifier) {
             // TODO: [5.0] Remove `prefix` placeholder
-            if (observer == null || target == null || (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))) {
+            if (
+                observer == null ||
+                target == null ||
+                (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))
+            ) {
                 return "";
             }
 
@@ -93,8 +101,8 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             return this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
-                    userObserverOption.get().getGuild().orNull(),
-                    userTargetOption.get().getGuild().orNull()
+                userObserverOption.get().getGuild().orNull(),
+                userTargetOption.get().getGuild().orNull()
             );
         }
 
@@ -123,5 +131,4 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             return true;
         }
     }
-
 }

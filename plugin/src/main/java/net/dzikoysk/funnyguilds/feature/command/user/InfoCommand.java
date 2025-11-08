@@ -16,29 +16,30 @@ import panda.std.Option;
 public final class InfoCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.info.name}",
-            description = "${user.info.description}",
-            aliases = "${user.info.aliases}",
-            permission = "funnyguilds.info",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${user.info.name}",
+        description = "${user.info.description}",
+        aliases = "${user.info.aliases}",
+        permission = "funnyguilds.info",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         UserManager userManager = this.userManager;
         String tag = Option.when(args.length > 0, () -> args[0])
-                .orElse(Option.of(sender)
-                        .is(Player.class)
-                        .flatMap(userManager::findByPlayer)
-                        .filter(User::hasGuild)
-                        .flatMap(User::getGuild)
-                        .map(Guild::getTag))
-                .orThrow(() -> new InternalValidationException(config -> config.infoTag));
+            .orElse(
+                Option.of(sender)
+                    .is(Player.class)
+                    .flatMap(userManager::findByPlayer)
+                    .filter(User::hasGuild)
+                    .flatMap(User::getGuild)
+                    .map(Guild::getTag)
+            )
+            .orThrow(() -> new InternalValidationException(config -> config.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
         this.messageService.getMessage(config -> config.infoList)
-                .receiver(sender)
-                .with(this.guildPlaceholdersService.prepareReplacements(sender, guild))
-                .send();
+            .receiver(sender)
+            .with(this.guildPlaceholdersService.prepareReplacements(sender, guild))
+            .send();
     }
-
 }

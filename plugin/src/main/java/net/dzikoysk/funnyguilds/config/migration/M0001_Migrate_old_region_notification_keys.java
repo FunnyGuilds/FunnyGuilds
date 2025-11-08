@@ -1,5 +1,13 @@
 package net.dzikoysk.funnyguilds.config.migration;
 
+import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
+import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
+import dev.peri.yetanothermessageslibrary.message.SendableMessage;
+import dev.peri.yetanothermessageslibrary.message.holder.SendableHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.ActionBarHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.ChatHolder;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 import eu.okaeri.configs.configurer.Configurer;
 import eu.okaeri.configs.migrate.ConfigMigration;
 import eu.okaeri.configs.migrate.builtin.NamedMigration;
@@ -17,24 +25,16 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.bossbar.BossBar;
 import org.jetbrains.annotations.Nullable;
-import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
-import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
-import dev.peri.yetanothermessageslibrary.message.SendableMessage;
-import dev.peri.yetanothermessageslibrary.message.holder.SendableHolder;
-import dev.peri.yetanothermessageslibrary.message.holder.impl.ActionBarHolder;
-import dev.peri.yetanothermessageslibrary.message.holder.impl.BossBarHolder;
-import dev.peri.yetanothermessageslibrary.message.holder.impl.ChatHolder;
-import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
 // TODO: [5.0] Remove this madness
 public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
 
     public M0001_Migrate_old_region_notification_keys() {
         super(
-                "Migrate old region move notifications into new format (YetAnotherMessagesLibrary)",
-                moveNotification("notification{TYPE}IntruderEnterGuildRegion"),
-                moveNotification("notification{TYPE}EnterGuildRegion"),
-                moveNotification("notification{TYPE}LeaveGuildRegion")
+            "Migrate old region move notifications into new format (YetAnotherMessagesLibrary)",
+            moveNotification("notification{TYPE}IntruderEnterGuildRegion"),
+            moveNotification("notification{TYPE}EnterGuildRegion"),
+            moveNotification("notification{TYPE}LeaveGuildRegion")
         );
     }
 
@@ -53,7 +53,10 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
                 return false;
             }
 
-            List<String> notificationStyles = (List<String>) getConfigValueOrDefault("region-move-notification-style", new ArrayList<>());
+            List<String> notificationStyles = (List<String>) getConfigValueOrDefault(
+                "region-move-notification-style",
+                new ArrayList<>()
+            );
             holders.removeIf(holder -> holder instanceof ChatHolder && !notificationStyles.contains("CHAT"));
             holders.removeIf(holder -> holder instanceof ActionBarHolder && !notificationStyles.contains("ACTIONBAR"));
             holders.removeIf(holder -> holder instanceof TitleHolder && !notificationStyles.contains("TITLE"));
@@ -65,10 +68,10 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
 
             Configurer configurer = config.getConfigurer();
             Object value = configurer.simplify(
-                    SendableMessage.of(holders),
-                    GenericsDeclaration.of(SendableMessage.class),
-                    SerdesContext.of(configurer),
-                    true
+                SendableMessage.of(holders),
+                GenericsDeclaration.of(SendableMessage.class),
+                SerdesContext.of(configurer),
+                true
             );
             view.set(FunnyFormatter.format(key, "{TYPE}", ""), value);
 
@@ -76,33 +79,30 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         };
     }
 
-    @Nullable
-    private static ChatHolder prepareChatNotification(RawConfigView view, String key) {
+    @Nullable private static ChatHolder prepareChatNotification(RawConfigView view, String key) {
         if (!view.exists(key)) {
             return null;
         }
         return new ChatHolder(false, getRawComponent(view, key));
     }
 
-    @Nullable
-    private static ActionBarHolder prepareActionBarNotification(RawConfigView view, String key) {
+    @Nullable private static ActionBarHolder prepareActionBarNotification(RawConfigView view, String key) {
         if (!view.exists(key)) {
             return null;
         }
         return new ActionBarHolder(getRawComponent(view, key));
     }
 
-    @Nullable
-    private static TitleHolder prepareTitleNotification(RawConfigView view, String key) {
+    @Nullable private static TitleHolder prepareTitleNotification(RawConfigView view, String key) {
         if (!view.exists(key)) {
             return null;
         }
 
         TitleHolder.Builder builder = TitleHolder.builder();
         builder.times(
-                (Integer) getConfigValueOrDefault("notification-title-fade-in", 10),
-                (Integer) getConfigValueOrDefault("notification-title-stay", 10),
-                (Integer) getConfigValueOrDefault("notification-title-fade-out", 10)
+            (Integer) getConfigValueOrDefault("notification-title-fade-in", 10),
+            (Integer) getConfigValueOrDefault("notification-title-stay", 10),
+            (Integer) getConfigValueOrDefault("notification-title-fade-out", 10)
         );
 
         RawComponent title = getRawComponent(view, key);
@@ -118,8 +118,7 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         return builder.build();
     }
 
-    @Nullable
-    private static BossBarHolder prepareBossBarNotification(RawConfigView view, String key) {
+    @Nullable private static BossBarHolder prepareBossBarNotification(RawConfigView view, String key) {
         if (!view.exists(key)) {
             return null;
         }
@@ -131,11 +130,11 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         if (time != null) {
             Configurer configurer = getConfigurer();
             Duration stay = configurer.resolveType(
-                    time,
-                    GenericsDeclaration.of(String.class),
-                    Duration.class,
-                    GenericsDeclaration.of(Duration.class),
-                    SerdesContext.of(configurer)
+                time,
+                GenericsDeclaration.of(String.class),
+                Duration.class,
+                GenericsDeclaration.of(Duration.class),
+                SerdesContext.of(configurer)
             );
             builder.stay((int) stay.toMillis() / 50);
         }
@@ -150,11 +149,10 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
             builder.overlay(getOverlay(style));
         }
 
-        ((List<String>) getConfigValueOrDefault("notification-boss-bar-flags", new ArrayList<>()))
-                .stream()
-                .map(M0001_Migrate_old_region_notification_keys::getFlag)
-                .filter(Objects::nonNull)
-                .forEach(builder::addFlag);
+        ((List<String>) getConfigValueOrDefault("notification-boss-bar-flags", new ArrayList<>())).stream()
+            .map(M0001_Migrate_old_region_notification_keys::getFlag)
+            .filter(Objects::nonNull)
+            .forEach(builder::addFlag);
 
         return builder.build();
     }
@@ -183,8 +181,7 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         return overlay;
     }
 
-    @Nullable
-    private static BossBar.Flag getFlag(String legacyFlag) {
+    @Nullable private static BossBar.Flag getFlag(String legacyFlag) {
         BossBar.Flag flag;
         switch (legacyFlag.toUpperCase()) {
             case "DARKEN_SKY":
@@ -202,8 +199,7 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
         return flag;
     }
 
-    @Nullable
-    private static RawComponent getRawComponent(RawConfigView view, String key) {
+    @Nullable private static RawComponent getRawComponent(RawConfigView view, String key) {
         if (!view.exists(key)) {
             return null;
         }
@@ -231,5 +227,4 @@ public class M0001_Migrate_old_region_notification_keys extends NamedMigration {
     private static Configurer getConfigurer() {
         return getPluginConfiguration().getConfigurer();
     }
-
 }

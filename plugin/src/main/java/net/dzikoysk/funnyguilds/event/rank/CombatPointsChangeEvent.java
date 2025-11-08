@@ -31,7 +31,14 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         return handlers;
     }
 
-    public CombatPointsChangeEvent(EventCause eventCause, User attacker, User victim, int attackerPointsChange, int victimPointsChange, Map<User, Assist> assistsMap) {
+    public CombatPointsChangeEvent(
+        EventCause eventCause,
+        User attacker,
+        User victim,
+        int attackerPointsChange,
+        int victimPointsChange,
+        Map<User, Assist> assistsMap
+    ) {
         super(eventCause, attacker, victim);
         this.attackerPointsChange = attackerPointsChange;
         this.victimPointsChange = victimPointsChange;
@@ -84,13 +91,15 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         }
 
         public Map<User, Integer> getPointChanges() {
-            return PandaStream.of(this.assistsMap.entrySet())
-                    .toMap(Map.Entry::getKey, entry -> entry.getValue().getPointsChange());
+            return PandaStream.of(this.assistsMap.entrySet()).toMap(Map.Entry::getKey, entry ->
+                entry.getValue().getPointsChange()
+            );
         }
 
         public Map<User, Double> getDamageShares() {
-            return PandaStream.of(this.assistsMap.entrySet())
-                    .toMap(Map.Entry::getKey, entry -> entry.getValue().getDamageShare());
+            return PandaStream.of(this.assistsMap.entrySet()).toMap(Map.Entry::getKey, entry ->
+                entry.getValue().getDamageShare()
+            );
         }
 
         public Option<Assist> getUserAssist(User user) {
@@ -113,10 +122,12 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
          * @return if points change was modified for user, false if that user wasn't assisting
          */
         public boolean modifyPointsChange(User user, IntFunction<Integer> update) {
-            return this.assistsMap.computeIfPresent(
-                    user,
-                    (key, value) -> value.setPointsChange(update.apply(value.getPointsChange()))
-            ) != null;
+            return (
+                this.assistsMap.computeIfPresent(user, (key, value) ->
+                    value.setPointsChange(update.apply(value.getPointsChange()))
+                ) !=
+                null
+            );
         }
 
         /**
@@ -125,10 +136,12 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
          * @return if damage share was modified for user, false if that user wasn't assisting
          */
         public boolean modifyDamageShare(User user, DoubleFunction<Double> update) {
-            return this.assistsMap.computeIfPresent(
-                    user,
-                    (key, value) -> value.setDamageShare(update.apply(value.getDamageShare()))
-            ) != null;
+            return (
+                this.assistsMap.computeIfPresent(user, (key, value) ->
+                    value.setDamageShare(update.apply(value.getDamageShare()))
+                ) !=
+                null
+            );
         }
 
         public boolean isEmpty() {
@@ -162,9 +175,6 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
                 this.damageShare = damageShare;
                 return this;
             }
-
         }
-
     }
-
 }

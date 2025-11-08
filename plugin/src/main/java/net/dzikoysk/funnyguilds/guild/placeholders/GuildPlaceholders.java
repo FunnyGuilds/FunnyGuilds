@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocalePairResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
@@ -21,7 +20,11 @@ import net.dzikoysk.funnyguilds.shared.TimeUtils;
 
 public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
 
-    public GuildPlaceholders property(String name, LocaleMonoResolver<Guild> resolver, LocaleSimpleResolver fallbackResolver) {
+    public GuildPlaceholders property(
+        String name,
+        LocaleMonoResolver<Guild> resolver,
+        LocaleSimpleResolver fallbackResolver
+    ) {
         return this.property(name, new FallbackPlaceholder<>(resolver, fallbackResolver));
     }
 
@@ -29,47 +32,67 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
         return this.property(name, (entity, data) -> resolver.resolve(data), fallbackResolve);
     }
 
-    public GuildPlaceholders rankProperty(String name, LocalePairResolver<Guild, GuildRank> resolver, LocaleSimpleResolver fallbackResolver) {
-        return this.property(name, (entity, guild) -> resolver.resolve(entity, guild, guild.getRank()), fallbackResolver);
-    }
-
-    public GuildPlaceholders rankProperty(String name, MonoResolver<GuildRank> resolver, Number fallbackValue) {
-        return this.property(name,
-                (entity, guild) -> {
-                    Object value = resolver.resolve(guild.getRank());
-                    if (value instanceof Float || value instanceof Double) {
-                        return String.format("%.2f", ((Number) value).floatValue());
-                    }
-                    return Objects.toString(value);
-                },
-                entity -> fallbackValue
+    public GuildPlaceholders rankProperty(
+        String name,
+        LocalePairResolver<Guild, GuildRank> resolver,
+        LocaleSimpleResolver fallbackResolver
+    ) {
+        return this.property(
+            name,
+            (entity, guild) -> resolver.resolve(entity, guild, guild.getRank()),
+            fallbackResolver
         );
     }
 
-    public GuildPlaceholders timeProperty(String name, Function<Guild, Instant> timeSupplier, MessageService messages, Function<MessageConfiguration, String> fallbackSupplier) {
-        String noValue = Objects.toString(messages.get(fallbackSupplier), "");
-        SimpleResolver fallbackResolver = () -> noValue;
-        return this.property(name, (entity, guild) -> formatDate(guild, timeSupplier, messages.get(entity, config -> config.dateFormat), noValue), fallbackResolver)
-                .property(name + "-time", (entity, guild) -> formatTime(guild, timeSupplier, noValue), fallbackResolver);
+    public GuildPlaceholders rankProperty(String name, MonoResolver<GuildRank> resolver, Number fallbackValue) {
+        return this.property(
+            name,
+            (entity, guild) -> {
+                Object value = resolver.resolve(guild.getRank());
+                if (value instanceof Float || value instanceof Double) {
+                    return String.format("%.2f", ((Number) value).floatValue());
+                }
+                return Objects.toString(value);
+            },
+            entity -> fallbackValue
+        );
     }
 
-    private static String formatDate(Guild guild, Function<Guild, Instant> timeSupplier, FunnyTimeFormatter formatter, String noValue) {
+    public GuildPlaceholders timeProperty(
+        String name,
+        Function<Guild, Instant> timeSupplier,
+        MessageService messages,
+        Function<MessageConfiguration, String> fallbackSupplier
+    ) {
+        String noValue = Objects.toString(messages.get(fallbackSupplier), "");
+        SimpleResolver fallbackResolver = () -> noValue;
+        return this.property(
+            name,
+            (entity, guild) ->
+                formatDate(guild, timeSupplier, messages.get(entity, config -> config.dateFormat), noValue),
+            fallbackResolver
+        ).property(name + "-time", (entity, guild) -> formatTime(guild, timeSupplier, noValue), fallbackResolver);
+    }
+
+    private static String formatDate(
+        Guild guild,
+        Function<Guild, Instant> timeSupplier,
+        FunnyTimeFormatter formatter,
+        String noValue
+    ) {
         Instant endTime = timeSupplier.apply(guild);
-        return endTime.isBefore(Instant.now())
-                ? noValue
-                : formatter.format(endTime);
+        return endTime.isBefore(Instant.now()) ? noValue : formatter.format(endTime);
     }
 
     private static String formatTime(Guild guild, Function<Guild, Instant> timeSupplier, String noValue) {
         Instant endTime = timeSupplier.apply(guild);
         return endTime.isBefore(Instant.now())
-                ? noValue
-                : TimeUtils.formatTime(Duration.between(Instant.now(), endTime));
+            ? noValue
+            : TimeUtils.formatTime(Duration.between(Instant.now(), endTime));
     }
 
     @Override
     public GuildPlaceholders create() {
         return new GuildPlaceholders();
     }
-
 }

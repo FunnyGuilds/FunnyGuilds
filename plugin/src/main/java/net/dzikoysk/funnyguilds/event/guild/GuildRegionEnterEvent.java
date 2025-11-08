@@ -29,5 +29,4 @@ public class GuildRegionEnterEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild region enter has been cancelled by the server!";
     }
-
 }

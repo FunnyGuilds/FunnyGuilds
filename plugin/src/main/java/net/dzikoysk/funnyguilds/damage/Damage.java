@@ -39,7 +39,7 @@ public final class Damage {
     }
 
     public boolean isExpired(Duration expireTime) {
-        return Duration.between(this.attackTime, Instant.now()).compareTo(expireTime) > 0;
+        return (Duration.between(this.attackTime, Instant.now()).compareTo(expireTime) > 0);
     }
 
     @Override
@@ -56,7 +56,10 @@ public final class Damage {
             return false;
         }
         Damage dmg = (Damage) obj;
-        return Double.compare(dmg.damage, this.damage) == 0 && this.attacker.equals(dmg.attacker) && this.attackTime.equals(dmg.attackTime);
+        return (
+            Double.compare(dmg.damage, this.damage) == 0 &&
+            this.attacker.equals(dmg.attacker) &&
+            this.attackTime.equals(dmg.attackTime)
+        );
     }
-
 }

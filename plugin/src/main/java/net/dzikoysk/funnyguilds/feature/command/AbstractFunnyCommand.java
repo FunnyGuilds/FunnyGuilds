@@ -23,15 +23,19 @@ public abstract class AbstractFunnyCommand {
 
     @Inject
     public FunnyGuilds plugin;
+
     @Inject
     public FunnyGuildsLogger logger;
+
     @Inject
     public Server server;
+
     @Inject
     public FunnyServer funnyServer;
 
     @Inject
     public PluginConfiguration config;
+
     @Inject
     public TablistConfiguration tablistConfig;
 
@@ -40,23 +44,31 @@ public abstract class AbstractFunnyCommand {
 
     @Inject
     public UserManager userManager;
+
     @Inject
     public GuildManager guildManager;
+
     @Inject
     public UserRankManager userRankManager;
+
     @Inject
     public GuildRankManager guildRankManager;
+
     @Inject
     public RegionManager regionManager;
 
     @Inject
     public BasicPlaceholdersService basicPlaceholdersService;
+
     @Inject
     public TimePlaceholdersService timePlaceholdersService;
+
     @Inject
     public UserPlaceholdersService userPlaceholdersService;
+
     @Inject
     public GuildPlaceholdersService guildPlaceholdersService;
+
     @Inject
     public RankPlaceholdersService rankPlaceholdersService;
 }

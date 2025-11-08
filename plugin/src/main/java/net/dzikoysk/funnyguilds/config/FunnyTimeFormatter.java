@@ -21,7 +21,6 @@ public class FunnyTimeFormatter {
     }
 
     public String format(Instant instant) {
-        return this.formatter.format(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())); //TODO: Option to change timezone (See GH-2085)
+        return this.formatter.format(ZonedDateTime.ofInstant(instant, ZoneId.systemDefault())); // TODO: Option to change timezone (See GH-2085)
     }
-
 }

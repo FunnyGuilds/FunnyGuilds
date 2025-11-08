@@ -24,8 +24,7 @@ public class MetricsCollector implements Runnable {
 
         try {
             this.bstats = new Metrics(plugin, 677);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             this.bstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize bstats", exception);
         }
@@ -42,15 +41,16 @@ public class MetricsCollector implements Runnable {
         if (bstats != null) {
             bstats.addCustomChart(new SingleLineChart("users", this.userManager::countUsers));
             bstats.addCustomChart(new SingleLineChart("guilds", this.guildManager::countGuilds));
-            bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
-                Map<String, Integer> valueMap = new HashMap<>();
+            bstats.addCustomChart(
+                new MultiLineChart("users_and_guilds", () -> {
+                    Map<String, Integer> valueMap = new HashMap<>();
 
-                valueMap.put("users", this.userManager.countUsers());
-                valueMap.put("guilds", this.guildManager.countGuilds());
+                    valueMap.put("users", this.userManager.countUsers());
+                    valueMap.put("guilds", this.guildManager.countGuilds());
 
-                return valueMap;
-            }));
+                    return valueMap;
+                })
+            );
         }
     }
-
 }

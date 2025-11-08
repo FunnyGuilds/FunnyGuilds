@@ -56,10 +56,38 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
         this.guildManager.getGuilds().forEach(this::getOrCreateDynmapGuild);
 
         Bukkit.getPluginManager().registerEvents(this, this.plugin);
-        Bukkit.getScheduler().runTaskTimer(this.plugin, () -> this.guilds.forEach((guild, dynmapGuild) -> {
-            dynmapGuild.getCenterMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild), true));
-            dynmapGuild.getAreaMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild), true));
-        }), 0, this.hookConfig.updateInterval);
+        Bukkit.getScheduler().runTaskTimer(
+            this.plugin,
+            () ->
+                this.guilds.forEach((guild, dynmapGuild) -> {
+                    dynmapGuild
+                        .getCenterMarker()
+                        .peek(marker ->
+                            marker.setLabel(
+                                this.plugin.getGuildPlaceholdersService().format(
+                                    null,
+                                    this.hookConfig.center.label,
+                                    guild
+                                ),
+                                true
+                            )
+                        );
+                    dynmapGuild
+                        .getAreaMarker()
+                        .peek(marker ->
+                            marker.setLabel(
+                                this.plugin.getGuildPlaceholdersService().format(
+                                    null,
+                                    this.hookConfig.area.label,
+                                    guild
+                                ),
+                                true
+                            )
+                        );
+                }),
+            0,
+            this.hookConfig.updateInterval
+        );
 
         return HookInitResult.SUCCESS;
     }
@@ -89,21 +117,22 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
     }
 
     private @NotNull Option<DynmapGuild> getOrCreateDynmapGuild(@NotNull Guild guild) {
-        return Option.of(this.guilds.computeIfAbsent(guild, key -> {
-            Option<Region> regionOption = guild.getRegion();
-            if (regionOption.isEmpty()) {
-                return null;
-            }
-            Region region = regionOption.get();
-            World world = region.getWorld();
-
-            Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> {
-                Location center = LocationUtils.toCenter(region.getCenter());
-                if (this.hookConfig.center.hideCenterY) {
-                    center.setY(world.getHighestBlockYAt(center) + 0.5);
+        return Option.of(
+            this.guilds.computeIfAbsent(guild, key -> {
+                Option<Region> regionOption = guild.getRegion();
+                if (regionOption.isEmpty()) {
+                    return null;
                 }
+                Region region = regionOption.get();
+                World world = region.getWorld();
 
-                return this.guildsMarkerSet.createMarker(
+                Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> {
+                    Location center = LocationUtils.toCenter(region.getCenter());
+                    if (this.hookConfig.center.hideCenterY) {
+                        center.setY(world.getHighestBlockYAt(center) + 0.5);
+                    }
+
+                    return this.guildsMarkerSet.createMarker(
                         "fg_guild_center_" + guild.getName(),
                         this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
                         region.getWorld().getName(),
@@ -112,34 +141,35 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
                         center.getZ(),
                         this.markerApi.getMarkerIcon(this.hookConfig.center.icon),
                         false
-                );
-            });
+                    );
+                });
 
-            Option<AreaMarker> areaMarker = Option.when(this.hookConfig.area.enabled, () -> {
-                Location firstCorner = region.getFirstCorner();
-                Location secondCorner = region.getSecondCorner();
+                Option<AreaMarker> areaMarker = Option.when(this.hookConfig.area.enabled, () -> {
+                    Location firstCorner = region.getFirstCorner();
+                    Location secondCorner = region.getSecondCorner();
 
-                AreaMarker marker = this.guildsMarkerSet.createAreaMarker(
+                    AreaMarker marker = this.guildsMarkerSet.createAreaMarker(
                         "fg_guild_area_" + guild.getName(),
                         this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild),
                         true,
                         region.getWorld().getName(),
-                        new double[]{firstCorner.getX(), secondCorner.getX()},
-                        new double[]{firstCorner.getZ(), secondCorner.getZ()},
+                        new double[] { firstCorner.getX(), secondCorner.getX() },
+                        new double[] { firstCorner.getZ(), secondCorner.getZ() },
                         false
-                );
+                    );
 
-                PluginConfiguration.DynmapHook.Area.Fill fillStyle = this.hookConfig.area.fill;
-                marker.setFillStyle(fillStyle.opacity, fillStyle.color.asRGB());
+                    PluginConfiguration.DynmapHook.Area.Fill fillStyle = this.hookConfig.area.fill;
+                    marker.setFillStyle(fillStyle.opacity, fillStyle.color.asRGB());
 
-                PluginConfiguration.DynmapHook.Area.Line lineStyle = this.hookConfig.area.line;
-                marker.setLineStyle(lineStyle.weight, lineStyle.opacity, lineStyle.color.asRGB());
+                    PluginConfiguration.DynmapHook.Area.Line lineStyle = this.hookConfig.area.line;
+                    marker.setLineStyle(lineStyle.weight, lineStyle.opacity, lineStyle.color.asRGB());
 
-                return marker;
-            });
+                    return marker;
+                });
 
-            return new DynmapGuild(centerMarker, areaMarker);
-        }));
+                return new DynmapGuild(centerMarker, areaMarker);
+            })
+        );
     }
 
     private void deleteDynmapGuild(@NotNull Guild guild) {
@@ -176,7 +206,5 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
             this.centerMarker.peek(Marker::deleteMarker);
             this.areaMarker.peek(AreaMarker::deleteMarker);
         }
-
     }
-
 }

@@ -28,5 +28,4 @@ public class UserBan {
     public Instant getTime() {
         return this.time;
     }
-
 }

@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.config.migration;
 
+import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
+import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
+import dev.peri.yetanothermessageslibrary.message.SendableMessage;
+import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 import eu.okaeri.configs.configurer.Configurer;
 import eu.okaeri.configs.migrate.ConfigMigration;
 import eu.okaeri.configs.migrate.builtin.NamedMigration;
@@ -12,57 +16,54 @@ import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.jetbrains.annotations.Nullable;
-import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
-import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
-import dev.peri.yetanothermessageslibrary.message.SendableMessage;
-import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
 public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
 
     public M0002_Migrate_old_rank_kill_message() {
         super(
-                "Migrate old rank kill message into new format (YetAnotherMessagesLibrary)",
-                moveMessage("rankKillTitle", "rankKillMessage")
+            "Migrate old rank kill message into new format (YetAnotherMessagesLibrary)",
+            moveMessage("rankKillTitle", "rankKillMessage")
         );
     }
 
     private static ConfigMigration moveMessage(String oldKey, String newKey) {
-        return ((config, view) -> {
-            if (!view.exists(oldKey)) {
-                return false;
-            }
+        return (
+            (config, view) -> {
+                if (!view.exists(oldKey)) {
+                    return false;
+                }
 
-            TitleHolder.Builder builder = TitleHolder.builder();
-            builder.times(
+                TitleHolder.Builder builder = TitleHolder.builder();
+                builder.times(
                     (Integer) getConfigValueOrDefault("notification-title-fade-in", 10),
                     (Integer) getConfigValueOrDefault("notification-title-stay", 10),
                     (Integer) getConfigValueOrDefault("notification-title-fade-out", 10)
-            );
+                );
 
-            RawComponent title = getRawComponent(view, oldKey);
-            if (title != null) {
-                builder.title(title);
-            }
+                RawComponent title = getRawComponent(view, oldKey);
+                if (title != null) {
+                    builder.title(title);
+                }
 
-            RawComponent subTitle = getRawComponent(view, FunnyFormatter.format(oldKey, "Title", "Subtitle"));
-            if (subTitle != null) {
-                builder.subTitle(subTitle);
-            }
+                RawComponent subTitle = getRawComponent(view, FunnyFormatter.format(oldKey, "Title", "Subtitle"));
+                if (subTitle != null) {
+                    builder.subTitle(subTitle);
+                }
 
-            Configurer configurer = config.getConfigurer();
-            Object value = configurer.simplify(
+                Configurer configurer = config.getConfigurer();
+                Object value = configurer.simplify(
                     SendableMessage.of(builder.build()),
                     GenericsDeclaration.of(SendableMessage.class),
                     SerdesContext.of(configurer),
                     true
-            );
-            view.set(newKey, value);
-            return true;
-        });
+                );
+                view.set(newKey, value);
+                return true;
+            }
+        );
     }
 
-    @Nullable
-    private static RawComponent getRawComponent(RawConfigView view, String key) {
+    @Nullable private static RawComponent getRawComponent(RawConfigView view, String key) {
         if (!view.exists(key)) {
             return null;
         }
@@ -82,5 +83,4 @@ public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
         pluginConfig.save();
         return value;
     }
-
 }

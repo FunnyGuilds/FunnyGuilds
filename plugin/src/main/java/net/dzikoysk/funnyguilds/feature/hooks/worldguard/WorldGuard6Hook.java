@@ -22,12 +22,21 @@ public class WorldGuard6Hook extends WorldGuardHook {
     static {
         try {
             MethodHandles.Lookup lookup = MethodHandles.lookup();
-            GET_REGION_MANAGER = lookup.findVirtual(WorldGuardPlugin.class, "getRegionManager",
-                    MethodType.methodType(RegionManager.class, World.class));
-            GET_APPLICABLE_REGIONS = lookup.findVirtual(RegionManager.class, "getApplicableRegions",
-                    MethodType.methodType(ApplicableRegionSet.class, Location.class));
-            GET_FLAG_REGISTRY = lookup.findVirtual(WorldGuardPlugin.class, "getFlagRegistry",
-                    MethodType.methodType(FlagRegistry.class));
+            GET_REGION_MANAGER = lookup.findVirtual(
+                WorldGuardPlugin.class,
+                "getRegionManager",
+                MethodType.methodType(RegionManager.class, World.class)
+            );
+            GET_APPLICABLE_REGIONS = lookup.findVirtual(
+                RegionManager.class,
+                "getApplicableRegions",
+                MethodType.methodType(ApplicableRegionSet.class, Location.class)
+            );
+            GET_FLAG_REGISTRY = lookup.findVirtual(
+                WorldGuardPlugin.class,
+                "getFlagRegistry",
+                MethodType.methodType(FlagRegistry.class)
+            );
         } catch (NoSuchMethodException | IllegalAccessException ex) {
             throw new RuntimeException("Could not properly initialize WorldGuard 6.0+ hook!", ex);
         }
@@ -66,11 +75,13 @@ public class WorldGuard6Hook extends WorldGuardHook {
         }
 
         try {
-            RegionManager regionManager = (RegionManager) GET_REGION_MANAGER.invokeExact(this.worldGuard, location.getWorld());
+            RegionManager regionManager = (RegionManager) GET_REGION_MANAGER.invokeExact(
+                this.worldGuard,
+                location.getWorld()
+            );
             return Option.of((ApplicableRegionSet) GET_APPLICABLE_REGIONS.invokeExact(regionManager, location));
         } catch (Throwable throwable) {
             return Option.none();
         }
     }
-
 }

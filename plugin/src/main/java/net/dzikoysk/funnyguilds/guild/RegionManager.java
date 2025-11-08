@@ -47,9 +47,7 @@ public class RegionManager {
      * @return set of regions
      */
     public Set<Region> getRegions() {
-        return this.regions.values().stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+        return this.regions.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
     /**
@@ -68,8 +66,8 @@ public class RegionManager {
      */
     public Option<Region> findByName(String name, boolean ignoreCase) {
         return PandaStream.of(this.regions.values())
-                .flatMap(r -> r)
-                .find(region -> ignoreCase ? region.getName().equalsIgnoreCase(name) : region.getName().equals(name));
+            .flatMap(r -> r)
+            .find(region -> ignoreCase ? region.getName().equalsIgnoreCase(name) : region.getName().equals(name));
     }
 
     /**
@@ -116,9 +114,9 @@ public class RegionManager {
 
         FunnyBox box = region.toBox();
         return PandaStream.of(Bukkit.getOnlinePlayers())
-                .filter(player -> !ignoredUuids.contains(player.getUniqueId()))
-                .find(player -> box.contains(player.getLocation()))
-                .isPresent();
+            .filter(player -> !ignoredUuids.contains(player.getUniqueId()))
+            .find(player -> box.contains(player.getLocation()))
+            .isPresent();
     }
 
     @Deprecated
@@ -128,9 +126,10 @@ public class RegionManager {
     }
 
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
-        return this.isAnyPlayerInRegion(region, PandaStream.of(ignoredUsers)
-                .map(User::getUUID)
-                .collect(Collectors.toSet()));
+        return this.isAnyPlayerInRegion(
+            region,
+            PandaStream.of(ignoredUsers).map(User::getUUID).collect(Collectors.toSet())
+        );
     }
 
     @Deprecated
@@ -150,16 +149,18 @@ public class RegionManager {
             return false;
         }
 
-        int size = this.pluginConfiguration.regionSize + (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
+        int size =
+            this.pluginConfiguration.regionSize +
+            (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
         return PandaStream.of(this.regions.values())
-                .flatMap(r -> r)
-                .map(Region::getCenter)
-                .filterNot(regionCenter -> regionCenter.equals(center))
-                .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
-                .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
-                .isPresent();
+            .flatMap(r -> r)
+            .map(Region::getCenter)
+            .filterNot(regionCenter -> regionCenter.equals(center))
+            .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
+            .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
+            .isPresent();
     }
 
     @Deprecated
@@ -182,8 +183,8 @@ public class RegionManager {
 
         Location blockLocation = block.getLocation();
         return this.findRegionAtLocation(blockLocation)
-                .map(region -> region.getHeart().contentEquals(blockLocation))
-                .orElseGet(false);
+            .map(region -> region.getHeart().contentEquals(blockLocation))
+            .orElseGet(false);
     }
 
     /**
@@ -211,7 +212,7 @@ public class RegionManager {
      */
     public void removeRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
-        
+
         if (!this.regionExists(region.getName())) {
             return;
         }
@@ -307,6 +308,6 @@ public class RegionManager {
     }
 
     private static long packChunkPosition(int chunkX, int chunkZ) {
-        return (long) chunkX & 0xFFFFFFFFL | ((long) chunkZ & 0xFFFFFFFFL) << 32;
+        return (((long) chunkX & 0xFFFFFFFFL) | (((long) chunkZ & 0xFFFFFFFFL) << 32));
     }
 }

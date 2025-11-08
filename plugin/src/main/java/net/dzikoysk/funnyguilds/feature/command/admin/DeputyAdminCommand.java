@@ -15,10 +15,10 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class DeputyAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.deputy.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3 online-players:3",
-            acceptsExceeded = true
+        name = "${admin.deputy.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3 online-players:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -30,7 +30,9 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         when(!guild.isMember(userToMove), config -> config.adminUserNotMemberOf);
 
         User admin = AdminUtils.getAdminUser(sender);
-        if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(AdminUtils.getCause(admin), admin, guild, userToMove))) {
+        if (
+            !SimpleEventHandler.handle(new GuildMemberDeputyEvent(AdminUtils.getCause(admin), admin, guild, userToMove))
+        ) {
             return;
         }
 
@@ -39,30 +41,29 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
             this.messageService.getMessage(config -> config.deputyRemove)
-                    .receiver(sender)
-                    .send();
+                .receiver(sender)
+                .send();
             this.messageService.getMessage(config -> config.deputyMember)
-                    .receiver(userToMove)
-                    .send();
+                .receiver(userToMove)
+                .send();
             this.messageService.getMessage(config -> config.deputyNoLongerMembers)
-                    .with(formatter)
-                    .receiver(guild)
-                    .send();
+                .with(formatter)
+                .receiver(guild)
+                .send();
             return;
         }
 
         guild.addDeputy(userToMove);
 
         this.messageService.getMessage(config -> config.deputySet)
-                .receiver(sender)
-                .send();
-        this.messageService.getMessage( config -> config.deputyOwner)
-                .receiver(userToMove)
-                .send();
+            .receiver(sender)
+            .send();
+        this.messageService.getMessage(config -> config.deputyOwner)
+            .receiver(userToMove)
+            .send();
         this.messageService.getMessage(config -> config.deputyMembers)
-                .with(formatter)
-                .receiver(guild)
-                .send();
+            .with(formatter)
+            .receiver(guild)
+            .send();
     }
-
 }

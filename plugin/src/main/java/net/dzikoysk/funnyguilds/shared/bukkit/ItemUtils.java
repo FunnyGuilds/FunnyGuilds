@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -11,8 +13,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -29,8 +31,6 @@ import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
-import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 
 public final class ItemUtils {
 
@@ -52,20 +52,25 @@ public final class ItemUtils {
         }
     }
 
-    private ItemUtils() {
-    }
+    private ItemUtils() {}
 
-    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, Function<MessageConfiguration, Sendable> messageSupplier) {
+    public static boolean playerHasEnoughItems(
+        Player player,
+        List<ItemStack> requiredItems,
+        Function<MessageConfiguration, Sendable> messageSupplier
+    ) {
         for (ItemStack requiredItem : requiredItems) {
             if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                 continue;
             }
 
-            FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
-                    .receiver(player)
-                    .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
-                    .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
-                    .send();
+            FunnyGuilds.getInstance()
+                .getMessageService()
+                .getMessage(messageSupplier)
+                .receiver(player)
+                .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
+                .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
+                .send();
 
             return false;
         }
@@ -74,9 +79,9 @@ public final class ItemUtils {
 
     public static String translateTextPlaceholder(String text, Collection<ItemStack> items, ItemStack item) {
         return StringReplacer.replace(
-                text,
-                ItemComponentHelper.prepareItemReplacement(item),
-                ItemComponentHelper.prepareItemsReplacement(items)
+            text,
+            ItemComponentHelper.prepareItemReplacement(item),
+            ItemComponentHelper.prepareItemsReplacement(items)
         );
     }
 
@@ -85,7 +90,11 @@ public final class ItemUtils {
         if (!displayAmount) {
             return materialName;
         }
-        return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
+        return (
+            item.getAmount() +
+            FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() +
+            materialName
+        );
     }
 
     public static ItemStack parseItem(String itemString) {
@@ -94,13 +103,17 @@ public final class ItemUtils {
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
         Material material = MaterialUtils.parseMaterial(typeSplit[0], false);
-        Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
-        });
+        Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(
+            () -> {
+                FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
+            }
+        );
 
-        Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
-        });
+        Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(
+            () -> {
+                FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
+            }
+        );
 
         ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
         FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
@@ -137,13 +150,15 @@ public final class ItemUtils {
                 case "enchants":
                 case "enchantments":
                     PandaStream.of(attributeValue.split(","))
-                            .map(ItemUtils::parseEnchant)
-                            .filter(enchant -> enchant.getFirst() != null)
-                            .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
+                        .map(ItemUtils::parseEnchant)
+                        .filter(enchant -> enchant.getFirst() != null)
+                        .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
                     continue;
                 case "skullowner":
                     if (!(item.getMeta() instanceof SkullMeta)) {
-                        FunnyGuilds.getPluginLogger().parser("Invalid item skull owner attribute (given item is not a skull!): " + split[index]);
+                        FunnyGuilds.getPluginLogger().parser(
+                            "Invalid item skull owner attribute (given item is not a skull!): " + split[index]
+                        );
                         continue;
                     }
 
@@ -153,33 +168,40 @@ public final class ItemUtils {
                 case "flags":
                 case "itemflags":
                     PandaStream.of(attributeValue.split(","))
-                            .map(String::trim)
-                            .mapOpt(ItemUtils::matchItemFlag)
-                            .forEach(item::setFlag);
+                        .map(String::trim)
+                        .mapOpt(ItemUtils::matchItemFlag)
+                        .forEach(item::setFlag);
 
                     continue;
                 case "armorcolor":
                     if (!(item.getMeta() instanceof LeatherArmorMeta)) {
-                        FunnyGuilds.getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
+                        FunnyGuilds.getPluginLogger().parser(
+                            "Invalid item armor color attribute (given item is not a leather armor!): " + split[index]
+                        );
                         continue;
                     }
 
                     String[] colorSplit = attributeValue.split("_");
 
                     try {
-                        Color color = Color.fromRGB(Integer.parseInt(colorSplit[0]), Integer.parseInt(colorSplit[1]), Integer.parseInt(colorSplit[2]));
+                        Color color = Color.fromRGB(
+                            Integer.parseInt(colorSplit[0]),
+                            Integer.parseInt(colorSplit[1]),
+                            Integer.parseInt(colorSplit[2])
+                        );
                         ((LeatherArmorMeta) item.getMeta()).setColor(color);
                         item.refreshMeta();
-                    }
-                    catch (NumberFormatException numberFormatException) {
+                    } catch (NumberFormatException numberFormatException) {
                         FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + attributeValue);
                     }
 
                     continue;
                 case "eggtype":
                     if (!EggTypeChanger.needsSpawnEggMeta()) {
-                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, " +
-                                "no need to use eggtype in item creation!");
+                        FunnyGuilds.getPluginLogger().info(
+                            "This MC version supports metadata for spawnGuildHeart egg type, " +
+                                "no need to use eggtype in item creation!"
+                        );
                         continue;
                     }
 
@@ -212,7 +234,9 @@ public final class ItemUtils {
         short durability = item.getDurability();
         int amount = item.getAmount();
 
-        StringBuilder itemString = new StringBuilder(amount + " " + material + (durability > 0 ? ":" + durability : ""));
+        StringBuilder itemString = new StringBuilder(
+            amount + " " + material + (durability > 0 ? ":" + durability : "")
+        );
         FunnyFormatter formatter = new FunnyFormatter().register(" ", "_").register("#", "{HASH}");
 
         ItemMeta meta = item.getItemMeta();
@@ -225,27 +249,24 @@ public final class ItemUtils {
         }
 
         if (meta.hasLore()) {
-            List<String> lore = PandaStream.of(meta.getLore())
-                    .map(ChatUtils::decolor)
-                    .map(formatter::format)
-                    .toList();
+            List<String> lore = PandaStream.of(meta.getLore()).map(ChatUtils::decolor).map(formatter::format).toList();
 
             itemString.append(" lore:").append(Joiner.on("#").join(lore));
         }
 
         if (meta.hasEnchants()) {
             List<String> enchants = PandaStream.of(meta.getEnchants().entrySet().stream())
-                    .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
-                    .toList();
+                .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
+                .toList();
 
             itemString.append(" enchants:").append(Joiner.on(",").join(enchants));
         }
 
         if (!meta.getItemFlags().isEmpty()) {
             List<String> flags = PandaStream.of(meta.getItemFlags())
-                    .map(ItemFlag::name)
-                    .map(name -> name.toLowerCase(Locale.ROOT))
-                    .toList();
+                .map(ItemFlag::name)
+                .map(name -> name.toLowerCase(Locale.ROOT))
+                .toList();
 
             itemString.append(" flags:").append(Joiner.on(",").join(flags));
         }
@@ -285,9 +306,7 @@ public final class ItemUtils {
                 if (enchantment != null) {
                     return (Enchantment) enchantment;
                 }
-            }
-            catch (IllegalAccessException | InvocationTargetException ignored) {
-            }
+            } catch (IllegalAccessException | InvocationTargetException ignored) {}
         }
 
         return Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
@@ -302,9 +321,7 @@ public final class ItemUtils {
                 if (namespacedKey != null) {
                     return (String) namespacedKey;
                 }
-            }
-            catch (InvocationTargetException | IllegalAccessException ignored) {
-            }
+            } catch (InvocationTargetException | IllegalAccessException ignored) {}
         }
 
         return enchantment.getName();
@@ -336,14 +353,13 @@ public final class ItemUtils {
 
     public static int getItemAmount(ItemStack item, Inventory inv) {
         return PandaStream.of(inv.getContents())
-                .filter(item::isSimilar)
-                .toStream()
-                .mapToInt(ItemStack::getAmount)
-                .sum();
+            .filter(item::isSimilar)
+            .toStream()
+            .mapToInt(ItemStack::getAmount)
+            .sum();
     }
 
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
         return collection.toArray(new ItemStack[0]);
     }
-
 }

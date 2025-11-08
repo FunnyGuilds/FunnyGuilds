@@ -32,8 +32,7 @@ import panda.std.Option;
 
 public final class FlatGuildSerializer {
 
-    private FlatGuildSerializer() {
-    }
+    private FlatGuildSerializer() {}
 
     public static Option<Guild> deserialize(File file) {
         if (file.isDirectory()) {
@@ -59,7 +58,7 @@ public final class FlatGuildSerializer {
         boolean pvp = wrapper.getBoolean("pvp");
         Instant born = TimeUtils.positiveOrNullInstant(wrapper.getLong("born"));
         Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
-        Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked")); //TODO: [FG 5.0] attacked -> protection
+        Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("attacked")); // TODO: [FG 5.0] attacked -> protection
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
 
@@ -173,12 +172,16 @@ public final class FlatGuildSerializer {
         FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
 
         if (guild.getOwner() == null) {
-            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + ", caused by: owner is null");
+            FunnyGuilds.getPluginLogger().error(
+                "[Serialize] Cannot serialize guild: " + guild.getName() + ", caused by: owner is null"
+            );
             return false;
         }
 
         if (!guild.hasRegion() && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + ", caused by: region is null");
+            FunnyGuilds.getPluginLogger().error(
+                "[Serialize] Cannot serialize guild: " + guild.getName() + ", caused by: region is null"
+            );
             return false;
         }
 
@@ -205,7 +208,7 @@ public final class FlatGuildSerializer {
         wrapper.set("enemies", new ArrayList<>(Entity.names(guild.getEnemies())));
         wrapper.set("born", guild.getBorn().toEpochMilli());
         wrapper.set("validity", guild.getValidity().toEpochMilli());
-        wrapper.set("attacked", guild.getProtection().toEpochMilli()); //TODO: [FG 5.0] attacked -> protection
+        wrapper.set("attacked", guild.getProtection().toEpochMilli()); // TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
@@ -223,15 +226,12 @@ public final class FlatGuildSerializer {
 
         if (collection instanceof List) {
             return new HashSet<>((List<String>) collection);
-        }
-        else if (collection instanceof Set) {
+        } else if (collection instanceof Set) {
             return (Set<String>) collection;
-        }
-        else if (collection instanceof ConfigurationSection) {
+        } else if (collection instanceof ConfigurationSection) {
             return ((ConfigurationSection) collection).getKeys(false);
         }
 
         return Collections.emptySet();
     }
-
 }

@@ -22,5 +22,4 @@ class FunnyGuildsExceptionHandler implements DetailedExceptionHandler<Exception>
         this.logger.error("An exception has been caught while executing the command", ex);
         return true;
     }
-
 }

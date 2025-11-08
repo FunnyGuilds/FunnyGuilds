@@ -31,8 +31,8 @@ public class PlayerCommand extends AbstractFunnyListener {
 
         String command = commandElements[0].substring(1);
         PandaStream.of(this.config.regionCommands)
-                .find(blockedCommand -> blockedCommand.equalsIgnoreCase(command))
-                .peek(blockedCommand -> this.handleCommandUsage(player, event));
+            .find(blockedCommand -> blockedCommand.equalsIgnoreCase(command))
+            .peek(blockedCommand -> this.handleCommandUsage(player, event));
     }
 
     private void handleCommandUsage(Player player, Cancellable event) {
@@ -48,8 +48,7 @@ public class PlayerCommand extends AbstractFunnyListener {
 
         event.setCancelled(true);
         this.messageService.getMessage(config -> config.regionCommand)
-                .receiver(player)
-                .send();
+            .receiver(player)
+            .send();
     }
-
 }

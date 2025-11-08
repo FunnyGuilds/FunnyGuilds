@@ -32,7 +32,6 @@ public class Region extends AbstractMutableEntity {
 
     public Region(Guild guild, Location center, int defaultSize) {
         this(guild.getName(), center);
-
         this.guild = guild;
         this.size = defaultSize;
 
@@ -84,7 +83,7 @@ public class Region extends AbstractMutableEntity {
 
         if (location.getBlockX() > this.getLowerX() && location.getBlockX() < this.getUpperX()) {
             if (location.getBlockY() > this.getLowerY() && location.getBlockY() < this.getUpperY()) {
-                return location.getBlockZ() > this.getLowerZ() && location.getBlockZ() < this.getUpperZ();
+                return (location.getBlockZ() > this.getLowerZ() && location.getBlockZ() < this.getUpperZ());
             }
         }
 
@@ -124,8 +123,8 @@ public class Region extends AbstractMutableEntity {
 
     public Option<Block> getHeartBlock() {
         return Option.of(this.center)
-                .map(Location::getBlock)
-                .map(block -> block.getRelative(BlockFace.DOWN));
+            .map(Location::getBlock)
+            .map(block -> block.getRelative(BlockFace.DOWN));
     }
 
     void setCenter(Location location) {
@@ -195,8 +194,7 @@ public class Region extends AbstractMutableEntity {
     private static int compareCoordinates(boolean upper, int a, int b) {
         if (upper) {
             return Math.max(b, a);
-        }
-        else {
+        } else {
             return Math.min(a, b);
         }
     }
@@ -214,5 +212,4 @@ public class Region extends AbstractMutableEntity {
     public String toString() {
         return this.name;
     }
-
 }

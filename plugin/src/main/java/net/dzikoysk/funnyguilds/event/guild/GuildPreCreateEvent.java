@@ -26,5 +26,4 @@ public class GuildPreCreateEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild creation has been cancelled by the server!";
     }
-
 }

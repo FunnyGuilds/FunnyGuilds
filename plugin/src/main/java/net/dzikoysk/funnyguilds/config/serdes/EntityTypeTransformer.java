@@ -23,5 +23,4 @@ public class EntityTypeTransformer extends BidirectionalTransformer<String, Enti
     public String rightToLeft(EntityType data, @NotNull SerdesContext serdesContext) {
         return data.name();
     }
-
 }

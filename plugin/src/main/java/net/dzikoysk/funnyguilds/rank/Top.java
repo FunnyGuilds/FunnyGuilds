@@ -33,5 +33,4 @@ public class Top<T> {
     public void recalculate(String id) {
         this.values = this.recalculateFunction.apply(id, this.comparator);
     }
-
 }

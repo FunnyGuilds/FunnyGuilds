@@ -16,18 +16,15 @@ public class LocaleHelper {
         }
     }
 
-    @Nullable
-    public static String getLocaleString(Player player) {
+    @Nullable public static String getLocaleString(Player player) {
         if (GET_LOCALE_SPIGOT != null) {
             try {
                 return (String) GET_LOCALE_SPIGOT.invoke(player.spigot());
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 return null;
             }
         }
 
         return player.getLocale();
     }
-
 }

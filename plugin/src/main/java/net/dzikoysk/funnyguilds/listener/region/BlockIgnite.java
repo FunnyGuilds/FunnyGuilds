@@ -10,9 +10,7 @@ public class BlockIgnite extends AbstractFunnyListener {
     @EventHandler
     public void onIgnite(BlockIgniteEvent event) {
         ProtectionSystem.isProtected(event.getPlayer(), event.getBlock().getLocation(), false)
-                .peek(ProtectionSystem::defaultResponse)
-                .peek(result -> event.setCancelled(true));
+            .peek(ProtectionSystem::defaultResponse)
+            .peek(result -> event.setCancelled(true));
     }
-
 }
-

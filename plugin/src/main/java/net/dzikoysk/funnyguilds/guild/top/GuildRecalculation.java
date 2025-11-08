@@ -23,10 +23,11 @@ public class GuildRecalculation implements BiFunction<String, TopComparator<Guil
         GuildRankManager rankManager = FunnyGuilds.getInstance().getGuildRankManager();
         NavigableSet<GuildRank> guildsRank = new TreeSet<>(topComparator);
 
-        this.guildManager.getGuilds().stream()
-                .filter(rankManager::isRankedGuild)
-                .map(Guild::getRank)
-                .forEach(guildsRank::add);
+        this.guildManager.getGuilds()
+            .stream()
+            .filter(rankManager::isRankedGuild)
+            .map(Guild::getRank)
+            .forEach(guildsRank::add);
 
         int position = 0;
         for (GuildRank guildRank : guildsRank) {
@@ -35,5 +36,4 @@ public class GuildRecalculation implements BiFunction<String, TopComparator<Guil
 
         return guildsRank;
     }
-
 }

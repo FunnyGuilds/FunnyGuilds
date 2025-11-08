@@ -15,8 +15,7 @@ import panda.std.Option;
 
 public final class DatabaseUserSerializer {
 
-    private DatabaseUserSerializer() {
-    }
+    private DatabaseUserSerializer() {}
 
     public static Option<User> deserialize(ResultSet resultSet) {
         if (resultSet == null) {
@@ -46,8 +45,7 @@ public final class DatabaseUserSerializer {
             values[8] = reason;
 
             return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize user", exception);
         }
 
@@ -81,5 +79,4 @@ public final class DatabaseUserSerializer {
         statement.set("uuid", user.getUUID().toString());
         statement.executeUpdate();
     }
-
 }

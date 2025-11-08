@@ -9,8 +9,8 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
@@ -35,7 +35,9 @@ public class IndividualNameTag {
     void initialize() {
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to initialize NameTag, but scoreboard hasn't been initialized.");
+            FunnyGuilds.getPluginLogger().debug(
+                "We're trying to initialize NameTag, but scoreboard hasn't been initialized."
+            );
             return;
         }
         Scoreboard scoreboard = scoreboardOption.get();
@@ -61,11 +63,15 @@ public class IndividualNameTag {
         }
         Player targetPlayer = targetPlayerOption.get();
 
-        FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + targetUser.getName() + " for " + this.user.getName());
+        FunnyGuilds.getPluginLogger().debug(
+            "[NameTag] Updating " + targetUser.getName() + " for " + this.user.getName()
+        );
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to update NameTag, but scoreboard hasn't been initialized.");
+            FunnyGuilds.getPluginLogger().debug(
+                "We're trying to update NameTag, but scoreboard hasn't been initialized."
+            );
             return;
         }
         Scoreboard scoreboard = scoreboardOption.get();
@@ -73,8 +79,12 @@ public class IndividualNameTag {
         Team targetTeam = this.prepareTeam(scoreboard, targetUser.getName());
 
         ScoreboardConfiguration.NameTag nameTagConfig = this.pluginConfiguration.scoreboard.nametag;
-        targetTeam.setPrefix(this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, targetUser), targetPlayer, targetUser));
-        targetTeam.setSuffix(this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, targetUser), targetPlayer, targetUser));
+        targetTeam.setPrefix(
+            this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, targetUser), targetPlayer, targetUser)
+        );
+        targetTeam.setSuffix(
+            this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, targetUser), targetPlayer, targetUser)
+        );
     }
 
     public void removePlayer(User target) {
@@ -82,7 +92,9 @@ public class IndividualNameTag {
 
         Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
-            FunnyGuilds.getPluginLogger().debug("We're trying to remove NameTag, but scoreboard hasn't been initialized.");
+            FunnyGuilds.getPluginLogger().debug(
+                "We're trying to remove NameTag, but scoreboard hasn't been initialized."
+            );
             return;
         }
         Scoreboard scoreboard = scoreboardOption.get();
@@ -125,14 +137,14 @@ public class IndividualNameTag {
         Guild targetGuild = targetUser.getGuild().orNull();
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
-                .register("{POS}", UserUtils.getUserPosition(this.pluginConfiguration, targetUser));
+            .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
+            .register("{POS}", UserUtils.getUserPosition(this.pluginConfiguration, targetUser));
         value = formatter.format(value);
 
         String finalValue = value;
         value = GuildPlaceholdersService.getSimplePlaceholders()
-                .map(placeholders -> placeholders.formatVariables(targetPlayer, finalValue, targetGuild))
-                .orElseGet(value);
+            .map(placeholders -> placeholders.formatVariables(targetPlayer, finalValue, targetGuild))
+            .orElseGet(value);
 
         value = HookUtils.replacePlaceholders(targetPlayer, value);
         value = HookUtils.replacePlaceholders(player, targetPlayer, value);
@@ -149,8 +161,7 @@ public class IndividualNameTag {
 
         if (targetGuildOption.isEmpty()) {
             return value.getNoGuild();
-        }
-        else if (guildOption.isEmpty()) {
+        } else if (guildOption.isEmpty()) {
             return value.getOtherGuild();
         }
 
@@ -160,14 +171,11 @@ public class IndividualNameTag {
         RawString finalValue = value.getOtherGuild();
         if (guild.equals(targetGuild)) {
             finalValue = value.getOurGuild();
-        }
-        else if (guild.isAlly(targetGuild) || targetGuild.isAlly(guild)) {
+        } else if (guild.isAlly(targetGuild) || targetGuild.isAlly(guild)) {
             finalValue = value.getAlliesGuild();
-        }
-        else if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
+        } else if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
             finalValue = value.getEnemiesGuild();
         }
         return finalValue;
     }
-
 }

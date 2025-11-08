@@ -22,8 +22,10 @@ public class PlayerJoin extends AbstractFunnyListener {
 
     @Inject
     private TablistConfiguration tablistConfig;
+
     @Inject
     private NmsAccessor nmsAccessor;
+
     @Inject
     public GuildEntityHelper guildEntityHelper;
 
@@ -31,11 +33,11 @@ public class PlayerJoin extends AbstractFunnyListener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         User user = this.userManager.findByPlayer(player)
-                .peek(foundUser -> foundUser.getProfile().refresh())
-                .orElseGet(() -> {
-                    UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.funnyServer);
-                    return this.userManager.create(player.getUniqueId(), player.getName(), profile);
-                });
+            .peek(foundUser -> foundUser.getProfile().refresh())
+            .orElseGet(() -> {
+                UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.funnyServer);
+                return this.userManager.create(player.getUniqueId(), player.getName(), profile);
+            });
 
         String playerName = player.getName();
         if (!user.getName().equals(playerName)) {
@@ -46,15 +48,17 @@ public class PlayerJoin extends AbstractFunnyListener {
 
         if (this.tablistConfig.enabled) {
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
-                    user,
-                    this.nmsAccessor.getPlayerListAccessor(),
-                    this.funnyServer,
-                    this.tablistConfig.cells,
-                    this.tablistConfig.header, this.tablistConfig.footer,
-                    this.tablistConfig.animated, this.tablistConfig.pages,
-                    this.tablistConfig.heads.textures,
-                    this.tablistConfig.cellsPing,
-                    this.tablistConfig.fillCells
+                user,
+                this.nmsAccessor.getPlayerListAccessor(),
+                this.funnyServer,
+                this.tablistConfig.cells,
+                this.tablistConfig.header,
+                this.tablistConfig.footer,
+                this.tablistConfig.animated,
+                this.tablistConfig.pages,
+                this.tablistConfig.heads.textures,
+                this.tablistConfig.cellsPing,
+                this.tablistConfig.fillCells
             );
 
             individualPlayerList.send();
@@ -62,22 +66,33 @@ public class PlayerJoin extends AbstractFunnyListener {
         }
 
         this.plugin.getIndividualNameTagManager()
-                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
-                .peek(this.plugin::scheduleFunnyTasks);
+            .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
+            .peek(this.plugin::scheduleFunnyTasks);
         this.plugin.getDummyManager()
-                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
-                .peek(this.plugin::scheduleFunnyTasks);
+            .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
+            .peek(this.plugin::scheduleFunnyTasks);
 
-        FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
-        inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(this.plugin, user));
+        FunnyGuildsInboundChannelHandler inboundChannelHandler =
+            this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
+        inboundChannelHandler
+            .getPacketCallbacksRegistry()
+            .registerPacketCallback(new WarPacketCallbacks(this.plugin, user));
 
-        FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+        FunnyGuildsOutboundChannelHandler outboundChannelHandler =
+            this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
         outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
-        outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
+        outboundChannelHandler
+            .getPacketSuppliersRegistry()
+            .registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
-        this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
-            this.plugin.getVersion().isNewAvailable(player, false);
-        }, 30L);
+        this.plugin.getServer()
+            .getScheduler()
+            .runTaskLaterAsynchronously(
+                this.plugin,
+                () -> {
+                    this.plugin.getVersion().isNewAvailable(player, false);
+                },
+                30L
+            );
     }
-
 }

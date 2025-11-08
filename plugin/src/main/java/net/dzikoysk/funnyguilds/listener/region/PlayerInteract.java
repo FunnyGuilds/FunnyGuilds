@@ -50,10 +50,11 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
 
         Region region = regionOption.get();
-        boolean returnMethod = region.getHeartBlock()
-                .filter(heart -> heart.equals(clicked))
-                .peek(heart -> this.handleHeartClick(player, eventAction, region.getGuild(), event))
-                .isPresent();
+        boolean returnMethod = region
+            .getHeartBlock()
+            .filter(heart -> heart.equals(clicked))
+            .peek(heart -> this.handleHeartClick(player, eventAction, region.getGuild(), event))
+            .isPresent();
 
         if (returnMethod) {
             return;
@@ -67,8 +68,7 @@ public class PlayerInteract extends AbstractFunnyListener {
 
                 if (guild.isMember(user)) {
                     event.setCancelled(blocked && this.config.regionExplodeBlockInteractions && !guild.canBuild());
-                }
-                else {
+                } else {
                     event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
                 }
             });
@@ -84,8 +84,13 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
         User user = userOption.get();
 
-        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild,
-                eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
+        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(
+            EventCause.USER,
+            user,
+            guild,
+            eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT,
+            !SecuritySystem.onHitCrystal(player, guild)
+        );
         SimpleEventHandler.handle(interactEvent);
 
         if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
@@ -102,14 +107,12 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
 
         try {
-            this.infoExecutor.execute(player, new String[] {guild.getTag()});
-        }
-        catch (InternalValidationException validatorException) {
+            this.infoExecutor.execute(player, new String[] { guild.getTag() });
+        } catch (InternalValidationException validatorException) {
             this.messageService.getMessage(validatorException.getMessageSupplier())
-                    .with(validatorException.getReplacements())
-                    .receiver(player)
-                    .send();
+                .with(validatorException.getReplacements())
+                .receiver(player)
+                .send();
         }
     }
-
 }

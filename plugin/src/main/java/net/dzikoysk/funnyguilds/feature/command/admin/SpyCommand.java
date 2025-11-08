@@ -9,19 +9,15 @@ import org.bukkit.command.CommandSender;
 public final class SpyCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.spy.name}",
-            permission = "funnyguilds.admin",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${admin.spy.name}",
+        permission = "funnyguilds.admin",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(CommandSender sender) {
         UserCache userCache = UserValidation.requireUserByName(sender.getName()).getCache();
-        this.messageService
-                .getMessage(config -> userCache.toggleSpy()
-                        ? config.adminStartSpy
-                        : config.adminStopSpy)
-                .receiver(sender)
-                .send();
+        this.messageService.getMessage(config -> userCache.toggleSpy() ? config.adminStartSpy : config.adminStopSpy)
+            .receiver(sender)
+            .send();
     }
-
 }

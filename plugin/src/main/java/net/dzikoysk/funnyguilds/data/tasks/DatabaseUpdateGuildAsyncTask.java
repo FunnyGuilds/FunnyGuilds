@@ -30,16 +30,13 @@ public class DatabaseUpdateGuildAsyncTask extends AsyncFunnyTask {
                 DatabaseGuildSerializer.serialize(this.guild);
                 this.guild.getRegion().peek(DatabaseRegionSerializer::serialize);
                 this.guild.getMembers().forEach(DatabaseUserSerializer::serialize);
-            }
-            else if (this.dataModel instanceof FlatDataModel) {
+            } else if (this.dataModel instanceof FlatDataModel) {
                 FlatGuildSerializer.serialize(this.guild);
                 this.guild.getRegion().peek(FlatRegionSerializer::serialize);
                 this.guild.getMembers().forEach(FlatUserSerializer::serialize);
             }
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Could not update guild", exception);
         }
     }
-
 }

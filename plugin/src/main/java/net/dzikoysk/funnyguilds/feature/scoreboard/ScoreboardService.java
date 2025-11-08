@@ -26,25 +26,31 @@ public class ScoreboardService {
         }
 
         UserCache cache = user.getCache();
-        cache.getScoreboard().peek(scoreboard -> {
-            try {
-                player.setScoreboard(scoreboard);
-            }
-            catch (IllegalStateException e) {
-                FunnyGuilds.getPluginLogger().error("[ScoreboardService] Cannot set scoreboard for " + user.getName(), e);
-            }
-        }).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().debug("We're trying to update player scoreboard, but cached scoreboard is null.");
+        cache
+            .getScoreboard()
+            .peek(scoreboard -> {
+                try {
+                    player.setScoreboard(scoreboard);
+                } catch (IllegalStateException e) {
+                    FunnyGuilds.getPluginLogger().error(
+                        "[ScoreboardService] Cannot set scoreboard for " + user.getName(),
+                        e
+                    );
+                }
+            })
+            .onEmpty(() -> {
+                FunnyGuilds.getPluginLogger().debug(
+                    "We're trying to update player scoreboard, but cached scoreboard is null."
+                );
 
-            Scoreboard scoreboard;
-            if (this.pluginConfiguration.scoreboard.useSharedScoreboard) {
-                scoreboard = player.getScoreboard();
-            }
-            else {
-                scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-                player.setScoreboard(scoreboard);
-            }
-            cache.setScoreboard(scoreboard);
-        });
+                Scoreboard scoreboard;
+                if (this.pluginConfiguration.scoreboard.useSharedScoreboard) {
+                    scoreboard = player.getScoreboard();
+                } else {
+                    scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                    player.setScoreboard(scoreboard);
+                }
+                cache.setScoreboard(scoreboard);
+            });
     }
 }

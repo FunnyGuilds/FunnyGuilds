@@ -15,10 +15,10 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class TagCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.tag.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.tag.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 2, config -> config.generalNoTagGiven);
@@ -30,21 +30,22 @@ public final class TagCommand extends AbstractFunnyCommand {
         User admin = AdminUtils.getAdminUser(sender);
 
         String oldTag = guild.getTag();
-        if (!SimpleEventHandler.handle(new GuildPreTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag))) {
+        if (
+            !SimpleEventHandler.handle(
+                new GuildPreTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag)
+            )
+        ) {
             return;
         }
 
         guild.setTag(tag);
 
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{OLD_TAG}", oldTag)
-                .register("{TAG}", guild.getTag());
+        FunnyFormatter formatter = new FunnyFormatter().register("{OLD_TAG}", oldTag).register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.adminTagChanged)
-                .with(formatter)
-                .receiver(sender)
-                .send();
+            .with(formatter)
+            .receiver(sender)
+            .send();
         SimpleEventHandler.handle(new GuildTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag));
     }
-
 }

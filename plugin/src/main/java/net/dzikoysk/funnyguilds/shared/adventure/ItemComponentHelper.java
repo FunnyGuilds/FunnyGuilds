@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextReplacementConfig;
@@ -21,8 +21,7 @@ import panda.std.stream.PandaStream;
 
 public final class ItemComponentHelper {
 
-    private ItemComponentHelper() {
-    }
+    private ItemComponentHelper() {}
 
     public static Component itemAsComponent(ItemStack item, boolean displayAmount) {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -35,7 +34,9 @@ public final class ItemComponentHelper {
 
         Material material = item.getType();
         if (config.useTranslatableComponentsForMaterials) {
-            itemComponent = itemComponent.append(Component.translatable(plugin.getLocaleManager().queryMaterial(material)));
+            itemComponent = itemComponent.append(
+                Component.translatable(plugin.getLocaleManager().queryMaterial(material))
+            );
         } else {
             itemComponent = itemComponent.append(Component.text(MaterialUtils.getMaterialName(material)));
         }
@@ -74,28 +75,27 @@ public final class ItemComponentHelper {
             this.item = item;
 
             this.itemReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEM}")
-                    .replacement(itemAsComponent(this.item, true))
-                    .build();
+                .matchLiteral("{ITEM}")
+                .replacement(itemAsComponent(this.item, true))
+                .build();
             this.itemNoAmountReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEM-NO-AMOUNT}")
-                    .replacement(itemAsComponent(this.item, false))
-                    .build();
+                .matchLiteral("{ITEM-NO-AMOUNT}")
+                .replacement(itemAsComponent(this.item, false))
+                .build();
         }
 
         @Override
         public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
             return new FunnyFormatter()
-                    .register("{ITEM}", ItemUtils.itemAsString(this.item, true))
-                    .register("{ITEM-NO-AMOUNT}", ItemUtils.itemAsString(this.item, false))
-                    .format(text);
+                .register("{ITEM}", ItemUtils.itemAsString(this.item, true))
+                .register("{ITEM-NO-AMOUNT}", ItemUtils.itemAsString(this.item, false))
+                .format(text);
         }
 
         @Override
         public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
             return text.replaceText(this.itemReplacement).replaceText(this.itemNoAmountReplacement);
         }
-
     }
 
     private static class ItemsReplacement implements Replaceable {
@@ -109,36 +109,56 @@ public final class ItemComponentHelper {
             this.items = items;
 
             this.itemsReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEMS}")
-                    .replacement(Component.join(JoinConfiguration.commas(true), PandaStream.of(this.items)
+                .matchLiteral("{ITEMS}")
+                .replacement(
+                    Component.join(
+                        JoinConfiguration.commas(true),
+                        PandaStream.of(this.items)
                             .map(itemStack -> itemAsComponent(itemStack, true))
-                            .toList()))
-                    .build();
+                            .toList()
+                    )
+                )
+                .build();
             this.itemsNoAmountReplacement = TextReplacementConfig.builder()
-                    .matchLiteral("{ITEMS-NO-AMOUNT}")
-                    .replacement(Component.join(JoinConfiguration.commas(true), PandaStream.of(this.items)
+                .matchLiteral("{ITEMS-NO-AMOUNT}")
+                .replacement(
+                    Component.join(
+                        JoinConfiguration.commas(true),
+                        PandaStream.of(this.items)
                             .map(itemStack -> itemAsComponent(itemStack, false))
-                            .toList()))
-                    .build();
+                            .toList()
+                    )
+                )
+                .build();
         }
 
         @Override
         public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
             return new FunnyFormatter()
-                    .register("{ITEMS}", FunnyStringUtils.join(PandaStream.of(this.items)
+                .register(
+                    "{ITEMS}",
+                    FunnyStringUtils.join(
+                        PandaStream.of(this.items)
                             .map(itemStack -> ItemUtils.itemAsString(itemStack, true))
-                            .toList(), true))
-                    .register("{ITEMS-NO-AMOUNT}", FunnyStringUtils.join(PandaStream.of(this.items)
+                            .toList(),
+                        true
+                    )
+                )
+                .register(
+                    "{ITEMS-NO-AMOUNT}",
+                    FunnyStringUtils.join(
+                        PandaStream.of(this.items)
                             .map(itemStack -> ItemUtils.itemAsString(itemStack, false))
-                            .toList(), true))
-                    .format(text);
+                            .toList(),
+                        true
+                    )
+                )
+                .format(text);
         }
 
         @Override
         public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
             return text.replaceText(this.itemsReplacement).replaceText(this.itemsNoAmountReplacement);
         }
-
     }
-
 }

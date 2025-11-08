@@ -29,7 +29,10 @@ public class EntityInteract extends AbstractFunnyListener {
             Player clickedPlayer = (Player) clickedEntity;
 
             boolean notSneaking = this.config.infoPlayerSneaking && !eventCaller.isSneaking();
-            boolean hasCooldown = this.informationMessageCooldowns.cooldown(eventCaller, this.config.infoPlayerCooldown);
+            boolean hasCooldown = this.informationMessageCooldowns.cooldown(
+                eventCaller,
+                this.config.infoPlayerCooldown
+            );
 
             if (!this.config.infoPlayerEnabled || hasCooldown || notSneaking) {
                 return;
@@ -37,16 +40,14 @@ public class EntityInteract extends AbstractFunnyListener {
 
             if (this.config.infoPlayerCommand) {
                 try {
-                    this.playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
-                }
-                catch (InternalValidationException validatorException) {
+                    this.playerExecutor.execute(eventCaller, new String[] { clickedPlayer.getName() });
+                } catch (InternalValidationException validatorException) {
                     this.messageService.getMessage(validatorException.getMessageSupplier())
-                            .with(validatorException.getReplacements())
-                            .receiver(eventCaller)
-                            .send();
+                        .with(validatorException.getReplacements())
+                        .receiver(eventCaller)
+                        .send();
                 }
-            }
-            else {
+            } else {
                 this.userManager.findByPlayer(clickedPlayer).peek(user -> {
                     this.playerExecutor.sendInfoMessage(config -> config.playerRightClickInfo, user, eventCaller);
                 });
@@ -55,9 +56,8 @@ public class EntityInteract extends AbstractFunnyListener {
 
         if (this.config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
             this.userManager.findByPlayer(eventCaller)
-                    .filter(user -> user.getGuild().map(Guild::canBuild).isEmpty())
-                    .peek(user -> event.setCancelled(true));
+                .filter(user -> user.getGuild().map(Guild::canBuild).isEmpty())
+                .peek(user -> event.setCancelled(true));
         }
     }
-
 }

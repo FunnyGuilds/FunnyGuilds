@@ -14,15 +14,15 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
         PandaStream.of(event.getBlocks())
-                .find(block -> this.regionManager.isGuildHeart(block))
-                .peek(block -> event.setCancelled(true));
+            .find(block -> this.regionManager.isGuildHeart(block))
+            .peek(block -> event.setCancelled(true));
     }
 
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
         PandaStream.of(event.getBlocks())
-                .find(block -> this.regionManager.isGuildHeart(block))
-                .peek(block -> event.setCancelled(true));
+            .find(block -> this.regionManager.isGuildHeart(block))
+            .peek(block -> event.setCancelled(true));
     }
 
     @EventHandler
@@ -45,5 +45,4 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
             event.setCancelled(true);
         }
     }
-
 }

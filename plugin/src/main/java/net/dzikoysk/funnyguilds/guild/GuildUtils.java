@@ -12,8 +12,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 public final class GuildUtils {
 
-    private GuildUtils() {
-    }
+    private GuildUtils() {}
 
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
@@ -53,8 +52,7 @@ public final class GuildUtils {
      * @return the guild
      * @deprecated for removal in the future, in favour of {@link GuildManager#findByUuid(UUID)}
      */
-    @Nullable
-    @Deprecated
+    @Nullable @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Guild getByUUID(UUID uuid) {
         return FunnyGuilds.getInstance().getGuildManager().findByUuid(uuid).getOrNull();
@@ -67,8 +65,7 @@ public final class GuildUtils {
      * @return the guild
      * @deprecated for removal in the future, in favour of {@link GuildManager#findByName(String)}
      */
-    @Nullable
-    @Deprecated
+    @Nullable @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Guild getByName(String name) {
         return FunnyGuilds.getInstance().getGuildManager().findByName(name).getOrNull();
@@ -81,8 +78,7 @@ public final class GuildUtils {
      * @return the guild
      * @deprecated for removal in the future, in favour of {@link GuildManager#findByTag(String)}
      */
-    @Nullable
-    @Deprecated
+    @Nullable @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Guild getByTag(String tag) {
         return FunnyGuilds.getInstance().getGuildManager().findByTag(tag).getOrNull();
@@ -157,10 +153,7 @@ public final class GuildUtils {
      * @return set of guild tags
      */
     public static Set<String> getTags(Collection<Guild> guilds) {
-        return guilds.stream()
-                .filter(Objects::nonNull)
-                .map(Guild::getTag)
-                .collect(Collectors.toSet());
+        return guilds.stream().filter(Objects::nonNull).map(Guild::getTag).collect(Collectors.toSet());
     }
 
     /**
@@ -171,8 +164,10 @@ public final class GuildUtils {
      * @return if guild name is valid
      */
     public static boolean validateName(PluginConfiguration pluginConfiguration, String guildName) {
-        return pluginConfiguration.whitelist == pluginConfiguration.restrictedGuildNames.stream()
-                .anyMatch(name -> name.equalsIgnoreCase(guildName));
+        return (
+            pluginConfiguration.whitelist ==
+            pluginConfiguration.restrictedGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName))
+        );
     }
 
     /**
@@ -183,8 +178,9 @@ public final class GuildUtils {
      * @return if guild tag is valid
      */
     public static boolean validateTag(PluginConfiguration pluginConfiguration, String guildTag) {
-        return pluginConfiguration.whitelist == pluginConfiguration.restrictedGuildTags.stream()
-                .anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
+        return (
+            pluginConfiguration.whitelist ==
+            pluginConfiguration.restrictedGuildTags.stream().anyMatch(tag -> tag.equalsIgnoreCase(guildTag))
+        );
     }
-
 }

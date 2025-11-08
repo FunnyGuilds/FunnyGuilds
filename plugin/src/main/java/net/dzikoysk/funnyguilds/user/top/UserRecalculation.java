@@ -25,9 +25,13 @@ public class UserRecalculation implements BiFunction<String, TopComparator<UserR
         NavigableSet<UserRank> usersRank = new TreeSet<>(topComparator);
 
         PandaStream.of(this.userManager.getUsers())
-                .filterNot(user -> this.pluginConfiguration.skipPrivilegedPlayersInRankPositions && user.hasPermission("funnyguilds.ranking.exempt"))
-                .map(User::getRank)
-                .forEach(usersRank::add);
+            .filterNot(
+                user ->
+                    this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
+                    user.hasPermission("funnyguilds.ranking.exempt")
+            )
+            .map(User::getRank)
+            .forEach(usersRank::add);
 
         int position = 0;
         for (UserRank userRank : usersRank) {
@@ -36,5 +40,4 @@ public class UserRecalculation implements BiFunction<String, TopComparator<UserR
 
         return usersRank;
     }
-
 }

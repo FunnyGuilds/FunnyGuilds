@@ -12,8 +12,7 @@ import panda.std.Option;
 
 public final class FlatRegionSerializer {
 
-    private FlatRegionSerializer() {
-    }
+    private FlatRegionSerializer() {}
 
     public static Option<Region> deserialize(File file) {
         if (file.isDirectory()) {
@@ -75,5 +74,4 @@ public final class FlatRegionSerializer {
 
         return true;
     }
-
 }

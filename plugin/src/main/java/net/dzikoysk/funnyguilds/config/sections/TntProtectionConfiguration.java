@@ -37,7 +37,6 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
         @Exclude
         public boolean passingMidnight;
-
     }
 
     public BuildConfig build = new BuildConfig();
@@ -50,7 +49,6 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Maksymalna wysokość, do której można stawiać TNT")
         public int maxHeight = 255;
-
     }
 
     public ExplodeConfig explode = new ExplodeConfig();
@@ -63,7 +61,5 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Maksymalna wysokość, do której TNT wybucha")
         public int maxHeight = 255;
-
     }
-
 }

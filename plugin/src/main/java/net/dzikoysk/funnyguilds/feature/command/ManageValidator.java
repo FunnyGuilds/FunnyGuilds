@@ -13,7 +13,8 @@ final class ManageValidator implements Validator<CanManage, User, ValidationExce
     private final MemberValidator memberValidator = new MemberValidator();
 
     @Override
-    public boolean validate(Context context, CanManage annotation, Property property, User user) throws ValidationException {
+    public boolean validate(Context context, CanManage annotation, Property property, User user)
+        throws ValidationException {
         this.memberValidator.isMember(user);
 
         if (!user.canManage()) {
@@ -32,5 +33,4 @@ final class ManageValidator implements Validator<CanManage, User, ValidationExce
     public Class<User> getType() {
         return User.class;
     }
-
 }

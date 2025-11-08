@@ -22,7 +22,6 @@ public class GuildBaseChangeEvent extends GuildEvent {
 
     public GuildBaseChangeEvent(EventCause eventCause, User doer, Guild guild, Location newBaseLocation) {
         super(eventCause, doer, guild);
-
         this.newBaseLocation = newBaseLocation;
     }
 
@@ -34,5 +33,4 @@ public class GuildBaseChangeEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild base location change has been cancelled by the server!";
     }
-
 }

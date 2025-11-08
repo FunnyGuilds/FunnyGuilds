@@ -5,8 +5,7 @@ import org.bukkit.Bukkit;
 
 public final class SimpleEventHandler {
 
-    private SimpleEventHandler() {
-    }
+    private SimpleEventHandler() {}
 
     public static boolean handle(FunnyEvent event) {
         Bukkit.getPluginManager().callEvent(event);
@@ -21,5 +20,4 @@ public final class SimpleEventHandler {
 
         return true;
     }
-
 }

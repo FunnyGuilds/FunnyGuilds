@@ -26,5 +26,4 @@ public class GuildEnlargeEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild enlargement has been cancelled by the server!";
     }
-
 }

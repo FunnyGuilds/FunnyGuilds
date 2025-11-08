@@ -27,7 +27,11 @@ public abstract class AbstractScoreboardHandler<T> {
     private final Queue<Pair<UpdateData, UpdateData>> updateQueue = new LinkedList<>();
     private final Queue<Pair<UpdateData, UpdateData>> highPriorityUpdateQueue = new LinkedList<>();
 
-    protected AbstractScoreboardHandler(PluginConfiguration pluginConfiguration, UserManager userManager, ScoreboardService scoreboardService) {
+    protected AbstractScoreboardHandler(
+        PluginConfiguration pluginConfiguration,
+        UserManager userManager,
+        ScoreboardService scoreboardService
+    ) {
         this.pluginConfiguration = pluginConfiguration;
         this.userManager = userManager;
         this.scoreboardService = scoreboardService;
@@ -76,17 +80,20 @@ public abstract class AbstractScoreboardHandler<T> {
     // Update specific observer to everyone (targets) and everyone to specific observer
     public void updatePlayer(Player observerPlayer, User observerUser, boolean highPriority) {
         UpdateData observerData = observerPlayer != null && observerUser.isOnline()
-                ? new UpdateData(observerUser, observerPlayer, this.getOrCreateData(observerPlayer, observerUser))
-                : new UpdateData(observerUser, null, null);
+            ? new UpdateData(observerUser, observerPlayer, this.getOrCreateData(observerPlayer, observerUser))
+            : new UpdateData(observerUser, null, null);
 
         this.getOnlinePlayersToUpdate().forEach(targetData -> this.queueUpdate(observerData, targetData, highPriority));
     }
 
     private List<UpdateData> getOnlinePlayersToUpdate() {
         return PandaStream.of(Bukkit.getOnlinePlayers())
-                .mapOpt(player -> this.userManager.findByUuid(player.getUniqueId())
-                        .map(user -> new UpdateData(user, player, this.getOrCreateData(player, user))))
-                .toList();
+            .mapOpt(player ->
+                this.userManager.findByUuid(player.getUniqueId()).map(user ->
+                    new UpdateData(user, player, this.getOrCreateData(player, user))
+                )
+            )
+            .toList();
     }
 
     protected class UpdateData {
@@ -132,7 +139,5 @@ public abstract class AbstractScoreboardHandler<T> {
         public int hashCode() {
             return Objects.hash(this.user);
         }
-
     }
-
 }

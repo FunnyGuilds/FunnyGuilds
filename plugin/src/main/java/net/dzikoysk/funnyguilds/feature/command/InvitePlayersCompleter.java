@@ -29,15 +29,17 @@ public class InvitePlayersCompleter implements Completer {
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
         return CommandUtils.collectCompletions(
-                PandaStream.of(Bukkit.getServer().getOnlinePlayers())
-                        .mapOpt(this.userManager::findByPlayer)
-                        .filterNot(User::hasGuild)
-                        .filterNot(User::isVanished)
-                        .map(User::getName)
-                        .concat(this.configuration.inviteCommandAllArgument)
-                        .toList(),
-                prefix, limit, ArrayList::new, it -> it
+            PandaStream.of(Bukkit.getServer().getOnlinePlayers())
+                .mapOpt(this.userManager::findByPlayer)
+                .filterNot(User::hasGuild)
+                .filterNot(User::isVanished)
+                .map(User::getName)
+                .concat(this.configuration.inviteCommandAllArgument)
+                .toList(),
+            prefix,
+            limit,
+            ArrayList::new,
+            it -> it
         );
-
     }
 }

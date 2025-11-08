@@ -10,20 +10,19 @@ import org.bukkit.command.CommandSender;
 public final class RankingCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.ranking.name}",
-            description = "${user.ranking.description}",
-            aliases = "${user.ranking.aliases}",
-            permission = "funnyguilds.ranking",
-            acceptsExceeded = true
+        name = "${user.ranking.name}",
+        description = "${user.ranking.description}",
+        aliases = "${user.ranking.aliases}",
+        permission = "funnyguilds.ranking",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
         this.messageService.getMessage(config -> config.rankingList)
-                .receiver(sender)
-                .with(CommandSender.class, receiver -> {
-                    User targetUser = this.userManager.findByName(sender.getName()).orNull();
-                    return this.rankPlaceholdersService.prepareReplacement(targetUser);
-                })
-                .send();
+            .receiver(sender)
+            .with(CommandSender.class, receiver -> {
+                User targetUser = this.userManager.findByName(sender.getName()).orNull();
+                return this.rankPlaceholdersService.prepareReplacement(targetUser);
+            })
+            .send();
     }
-
 }

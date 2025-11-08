@@ -32,5 +32,4 @@ public class FunnyTabHook extends AbstractPluginHook {
         Bukkit.getPluginManager().disablePlugin(this.plugin);
         return HookInitResult.UNUSED;
     }
-
 }

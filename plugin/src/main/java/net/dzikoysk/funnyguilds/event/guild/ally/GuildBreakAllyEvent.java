@@ -26,5 +26,4 @@ public class GuildBreakAllyEvent extends GuildAllyEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Alliance break has been cancelled by the server!";
     }
-
 }

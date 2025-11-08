@@ -15,5 +15,4 @@ public class TablistPage {
         this.header = header;
         this.footer = footer;
     }
-
 }

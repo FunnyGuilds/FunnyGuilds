@@ -46,29 +46,30 @@ public final class NumberRange {
 
     public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
         return PandaStream.of(rangeMap.entrySet())
-                .find((entry) -> {
-                    NumberRange range = entry.getKey();
+            .find(entry -> {
+                NumberRange range = entry.getKey();
 
-                    Number minRange = range.minRange;
-                    Number maxRange = range.maxRange;
-                    float floatValue = value.floatValue();
+                Number minRange = range.minRange;
+                Number maxRange = range.maxRange;
+                float floatValue = value.floatValue();
 
-                    // If range boundaries are both integers - we treat both inclusively
-                    if (minRange instanceof Integer && maxRange instanceof Integer) {
-                        return floatValue >= minRange.intValue() && floatValue <= maxRange.intValue();
-                    }
+                // If range boundaries are both integers - we treat both inclusively
+                if (minRange instanceof Integer && maxRange instanceof Integer) {
+                    return (floatValue >= minRange.intValue() && floatValue <= maxRange.intValue());
+                }
 
-                    // If any of the boundaries is not an integer - we treat right boundary as exclusive
-                    return floatValue >= minRange.floatValue() && floatValue < maxRange.floatValue();
-                })
-                .map(Map.Entry::getValue);
+                // If any of the boundaries is not an integer - we treat right boundary as
+                // exclusive
+                return (floatValue >= minRange.floatValue() && floatValue < maxRange.floatValue());
+            })
+            .map(Map.Entry::getValue);
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap, boolean color) {
         return inRange(value, rangeMap)
-                .map(Objects::toString)
-                .map(string -> color ? ChatUtils.colored(string) : string)
-                .orElseGet(value.toString());
+            .map(Objects::toString)
+            .map(string -> color ? ChatUtils.colored(string) : string)
+            .orElseGet(value.toString());
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
@@ -85,28 +86,24 @@ public final class NumberRange {
 
     public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
         return PandaStream.of(rangeEntries)
-                .map(RangeFormatting::new)
-                .toMap(RangeFormatting::getRange, (formatting) -> color
-                        ? ChatUtils.colored(formatting.getValue())
-                        : formatting.getValue()
-                );
+            .map(RangeFormatting::new)
+            .toMap(RangeFormatting::getRange, formatting ->
+                color ? ChatUtils.colored(formatting.getValue()) : formatting.getValue()
+            );
     }
 
     private static Number parseNumber(String numberString, Number borderValue) {
         try {
             if (numberString.contains("*")) {
                 return borderValue;
-            }
-            else {
+            } else {
                 if (numberString.contains(".")) {
                     return Double.parseDouble(numberString);
-                }
-                else {
+                } else {
                     return Integer.parseInt(numberString);
                 }
             }
-        }
-        catch (NumberFormatException exception) {
+        } catch (NumberFormatException exception) {
             FunnyGuilds.getPluginLogger().error("Failed to parse a range boundary: " + numberString, exception);
             return borderValue;
         }
@@ -128,7 +125,7 @@ public final class NumberRange {
         }
 
         NumberRange range = (NumberRange) obj;
-        return this.minRange.equals(range.minRange) && this.maxRange.equals(range.maxRange);
+        return (this.minRange.equals(range.minRange) && this.maxRange.equals(range.maxRange));
     }
 
     @Override
@@ -138,5 +135,4 @@ public final class NumberRange {
 
         return min + "-" + max;
     }
-
 }

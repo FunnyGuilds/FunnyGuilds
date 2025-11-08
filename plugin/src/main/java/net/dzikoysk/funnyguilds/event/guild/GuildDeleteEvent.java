@@ -26,5 +26,4 @@ public class GuildDeleteEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild deletion has been cancelled by the server!";
     }
-
 }

@@ -15,10 +15,10 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class UnbanCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.unban.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.unban.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -34,18 +34,17 @@ public final class UnbanCommand extends AbstractFunnyCommand {
         BanUtils.unban(guild);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getName())
-                .register("{ADMIN}", sender.getName());
+            .register("{GUILD}", guild.getName())
+            .register("{TAG}", guild.getName())
+            .register("{ADMIN}", sender.getName());
 
         this.messageService.getMessage(config -> config.adminGuildUnban)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.broadcastUnban)
-                .broadcast()
-                .with(formatter)
-                .send();
+            .broadcast()
+            .with(formatter)
+            .send();
     }
-
 }

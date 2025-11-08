@@ -31,8 +31,7 @@ public class FunnyBox {
             double maxZ = (double) bbGetMaxZ.invoke(boundingBox);
 
             return new FunnyBox(minX, minY, minZ, maxX, maxY, maxZ);
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             return ofBlock(block);
         }
     }
@@ -56,8 +55,7 @@ public class FunnyBox {
             bbGetMaxX = lookup.findVirtual(boundingBoxClazz, "getMaxX", MethodType.methodType(double.class));
             bbGetMaxY = lookup.findVirtual(boundingBoxClazz, "getMaxY", MethodType.methodType(double.class));
             bbGetMaxZ = lookup.findVirtual(boundingBoxClazz, "getMaxZ", MethodType.methodType(double.class));
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             getBoundingBox = null;
         }
     }
@@ -67,8 +65,12 @@ public class FunnyBox {
         Validate.notNull(corner2, "corner2 cannot be null");
 
         return new FunnyBox(
-                corner1.getX(), corner1.getY(), corner1.getZ(),
-                corner2.getX(), corner2.getY(), corner2.getZ()
+            corner1.getX(),
+            corner1.getY(),
+            corner1.getZ(),
+            corner2.getX(),
+            corner2.getY(),
+            corner2.getZ()
         );
     }
 
@@ -78,31 +80,47 @@ public class FunnyBox {
         Validate.isTrue(Objects.equals(corner1.getWorld(), corner2.getWorld()), "Locations from different worlds!");
 
         return new FunnyBox(
-                corner1.getX(), corner1.getY(), corner1.getZ(),
-                corner2.getX(), corner2.getY(), corner2.getZ()
+            corner1.getX(),
+            corner1.getY(),
+            corner1.getZ(),
+            corner2.getX(),
+            corner2.getY(),
+            corner2.getZ()
         );
     }
 
     public static FunnyBox of(Vector center, double x, double y, double z) {
         Validate.notNull(center, "center cannot be null");
         return new FunnyBox(
-                center.getX() - x, center.getY() - y, center.getZ() - z,
-                center.getX() + x, center.getY() + y, center.getZ() + z
+            center.getX() - x,
+            center.getY() - y,
+            center.getZ() - z,
+            center.getX() + x,
+            center.getY() + y,
+            center.getZ() + z
         );
     }
 
     public static FunnyBox of(Location center, double x, double y, double z) {
         Validate.notNull(center, "center cannot be null");
         return new FunnyBox(
-                center.getX() - x, center.getY() - y, center.getZ() - z,
-                center.getX() + x, center.getY() + y, center.getZ() + z
+            center.getX() - x,
+            center.getY() - y,
+            center.getZ() - z,
+            center.getX() + x,
+            center.getY() + y,
+            center.getZ() + z
         );
     }
 
     private static FunnyBox ofBlock(Block block) {
         return new FunnyBox(
-                block.getX(), block.getY(), block.getZ(),
-                block.getX() + 1, block.getY() + 1, block.getZ() + 1
+            block.getX(),
+            block.getY(),
+            block.getZ(),
+            block.getX() + 1,
+            block.getY() + 1,
+            block.getZ() + 1
         );
     }
 
@@ -113,8 +131,7 @@ public class FunnyBox {
     private double maxY;
     private double maxZ;
 
-    public FunnyBox() {
-    }
+    public FunnyBox() {}
 
     public FunnyBox(double x1, double y1, double z1, double x2, double y2, double z2) {
         this.resize(x1, y1, z1, x2, y2, z2);
@@ -207,9 +224,22 @@ public class FunnyBox {
         return this.resize(other.minX, other.minY, other.minZ, other.maxX, other.maxY, other.maxZ);
     }
 
-    public FunnyBox expand(double negativeX, double negativeY, double negativeZ, double positiveX, double positiveY, double positiveZ) {
-        if ((negativeX == 0.0d) && (negativeY == 0.0d) && (negativeZ == 0.0d) &&
-                (positiveX == 0.0d) && (positiveY == 0.0d) && (positiveZ == 0.0d)) {
+    public FunnyBox expand(
+        double negativeX,
+        double negativeY,
+        double negativeZ,
+        double positiveX,
+        double positiveY,
+        double positiveZ
+    ) {
+        if (
+            (negativeX == 0.0d) &&
+            (negativeY == 0.0d) &&
+            (negativeZ == 0.0d) &&
+            (positiveX == 0.0d) &&
+            (positiveY == 0.0d) &&
+            (positiveZ == 0.0d)
+        ) {
             return this;
         }
 
@@ -225,11 +255,9 @@ public class FunnyBox {
 
             if (newMaxX >= centerX) {
                 newMinX = newMaxX;
-            }
-            else if (newMinX <= centerX) {
+            } else if (newMinX <= centerX) {
                 newMaxX = newMinX;
-            }
-            else {
+            } else {
                 newMinX = centerX;
                 newMaxX = centerX;
             }
@@ -240,11 +268,9 @@ public class FunnyBox {
 
             if (newMaxY >= centerY) {
                 newMinY = newMaxY;
-            }
-            else if (newMinY <= centerY) {
+            } else if (newMinY <= centerY) {
                 newMaxY = newMinY;
-            }
-            else {
+            } else {
                 newMinY = centerY;
                 newMaxY = centerY;
             }
@@ -255,11 +281,9 @@ public class FunnyBox {
 
             if (newMaxZ >= centerZ) {
                 newMinZ = newMaxZ;
-            }
-            else if (newMinZ <= centerZ) {
+            } else if (newMinZ <= centerZ) {
                 newMaxZ = newMinZ;
-            }
-            else {
+            } else {
                 newMinZ = centerZ;
                 newMaxZ = centerZ;
             }
@@ -333,8 +357,12 @@ public class FunnyBox {
         Validate.notNull(direction1, "direction1 cannot be null");
         Validate.notNull(direction2, "direction2 cannot be null");
 
-        return this.expand(direction1.getX(), direction1.getY(), direction1.getZ(), 1.0d)
-                .expand(direction2.getX(), direction2.getY(), direction2.getZ(), 1.0d);
+        return this.expand(direction1.getX(), direction1.getY(), direction1.getZ(), 1.0d).expand(
+            direction2.getX(),
+            direction2.getY(),
+            direction2.getZ(),
+            1.0d
+        );
     }
 
     public FunnyBox union(double posX, double posY, double posZ) {
@@ -345,8 +373,14 @@ public class FunnyBox {
         double newMaxY = Math.max(this.maxY, posY);
         double newMaxZ = Math.max(this.maxZ, posZ);
 
-        if ((newMinX == this.minX) && (newMinY == this.minY) && (newMinZ == this.minZ) &&
-                (newMaxX == this.maxX) && (newMaxY == this.maxY) && (newMaxZ == this.maxZ)) {
+        if (
+            (newMinX == this.minX) &&
+            (newMinY == this.minY) &&
+            (newMinZ == this.minZ) &&
+            (newMaxX == this.maxX) &&
+            (newMaxY == this.maxY) &&
+            (newMaxZ == this.maxZ)
+        ) {
             return this;
         }
 
@@ -399,8 +433,12 @@ public class FunnyBox {
         }
 
         return this.resize(
-                this.minX + shiftX, this.minY + shiftY, this.minZ + shiftZ,
-                this.maxX + shiftX, this.maxY + shiftY, this.maxZ + shiftZ
+            this.minX + shiftX,
+            this.minY + shiftY,
+            this.minZ + shiftZ,
+            this.maxX + shiftX,
+            this.maxY + shiftY,
+            this.maxZ + shiftZ
         );
     }
 
@@ -415,9 +453,14 @@ public class FunnyBox {
     }
 
     private boolean overlaps(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return (this.minX < maxX) && (this.maxX > minX) &&
-                (this.minY < maxY) && (this.maxY > minY) &&
-                (this.minZ < maxZ) && (this.maxZ > minZ);
+        return (
+            (this.minX < maxX) &&
+            (this.maxX > minX) &&
+            (this.minY < maxY) &&
+            (this.maxY > minY) &&
+            (this.minZ < maxZ) &&
+            (this.maxZ > minZ)
+        );
     }
 
     public boolean overlaps(FunnyBox other) {
@@ -437,15 +480,24 @@ public class FunnyBox {
         double z2 = max.getZ();
 
         return this.overlaps(
-                Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
-                Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)
+            Math.min(x1, x2),
+            Math.min(y1, y2),
+            Math.min(z1, z2),
+            Math.max(x1, x2),
+            Math.max(y1, y2),
+            Math.max(z1, z2)
         );
     }
 
     public boolean contains(double x, double y, double z) {
-        return (x >= this.minX) && (x < this.maxX) &&
-                (y >= this.minY) && (y < this.maxY) &&
-                (z >= this.minZ) && (z < this.maxZ);
+        return (
+            (x >= this.minX) &&
+            (x < this.maxX) &&
+            (y >= this.minY) &&
+            (y < this.maxY) &&
+            (z >= this.minZ) &&
+            (z < this.maxZ)
+        );
     }
 
     public boolean contains(Vector position) {
@@ -459,9 +511,14 @@ public class FunnyBox {
     }
 
     private boolean contains(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return (this.minX <= minX) && (this.maxX >= maxX) &&
-                (this.minY <= minY) && (this.maxY >= maxY) &&
-                (this.minZ <= minZ) && (this.maxZ >= maxZ);
+        return (
+            (this.minX <= minX) &&
+            (this.maxX >= maxX) &&
+            (this.minY <= minY) &&
+            (this.maxY >= maxY) &&
+            (this.minZ <= minZ) &&
+            (this.maxZ >= maxZ)
+        );
     }
 
     public boolean contains(FunnyBox other) {
@@ -481,13 +538,16 @@ public class FunnyBox {
         double z2 = max.getZ();
 
         return this.contains(
-                Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
-                Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2)
+            Math.min(x1, x2),
+            Math.min(y1, y2),
+            Math.min(z1, z2),
+            Math.max(x1, x2),
+            Math.max(y1, y2),
+            Math.max(z1, z2)
         );
     }
 
-    @Nullable
-    public Vector rayTrace(Vector start, Vector direction, double stepSize, double maxDistance) {
+    @Nullable public Vector rayTrace(Vector start, Vector direction, double stepSize, double maxDistance) {
         Validate.notNull(start, "start cannot be null");
         checkFinite(start);
 
@@ -515,5 +575,4 @@ public class FunnyBox {
         NumberConversions.checkFinite(vector.getY(), "y not finite");
         NumberConversions.checkFinite(vector.getZ(), "z not finite");
     }
-
 }

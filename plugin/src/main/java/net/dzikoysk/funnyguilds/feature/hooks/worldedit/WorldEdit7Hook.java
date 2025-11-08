@@ -34,25 +34,25 @@ public class WorldEdit7Hook extends WorldEditHook {
             BlockVector3 pasteLocation = BlockVector3.at(location.getX(), location.getY(), location.getZ());
             World pasteWorld = BukkitAdapter.adapt(location.getWorld());
 
-            Clipboard clipboard = ClipboardFormats.findByFile(schematicFile).getReader(Files.newInputStream(schematicFile.toPath())).read();
+            Clipboard clipboard = ClipboardFormats.findByFile(schematicFile)
+                .getReader(Files.newInputStream(schematicFile.toPath()))
+                .read();
             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
 
             EditSession editSession = WorldEdit.getInstance().newEditSession(pasteWorld);
 
             Operation operation = clipboardHolder
-                    .createPaste(editSession)
-                    .to(pasteLocation)
-                    .ignoreAirBlocks(!withAir)
-                    .build();
+                .createPaste(editSession)
+                .to(pasteLocation)
+                .ignoreAirBlocks(!withAir)
+                .build();
 
             Operations.complete(operation);
             editSession.close();
             return true;
-        }
-        catch (IOException | WorldEditException e) {
+        } catch (IOException | WorldEditException e) {
             FunnyGuilds.getPluginLogger().error("Could not paste schematic: " + schematicFile.getAbsolutePath(), e);
             return false;
         }
     }
-
 }

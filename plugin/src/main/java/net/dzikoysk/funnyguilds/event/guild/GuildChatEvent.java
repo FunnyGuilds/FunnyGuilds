@@ -24,7 +24,14 @@ public class GuildChatEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildChatEvent(EventCause eventCause, @Nullable User doer, Guild guild, Type type, Set<Guild> receivers, String message) {
+    public GuildChatEvent(
+        EventCause eventCause,
+        @Nullable User doer,
+        Guild guild,
+        Type type,
+        Set<Guild> receivers,
+        String message
+    ) {
         super(eventCause, doer, guild);
         this.type = type;
         this.receivers = Collections.unmodifiableSet(receivers);
@@ -53,10 +60,9 @@ public class GuildChatEvent extends GuildEvent {
         throw new UnsupportedOperationException("GuildChatEvent cannot be cancelled, use GuildPreChatEvent");
     }
 
-    public static enum Type {
+    public enum Type {
         PRIVATE,
         ALLY,
-        ALL
+        ALL,
     }
-
 }

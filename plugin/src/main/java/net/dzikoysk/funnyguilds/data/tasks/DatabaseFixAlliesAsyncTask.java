@@ -13,9 +13,10 @@ public class DatabaseFixAlliesAsyncTask extends AsyncFunnyTask {
 
     @Override
     public void execute() {
-        guildManager.getGuilds().forEach(guild -> {
-            guild.getAllies().forEach(ally -> ally.addAlly(guild));
-        });
+        guildManager
+            .getGuilds()
+            .forEach(guild -> {
+                guild.getAllies().forEach(ally -> ally.addAlly(guild));
+            });
     }
-
 }

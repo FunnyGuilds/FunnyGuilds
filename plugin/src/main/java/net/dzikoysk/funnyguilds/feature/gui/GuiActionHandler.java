@@ -41,5 +41,4 @@ public class GuiActionHandler extends AbstractFunnyListener {
 
         event.setCancelled(true);
     }
-
 }

@@ -45,7 +45,11 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder setLore(Iterable<String> lore, boolean color) {
-        this.itemMeta.setLore(PandaStream.of(lore).map(line -> color ? ChatUtils.colored(line) : line).toList());
+        this.itemMeta.setLore(
+            PandaStream.of(lore)
+                .map(line -> color ? ChatUtils.colored(line) : line)
+                .toList()
+        );
         this.refreshMeta();
 
         return this;
@@ -76,5 +80,4 @@ public final class ItemBuilder {
     public ItemMeta getMeta() {
         return this.itemMeta;
     }
-
 }

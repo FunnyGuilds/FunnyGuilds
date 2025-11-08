@@ -17,8 +17,12 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
     private final UserPlaceholdersService userPlaceholdersService;
     private final GuildPlaceholdersService guildPlaceholdersService;
 
-    public TablistPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService, TimePlaceholdersService timePlaceholdersService,
-                                      UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService) {
+    public TablistPlaceholdersService(
+        BasicPlaceholdersService basicPlaceholdersService,
+        TimePlaceholdersService timePlaceholdersService,
+        UserPlaceholdersService userPlaceholdersService,
+        GuildPlaceholdersService guildPlaceholdersService
+    ) {
         this.basicPlaceholdersService = basicPlaceholdersService;
         this.timePlaceholdersService = timePlaceholdersService;
         this.userPlaceholdersService = userPlaceholdersService;
@@ -30,7 +34,9 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
         text = this.basicPlaceholdersService.format(entity, text, null);
         text = this.timePlaceholdersService.format(entity, text, OffsetDateTime.now());
         text = this.userPlaceholdersService.format(entity, text, user);
-        text = this.guildPlaceholdersService.formatCustom(entity, text, user.getGuild().orNull(), "{G-", "}", name -> name.toUpperCase(Locale.ROOT));
+        text = this.guildPlaceholdersService.formatCustom(entity, text, user.getGuild().orNull(), "{G-", "}", name ->
+            name.toUpperCase(Locale.ROOT)
+        );
 
         return text;
     }
@@ -38,5 +44,4 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
     public String formatIdentifier(@Nullable Object entity, String identifier, User user) {
         return this.format(entity, "{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
     }
-
 }

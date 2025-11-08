@@ -16,17 +16,20 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class AssistsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.assists.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.assists.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
         when(args.length < 2, config -> config.adminNoAssistsGiven);
 
         int assists = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(
+                config -> config.adminErrorInNumber,
+                FunnyFormatter.of("{ERROR}", args[0])
+            );
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -44,13 +47,12 @@ public final class AssistsCommand extends AbstractFunnyCommand {
         user.getRank().setAssists(finalAssists);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", user.getName())
-                .register("{ASSISTS}", finalAssists);
+            .register("{PLAYER}", user.getName())
+            .register("{ASSISTS}", finalAssists);
 
         this.messageService.getMessage(config -> config.adminAssistsChanged)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
     }
-
 }

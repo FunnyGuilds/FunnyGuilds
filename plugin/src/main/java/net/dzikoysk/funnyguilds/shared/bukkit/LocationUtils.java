@@ -14,8 +14,7 @@ public final class LocationUtils {
 
     private static final int LEGACY_MIN_HEIGHT = 0;
 
-    private LocationUtils() {
-    }
+    private LocationUtils() {}
 
     @Contract(pure = true)
     public static Location toCenter(Location location) {
@@ -30,8 +29,7 @@ public final class LocationUtils {
         return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getZ() - a.getZ(), 2));
     }
 
-    @Nullable
-    public static Location parseLocation(String string) {
+    @Nullable public static Location parseLocation(String string) {
         if (string == null) {
             return null;
         }
@@ -50,7 +48,11 @@ public final class LocationUtils {
     }
 
     public static boolean equals(Location location, Location to) {
-        return (location.getBlockX() == to.getBlockX() && location.getBlockY() == to.getBlockY() && location.getBlockZ() == to.getBlockZ());
+        return (
+            location.getBlockX() == to.getBlockX() &&
+            location.getBlockY() == to.getBlockY() &&
+            location.getBlockZ() == to.getBlockZ()
+        );
     }
 
     public static boolean equalsFlat(Location location, Location to) {
@@ -67,8 +69,15 @@ public final class LocationUtils {
             return "";
         }
 
-        return location.getWorld().getName() + "," + (float) location.getX() + "," + (float) location.getY() +
-                "," + (float) location.getZ();
+        return (
+            location.getWorld().getName() +
+            "," +
+            (float) location.getX() +
+            "," +
+            (float) location.getY() +
+            "," +
+            (float) location.getZ()
+        );
     }
 
     public static String toString(Option<Location> location) {
@@ -77,16 +86,16 @@ public final class LocationUtils {
 
     public static boolean checkWorld(Player player) {
         List<String> blockedWorlds = FunnyGuilds.getInstance().getPluginConfiguration().blockedWorlds;
-        return blockedWorlds != null && !blockedWorlds.isEmpty() && blockedWorlds.contains(player.getWorld().getName());
+        return (
+            blockedWorlds != null && !blockedWorlds.isEmpty() && blockedWorlds.contains(player.getWorld().getName())
+        );
     }
 
     public static int getMinHeight(World world) {
         try {
             return world.getMinHeight();
-        }
-        catch (NoSuchMethodError exception) {
+        } catch (NoSuchMethodError exception) {
             return LEGACY_MIN_HEIGHT;
         }
     }
-
 }

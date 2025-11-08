@@ -35,5 +35,4 @@ public class AssistsChangeEvent extends AbstractRankEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Assists change has been cancelled by the server!";
     }
-
 }

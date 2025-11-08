@@ -13,8 +13,7 @@ import panda.std.Option;
 
 public final class DatabaseRegionSerializer {
 
-    private DatabaseRegionSerializer() {
-    }
+    private DatabaseRegionSerializer() {}
 
     public static Option<Region> deserialize(ResultSet resultSet) {
         if (resultSet == null) {
@@ -30,9 +29,10 @@ public final class DatabaseRegionSerializer {
             if (name == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize region, caused by: name == null");
                 return Option.none();
-            }
-            else if (center == null) {
-                FunnyGuilds.getPluginLogger().error("Cannot deserialize region (" + name + "), caused by: center == null");
+            } else if (center == null) {
+                FunnyGuilds.getPluginLogger().error(
+                    "Cannot deserialize region (" + name + "), caused by: center == null"
+                );
                 return Option.none();
             }
 
@@ -43,8 +43,7 @@ public final class DatabaseRegionSerializer {
             values[3] = enlarge;
 
             return DeserializationUtils.deserializeRegion(FunnyGuilds.getInstance().getRegionManager(), values);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize region", exception);
         }
 
@@ -71,5 +70,4 @@ public final class DatabaseRegionSerializer {
         statement.set("name", region.getName());
         statement.executeUpdate();
     }
-
 }

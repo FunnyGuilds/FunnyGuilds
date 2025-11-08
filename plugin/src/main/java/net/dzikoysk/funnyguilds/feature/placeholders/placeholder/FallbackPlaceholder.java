@@ -1,9 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.placeholder;
 
-import java.util.Objects;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import org.jetbrains.annotations.Nullable;
 
 public class FallbackPlaceholder<T> extends Placeholder<T> {
@@ -27,5 +25,4 @@ public class FallbackPlaceholder<T> extends Placeholder<T> {
     public Object getRawFallback(@Nullable Object entity) {
         return this.fallbackResolver.resolve(entity);
     }
-
 }

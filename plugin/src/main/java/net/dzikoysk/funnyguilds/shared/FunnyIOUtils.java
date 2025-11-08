@@ -17,8 +17,7 @@ import panda.utilities.IOUtils;
 
 public final class FunnyIOUtils {
 
-    private FunnyIOUtils() {
-    }
+    private FunnyIOUtils() {}
 
     public static Result<File, String> createFile(String fileName, boolean isDirectory) {
         return createFile(new File(fileName), isDirectory);
@@ -43,8 +42,7 @@ public final class FunnyIOUtils {
                 if (!file.createNewFile()) {
                     return Result.error("Could not create file");
                 }
-            }
-            catch (IOException exception) {
+            } catch (IOException exception) {
                 FunnyGuilds.getPluginLogger().error("Could not initialize file: " + file.getAbsolutePath(), exception);
             }
         }
@@ -82,11 +80,9 @@ public final class FunnyIOUtils {
             encoding = encoding == null ? "UTF-8" : encoding;
 
             try (InputStream input = connection.getInputStream()) {
-                return IOUtils.convertStreamToString(input, Charset.forName(encoding))
-                        .orThrow(exception -> exception);
+                return IOUtils.convertStreamToString(input, Charset.forName(encoding)).orThrow(exception -> exception);
             }
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().update("Connection to the server (" + urlString + ") failed!");
             FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(exception));
         }
@@ -94,7 +90,8 @@ public final class FunnyIOUtils {
         return "";
     }
 
-    public static void copyFileFromResources(InputStream resource, File destination, boolean ignoreIfExists) throws IOException {
+    public static void copyFileFromResources(InputStream resource, File destination, boolean ignoreIfExists)
+        throws IOException {
         if (ignoreIfExists && destination.exists()) {
             return;
         }

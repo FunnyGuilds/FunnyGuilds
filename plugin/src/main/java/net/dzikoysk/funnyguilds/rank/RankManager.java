@@ -40,5 +40,4 @@ public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
     public void recalculateTops() {
         this.topMap.forEach((id, top) -> top.recalculate(id));
     }
-
 }

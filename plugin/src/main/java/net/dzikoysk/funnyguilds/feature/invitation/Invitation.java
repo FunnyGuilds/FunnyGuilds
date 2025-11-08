@@ -43,5 +43,4 @@ public abstract class Invitation<F, T> {
     public int hashCode() {
         return Objects.hash(this.from, this.to);
     }
-
 }

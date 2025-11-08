@@ -18,10 +18,12 @@ final class GuildBind implements Bind {
 
     @Override
     public void accept(Resources injectorResources) {
-        injectorResources.on(Guild.class).assignHandler((property, annotation, args) ->
+        injectorResources
+            .on(Guild.class)
+            .assignHandler((property, annotation, args) ->
                 this.userBind.fetchUser(CommandUtils.getContext(args))
-                        .getGuild()
-                        .orThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild)));
+                    .getGuild()
+                    .orThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild))
+            );
     }
-
 }

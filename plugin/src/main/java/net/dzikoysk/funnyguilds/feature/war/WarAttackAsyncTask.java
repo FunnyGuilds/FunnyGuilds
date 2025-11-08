@@ -34,25 +34,26 @@ public class WarAttackAsyncTask extends AsyncFunnyTask {
     @Override
     public void execute() throws Exception {
         PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
-                .filter(entry -> entry.getValue().getId() == this.entityId)
-                .map(Entry::getKey)
-                .mapOpt(guild -> this.funnyServer.getPlayer(this.user)
-                        .map(player -> Pair.of(player, guild))
-                )
-                .filter(playerToGuild -> playerToGuild.getSecond()
-                        .getEnderCrystal()
-                        .map(Location::getWorld)
-                        .is(guildWorld -> guildWorld.equals(playerToGuild.getFirst().getWorld())))
-                .forEach(playerToGuild -> this.attackGuild(playerToGuild.getFirst(), playerToGuild.getSecond()));
+            .filter(entry -> entry.getValue().getId() == this.entityId)
+            .map(Entry::getKey)
+            .mapOpt(guild -> this.funnyServer.getPlayer(this.user).map(player -> Pair.of(player, guild)))
+            .filter(playerToGuild ->
+                playerToGuild
+                    .getSecond()
+                    .getEnderCrystal()
+                    .map(Location::getWorld)
+                    .is(guildWorld -> guildWorld.equals(playerToGuild.getFirst().getWorld()))
+            )
+            .forEach(playerToGuild -> this.attackGuild(playerToGuild.getFirst(), playerToGuild.getSecond()));
     }
 
     private void attackGuild(Player player, Guild guild) {
         GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(
-                EventCause.USER,
-                this.user,
-                guild,
-                Click.LEFT,
-                !SecuritySystem.onHitCrystal(player, guild)
+            EventCause.USER,
+            this.user,
+            guild,
+            Click.LEFT,
+            !SecuritySystem.onHitCrystal(player, guild)
         );
         SimpleEventHandler.handle(interactEvent);
 
@@ -61,11 +62,12 @@ public class WarAttackAsyncTask extends AsyncFunnyTask {
         }
 
         if (!interactEvent.isSecurityCheckPassed()) {
-            FunnyGuilds.getPluginLogger().debug("Security check failed for " + player.getName() + " when attacking " + guild.getName());
+            FunnyGuilds.getPluginLogger().debug(
+                "Security check failed for " + player.getName() + " when attacking " + guild.getName()
+            );
             return;
         }
 
         WarSystem.getInstance().attack(player, guild);
     }
-
 }

@@ -6,8 +6,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 
 public final class FlatPatcher {
 
-    private FlatPatcher() {
-    }
+    private FlatPatcher() {}
 
     public static void patch(FunnyGuilds plugin, File usersFolder, File guildsFolder, File regionsFolder) {
         File users = new File(plugin.getDataFolder(), "users");
@@ -66,5 +65,4 @@ public final class FlatPatcher {
             FunnyGuilds.getPluginLogger().update("Updated files: " + filesFound);
         }
     }
-
 }

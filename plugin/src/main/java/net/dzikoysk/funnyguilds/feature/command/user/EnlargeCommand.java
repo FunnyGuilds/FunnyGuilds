@@ -14,18 +14,17 @@ import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class EnlargeCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.enlarge.name}",
-            description = "${user.enlarge.description}",
-            aliases = "${user.enlarge.aliases}",
-            permission = "funnyguilds.enlarge",
-            playerOnly = true
+        name = "${user.enlarge.name}",
+        description = "${user.enlarge.description}",
+        aliases = "${user.enlarge.aliases}",
+        permission = "funnyguilds.enlarge",
+        playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
         when(!this.config.regionsEnabled, config -> config.regionsDisabled);
@@ -36,8 +35,11 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         when(currentEnlargementLevel > this.config.enlargeItems.size() - 1, config -> config.enlargeMaxSize);
 
         ItemStack need = this.config.enlargeItems.get(currentEnlargementLevel);
-        when(!player.getInventory().containsAtLeast(need, need.getAmount()), config -> config.enlargeItem,
-                FunnyFormatter.of("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT)));
+        when(
+            !player.getInventory().containsAtLeast(need, need.getAmount()),
+            config -> config.enlargeItem,
+            FunnyFormatter.of("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT))
+        );
         when(this.regionManager.isNearRegion(region.getCenter()), config -> config.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, deputy, guild))) {
@@ -48,13 +50,12 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         this.regionManager.changeRegionEnlargement(region, currentEnlargementLevel + 1);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{SIZE}", region.getSize())
-                .register("{LEVEL}", region.getEnlargementLevel());
+            .register("{SIZE}", region.getSize())
+            .register("{LEVEL}", region.getEnlargementLevel());
 
         this.messageService.getMessage(config -> config.enlargeDone)
-                .receiver(guild)
-                .with(formatter)
-                .send();
+            .receiver(guild)
+            .with(formatter)
+            .send();
     }
-
 }

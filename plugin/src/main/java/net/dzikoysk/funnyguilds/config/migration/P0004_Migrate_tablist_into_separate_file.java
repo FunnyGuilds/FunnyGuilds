@@ -8,7 +8,6 @@ import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
-
 import static eu.okaeri.configs.migrate.ConfigMigrationDsl.when;
 
 /**
@@ -23,21 +22,18 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
 
     public P0004_Migrate_tablist_into_separate_file() {
         super(
-                "Migrate old config.yml tablist into tablist.yml",
-                when(
-                        moveToTablistConfig("player-list"),
-                        (config, view) -> {
-                            updateTablistConfig("player-list-animated", false);
-                            return true;
-                        }
-                ),
-                moveToTablistConfig("player-list-header"),
-                moveToTablistConfig("player-list-footer"),
-                moveToTablistConfig("player-list-ping"),
-                moveToTablistConfig("player-list-fill-cells"),
-                moveToTablistConfig("player-list-enable"),
-                moveToTablistConfig("player-list-update-interval"),
-                moveToTablistConfig("player-list-use-relationship-colors")
+            "Migrate old config.yml tablist into tablist.yml",
+            when(moveToTablistConfig("player-list"), (config, view) -> {
+                updateTablistConfig("player-list-animated", false);
+                return true;
+            }),
+            moveToTablistConfig("player-list-header"),
+            moveToTablistConfig("player-list-footer"),
+            moveToTablistConfig("player-list-ping"),
+            moveToTablistConfig("player-list-fill-cells"),
+            moveToTablistConfig("player-list-enable"),
+            moveToTablistConfig("player-list-update-interval"),
+            moveToTablistConfig("player-list-use-relationship-colors")
         );
     }
 
@@ -67,5 +63,4 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
 
         return oldValue;
     }
-
 }

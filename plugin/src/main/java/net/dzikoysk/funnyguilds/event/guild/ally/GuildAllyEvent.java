@@ -17,5 +17,4 @@ public abstract class GuildAllyEvent extends GuildEvent {
     public Guild getAlliedGuild() {
         return this.alliedGuild;
     }
-
 }

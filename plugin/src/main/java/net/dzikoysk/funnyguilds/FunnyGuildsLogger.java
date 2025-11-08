@@ -77,9 +77,9 @@ public class FunnyGuildsLogger {
         @Override
         public void error(String content, Throwable cause) {
             String loadedPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                    .filter(plugin -> !plugin.getName().contains("FunnyGuilds"))
-                    .map(plugin -> plugin.getName() + " " + plugin.getDescription().getVersion())
-                    .collect(Collectors.joining(", "));
+                .filter(plugin -> !plugin.getName().contains("FunnyGuilds"))
+                .map(plugin -> plugin.getName() + " " + plugin.getDescription().getVersion())
+                .collect(Collectors.joining(", "));
 
             if (loadedPlugins.isEmpty()) {
                 loadedPlugins = "none";
@@ -97,7 +97,5 @@ public class FunnyGuildsLogger {
             this.error("  Reload count: " + NmsUtils.getReloadCount());
             this.error("");
         }
-
     }
-
 }

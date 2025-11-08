@@ -26,5 +26,4 @@ public abstract class GuildEvent extends FunnyEvent {
     public Guild getGuild() {
         return this.guild;
     }
-
 }

@@ -26,5 +26,4 @@ public class GuildMemberDeputyEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Deputy change has been cancelled by the server!";
     }
-
 }

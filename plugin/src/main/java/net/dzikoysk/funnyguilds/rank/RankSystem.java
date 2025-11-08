@@ -21,31 +21,35 @@ public final class RankSystem {
 
     public static RankSystem create(PluginConfiguration config) {
         ImmutableMap<Type, RankingAlgorithm> build = new ImmutableMap.Builder<Type, RankingAlgorithm>()
-                .put(Type.ELO, (attackerPoints, victimPoints) -> {
-                    int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
-                    int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
+            .put(Type.ELO, (attackerPoints, victimPoints) -> {
+                int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
+                int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
 
-                    double attackerE = 1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider));
-                    double victimE = 1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider));
+                double attackerE =
+                    1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider));
+                double victimE =
+                    1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider));
 
-                    attackerElo = (int) Math.round(attackerElo * (1 - attackerE));
-                    victimElo = (int) Math.round(victimElo * (0 - victimE) * -1);
+                attackerElo = (int) Math.round(attackerElo * (1 - attackerE));
+                victimElo = (int) Math.round(victimElo * (0 - victimE) * -1);
 
-                    return new RankResult(attackerElo, victimElo);
-                })
-                .put(Type.PERCENT, (attackerPoints, victimPoints) -> new RankResult((int) (victimPoints * (config.percentRankChange / 100.0))))
-                .put(Type.STATIC, (attackerPoints, victimPoints) -> new RankResult(config.staticAttackerChange, config.staticVictimChange))
-                .build();
+                return new RankResult(attackerElo, victimElo);
+            })
+            .put(Type.PERCENT, (attackerPoints, victimPoints) ->
+                new RankResult((int) (victimPoints * (config.percentRankChange / 100.0)))
+            )
+            .put(Type.STATIC, (attackerPoints, victimPoints) ->
+                new RankResult(config.staticAttackerChange, config.staticVictimChange)
+            )
+            .build();
 
         return new RankSystem(Maps.newEnumMap(build));
     }
 
     public enum Type {
-
         ELO,
         PERCENT,
-        STATIC
-
+        STATIC,
     }
 
     public static class RankResult {
@@ -70,10 +74,7 @@ public final class RankSystem {
         public int getVictimPoints() {
             return this.victimPoints;
         }
-
     }
 
-    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {
-    }
-
+    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {}
 }

@@ -7,9 +7,8 @@ public class P0009_Migrate_old_killer_notification_key extends NamedMigration {
 
     public P0009_Migrate_old_killer_notification_key() {
         super(
-                "Migrate old key for killer notification",
-                move("display-title-notification-for-killer", "display-notification-for-killer")
+            "Migrate old key for killer notification",
+            move("display-title-notification-for-killer", "display-notification-for-killer")
         );
     }
-
 }

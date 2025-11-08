@@ -7,8 +7,7 @@ import panda.utilities.text.Joiner;
 
 public final class SQLBasicUtils {
 
-    private SQLBasicUtils() {
-    }
+    private SQLBasicUtils() {}
 
     public static SQLNamedStatement getInsert(SQLTable table) {
         if (table == null) {
@@ -41,7 +40,8 @@ public final class SQLBasicUtils {
         StringBuilder query = new StringBuilder();
 
         query.append("SELECT ");
-        query.append(PandaStream.of(sqlElements)
+        query.append(
+            PandaStream.of(sqlElements)
                 .mapOpt(table::getSQLElement)
                 .map(SQLElement::getKeyGraveAccent)
                 .collect(Collectors.joining(", "))
@@ -98,19 +98,21 @@ public final class SQLBasicUtils {
         queryBuilder.append("CREATE TABLE IF NOT EXISTS ");
         queryBuilder.append(table.getNameGraveAccent());
         queryBuilder.append(" (");
-        queryBuilder.append(Joiner.on(", ").join(table.getSqlElements(), sqlElement -> {
-            StringBuilder elementBuilder = new StringBuilder();
+        queryBuilder.append(
+            Joiner.on(", ").join(table.getSqlElements(), sqlElement -> {
+                StringBuilder elementBuilder = new StringBuilder();
 
-            elementBuilder.append(sqlElement.getKeyGraveAccent());
-            elementBuilder.append(" ");
-            elementBuilder.append(sqlElement.getType());
+                elementBuilder.append(sqlElement.getKeyGraveAccent());
+                elementBuilder.append(" ");
+                elementBuilder.append(sqlElement.getType());
 
-            if (sqlElement.isNotNull()) {
-                elementBuilder.append(" NOT NULL");
-            }
+                if (sqlElement.isNotNull()) {
+                    elementBuilder.append(" NOT NULL");
+                }
 
-            return elementBuilder.toString();
-        }));
+                return elementBuilder.toString();
+            })
+        );
 
         queryBuilder.append(", PRIMARY KEY (");
         queryBuilder.append(table.getPrimaryKey().getKey());
@@ -160,5 +162,4 @@ public final class SQLBasicUtils {
 
         return new SQLNamedStatement(query.toString(), new HashMap<>());
     }
-
 }

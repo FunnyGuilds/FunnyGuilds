@@ -15,8 +15,7 @@ public class HangingBreak extends AbstractFunnyListener {
         }
 
         ProtectionSystem.isProtected((Player) event.getRemover(), event.getEntity().getLocation(), false)
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+            .peek(result -> event.setCancelled(true))
+            .peek(ProtectionSystem::defaultResponse);
     }
-
 }

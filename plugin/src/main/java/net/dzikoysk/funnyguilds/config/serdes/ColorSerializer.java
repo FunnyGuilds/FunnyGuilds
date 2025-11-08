@@ -22,11 +22,6 @@ public class ColorSerializer implements ObjectSerializer<Color> {
 
     @Override
     public Color deserialize(DeserializationData data, GenericsDeclaration generics) {
-        return Color.fromRGB(
-                data.get("red", int.class),
-                data.get("green", int.class),
-                data.get("blue", int.class)
-        );
+        return Color.fromRGB(data.get("red", int.class), data.get("green", int.class), data.get("blue", int.class));
     }
-
 }

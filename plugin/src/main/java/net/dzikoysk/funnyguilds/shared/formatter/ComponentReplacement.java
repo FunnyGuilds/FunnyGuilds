@@ -12,9 +12,6 @@ public final class ComponentReplacement extends Replacement<Component> {
 
     @Override
     public TextReplacementConfig prepareReplacementConfig(Component value) {
-        return TextReplacementConfig.builder()
-                .matchLiteral(this.placeholder)
-                .replacement(value)
-                .build();
+        return TextReplacementConfig.builder().matchLiteral(this.placeholder).replacement(value).build();
     }
 }

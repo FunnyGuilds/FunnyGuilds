@@ -22,5 +22,4 @@ public class NumberRangeTransformer extends BidirectionalTransformer<String, Num
     public String rightToLeft(NumberRange data, @NotNull SerdesContext serdesContext) {
         return data.toString();
     }
-
 }

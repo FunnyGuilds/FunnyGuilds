@@ -20,20 +20,22 @@ public final class DeleteCommand extends AbstractFunnyCommand {
     }
 
     @FunnyCommand(
-            name = "${user.delete.name}",
-            description = "${user.delete.description}",
-            aliases = "${user.delete.aliases}",
-            permission = "funnyguilds.delete",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.delete.name}",
+        description = "${user.delete.description}",
+        aliases = "${user.delete.aliases}",
+        permission = "funnyguilds.delete",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(@IsOwner User owner, Guild guild) {
-        when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
-                guild.getMembers()), config -> config.deleteSomeoneIsNear);
+        when(
+            this.config.guildDeleteCancelIfSomeoneIsOnRegion &&
+                this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(), guild.getMembers()),
+            config -> config.deleteSomeoneIsNear
+        );
         ConfirmationList.add(owner.getUUID());
 
         when(this.config.commands.confirm.enabled, config -> config.deleteConfirm);
         this.confirmExecutor.execute(owner, guild);
     }
-
 }

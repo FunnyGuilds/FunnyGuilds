@@ -20,5 +20,4 @@ public abstract class GuildMemberEvent extends GuildEvent {
     public User getMember() {
         return this.member;
     }
-
 }

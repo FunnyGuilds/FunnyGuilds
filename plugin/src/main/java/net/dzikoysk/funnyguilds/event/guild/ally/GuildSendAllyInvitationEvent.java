@@ -26,5 +26,4 @@ public class GuildSendAllyInvitationEvent extends GuildAllyEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Alliance invatation sending has been cancelled by the server!";
     }
-
 }

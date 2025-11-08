@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -11,34 +12,36 @@ import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class ValidityCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.validity.name}",
-            description = "${user.validity.description}",
-            aliases = "${user.validity.aliases}",
-            permission = "funnyguilds.validity",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.validity.name}",
+        description = "${user.validity.description}",
+        aliases = "${user.validity.aliases}",
+        permission = "funnyguilds.validity",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
         if (!this.config.validityWhen.isZero()) {
             Instant validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), validity);
 
-            when(delta.compareTo(this.config.validityWhen) > 0,config -> config.validityWhen, FunnyFormatter.of("{TIME}",
-                    TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
+            when(
+                delta.compareTo(this.config.validityWhen) > 0,
+                config -> config.validityWhen,
+                FunnyFormatter.of("{TIME}", TimeUtils.formatTime(delta.minus(this.config.validityWhen)))
+            );
         }
 
         List<ItemStack> requiredItems = this.config.validityItems;
@@ -63,12 +66,13 @@ public final class ValidityCommand extends AbstractFunnyCommand {
 
         Instant finalValidity = validity;
         this.messageService.getMessage(config -> config.validityDone)
-                .receiver(player)
-                .with(CommandSender.class, receiver -> {
-                    String formattedValidity = this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity);
-                    return Replacement.of("{DATE}", formattedValidity);
-                })
-                .send();
+            .receiver(player)
+            .with(CommandSender.class, receiver -> {
+                String formattedValidity = this.messageService.get(receiver, config -> config.dateFormat).format(
+                    finalValidity
+                );
+                return Replacement.of("{DATE}", formattedValidity);
+            })
+            .send();
     }
-
 }

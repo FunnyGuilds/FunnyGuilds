@@ -45,11 +45,14 @@ public class WorldGuard7Hook extends WorldGuardHook {
             return Option.none();
         }
 
-        RegionManager regionManager = this.worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+        RegionManager regionManager = this.worldGuard.getPlatform()
+            .getRegionContainer()
+            .get(BukkitAdapter.adapt(world));
         if (regionManager == null) {
             return Option.none();
         }
-        return Option.of(regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ())));
+        return Option.of(
+            regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ()))
+        );
     }
-
 }

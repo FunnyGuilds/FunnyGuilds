@@ -6,6 +6,31 @@ plugins {
     id("org.ajoberstar.grgit.service")
 }
 
+spotless {
+    java {
+        target("src/**/*.java")
+        
+        forbidWildcardImports()
+        removeUnusedImports()
+        
+        cleanthat()  
+        
+        prettier(mapOf(
+            "prettier" to "3.6.2",
+            "prettier-plugin-java" to "2.7.7"
+        )).config(mapOf(
+            "parser" to "java",
+            "plugins" to listOf("prettier-plugin-java"),
+            "printWidth" to 120,
+            "experimentalTernaries" to true,
+            "tabWidth" to 4,
+            "useTabs" to false
+        ));
+        
+        formatAnnotations() 
+    }
+}
+
 publishing {
     repositories {
         maven {

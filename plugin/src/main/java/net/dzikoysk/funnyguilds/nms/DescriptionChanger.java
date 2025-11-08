@@ -25,10 +25,8 @@ public final class DescriptionChanger {
             }
 
             field.set(this.descriptionFile, pluginName);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Could not change description file", exception);
         }
     }
-
 }

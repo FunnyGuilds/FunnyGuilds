@@ -11,5 +11,4 @@ public class DamageManager {
     public DamageState getDamageState(UUID user) {
         return this.damageHistories.computeIfAbsent(user, uuid -> new DamageState(user));
     }
-
 }

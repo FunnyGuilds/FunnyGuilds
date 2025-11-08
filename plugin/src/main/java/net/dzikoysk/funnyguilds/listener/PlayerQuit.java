@@ -35,7 +35,12 @@ public class PlayerQuit extends AbstractFunnyListener {
             DamageState damageState = damageManager.getDamageState(user.getUUID());
 
             if (damageState.isInCombat()) {
-                LogoutsChangeEvent logoutsChangeEvent = new LogoutsChangeEvent(FunnyEvent.EventCause.USER, user, user, 1);
+                LogoutsChangeEvent logoutsChangeEvent = new LogoutsChangeEvent(
+                    FunnyEvent.EventCause.USER,
+                    user,
+                    user,
+                    1
+                );
 
                 if (SimpleEventHandler.handle(logoutsChangeEvent)) {
                     user.getRank().updateLogouts(currentValue -> currentValue + logoutsChangeEvent.getLogoutsChange());
@@ -43,11 +48,11 @@ public class PlayerQuit extends AbstractFunnyListener {
             }
 
             this.plugin.getIndividualNameTagManager()
-                    .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                    .peek(this.plugin::scheduleFunnyTasks);
+                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
+                .peek(this.plugin::scheduleFunnyTasks);
             this.plugin.getDummyManager()
-                    .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                    .peek(this.plugin::scheduleFunnyTasks);
+                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
+                .peek(this.plugin::scheduleFunnyTasks);
 
             cache.setIndividualNameTag(null);
             cache.setScoreboard(null);
@@ -58,5 +63,4 @@ public class PlayerQuit extends AbstractFunnyListener {
 
         this.messageService.playerQuit(player);
     }
-
 }

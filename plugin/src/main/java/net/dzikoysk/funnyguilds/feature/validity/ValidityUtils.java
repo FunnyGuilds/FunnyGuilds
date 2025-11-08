@@ -12,8 +12,7 @@ import panda.std.Option;
 
 public final class ValidityUtils {
 
-    private ValidityUtils() {
-    }
+    private ValidityUtils() {}
 
     public static void broadcast(@Nullable Guild guild) {
         if (guild == null) {
@@ -22,33 +21,32 @@ public final class ValidityUtils {
 
         MessageService messageService = FunnyGuilds.getInstance().getMessageService();
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag())
-                .register("{GUILD}", guild.getName());
+            .register("{GUILD}", guild.getName())
+            .register("{TAG}", guild.getTag())
+            .register("{GUILD}", guild.getName());
 
         Option<Region> regionOption = guild.getRegion();
         boolean hasCenter = regionOption.isPresent() && regionOption.get().getCenter() != null;
 
-        messageService.getMessage(config -> config.broadcastValidity)
-                .broadcast()
-                .with(formatter)
-                .with(CommandSender.class, receiver -> {
-                    FunnyFormatter cordFormatter = new FunnyFormatter();
-                    if (hasCenter) {
-                        Location center = regionOption.get().getCenter();
-                        cordFormatter.register("{X}", center.getBlockX());
-                        cordFormatter.register("{Y}", center.getBlockY());
-                        cordFormatter.register("{Z}", center.getBlockZ());
-                    }
-                    else {
-                        String noInformation = messageService.get(receiver, config -> config.noInformation);
-                        cordFormatter.register("{X}", noInformation);
-                        cordFormatter.register("{Y}", noInformation);
-                        cordFormatter.register("{Z}", noInformation);
-                    }
-                    return cordFormatter;
-                })
-                .send();
+        messageService
+            .getMessage(config -> config.broadcastValidity)
+            .broadcast()
+            .with(formatter)
+            .with(CommandSender.class, receiver -> {
+                FunnyFormatter cordFormatter = new FunnyFormatter();
+                if (hasCenter) {
+                    Location center = regionOption.get().getCenter();
+                    cordFormatter.register("{X}", center.getBlockX());
+                    cordFormatter.register("{Y}", center.getBlockY());
+                    cordFormatter.register("{Z}", center.getBlockZ());
+                } else {
+                    String noInformation = messageService.get(receiver, config -> config.noInformation);
+                    cordFormatter.register("{X}", noInformation);
+                    cordFormatter.register("{Y}", noInformation);
+                    cordFormatter.register("{Z}", noInformation);
+                }
+                return cordFormatter;
+            })
+            .send();
     }
-
 }

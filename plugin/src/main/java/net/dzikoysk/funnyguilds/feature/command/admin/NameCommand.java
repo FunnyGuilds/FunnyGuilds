@@ -12,8 +12,8 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
@@ -25,10 +25,10 @@ public final class NameCommand extends AbstractFunnyCommand {
     public DataModel dataModel;
 
     @FunnyCommand(
-            name = "${admin.name.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.name.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -40,37 +40,40 @@ public final class NameCommand extends AbstractFunnyCommand {
         User admin = AdminUtils.getAdminUser(sender);
 
         String oldName = guild.getName();
-        if (!SimpleEventHandler.handle(new GuildPreRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]))) {
+        if (
+            !SimpleEventHandler.handle(
+                new GuildPreRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1])
+            )
+        ) {
             return;
         }
 
-        guild.getRegion().peek(region -> {
-            if (this.dataModel instanceof FlatDataModel) {
-                FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-                dataModel.getRegionFile(region).peek(FunnyIOUtils::deleteFile);
-            }
-            else if (this.dataModel instanceof SQLDataModel) {
-                DatabaseRegionSerializer.delete(region);
-            }
+        guild
+            .getRegion()
+            .peek(region -> {
+                if (this.dataModel instanceof FlatDataModel) {
+                    FlatDataModel dataModel = (FlatDataModel) this.dataModel;
+                    dataModel.getRegionFile(region).peek(FunnyIOUtils::deleteFile);
+                } else if (this.dataModel instanceof SQLDataModel) {
+                    DatabaseRegionSerializer.delete(region);
+                }
 
-            region.setName(args[1]);
-        });
+                region.setName(args[1]);
+            });
 
         if (this.dataModel instanceof FlatDataModel) {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;
             dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
-        }
-        else if (this.dataModel instanceof SQLDataModel) {
+        } else if (this.dataModel instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete(guild);
         }
 
         guild.setName(args[1]);
         this.messageService.getMessage(config -> config.adminNameChanged)
-                .with(FunnyFormatter.of("{GUILD}", guild.getName()))
-                .receiver(sender)
-                .send();
+            .with(FunnyFormatter.of("{GUILD}", guild.getName()))
+            .receiver(sender)
+            .send();
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }
-
 }

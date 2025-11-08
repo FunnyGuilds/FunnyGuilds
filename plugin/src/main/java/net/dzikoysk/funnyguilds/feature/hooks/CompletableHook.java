@@ -36,5 +36,4 @@ public class CompletableHook<T extends PluginHook> {
     public boolean isCompleted() {
         return this.completableHook.isReady();
     }
-
 }

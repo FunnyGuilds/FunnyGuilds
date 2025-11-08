@@ -38,12 +38,11 @@ public class FunnyTime {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof FunnyTime && this.time.equals(((FunnyTime) obj).time);
+        return (obj instanceof FunnyTime && this.time.equals(((FunnyTime) obj).time));
     }
 
     @Override
     public String toString() {
-        return "FunnyTime{time=" + this.time + ", formattedTime='" + this.formattedTime + "'}";
+        return ("FunnyTime{time=" + this.time + ", formattedTime='" + this.formattedTime + "'}");
     }
-
 }

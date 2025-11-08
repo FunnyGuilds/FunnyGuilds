@@ -33,5 +33,4 @@ public class GuildExtendValidityEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild validity extension has been cancelled by the server!";
     }
-
 }

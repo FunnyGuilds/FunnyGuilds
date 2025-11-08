@@ -17,5 +17,4 @@ public class DataSaveAsyncTask extends AsyncFunnyTask {
     public void execute() {
         this.dataModel.save(!this.fullSave);
     }
-
 }

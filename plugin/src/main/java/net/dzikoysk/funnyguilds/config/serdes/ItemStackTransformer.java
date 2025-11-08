@@ -23,5 +23,4 @@ public class ItemStackTransformer extends BidirectionalTransformer<String, ItemS
     public String rightToLeft(@NotNull ItemStack data, @NotNull SerdesContext serdesContext) {
         return ItemUtils.toString(data);
     }
-
 }

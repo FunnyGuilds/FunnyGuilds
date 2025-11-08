@@ -17,13 +17,16 @@ import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
 
-    private static final Method MATCH_MATERIAL_METHOD = Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
+    private static final Method MATCH_MATERIAL_METHOD = Reflections.getMethod(
+        Material.class,
+        "matchMaterial",
+        String.class,
+        boolean.class
+    );
 
-    private MaterialUtils() {
-    }
+    private MaterialUtils() {}
 
-    @Nullable
-    public static Material parseMaterial(String materialString, boolean allowNullReturn) {
+    @Nullable public static Material parseMaterial(String materialString, boolean allowNullReturn) {
         if (materialString == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
@@ -42,12 +45,11 @@ public final class MaterialUtils {
 
     public static Set<Material> parseMaterials(boolean allowNullReturn, String... materialStrings) {
         return PandaStream.of(materialStrings)
-                .map(materialString -> parseMaterial(materialString, allowNullReturn))
-                .toSet();
+            .map(materialString -> parseMaterial(materialString, allowNullReturn))
+            .toSet();
     }
 
-    @Nullable
-    public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
+    @Nullable public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material data: null");
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
@@ -76,7 +78,6 @@ public final class MaterialUtils {
                 return false;
         }
     }
-
 
     public static String getMaterialName(Material material) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
@@ -109,8 +110,7 @@ public final class MaterialUtils {
         return itemMeta.getDisplayName();
     }
 
-    @Nullable
-    public static Material matchMaterial(String materialName) {
+    @Nullable public static Material matchMaterial(String materialName) {
         try {
             if (Reflections.USE_PRE_13_METHODS) {
                 return Material.matchMaterial(materialName);
@@ -126,10 +126,8 @@ public final class MaterialUtils {
             }
 
             return material;
-        }
-        catch (IllegalAccessException | InvocationTargetException ex) {
+        } catch (IllegalAccessException | InvocationTargetException ex) {
             return null;
         }
     }
-
 }

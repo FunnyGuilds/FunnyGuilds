@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import panda.std.Option;
@@ -52,8 +51,7 @@ public class SQLNamedStatement {
             try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql))) {
                 statement.executeUpdate();
             }
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             if (ignoreFails) {
                 FunnyGuilds.getPluginLogger().debug("Could not execute update (ignoreFails)");
                 return;
@@ -83,8 +81,7 @@ public class SQLNamedStatement {
                     consumer.accept(resultSet);
                 }
             }
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             if (ignoreFails) {
                 FunnyGuilds.getPluginLogger().debug("Could not execute query (ignoreFails)");
                 return;
@@ -98,8 +95,7 @@ public class SQLNamedStatement {
         this.placeholders.forEach((key, value) -> {
             try {
                 preparedStatement.setObject(this.keyMapIndex.get(key.toLowerCase(Locale.ROOT)), value);
-            }
-            catch (SQLException exception) {
+            } catch (SQLException exception) {
                 FunnyGuilds.getPluginLogger().error("Could not prepare query", exception);
                 throw new RuntimeException("Query preparation failed");
             }
@@ -107,5 +103,4 @@ public class SQLNamedStatement {
 
         return preparedStatement;
     }
-
 }

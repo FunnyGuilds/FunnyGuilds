@@ -20,5 +20,4 @@ public class GuildInvitation extends Invitation<Guild, User> {
     public UUID getToUUID() {
         return this.to.getUUID();
     }
-
 }

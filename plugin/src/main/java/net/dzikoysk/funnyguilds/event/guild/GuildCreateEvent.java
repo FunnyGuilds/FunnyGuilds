@@ -31,5 +31,4 @@ public class GuildCreateEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent");
     }
-
 }

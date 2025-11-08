@@ -20,12 +20,12 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class SetBaseCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.set-base.name}",
-            description = "${user.set-base.description}",
-            aliases = "${user.set-base.aliases}",
-            permission = "funnyguilds.setbase",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.set-base.name}",
+        description = "${user.set-base.description}",
+        aliases = "${user.set-base.aliases}",
+        permission = "funnyguilds.setbase",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(Player player, @CanManage User deputy, Guild guild) {
         when(!this.config.regionsEnabled, config -> config.regionsDisabled);
@@ -51,8 +51,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
         }
 
         this.messageService.getMessage(config -> config.setbaseDone)
-                .receiver(deputy)
-                .send();
+            .receiver(deputy)
+            .send();
     }
-
 }

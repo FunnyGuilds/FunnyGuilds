@@ -103,22 +103,47 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @param nameModifier function to modify placeholder name (for eg. upper case)
      * @return formatted text
      */
-    public String formatCustom(@Nullable Object entity, String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public String formatCustom(
+        @Nullable Object entity,
+        String text,
+        T data,
+        String prefix,
+        String suffix,
+        Function<String, String> nameModifier
+    ) {
         return this.toCustomFormatter(entity, data, prefix, suffix, nameModifier).format(text);
     }
 
-    public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public String formatCustom(
+        String text,
+        T data,
+        String prefix,
+        String suffix,
+        Function<String, String> nameModifier
+    ) {
         return this.formatCustom(null, text, data, prefix, suffix, nameModifier);
     }
 
-    public FunnyFormatter toCustomFormatter(@Nullable Object entity, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public FunnyFormatter toCustomFormatter(
+        @Nullable Object entity,
+        T data,
+        String prefix,
+        String suffix,
+        Function<String, String> nameModifier
+    ) {
         FunnyFormatter formatter = new FunnyFormatter();
-        this.placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(entity, data)));
+        this.placeholders.forEach((key, placeholder) ->
+            formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(entity, data))
+        );
         return formatter;
     }
 
-    public FunnyFormatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public FunnyFormatter toCustomFormatter(
+        T data,
+        String prefix,
+        String suffix,
+        Function<String, String> nameModifier
+    ) {
         return this.toCustomFormatter(null, data, prefix, suffix, nameModifier);
     }
-
 }

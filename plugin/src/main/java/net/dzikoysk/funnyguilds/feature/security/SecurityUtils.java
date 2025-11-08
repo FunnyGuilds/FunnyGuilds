@@ -15,8 +15,7 @@ public final class SecurityUtils {
 
     private static final double COMPENSATION_RATIO = 0.0056;
 
-    private SecurityUtils() {
-    }
+    private SecurityUtils() {}
 
     public static double compensationMs(double millisecond) {
         return millisecond * COMPENSATION_RATIO;
@@ -26,18 +25,19 @@ public final class SecurityUtils {
         MessageService messageService = FunnyGuilds.getInstance().getMessageService();
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", player.getName())
-                .register("{CHEAT}", cheatType.getName());
+            .register("{PLAYER}", player.getName())
+            .register("{CHEAT}", cheatType.getName());
 
-        FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.securitySystemInfo)
-                .broadcast()
-                .with(formatter)
-                .with(
-                        CommandSender.class,
-                        receiver -> Replacement.of("{NOTE}", messageService.get(receiver, cheatType.getNoteSupplier(), noteReplacements))
-                )
-                .permission("funnyguilds.admin")
-                .send();
+        FunnyGuilds.getInstance()
+            .getMessageService()
+            .getMessage(config -> config.securitySystemInfo)
+            .broadcast()
+            .with(formatter)
+            .with(CommandSender.class, receiver ->
+                Replacement.of("{NOTE}", messageService.get(receiver, cheatType.getNoteSupplier(), noteReplacements))
+            )
+            .permission("funnyguilds.admin")
+            .send();
     }
 
     public static void addViolationLevel(User user) {
@@ -46,7 +46,9 @@ public final class SecurityUtils {
     }
 
     public static boolean isBlocked(User user) {
-        return SecuritySystem.getPlayersViolationLevel().asMap().getOrDefault(user, 0) >= FunnyGuilds.getInstance().getPluginConfiguration().securitySystem.maxViolations;
+        return (
+            SecuritySystem.getPlayersViolationLevel().asMap().getOrDefault(user, 0) >=
+            FunnyGuilds.getInstance().getPluginConfiguration().securitySystem.maxViolations
+        );
     }
-
 }

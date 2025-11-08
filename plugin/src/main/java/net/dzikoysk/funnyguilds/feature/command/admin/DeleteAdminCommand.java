@@ -14,10 +14,10 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class DeleteAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.delete.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.delete.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -32,23 +32,22 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
         this.guildManager.deleteGuild(this.plugin, guild);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", sender.getName())
-                .register("{ADMIN}", sender.getName())
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag());
+            .register("{PLAYER}", sender.getName())
+            .register("{ADMIN}", sender.getName())
+            .register("{GUILD}", guild.getName())
+            .register("{TAG}", guild.getTag());
 
         this.messageService.getMessage(config -> config.deleteSuccessful)
-                .receiver(sender)
-                .with(formatter)
-                .send();
+            .receiver(sender)
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.adminGuildBroken)
-                .receiver(guild.getOwner())
-                .with(formatter)
-                .send();
+            .receiver(guild.getOwner())
+            .with(formatter)
+            .send();
         this.messageService.getMessage(config -> config.broadcastDelete)
-                .broadcast()
-                .with(formatter)
-                .send();
+            .broadcast()
+            .with(formatter)
+            .send();
     }
-
 }

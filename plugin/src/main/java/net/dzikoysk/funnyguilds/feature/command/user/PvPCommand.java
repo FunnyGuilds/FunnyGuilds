@@ -14,13 +14,13 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class PvPCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.pvp.name}",
-            description = "${user.pvp.description}",
-            aliases = "${user.pvp.aliases}",
-            permission = "funnyguilds.pvp",
-            completer = "allies:3",
-            acceptsExceeded = true,
-            playerOnly = true
+        name = "${user.pvp.name}",
+        description = "${user.pvp.description}",
+        aliases = "${user.pvp.aliases}",
+        permission = "funnyguilds.pvp",
+        completer = "allies:3",
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(@CanManage User deputy, Guild guild, String[] args) {
         if (args.length > 0) {
@@ -32,17 +32,16 @@ public final class PvPCommand extends AbstractFunnyCommand {
 
             boolean newPvpValue = guild.toggleAllyPvP(targetAlliedGuild);
             this.messageService.getMessage(config -> newPvpValue ? config.pvpAllyOn : config.pvpAllyOff)
-                    .receiver(deputy)
-                    .with(guildTagFormatter)
-                    .send();
+                .receiver(deputy)
+                .with(guildTagFormatter)
+                .send();
 
             return;
         }
 
         boolean newPvpValue = guild.togglePvP();
         this.messageService.getMessage(config -> newPvpValue ? config.pvpOn : config.pvpOff)
-                .receiver(deputy)
-                .send();
+            .receiver(deputy)
+            .send();
     }
-
 }

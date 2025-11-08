@@ -16,10 +16,10 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class LivesCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${admin.lives.name}",
-            permission = "funnyguilds.admin",
-            completer = "guilds:3",
-            acceptsExceeded = true
+        name = "${admin.lives.name}",
+        permission = "funnyguilds.admin",
+        completer = "guilds:3",
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoTagGiven);
@@ -27,7 +27,10 @@ public final class LivesCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         int lives = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(
+                config -> config.adminErrorInNumber,
+                FunnyFormatter.of("{ERROR}", args[0])
+            );
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -37,14 +40,11 @@ public final class LivesCommand extends AbstractFunnyCommand {
 
         guild.setLives(lives);
 
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getTag())
-                .register("{LIVES}", lives);
+        FunnyFormatter formatter = new FunnyFormatter().register("{GUILD}", guild.getTag()).register("{LIVES}", lives);
 
         this.messageService.getMessage(config -> config.adminLivesChanged)
-                .with(formatter)
-                .receiver(sender)
-                .send();
+            .with(formatter)
+            .receiver(sender)
+            .send();
     }
-
 }

@@ -26,5 +26,4 @@ public class GuildMemberKickEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member kick has been cancelled by the server!";
     }
-
 }

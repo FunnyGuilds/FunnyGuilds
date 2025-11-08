@@ -88,5 +88,4 @@ public class UserCache {
         this.spy = !this.spy;
         return this.spy;
     }
-
 }

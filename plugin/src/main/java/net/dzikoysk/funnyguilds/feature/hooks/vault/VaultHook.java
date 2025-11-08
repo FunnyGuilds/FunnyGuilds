@@ -29,16 +29,18 @@ public class VaultHook extends AbstractPluginHook {
 
         if (economyProvider != null) {
             economyHook = economyProvider.getProvider();
-        }
-        else {
-            FunnyGuilds.getPluginLogger().warning("Vault - No economy provider found, some features may not be available");
+        } else {
+            FunnyGuilds.getPluginLogger().warning(
+                "Vault - No economy provider found, some features may not be available"
+            );
         }
 
         if (permissionProvider != null) {
             permissionHook = permissionProvider.getProvider();
-        }
-        else {
-            FunnyGuilds.getPluginLogger().warning("Vault - No permission provider found, some features may not be available");
+        } else {
+            FunnyGuilds.getPluginLogger().warning(
+                "Vault - No permission provider found, some features may not be available"
+            );
         }
 
         return HookInitResult.SUCCESS;
@@ -64,7 +66,6 @@ public class VaultHook extends AbstractPluginHook {
     }
 
     public static boolean hasPermission(OfflinePlayer player, String permission) {
-        return permissionHook != null && permissionHook.playerHas(null, player, permission);
+        return (permissionHook != null && permissionHook.playerHas(null, player, permission));
     }
-
 }

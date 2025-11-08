@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.rank;
 import java.util.Comparator;
 
 public interface TopComparator<T> extends Comparator<T> {
-
     Number getValue(T object);
 
     @Override
@@ -29,7 +28,5 @@ public interface TopComparator<T> extends Comparator<T> {
         public int compare(T o1, T o2) {
             return this.comparator.compare(o2, o1);
         }
-
     }
-
 }

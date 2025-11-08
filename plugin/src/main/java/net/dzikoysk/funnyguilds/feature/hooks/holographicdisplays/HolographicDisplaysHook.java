@@ -57,7 +57,7 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
             return;
         }
 
-        Holo holo = this.holograms.computeIfAbsent(guild, (g) -> Holo.create(this.plugin));
+        Holo holo = this.holograms.computeIfAbsent(guild, g -> Holo.create(this.plugin));
         holo.location(guildCenter.map(it -> it.add(holoConfig.locationCorrection)).get());
         holo.clear();
 
@@ -65,10 +65,12 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
             holo.appendItem(new ItemStack(holoConfig.item));
         }
 
-        holo.appendTexts(PandaStream.of(holoConfig.displayedLines)
+        holo.appendTexts(
+            PandaStream.of(holoConfig.displayedLines)
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
                 .map(ChatUtils::colored)
-                .toList());
+                .toList()
+        );
 
         holo.update();
     }
@@ -101,5 +103,4 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
     public void handleGuildMove(GuildMoveEvent event) {
         this.update(event.getGuild());
     }
-
 }
