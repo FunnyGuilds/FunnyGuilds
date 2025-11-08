@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
@@ -123,48 +124,66 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
     }
 
     @Override
-    public void updateValue(
+    public CompletableFuture<T> updateValue(
             E entity,
-            T valueChange,
-            Consumer<T> onComplete
+            T valueChange
     ) {
-        UUID uuid = entity.getUUID();
-        this.pendingChanges.merge(
-                uuid,
-                1,
-                Integer::sum
+        return this.enqueueValueUpdate(
+                entity,
+                valueChange,
+                (uuid, change) -> this.entitiesValues.merge(
+                        uuid,
+                        change,
+                        this.statKey::aggregate
+                )
         );
+    }
+
+    @Override
+    public CompletableFuture<T> setValue(
+            E entity,
+            T value
+    ) {
+        return this.enqueueValueUpdate(
+                entity,
+                value,
+                (uuid, newValue) -> {
+                    this.entitiesValues.put(uuid, newValue);
+                    return newValue;
+                }
+        );
+    }
+
+    private CompletableFuture<T> enqueueValueUpdate(
+            E entity,
+            T value,
+            BiFunction<UUID, T, T> applyValue
+    ) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        UUID uuid = entity.getUUID();
+        this.pendingChanges.merge(uuid, 1, Integer::sum);
 
         this.topUpdateQueue.add(() -> {
-            T currentValue = this.entitiesValues.merge(
-                    uuid,
-                    valueChange,
-                    this.statKey::aggregate
-            );
+            T currentValue = applyValue.apply(uuid, value);
 
-            this.updateRanking(
-                    entity,
-                    currentValue
-            );
+            this.updateRanking(entity, currentValue);
 
-            this.pendingChanges.compute(
-                    uuid,
-                    (key, count) -> {
-                        int newCount = count - 1;
-                        return newCount > 0
-                                ? newCount
-                                : null;
-                    }
-            );
+            this.pendingChanges.compute(uuid, (key, count) -> {
+                int newCount = count - 1;
+                return newCount > 0 ? newCount : null;
+            });
 
-            onComplete.accept(currentValue);
+            future.complete(currentValue);
         });
+
         this.executor.execute(() -> {
             Runnable update;
             while ((update = this.topUpdateQueue.poll()) != null) {
                 update.run();
             }
         });
+
+        return future;
     }
 
     private synchronized void updateRanking(E entity, T currentValue) {

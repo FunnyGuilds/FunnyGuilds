@@ -94,10 +94,11 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
+    
+    public static final String NAMESPACE = "funnyguilds";
 
     private static FunnyGuilds plugin;
     private static FunnyGuildsLogger logger;
