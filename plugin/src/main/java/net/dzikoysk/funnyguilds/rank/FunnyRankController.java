@@ -7,8 +7,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankNameProvider;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankNameProvider;
 import panda.std.Option;
 
@@ -17,31 +19,53 @@ public final class FunnyRankController implements RankController {
     private final Executor executor;
     private final PluginConfiguration pluginConfiguration;
     
+    private final UserManager userManager;
     private final UserRankNameProvider userRankNameProvider;
     private final LoadingCache<StatKey<?>, UserRankTracker<?>> userRankTrackers;
     
+    private final GuildManager guildManager;
     private final GuildRankNameProvider guildRankNameProvider;
     private final Cache<StatKey<?>, GuildRankTracker<?>> guildRankTrackers;
     
-    private FunnyRankController(
+    public FunnyRankController(
             Executor executor,
             PluginConfiguration pluginConfiguration,
-            UserRankNameProvider userRankNameProvider,
-            GuildRankNameProvider guildRankNameProvider
+            UserManager userManager,
+            GuildManager guildManager
     ) {
         this.executor = executor;
         this.pluginConfiguration = pluginConfiguration;
         
-        this.userRankNameProvider = userRankNameProvider;
+        this.userManager = userManager;
+        this.userRankNameProvider = new UserRankNameProvider(userManager);
         this.userRankTrackers = this.createUseRankTrackersCache();
-        
-        this.guildRankNameProvider = guildRankNameProvider;
+
+        this.guildManager = guildManager;
+        this.guildRankNameProvider = new GuildRankNameProvider(guildManager);
         this.guildRankTrackers = this.createGuildRankTrackersCache();
     }
     
     @Override
     public <T extends Number> Option<T> getUserStatValue(User user, StatKey<T> key) {
         return this.getUserRankTracker(key).getValue(user);
+    }
+    
+    @Override
+    public <T extends Number> Option<Integer> getUserPosition(
+            User user,
+            StatKey<T> key
+    ) {
+        return this.getUserRankTracker(key).getPosition(user);
+    }
+
+    @Override
+    public <T extends Number> Option<User> getUserAtPosition(
+            int position,
+            StatKey<T> key
+    ) {
+        return this.getUserRankTracker(key)
+                .getAtPosition(position)
+                .flatMap(this.userManager::findByUuid);
     }
 
     @Override
@@ -67,11 +91,31 @@ public final class FunnyRankController implements RankController {
         return this.getGuildRankTracker(key, aggregationType).getValue(guild);
     }
     
+    @Override
+    public <T extends Number> Option<Integer> getGuildPosition(
+            Guild guild,
+            StatKey<T> key,
+            GuildStatAggregationType<?> aggregationType
+    ) {
+        return this.getGuildRankTracker(key, aggregationType).getPosition(guild);
+    }
+
+    @Override
+    public <T extends Number> Option<Guild> getGuildAtPosition(
+            int position,
+            StatKey<T> key,
+            GuildStatAggregationType<?> aggregationType
+    ) {
+        return this.getGuildRankTracker(key, aggregationType)
+                .getAtPosition(position)
+                .flatMap(this.guildManager::findByUuid);
+    }
+
     private <T extends Number> CompletableFuture<?> updateGuildStatsValue(
             Guild guild,
             StatKey<T> key
     ) {
-        return CompletableFuture.completedFuture(GuildStatAggregationType.VALUES.stream()
+        return CompletableFuture.allOf(GuildStatAggregationType.VALUES.stream()
                 .map(statType -> this.updateGuildStatValue(guild, key, statType))
                 .toArray(CompletableFuture[]::new));
     }
@@ -126,7 +170,7 @@ public final class FunnyRankController implements RankController {
     
     @SuppressWarnings("unchecked")
     private static <R extends Number> StatKey<R> createStatKey(GuildStatAggregationType<R> statType, StatKey<?> key) {
-        String newKey = key.key().asString() + "_" + statType.key().asString();
+        String newKey = key.key().value() + "-" + statType.key().value();
         if (statType.getValueType().isAssignableFrom(Double.class)) {
             return (StatKey<R>) StatKey.doubleStatKey(newKey);
         } else if (statType.getValueType().isAssignableFrom(Integer.class)) {
