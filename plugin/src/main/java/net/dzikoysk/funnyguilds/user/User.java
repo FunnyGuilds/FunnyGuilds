@@ -2,12 +2,13 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
-public class User extends AbstractMutableEntity {
+public class User extends AbstractMutableEntity implements IdentifiableEntity {
 
     private final UUID uuid;
     private String name;
@@ -30,6 +31,7 @@ public class User extends AbstractMutableEntity {
         this.markChanged();
     }
 
+    @Override
     public UUID getUUID() {
         return this.uuid;
     }

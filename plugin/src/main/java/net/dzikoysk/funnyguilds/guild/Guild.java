@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
-public class Guild extends AbstractMutableEntity {
+public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
 
     private final UUID uuid;
 
@@ -65,6 +66,7 @@ public class Guild extends AbstractMutableEntity {
         this.members.forEach(user -> user.setGuild(this));
     }
 
+    @Override
     public UUID getUUID() {
         return this.uuid;
     }
