@@ -46,8 +46,7 @@ public interface GuildPermissionController {
      */
     default boolean handlePermission(Guild guild, User user, GuildPermission<Boolean> permission) {
         return this.getPermissionResult(guild, user, permission)
-                .onError(Runnable::run)
-                .mapErr(ignored -> false)
+                .mapErr(GuildPermissionController::handleError)
                 .get();
     }
     
@@ -61,8 +60,12 @@ public interface GuildPermissionController {
      */
     default boolean handleProtectionPermission(Guild guild, User user, GuildPermission<Boolean> permission, Event event) {
         return this.getProtectionPermissionResult(guild, user, permission, event)
-                .onError(Runnable::run)
-                .mapErr(ignored -> false)
+                .mapErr(GuildPermissionController::handleError)
                 .get();
+    }
+    
+    static boolean handleError(Runnable errorAction) {
+        errorAction.run();
+        return false;
     }
 }

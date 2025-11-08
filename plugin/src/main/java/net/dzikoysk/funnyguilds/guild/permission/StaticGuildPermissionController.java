@@ -21,7 +21,7 @@ import panda.std.Result;
  * guild.
  * It preserves the original permission checking logic while providing a straightforward permission structure.
  */
-public final class StaticGuildPermissionController implements GuildPermissionController {
+final class StaticGuildPermissionController implements GuildPermissionController {
 
     private static final Collection<GuildCommandPermission> MEMBER_PERMISSIONS = EnumSet.of(
             GuildCommandPermission.BASE,
@@ -45,7 +45,7 @@ public final class StaticGuildPermissionController implements GuildPermissionCon
     private final PluginConfiguration pluginConfiguration;
     private final MessageService messageService;
 
-    public StaticGuildPermissionController(
+    StaticGuildPermissionController(
             PluginConfiguration pluginConfiguration,
             MessageService messageService
     ) {
