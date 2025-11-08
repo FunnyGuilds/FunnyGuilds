@@ -12,6 +12,16 @@ public interface RankController {
             StatKey<T> key
     );
 
+    <T extends Number> Option<Integer> getUserPosition(
+            User user,
+            StatKey<T> key
+    );
+
+    <T extends Number> Option<User> getUserAtPosition(
+            int position,
+            StatKey<T> key
+    );
+    
     <T extends Number> CompletableFuture<T> updateUserStatValue(
             User user,
             StatKey<T> key,
@@ -23,4 +33,17 @@ public interface RankController {
             StatKey<T> key,
             GuildStatAggregationType<R> aggregationType
     );
+
+    <T extends Number> Option<Integer> getGuildPosition(
+            Guild guild,
+            StatKey<T> key,
+            GuildStatAggregationType<?> aggregationType
+    );
+
+    <T extends Number> Option<Guild> getGuildAtPosition(
+            int position,
+            StatKey<T> key,
+            GuildStatAggregationType<?> aggregationType
+    );
+
 }
