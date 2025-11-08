@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.KeyPattern;
@@ -55,6 +56,27 @@ public interface StatKey<T extends Number> extends Keyed {
             return this.key;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof CommonStatKey)) {
+                return false;
+            }
+            CommonStatKey<?> that = (CommonStatKey<?>) o;
+            return Objects.equals(this.key, that.key);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(this.key);
+        }
+        
+        @Override
+        public String toString() {
+            return "StatKey{" +
+                   "key=" + this.key +
+                   ", valueType=" + this.getValueType().getSimpleName() +
+                   '}';
+        }
     }
 
     final class IntegerStatKey extends CommonStatKey<Integer> {

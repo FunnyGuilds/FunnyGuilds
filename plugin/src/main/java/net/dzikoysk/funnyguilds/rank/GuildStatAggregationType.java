@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -15,7 +16,7 @@ import panda.std.function.TriFunction;
 public final class GuildStatAggregationType<R extends Number> implements Keyed {
 
     public static final GuildStatAggregationType<Integer> TOTAL_INT = new GuildStatAggregationType<>(
-            "guild_stat_type/total_int",
+            "guild_stat_aggregation_total_int",
             Integer.class,
             (controller, guild, key) -> {
                 int total = 0;
@@ -30,7 +31,7 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
     );
 
     public static final GuildStatAggregationType<Double> TOTAL_DOUBLE = new GuildStatAggregationType<>(
-            "guild_stat_type/total_double",
+            "guild_stat_aggregation_total_double",
             Double.class,
             (controller, guild, key) -> {
                 double total = 0.0;
@@ -45,7 +46,7 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
     );
 
     public static final GuildStatAggregationType<Double> AVERAGE = new GuildStatAggregationType<>(
-            "guild_stat_type/average",
+            "guild_stat_aggregation_average",
             Double.class,
             (controller, guild, key) -> {
                 Set<User> members = guild.getMembers();
@@ -109,4 +110,25 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
         );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof GuildStatAggregationType)) {
+            return false;
+        }
+        GuildStatAggregationType<?> that = (GuildStatAggregationType<?>) o;
+        return Objects.equals(this.key, that.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.key);
+    }
+
+    @Override
+    public String toString() {
+        return "GuildStatAggregationType{" +
+               "key=" + this.key +
+               ", valueType=" + this.valueType.getSimpleName() +
+               '}';
+    }
 }
