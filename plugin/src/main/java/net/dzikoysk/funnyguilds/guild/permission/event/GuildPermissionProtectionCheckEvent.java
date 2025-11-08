@@ -50,7 +50,7 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
         if (permissionResult == null) {
             return null;
         }
-        return permissionResult.map(result -> (Boolean) result);
+        return permissionResult.is(Boolean.class, error -> null);
     }
 
     /**
