@@ -100,9 +100,12 @@ import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Result;
 import net.dzikoysk.funnyguilds.shared.Optionals;
+import panda.utilities.ClassUtils;
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
+    
+    public static final String NAMESPACE = "funnyguilds";
 
     private static FunnyGuilds plugin;
     private static FunnyGuildsLogger logger;

@@ -19,7 +19,6 @@ public final class UserRankNameProvider implements RankNameProvider {
                 .build(uuid -> userManager.findByUuid(uuid)
                         .map(User::getName)
                         .orElseGet("Unknown"));
-
     }
 
     @Override

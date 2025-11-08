@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import panda.std.Option;
 
@@ -51,12 +51,25 @@ public interface RankTracker<E extends IdentifiableEntity, T extends Number> {
      *
      * @param entity      the entity to update
      * @param valueChange the value to change (will be aggregated)
-     * @param onComplete  the callback to execute when the update is complete
+     *
+     * @return a future with the updated (aggregated) value
      */
-    void updateValue(
+    CompletableFuture<T> updateValue(
             E entity,
-            T valueChange,
-            Consumer<T> onComplete
+            T valueChange
+    );
+    
+    /**
+     * Set the value asynchronously.
+     *
+     * @param entity the entity to update
+     * @param value  the new value
+     *
+     * @return a future with the set value
+     */
+    CompletableFuture<T> setValue(
+            E entity,
+            T value
     );
 
 }
