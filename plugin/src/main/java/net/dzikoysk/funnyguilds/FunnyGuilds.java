@@ -35,8 +35,8 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
-import net.dzikoysk.funnyguilds.guild.permission.EventGuildPermissionController;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionControllerFactory;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -126,7 +126,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
-    private final GuildPermissionController guildPermissionController = new EventGuildPermissionController();
+    private GuildPermissionController guildPermissionController;
 
     private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
     private Option<DummyManager> dummyManager = Option.none();
@@ -257,6 +257,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
+        this.guildPermissionController = GuildPermissionControllerFactory.create(this, this.pluginConfiguration.permission.guildPermissionHandlingType);
 
         this.prepareScoreboardServices();
 

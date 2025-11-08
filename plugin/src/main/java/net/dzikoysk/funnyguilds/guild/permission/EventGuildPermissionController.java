@@ -10,12 +10,12 @@ import org.bukkit.event.Event;
 import panda.std.Option;
 import panda.std.Result;
 
-public final class EventGuildPermissionController implements GuildPermissionController {
+final class EventGuildPermissionController implements GuildPermissionController {
     
     static final Runnable EMPTY_ERROR_ACTION = () -> {
     };
     
-    public EventGuildPermissionController() {
+    EventGuildPermissionController() {
     }
 
     @Override
