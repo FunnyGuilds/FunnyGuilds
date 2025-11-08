@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 public final class GenericGuildPermissions {
 
     /**
-     * Specifies how the user position is displayer in messages.
+     * Specifies how the user position is displayed in messages.
      */
     public static final GuildPermission<String> USER_POSITION = GuildPermission.permission("user.position", String.class);
 

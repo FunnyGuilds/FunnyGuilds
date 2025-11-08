@@ -19,7 +19,7 @@ public interface GuildPermissionController {
     <T> Option<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission);
 
     /**
-     * Get the value of a specific protection permission for a user, or fallback acton if user lacks permission
+     * Get the value of a specific protection permission for a user, or fallback action if user lacks permission
      * @param guild the guild to check
      * @param user the user to check
      * @param permission the permission to check

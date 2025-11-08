@@ -119,8 +119,7 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = prefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
-            if (!this.checkUsePermission(user, playerGuild, type)) {
-                // TODO: send custom message when no permission
+            if (!this.handleUsePermission(user, playerGuild, type)) {
                 return true;
             }
             
@@ -142,50 +141,24 @@ public class PlayerChat extends AbstractFunnyListener {
 
         return false;
     }
+    
+    private boolean handleUsePermission(User user, Guild guild, Type type) {
+        GuildPermission<Boolean> permission = ChatType.getChatType(type).getUsePermission();
+        return this.permissionController.handlePermission(guild, user, permission);
+    }
 
     private void sendMessageToGuild(Guild guild, String message, Type type) {
         PandaStream.of(guild.getMembers())
                 .filterNot(member -> member.getCache().isSpy())
-                .filter(member -> this.checkSeePermission(member, guild, type) || this.checkUsePermission(member, guild, type))
+                .filter(member -> this.checkSeePermission(member, guild, type))
                 .forEach(member -> member.sendMessage(message));
     }
     
     private boolean checkSeePermission(User user, Guild guild, Type type) {
-        GuildPermission<Boolean> seePermission;
-        switch (type) {
-            case PRIVATE:
-                seePermission = GenericGuildPermissions.GUILD_CHAT_SEE;
-                break;
-            case ALLY:
-                seePermission = GenericGuildPermissions.ALLY_CHAT_SEE;
-                break;
-            case ALL:
-                seePermission = GenericGuildPermissions.GLOBAL_CHAT_SEE;
-                break;
-            default:
-                return false;
-        }
-        return this.permissionController.getPermissionValue(guild, user, seePermission)
-                .orElseGet(true);
-    }
-    
-    private boolean checkUsePermission(User user, Guild guild, Type type) {
-        GuildPermission<Boolean> usePermission;
-        switch (type) {
-            case PRIVATE:
-                usePermission = GenericGuildPermissions.GUILD_CHAT_USE;
-                break;
-            case ALLY:
-                usePermission = GenericGuildPermissions.ALLY_CHAT_USE;
-                break;
-            case ALL:
-                usePermission = GenericGuildPermissions.GLOBAL_CHAT_USE;
-                break;
-            default:
-                return false;
-        }
-        return this.permissionController.getPermissionValue(guild, user, usePermission)
-                .orElseGet(true);
+        ChatType chatType = ChatType.getChatType(type);
+        return this.permissionController.getPermissionValue(guild, user, chatType.getSeePermission())
+                .orElse(() -> this.permissionController.getPermissionValue(guild, user, chatType.getUsePermission()))
+                .orElseGet(false);
     }
     
     private void spy(User user, Player player, Guild playerGuild, String message) {
@@ -208,4 +181,41 @@ public class PlayerChat extends AbstractFunnyListener {
         return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));
     }
 
+    private enum ChatType {
+        PRIVATE(GenericGuildPermissions.GUILD_CHAT_USE, GenericGuildPermissions.GUILD_CHAT_SEE),
+        ALLY(GenericGuildPermissions.ALLY_CHAT_USE, GenericGuildPermissions.ALLY_CHAT_SEE),
+        ALL(GenericGuildPermissions.GLOBAL_CHAT_USE, GenericGuildPermissions.GLOBAL_CHAT_SEE);
+        
+        private final GuildPermission<Boolean> usePermission;
+        private final GuildPermission<Boolean> seePermission;
+
+        ChatType(
+                GuildPermission<Boolean> usePermission,
+                GuildPermission<Boolean> seePermission
+        ) {
+            this.usePermission = usePermission;
+            this.seePermission = seePermission;
+        }
+        
+        private GuildPermission<Boolean> getUsePermission() {
+            return this.usePermission;
+        }
+        
+        private GuildPermission<Boolean> getSeePermission() {
+            return this.seePermission;
+        }
+        
+        private static ChatType getChatType(Type type) {
+            switch (type) {
+                case PRIVATE:
+                    return PRIVATE;
+                case ALLY:
+                    return ALLY;
+                case ALL:
+                    return ALL;
+                default:
+                    throw new IllegalArgumentException("Unknown chat type: " + type);
+            }
+        }
+    }
 }
