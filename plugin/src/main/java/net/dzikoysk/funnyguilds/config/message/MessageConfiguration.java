@@ -319,12 +319,6 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalAllyPvpDisabled = ChatHolder.message("&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!");
     
     @Comment("")
-    @Comment("<------- Guild Chat Messages -------> #")
-    public SendableMessage guildChatPrivateInsufficientPermission = ChatHolder.message("&cNie masz uprawnień do używania czatu gildii!");
-    public SendableMessage guildChatAlliesInsufficientPermission = ChatHolder.message("&cNie masz uprawnień do używania czatu sojuszniczego!");
-    public SendableMessage guildChatGlobalInsufficientPermission = ChatHolder.message("&cNie masz uprawnień do używania czatu globalnego!");
-
-    @Comment("")
     @Comment("<------- Escape Messages -------> #")
     public SendableMessage escapeDisabled = ChatHolder.message("&cPrzykro mi, ucieczki sa wylaczone!");
     @Comment("Dostępne zmienne: {TIME}")
