@@ -4,28 +4,28 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRankNameProvider;
-import net.dzikoysk.funnyguilds.user.UserRankTrackabilityChecker;
 import panda.std.Option;
 
-public final class CommonRankController implements RankController {
+public final class FunnyRankController implements RankController {
     
     private final Executor executor;
+    private final PluginConfiguration pluginConfiguration;
     
     private final UserRankNameProvider userRankNameProvider;
-    private final UserRankTrackabilityChecker userRankTrackabilityChecker;
     private final LoadingCache<StatKey<?>, UserRankTracker<?>> userRankTrackers;
     
-    private CommonRankController(
+    private FunnyRankController(
             Executor executor,
-            UserRankNameProvider userRankNameProvider,
-            UserRankTrackabilityChecker userRankTrackabilityChecker
+            PluginConfiguration pluginConfiguration,
+            UserRankNameProvider userRankNameProvider
     ) {
         this.executor = executor;
+        this.pluginConfiguration = pluginConfiguration;
         this.userRankNameProvider = userRankNameProvider;
-        this.userRankTrackabilityChecker = userRankTrackabilityChecker;
         
         this.userRankTrackers = this.createUseRankTrackersCache();
     }
@@ -67,7 +67,7 @@ public final class CommonRankController implements RankController {
                         this.executor,
                         (StatKey<Number>) key,
                         this.userRankNameProvider,
-                        this.userRankTrackabilityChecker
+                        this.pluginConfiguration.skipPrivilegedPlayersInRankPositions
                 ));
     }
 }
