@@ -66,13 +66,13 @@ final class StaticGuildPermissionController implements GuildPermissionController
                             user,
                             (GuildPermission<Boolean>) permission
                     )
-                    .map(result -> (T) result)
-                    .toOption();
+                    .toOption()
+                    .is(permission.getValueType());
         }
 
         if (GenericGuildPermissions.USER_POSITION.equals(permission)) {
             return this.getGuildUserPositionValue(user)
-                    .map(value -> (T) value);
+                    .is(permission.getValueType());
         }
 
         return Option.none();
