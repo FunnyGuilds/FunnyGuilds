@@ -51,12 +51,10 @@ public final class ProtectionSystem {
         if (player.hasPermission("funnyguilds.admin.build")) {
             return Option.none();
         }
-
-        Option<User> userOption = plugin.getUserManager().findByUuid(player.getUniqueId());
-        if (userOption.isEmpty()) {
-            return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
-        }
-        User user = userOption.get();
+        
+        User user = plugin.getUserManager()
+                .findByUuid(player.getUniqueId())
+                .orThrow(() -> new IllegalStateException("User not found for player " + player.getName()));
         
         boolean canPerformAction = plugin.getGuildPermissionController().handleProtectionPermission(
                 guild,
@@ -104,9 +102,6 @@ public final class ProtectionSystem {
 
         Function<MessageConfiguration, Sendable> messageSupplier;
         switch (protectionType) {
-            case FAILURE:
-                messageSupplier = config -> config.regionUnauthorized;
-                break;
             case UNAUTHORIZED:
                 // Do nothing, message is sent in GuildProtectionPermissionHandler
                 return;
@@ -139,8 +134,7 @@ public final class ProtectionSystem {
     }
 
     public enum ProtectionType {
-
-        FAILURE,
+        
         UNAUTHORIZED,
         LOCKED,
         HEART,
