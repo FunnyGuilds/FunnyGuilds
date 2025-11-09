@@ -17,7 +17,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankNameProvider;
 import panda.std.Option;
 
-public final class FunnyRankController implements RankController {
+public final class FunnyRankService implements RankService {
     
     private final Executor executor;
     private final Queue<Runnable> rankUpdateQueue = new ConcurrentLinkedQueue<>();
@@ -33,7 +33,7 @@ public final class FunnyRankController implements RankController {
     private final Cache<StatKey<?>, GuildRankTracker<?>> guildRankTrackers;
     
     @SuppressWarnings("unchecked")
-    public FunnyRankController(
+    public FunnyRankService(
             Executor executor,
             PluginConfiguration pluginConfiguration,
             UserManager userManager,
