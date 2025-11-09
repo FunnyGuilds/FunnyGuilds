@@ -8,26 +8,24 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
-import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 import panda.std.Result;
 
 /**
- * A static implementation of GuildPermissionController that defines fixed permissions based on user roles within a 
+ * A static implementation of GuildPermissionController that defines fixed permissions based on user roles within a
  * guild.
  * It preserves the original permission checking logic while providing a straightforward permission structure.
  */
 final class StaticGuildPermissionController implements GuildPermissionController {
 
-    private static final Collection<GuildCommandPermission> MEMBER_PERMISSIONS = EnumSet.of(
+    private static final Collection<? extends GuildPermission<?>> MEMBER_PERMISSIONS = EnumSet.of(
             GuildCommandPermission.BASE,
             GuildCommandPermission.LEAVE
     );
-    private static final Collection<GuildCommandPermission> MANAGER_PERMISSIONS = EnumSet.of(
+    private static final Collection<? extends GuildPermission<?>> MANAGER_PERMISSIONS = EnumSet.of(
             GuildCommandPermission.SET_BASE,
             GuildCommandPermission.ENLARGE,
             GuildCommandPermission.EXTEND_VALIDITY,
@@ -35,7 +33,7 @@ final class StaticGuildPermissionController implements GuildPermissionController
             GuildCommandPermission.KICK,
             GuildCommandPermission.PVP
     );
-    private static final Collection<GuildCommandPermission> OWNER_PERMISSIONS = EnumSet.of(
+    private static final Collection<? extends GuildPermission<?>> OWNER_PERMISSIONS = EnumSet.of(
             GuildCommandPermission.DEPUTY,
             GuildCommandPermission.ALLY,
             GuildCommandPermission.WAR,
@@ -52,84 +50,37 @@ final class StaticGuildPermissionController implements GuildPermissionController
         this.pluginConfiguration = pluginConfiguration;
         this.messageService = messageService;
     }
-
-    @SuppressWarnings("unchecked")
+    
     @Override
-    public <T> Option<T> getPermissionValue(
+    public <T> Result<T, Runnable> getPermissionResult(
             Guild guild,
             User user,
             GuildPermission<T> permission
     ) {
-        if (permission.getValueType() == Boolean.class) {
-            return this.getPermissionResult(
-                            guild,
-                            user,
-                            (GuildPermission<Boolean>) permission
-                    )
-                    .toOption()
-                    .is(permission.getValueType());
-        }
-
-        if (GenericGuildPermissions.USER_POSITION.equals(permission)) {
-            return this.getGuildUserPositionValue(user)
-                    .is(permission.getValueType());
-        }
-
-        return Option.none();
-    }
-
-    private Option<String> getGuildUserPositionValue(User user) {
-        String value = "";
-        if (user.isOwner()) {
-            value = this.pluginConfiguration.chatPositionLeader.getValue();
-        }
-        else if (user.isDeputy()) {
-            value = this.pluginConfiguration.chatPositionDeputy.getValue();
-        }
-        else {
-            value = this.pluginConfiguration.chatPositionMember.getValue();
-        }
-        return Option.of(value);
-    }
-
-    @Override
-    public Result<Boolean, Runnable> getPermissionResult(
-            Guild guild,
-            User user,
-            GuildPermission<Boolean> permission
-    ) {
         if (!guild.isMember(user)) {
-            return Result.error(() -> this.messageService.getMessage(config -> config.generalIsNotMember)
-                    .receiver(user)
-                    .send());
+            return Result.error(this.errorMessageAction(
+                    user,
+                    config -> config.generalIsNotMember
+            ));
         }
 
-        if (permission instanceof GuildCommandPermission) {
-            return this.handleCommandPermissions(
-                    guild,
-                    user,
-                    (GuildCommandPermission) permission
-            );
-        }
-        else if (permission instanceof GuildProtectionPermission) {
-            return this.getProtectionPermissionResult(
-                    guild,
-                    user,
-                    permission,
-                    null
-            );
-        }
-        else if (GenericGuildPermissions.CHAT_PERMISSIONS.contains(permission)) {
-            return Result.ok(true);
-        }
-
-        return Result.ok(false);
+        return this.getPermissionResultInternal(guild, user, permission)
+                .mapErr(errorAction -> {
+                    if (errorAction != null) {
+                        return errorAction;
+                    }
+                    return this.errorMessageAction(
+                            user,
+                            config -> config.generalInsufficientGuildPermission
+                    );
+                })
+                .map(permission.getValueType()::cast);
     }
-
-    private Result<Boolean, Runnable> handleCommandPermissions(
+    
+    private Result<?, Runnable> getPermissionResultInternal(
             Guild guild,
             User user,
-            GuildCommandPermission permission
+            GuildPermission<?> permission
     ) {
         if (MEMBER_PERMISSIONS.contains(permission)) {
             return this.handlePermission(
@@ -152,7 +103,28 @@ final class StaticGuildPermissionController implements GuildPermissionController
                     config -> config.generalIsNotOwner
             );
         }
-        return Result.ok(false);
+        else if (GenericGuildPermissions.USER_POSITION.equals(permission)) {
+            return this.getGuildUserPositionValue(user);
+        }
+        else if (GenericGuildPermissions.CHAT_PERMISSIONS.contains(permission)) {
+            return Result.ok(true);
+        }
+
+        return Result.error(null);
+    }
+    
+    private Result<String, Runnable> getGuildUserPositionValue(User user) {
+        String value;
+        if (user.isOwner()) {
+            value = this.pluginConfiguration.chatPositionLeader.getValue();
+        }
+        else if (user.isDeputy()) {
+            value = this.pluginConfiguration.chatPositionDeputy.getValue();
+        }
+        else {
+            value = this.pluginConfiguration.chatPositionMember.getValue();
+        }
+        return Result.ok(value);
     }
 
     @Override
@@ -170,17 +142,23 @@ final class StaticGuildPermissionController implements GuildPermissionController
     }
 
     private Result<Boolean, Runnable> handlePermission(
-            boolean isSufficientPermission,
+            boolean hasSufficientPermission,
             User user,
             Function<MessageConfiguration, Sendable> messageSupplier
     ) {
         return Result.when(
-                isSufficientPermission,
+                hasSufficientPermission,
                 () -> true,
-                () -> () -> this.messageService.getMessage(messageSupplier)
-                        .receiver(user)
-                        .send()
+                () -> this.errorMessageAction(user, messageSupplier)
         );
     }
-
+    
+    private Runnable errorMessageAction(
+            User user,
+            Function<MessageConfiguration, Sendable> messageSupplier
+    ) {
+        return () -> this.messageService.getMessage(messageSupplier)
+                .receiver(user)
+                .send();
+    }
 }

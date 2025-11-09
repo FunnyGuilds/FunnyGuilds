@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.guild.permission;
 
+import java.util.Objects;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
@@ -9,23 +11,14 @@ import panda.std.Result;
 public interface GuildPermissionController {
 
     /**
-     * Get the value of a specific permission for a user
-     * @param guild the guild to check
-     * @param user the user to check
-     * @param permission the permission to check
-     * @return the value of the permission, or an empty option if not set
-     * @param <T> the type of the permission value
-     */
-    <T> Option<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission);
-
-    /**
      * Get the value of a specific protection permission for a user, or fallback action if user lacks permission
      * @param guild the guild to check
      * @param user the user to check
      * @param permission the permission to check
      * @return result containing the value of the permission or a runnable action to execute if permission is denied
+     * @param <T> the type of the permission value
      */
-    Result<Boolean, Runnable> getPermissionResult(Guild guild, User user, GuildPermission<Boolean> permission);
+    <T> Result<T, Runnable> getPermissionResult(Guild guild, User user, GuildPermission<T> permission);
 
     /**
      * Get the value of a specific protection permission for a user, or fallback action if user lacks permission
@@ -38,6 +31,18 @@ public interface GuildPermissionController {
     Result<Boolean, Runnable> getProtectionPermissionResult(Guild guild, User user, GuildPermission<Boolean> permission, Event event);
     
     /**
+     * Get the value of a specific permission for a user
+     * @param guild the guild to check
+     * @param user the user to check
+     * @param permission the permission to check
+     * @return the value of the permission, or an empty option if not set
+     * @param <T> the type of the permission value
+     */
+    default <T> Option<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission) {
+        return this.getPermissionResult(guild, user, permission).toOption();
+    }
+    
+    /**
      * Handle the permission check for a user, returning a boolean result and sending appropriate messages
      * @param guild the guild to check
      * @param user the user to check
@@ -46,8 +51,8 @@ public interface GuildPermissionController {
      */
     default boolean handlePermission(Guild guild, User user, GuildPermission<Boolean> permission) {
         return this.getPermissionResult(guild, user, permission)
-                .mapErr(GuildPermissionController::handleError)
-                .get();
+                .onError(Runnable::run)
+                .matches(Objects::nonNull);
     }
     
     /**
@@ -60,12 +65,12 @@ public interface GuildPermissionController {
      */
     default boolean handleProtectionPermission(Guild guild, User user, GuildPermission<Boolean> permission, Event event) {
         return this.getProtectionPermissionResult(guild, user, permission, event)
-                .mapErr(GuildPermissionController::handleError)
-                .get();
+                .onError(Runnable::run)
+                .matches(Objects::nonNull);
     }
     
-    static boolean handleError(Runnable errorAction) {
-        errorAction.run();
-        return false;
+    static GuildPermissionController create(FunnyGuilds plugin) {
+        StaticGuildPermissionController staticController = new StaticGuildPermissionController(plugin.getPluginConfiguration(), plugin.getMessageService());
+        return new EventGuildPermissionController(staticController);
     }
 }

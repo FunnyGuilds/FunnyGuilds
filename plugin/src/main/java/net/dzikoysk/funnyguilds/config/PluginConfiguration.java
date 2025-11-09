@@ -36,7 +36,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
-import net.dzikoysk.funnyguilds.config.sections.PermissionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
@@ -1153,9 +1152,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     public SecuritySystemConfiguration securitySystem = new SecuritySystemConfiguration();
-    
-    @Comment("")
-    public PermissionConfiguration permission = new PermissionConfiguration();
 
     @Min(1)
     @Comment("")

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.guild.permission;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionCheckEvent;
@@ -7,44 +8,34 @@ import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionEvent;
 import net.dzikoysk.funnyguilds.guild.permission.event.GuildPermissionProtectionCheckEvent;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
-import panda.std.Option;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Result;
 
 final class EventGuildPermissionController implements GuildPermissionController {
-    
-    static final Runnable EMPTY_ERROR_ACTION = () -> {
-    };
-    
-    EventGuildPermissionController() {
+
+    private final StaticGuildPermissionController staticController;
+
+    EventGuildPermissionController(StaticGuildPermissionController staticController) {
+        this.staticController = staticController;
     }
 
     @Override
-    public <T> Option<T> getPermissionValue(
+    public <T> Result<T, Runnable> getPermissionResult(
             Guild guild,
             User user,
             GuildPermission<T> permission
     ) {
-        return this.getPermissionResult(
+        Result<T, Runnable> staticResult = this.staticController.getPermissionResult(
                 guild,
                 user,
-                permission,
-                null,
-                null
-        ).toOption();
-    }
+                permission
+        );
 
-    @Override
-    public Result<Boolean, Runnable> getPermissionResult(
-            Guild guild,
-            User user,
-            GuildPermission<Boolean> permission
-    ) {
-        return this.getPermissionResult(
+        return this.handlePermissionCheck(
                 guild,
                 user,
                 permission,
-                null,
-                EMPTY_ERROR_ACTION
+                staticResult
         );
     }
 
@@ -55,57 +46,75 @@ final class EventGuildPermissionController implements GuildPermissionController 
             GuildPermission<Boolean> permission,
             Event event
     ) {
-        return this.getProtectionPermissionResult(
+        Result<Boolean, Runnable> staticResult = this.staticController.getProtectionPermissionResult(
                 guild,
                 user,
                 permission,
-                event,
-                EMPTY_ERROR_ACTION
+                event
+        );
+
+        Result<Boolean, Runnable> protectionResult = handleAndReturn(
+                guild,
+                user,
+                permission,
+                new GuildPermissionProtectionCheckEvent(
+                        guild,
+                        user,
+                        permission,
+                        event,
+                        staticResult
+                )
+        );
+
+        return this.handlePermissionCheck(
+                guild,
+                user,
+                permission,
+                protectionResult
         );
     }
-    
-    <T> Result<T, Runnable> getPermissionResult(
+
+    private <T> Result<T, Runnable> handlePermissionCheck(
             Guild guild,
             User user,
             GuildPermission<T> permission,
-            Result<T, Runnable> permissionResult,
-            Runnable failureAction
+            @Nullable Result<T, Runnable> permissionResult
     ) {
         return handleAndReturn(
+                guild,
+                user,
+                permission,
                 new GuildPermissionCheckEvent(
                         guild,
                         user,
                         permission,
                         permissionResult
-                ))
-                .flatMap(GuildPermissionEvent::getPermissionResult)
-                .is(permission.getValueType(), value -> failureAction);
+                )
+        );
     }
-    
-     Result<Boolean, Runnable> getProtectionPermissionResult(
+
+    static <T> Result<T, Runnable> handleAndReturn(
             Guild guild,
             User user,
-            GuildPermission<Boolean> permission,
-            Event event,
-            Runnable failureAction
+            GuildPermission<T> permission,
+            GuildPermissionEvent event
     ) {
-        return handleAndReturn(
-                new GuildPermissionProtectionCheckEvent(
-                        guild,
-                        user,
-                        permission,
-                        event
-                ))
-                .flatMap(protectionEvent -> this.getPermissionResult(
-                        guild,
-                        user,
-                        permission,
-                        protectionEvent.getPermissionResult(),
-                        failureAction
-                ));
+        return Result.<GuildPermissionEvent, Runnable>ok(event)
+                .peek(SimpleEventHandler::handle)
+                .flatMap(GuildPermissionEvent::getPermissionResult)
+                .map(permission.getValueType()::cast)
+                .mapErr(errorAction -> () -> {
+                    if (errorAction != null) {
+                        errorAction.run();
+                    }
+                    FunnyGuilds.getPluginLogger()
+                            .debug(String.format(
+                                    "No permission result for permission '%s' in guild '%s' and user '%s'",
+                                    permission,
+                                    guild.getName(),
+                                    user.getName()
+                            ));
+                });
     }
-     
-    static <E extends GuildPermissionEvent> Result<E, Runnable> handleAndReturn(E event) {
-        return Result.<E, Runnable>ok(event).peek(SimpleEventHandler::handle);
-    }
+
 }

@@ -9,7 +9,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 /**
@@ -26,14 +25,15 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
             Guild guild,
             User doer,
             GuildPermission<Boolean> permission,
-            Event event
+            Event event,
+            panda.std.Result<Boolean, Runnable> permissionResult
     ) {
         super(
                 GuildPermissionEvent.EventCause.SYSTEM,
                 guild,
                 doer,
                 permission,
-                null
+                permissionResult
         );
         this.internalEventReference = new WeakReference<>(event);
     }
@@ -45,12 +45,8 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
     }
 
     @Override
-    public @Nullable panda.std.Result<Boolean, Runnable> getPermissionResult() {
-        panda.std.Result<?, Runnable> permissionResult = super.getPermissionResult();
-        if (permissionResult == null) {
-            return null;
-        }
-        return permissionResult.is(Boolean.class, error -> null);
+    public panda.std.Result<Boolean, Runnable> getPermissionResult() {
+        return super.getPermissionResult().is(Boolean.class, error -> null);
     }
 
     /**

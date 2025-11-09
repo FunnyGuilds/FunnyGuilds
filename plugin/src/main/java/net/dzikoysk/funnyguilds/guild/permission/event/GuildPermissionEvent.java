@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.user.User;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class GuildPermissionEvent extends GuildEvent {
 
@@ -25,8 +24,7 @@ public abstract class GuildPermissionEvent extends GuildEvent {
                         doer,
                         "Doer cannot be null"
                 ),
-                guild,
-                false
+                guild
         );
         this.permission = permission;
         this.permissionResult = permissionResult;
@@ -36,7 +34,10 @@ public abstract class GuildPermissionEvent extends GuildEvent {
         return this.permission;
     }
     
-    public @Nullable panda.std.Result<?, Runnable> getPermissionResult() {
+    public panda.std.Result<?, Runnable> getPermissionResult() {
+        if (this.permissionResult == null) {
+            return panda.std.Result.ok(null);
+        }
         return this.permissionResult;
     }
     
