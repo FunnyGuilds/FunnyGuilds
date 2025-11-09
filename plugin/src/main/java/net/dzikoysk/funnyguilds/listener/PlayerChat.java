@@ -13,6 +13,9 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreChatEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
@@ -30,6 +33,9 @@ public class PlayerChat extends AbstractFunnyListener {
 
     @Inject
     private GuildManager guildManager;
+    
+    @Inject
+    private GuildPermissionChecker permissionChecker;
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
@@ -68,7 +74,7 @@ public class PlayerChat extends AbstractFunnyListener {
                     formatter.register("{TAG}", this.config.chatGuild.getValue());
                     formatter.register("{TAG}", guild.getTag());
                     formatter.register("{POS}", this.config.chatPosition.getValue());
-                    formatter.register("{POS}", UserUtils.getUserPosition(this.config, user));
+                    formatter.register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -113,6 +119,10 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = prefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
+            if (!this.handleUsePermission(user, playerGuild, type)) {
+                return true;
+            }
+            
             String subMessage = message.substring(prefixLength).trim();
             String resultMessage = this.formatChatDesign(user, player, playerGuild, chatDesign, subMessage);
 
@@ -122,7 +132,7 @@ public class PlayerChat extends AbstractFunnyListener {
             }
 
             this.spy(user, player, playerGuild, subMessage);
-            preChatEvent.getReceivers().forEach(guild -> sendMessageToGuild(guild, resultMessage));
+            preChatEvent.getReceivers().forEach(guild -> sendMessageToGuild(guild, resultMessage, type));
 
             SimpleEventHandler.handle(new GuildChatEvent(EventCause.USER, user, playerGuild, type, receivers, resultMessage));
 
@@ -131,13 +141,26 @@ public class PlayerChat extends AbstractFunnyListener {
 
         return false;
     }
-
-    private static void sendMessageToGuild(Guild guild, String message) {
-        PandaStream.of(guild.getMembers())
-                .filterNot(member -> member.getCache().isSpy())
-                .forEach(member -> member.sendMessage(message));
+    
+    private boolean handleUsePermission(User user, Guild guild, Type type) {
+        GuildPermission<Boolean> permission = ChatType.getChatType(type).getUsePermission();
+        return this.permissionChecker.handlePermission(guild, user, permission);
     }
 
+    private void sendMessageToGuild(Guild guild, String message, Type type) {
+        PandaStream.of(guild.getMembers())
+                .filterNot(member -> member.getCache().isSpy())
+                .filter(member -> this.checkSeePermission(member, guild, type))
+                .forEach(member -> member.sendMessage(message));
+    }
+    
+    private boolean checkSeePermission(User user, Guild guild, Type type) {
+        ChatType chatType = ChatType.getChatType(type);
+        return this.permissionChecker.getPermissionValue(guild, user, chatType.getSeePermission())
+                .orElse(() -> this.permissionChecker.getPermissionValue(guild, user, chatType.getUsePermission()))
+                .orElseGet(false);
+    }
+    
     private void spy(User user, Player player, Guild playerGuild, String message) {
         String spyMessage = this.formatChatDesign(user, player, playerGuild, this.config.chatSpyDesign.getValue(), message);
 
@@ -152,10 +175,47 @@ public class PlayerChat extends AbstractFunnyListener {
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())
                 .register("{POS}", this.config.chatPosition.getValue())
-                .register("{POS}", UserUtils.getUserPosition(this.config, user))
+                .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user))
                 .register("{MESSAGE}", message);
 
         return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));
     }
 
+    private enum ChatType {
+        PRIVATE(GenericGuildPermissions.GUILD_CHAT_USE, GenericGuildPermissions.GUILD_CHAT_SEE),
+        ALLY(GenericGuildPermissions.ALLY_CHAT_USE, GenericGuildPermissions.ALLY_CHAT_SEE),
+        ALL(GenericGuildPermissions.GLOBAL_CHAT_USE, GenericGuildPermissions.GLOBAL_CHAT_SEE);
+        
+        private final GuildPermission<Boolean> usePermission;
+        private final GuildPermission<Boolean> seePermission;
+
+        ChatType(
+                GuildPermission<Boolean> usePermission,
+                GuildPermission<Boolean> seePermission
+        ) {
+            this.usePermission = usePermission;
+            this.seePermission = seePermission;
+        }
+        
+        private GuildPermission<Boolean> getUsePermission() {
+            return this.usePermission;
+        }
+        
+        private GuildPermission<Boolean> getSeePermission() {
+            return this.seePermission;
+        }
+        
+        private static ChatType getChatType(Type type) {
+            switch (type) {
+                case PRIVATE:
+                    return PRIVATE;
+                case ALLY:
+                    return ALLY;
+                case ALL:
+                    return ALL;
+                default:
+                    throw new IllegalArgumentException("Unknown chat type: " + type);
+            }
+        }
+    }
 }

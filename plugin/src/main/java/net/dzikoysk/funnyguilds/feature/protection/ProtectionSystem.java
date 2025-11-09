@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.protection;
 
+import dev.peri.yetanothermessageslibrary.message.Sendable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Function;
@@ -9,23 +10,24 @@ import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.Triple;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
 
 public final class ProtectionSystem {
 
     private ProtectionSystem() {
     }
 
-    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
+    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, Event triggerEvent, GuildPermission<Boolean> permission, boolean includeBuildLock) {
         if (player == null || location == null) {
             return Option.none();
         }
@@ -49,9 +51,18 @@ public final class ProtectionSystem {
         if (player.hasPermission("funnyguilds.admin.build")) {
             return Option.none();
         }
-
-        Option<User> userOption = plugin.getUserManager().findByUuid(player.getUniqueId());
-        if (!userOption.is(guild::isMember)) {
+        
+        User user = plugin.getUserManager()
+                .findByUuid(player.getUniqueId())
+                .orThrow(() -> new IllegalStateException("User not found for player " + player.getName()));
+        
+        boolean canPerformAction = plugin.getGuildPermissionChecker().handleProtectionPermission(
+                guild,
+                user,
+                permission,
+                triggerEvent
+        );
+        if (!canPerformAction) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
 
@@ -92,8 +103,8 @@ public final class ProtectionSystem {
         Function<MessageConfiguration, Sendable> messageSupplier;
         switch (protectionType) {
             case UNAUTHORIZED:
-                messageSupplier = config -> config.regionUnauthorized;
-                break;
+                // Do nothing, message is sent in GuildProtectionPermissionHandler
+                return;
             case HEART:
                 messageSupplier = config -> config.regionCenter;
                 break;
@@ -123,7 +134,7 @@ public final class ProtectionSystem {
     }
 
     public enum ProtectionType {
-
+        
         UNAUTHORIZED,
         LOCKED,
         HEART,

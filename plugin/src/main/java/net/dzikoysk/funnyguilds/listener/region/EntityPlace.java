@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.EnderCrystal;
@@ -16,7 +17,13 @@ public class EntityPlace extends AbstractFunnyListener {
             return;
         }
 
-        ProtectionSystem.isProtected(event.getPlayer(), entity.getLocation(), true)
+        ProtectionSystem.isProtected(
+                        event.getPlayer(),
+                        entity.getLocation(),
+                        event,
+                        GuildProtectionPermission.ENTITY_PLACE,
+                        true
+                )
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
     }
