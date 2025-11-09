@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
 
-public interface RankController {
+public interface RankService {
 
     <T extends Number> Option<T> getUserStatValue(
             User user,

@@ -74,12 +74,12 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
 
     private final Key key;
     private final Class<R> valueType;
-    private final TriFunction<RankController, Guild, StatKey<?>, R> valueComputer;
+    private final TriFunction<RankService, Guild, StatKey<?>, R> valueComputer;
 
     private GuildStatAggregationType(
             @KeyPattern String key,
             Class<R> valueType,
-            TriFunction<RankController, Guild, StatKey<?>, R> valueComputer
+            TriFunction<RankService, Guild, StatKey<?>, R> valueComputer
     ) {
         this.key = Key.key(
                 FunnyGuilds.NAMESPACE,
@@ -99,7 +99,7 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
     }
 
     public R computeValue(
-            RankController controller,
+            RankService controller,
             Guild guild,
             StatKey<?> key
     ) {
