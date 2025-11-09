@@ -3,8 +3,11 @@ package net.dzikoysk.funnyguilds.rank;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
+import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -17,6 +20,8 @@ import panda.std.Option;
 public final class FunnyRankController implements RankController {
     
     private final Executor executor;
+    private final Queue<Runnable> rankUpdateQueue = new ConcurrentLinkedQueue<>();
+    
     private final PluginConfiguration pluginConfiguration;
     
     private final UserManager userManager;
@@ -27,6 +32,7 @@ public final class FunnyRankController implements RankController {
     private final GuildRankNameProvider guildRankNameProvider;
     private final Cache<StatKey<?>, GuildRankTracker<?>> guildRankTrackers;
     
+    @SuppressWarnings("unchecked")
     public FunnyRankController(
             Executor executor,
             PluginConfiguration pluginConfiguration,
@@ -38,11 +44,16 @@ public final class FunnyRankController implements RankController {
         
         this.userManager = userManager;
         this.userRankNameProvider = new UserRankNameProvider(userManager);
-        this.userRankTrackers = this.createUseRankTrackersCache();
+        this.userRankTrackers = Caffeine.newBuilder()
+                .build(key -> new UserRankTracker<>(
+                        (StatKey<Number>) key,
+                        this.userRankNameProvider,
+                        this.pluginConfiguration.skipPrivilegedPlayersInRankPositions
+                ));
 
         this.guildManager = guildManager;
         this.guildRankNameProvider = new GuildRankNameProvider(guildManager);
-        this.guildRankTrackers = this.createGuildRankTrackersCache();
+        this.guildRankTrackers = Caffeine.newBuilder().build();
     }
     
     @Override
@@ -69,17 +80,56 @@ public final class FunnyRankController implements RankController {
     }
 
     @Override
-    public <T extends Number> CompletableFuture<T> updateUserStatValue(
+    public <T extends Number> T setUserStatValue(
             User user,
             StatKey<T> key,
             T valueChange
     ) {
-        return this.getUserRankTracker(key)
-                .updateValue(user, valueChange)
-                .thenCompose(v -> user.getGuild()
-                        .map(guild -> this.updateGuildStatsValue(guild, key))
-                        .orElseGet(CompletableFuture.completedFuture(null))
-                        .thenApply(ignored -> v));
+        T updatedValue = this.getUserRankTracker(key).setValue(user, valueChange);
+        user.getGuild().peek(guild -> this.updateGuildStatsValue(guild, key));
+        return updatedValue;
+    }
+
+    @Override
+    public <T extends Number> T changeUserStatValue(
+            User user,
+            StatKey<T> key,
+            UnaryOperator<T> updateFunction
+    ) {
+        T updatedValue = this.getUserRankTracker(key).changeValue(user, updateFunction);
+        user.getGuild().peek(guild -> this.updateGuildStatsValue(guild, key));
+        return updatedValue;
+    }
+
+    @Override
+    public <T extends Number> CompletableFuture<T> queueSetUserStatValue(
+            User user,
+            StatKey<T> key,
+            T valueChange
+    ) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        this.rankUpdateQueue.add(() -> future.complete(this.setUserStatValue(user, key, valueChange)));
+        this.executor.execute(this::processRankUpdates);
+        return future;
+    }
+
+    @Override
+    public <T extends Number> CompletableFuture<T> queueChangeUserStatValue(
+            User user,
+            StatKey<T> key,
+            UnaryOperator<T> updateFunction
+    ) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        this.rankUpdateQueue.add(() -> future.complete(this.changeUserStatValue(user, key, updateFunction)));
+        this.executor.execute(this::processRankUpdates);
+        return future;
+    }
+    
+    private void processRankUpdates() {
+        Runnable task;
+        while ((task = this.rankUpdateQueue.poll()) != null) {
+            task.run();
+        }
     }
 
     @Override
@@ -111,22 +161,21 @@ public final class FunnyRankController implements RankController {
                 .flatMap(this.guildManager::findByUuid);
     }
 
-    private <T extends Number> CompletableFuture<?> updateGuildStatsValue(
+    private <T extends Number> void updateGuildStatsValue(
             Guild guild,
             StatKey<T> key
     ) {
-        return CompletableFuture.allOf(GuildStatAggregationType.VALUES.stream()
-                .map(statType -> this.updateGuildStatValue(guild, key, statType))
-                .toArray(CompletableFuture[]::new));
+        GuildStatAggregationType.VALUES
+                .forEach(statType -> this.updateGuildStatValue(guild, key, statType));
     }
     
-    private <T extends Number, R extends Number> CompletableFuture<?> updateGuildStatValue(
+    private <T extends Number, R extends Number> void updateGuildStatValue(
             Guild guild,
             StatKey<T> key,
             GuildStatAggregationType<R> aggregationType
     ) {
         R newValue = aggregationType.computeValue(this, guild, key);
-        return this.getGuildRankTracker(key, aggregationType).setValue(guild, newValue);
+        this.getGuildRankTracker(key, aggregationType).setValue(guild, newValue);
     }
 
     @SuppressWarnings("unchecked")
@@ -134,16 +183,6 @@ public final class FunnyRankController implements RankController {
         return (UserRankTracker<T>) this.userRankTrackers.get(key);
     }
     
-    @SuppressWarnings("unchecked")
-    private LoadingCache<StatKey<?>, UserRankTracker<?>> createUseRankTrackersCache() {
-        return Caffeine.newBuilder()
-                .build(key -> new UserRankTracker<>(
-                        this.executor,
-                        (StatKey<Number>) key,
-                        this.userRankNameProvider,
-                        this.pluginConfiguration.skipPrivilegedPlayersInRankPositions
-                ));
-    }
     
     @SuppressWarnings("unchecked")
     private <T extends Number, R extends Number> GuildRankTracker<R> getGuildRankTracker(
@@ -152,16 +191,10 @@ public final class FunnyRankController implements RankController {
     ) {
         StatKey<R> finalKey = createStatKey(statType, key);
         return (GuildRankTracker<R>) this.guildRankTrackers.get(finalKey, k -> new GuildRankTracker<>(
-                this.executor,
                 (StatKey<Number>) k,
                 this.guildRankNameProvider,
                 this::isRankedGuild
         ));
-    }
-    
-    private Cache<StatKey<?>, GuildRankTracker<?>> createGuildRankTrackersCache() {
-        return Caffeine.newBuilder()
-                .build();
     }
     
     public boolean isRankedGuild(Guild guild) {
