@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -23,19 +23,19 @@ import panda.std.Option;
 public class IndividualNameTag {
 
     private final PluginConfiguration pluginConfiguration;
-    private final GuildPermissionController permissionController;
+    private final GuildPermissionChecker permissionChecker;
 
     private WeakReference<Player> playerRef;
     private final User user;
 
     IndividualNameTag(
             PluginConfiguration pluginConfiguration,
-            GuildPermissionController permissionController,
+            GuildPermissionChecker permissionChecker,
             Player player,
             User user
     ) {
         this.pluginConfiguration = pluginConfiguration;
-        this.permissionController = permissionController;
+        this.permissionChecker = permissionChecker;
         this.playerRef = new WeakReference<>(player);
         this.user = user;
     }
@@ -134,7 +134,7 @@ public class IndividualNameTag {
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
-                .register("{POS}", UserUtils.getUserPosition(this.permissionController, targetUser));
+                .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
         value = formatter.format(value);
 
         String finalValue = value;

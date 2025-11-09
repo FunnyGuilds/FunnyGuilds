@@ -5,17 +5,17 @@ import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.resources.Validator;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.user.User;
 import org.panda_lang.utilities.inject.Property;
 
 @FunnyComponent
 final class HasGuildPermissionValidator implements Validator<HasGuildPermission, User, ValidationException> {
 
-    private final GuildPermissionController permissionController;
+    private final GuildPermissionChecker permissionChecker;
 
-    HasGuildPermissionValidator(GuildPermissionController permissionController) {
-        this.permissionController = permissionController;
+    HasGuildPermissionValidator(GuildPermissionChecker permissionChecker) {
+        this.permissionChecker = permissionChecker;
     }
 
     @Override
@@ -23,7 +23,7 @@ final class HasGuildPermissionValidator implements Validator<HasGuildPermission,
         Guild guild = user
                 .getGuild()
                 .orThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild));
-        return this.permissionController.handlePermission(guild, user, annotation.value());
+        return this.permissionChecker.handlePermission(guild, user, annotation.value());
     }
 
     @Override

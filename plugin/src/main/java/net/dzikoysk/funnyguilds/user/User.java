@@ -4,7 +4,7 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -96,7 +96,7 @@ public class User extends AbstractMutableEntity {
     }
 
     /**
-     * @deprecated use {@link GuildPermissionController} to check specific permissions
+     * @deprecated use {@link GuildPermissionChecker} to check specific permissions
      */
     @Deprecated
     public boolean canManage() {

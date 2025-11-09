@@ -31,7 +31,7 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                 .property("ping-format", user -> FunnyFormatter.format(NumberRange.inRangeToString(user.getPing(),
                         config.pingFormat), "{PING}", user.getPing()))
                 .property("has-guild", user -> user.hasGuild())
-                .property("guild-position", user -> UserUtils.getUserPosition(plugin.getGuildPermissionController(), user))
+                .property("guild-position", user -> UserUtils.getUserPosition(plugin.getGuildPermissionChecker(), user))
                 .rankProperty("position", (rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
                 .rankProperty("points", UserRank::getPoints)
                 .rankProperty("points-format", (UserRank rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getPoints(),

@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.scoreboard.AbstractScoreboardHandler;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 
 public class IndividualNameTagManager extends AbstractScoreboardHandler<IndividualNameTag> {
 
-    private final GuildPermissionController permissionController;
+    private final GuildPermissionChecker permissionChecker;
     
-    public IndividualNameTagManager(PluginConfiguration pluginConfiguration, UserManager userManager, GuildPermissionController permissionController, ScoreboardService scoreboardService) {
+    public IndividualNameTagManager(PluginConfiguration pluginConfiguration, UserManager userManager, GuildPermissionChecker permissionChecker, ScoreboardService scoreboardService) {
         super(pluginConfiguration, userManager, scoreboardService);
-        this.permissionController = permissionController;
+        this.permissionChecker = permissionChecker;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class IndividualNameTagManager extends AbstractScoreboardHandler<Individu
             // Ensure user has their own scoreboard
             this.scoreboardService.updatePlayer(player, user);
 
-            IndividualNameTag nameTag = new IndividualNameTag(this.pluginConfiguration, this.permissionController, player, user);
+            IndividualNameTag nameTag = new IndividualNameTag(this.pluginConfiguration, this.permissionChecker, player, user);
             nameTag.initialize();
             userCache.setIndividualNameTag(nameTag);
             return nameTag;

@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 import panda.std.Option;
 import panda.std.Result;
 
-public interface GuildPermissionController {
+public interface GuildPermissionChecker {
 
     /**
      * Get the value of a specific protection permission for a user, or fallback action if user lacks permission
@@ -69,8 +69,8 @@ public interface GuildPermissionController {
                 .matches(Objects::nonNull);
     }
     
-    static GuildPermissionController create(FunnyGuilds plugin) {
-        StaticGuildPermissionController staticController = new StaticGuildPermissionController(plugin.getPluginConfiguration(), plugin.getMessageService());
-        return new EventGuildPermissionController(staticController);
+    static GuildPermissionChecker create(FunnyGuilds plugin) {
+        StaticGuildPermissionChecker staticChecker = new StaticGuildPermissionChecker(plugin.getPluginConfiguration(), plugin.getMessageService());
+        return new EventGuildPermissionChecker(staticChecker);
     }
 }

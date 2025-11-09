@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.StringUtils;
@@ -119,10 +119,10 @@ public final class UserUtils {
         return set;
     }
 
-    public static String getUserPosition(GuildPermissionController permissionController, @Nullable User user) {
+    public static String getUserPosition(GuildPermissionChecker permissionChecker, @Nullable User user) {
         return Option.of(user)
                 .flatMap(User::getGuild)
-                .flatMap(guild -> permissionController.getPermissionValue(guild, user, GenericGuildPermissions.USER_POSITION))
+                .flatMap(guild -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.USER_POSITION))
                 .orElseGet("");
     }
 

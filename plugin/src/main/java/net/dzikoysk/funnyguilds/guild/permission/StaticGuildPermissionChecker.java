@@ -15,11 +15,11 @@ import org.jetbrains.annotations.Nullable;
 import panda.std.Result;
 
 /**
- * A static implementation of GuildPermissionController that defines fixed permissions based on user roles within a
+ * A static implementation of GuildPermissionChecker that defines fixed permissions based on user roles within a
  * guild.
  * It preserves the original permission checking logic while providing a straightforward permission structure.
  */
-final class StaticGuildPermissionController implements GuildPermissionController {
+final class StaticGuildPermissionChecker implements GuildPermissionChecker {
 
     private static final Collection<? extends GuildPermission<?>> MEMBER_PERMISSIONS = EnumSet.of(
             GuildCommandPermission.BASE,
@@ -43,7 +43,7 @@ final class StaticGuildPermissionController implements GuildPermissionController
     private final PluginConfiguration pluginConfiguration;
     private final MessageService messageService;
 
-    StaticGuildPermissionController(
+    StaticGuildPermissionChecker(
             PluginConfiguration pluginConfiguration,
             MessageService messageService
     ) {

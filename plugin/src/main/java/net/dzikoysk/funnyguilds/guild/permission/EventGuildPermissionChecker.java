@@ -11,12 +11,12 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Result;
 
-final class EventGuildPermissionController implements GuildPermissionController {
+final class EventGuildPermissionChecker implements GuildPermissionChecker {
 
-    private final StaticGuildPermissionController staticController;
+    private final StaticGuildPermissionChecker staticChecker;
 
-    EventGuildPermissionController(StaticGuildPermissionController staticController) {
-        this.staticController = staticController;
+    EventGuildPermissionChecker(StaticGuildPermissionChecker staticChecker) {
+        this.staticChecker = staticChecker;
     }
 
     @Override
@@ -25,7 +25,7 @@ final class EventGuildPermissionController implements GuildPermissionController 
             User user,
             GuildPermission<T> permission
     ) {
-        Result<T, Runnable> staticResult = this.staticController.getPermissionResult(
+        Result<T, Runnable> staticResult = this.staticChecker.getPermissionResult(
                 guild,
                 user,
                 permission
@@ -46,7 +46,7 @@ final class EventGuildPermissionController implements GuildPermissionController 
             GuildPermission<Boolean> permission,
             Event event
     ) {
-        Result<Boolean, Runnable> staticResult = this.staticController.getProtectionPermissionResult(
+        Result<Boolean, Runnable> staticResult = this.staticChecker.getProtectionPermissionResult(
                 guild,
                 user,
                 permission,

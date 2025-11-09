@@ -56,7 +56,7 @@ public final class ProtectionSystem {
                 .findByUuid(player.getUniqueId())
                 .orThrow(() -> new IllegalStateException("User not found for player " + player.getName()));
         
-        boolean canPerformAction = plugin.getGuildPermissionController().handleProtectionPermission(
+        boolean canPerformAction = plugin.getGuildPermissionChecker().handleProtectionPermission(
                 guild,
                 user,
                 permission,

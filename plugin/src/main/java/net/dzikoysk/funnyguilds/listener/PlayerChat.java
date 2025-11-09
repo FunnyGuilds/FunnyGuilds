@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
-import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionController;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
@@ -35,7 +35,7 @@ public class PlayerChat extends AbstractFunnyListener {
     private GuildManager guildManager;
     
     @Inject
-    private GuildPermissionController permissionController;
+    private GuildPermissionChecker permissionChecker;
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
@@ -74,7 +74,7 @@ public class PlayerChat extends AbstractFunnyListener {
                     formatter.register("{TAG}", this.config.chatGuild.getValue());
                     formatter.register("{TAG}", guild.getTag());
                     formatter.register("{POS}", this.config.chatPosition.getValue());
-                    formatter.register("{POS}", UserUtils.getUserPosition(this.permissionController, user));
+                    formatter.register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -144,7 +144,7 @@ public class PlayerChat extends AbstractFunnyListener {
     
     private boolean handleUsePermission(User user, Guild guild, Type type) {
         GuildPermission<Boolean> permission = ChatType.getChatType(type).getUsePermission();
-        return this.permissionController.handlePermission(guild, user, permission);
+        return this.permissionChecker.handlePermission(guild, user, permission);
     }
 
     private void sendMessageToGuild(Guild guild, String message, Type type) {
@@ -156,8 +156,8 @@ public class PlayerChat extends AbstractFunnyListener {
     
     private boolean checkSeePermission(User user, Guild guild, Type type) {
         ChatType chatType = ChatType.getChatType(type);
-        return this.permissionController.getPermissionValue(guild, user, chatType.getSeePermission())
-                .orElse(() -> this.permissionController.getPermissionValue(guild, user, chatType.getUsePermission()))
+        return this.permissionChecker.getPermissionValue(guild, user, chatType.getSeePermission())
+                .orElse(() -> this.permissionChecker.getPermissionValue(guild, user, chatType.getUsePermission()))
                 .orElseGet(false);
     }
     
@@ -175,7 +175,7 @@ public class PlayerChat extends AbstractFunnyListener {
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())
                 .register("{POS}", this.config.chatPosition.getValue())
-                .register("{POS}", UserUtils.getUserPosition(this.permissionController, user))
+                .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user))
                 .register("{MESSAGE}", message);
 
         return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));
