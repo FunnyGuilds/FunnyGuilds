@@ -72,6 +72,7 @@ import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
@@ -121,6 +122,7 @@ public class FunnyGuilds extends JavaPlugin {
     private HookManager hookManager;
     private UserManager userManager;
     private GuildManager guildManager;
+    private RankService rankService;
     private UserRankManager userRankManager;
     private GuildRankManager guildRankManager;
     private DamageManager damageManager;
@@ -250,6 +252,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.localeManager = new LocaleManager();
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
+        this.rankService = RankService.createRankService(this);   
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
         this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
         this.guildRankManager = new GuildRankManager(this.pluginConfiguration);

@@ -1,19 +1,19 @@
 package net.dzikoysk.funnyguilds.rank;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRankNameProvider;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 
 final class GuildRankTracker<T extends Number> extends CommonRankTracker<Guild, T> {
 
     GuildRankTracker(
             StatKey<T> statKey,
-            GuildRankNameProvider nameProvider,
-            Function<Guild, Boolean> isRanked
+            GuildManager guildManager,
+            Predicate<Guild> isRanked
     ) {
         super(
                 statKey,
-                nameProvider,
+                guildManager::findByUuid,
                 isRanked
         );
     }

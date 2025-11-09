@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.rank;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -11,13 +10,10 @@ import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildRankNameProvider;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserRankNameProvider;
-import panda.std.Option;
 
-public final class FunnyRankService implements RankService {
+final class FunnyRankService implements RankService {
     
     private final Executor executor;
     private final Queue<Runnable> rankUpdateQueue = new ConcurrentLinkedQueue<>();
@@ -25,15 +21,13 @@ public final class FunnyRankService implements RankService {
     private final PluginConfiguration pluginConfiguration;
     
     private final UserManager userManager;
-    private final UserRankNameProvider userRankNameProvider;
-    private final LoadingCache<StatKey<?>, UserRankTracker<?>> userRankTrackers;
+    private final Cache<StatKey<?>, UserRankTracker<?>> userRankTrackers = Caffeine.newBuilder().build();
     
     private final GuildManager guildManager;
-    private final GuildRankNameProvider guildRankNameProvider;
-    private final Cache<StatKey<?>, GuildRankTracker<?>> guildRankTrackers;
+    private final Cache<StatKey<?>, GuildRankTracker<?>> guildRankTrackers = Caffeine.newBuilder().build();
     
     @SuppressWarnings("unchecked")
-    public FunnyRankService(
+    FunnyRankService(
             Executor executor,
             PluginConfiguration pluginConfiguration,
             UserManager userManager,
@@ -43,40 +37,7 @@ public final class FunnyRankService implements RankService {
         this.pluginConfiguration = pluginConfiguration;
         
         this.userManager = userManager;
-        this.userRankNameProvider = new UserRankNameProvider(userManager);
-        this.userRankTrackers = Caffeine.newBuilder()
-                .build(key -> new UserRankTracker<>(
-                        (StatKey<Number>) key,
-                        this.userRankNameProvider,
-                        this.pluginConfiguration.skipPrivilegedPlayersInRankPositions
-                ));
-
         this.guildManager = guildManager;
-        this.guildRankNameProvider = new GuildRankNameProvider(guildManager);
-        this.guildRankTrackers = Caffeine.newBuilder().build();
-    }
-    
-    @Override
-    public <T extends Number> Option<T> getUserStatValue(User user, StatKey<T> key) {
-        return this.getUserRankTracker(key).getValue(user);
-    }
-    
-    @Override
-    public <T extends Number> Option<Integer> getUserPosition(
-            User user,
-            StatKey<T> key
-    ) {
-        return this.getUserRankTracker(key).getPosition(user);
-    }
-
-    @Override
-    public <T extends Number> Option<User> getUserAtPosition(
-            int position,
-            StatKey<T> key
-    ) {
-        return this.getUserRankTracker(key)
-                .getAtPosition(position)
-                .flatMap(this.userManager::findByUuid);
     }
 
     @Override
@@ -132,35 +93,6 @@ public final class FunnyRankService implements RankService {
         }
     }
 
-    @Override
-    public <T extends Number, R extends Number> Option<R> getGuildStatValue(
-            Guild guild,
-            StatKey<T> key,
-            GuildStatAggregationType<R> aggregationType
-    ) {
-        return this.getGuildRankTracker(key, aggregationType).getValue(guild);
-    }
-    
-    @Override
-    public <T extends Number> Option<Integer> getGuildPosition(
-            Guild guild,
-            StatKey<T> key,
-            GuildStatAggregationType<?> aggregationType
-    ) {
-        return this.getGuildRankTracker(key, aggregationType).getPosition(guild);
-    }
-
-    @Override
-    public <T extends Number> Option<Guild> getGuildAtPosition(
-            int position,
-            StatKey<T> key,
-            GuildStatAggregationType<?> aggregationType
-    ) {
-        return this.getGuildRankTracker(key, aggregationType)
-                .getAtPosition(position)
-                .flatMap(this.guildManager::findByUuid);
-    }
-
     private <T extends Number> void updateGuildStatsValue(
             Guild guild,
             StatKey<T> key
@@ -178,26 +110,35 @@ public final class FunnyRankService implements RankService {
         this.getGuildRankTracker(key, aggregationType).setValue(guild, newValue);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private <T extends Number> UserRankTracker<T> getUserRankTracker(StatKey<T> key) {
-        return (UserRankTracker<T>) this.userRankTrackers.get(key);
+    public <T extends Number> UserRankTracker<T> getUserRankTracker(StatKey<T> key) {
+        return (UserRankTracker<T>) this.userRankTrackers.get(key, k -> new UserRankTracker<>(
+                key,
+                this.userManager,
+                this::isRankedUser
+        ));
     }
     
+    private boolean isRankedUser(User user) {
+        return !this.pluginConfiguration.skipPrivilegedPlayersInRankPositions || !user.hasPermission("funnyguilds.ranking.exempt");
+    }
     
+    @Override
     @SuppressWarnings("unchecked")
-    private <T extends Number, R extends Number> GuildRankTracker<R> getGuildRankTracker(
+    public  <T extends Number, R extends Number> GuildRankTracker<R> getGuildRankTracker(
             StatKey<T> key,
             GuildStatAggregationType<R> statType
     ) {
         StatKey<R> finalKey = createStatKey(statType, key);
         return (GuildRankTracker<R>) this.guildRankTrackers.get(finalKey, k -> new GuildRankTracker<>(
-                (StatKey<Number>) k,
-                this.guildRankNameProvider,
+                finalKey,
+                this.guildManager,
                 this::isRankedGuild
         ));
     }
     
-    public boolean isRankedGuild(Guild guild) {
+    private boolean isRankedGuild(Guild guild) {
         return guild.getMembers().size() >= this.pluginConfiguration.minMembersToInclude;
     }
     

@@ -1,85 +1,94 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number> implements RankTracker<E, T> {
-
+  
     private final StatKey<T> statKey;
-    private final Function<UUID, String> nameProvider;
-    private final Function<E, Boolean> canBeTrackedFunction;
+    
+    private final Function<UUID, Option<E>> entityProvider;
+    private final Predicate<E> canBeTrackedChecker;
 
-    private final Queue<Runnable> topUpdateQueue = new ConcurrentLinkedQueue<>();
-
-    private final Map<UUID, T> entitiesValues = new ConcurrentHashMap<>();
-    private final List<UUID> rankedEntities = new ArrayList<>();
+    private final Map<UUID, T> statisticValueByEntity = new ConcurrentHashMap<>();
+    private final List<UUID> entitiesInTop = new ArrayList<>();
 
     CommonRankTracker(
             StatKey<T> statKey,
-            RankNameProvider nameProvider,
-            Function<E, Boolean> canBeTrackedFunction
+            Function<UUID, Option<E>> entityProvider,
+            Predicate<E> canBeTrackedChecker
     ) {
         this.statKey = statKey;
-        this.nameProvider = nameProvider;
-        this.canBeTrackedFunction = canBeTrackedFunction;
+        this.entityProvider = entityProvider;
+        this.canBeTrackedChecker = canBeTrackedChecker;
     }
 
     @Override
-    public StatKey<T> getStatKey() {
-        return this.statKey;
+    public Collection<E> entitiesInTop() {
+        List<E> entitiesInTop = PandaStream.of(this.entitiesInTop)
+                .flatMap(this.entityProvider::apply)
+                .toList();
+        return Collections.unmodifiableList(entitiesInTop);
     }
 
     @Override
-    public boolean canBeTracked(E entity) {
-        return this.canBeTrackedFunction.apply(entity);
+    public int countEntitiesInTop() {
+        return this.entitiesInTop.size();
     }
 
     @Override
-    public synchronized Option<Integer> getPosition(E entity) {
-        if (!this.canBeTracked(entity)) {
+    public boolean isEntityIncludedInTop(E entity) {
+        return this.canBeTrackedChecker.test(entity);
+    }
+
+    @Override
+    public synchronized Option<Integer> findPositionByEntity(E entity) {
+        if (!this.isEntityIncludedInTop(entity)) {
             return Option.none();
         }
 
-        int position = this.rankedEntities.indexOf(entity.getUUID());
+        int position = this.entitiesInTop.indexOf(entity.getUUID());
         return position >= 0
                 ? Option.of(position + 1)
                 : Option.none();
     }
 
     @Override
-    public synchronized Option<UUID> getAtPosition(int position) {
-        int index = position - 1;
-        if (index >= 0 && index < this.rankedEntities.size()) {
-            return Option.of(this.rankedEntities.get(index));
-        }
-        return Option.none();
+    public synchronized Option<E> findEntityByPosition(int position) {
+        return Option.flatWhen(
+                position >= 1 && position <= this.entitiesInTop.size(),
+                () -> Option.of(this.entitiesInTop.get(position - 1))
+                        .flatMap(this.entityProvider)
+        );
     }
 
     @Override
-    public Option<T> getValue(E entity) {
-        return Option.of(this.entitiesValues.get(entity.getUUID()));
+    public Option<T> valueOfEntity(E entity) {
+        return Option.of(this.statisticValueByEntity.get(entity.getUUID()));
     }
 
     @ApiStatus.Internal
-    public synchronized void initializeEntities(Map<E, T> initialValues) {
+    synchronized void initializeEntities(Map<E, T> initialValues) {
         if (initialValues.isEmpty()) {
             return;
         }
 
-        List<UUID> sortedUuids = initialValues.entrySet()
-                .stream()
-                .filter(entry -> !this.canBeTracked(entry.getKey()))
+        this.entitiesInTop.clear();
+        List<UUID> entitiesInTop = PandaStream.of(initialValues.entrySet())
+                .filterNot(entry -> !this.isEntityIncludedInTop(entry.getKey()))
                 .sorted((entry1, entry2) -> {
                     E entity1 = entry1.getKey();
                     T value1 = entry1.getValue();
@@ -94,53 +103,61 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
                 })
                 .map(Map.Entry::getKey)
                 .map(IdentifiableEntity::getUUID)
-                .collect(Collectors.toList());
+                .toList();
+        this.entitiesInTop.addAll(entitiesInTop);
 
-        Map<UUID, T> initialValuesByUuid = initialValues.entrySet()
+        this.statisticValueByEntity.clear();
+        Map<UUID, T> statisticValuesOfEntities = initialValues.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().getUUID(),
                         Map.Entry::getValue
                 ));
-
-        this.entitiesValues.putAll(initialValuesByUuid);
-        this.rankedEntities.clear();
-        this.rankedEntities.addAll(sortedUuids);
+        this.statisticValueByEntity.putAll(statisticValuesOfEntities);
     }
 
-    @Override
-    public T changeValue(
+    @ApiStatus.Internal
+    T changeValue(
             E entity,
             UnaryOperator<T> valueChange
     ) {
-        return this.entitiesValues.compute(entity.getUUID(), (uuid, currentValue) -> {
-            T newValue = valueChange.apply(currentValue);
-            this.updateRanking(
-                    entity,
-                    newValue
-            );
-            return newValue;
-        });
+        return this.statisticValueByEntity.compute(
+                entity.getUUID(),
+                (uuid, currentValue) -> {
+                    T newValue = valueChange.apply(currentValue);
+                    this.updateRanking(
+                            entity,
+                            newValue
+                    );
+                    return newValue;
+                }
+        );
     }
 
-    @Override
-    public T setValue(
+    @ApiStatus.Internal
+    T setValue(
             E entity,
             T value
     ) {
-        return this.entitiesValues.compute(entity.getUUID(), (uuid, currentValue) -> {
-            this.updateRanking(
-                    entity,
-                    value
-            );
-            return value;
-        });
+        return this.statisticValueByEntity.compute(
+                entity.getUUID(),
+                (uuid, currentValue) -> {
+                    this.updateRanking(
+                            entity,
+                            value
+                    );
+                    return value;
+                }
+        );
     }
 
-    private synchronized void updateRanking(E entity, T currentValue) {
+    private synchronized void updateRanking(
+            E entity,
+            T currentValue
+    ) {
         UUID uuid = entity.getUUID();
-        this.rankedEntities.remove(uuid);
-        if (!this.canBeTracked(entity)) {
+        this.entitiesInTop.remove(uuid);
+        if (!this.isEntityIncludedInTop(entity)) {
             return;
         }
 
@@ -148,46 +165,68 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
                 uuid,
                 currentValue
         );
-        this.rankedEntities.add(
+        this.entitiesInTop.add(
                 insertPosition,
                 uuid
         );
     }
 
-    private int findInsertPositionBinary(UUID uuid, T value) {
+    private int findInsertPositionBinary(
+            UUID uuid,
+            T value
+    ) {
         int left = 0;
-        int right = this.rankedEntities.size();
+        int right = this.entitiesInTop.size();
 
         while (left < right) {
             int mid = (left + right) >>> 1;
-            UUID midUuid = this.rankedEntities.get(mid);
-            T midValue = this.entitiesValues.get(midUuid);
+            UUID midUuid = this.entitiesInTop.get(mid);
+            T midValue = this.statisticValueByEntity.get(midUuid);
             if (midValue == null) {
-                return this.findInsertPositionLinear(uuid, value, left);
+                return this.findInsertPositionLinear(
+                        uuid,
+                        value,
+                        left
+                );
             }
 
-            int comparison = this.compareRankedEntities(uuid, value, midUuid, midValue);
+            int comparison = this.compareRankedEntities(
+                    uuid,
+                    value,
+                    midUuid,
+                    midValue
+            );
             if (comparison < 0) {
                 right = mid;
-            } else {
+            }
+            else {
                 left = mid + 1;
             }
         }
         return left;
     }
 
-    private int findInsertPositionLinear(UUID uuid, T value, int startIndex) {
-        int size = this.rankedEntities.size();
+    private int findInsertPositionLinear(
+            UUID uuid,
+            T value,
+            int startIndex
+    ) {
+        int size = this.entitiesInTop.size();
 
         for (int i = startIndex; i < size; i++) {
-            UUID currentUuid = this.rankedEntities.get(i);
-            T currentValue = this.entitiesValues.get(currentUuid);
+            UUID currentUuid = this.entitiesInTop.get(i);
+            T currentValue = this.statisticValueByEntity.get(currentUuid);
 
             if (currentValue == null) {
                 continue;
             }
 
-            int comparison = this.compareRankedEntities(uuid, value, currentUuid, currentValue);
+            int comparison = this.compareRankedEntities(
+                    uuid,
+                    value,
+                    currentUuid,
+                    currentValue
+            );
             if (comparison < 0) {
                 return i;
             }
@@ -197,40 +236,26 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
     }
 
     private int compareRankedEntities(
-            UUID uuid1,
-            T value1,
-            UUID uuid2,
-            T value2
+            UUID firstUuid,
+            T firstValue,
+            UUID secondUuid,
+            T secondValue
     ) {
-        int valueComparison = this.compareByValue(
-                value1,
-                value2
+        int valueComparison = this.statKey.compare(
+                firstValue,
+                secondValue
         );
         if (valueComparison != 0) {
             return valueComparison;
         }
-        return this.compareByName(
-                uuid1,
-                uuid2
-        );
+
+        String firstEntityName = this.entityProvider.apply(firstUuid)
+                .map(IdentifiableEntity::getName)
+                .get();
+        String secondEntityName = this.entityProvider.apply(secondUuid)
+                .map(IdentifiableEntity::getName)
+                .get();
+        return firstEntityName.compareToIgnoreCase(secondEntityName);
     }
 
-    private int compareByValue(
-            T value1,
-            T value2
-    ) {
-        return this.statKey.compare(
-                value2,
-                value1
-        );
-    }
-
-    private int compareByName(
-            UUID uuid1,
-            UUID uuid2
-    ) {
-        String name1 = this.nameProvider.apply(uuid1);
-        String name2 = this.nameProvider.apply(uuid2);
-        return name1.compareTo(name2);
-    }
 }

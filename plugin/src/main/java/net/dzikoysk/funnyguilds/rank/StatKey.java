@@ -16,11 +16,6 @@ public interface StatKey<T extends Number> extends Keyed {
             T value2
     );
 
-    T aggregate(
-            T value1,
-            T value2
-    );
-
     static StatKey<Integer> integerStatKey(Key key) {
         return new IntegerStatKey(key);
     }
@@ -100,14 +95,6 @@ public interface StatKey<T extends Number> extends Keyed {
                     value2
             );
         }
-
-        @Override
-        public Integer aggregate(
-                Integer value1,
-                Integer value2
-        ) {
-            return value1 + value2;
-        }
     }
 
     final class DoubleStatKey extends CommonStatKey<Double> {
@@ -130,14 +117,6 @@ public interface StatKey<T extends Number> extends Keyed {
                     value1,
                     value2
             );
-        }
-
-        @Override
-        public Double aggregate(
-                Double value1,
-                Double value2
-        ) {
-            return value1 + value2;
         }
     }
 
