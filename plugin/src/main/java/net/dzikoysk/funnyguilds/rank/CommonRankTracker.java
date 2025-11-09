@@ -5,20 +5,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
-import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 
 abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number> implements RankTracker<E, T> {
-
-    private final Executor executor;
 
     private final StatKey<T> statKey;
     private final Function<UUID, String> nameProvider;
@@ -28,15 +24,12 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
 
     private final Map<UUID, T> entitiesValues = new ConcurrentHashMap<>();
     private final List<UUID> rankedEntities = new ArrayList<>();
-    private final Map<UUID, Integer> pendingChanges = new ConcurrentHashMap<>();
 
     CommonRankTracker(
-            Executor executor,
             StatKey<T> statKey,
             RankNameProvider nameProvider,
             Function<E, Boolean> canBeTrackedFunction
     ) {
-        this.executor = executor;
         this.statKey = statKey;
         this.nameProvider = nameProvider;
         this.canBeTrackedFunction = canBeTrackedFunction;
@@ -50,14 +43,6 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
     @Override
     public boolean canBeTracked(E entity) {
         return this.canBeTrackedFunction.apply(entity);
-    }
-
-    @Override
-    public boolean hasPendingChanges(E entity) {
-        return this.pendingChanges.getOrDefault(
-                entity.getUUID(),
-                0
-        ) > 0;
     }
 
     @Override
@@ -124,66 +109,32 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
     }
 
     @Override
-    public CompletableFuture<T> updateValue(
+    public T changeValue(
             E entity,
-            T valueChange
+            UnaryOperator<T> valueChange
     ) {
-        return this.enqueueValueUpdate(
-                entity,
-                valueChange,
-                (uuid, change) -> this.entitiesValues.merge(
-                        uuid,
-                        change,
-                        this.statKey::aggregate
-                )
-        );
+        return this.entitiesValues.compute(entity.getUUID(), (uuid, currentValue) -> {
+            T newValue = valueChange.apply(currentValue);
+            this.updateRanking(
+                    entity,
+                    newValue
+            );
+            return newValue;
+        });
     }
 
     @Override
-    public CompletableFuture<T> setValue(
+    public T setValue(
             E entity,
             T value
     ) {
-        return this.enqueueValueUpdate(
-                entity,
-                value,
-                (uuid, newValue) -> {
-                    this.entitiesValues.put(uuid, newValue);
-                    return newValue;
-                }
-        );
-    }
-
-    private CompletableFuture<T> enqueueValueUpdate(
-            E entity,
-            T value,
-            BiFunction<UUID, T, T> applyValue
-    ) {
-        CompletableFuture<T> future = new CompletableFuture<>();
-        UUID uuid = entity.getUUID();
-        this.pendingChanges.merge(uuid, 1, Integer::sum);
-
-        this.topUpdateQueue.add(() -> {
-            T currentValue = applyValue.apply(uuid, value);
-
-            this.updateRanking(entity, currentValue);
-
-            this.pendingChanges.compute(uuid, (key, count) -> {
-                int newCount = count - 1;
-                return newCount > 0 ? newCount : null;
-            });
-
-            future.complete(currentValue);
+        return this.entitiesValues.compute(entity.getUUID(), (uuid, currentValue) -> {
+            this.updateRanking(
+                    entity,
+                    value
+            );
+            return value;
         });
-
-        this.executor.execute(() -> {
-            Runnable update;
-            while ((update = this.topUpdateQueue.poll()) != null) {
-                update.run();
-            }
-        });
-
-        return future;
     }
 
     private synchronized void updateRanking(E entity, T currentValue) {

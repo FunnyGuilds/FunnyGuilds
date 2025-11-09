@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import panda.std.Option;
 
@@ -15,12 +15,7 @@ public interface RankTracker<E extends IdentifiableEntity, T extends Number> {
      * @return whether the entity can be tracked (for e.g. they not an admin or have tracking disabled)
      */
     boolean canBeTracked(E entity);
-
-    /**
-     * @return whether there are pending changes for the given entity
-     */
-    boolean hasPendingChanges(E entity);
-
+    
     /**
      * Get the position of the entity.
      *
@@ -47,27 +42,27 @@ public interface RankTracker<E extends IdentifiableEntity, T extends Number> {
     Option<T> getValue(E entity);
 
     /**
-     * Update the top value asynchronously.
+     * Update the value associated with the entity by aggregating the provided value.
      *
      * @param entity      the entity to update
-     * @param valueChange the value to change (will be aggregated)
-     *
-     * @return a future with the updated (aggregated) value
+     * @param updateFunction the function to aggregate the current value with the new value
+     *                    
+     * @return value after the update
      */
-    CompletableFuture<T> updateValue(
+    T changeValue(
             E entity,
-            T valueChange
+            UnaryOperator<T> updateFunction
     );
     
     /**
-     * Set the value asynchronously.
+     * Set the value associated with the entity.
      *
      * @param entity the entity to update
      * @param value  the new value
-     *
-     * @return a future with the set value
+     *               
+     * @return value after the update
      */
-    CompletableFuture<T> setValue(
+    T setValue(
             E entity,
             T value
     );

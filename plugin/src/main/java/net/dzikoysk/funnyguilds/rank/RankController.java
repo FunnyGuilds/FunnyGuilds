@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
@@ -22,10 +23,28 @@ public interface RankController {
             StatKey<T> key
     );
     
-    <T extends Number> CompletableFuture<T> updateUserStatValue(
+    <T extends Number> T setUserStatValue(
             User user,
             StatKey<T> key,
             T valueChange
+    );
+    
+    <T extends Number> T changeUserStatValue(
+            User user,
+            StatKey<T> key,
+            UnaryOperator<T> updateFunction
+    );
+    
+    <T extends Number> CompletableFuture<T> queueSetUserStatValue(
+            User user,
+            StatKey<T> key,
+            T valueChange
+    );
+    
+    <T extends Number> CompletableFuture<T> queueChangeUserStatValue(
+            User user,
+            StatKey<T> key,
+            UnaryOperator<T> updateFunction
     );
 
     <T extends Number, R extends Number> Option<R> getGuildStatValue(
