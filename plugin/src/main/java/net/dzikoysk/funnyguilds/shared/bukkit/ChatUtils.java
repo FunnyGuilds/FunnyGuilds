@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 import java.util.List;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import panda.std.stream.PandaStream;
@@ -21,6 +22,9 @@ public final class ChatUtils {
 
     private static final Pattern LEGACY_TO_HEX_PATTERN = Pattern.compile("&[xX]&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})");
     private static final String HEX_COLOR_REPLACEMENT = "&#$1$2$3$4$5$6";
+
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
 
     public static String colored(String message) {
         if (message == null) {
@@ -57,5 +61,40 @@ public final class ChatUtils {
 
     public static Component deserializeAmpersand(String text) {
         return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+    }
+
+    /**
+     * Formats a string with support for both MiniMessage and legacy color codes.
+     * This method first processes MiniMessage tags, then applies legacy color codes.
+     *
+     * @param message the message to format
+     * @return the formatted message as a legacy string
+     */
+    public static String coloredWithMiniMessage(String message) {
+        if (message == null) {
+            return "";
+        }
+
+        try {
+            // First, try to parse as MiniMessage
+            Component component = MINI_MESSAGE.deserialize(message);
+            // Convert to legacy format for compatibility with older Minecraft versions
+            String legacyMessage = LEGACY_SERIALIZER.serialize(component);
+            // Also process any remaining legacy color codes
+            return colored(legacyMessage);
+        } catch (Exception e) {
+            // If MiniMessage parsing fails, fall back to legacy color code processing
+            return colored(message);
+        }
+    }
+
+    /**
+     * Formats a list of strings with support for both MiniMessage and legacy color codes.
+     *
+     * @param messages the messages to format
+     * @return the formatted messages
+     */
+    public static List<String> coloredWithMiniMessage(List<String> messages) {
+        return PandaStream.of(messages).map(ChatUtils::coloredWithMiniMessage).toList();
     }
 }
