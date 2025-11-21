@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.Optional;
 import java.util.UUID;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -28,7 +27,7 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         this.profile = profile;
 
         this.cache = new UserCache(this);
-        this.rank = new UserRank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
+        this.rank = new UserRank(this);
 
         this.markChanged();
     }

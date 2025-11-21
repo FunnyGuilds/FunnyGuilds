@@ -528,11 +528,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
-    @Min(1)
-    @Comment("")
-    @Comment("Co ile ticków ranking graczy oraz gildii powinien być odświeżany (20 ticków = 1 sekunda)")
-    public int rankingUpdateInterval = 40;
-
     @Comment("")
     @Comment("Czy system asyst ma byc włączony")
     @CustomKey("rank-assist-enable")

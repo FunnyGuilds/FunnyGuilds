@@ -13,6 +13,8 @@ import panda.std.Option;
 
 public interface RankService {
 
+    boolean isRankedUser(User user);
+    
     /**
      * @param key the statistic key
      * @param <T> the type of the statistic value
@@ -123,6 +125,8 @@ public interface RankService {
             StatKey<T> key,
             UnaryOperator<T> updateFunction
     );
+    
+    boolean isRankedGuild(Guild guild);
 
     /**
      * Get the rank tracker for guilds based on a specific statistic key and aggregation type.

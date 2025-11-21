@@ -1,21 +1,17 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.util.function.IntFunction;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.rank.Rank;
-import net.dzikoysk.funnyguilds.user.top.UserComparator;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
-    private int points;
-    private int kills;
-    private int deaths;
-    private int assists;
-    private int logouts;
-
-    UserRank(User user, int rankStart) {
+    UserRank(User user) {
         super(user);
-        this.points = rankStart;
     }
 
     public User getUser() {
@@ -24,87 +20,176 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     @Override
     public int getPoints() {
-        return this.points;
+        return FunnyGuilds.getInstance().getRankService().getUserStatValue(
+                this.entity,
+                UserStatKeys.POINTS
+        ).orElseGet(0);
     }
 
     public void setPoints(int points) {
-        this.points = Math.max(0, points);
-        this.entity.markChanged();
+        FunnyGuilds.getInstance().getRankService().setUserStatValue(
+                this.entity,
+                UserStatKeys.POINTS,
+                Math.max(
+                        0,
+                        points
+                )
+        );
     }
 
     public void updatePoints(IntFunction<Integer> update) {
-        this.setPoints(update.apply(this.points));
+        FunnyGuilds.getInstance().getRankService().changeUserStatValue(
+                this.entity,
+                UserStatKeys.POINTS,
+                current -> Math.max(
+                        0,
+                        update.apply(current)
+                )
+        );
     }
 
     @Override
     public int getKills() {
-        return this.kills;
+        return FunnyGuilds.getInstance().getRankService().getUserStatValue(
+                this.entity,
+                UserStatKeys.KILLS
+        ).orElseGet(0);
     }
 
     public void setKills(int kills) {
-        this.kills = Math.max(0, kills);
-        this.entity.markChanged();
+        FunnyGuilds.getInstance().getRankService().setUserStatValue(
+                this.entity,
+                UserStatKeys.KILLS,
+                Math.max(
+                        0,
+                        kills
+                )
+        );
     }
 
     public void updateKills(IntFunction<Integer> update) {
-        this.setKills(update.apply(this.kills));
+        FunnyGuilds.getInstance().getRankService().changeUserStatValue(
+                this.entity,
+                UserStatKeys.KILLS,
+                current -> Math.max(
+                        0,
+                        update.apply(current)
+                )
+        );
     }
 
     @Override
     public int getDeaths() {
-        return this.deaths;
+        return FunnyGuilds.getInstance().getRankService().getUserStatValue(
+                this.entity,
+                UserStatKeys.DEATHS
+        ).orElseGet(0);
     }
 
     public void setDeaths(int deaths) {
-        this.deaths = Math.max(0, deaths);
-        this.entity.markChanged();
+        FunnyGuilds.getInstance().getRankService().setUserStatValue(
+                this.entity,
+                UserStatKeys.DEATHS,
+                Math.max(
+                        0,
+                        deaths
+                )
+        );
     }
 
     public void updateDeaths(IntFunction<Integer> update) {
-        this.setDeaths(update.apply(this.deaths));
+        FunnyGuilds.getInstance().getRankService().changeUserStatValue(
+                this.entity,
+                UserStatKeys.DEATHS,
+                current -> Math.max(
+                        0,
+                        update.apply(current)
+                )
+        );
     }
 
     @Override
     public int getAssists() {
-        return this.assists;
+        return FunnyGuilds.getInstance().getRankService().getUserStatValue(
+                this.entity,
+                UserStatKeys.ASSISTS
+        ).orElseGet(0);
     }
 
     public void setAssists(int assists) {
-        this.assists = Math.max(0, assists);
-        this.entity.markChanged();
+        FunnyGuilds.getInstance().getRankService().setUserStatValue(
+                this.entity,
+                UserStatKeys.ASSISTS,
+                Math.max(
+                        0,
+                        assists
+                )
+        );
     }
 
     public void updateAssists(IntFunction<Integer> update) {
-        this.setAssists(update.apply(this.assists));
+        FunnyGuilds.getInstance().getRankService().changeUserStatValue(
+                this.entity,
+                UserStatKeys.ASSISTS,
+                current -> Math.max(
+                        0,
+                        update.apply(current)
+                )
+        );
     }
 
     @Override
     public int getLogouts() {
-        return this.logouts;
+        return FunnyGuilds.getInstance().getRankService().getUserStatValue(
+                this.entity,
+                UserStatKeys.LOGOUTS
+        ).orElseGet(0);
     }
 
     public void setLogouts(int logouts) {
-        this.logouts = Math.max(0, logouts);
-        this.entity.markChanged();
+        FunnyGuilds.getInstance().getRankService().setUserStatValue(
+                this.entity,
+                UserStatKeys.LOGOUTS,
+                Math.max(
+                        0,
+                        logouts
+                )
+        );
     }
 
     public void updateLogouts(IntFunction<Integer> update) {
-        this.setLogouts(update.apply(this.logouts));
+        FunnyGuilds.getInstance().getRankService().changeUserStatValue(
+                this.entity,
+                UserStatKeys.LOGOUTS,
+                current -> Math.max(
+                        0,
+                        update.apply(current)
+                )
+        );
     }
 
     @Override
     public float getKDR() {
-        return this.deaths == 0 ? this.kills : 1.0F * this.kills / this.deaths;
+           int kills = this.getKills();
+        int deaths = this.getDeaths();
+        return deaths == 0
+                ? kills
+                : 1.0F * kills / deaths;
     }
 
     @Override
     public float getKDA() {
-        return this.deaths == 0 ? (this.kills + this.assists) : 1.0F * (this.kills + this.assists) / this.deaths;
+        int kills = this.getKills();
+        int deaths = this.getDeaths();
+        int assists = this.getAssists();
+        return deaths == 0
+                ? (kills + assists)
+                : 1.0F * (kills + assists) / deaths;
     }
 
     @Override
     public int compareTo(@NotNull UserRank rank) {
-        return UserComparator.POINTS_COMPARATOR.compare(this, rank);
+        return Integer.compare(rank.getPoints(), this.getPoints());
     }
 
 }

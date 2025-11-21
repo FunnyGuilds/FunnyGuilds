@@ -7,10 +7,9 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.jetbrains.annotations.Nullable;
 
 public class RankPlaceholdersService implements PlaceholdersService<User> {
@@ -19,28 +18,25 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
     private final PluginConfiguration config;
     private final MessageService messageService;
-    private final UserRankManager userRankManager;
-    private final GuildRankManager guildRankManager;
+    private final RankService rankService;
 
     public RankPlaceholdersService(
         EntityLocaleProvider entityLocaleProvider,
         PluginConfiguration config,
         MessageService messageService,
-        UserRankManager userRankManager,
-        GuildRankManager guildRankManager
+        RankService rankService
     ) {
         this.entityLocaleProvider = entityLocaleProvider;
         this.config = config;
         this.messageService = messageService;
-        this.userRankManager = userRankManager;
-        this.guildRankManager = guildRankManager;
+        this.rankService = rankService;
     }
 
     @Override
     public Replaceable asReplaceable(User targetUser, String prefix, String suffix, UnaryOperator<String> nameModifier) {
         return new FunnyFormatter()
-            .register(new TopPlaceholderReplacement(config, messageService, userRankManager, guildRankManager, targetUser))
-            .register(new TopPositionPlaceholderReplacement(messageService, guildRankManager, targetUser));
+            .register(new TopPlaceholderReplacement(config, messageService, rankService, targetUser))
+            .register(new TopPositionPlaceholderReplacement(messageService, rankService, targetUser));
     }
 
     @Override

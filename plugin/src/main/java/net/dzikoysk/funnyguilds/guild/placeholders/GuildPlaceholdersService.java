@@ -19,7 +19,7 @@ import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
@@ -61,7 +61,7 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
     public static GuildPlaceholders createGuildPlaceholders(FunnyGuilds plugin) {
         PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
         MessageService messages = plugin.getMessageService();
-        GuildRankManager rankManager = plugin.getGuildRankManager();
+        RankService rankManager = plugin.getRankService();
 
         return new GuildPlaceholders()
                 .property("owner", guild -> guild.getOwner().getName(), entity -> messages.get(entity, config -> config.gOwnerNoValue))
