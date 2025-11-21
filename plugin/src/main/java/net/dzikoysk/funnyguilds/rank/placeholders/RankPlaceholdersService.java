@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.rank.placeholders;
 
+import dev.peri.yetanothermessageslibrary.adventure.AdventureHelper;
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -13,21 +15,16 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
-import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRankManager;
-import net.dzikoysk.funnyguilds.user.top.UserTop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
-import dev.peri.yetanothermessageslibrary.adventure.AdventureHelper;
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
 public class RankPlaceholdersService implements PlaceholdersService<User> {
 
@@ -38,21 +35,18 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
     private final PluginConfiguration config;
     private final TablistConfiguration tablistConfig;
     private final MessageService messageService;
-    private final UserRankManager userRankManager;
-    private final GuildRankManager guildRankManager;
-
+    private final RankService rankService;
+    
     public RankPlaceholdersService(
             PluginConfiguration config,
             TablistConfiguration tablistConfig,
             MessageService messageService,
-            UserRankManager userRankManager,
-            GuildRankManager guildRankManager
+            RankService rankService
     ) {
         this.config = config;
         this.tablistConfig = tablistConfig;
         this.messageService = messageService;
-        this.userRankManager = userRankManager;
-        this.guildRankManager = guildRankManager;
+        this.rankService = rankService;
     }
 
     /**

@@ -33,7 +33,6 @@ import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
@@ -70,8 +69,6 @@ import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
-import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
@@ -81,7 +78,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -123,8 +119,6 @@ public class FunnyGuilds extends JavaPlugin {
     private UserManager userManager;
     private GuildManager guildManager;
     private RankService rankService;
-    private UserRankManager userRankManager;
-    private GuildRankManager guildRankManager;
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
@@ -252,11 +246,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.localeManager = new LocaleManager();
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
-        this.rankService = RankService.createRankService(this);   
-        this.userRankManager = new UserRankManager(this.pluginConfiguration);
-        this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
-        this.guildRankManager = new GuildRankManager(this.pluginConfiguration);
-        this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
+        this.rankService = RankService.createRankService(this);
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
@@ -284,8 +274,7 @@ public class FunnyGuilds extends JavaPlugin {
                 this.pluginConfiguration,
                 this.tablistConfiguration,
                 this.messageService,
-                this.userRankManager,
-                this.guildRankManager
+                this.rankService
         );
         this.tablistPlaceholdersService = new TablistPlaceholdersService(
                 this.basicPlaceholdersService,
@@ -331,8 +320,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(MessageService.class).assignInstance(this.messageService);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
-            resources.on(UserRankManager.class).assignInstance(this.userRankManager);
-            resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
+            resources.on(RankService.class).assignInstance(this.rankService);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
@@ -352,7 +340,6 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
@@ -606,12 +593,8 @@ public class FunnyGuilds extends JavaPlugin {
         return this.guildManager;
     }
 
-    public UserRankManager getUserRankManager() {
-        return this.userRankManager;
-    }
-
-    public GuildRankManager getGuildRankManager() {
-        return this.guildRankManager;
+    public RankService getRankService() {
+        return this.rankService;
     }
 
     public DamageManager getDamageManager() {

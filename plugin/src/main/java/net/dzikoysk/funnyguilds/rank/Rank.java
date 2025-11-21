@@ -1,17 +1,15 @@
 package net.dzikoysk.funnyguilds.rank;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
+import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;
-    protected Map<String, Integer> position = new HashMap<>();
 
     protected Rank(T entity) {
         this.entity = entity;
@@ -34,8 +32,9 @@ public abstract class Rank<T extends MutableEntity> {
      *
      * @return position in which entity is for the given top, return 0 if entity is not in the top
      */
+    
     public int getPosition(String top) {
-        return this.position.getOrDefault(top.toLowerCase(Locale.ROOT), 0);
+        throw new UnsupportedOperationException("Rank API is deprecated, use RankService to get positions");
     }
 
     /**
@@ -43,7 +42,7 @@ public abstract class Rank<T extends MutableEntity> {
      * It's only for internal use (or when you added your own top from your plugin)
      */
     public void setPosition(String top, int position) {
-        this.position.put(top.toLowerCase(Locale.ROOT), position);
+        throw new UnsupportedOperationException("Rank API is deprecated, use RankService to calculate positions");
     }
 
     public abstract int getPoints();

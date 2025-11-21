@@ -120,7 +120,8 @@ final class FunnyRankService implements RankService {
         ));
     }
     
-    private boolean isRankedUser(User user) {
+    @Override
+    public boolean isRankedUser(User user) {
         return !this.pluginConfiguration.skipPrivilegedPlayersInRankPositions || !user.hasPermission("funnyguilds.ranking.exempt");
     }
     
@@ -138,7 +139,8 @@ final class FunnyRankService implements RankService {
         ));
     }
     
-    private boolean isRankedGuild(Guild guild) {
+    @Override
+    public boolean isRankedGuild(Guild guild) {
         return guild.getMembers().size() >= this.pluginConfiguration.minMembersToInclude;
     }
     

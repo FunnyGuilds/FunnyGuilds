@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -44,12 +43,12 @@ import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -99,6 +98,10 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jeżeli chcesz dodać nowy język dodaj go tutaj - utworzy to nowy plik z domyślnymi wartościami, które możesz później edytować")
     @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
     public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl")));
+    
+    @Comment("")
+    @Comment("Czy ")
+    public boolean enableLegacyPlaceholders = false;
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
@@ -696,11 +699,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzględnieni przy wyznaczaniu pozycji gracza w rankingu")
     @CustomKey("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Co ile ticków ranking graczy oraz gildii powinien być odświeżany (20 ticków = 1 sekunda)")
-    public int rankingUpdateInterval = 40;
 
     @Comment("")
     @Comment("Czy system asyst ma byc włączony")

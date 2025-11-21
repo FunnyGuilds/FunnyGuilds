@@ -1,9 +1,11 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import net.dzikoysk.funnyguilds.guild.top.GuildComparator;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
+@ApiStatus.ScheduledForRemoval
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     GuildRank(Guild guild) {
@@ -99,7 +101,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int compareTo(@NotNull GuildRank rank) {
-        return GuildComparator.AVG_POINTS_COMPARATOR.compare(this, rank);
+        return Integer.compare(rank.getPoints(), this.getPoints());
     }
 
     private int calculateAverage(int value) {
