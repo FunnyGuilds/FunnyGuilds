@@ -1,0 +1,142 @@
+name: Publish Release to CurseForge, Modrinth & Hangar
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      - uses: burrunan/gradle-cache-action@v2
+        name: Build FunnyGuilds
+        with:
+          arguments: build --stacktrace -i
+          
+      - name: Publish to CurseForge, Modrinth & Hangar
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # CurseForge configuration
+          curseforge-id: ${{ secrets.CURSEFORGE_PROJECT_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          
+          # Modrinth configuration
+          modrinth-id: ${{ secrets.MODRINTH_PROJECT_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          
+          # Paper Hangar configuration
+          hangar-id: ${{ secrets.HANGAR_PROJECT_ID }}
+          hangar-token: ${{ secrets.HANGAR_TOKEN }}
+          
+          # Common configuration for all platforms
+          name: ${{ github.event.release.name }}
+          version: ${{ github.event.release.tag_name }}
+          version-type: release
+          changelog: ${{ github.event.release.body }}
+          
+          # Game versions - FunnyGuilds supports MC 1.8-1.21
+          game-versions: |
+            1.8
+            1.8.1
+            1.8.2
+            1.8.3
+            1.8.4
+            1.8.5
+            1.8.6
+            1.8.7
+            1.8.8
+            1.9
+            1.9.1
+            1.9.2
+            1.9.3
+            1.9.4
+            1.10
+            1.10.1
+            1.10.2
+            1.11
+            1.11.1
+            1.11.2
+            1.12
+            1.12.1
+            1.12.2
+            1.13
+            1.13.1
+            1.13.2
+            1.14
+            1.14.1
+            1.14.2
+            1.14.3
+            1.14.4
+            1.15
+            1.15.1
+            1.15.2
+            1.16
+            1.16.1
+            1.16.2
+            1.16.3
+            1.16.4
+            1.16.5
+            1.17
+            1.17.1
+            1.18
+            1.18.1
+            1.18.2
+            1.19
+            1.19.1
+            1.19.2
+            1.19.3
+            1.19.4
+            1.20
+            1.20.1
+            1.20.2
+            1.20.3
+            1.20.4
+            1.20.5
+            1.20.6
+            1.21
+            1.21.1
+            1.21.2
+            1.21.3
+            1.21.4
+          
+          # Loaders - FunnyGuilds is a Bukkit/Spigot/Paper plugin
+          loaders: |
+            bukkit
+            spigot
+            paper
+            purpur
+          
+          # Dependencies
+          dependencies: |
+            WorldEdit(optional)
+            WorldGuard(optional)
+            Vault(optional)
+            PlaceholderAPI(optional)
+            HolographicDisplays(optional)
+            DecentHolograms(optional)
+            Multiverse-Core(optional)
+            dynmap(optional)
+          
+          # Files to upload - the built JAR from the plugin module
+          files: |
+            plugin/build/libs/FunnyGuilds*.jar
+          
+          # Retry configuration
+          retry-attempts: 2
+          retry-delay: 10000
+          
+          # Fail mode - continue even if one platform fails
+          fail-mode: skip
