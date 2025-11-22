@@ -1042,6 +1042,22 @@ public class PluginConfiguration extends OkaeriConfig {
     public RawString ptopOffline = new RawString("&c");
 
     @Comment("")
+    @Comment("Czy gtop-online/gtop-offline mają uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean gtopRespectVanish = true;
+
+    @Comment("")
+    @Comment("Kolory dodawane przed tagiem gildii online (przynajmniej 1 członek online) przy zamianie zmiennej {GTOP-x}")
+    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-offline) pustą")
+    public RawString gtopOnline = new RawString("&a");
+
+    @Comment("")
+    @Comment("Kolory dodawane przed tagiem gildii offline (wszyscy członkowie offline) przy zamianie zmiennej {GTOP-x}")
+    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-online) pustą")
+    public RawString gtopOffline = new RawString("&c");
+
+    @Comment("")
     public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();
 
     @Comment("")

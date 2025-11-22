@@ -348,6 +348,18 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
     }
 
     private String formatGuildRank(String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
+        // Check if guild has at least one online member
+        boolean hasOnlineMembers = guild.getMembers().stream()
+                .anyMatch(member -> {
+                    boolean online = member.isOnline();
+                    if (online && this.config.gtopRespectVanish) {
+                        online = !member.isVanished();
+                    }
+                    return online;
+                });
+
+        RawString onlineColor = hasOnlineMembers ? this.config.gtopOnline : this.config.gtopOffline;
+        
         String prefix = "{TAG}";
 
         if (this.tablistConfig.useRelationshipColors) {
@@ -356,7 +368,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         }
 
         String formattedPrefix = FunnyFormatter.format(prefix, "{TAG}", guild.getTag());
-        return FunnyFormatter.format(text, placeholder, formattedPrefix + topFormat);
+        return FunnyFormatter.format(text, placeholder, onlineColor + formattedPrefix + topFormat);
     }
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([A-Za-z0-9-_)]+)}");
