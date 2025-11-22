@@ -357,9 +357,9 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
 
         String formattedPrefix = FunnyFormatter.format(prefix, "{TAG}", guild.getTag());
         
-        // Apply online/offline colors if configured
+        // Apply online/offline colors if both are configured
         String colorPrefix = "";
-        if (!this.config.gtopOnline.isEmpty() || !this.config.gtopOffline.isEmpty()) {
+        if (!this.config.gtopOnline.isEmpty() && !this.config.gtopOffline.isEmpty()) {
             boolean hasOnlineMembers = guild.getMembers().stream()
                     .anyMatch(member -> {
                         boolean online = member.isOnline();
