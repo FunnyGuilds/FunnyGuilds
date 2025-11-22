@@ -5,9 +5,9 @@ on:
   pull_request:
     branches: [ 4.x, 5.x, 6.x ]
 
-permissions:
-  pull-requests: write
-  issues: write
+#permissions:
+#  pull-requests: write
+#  issues: write
   
 jobs:
   build:
@@ -17,27 +17,27 @@ jobs:
       matrix:
         jdk: [ 21 ]
     steps:
-      - name: Find comment with artifact link
-        uses: peter-evans/find-comment@v3
-        if: github.event_name == 'pull_request'
-        id: init-find-comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-      - name: Create initial comment for artifact link
-        uses: peter-evans/create-or-update-comment@v4
-        id: create-comment
-        if: |
-          github.event_name == 'pull_request' &&
-          steps.init-find-comment.outputs.comment-id == ''
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ### 📦 Dev Build
-
-            ⏳ Tutaj dostępna będzie testowa wersja **FunnyGuilds**, posiadająca zmiany z tego Pull Requesta.
-          edit-mode: replace
-          
+      #- name: Find comment with artifact link
+      #  uses: peter-evans/find-comment@v3
+      #  if: github.event_name == 'pull_request'
+      #  id: init-find-comment
+      #  with:
+      #    issue-number: ${{ github.event.pull_request.number }}
+      #    comment-author: 'github-actions[bot]'
+      #- name: Create initial comment for artifact link
+      #  uses: peter-evans/create-or-update-comment@v4
+      #  id: create-comment
+      #  if: |
+      #    github.event_name == 'pull_request' &&
+      #    steps.init-find-comment.outputs.comment-id == ''
+      #  with:
+      #    issue-number: ${{ github.event.pull_request.number }}
+      #    body: |
+      #      ### 📦 Dev Build
+      #    
+      #      ⏳ Tutaj dostępna będzie testowa wersja **FunnyGuilds**, posiadająca zmiany z tego Pull Requesta.
+      #    edit-mode: replace
+      #    
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -61,24 +61,24 @@ jobs:
           retention-days: 30
           overwrite: true
           
-      - name: Find comment with artifact link
-        uses: peter-evans/find-comment@v3
-        if: github.event_name == 'pull_request'
-        id: find-comment
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-      - name: Update comment with artifact link
-        uses: peter-evans/create-or-update-comment@v4
-        if: github.event_name == 'pull_request'
-        with:
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
-          body: |
-            ### 📦 Dev Build
-            
-            Możesz pobrać testową wersję **FunnyGuilds**, ze zmianami z tego Pull Requesta [tutaj](${{ steps.upload-artifact.outputs.artifact-url }})
-            
-            **⚠️ Uwaga!** Jest to wersja testowa, nie powinno się jej używać na serwerze produkcyjnym. Może posiadać 
-            błędy mogące powodować utratę danych graczy i gildii, konfiguracji pluginu itp.
-          edit-mode: replace
-          reactions: rocket
+      #- name: Find comment with artifact link
+      #  uses: peter-evans/find-comment@v3
+      #  if: github.event_name == 'pull_request'
+      #  id: find-comment
+      #  with:
+      #    issue-number: ${{ github.event.pull_request.number }}
+      #    comment-author: 'github-actions[bot]'
+      #- name: Update comment with artifact link
+      #  uses: peter-evans/create-or-update-comment@v4
+      #  if: github.event_name == 'pull_request'
+      #  with:
+      #    comment-id: ${{ steps.find-comment.outputs.comment-id }}
+      #    body: |
+      #      ### 📦 Dev Build
+      #      
+      #      Możesz pobrać testową wersję **FunnyGuilds**, ze zmianami z tego Pull Requesta [tutaj](${{ steps.upload-artifact.outputs.artifact-url }})
+      #      
+      #      **⚠️ Uwaga!** Jest to wersja testowa, nie powinno się jej używać na serwerze produkcyjnym. Może posiadać 
+      #      błędy mogące powodować utratę danych graczy i gildii, konfiguracji pluginu itp.
+      #    edit-mode: replace
+      #    reactions: rocket
