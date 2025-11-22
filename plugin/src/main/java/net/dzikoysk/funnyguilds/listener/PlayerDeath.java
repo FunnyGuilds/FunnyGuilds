@@ -252,6 +252,35 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
         }
 
+        if (this.config.displayNotificationForVictim) {
+            this.messageService.getMessage(config -> config.rankDeathVictimMessage)
+                    .with(killFormatter)
+                    .with(itemReplacement)
+                    .receiver(victim)
+                    .send();
+        }
+
+        if (this.config.displayNotificationForAssist) {
+            for (Map.Entry<User, Assist> assistEntry : calculatedAssists.entrySet()) {
+                User assistUser = assistEntry.getKey();
+                Assist assist = assistEntry.getValue();
+                int assistPoints = assist.getPointsChange();
+                double damageShare = assist.getDamageShare();
+
+                FunnyFormatter assistFormatter = new FunnyFormatter()
+                        .register("{VICTIM}", victim.getName())
+                        .register("{+}", assistPoints)
+                        .register("{PLUS-FORMATTED}", formatChangeWithRange(assistPoints))
+                        .register("{CHANGE}", Math.abs(assistPoints))
+                        .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
+
+                this.messageService.getMessage(config -> config.rankDeathAssistMessage)
+                        .with(assistFormatter)
+                        .receiver(assistUser)
+                        .send();
+            }
+        }
+
         if (this.config.disableDefaultDeathMessage) {
             event.setDeathMessage(null);
         }

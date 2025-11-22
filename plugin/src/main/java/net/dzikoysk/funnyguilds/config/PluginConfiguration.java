@@ -1128,6 +1128,14 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean displayNotificationForKiller = false;
 
     @Comment("")
+    @Comment("Czy powiadomienie o śmierci powinno się wyświetlać dla ofiary")
+    public boolean displayNotificationForVictim = false;
+
+    @Comment("")
+    @Comment("Czy powiadomienie o asyście powinno się wyświetlać dla asystujących graczy")
+    public boolean displayNotificationForAssist = false;
+
+    @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
     @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;
