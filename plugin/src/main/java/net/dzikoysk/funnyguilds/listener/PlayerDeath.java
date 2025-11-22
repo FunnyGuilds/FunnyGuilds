@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -150,9 +151,11 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         victimDamageState.addKill(attacker);
         
-        // Track kill by IP address
-        String attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getHostString() : null;
-        victimDamageState.addKillByIP(attackerIP);
+        // Track kill by IP address if IP-based cooldown protection is enabled
+        if (this.config.rankFarmingCooldownIP) {
+            InetAddress attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getAddress() : null;
+            victimDamageState.addKillByIP(attackerIP);
+        }
 
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
@@ -302,12 +305,17 @@ public class PlayerDeath extends AbstractFunnyListener {
         Option<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
         Option<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
 
-        // Check IP-based kill history
-        String attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getHostString() : null;
-        String victimIP = playerVictim.getAddress() != null ? playerVictim.getAddress().getHostString() : null;
+        // Check IP-based kill history if enabled
+        Option<Instant> victimIPTimestamp = Option.none();
+        Option<Instant> attackerIPTimestamp = Option.none();
         
-        Option<Instant> victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Option.none();
-        Option<Instant> attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Option.none();
+        if (this.config.rankFarmingCooldownIP) {
+            InetAddress attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getAddress() : null;
+            InetAddress victimIP = playerVictim.getAddress() != null ? playerVictim.getAddress().getAddress() : null;
+            
+            victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Option.none();
+            attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Option.none();
+        }
 
         if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
@@ -318,7 +326,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (victimIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && victimIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
                     .send();
@@ -336,7 +344,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();

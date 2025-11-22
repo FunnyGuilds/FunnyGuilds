@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.damage;
 
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class DamageState {
 
     private final LinkedList<Damage> damageHistory = new LinkedList<>();
     private final Map<UUID, Instant> killHistory = new HashMap<>();
-    private final Map<String, Instant> killHistoryByIP = new HashMap<>();
+    private final Map<InetAddress, Instant> killHistoryByIP = new HashMap<>();
 
     public DamageState(UUID ownerUUID) {
         this.ownerUUID = ownerUUID;
@@ -78,7 +79,7 @@ public class DamageState {
         return Option.of(this.killHistory.get(user.getUUID()));
     }
 
-    public Option<Instant> getLastKillTimeByIP(String ip) {
+    public Option<Instant> getLastKillTimeByIP(InetAddress ip) {
         return Option.of(this.killHistoryByIP.get(ip));
     }
 
@@ -96,7 +97,7 @@ public class DamageState {
         this.killHistory.put(killer.getUUID(), Instant.now());
     }
 
-    public void addKillByIP(String killerIP) {
+    public void addKillByIP(InetAddress killerIP) {
         if (killerIP != null) {
             this.killHistoryByIP.put(killerIP, Instant.now());
         }
