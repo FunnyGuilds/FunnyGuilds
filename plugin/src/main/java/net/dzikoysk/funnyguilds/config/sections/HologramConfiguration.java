@@ -27,6 +27,7 @@ public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Tekst wyświetlany przez hologram")
+    @Comment("Obsługuje formatowanie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) oraz legacy color codes (&X, &#XXXXXX)")
     @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> displayedLines = new ImmutableList.Builder<String>()
             .add("&7&m-------------------")
