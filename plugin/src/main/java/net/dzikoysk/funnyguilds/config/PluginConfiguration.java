@@ -41,6 +41,7 @@ import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.listener.chat.GuildChatMessageHandler;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
@@ -840,6 +841,15 @@ public class PluginConfiguration extends OkaeriConfig {
         public RawString more = new RawString("&a+");
 
     }
+
+    @Comment("")
+    @Comment("Tryb obsługi wiadomości gildii w chacie")
+    @Comment("Dostępne tryby:")
+    @Comment("  SPIGOT - używa standardowego eventu Spigotowego")
+    @Comment("  PAPER - używa nowszego eventu paperowego, wspieranego od wersji 1.16.5")
+    @Comment("Jeśli wszystko działa prawidłowo - nie zmieniaj tego ustawienia")
+    @Comment("Jeśli wiadomości nie wysyłają się prawidłowo, np. są wysyłane mimo anulowania eventu, spróbuj zmienić tryb na PAPER")
+    public GuildChatMessageHandler guildChatMessageHandler = GuildChatMessageHandler.SPIGOT;
 
     @Comment("")
     @Comment("Wygląd znacznika {POS} wstawionego w format chatu")

@@ -41,12 +41,13 @@ import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PistonUse;
-import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.TntProtection;
+import net.dzikoysk.funnyguilds.listener.chat.PaperPlayerChat;
+import net.dzikoysk.funnyguilds.listener.chat.SpigotPlayerChat;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
@@ -370,13 +371,17 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuiActionHandler.class)
                     .add(EntityDamage.class)
                     .add(EntityInteract.class)
-                    .add(PlayerChat.class)
+                    .add(SpigotPlayerChat.class)
                     .add(PlayerDeath.class)
                     .add(PlayerJoin.class)
                     .add(PlayerLogin.class)
                     .add(PlayerQuit.class)
                     .add(GuildHeartProtectionHandler.class)
                     .add(TntProtection.class);
+
+            if (ClassUtils.forName("io.papermc.paper.event.player.AsyncChatEvent").isPresent()) {
+                setBuilder.add(PaperPlayerChat.class);
+            }
 
             if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
                 setBuilder.add(BlockFlow.class);

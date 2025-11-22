@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreChatEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -29,6 +30,9 @@ public abstract class PlayerChat extends AbstractFunnyListener {
     @Inject
     protected GuildManager guildManager;
 
+    @Inject
+    protected GuildPermissionChecker permissionChecker;
+
     abstract protected boolean shouldHandleGuildChat();
 
     protected FunnyFormatter buildChatMessageFormatter(User user) {
@@ -45,7 +49,7 @@ public abstract class PlayerChat extends AbstractFunnyListener {
                     formatter.register("{TAG}", ChatUtils.deserializeSection(this.config.chatGuild.getValue()));
                     formatter.register("{TAG}", guild.getTag());
                     formatter.register("{POS}", ChatUtils.deserializeSection(this.config.chatPosition.getValue()));
-                    formatter.register("{POS}", UserUtils.getUserPosition(this.config, user));
+                    formatter.register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -180,7 +184,7 @@ public abstract class PlayerChat extends AbstractFunnyListener {
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())
                 .register("{POS}", this.config.chatPosition.getValue())
-                .register("{POS}", UserUtils.getUserPosition(this.config, user))
+                .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user))
                 .register("{MESSAGE}", message);
 
         return HookUtils.replacePlaceholders(player, formatter.replace(chatDesign));
