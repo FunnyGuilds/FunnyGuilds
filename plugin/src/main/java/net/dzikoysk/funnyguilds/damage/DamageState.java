@@ -19,6 +19,7 @@ public class DamageState {
 
     private final LinkedList<Damage> damageHistory = new LinkedList<>();
     private final Map<UUID, Instant> killHistory = new HashMap<>();
+    private final Map<String, Instant> killHistoryByIP = new HashMap<>();
 
     public DamageState(UUID ownerUUID) {
         this.ownerUUID = ownerUUID;
@@ -77,6 +78,10 @@ public class DamageState {
         return Option.of(this.killHistory.get(user.getUUID()));
     }
 
+    public Option<Instant> getLastKillTimeByIP(String ip) {
+        return Option.of(this.killHistoryByIP.get(ip));
+    }
+
     public void addDamage(User damageDealer, double damage) {
         // Prevent players from damaging themselves to for eg. avoid points loss after logout
         if (this.ownerUUID.equals(damageDealer.getUUID())) {
@@ -89,6 +94,12 @@ public class DamageState {
 
     public void addKill(User killer) {
         this.killHistory.put(killer.getUUID(), Instant.now());
+    }
+
+    public void addKillByIP(String killerIP) {
+        if (killerIP != null) {
+            this.killHistoryByIP.put(killerIP, Instant.now());
+        }
     }
 
     public void update() {

@@ -149,6 +149,10 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         victimDamageState.addKill(attacker);
+        
+        // Track kill by IP address
+        String attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getHostString() : null;
+        victimDamageState.addKillByIP(attackerIP);
 
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
@@ -298,6 +302,13 @@ public class PlayerDeath extends AbstractFunnyListener {
         Option<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
         Option<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
 
+        // Check IP-based kill history
+        String attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getHostString() : null;
+        String victimIP = playerVictim.getAddress() != null ? playerVictim.getAddress().getHostString() : null;
+        
+        Option<Instant> victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Option.none();
+        Option<Instant> attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Option.none();
+
         if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
@@ -307,7 +318,25 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
+        } else if (victimIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+            this.messageService.getMessage(config -> config.rankLastVictimV)
+                    .receiver(playerVictim)
+                    .send();
+            this.messageService.getMessage(config -> config.rankLastVictimA)
+                    .receiver(playerAttacker)
+                    .send();
+
+            return true;
         } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+            this.messageService.getMessage(config -> config.rankLastAttackerV)
+                    .receiver(playerVictim)
+                    .send();
+            this.messageService.getMessage(config -> config.rankLastAttackerA)
+                    .receiver(playerAttacker)
+                    .send();
+
+            return true;
+        } else if (this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();
