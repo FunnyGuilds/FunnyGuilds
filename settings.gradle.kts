@@ -10,9 +10,6 @@ include(
     "funnyguilds-targets:fake-server",
     "funnyguilds-targets:spigot-server",
     "funnyguilds-targets:spigot-server:core",
-    "funnyguilds-targets:spigot-server:nms",
-    "funnyguilds-targets:spigot-server:nms:api",
-    "funnyguilds-targets:spigot-server:nms:v1_19R2",
     // Features
     "funnyguilds-regions",
     "funnyguilds-rank",
@@ -22,3 +19,10 @@ include(
     // Tests
     "funnyguilds-tests",
 )
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://repo.papermc.io/repository/maven-public/")
+    }
+}

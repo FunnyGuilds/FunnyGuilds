@@ -4,22 +4,16 @@ plugins {
     `java-library`
     application
     `maven-publish`
-
-    val kotlinVersion = "1.8.22"
-    kotlin("jvm") version kotlinVersion
-    id("com.google.devtools.ksp") version "1.8.22-1.0.11"
-
+    kotlin("jvm") version "2.1.20"
+    id("com.google.devtools.ksp") version "2.1.20-1.0.32"
     id("org.ajoberstar.grgit") version "4.1.1"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-
-    id("io.gitlab.arturbosch.detekt").version("1.21.0")
+    id("com.gradleup.shadow") version "9.2.2"
     id("idea")
-
-    id("xyz.jpenilla.run-paper") version "2.0.1"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 idea {
-    project.jdkName = "17"
+    project.jdkName = "21"
 }
 
 allprojects {
@@ -29,7 +23,7 @@ allprojects {
     apply(plugin = "java-library")
     apply(plugin = "kotlin")
     apply(plugin = "application")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "com.gradleup.shadow")
 
     application {
         mainClass.set("net.dzikoysk.funnyguilds.FunnyGuilds")
@@ -43,8 +37,8 @@ allprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
 
         withSourcesJar()
         withJavadocJar()
@@ -58,12 +52,13 @@ allprojects {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            jvmTarget = JavaVersion.VERSION_11.toString()
-            languageVersion = "1.9"
+            jvmTarget = JavaVersion.VERSION_21.toString()
+            languageVersion = "2.1"
             freeCompilerArgs = listOf(
                 "-Xjvm-default=all", // For generating default methods in interfaces
                 "-Xcontext-receivers"
             )
+            javaParameters = true
         }
     }
 }

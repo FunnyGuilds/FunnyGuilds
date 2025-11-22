@@ -10,7 +10,7 @@ dependencies {
     implementation("org.panda-lang:expressible-kt:$expressible") // Kotlin extensions
     testImplementation("org.panda-lang:expressible-junit:$expressible") // JUnit extensions
 
-    val sqiffy = "1.0.0-alpha.55"
+    val sqiffy = "1.0.0-alpha.72"
     ksp("com.dzikoysk.sqiffy:sqiffy-symbol-processor:$sqiffy")
     api("com.dzikoysk.sqiffy:sqiffy:$sqiffy")
 }
