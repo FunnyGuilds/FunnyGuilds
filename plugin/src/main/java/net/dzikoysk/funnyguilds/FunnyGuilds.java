@@ -35,18 +35,18 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PistonUse;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.TntProtection;
-import net.dzikoysk.funnyguilds.listener.chat.PaperPlayerChat;
-import net.dzikoysk.funnyguilds.listener.chat.SpigotPlayerChat;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
@@ -95,7 +95,6 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -126,6 +125,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
+    private GuildPermissionChecker guildPermissionChecker;
 
     private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
     private Option<DummyManager> dummyManager = Option.none();
@@ -256,6 +256,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
+        this.guildPermissionChecker = GuildPermissionChecker.create(this);
 
         this.prepareScoreboardServices();
 
@@ -331,6 +332,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(GuildPermissionChecker.class).assignInstance(this.guildPermissionChecker);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
@@ -368,17 +370,13 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuiActionHandler.class)
                     .add(EntityDamage.class)
                     .add(EntityInteract.class)
-                    .add(SpigotPlayerChat.class)
+                    .add(PlayerChat.class)
                     .add(PlayerDeath.class)
                     .add(PlayerJoin.class)
                     .add(PlayerLogin.class)
                     .add(PlayerQuit.class)
                     .add(GuildHeartProtectionHandler.class)
                     .add(TntProtection.class);
-
-            if (ClassUtils.forName("io.papermc.paper.event.player.AsyncChatEvent").isPresent()) {
-                setBuilder.add(PaperPlayerChat.class);
-            }
 
             if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
                 setBuilder.add(BlockFlow.class);
@@ -626,6 +624,10 @@ public class FunnyGuilds extends JavaPlugin {
     public FunnyServer getFunnyServer() {
         return this.funnyServer;
     }
+    
+    public GuildPermissionChecker getGuildPermissionChecker() {
+        return this.guildPermissionChecker;
+    }
 
     public Option<IndividualNameTagManager> getIndividualNameTagManager() {
         return this.individualNameTagManager;
@@ -700,7 +702,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.individualNameTagManager = Option.when(
                 scoreboardConfig.nametag.enabled,
-                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService)
+                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, this.guildPermissionChecker, scoreboardService)
         );
         this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,

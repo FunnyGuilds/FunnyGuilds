@@ -21,5 +21,4 @@ public final class SimpleEventHandler {
 
         return true;
     }
-
 }

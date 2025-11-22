@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.block.Block;
@@ -13,7 +14,13 @@ public class BucketAction extends AbstractFunnyListener {
     public void onFill(PlayerBucketFillEvent event) {
         Block block = event.getBlockClicked();
 
-        ProtectionSystem.isProtected(event.getPlayer(), block.getLocation(), true)
+        ProtectionSystem.isProtected(
+                        event.getPlayer(),
+                        block.getLocation(),
+                        event,
+                        GuildProtectionPermission.BUCKET_FILL,
+                        true
+                )
                 .filterNot(predicate -> this.config.placingBlocksBypassOnRegion.contains(block.getType()))
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
@@ -21,7 +28,13 @@ public class BucketAction extends AbstractFunnyListener {
 
     @EventHandler
     public void onEmpty(PlayerBucketEmptyEvent event) {
-        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), true)
+        ProtectionSystem.isProtected(
+                        event.getPlayer(),
+                        event.getBlockClicked().getLocation(),
+                        event,
+                        GuildProtectionPermission.BUCKET_EMPTY,
+                        true
+                )
                 .filterNot(predicate -> this.config.placingBlocksBypassOnRegion.contains(event.getBucket()))
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);

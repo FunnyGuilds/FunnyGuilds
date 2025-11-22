@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.event.EventHandler;
@@ -9,7 +10,13 @@ public class HangingPlace extends AbstractFunnyListener {
 
     @EventHandler
     public void onPlace(HangingPlaceEvent event) {
-        ProtectionSystem.isProtected(event.getPlayer(), event.getEntity().getLocation(), false)
+        ProtectionSystem.isProtected(
+                        event.getPlayer(),
+                        event.getEntity().getLocation(),
+                        event,
+                        GuildProtectionPermission.HANGING_PLACE,
+                        false
+                )
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
     }

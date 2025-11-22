@@ -7,10 +7,11 @@ import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
@@ -22,12 +23,19 @@ import panda.std.Option;
 public class IndividualNameTag {
 
     private final PluginConfiguration pluginConfiguration;
+    private final GuildPermissionChecker permissionChecker;
 
     private WeakReference<Player> playerRef;
     private final User user;
 
-    IndividualNameTag(PluginConfiguration pluginConfiguration, Player player, User user) {
+    IndividualNameTag(
+            PluginConfiguration pluginConfiguration,
+            GuildPermissionChecker permissionChecker,
+            Player player,
+            User user
+    ) {
         this.pluginConfiguration = pluginConfiguration;
+        this.permissionChecker = permissionChecker;
         this.playerRef = new WeakReference<>(player);
         this.user = user;
     }
@@ -126,7 +134,7 @@ public class IndividualNameTag {
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
-                .register("{POS}", UserUtils.getUserPosition(this.pluginConfiguration, targetUser));
+                .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
         value = formatter.format(value);
 
         String finalValue = value;

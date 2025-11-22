@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessageDispatcher> {
 
@@ -33,6 +34,11 @@ public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessage
         if (sender instanceof Player) {
             this.receiver(sender);
         }
+        return this;
+    }
+    
+    public FunnyMessageDispatcher receiver(Option<User> userOption) {
+        userOption.peek(this::receiver);
         return this;
     }
 

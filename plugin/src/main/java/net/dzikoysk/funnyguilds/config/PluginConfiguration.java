@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -42,15 +41,14 @@ import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.listener.chat.GuildChatMessageHandler;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -844,14 +842,6 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     @Comment("")
-    @Comment("Który event powinien odpowiadać za obsługę chatu gildii:")
-    @Comment("  SPIGOT - używa starszego eventu spigotowego, zalecany w większości przypadków")
-    @Comment("  PAPER - używa nowszego eventu paperowego, wspieranego od wersji 1.16.5")
-    @Comment("Jeśli wszystko działa prawidłowo - nie zmieniaj tego ustawienia")
-    @Comment("Jeśli wiadomości nie wysyłają się prawidłowo, np. są wysyłane mimo anulowania eventu, spróbuj zmienić tryb na PAPER")
-    public GuildChatMessageHandler guildChatMessageHandler = GuildChatMessageHandler.SPIGOT;
-
-    @Comment("")
     @Comment("Wygląd znacznika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktoś jest liderem, zastępcą lub zwykłym członkiem gildii")
     public RawString chatPosition = new RawString("&b{POS} ");
@@ -957,21 +947,25 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie gildii")
+    @Comment("Obsługuje formatowanie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) oraz legacy color codes (&X, &#XXXXXX)")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatPrivDesign = new RawString("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie dla sojuszników")
+    @Comment("Obsługuje formatowanie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) oraz legacy color codes (&X, &#XXXXXX)")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatAllyDesign = new RawString("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie globalnym gildii")
+    @Comment("Obsługuje formatowanie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) oraz legacy color codes (&X, &#XXXXXX)")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatGlobalDesign = new RawString("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomoci wysyłanej na czacie gildyjnym/sojuszniczym/globalnym gildii, dla osób z włączonym /ga spy")
+    @Comment("Obsługuje formatowanie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) oraz legacy color codes (&X, &#XXXXXX)")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatSpyDesign = new RawString("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
 
