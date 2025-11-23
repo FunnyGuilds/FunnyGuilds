@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.damage;
 
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
@@ -19,6 +20,7 @@ public class DamageState {
 
     private final LinkedList<Damage> damageHistory = new LinkedList<>();
     private final Map<UUID, Instant> killHistory = new HashMap<>();
+    private final Map<InetAddress, Instant> killHistoryByIP = new HashMap<>();
 
     public DamageState(UUID ownerUUID) {
         this.ownerUUID = ownerUUID;
@@ -77,6 +79,10 @@ public class DamageState {
         return Option.of(this.killHistory.get(user.getUUID()));
     }
 
+    public Option<Instant> getLastKillTimeByIP(InetAddress ip) {
+        return Option.of(this.killHistoryByIP.get(ip));
+    }
+
     public void addDamage(User damageDealer, double damage) {
         // Prevent players from damaging themselves to for eg. avoid points loss after logout
         if (this.ownerUUID.equals(damageDealer.getUUID())) {
@@ -89,6 +95,12 @@ public class DamageState {
 
     public void addKill(User killer) {
         this.killHistory.put(killer.getUUID(), Instant.now());
+    }
+
+    public void addKillByIP(InetAddress killerIP) {
+        if (killerIP != null) {
+            this.killHistoryByIP.put(killerIP, Instant.now());
+        }
     }
 
     public void update() {

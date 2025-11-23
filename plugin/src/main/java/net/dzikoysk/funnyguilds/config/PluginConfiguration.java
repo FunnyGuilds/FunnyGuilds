@@ -680,6 +680,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration rankFarmingCooldown = Duration.ofHours(2);
 
     @Comment("")
+    @Comment("Czy blokada nabijania rankingu powinna działać również na adres IP gracza zabitego")
+    @Comment("Zapobiega to nabijaniu rankingu przez logowanie się na wielu kontach z tego samego adresu IP")
+    public boolean rankFarmingCooldownIP = true;
+
+    @Comment("")
     @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki mają taki sam adres IP")
     public boolean rankIPProtect = false;
 
