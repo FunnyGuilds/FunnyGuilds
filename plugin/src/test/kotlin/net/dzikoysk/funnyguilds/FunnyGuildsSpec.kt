@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds
 
+import net.dzikoysk.funnyguilds.config.MockPluginConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration
@@ -59,7 +60,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
-        config = PluginConfiguration()
+        config = MockPluginConfiguration()
         tablistConfig = TablistConfiguration()
         messages = MessageService(null, null)
         messages.defaultLocale = Locale.forLanguageTag("pl")

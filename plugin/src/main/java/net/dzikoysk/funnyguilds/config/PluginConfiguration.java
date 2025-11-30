@@ -1434,7 +1434,7 @@ public class PluginConfiguration extends OkaeriConfig {
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
     }
 
-    private Set<Material> defaultBuggedBlocksExclude() {
+    public Set<Material> defaultBuggedBlocksExclude() {
         Set<Material> excludedBlocks = new HashSet<>(Set.of(
             // Ban basic
             Material.TNT, Material.LAVA, Material.WATER,
