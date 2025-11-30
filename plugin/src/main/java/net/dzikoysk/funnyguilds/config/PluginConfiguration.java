@@ -621,13 +621,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("ALL - wszystkim uczestnikom walki i wszystkim graczom na serwerze")
     public DeathMessageReceivers deathMessageReceivers = DeathMessageReceivers.ALL;
 
-    @Comment("")
-    @Comment("Czy wiadomości śmierci powinny używać relacyjnego kolorowania tagów gildii")
-    @Comment("Gdy włączone, tagi gildii będą wyświetlane w różnych kolorach w zależności od relacji obserwatora")
-    @Comment("Takie samo zachowanie jak w nazwach graczy i wiadomościach na czacie")
-    @CustomKey("death-message-relational-tags")
-    public boolean deathMessageRelationalTags = true;
-
     public enum DeathMessageReceivers {
 
         PARTICIPANTS,

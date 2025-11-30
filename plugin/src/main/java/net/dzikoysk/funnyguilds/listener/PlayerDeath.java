@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -243,64 +245,38 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", (int) (playerAttacker.getHealth() / 2));
 
-        if (!this.config.deathMessageRelationalTags) {
-            killFormatter
-                    .register("{VTAG}", victim.getGuild()
-                            .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                            .orElseGet(""))
-                    .register("{ATAG}", attacker.getGuild()
-                            .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                            .orElseGet(""));
-        }
-
         Replaceable itemReplacement = ItemComponentHelper.prepareItemReplacement(playerAttacker.getItemInHand());
 
         if (this.config.displayNotificationForKiller) {
-            if (this.config.deathMessageRelationalTags) {
-                Guild attackerGuild = attacker.getGuild().orNull();
-                Guild victimGuild = victim.getGuild().orNull();
+            Guild attackerGuild = attacker.getGuild().orNull();
+            Guild victimGuild = victim.getGuild().orNull();
 
-                FunnyFormatter relationalFormatter = new FunnyFormatter()
-                        .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(attackerGuild, victimGuild))
-                        .register("{ATAG}", this.config.relationalTag.chooseAndPrepareTag(attackerGuild, attackerGuild));
+            FunnyFormatter relationalFormatter = new FunnyFormatter()
+                    .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(attackerGuild, victimGuild))
+                    .register("{ATAG}", this.config.relationalTag.chooseAndPrepareTag(attackerGuild, attackerGuild));
 
-                this.messageService.getMessage(config -> config.rankKillMessage)
-                        .with(killFormatter)
-                        .with(relationalFormatter)
-                        .with(itemReplacement)
-                        .receiver(attacker)
-                        .send();
-            } else {
-                this.messageService.getMessage(config -> config.rankKillMessage)
-                        .with(killFormatter)
-                        .with(itemReplacement)
-                        .receiver(attacker)
-                        .send();
-            }
+            this.messageService.getMessage(config -> config.rankKillMessage)
+                    .with(killFormatter)
+                    .with(relationalFormatter)
+                    .with(itemReplacement)
+                    .receiver(attacker)
+                    .send();
         }
 
         if (this.config.displayNotificationForVictim) {
-            if (this.config.deathMessageRelationalTags) {
-                Guild victimGuild = victim.getGuild().orNull();
-                Guild attackerGuild = attacker.getGuild().orNull();
+            Guild victimGuild = victim.getGuild().orNull();
+            Guild attackerGuild = attacker.getGuild().orNull();
 
-                FunnyFormatter relationalFormatter = new FunnyFormatter()
-                        .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(victimGuild, victimGuild))
-                        .register("{ATAG}", this.config.relationalTag.chooseAndPrepareTag(victimGuild, attackerGuild));
+            FunnyFormatter relationalFormatter = new FunnyFormatter()
+                    .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(victimGuild, victimGuild))
+                    .register("{ATAG}", this.config.relationalTag.chooseAndPrepareTag(victimGuild, attackerGuild));
 
-                this.messageService.getMessage(config -> config.rankDeathVictimMessage)
-                        .with(killFormatter)
-                        .with(relationalFormatter)
-                        .with(itemReplacement)
-                        .receiver(victim)
-                        .send();
-            } else {
-                this.messageService.getMessage(config -> config.rankDeathVictimMessage)
-                        .with(killFormatter)
-                        .with(itemReplacement)
-                        .receiver(victim)
-                        .send();
-            }
+            this.messageService.getMessage(config -> config.rankDeathVictimMessage)
+                    .with(killFormatter)
+                    .with(relationalFormatter)
+                    .with(itemReplacement)
+                    .receiver(victim)
+                    .send();
         }
 
         if (this.config.displayNotificationForAssist) {
@@ -317,24 +293,17 @@ public class PlayerDeath extends AbstractFunnyListener {
                         .register("{CHANGE}", Math.abs(assistPoints))
                         .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
 
-                if (this.config.deathMessageRelationalTags) {
-                    Guild assistUserGuild = assistUser.getGuild().orNull();
-                    Guild victimGuild = victim.getGuild().orNull();
+                Guild assistUserGuild = assistUser.getGuild().orNull();
+                Guild victimGuild = victim.getGuild().orNull();
 
-                    FunnyFormatter relationalFormatter = new FunnyFormatter()
-                            .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(assistUserGuild, victimGuild));
+                FunnyFormatter relationalFormatter = new FunnyFormatter()
+                        .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(assistUserGuild, victimGuild));
 
-                    this.messageService.getMessage(config -> config.rankDeathAssistMessage)
-                            .with(assistFormatter)
-                            .with(relationalFormatter)
-                            .receiver(assistUser)
-                            .send();
-                } else {
-                    this.messageService.getMessage(config -> config.rankDeathAssistMessage)
-                            .with(assistFormatter)
-                            .receiver(assistUser)
-                            .send();
-                }
+                this.messageService.getMessage(config -> config.rankDeathAssistMessage)
+                        .with(assistFormatter)
+                        .with(relationalFormatter)
+                        .receiver(assistUser)
+                        .send();
             }
         }
 
@@ -342,90 +311,63 @@ public class PlayerDeath extends AbstractFunnyListener {
             event.setDeathMessage(null);
         }
 
-        if (this.config.deathMessageRelationalTags) {
-            java.util.Set<User> receivers = new java.util.HashSet<>();
-            receivers.add(attacker);
-            receivers.add(victim);
-            receivers.addAll(calculatedAssists.keySet());
+        Set<User> receivers = new HashSet<>();
+        receivers.add(attacker);
+        receivers.add(victim);
+        receivers.addAll(calculatedAssists.keySet());
 
-            switch (this.config.deathMessageReceivers) {
-                case GUILD:
-                    attacker.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers()));
-                    victim.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers()));
-                    calculatedAssists.keySet().forEach(user ->
-                            user.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers())));
-                    break;
-                case WORLD:
-                    event.getEntity().getWorld().getPlayers().forEach(player ->
-                            this.userManager.findByPlayer(player).peek(receivers::add));
-                    break;
-                case ALL:
-                    Bukkit.getOnlinePlayers().forEach(player ->
-                            this.userManager.findByPlayer(player).peek(receivers::add));
-                    break;
-            }
+        switch (this.config.deathMessageReceivers) {
+            case GUILD:
+                attacker.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers()));
+                victim.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers()));
+                calculatedAssists.keySet().forEach(user ->
+                        user.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers())));
+                break;
+            case WORLD:
+                event.getEntity().getWorld().getPlayers().forEach(player ->
+                        this.userManager.findByPlayer(player).peek(receivers::add));
+                break;
+            case ALL:
+                Bukkit.getOnlinePlayers().forEach(player ->
+                        this.userManager.findByPlayer(player).peek(receivers::add));
+                break;
+        }
 
-            FunnyFormatter assistsFormatter = buildAssistsFormatter(combatPointsChangeEvent.getAssistsMap());
-            Guild attackerGuild = attacker.getGuild().orNull();
-            Guild victimGuild = victim.getGuild().orNull();
+        FunnyFormatter assistsFormatter = buildAssistsFormatter(combatPointsChangeEvent.getAssistsMap());
+        Guild attackerGuild = attacker.getGuild().orNull();
+        Guild victimGuild = victim.getGuild().orNull();
 
-            for (User receiver : receivers) {
-                Guild receiverGuild = receiver.getGuild().orNull();
+        for (User receiver : receivers) {
+            Guild receiverGuild = receiver.getGuild().orNull();
 
-                FunnyFormatter relationalFormatter = new FunnyFormatter()
-                        .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(receiverGuild, victimGuild))
-                        .register("{ATAG}", this.config.relationalTag.chooseAndPrepareTag(receiverGuild, attackerGuild));
-
-                this.messageService.getMessage(config -> config.rankDeathMessage)
-                        .with(killFormatter)
-                        .with(relationalFormatter)
-                        .with(itemReplacement)
-                        .with(assistsFormatter)
-                        .receiver(receiver)
-                        .send();
-            }
-
-            FunnyFormatter consoleTagFormatter = new FunnyFormatter()
-                    .register("{VTAG}", victim.getGuild()
-                            .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                            .orElseGet(""))
-                    .register("{ATAG}", attacker.getGuild()
-                            .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                            .orElseGet(""));
+            FunnyFormatter relationalFormatter = new FunnyFormatter()
+                    .register("{VTAG}", this.config.relationalTag.chooseAndPrepareTag(receiverGuild, victimGuild))
+                    .register("{ATAG}", this.config.relationalTag.chooseAndPrepareTag(receiverGuild, attackerGuild));
 
             this.messageService.getMessage(config -> config.rankDeathMessage)
                     .with(killFormatter)
-                    .with(consoleTagFormatter)
+                    .with(relationalFormatter)
                     .with(itemReplacement)
                     .with(assistsFormatter)
-                    .console()
+                    .receiver(receiver)
                     .send();
-        } else {
-            FunnyMessageDispatcher deathMessage = this.messageService.getMessage(config -> config.rankDeathMessage)
-                    .with(killFormatter)
-                    .with(itemReplacement)
-                    .with(buildAssistsFormatter(combatPointsChangeEvent.getAssistsMap()))
-                    .receiver(attacker)
-                    .receiver(victim)
-                    .receivers(calculatedAssists.keySet())
-                    .console();
-
-            switch (this.config.deathMessageReceivers) {
-                case GUILD:
-                    attacker.getGuild().peek(guild -> deathMessage.receivers(guild.getOnlineMembers()));
-                    victim.getGuild().peek(guild -> deathMessage.receivers(guild.getOnlineMembers()));
-                    calculatedAssists.keySet().forEach(user -> user.getGuild().peek(guild -> deathMessage.receivers(guild.getOnlineMembers())));
-                    break;
-                case WORLD:
-                    deathMessage.receivers(event.getEntity().getWorld().getPlayers());
-                    break;
-                case ALL:
-                    deathMessage.receivers(Bukkit.getOnlinePlayers());
-                    break;
-            }
-
-            deathMessage.send();
         }
+
+        FunnyFormatter consoleTagFormatter = new FunnyFormatter()
+                .register("{VTAG}", victim.getGuild()
+                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .orElseGet(""))
+                .register("{ATAG}", attacker.getGuild()
+                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .orElseGet(""));
+
+        this.messageService.getMessage(config -> config.rankDeathMessage)
+                .with(killFormatter)
+                .with(consoleTagFormatter)
+                .with(itemReplacement)
+                .with(assistsFormatter)
+                .console()
+                .send();
     }
 
     private void handleDeathEvent(User victim, User attacker, EventCause cause) {
