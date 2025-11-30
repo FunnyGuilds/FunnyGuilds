@@ -5,14 +5,13 @@ import java.util.Collection;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextReplacementConfig;
-import net.kyori.adventure.text.event.HoverEventSource;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -41,17 +40,9 @@ public final class ItemComponentHelper {
         }
 
         if (config.enableItemComponent) {
-            HoverEventSource<?> hoverEventSource;
-            if (item instanceof HoverEventSource<?>) {
-                hoverEventSource = (HoverEventSource<?>) item;
-            } else {
-                hoverEventSource = LegacyItemHoverEventHelper.getHoverForItem(item);
-            }
-
-            if (hoverEventSource != null) {
-                itemComponent = itemComponent.hoverEvent(hoverEventSource);
-            }
+            itemComponent = itemComponent.hoverEvent(item);
         }
+
         return itemComponent;
     }
 

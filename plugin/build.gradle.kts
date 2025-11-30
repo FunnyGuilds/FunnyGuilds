@@ -40,20 +40,17 @@ publishing {
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     /* funnyguilds */
-
-    project(":nms").dependencyProject.subprojects.forEach {
+    project.project(":nms").subprojects.forEach {
         implementation(it)
     }
     implementation("net.dzikoysk:funnycommands:0.8.0")
 
     /* std */
-
     val expressible = "1.3.6"
     api("org.panda-lang:expressible:$expressible")
     testImplementation("org.panda-lang:expressible-junit:$expressible")
 
     /* okaeri config library */
-
     val okaeriConfigs = "5.0.5"
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
@@ -62,7 +59,6 @@ dependencies {
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.27")
 
     /* messages libraries */
-
     val adventureVersion = "4.18.0"
     implementation("net.kyori:adventure-api:$adventureVersion")
     implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
@@ -77,7 +73,6 @@ dependencies {
     implementation("me.pikamug.localelib:LocaleLib:4.1.0")
 
     /* general stuff */
-
     @Suppress("GradlePackageUpdate")
     implementation("com.zaxxer:HikariCP:4.0.3")
 
@@ -100,15 +95,14 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
 
     // bukkit stuff
-    shadow("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    shadow("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     shadow("org.apache.logging.log4j:log4j-core:2.20.0")
 
     /* hooks */
-
     shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("me.clip:placeholderapi:2.11.6") {
-//        because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
+        // because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
     shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
@@ -116,7 +110,7 @@ dependencies {
     shadow("us.dynmap:DynmapCoreAPI:3.6")
 
     /* tests */
-    testImplementation("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:3.2.38")
 }
 
@@ -135,7 +129,7 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     val commitCount = grgitService.service.get().grgit.log().size
-    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.8-1.21).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.21.x).jar"
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")

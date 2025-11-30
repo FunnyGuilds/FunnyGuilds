@@ -4,7 +4,7 @@ version: '${funnyGuildsVersion} Snowdrop-${funnyGuildsCommit}'
 author: 'FunnyGuilds Team'
 website: https://github.com/FunnyGuilds
 softdepend: [WorldEdit, WorldGuard, Vault, PlaceholderAPI, FunnyTab, HolographicDisplays, DecentHolograms, Multiverse-Core, dynmap]
-api-version: 1.13
+api-version: 1.21
 
 permissions:
   funnyguilds.*:

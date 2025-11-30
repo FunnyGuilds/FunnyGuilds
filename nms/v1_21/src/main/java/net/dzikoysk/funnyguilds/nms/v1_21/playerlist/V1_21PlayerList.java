@@ -1,7 +1,13 @@
-package net.dzikoysk.funnyguilds.nms.v1_21_4.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_21.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import java.lang.reflect.Field;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
@@ -17,18 +23,10 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-public class V1_21_4PlayerList implements PlayerList {
+public class V1_21PlayerList implements PlayerList {
 
     private static final GameType DEFAULT_GAME_MODE = GameType.SURVIVAL;
     private static final Component EMPTY_COMPONENT = Component.empty();
-    // base chosen randomly to override other entries
-    private static final int PRIORITY_BASE = 999;
 
     private static final Field playerInfoEntriesField;
 
@@ -46,7 +44,7 @@ public class V1_21_4PlayerList implements PlayerList {
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
     private boolean firstPacket = true;
 
-    public V1_21_4PlayerList(int cellCount) {
+    public V1_21PlayerList(int cellCount) {
         this.cellCount = cellCount;
     }
 
@@ -60,12 +58,12 @@ public class V1_21_4PlayerList implements PlayerList {
         try {
             for (int i = 0; i < this.cellCount; i++) {
                 String paddedIdentifier = StringUtils.leftPad(String.valueOf(i), 2, '0');
-                String gameProfileName = " ";
+                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier, paddedIdentifier);
 
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
-                            UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
-                            gameProfileName
+                        UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
+                        gameProfileName
                     );
                 }
 
@@ -81,18 +79,14 @@ public class V1_21_4PlayerList implements PlayerList {
                     }
                 }
 
-                // higher priority first
-                int cellPriority = PRIORITY_BASE - i;
-                Entry playerInfoData = new Entry(
-                        gameProfile.getId(),
-                        gameProfile,
-                        true,
-                        ping,
-                        DEFAULT_GAME_MODE,
-                        component,
-                        false,
-                        cellPriority,
-                        null
+                ClientboundPlayerInfoUpdatePacket.Entry playerInfoData = new Entry(
+                    gameProfile.getId(),
+                    gameProfile,
+                    true,
+                    ping,
+                    DEFAULT_GAME_MODE,
+                    component,
+                    null
                 );
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
@@ -107,21 +101,20 @@ public class V1_21_4PlayerList implements PlayerList {
             }
 
             ClientboundPlayerInfoUpdatePacket addPlayerPacket = createPlayerInfoPacket(
-                    EnumSet.of(
-                            Action.ADD_PLAYER,
-                            Action.UPDATE_GAME_MODE,
-                            Action.UPDATE_LISTED,
-                            Action.UPDATE_LATENCY,
-                            Action.UPDATE_DISPLAY_NAME,
-                            Action.UPDATE_LIST_ORDER
-                    ),
-                    addPlayerList
+                EnumSet.of(
+                    Action.ADD_PLAYER,
+                    Action.UPDATE_GAME_MODE,
+                    Action.UPDATE_LISTED,
+                    Action.UPDATE_LATENCY,
+                    Action.UPDATE_DISPLAY_NAME
+                ),
+                addPlayerList
             );
             packets.add(addPlayerPacket);
 
             ClientboundPlayerInfoUpdatePacket updatePlayerPacket = createPlayerInfoPacket(
-                    EnumSet.of(Action.UPDATE_LATENCY, Action.UPDATE_DISPLAY_NAME),
-                    updatePlayerList
+                EnumSet.of(Action.UPDATE_LATENCY, Action.UPDATE_DISPLAY_NAME),
+                updatePlayerList
             );
             packets.add(updatePlayerPacket);
 
@@ -141,7 +134,7 @@ public class V1_21_4PlayerList implements PlayerList {
                 }
 
                 ClientboundTabListPacket headerFooterPacket =
-                        new ClientboundTabListPacket(headerComponent, footerComponent);
+                    new ClientboundTabListPacket(headerComponent, footerComponent);
                 packets.add(headerFooterPacket);
             }
 
@@ -159,7 +152,7 @@ public class V1_21_4PlayerList implements PlayerList {
         // NOTE: this whole hack exists just because Mojang does stupid things and collects list of entries
         //       into an immutable list without any ability to modify or pass direct entries through constructor.
         ClientboundPlayerInfoUpdatePacket playerInfoPacket =
-                new ClientboundPlayerInfoUpdatePacket(actions, List.<Entry>of());
+            new ClientboundPlayerInfoUpdatePacket(actions, List.<Entry>of());
 
         try {
             playerInfoEntriesField.set(playerInfoPacket, entries);

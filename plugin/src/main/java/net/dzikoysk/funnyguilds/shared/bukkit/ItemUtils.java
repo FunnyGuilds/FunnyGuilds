@@ -1,7 +1,9 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -9,14 +11,13 @@ import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
-import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
-import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -24,36 +25,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
-import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 
 public final class ItemUtils {
 
-    private static Method BY_IN_GAME_NAME_ENCHANT;
-    private static Method CREATE_NAMESPACED_KEY;
-
-    private static Method GET_IN_GAME_NAME_ENCHANT;
-    private static Method GET_NAMESPACED_KEY;
-
-    static {
-        if (!Reflections.USE_PRE_12_METHODS) {
-            Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
-
-            BY_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getByKey");
-            CREATE_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "minecraft", String.class);
-
-            GET_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getKey");
-            GET_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "getKey");
-        }
-    }
-
-    private ItemUtils() {
-    }
+    private ItemUtils() { }
 
     public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, Function<MessageConfiguration, Sendable> messageSupplier) {
         for (ItemStack requiredItem : requiredItems) {
@@ -93,7 +72,7 @@ public final class ItemUtils {
         String[] typeSplit = split[1].split(":");
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
-        Material material = MaterialUtils.parseMaterial(typeSplit[0], false);
+        Material material = Material.matchMaterial(typeSplit[0]);
         Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
             FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
         });
@@ -174,25 +153,6 @@ public final class ItemUtils {
                     catch (NumberFormatException numberFormatException) {
                         FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + attributeValue);
                     }
-
-                    continue;
-                case "eggtype":
-                    if (!EggTypeChanger.needsSpawnEggMeta()) {
-                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, " +
-                                "no need to use eggtype in item creation!");
-                        continue;
-                    }
-
-                    Option<EntityType> entityType = Option.attempt(IllegalArgumentException.class, () -> {
-                        return EntityType.valueOf(attributeValue.toUpperCase(Locale.ROOT));
-                    }).onEmpty(() -> {
-                        FunnyGuilds.getPluginLogger().parser("Unknown entity type: " + attributeValue);
-                    });
-
-                    if (entityType.isPresent()) {
-                        EggTypeChanger.applyChanges(item.getMeta(), entityType.get());
-                        item.refreshMeta();
-                    }
             }
         }
 
@@ -250,64 +210,28 @@ public final class ItemUtils {
             itemString.append(" flags:").append(Joiner.on(",").join(flags));
         }
 
-        if (meta instanceof SkullMeta) {
-            SkullMeta skullMeta = (SkullMeta) meta;
+        if (meta instanceof SkullMeta skullMeta) {
             if (skullMeta.hasOwner()) {
-                itemString.append(" skullowner:").append(skullMeta.getOwner());
+                itemString.append(" skullowner:").append(skullMeta.getOwningPlayer().getName());
             }
         }
 
-        if (meta instanceof LeatherArmorMeta) {
-            LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
+        if (meta instanceof LeatherArmorMeta armorMeta) {
             Color color = armorMeta.getColor();
-
             String colorString = color.getRed() + "_" + color.getGreen() + "_" + color.getBlue();
             itemString.append(" armorcolor:").append(colorString);
-        }
-
-        if (EggTypeChanger.needsSpawnEggMeta()) {
-            if (meta instanceof SpawnEggMeta) {
-                SpawnEggMeta eggMeta = (SpawnEggMeta) meta;
-                String entityType = eggMeta.getSpawnedType().name().toLowerCase(Locale.ROOT);
-                itemString.append(" eggtype:").append(entityType);
-            }
         }
 
         return itemString.toString();
     }
 
     private static Enchantment matchEnchant(String enchantName) {
-        if (BY_IN_GAME_NAME_ENCHANT != null && CREATE_NAMESPACED_KEY != null) {
-            try {
-                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase(Locale.ROOT));
-                Object enchantment = BY_IN_GAME_NAME_ENCHANT.invoke(null, namespacedKey);
-
-                if (enchantment != null) {
-                    return (Enchantment) enchantment;
-                }
-            }
-            catch (IllegalAccessException | InvocationTargetException ignored) {
-            }
-        }
-
-        return Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
+        Registry<Enchantment> enchantmentRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        return enchantmentRegistry.get(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
     }
 
     private static String getEnchantName(Enchantment enchantment) {
-        if (GET_IN_GAME_NAME_ENCHANT != null && GET_NAMESPACED_KEY != null) {
-            try {
-                Object enchantmentName = GET_IN_GAME_NAME_ENCHANT.invoke(enchantment);
-                Object namespacedKey = GET_NAMESPACED_KEY.invoke(enchantmentName);
-
-                if (namespacedKey != null) {
-                    return (String) namespacedKey;
-                }
-            }
-            catch (InvocationTargetException | IllegalAccessException ignored) {
-            }
-        }
-
-        return enchantment.getName();
+        return enchantment.getKey().getKey();
     }
 
     private static Pair<Enchantment, Integer> parseEnchant(String enchantString) {

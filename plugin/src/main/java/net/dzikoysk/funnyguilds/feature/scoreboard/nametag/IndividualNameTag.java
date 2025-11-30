@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
@@ -116,11 +115,7 @@ public class IndividualNameTag {
     }
 
     private String prepareValue(RawString value, Player targetPlayer, User targetUser) {
-        String formatted = this.decorateValue(value.getValue(), targetPlayer, targetUser);
-        if (Reflections.USE_PRE_13_METHODS && formatted.length() > 16) {
-            formatted = formatted.substring(0, 16);
-        }
-        return formatted;
+        return this.decorateValue(value.getValue(), targetPlayer, targetUser);
     }
 
     private String decorateValue(String value, Player targetPlayer, User targetUser) {
