@@ -47,7 +47,6 @@ import net.dzikoysk.funnyguilds.shared.LegacyUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -359,23 +358,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Bloki, których nie można 'bugować'")
     @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
-            // Ban basic
-            "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
-            // Ban TNT Minecart placement
-            "RAILS", "DETECTOR_RAIL", "ACTIVATOR_RAIL", "POWERED_RAIL",
-            // Ban gravity blocks that won't be removed when fallen
-            "ANVIL", "GRAVEL", "SAND", "DRAGON_EGG",
-            // Ban pistons and other components that may produce redstone output or interact with it
-            "PISTON_BASE", "PISTON_STICKY_BASE",
-            "REDSTONE_BLOCK", "REDSTONE_TORCH_ON", "REDSTONE_TORCH_OFF", "DIODE", "REDSTONE_COMPARATOR", "DAYLIGHT_DETECTOR",
-            "DISPENSER", "HOPPER", "DROPPER", "OBSERVER",
-            "STONE_PLATE", "WOOD_PLATE", "GOLD_PLATE", "IRON_PLATE", "LEVER", "TRIPWIRE_HOOK", "TRAP_DOOR", "IRON_TRAPDOOR", "WOOD_BUTTON", "STONE_BUTTON",
-            "WOOD_DOOR", "IRON_DOOR", "SPRUCE_DOOR_ITEM", "BIRCH_DOOR_ITEM", "JUNGLE_DOOR_ITEM", "ACACIA_DOOR_ITEM", "DARK_OAK_DOOR_ITEM",
-            "FENCE_GATE", "SPRUCE_FENCE_GATE", "JUNGLE_FENCE_GATE", "DARK_OAK_FENCE_GATE", "BIRCH_FENCE_GATE",
-            "REDSTONE_LAMP_ON", "REDSTONE_LAMP_OFF",
-            "TRAPPED_CHEST", "CHEST"
-    );
+    public Set<Material> buggedBlocksExclude = defaultBuggedBlocksExclude();
 
     @Comment("")
     @Comment("Czy klocki po 'zbugowaniu' mają zostać oddane")
@@ -1367,7 +1350,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             if (item == null) {
-                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14)
+                item = new ItemBuilder(Material.RED_STAINED_GLASS_PANE, 1, 14)
                         .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
             }
 
@@ -1406,7 +1389,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
-        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
+        if (this.heart.createMaterial != null && this.heart.createMaterial.hasGravity()) {
             this.eventPhysics = true;
         }
 
@@ -1440,7 +1423,7 @@ public class PluginConfiguration extends OkaeriConfig {
                 continue;
             }
 
-            Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
+            Material material = Material.matchMaterial(entry.getKey());
             if (material == null || material == Material.AIR) {
                 continue;
             }
@@ -1449,6 +1432,64 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
+    }
+
+    public Set<Material> defaultBuggedBlocksExclude() {
+        Set<Material> excludedBlocks = new HashSet<>(Set.of(
+            // Ban basic
+            Material.TNT, Material.LAVA, Material.WATER,
+
+            // Ban TNT Minecart placement
+            Material.RAIL, Material.DETECTOR_RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL,
+
+            // Ban pistons and other components that may produce redstone output or interact with it
+            Material.PISTON, Material.STICKY_PISTON, Material.REDSTONE_BLOCK, Material.REDSTONE_TORCH,
+            Material.REDSTONE_WALL_TORCH, Material.REPEATER, Material.COMPARATOR, Material.DAYLIGHT_DETECTOR,
+            Material.DISPENSER, Material.HOPPER, Material.DROPPER, Material.OBSERVER, Material.LEVER,
+            Material.TRIPWIRE_HOOK, Material.REDSTONE_LAMP, Material.TRAPPED_CHEST, Material.CHEST
+        ));
+
+        Set<Material> filteredMaterials = Arrays.stream(Material.values()).filter(material -> {
+            // Ignore legacy materials
+            if (material.name().startsWith("LEGACY_")) {
+                return false;
+            }
+
+            // Ban all gravity affected blocks, as they won't be removed when fallen
+            if (material.hasGravity()) {
+                return true;
+            }
+
+            // Ban all pressure plates
+            if (material.name().endsWith("_PRESSURE_PLATE")) {
+                return true;
+            }
+
+            // Ban all trapdoors
+            if (material.name().endsWith("_TRAPDOOR")) {
+                return true;
+            }
+
+            // Ban all buttons
+            if (material.name().endsWith("_BUTTON")) {
+                return true;
+            }
+
+            // Ban all doors
+            if (material.name().endsWith("_DOOR")) {
+                return true;
+            }
+
+            // Ban all fence gates
+            if (material.name().endsWith("_FENCE_GATE")) {
+                return true;
+            }
+
+            return false;
+        }).collect(Collectors.toSet());
+
+        excludedBlocks.addAll(filteredMaterials);
+        return excludedBlocks;
     }
 
     public enum DataModel {

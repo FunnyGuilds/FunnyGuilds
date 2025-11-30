@@ -19,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import panda.std.Option;
-import panda.std.Pair;
 import panda.std.Triple;
 
 public final class ProtectionSystem {
@@ -44,8 +43,8 @@ public final class ProtectionSystem {
         PluginConfiguration config = plugin.getPluginConfiguration();
         HeartConfiguration heartConfig = config.heart;
         if (region.getHeart().contentEquals(location)) {
-            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
-            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+            Material heartMaterial = heartConfig.createMaterial;
+            return Option.when(heartMaterial != null && heartMaterial != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
         if (player.hasPermission("funnyguilds.admin.build")) {

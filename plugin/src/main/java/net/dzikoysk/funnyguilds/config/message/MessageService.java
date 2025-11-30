@@ -54,13 +54,6 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         messageService.registerLocaleProvider(new CommandSenderLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(plugin.getFunnyServer()));
 
-        // TODO: Remove in 5.0
-        File oldMessagesFile = new File(plugin.getDataFolder(), "messages.yml");
-        File newMessagesFile = new File(languageFolder, config.defaultLocale.toString() + ".yml");
-        if (oldMessagesFile.exists() && !newMessagesFile.exists() && !oldMessagesFile.renameTo(newMessagesFile)) {
-            logger.warning("Could not copy legacy messages.yml to new lang directory");
-        }
-
         PandaStream.of(config.availableLocales).forEach(locale -> {
             String localeName = locale.toString();
             File localeFile = new File(languageFolder, localeName + ".yml");

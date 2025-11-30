@@ -1,4 +1,4 @@
 dependencies {
-    shadow("com.viaversion:viaversion-api:[4.0.0,5.0.0)")
+    implementation(project(":nms:api"))
     paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 }
