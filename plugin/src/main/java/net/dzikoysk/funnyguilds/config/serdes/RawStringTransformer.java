@@ -16,7 +16,7 @@ public class RawStringTransformer extends BidirectionalTransformer<String, RawSt
 
     @Override
     public RawString leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
-        return new RawString(ChatUtils.coloredWithMiniMessage(data));
+        return new RawString(ChatUtils.colored(data));
     }
 
     @Override
