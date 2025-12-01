@@ -50,6 +50,7 @@ public class DamageState {
     }
 
     public double getTotalDamage(User user) {
+        this.update();
         return this.getTotalDamageMap().getOrDefault(user, 0.0);
     }
 
@@ -111,7 +112,7 @@ public class DamageState {
         DamageTracking trackingConfig = FunnyGuilds.getInstance().getPluginConfiguration().damageTracking;
 
         // Remove expired
-        this.damageHistory.removeIf(damage -> this.damageHistory.size() > 1 && damage.isExpired(trackingConfig.expireTime));
+        this.damageHistory.removeIf(damage -> damage.isExpired(trackingConfig.expireTime));
 
         // Remove over limit
         if (trackingConfig.maxTracks < 1) {

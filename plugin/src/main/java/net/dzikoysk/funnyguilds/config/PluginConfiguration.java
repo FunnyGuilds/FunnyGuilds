@@ -1137,6 +1137,14 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean displayNotificationForAssist = false;
 
     @Comment("")
+    @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla atakującego")
+    public boolean displayCombatPredictionAttacker = false;
+
+    @Comment("")
+    @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla ofiary")
+    public boolean displayCombatPredictionVictim = false;
+
+    @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
     @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;

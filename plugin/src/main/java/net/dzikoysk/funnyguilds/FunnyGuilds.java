@@ -36,6 +36,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
+import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -123,6 +124,7 @@ public class FunnyGuilds extends JavaPlugin {
     private UserRankManager userRankManager;
     private GuildRankManager guildRankManager;
     private DamageManager damageManager;
+    private RankSystem rankSystem;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
     private GuildPermissionChecker guildPermissionChecker;
@@ -255,6 +257,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager = new GuildRankManager(this.pluginConfiguration);
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.damageManager = new DamageManager();
+        this.rankSystem = RankSystem.create(this.pluginConfiguration);
         this.regionManager = new RegionManager(this.pluginConfiguration);
         this.guildPermissionChecker = GuildPermissionChecker.create(this);
 
@@ -334,6 +337,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(GuildPermissionChecker.class).assignInstance(this.guildPermissionChecker);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
+            resources.on(RankSystem.class).assignInstance(this.rankSystem);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
             resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
