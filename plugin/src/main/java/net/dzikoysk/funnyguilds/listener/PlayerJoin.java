@@ -42,6 +42,11 @@ public class PlayerJoin extends AbstractFunnyListener {
             this.userManager.updateUsername(user, playerName);
         }
 
+        String currentIP = player.getAddress() != null ? player.getAddress().getHostString() : null;
+        if (currentIP != null && !currentIP.equals(user.getLastIP())) {
+            user.setLastIP(currentIP);
+        }
+
         UserCache cache = user.getCache();
 
         if (this.tablistConfig.enabled) {

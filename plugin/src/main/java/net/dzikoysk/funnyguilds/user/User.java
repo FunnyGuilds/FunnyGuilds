@@ -17,6 +17,7 @@ public class User extends AbstractMutableEntity {
     private final UserRank rank;
     private Option<Guild> guild = Option.none();
     private Option<UserBan> ban = Option.none();
+    private String lastIP;
 
     private final UserProfile profile;
 
@@ -127,6 +128,15 @@ public class User extends AbstractMutableEntity {
 
     public void setBan(@Nullable UserBan ban) {
         this.ban = Option.of(ban);
+    }
+
+    public String getLastIP() {
+        return this.lastIP;
+    }
+
+    public void setLastIP(String lastIP) {
+        this.lastIP = lastIP;
+        this.markChanged();
     }
 
     public UserProfile getProfile() {

@@ -61,6 +61,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage rankLastAttackerA = ChatHolder.message("&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja dodane!");
     public SendableMessage rankIPVictim = ChatHolder.message("&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!");
     public SendableMessage rankIPAttacker = ChatHolder.message("&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!");
+    public SendableMessage rankIPGuildMemberVictim = ChatHolder.message("&7Ten gracz jest w gildii z czlonkiem o twoim adresie IP, punkty nie zostaja odjete!");
+    public SendableMessage rankIPGuildMemberAttacker = ChatHolder.message("&7Ten gracz ma taki sam adres IP jak czlonek twojej gildii, punkty nie zostaja dodane!");
     public SendableMessage rankMemberVictim = ChatHolder.message("&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja odebrane!");
     public SendableMessage rankMemberAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja dodane!");
     public SendableMessage rankAllyVictim = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja odebrane!");

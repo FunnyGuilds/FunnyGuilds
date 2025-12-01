@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.damage.DamageState;
@@ -44,9 +41,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -129,6 +124,12 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         if (this.checkIPRankFarmingProtection(playerVictim, playerAttacker)) {
+            victimDamageState.clear();
+            event.setDeathMessage(null);
+            return;
+        }
+
+        if (this.checkIPRankFarmingGuildMembersProtection(playerVictim, playerAttacker, attacker)) {
             victimDamageState.clear();
             event.setDeathMessage(null);
             return;
@@ -454,6 +455,41 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .receiver(playerAttacker)
                     .send();
             return true;
+        }
+
+        return false;
+    }
+
+    // Function to check if victim shares IP with any guild member of the attacker (alt account protection)
+    private boolean checkIPRankFarmingGuildMembersProtection(Player playerVictim, Player playerAttacker, User attacker) {
+        if (!this.config.rankIPProtectPlayersFromGuild) {
+            return false;
+        }
+
+        Option<Guild> attackerGuildOption = attacker.getGuild();
+        if (attackerGuildOption.isEmpty()) {
+            return false;
+        }
+
+        Guild attackerGuild = attackerGuildOption.get();
+        String victimIP = playerVictim.getAddress().getHostString();
+
+        if (victimIP == null) {
+            return false;
+        }
+
+        for (User guildMember : attackerGuild.getMembers()) {
+            String guildMemberIP = guildMember.getLastIP();
+
+            if (guildMemberIP != null && guildMemberIP.equalsIgnoreCase(victimIP)) {
+                this.messageService.getMessage(config -> config.rankIPGuildMemberVictim)
+                        .receiver(playerVictim)
+                        .send();
+                this.messageService.getMessage(config -> config.rankIPGuildMemberAttacker)
+                        .receiver(playerAttacker)
+                        .send();
+                return true;
+            }
         }
 
         return false;

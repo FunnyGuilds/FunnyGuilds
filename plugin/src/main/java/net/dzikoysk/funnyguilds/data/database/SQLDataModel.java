@@ -50,6 +50,7 @@ public class SQLDataModel implements DataModel {
         this.usersTable.add("logouts", SQLType.INT, true);
         this.usersTable.add("ban", SQLType.BIGINT);
         this.usersTable.add("reason", SQLType.TEXT);
+        this.usersTable.add("lastIP", SQLType.VARCHAR, 45);
         this.usersTable.setPrimaryKey("uuid");
 
         this.guildsTable.add("uuid", SQLType.VARCHAR, 100, true);
