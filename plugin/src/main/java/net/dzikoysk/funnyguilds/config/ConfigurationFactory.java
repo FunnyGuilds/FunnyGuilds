@@ -47,14 +47,15 @@ public final class ConfigurationFactory {
 
     public static MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
-            it.withConfigurer(new YamlBukkitConfigurer());
-            it.withSerdesPack(registry -> {
-                registry.register(new DecolorTransformer());
-                registry.register(new FunnyTimeFormatterTransformer());
-                registry.register(new SerdesMessages());
+            it.configure(opt -> {
+                opt.configurer(new YamlBukkitConfigurer());
+                opt.serdes(registry -> {
+                    registry.register(new DecolorTransformer());
+                    registry.register(new FunnyTimeFormatterTransformer());
+                    registry.register(new SerdesMessages());
+                });
+                opt.bindFile(messageConfigurationFile);
             });
-
-            it.withBindFile(messageConfigurationFile);
             it.saveDefaults();
             it.load(true);
 
@@ -67,21 +68,22 @@ public final class ConfigurationFactory {
 
     public static PluginConfiguration createPluginConfiguration(File pluginConfigurationFile) {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
-            it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
-            it.withSerdesPack(registry -> {
-                registry.register(new RawStringTransformer());
-                registry.register(new ColorSerializer());
-                registry.register(new MaterialTransformer());
-                registry.register(new ItemStackTransformer());
-                registry.register(new EntityTypeTransformer());
-                registry.register(new VectorSerializer());
-                registry.register(new FunnyTimeTransformer());
-                registry.register(new FunnyPatternTransformer());
-                registry.register(new RangeFormattingTransformer());
+            it.configure(opt -> {
+                opt.configurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
+                opt.serdes(registry -> {
+                    registry.register(new RawStringTransformer());
+                    registry.register(new ColorSerializer());
+                    registry.register(new MaterialTransformer());
+                    registry.register(new ItemStackTransformer());
+                    registry.register(new EntityTypeTransformer());
+                    registry.register(new VectorSerializer());
+                    registry.register(new FunnyTimeTransformer());
+                    registry.register(new FunnyPatternTransformer());
+                    registry.register(new RangeFormattingTransformer());
+                });
+                opt.bindFile(pluginConfigurationFile);
+                opt.logger(FunnyGuilds.getInstance().getLogger());
             });
-
-            it.withBindFile(pluginConfigurationFile);
-            it.withLogger(FunnyGuilds.getInstance().getLogger());
             it.saveDefaults();
             it.load(true);
 
@@ -104,14 +106,15 @@ public final class ConfigurationFactory {
 
     public static TablistConfiguration createTablistConfiguration(File tablistConfigurationFile) {
         return ConfigManager.create(TablistConfiguration.class, (it) -> {
-            it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
-            it.withSerdesPack(registry -> {
-                registry.register(new NumberRangeTransformer());
-                registry.register(new TablistPageSerializer());
-                registry.register(new SkinTextureSerializer());
+            it.configure(opt -> {
+                opt.configurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
+                opt.serdes(registry -> {
+                    registry.register(new NumberRangeTransformer());
+                    registry.register(new TablistPageSerializer());
+                    registry.register(new SkinTextureSerializer());
+                });
+                opt.bindFile(tablistConfigurationFile);
             });
-
-            it.withBindFile(tablistConfigurationFile);
             it.saveDefaults();
             it.load(true);
 

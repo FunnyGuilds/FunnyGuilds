@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class SkinTextureSerializer implements ObjectSerializer<SkinTexture> {
 
     @Override
-    public boolean supports(@NotNull Class<? super SkinTexture> type) {
+    public boolean supports(@NotNull Class<?> type) {
         return SkinTexture.class.isAssignableFrom(type);
     }
 
