@@ -111,6 +111,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
             freeCompilerArgs = listOf("-Xjvm-default=all") // Generate default methods in interfaces by default
         }
     }
