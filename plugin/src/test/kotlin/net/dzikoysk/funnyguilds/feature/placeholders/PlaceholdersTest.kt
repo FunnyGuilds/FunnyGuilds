@@ -17,7 +17,7 @@ class PlaceholdersTest : FunnyGuildsSpec() {
         var text = "§7offline - <online>online</online> - offline - <online>online</online> - offline"
         val formatter = BasicPlaceholdersService.ONLINE.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
 
-        text = formatter.format(text)
+        text = formatter.replace(text)
 
         assertEquals("§7offline - §aonline§7 - offline - §aonline§7 - offline", text)
     }

@@ -19,6 +19,8 @@ import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
@@ -31,9 +33,13 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
             .property("members", pair -> {
                 String text = JOIN_OR_DEFAULT.apply(UserUtils.getOnlineNames(pair.getSecond().getMembers()), "");
 
-                return !text.contains("<online>")
-                        ? text
-                        : BasicPlaceholdersService.ONLINE.toFormatter(pair.getFirst()).format(text);
+                if (!text.contains("<online>")) {
+                    return text;
+                }
+
+                String lastColor = pair.getFirst();
+                return text.replaceAll("<online>", "§a")
+                        .replaceAll("</online>", lastColor);
             });
 
     private static Option<GuildPlaceholders> SIMPLE = Option.none();
@@ -42,7 +48,7 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
     public String format(@Nullable Object entity, String text, Guild guild) {
         text = super.format(entity, text, guild);
         text = GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(ChatUtils.getLastColorBefore(text, "{MEMBERS}"), guild))
-                .format(text);
+                .replace(text);
         return text;
     }
 
@@ -161,8 +167,12 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
     @Override
     public Set<FunnyFormatter> prepareReplacements(@Nullable Object entity, Guild data) {
         Set<FunnyFormatter> formatters = new LinkedHashSet<>(super.prepareReplacements(entity, data));
-        formatters.add(GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(ChatColor.RESET.toString(), data)));
+        String resetColor = "§r";
+
+        formatters.add(
+                GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(resetColor, data))
+        );
+
         return formatters;
     }
-
 }

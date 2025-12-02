@@ -46,21 +46,12 @@ public class FlatDataModel implements DataModel {
     }
 
     private Option<File> loadCustomFile(EntityType type, String name) {
-        File fileFolder;
-
-        switch (type) {
-            case USER:
-                fileFolder = this.usersFolderFile;
-                break;
-            case GUILD:
-                fileFolder = this.guildsFolderFile;
-                break;
-            case REGION:
-                fileFolder = this.regionsFolderFile;
-                break;
-            default:
-                fileFolder = null;
-        }
+        File fileFolder = switch (type) {
+            case USER -> this.usersFolderFile;
+            case GUILD -> this.guildsFolderFile;
+            case REGION -> this.regionsFolderFile;
+            default -> null;
+        };
 
         if (fileFolder == null) {
             return Option.none();

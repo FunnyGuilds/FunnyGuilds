@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.listener;
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -18,16 +19,30 @@ public class PlayerLogin extends AbstractFunnyListener {
 
         Player player = event.getPlayer();
         String name = player.getName();
+
         switch (FunnyValidator.validateUsername(this.config, name)) {
+
             case TOO_SHORT:
-                event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginNickTooShort));
-                break;
+                event.disallow(
+                        Result.KICK_OTHER,
+                        Component.text((String) this.messageService.get(player, cfg -> cfg.loginNickTooShort))
+                );
+                return;
+
             case TOO_LONG:
-                event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginNickTooLong));
-                break;
+                event.disallow(
+                        Result.KICK_OTHER,
+                        Component.text((String) this.messageService.get(player, cfg -> cfg.loginNickTooLong))
+                );
+                return;
+
             case INVALID:
-                event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginNickInvalid));
-                break;
+                event.disallow(
+                        Result.KICK_OTHER,
+                        Component.text((String) this.messageService.get(player, cfg -> cfg.loginNickInvalid))
+                );
+                return;
+
             case VALID:
                 break;
         }
@@ -35,7 +50,9 @@ public class PlayerLogin extends AbstractFunnyListener {
         this.userManager.findByPlayer(player)
                 .peek(BanUtils::checkIfBanShouldExpire)
                 .filter(User::isBanned)
-                .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));
+                .peek(user -> event.disallow(
+                        Result.KICK_BANNED,
+                        Component.text((String) BanUtils.getBanMessage(user))
+                ));
     }
-
 }

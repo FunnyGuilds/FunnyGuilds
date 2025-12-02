@@ -61,7 +61,7 @@ public final class TimeUtils {
             timeStringBuilder.append(delimiter).append(timePart.getKey().getFormatted(partValue));
         }
 
-        if (timeStringBuilder.length() == 0) {
+        if (timeStringBuilder.isEmpty()) {
             return TimeDivision.SECOND.getFormatted(0);
         }
 
@@ -104,7 +104,7 @@ public final class TimeUtils {
                         continue;
                     }
 
-                    if (tempNumber.length() == 0) {
+                    if (tempNumber.isEmpty()) {
                         return Duration.ofSeconds(0);
                     }
 

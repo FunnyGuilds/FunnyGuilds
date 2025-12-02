@@ -28,7 +28,7 @@ class RankUtilsTest : FunnyGuildsSpec() {
         config.gtopOffline = RawString("")
 
         // when: the GTOP placeholder is requested to parse
-        val rank = rankPlaceholdersService.formatRank("{GTOP-1}", user)
+        val rank = rankPlaceholdersService.format("{GTOP-1}", user)
 
         // then: the result should match the configured pattern
         assertEquals("OP 1000", rank)

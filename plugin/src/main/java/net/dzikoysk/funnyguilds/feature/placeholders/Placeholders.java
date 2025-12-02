@@ -55,7 +55,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String format(@Nullable Object entity, String text, T data) {
-        return this.toFormatter(entity, data).format(text);
+        return this.toFormatter(entity, data).replace(text);
     }
 
     public String format(String text, T data) {
@@ -78,7 +78,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String formatVariables(@Nullable Object entity, String text, T data) {
-        return this.toVariablesFormatter(entity, data).format(text);
+        return this.toVariablesFormatter(entity, data).replace(text);
     }
 
     public String formatVariables(String text, T data) {
@@ -104,7 +104,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String formatCustom(@Nullable Object entity, String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
-        return this.toCustomFormatter(entity, data, prefix, suffix, nameModifier).format(text);
+        return this.toCustomFormatter(entity, data, prefix, suffix, nameModifier).replace(text);
     }
 
     public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {

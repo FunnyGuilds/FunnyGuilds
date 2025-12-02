@@ -1,11 +1,18 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import panda.std.stream.PandaStream;
 
 public final class ItemBuilder {
@@ -37,17 +44,30 @@ public final class ItemBuilder {
         this.itemStack.setItemMeta(this.itemMeta);
     }
 
+    // --- Set display name (Adventure API, nie deprecated) ---
     public ItemBuilder setName(String name, boolean color) {
-        this.itemMeta.setDisplayName(color ? ChatUtils.colored(name) : name);
-        this.refreshMeta();
-
+        if (name != null) {
+            Component displayName = color
+                    ? LegacyComponentSerializer.legacySection().deserialize(name)
+                    : Component.text(name);
+            this.itemMeta.displayName(displayName);
+            this.refreshMeta();
+        }
         return this;
     }
 
+    // --- Set lore (Adventure API, nie deprecated) ---
     public ItemBuilder setLore(Iterable<String> lore, boolean color) {
-        this.itemMeta.setLore(PandaStream.of(lore).map(line -> color ? ChatUtils.colored(line) : line).toList());
-        this.refreshMeta();
-
+        if (lore != null) {
+            List<Component> loreComponents = new ArrayList<>();
+            for (String line : lore) {
+                loreComponents.add(color
+                        ? LegacyComponentSerializer.legacySection().deserialize(line)
+                        : Component.text(line));
+            }
+            this.itemMeta.lore(loreComponents);
+            this.refreshMeta();
+        }
         return this;
     }
 
@@ -55,20 +75,33 @@ public final class ItemBuilder {
         return this.setLore(Arrays.asList(lore), true);
     }
 
+    // --- Enchantments i flagi ---
     public ItemBuilder addEnchant(Enchantment enchant, int level) {
         this.itemMeta.addEnchant(enchant, level, true);
         this.refreshMeta();
-
         return this;
     }
 
     public ItemBuilder setFlag(ItemFlag flag) {
         this.itemMeta.addItemFlags(flag);
         this.refreshMeta();
-
         return this;
     }
 
+    public ItemBuilder setSkullOwner(String ownerName) {
+        if (this.itemMeta instanceof SkullMeta) {
+            SkullMeta skullMeta = (SkullMeta) this.itemMeta;
+            OfflinePlayer owner = org.bukkit.Bukkit.getOfflinePlayerIfCached(ownerName);
+            if (owner == null) {
+                owner = org.bukkit.Bukkit.getOfflinePlayer(ownerName);
+            }
+            skullMeta.setOwningPlayer(owner);
+            this.refreshMeta();
+        }
+        return this;
+    }
+
+    // --- Gettery ---
     public ItemStack getItem() {
         return this.itemStack;
     }
@@ -76,5 +109,4 @@ public final class ItemBuilder {
     public ItemMeta getMeta() {
         return this.itemMeta;
     }
-
 }

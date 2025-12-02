@@ -79,7 +79,7 @@ public final class ItemComponentHelper {
             return new FunnyFormatter()
                     .register("{ITEM}", ItemUtils.itemAsString(this.item, true))
                     .register("{ITEM-NO-AMOUNT}", ItemUtils.itemAsString(this.item, false))
-                    .format(text);
+                    .replace(text);
         }
 
         @Override
@@ -122,7 +122,7 @@ public final class ItemComponentHelper {
                     .register("{ITEMS-NO-AMOUNT}", FunnyStringUtils.join(PandaStream.of(this.items)
                             .map(itemStack -> ItemUtils.itemAsString(itemStack, false))
                             .toList(), true))
-                    .format(text);
+                    .replace(text);
         }
 
         @Override

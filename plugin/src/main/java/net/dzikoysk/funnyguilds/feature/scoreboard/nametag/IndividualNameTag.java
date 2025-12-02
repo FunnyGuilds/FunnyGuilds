@@ -13,6 +13,8 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -48,7 +50,8 @@ public class IndividualNameTag {
         Scoreboard scoreboard = scoreboardOption.get();
 
         Team team = this.prepareTeam(scoreboard, this.user.getName());
-        team.setPrefix(this.user.getName());
+        // now using Component API
+        team.prefix(LegacyComponentSerializer.legacySection().deserialize(this.user.getName()));
     }
 
     private Player getPlayer() {
@@ -80,8 +83,17 @@ public class IndividualNameTag {
         Team targetTeam = this.prepareTeam(scoreboard, targetUser.getName());
 
         ScoreboardConfiguration.NameTag nameTagConfig = this.pluginConfiguration.scoreboard.nametag;
-        targetTeam.setPrefix(this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, targetUser), targetPlayer, targetUser));
-        targetTeam.setSuffix(this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, targetUser), targetPlayer, targetUser));
+
+        Component prefix = LegacyComponentSerializer.legacySection().deserialize(
+                this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, targetUser), targetPlayer, targetUser)
+        );
+
+        Component suffix = LegacyComponentSerializer.legacySection().deserialize(
+                this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, targetUser), targetPlayer, targetUser)
+        );
+
+        targetTeam.prefix(prefix);
+        targetTeam.suffix(suffix);
     }
 
     public void removePlayer(User target) {
@@ -130,7 +142,7 @@ public class IndividualNameTag {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
                 .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
-        value = formatter.format(value);
+        value = formatter.replace(value);
 
         String finalValue = value;
         value = GuildPlaceholdersService.getSimplePlaceholders()

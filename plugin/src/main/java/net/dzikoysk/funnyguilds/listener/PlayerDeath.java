@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
+
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.damage.DamageState;
@@ -44,9 +42,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -124,25 +120,25 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         if (this.checkRankFarmingProtection(playerVictim, playerAttacker, victim, victimDamageState, attacker, attackerDamageState)) {
             victimDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(Component.empty());
             return;
         }
 
         if (this.checkIPRankFarmingProtection(playerVictim, playerAttacker)) {
             victimDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(Component.empty());
             return;
         }
 
         if (this.checkMemberRankChangeProtection(victim, attacker)) {
             victimDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(Component.empty());
             return;
         }
 
         if (this.checkAllyRankChangeProtection(victim, attacker)) {
             attackerDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(Component.empty());
             return;
         }
 
@@ -240,12 +236,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{CHANGE}", Math.abs(victimPointsChange))
                 .register("{POINTS-FORMAT}", formatPointsWithRange(victimPoints))
                 .register("{POINTS}", victimPoints)
-                .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
-                .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
+                .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getInventory().getItemInMainHand().getType()))
+                .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getInventory().getItemInMainHand()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", (int) (playerAttacker.getHealth() / 2));
 
-        Replaceable itemReplacement = ItemComponentHelper.prepareItemReplacement(playerAttacker.getItemInHand());
+        Replaceable itemReplacement = ItemComponentHelper.prepareItemReplacement(playerAttacker.getInventory().getItemInMainHand());
 
         if (this.config.displayNotificationForKiller) {
             Guild attackerGuild = attacker.getGuild().orNull();
@@ -308,7 +304,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         if (this.config.disableDefaultDeathMessage) {
-            event.setDeathMessage(null);
+            event.deathMessage(Component.empty());
         }
 
         Set<User> receivers = new HashSet<>();

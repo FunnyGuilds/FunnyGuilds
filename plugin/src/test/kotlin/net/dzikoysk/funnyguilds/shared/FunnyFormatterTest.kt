@@ -12,10 +12,9 @@ class FunnyFormatterTest {
                 .register("{TEST}", "sth {TEST}")
                 .register("{VALUE}", "x")
 
-        assertEquals("", formatter.format(null))
-        assertEquals("", formatter.format(""))
-        assertEquals("some text sth {TEST} x", formatter.format("some text {TEST} {VALUE}"))
-        assertEquals("some text {TEST2} {VALUE2}", formatter.format("some text {TEST2} {VALUE2}"))
+        assertEquals("", formatter.replace(""))
+        assertEquals("some text sth {TEST} x", formatter.replace("some text {TEST} {VALUE}"))
+        assertEquals("some text {TEST2} {VALUE2}", formatter.replace("some text {TEST2} {VALUE2}"))
     }
 
     @Test

@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocalePairResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;

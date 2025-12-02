@@ -334,7 +334,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
                 .register("{VALUE-FORMAT}", valueFormat)
                 .register("{VALUE}", valueString);
 
-        return formatter.format(topFormat);
+        return formatter.replace(topFormat);
     }
 
     private String formatUserRank(String text, String placeholder, User user, String topFormat) {

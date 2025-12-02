@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.decentholograms.DecentHologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.dynmap.DynmapHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
@@ -76,9 +74,6 @@ public class HookManager {
 
         this.setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, this.plugin), true)
                 .subscribe(hook -> PLACEHOLDER_API = hook);
-
-        this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, this.plugin), true)
-                .subscribe(hook -> hook.peek(hdHook -> HOLOGRAMS = Option.of(hdHook)));
 
         this.<HologramsHook>setupHook("DecentHolograms", true, pluginName -> new DecentHologramsHook(pluginName, this.plugin), true)
                 .subscribe(hook -> hook.peek(dhHook -> HOLOGRAMS = Option.of(dhHook)));

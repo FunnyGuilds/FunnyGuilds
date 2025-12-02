@@ -1008,7 +1008,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             return FunnyFormatter.of("{TAG}", targetGuild.getTag())
-                    .format(this.chooseTag(guild, targetGuild));
+                    .replace(this.chooseTag(guild, targetGuild));
         }
 
     }

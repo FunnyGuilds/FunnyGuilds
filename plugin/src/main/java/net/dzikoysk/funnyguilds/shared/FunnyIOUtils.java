@@ -4,9 +4,14 @@ import com.google.common.base.Throwables;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -16,6 +21,8 @@ import panda.std.stream.PandaStream;
 import panda.utilities.IOUtils;
 
 public final class FunnyIOUtils {
+
+    private static final HttpClient CLIENT = HttpClient.newHttpClient();
 
     private FunnyIOUtils() {
     }
@@ -75,20 +82,21 @@ public final class FunnyIOUtils {
 
     public static String getContent(String urlString) {
         try {
-            URLConnection connection = new URL(urlString).openConnection();
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(urlString))
+                    .header("User-Agent", "Mozilla/5.0")
+                    .GET()
+                    .build();
 
-            String encoding = connection.getContentEncoding();
-            encoding = encoding == null ? "UTF-8" : encoding;
+            HttpResponse<String> response = CLIENT.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)
+            );
 
-            try (InputStream input = connection.getInputStream()) {
-                return IOUtils.convertStreamToString(input, Charset.forName(encoding))
-                        .orThrow(exception -> exception);
-            }
-        }
-        catch (Exception exception) {
+            return response.body();
+        } catch (Exception e) {
             FunnyGuilds.getPluginLogger().update("Connection to the server (" + urlString + ") failed!");
-            FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(exception));
+            FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(e));
         }
 
         return "";

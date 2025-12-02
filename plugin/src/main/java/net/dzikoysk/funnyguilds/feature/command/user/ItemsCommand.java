@@ -8,6 +8,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
+import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
@@ -37,25 +38,14 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
-        PandaStream.of(guiItems).forEach(item -> {
-            item = item.clone();
+        PandaStream.of(guiItems).forEach(originalItem -> {
+            ItemStack item = originalItem.clone();
+            ItemBuilder builder = new ItemBuilder(item);
 
             if (this.config.addLoreLines && (this.config.createItems.contains(item) || this.config.createItemsVip.contains(item))) {
-                ItemMeta meta = item.getItemMeta();
-
-                if (meta == null) {
-                    FunnyGuilds.getPluginLogger().warning("Item meta is not defined (" + item + ")");
-                    return;
-                }
-
                 int requiredAmount = item.getAmount();
                 int inventoryAmount = ItemUtils.getItemAmount(item, player.getInventory());
                 int enderChestAmount = ItemUtils.getItemAmount(item, player.getEnderChest());
-
-                List<String> lore = meta.getLore();
-                if (lore == null) {
-                    lore = new ArrayList<>(this.config.guiItemsLore.size());
-                }
 
                 FunnyFormatter formatter = new FunnyFormatter()
                         .register("{REQ-AMOUNT}", requiredAmount)
@@ -66,17 +56,17 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                         .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
                         .register("{ALL-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
 
-                lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
+                List<String> loreLines = new ArrayList<>();
+                PandaStream.of(this.config.guiItemsLore).map(line -> formatter.replace(line.getValue())).forEach(loreLines::add);
+
+                builder.setLore(loreLines, true);
 
                 if (!this.config.guiItemsName.isEmpty()) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), Collections.emptySet(), item));
+                    builder.setName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), Collections.emptySet(), item), true);
                 }
-
-                meta.setLore(lore);
-                item.setItemMeta(meta);
             }
 
-            gui.setToNextFree(item);
+            gui.setToNextFree(builder.getItem());
         });
 
         gui.open(player);

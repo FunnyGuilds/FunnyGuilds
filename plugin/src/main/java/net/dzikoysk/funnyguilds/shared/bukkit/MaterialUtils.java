@@ -4,6 +4,8 @@ import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,17 +32,18 @@ public final class MaterialUtils {
         if (itemStack == null) {
             return "";
         }
-
         ItemMeta itemMeta = itemStack.getItemMeta();
+
         if (itemMeta == null) {
             return "";
         }
 
-        if (!itemMeta.hasDisplayName()) {
+        Component displayName = itemMeta.displayName();
+
+        if (displayName == null) {
             return "";
         }
-
-        return itemMeta.getDisplayName();
+        return PlainTextComponentSerializer.plainText().serialize(displayName);
     }
 
 }

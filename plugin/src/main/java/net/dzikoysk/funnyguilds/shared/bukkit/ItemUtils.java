@@ -9,10 +9,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,13 +26,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
-import panda.utilities.text.Joiner;
 
 public final class ItemUtils {
 
@@ -98,10 +102,10 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    item.setName(formatter.format(attributeValue), true);
+                    item.setName(formatter.replace(attributeValue), true);
                     continue;
                 case "lore":
-                    List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
+                    List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::replace).toList();
                     item.setLore(lore, true);
                     continue;
                 case "enchant":
@@ -122,12 +126,13 @@ public final class ItemUtils {
                     continue;
                 case "skullowner":
                     if (!(item.getMeta() instanceof SkullMeta)) {
-                        FunnyGuilds.getPluginLogger().parser("Invalid item skull owner attribute (given item is not a skull!): " + split[index]);
+                        FunnyGuilds.getPluginLogger().parser(
+                                "Invalid item skull owner attribute (given item is not a skull!): " + split[index]
+                        );
                         continue;
                     }
+                    item.setSkullOwner(attributeValue);
 
-                    ((SkullMeta) item.getMeta()).setOwner(attributeValue);
-                    item.refreshMeta();
                     continue;
                 case "flags":
                 case "itemflags":
@@ -169,49 +174,56 @@ public final class ItemUtils {
 
     public static String toString(ItemStack item) {
         String material = item.getType().toString().toLowerCase(Locale.ROOT);
-        short durability = item.getDurability();
-        int amount = item.getAmount();
+        int durability = 0;
 
+        ItemMeta meta = item.getItemMeta();
+        if (meta instanceof Damageable damageable) {
+            durability = damageable.getDamage();
+        }
+
+        int amount = item.getAmount();
         StringBuilder itemString = new StringBuilder(amount + " " + material + (durability > 0 ? ":" + durability : ""));
         FunnyFormatter formatter = new FunnyFormatter().register(" ", "_").register("#", "{HASH}");
 
-        ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             return itemString.toString();
         }
 
-        if (meta.hasDisplayName()) {
-            itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
+        Component displayName = meta.displayName();
+        if (displayName != null) {
+            String name = LegacyComponentSerializer.legacySection().serialize(displayName);
+            itemString.append(" name:").append(formatter.replace(ChatUtils.decolor(name)));
         }
 
-        if (meta.hasLore()) {
-            List<String> lore = PandaStream.of(meta.getLore())
-                    .map(ChatUtils::decolor)
-                    .map(formatter::format)
-                    .toList();
+        List<Component> loreComponents = meta.lore();
+        if (loreComponents != null && !loreComponents.isEmpty()) {
+            List<String> lore = loreComponents.stream()
+                    .map(component -> ChatUtils.decolor(LegacyComponentSerializer.legacySection().serialize(component)))
+                    .map(formatter::replace)
+                    .collect(Collectors.toList());
 
-            itemString.append(" lore:").append(Joiner.on("#").join(lore));
+            itemString.append(" lore:").append(String.join("#", lore));
         }
 
-        if (meta.hasEnchants()) {
-            List<String> enchants = PandaStream.of(meta.getEnchants().entrySet().stream())
+        if (!meta.getEnchants().isEmpty()) {
+            List<String> enchants = meta.getEnchants().entrySet().stream()
                     .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
-                    .toList();
+                    .collect(Collectors.toList());
 
-            itemString.append(" enchants:").append(Joiner.on(",").join(enchants));
+            itemString.append(" enchants:").append(String.join(",", enchants));
         }
 
         if (!meta.getItemFlags().isEmpty()) {
-            List<String> flags = PandaStream.of(meta.getItemFlags())
+            List<String> flags = meta.getItemFlags().stream()
                     .map(ItemFlag::name)
                     .map(name -> name.toLowerCase(Locale.ROOT))
-                    .toList();
+                    .collect(Collectors.toList());
 
-            itemString.append(" flags:").append(Joiner.on(",").join(flags));
+            itemString.append(" flags:").append(String.join(",", flags));
         }
 
         if (meta instanceof SkullMeta skullMeta) {
-            if (skullMeta.hasOwner()) {
+            if (skullMeta.getOwningPlayer() != null) {
                 itemString.append(" skullowner:").append(skullMeta.getOwningPlayer().getName());
             }
         }
