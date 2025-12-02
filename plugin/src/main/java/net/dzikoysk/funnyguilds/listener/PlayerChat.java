@@ -178,7 +178,7 @@ public class PlayerChat extends AbstractFunnyListener {
                 .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, user))
                 .register("{MESSAGE}", message);
 
-        return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));
+        return HookUtils.replacePlaceholders(player, formatter.replace(chatDesign));
     }
 
     private enum ChatType {

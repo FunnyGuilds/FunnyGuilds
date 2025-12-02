@@ -24,7 +24,7 @@ class FunnyFormatterTest {
                 .register("{VALUE}", "else {TEST}")
                 .register("{TEST}", 1)
 
-        assertEquals("some text sth 1 else 1", formatter.format("some text {TEST} {VALUE}"))
+        assertEquals("some text sth 1 else 1", formatter.replace("some text {TEST} {VALUE}"))
     }
 
 }

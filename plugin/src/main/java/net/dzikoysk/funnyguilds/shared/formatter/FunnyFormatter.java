@@ -18,6 +18,12 @@ public final class FunnyFormatter implements Replaceable {
         return this.replace(message);
     }
 
+    // NOWA METODA – bez Locale
+    public @NotNull String replace(@NotNull String text) {
+        // delegacja do metody z Locale
+        return this.replace(null, text);
+    }
+
     @Override
     public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
         if (FunnyStringUtils.isEmpty(text)) {
@@ -58,6 +64,7 @@ public final class FunnyFormatter implements Replaceable {
         return new FunnyFormatter().register(placeholder, value);
     }
 
+    // Tu dalej możesz korzystać z replace(String)
     public static String format(String text, String placeholder, Object value) {
         return new FunnyFormatter().register(placeholder, value).replace(text);
     }

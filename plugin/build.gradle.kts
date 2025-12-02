@@ -143,7 +143,6 @@ tasks.withType<ShadowJar> {
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
     relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
-    relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
     relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")
