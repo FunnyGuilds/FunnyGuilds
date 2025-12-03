@@ -273,7 +273,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastCreate)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
 

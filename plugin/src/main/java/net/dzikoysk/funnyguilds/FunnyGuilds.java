@@ -440,7 +440,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         if (NmsUtils.getReloadCount() > 0) {
             this.messageService.getMessage(config -> config.reloadWarn)
-                    .broadcast()
+                    .all()
                     .permission("funnyguilds.admin")
                     .send();
         }

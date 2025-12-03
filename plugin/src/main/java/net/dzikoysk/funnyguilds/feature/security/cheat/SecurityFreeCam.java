@@ -49,7 +49,7 @@ public final class SecurityFreeCam {
         String blocksString = Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString();
 
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
-        SecurityUtils.sendToOperator(player, CheatType.FREE_CAM, Replacement.of("{BLOCKS}", blocksString));
+        SecurityUtils.sendToOperator(player, CheatType.FREE_CAM, Replacement.string("{BLOCKS}", blocksString));
     }
 
 }

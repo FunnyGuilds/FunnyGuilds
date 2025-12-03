@@ -67,7 +67,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
                 .receiver(player)
                 .with(CommandSender.class, receiver -> {
                     String formattedValidity = this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity);
-                    return Replacement.of("{DATE}", formattedValidity);
+                    return Replacement.string("{DATE}", formattedValidity);
                 })
                 .send();
     }

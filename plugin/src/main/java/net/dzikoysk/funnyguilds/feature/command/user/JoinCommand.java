@@ -97,7 +97,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastJoin)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
 
