@@ -1,5 +1,9 @@
 rootProject.name = "FunnyGuilds"
 
+// Limit workers - apologies to anyone heating their room with Gradle (4 -> 2, 8 -> 4, 16 -> 8, 32+ -> 16)
+val cores = Runtime.getRuntime().availableProcessors()
+gradle.startParameter.maxWorkerCount = maxOf(1, minOf(cores / 2, 16))
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
