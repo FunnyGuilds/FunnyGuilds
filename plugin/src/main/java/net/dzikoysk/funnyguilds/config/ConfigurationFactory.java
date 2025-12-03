@@ -54,6 +54,7 @@ public final class ConfigurationFactory {
                     registry.register(new FunnyTimeFormatterTransformer());
                     registry.register(new SerdesMessages());
                 });
+                opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.bindFile(messageConfigurationFile);
             });
             it.saveDefaults();
@@ -83,6 +84,7 @@ public final class ConfigurationFactory {
                 });
                 opt.bindFile(pluginConfigurationFile);
                 opt.logger(FunnyGuilds.getInstance().getLogger());
+                opt.errorComments(true);
             });
             it.saveDefaults();
             it.load(true);
@@ -114,6 +116,8 @@ public final class ConfigurationFactory {
                     registry.register(new SkinTextureSerializer());
                 });
                 opt.bindFile(tablistConfigurationFile);
+                opt.logger(FunnyGuilds.getInstance().getLogger());
+                opt.errorComments(true);
             });
             it.saveDefaults();
             it.load(true);

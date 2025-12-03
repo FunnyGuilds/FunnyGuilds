@@ -51,7 +51,7 @@ dependencies {
     testImplementation("org.panda-lang:expressible-junit:$expressible")
 
     /* okaeri config library */
-    val okaeriConfigs = "6.0.0-beta.15"
+    val okaeriConfigs = "6.0.0-beta.19"
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")

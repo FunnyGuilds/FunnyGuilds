@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
 import com.google.common.collect.ImmutableSet;
+import eu.okaeri.configs.exception.OkaeriConfigException;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
@@ -73,6 +74,7 @@ import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
+import net.dzikoysk.funnyguilds.shared.ExceptionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
@@ -192,7 +194,16 @@ public class FunnyGuilds extends JavaPlugin {
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
-            logger.error("Could not load plugin configuration", exception);
+            OkaeriConfigException configException = ExceptionUtils.findCause(exception, OkaeriConfigException.class, 5);
+            if ((configException != null) && configException.isMessageSufficient()) {
+                logger.error("Could not load plugin configuration");
+                for (String line : configException.getMessage().split("\n")) {
+                    logger.error(line);
+                }
+            }
+            else {
+                logger.error("Could not load plugin configuration", exception);
+            }
             this.shutdown("Critical error has been encountered!");
             return;
         }
