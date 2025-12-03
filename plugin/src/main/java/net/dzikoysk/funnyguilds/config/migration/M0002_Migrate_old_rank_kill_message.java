@@ -1,15 +1,7 @@
 package net.dzikoysk.funnyguilds.config.migration;
 
-import eu.okaeri.configs.configurer.Configurer;
 import eu.okaeri.configs.migrate.ConfigMigration;
-import eu.okaeri.configs.migrate.builtin.NamedMigration;
 import eu.okaeri.configs.migrate.view.RawConfigView;
-import eu.okaeri.configs.schema.GenericsDeclaration;
-import eu.okaeri.configs.serdes.SerdesContext;
-import java.io.File;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.jetbrains.annotations.Nullable;
 import dev.peri.yetanothermessageslibrary.adventure.MiniComponent;
@@ -17,7 +9,7 @@ import dev.peri.yetanothermessageslibrary.adventure.RawComponent;
 import dev.peri.yetanothermessageslibrary.message.SendableMessage;
 import dev.peri.yetanothermessageslibrary.message.holder.impl.TitleHolder;
 
-public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
+public class M0002_Migrate_old_rank_kill_message extends FunnyMigration {
 
     public M0002_Migrate_old_rank_kill_message() {
         super(
@@ -32,11 +24,12 @@ public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
                 return false;
             }
 
+            RawConfigView plugin = plugin();
             TitleHolder.Builder builder = TitleHolder.builder();
             builder.times(
-                    (Integer) getConfigValueOrDefault("notification-title-fade-in", 10),
-                    (Integer) getConfigValueOrDefault("notification-title-stay", 10),
-                    (Integer) getConfigValueOrDefault("notification-title-fade-out", 10)
+                    plugin.getOr("notification-title-fade-in", Integer.class, 10),
+                    plugin.getOr("notification-title-stay", Integer.class, 10),
+                    plugin.getOr("notification-title-fade-out", Integer.class, 10)
             );
 
             RawComponent title = getRawComponent(view, oldKey);
@@ -49,14 +42,7 @@ public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
                 builder.subTitle(subTitle);
             }
 
-            Configurer configurer = config.getConfigurer();
-            Object value = configurer.simplify(
-                    SendableMessage.of(builder.build()),
-                    GenericsDeclaration.of(SendableMessage.class),
-                    SerdesContext.of(configurer),
-                    true
-            );
-            view.set(newKey, value);
+            view.set(newKey, SendableMessage.of(builder.build()));
             return true;
         });
     }
@@ -68,19 +54,6 @@ public class M0002_Migrate_old_rank_kill_message extends NamedMigration {
         }
         String message = (String) view.remove(key);
         return MiniComponent.of(message);
-    }
-
-    private static Object getConfigValueOrDefault(String key, Object defaultValue) {
-        File configurationFile = FunnyGuilds.getInstance().getPluginConfigurationFile();
-        PluginConfiguration pluginConfig = ConfigurationFactory.createPluginConfiguration(configurationFile);
-        RawConfigView configView = new RawConfigView(pluginConfig);
-
-        Object value = configView.get(key);
-        if (value == null) {
-            return defaultValue;
-        }
-        pluginConfig.save();
-        return value;
     }
 
 }

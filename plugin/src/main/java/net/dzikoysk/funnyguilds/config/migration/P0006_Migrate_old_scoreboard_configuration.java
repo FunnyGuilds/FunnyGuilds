@@ -5,6 +5,7 @@ import eu.okaeri.configs.migrate.builtin.NamedMigration;
 import static eu.okaeri.configs.migrate.ConfigMigrationDsl.move;
 
 public class P0006_Migrate_old_scoreboard_configuration extends NamedMigration {
+
     public P0006_Migrate_old_scoreboard_configuration() {
         super(
                 "Migrate old top-level keys to scoreboard subconfig",
@@ -14,4 +15,5 @@ public class P0006_Migrate_old_scoreboard_configuration extends NamedMigration {
                 move("dummy-suffix", "scoreboard.dummy.suffix")
         );
     }
+
 }

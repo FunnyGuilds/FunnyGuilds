@@ -49,11 +49,11 @@ public final class ConfigurationFactory {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
             it.configure(opt -> {
                 opt.configurer(new YamlBukkitConfigurer());
-                opt.serdes(registry -> {
-                    registry.register(new DecolorTransformer());
-                    registry.register(new FunnyTimeFormatterTransformer());
-                    registry.register(new SerdesMessages());
-                });
+                opt.serdes(
+                    new DecolorTransformer(),
+                    new FunnyTimeFormatterTransformer(),
+                    new SerdesMessages()
+                );
                 opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.bindFile(messageConfigurationFile);
             });
@@ -70,18 +70,19 @@ public final class ConfigurationFactory {
     public static PluginConfiguration createPluginConfiguration(File pluginConfigurationFile) {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.configure(opt -> {
-                opt.configurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
-                opt.serdes(registry -> {
-                    registry.register(new RawStringTransformer());
-                    registry.register(new ColorSerializer());
-                    registry.register(new MaterialTransformer());
-                    registry.register(new ItemStackTransformer());
-                    registry.register(new EntityTypeTransformer());
-                    registry.register(new VectorSerializer());
-                    registry.register(new FunnyTimeTransformer());
-                    registry.register(new FunnyPatternTransformer());
-                    registry.register(new RangeFormattingTransformer());
-                });
+                opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
+                opt.validator(new OkaeriValidator(true));
+                opt.serdes(
+                    new RawStringTransformer(),
+                    new ColorSerializer(),
+                    new MaterialTransformer(),
+                    new ItemStackTransformer(),
+                    new EntityTypeTransformer(),
+                    new VectorSerializer(),
+                    new FunnyTimeTransformer(),
+                    new FunnyPatternTransformer(),
+                    new RangeFormattingTransformer()
+                );
                 opt.bindFile(pluginConfigurationFile);
                 opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.errorComments(true);
@@ -109,12 +110,13 @@ public final class ConfigurationFactory {
     public static TablistConfiguration createTablistConfiguration(File tablistConfigurationFile) {
         return ConfigManager.create(TablistConfiguration.class, (it) -> {
             it.configure(opt -> {
-                opt.configurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
-                opt.serdes(registry -> {
-                    registry.register(new NumberRangeTransformer());
-                    registry.register(new TablistPageSerializer());
-                    registry.register(new SkinTextureSerializer());
-                });
+                opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
+                opt.validator(new OkaeriValidator(true));
+                opt.serdes(
+                    new NumberRangeTransformer(),
+                    new TablistPageSerializer(),
+                    new SkinTextureSerializer()
+                );
                 opt.bindFile(tablistConfigurationFile);
                 opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.errorComments(true);
