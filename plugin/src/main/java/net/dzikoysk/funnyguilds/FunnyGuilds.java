@@ -42,7 +42,6 @@ import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PistonUse;
-import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
@@ -377,7 +376,7 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuiActionHandler.class)
                     .add(EntityDamage.class)
                     .add(EntityInteract.class)
-                    .add(PlayerChat.class)
+                    //.add(PlayerChat.class) //TODO reimplement
                     .add(PlayerDeath.class)
                     .add(PlayerJoin.class)
                     .add(PlayerLogin.class)
@@ -447,7 +446,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         if (NmsUtils.getReloadCount() > 0) {
             this.messageService.getMessage(config -> config.reloadWarn)
-                    .broadcast()
+                    .all()
                     .permission("funnyguilds.admin")
                     .send();
         }

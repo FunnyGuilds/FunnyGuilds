@@ -1,17 +1,19 @@
 package net.dzikoysk.funnyguilds.config.tablist;
 
+import java.util.Collections;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
 
-public class TablistPage {
+public record TablistPage(int cycles, Map<Integer, Component> cells, Component header, Component footer) {
 
-    public final int cycles;
-    public final Map<Integer, String> cells;
-    public final String header;
-    public final String footer;
-
-    public TablistPage(int cycles, Map<Integer, String> cells, String header, String footer) {
+    public TablistPage(
+            int cycles,
+            Map<Integer, Component> cells,
+            Component header,
+            Component footer
+    ) {
         this.cycles = cycles;
-        this.cells = cells;
+        this.cells = Collections.unmodifiableMap(cells);
         this.header = header;
         this.footer = footer;
     }

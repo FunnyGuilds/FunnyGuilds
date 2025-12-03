@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import panda.std.stream.PandaStream;
 import panda.utilities.StringUtils;
 
+@Deprecated
 public final class ChatUtils {
 
     private ChatUtils() {

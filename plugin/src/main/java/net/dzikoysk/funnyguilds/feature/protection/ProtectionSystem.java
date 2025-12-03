@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -126,7 +125,7 @@ public final class ProtectionSystem {
         guild.getBuild().peek(build -> {
             Duration time = Duration.between(Instant.now(), build);
             FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.regionExplodeInteract)
-                    .with(FunnyFormatter.of("{TIME}", time.getSeconds()))
+                    .with("{TIME}", time.getSeconds())
                     .receiver(player)
                     .send();
         });

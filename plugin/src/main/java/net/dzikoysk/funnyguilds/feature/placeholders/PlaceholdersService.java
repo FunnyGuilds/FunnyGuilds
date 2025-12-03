@@ -1,14 +1,26 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
 public interface PlaceholdersService<T> {
 
-    String format(@Nullable Object entity, String text, T data);
+    Component format(
+            @Nullable Object entity,
+            Component text,
+            T data
+    );
 
-    default String format(String text, T data) {
-        return this.format(null, text, data);
+    default Component format(
+            Component text,
+            T data
+    ) {
+        return this.format(
+                null,
+                text,
+                data
+        );
     }
 
 }

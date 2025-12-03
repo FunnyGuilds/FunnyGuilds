@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
@@ -59,7 +60,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
                         .orThrow(() -> new InternalValidationException(config -> config.inviteAllArgumentIsNotNumber))
                     : this.config.inviteCommandAllDefaultRange;
 
-            when(range > this.config.inviteCommandAllMaxRange, config -> config.inviteRangeToBig, FunnyFormatter.of("{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
+            when(range > this.config.inviteCommandAllMaxRange, config -> config.inviteRangeToBig, Replacement.string("{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
 
             List<Player> nearbyPlayers = PandaStream.of(Bukkit.getServer().getOnlinePlayers())
                     .filter(player -> range >= player.getLocation().distance(sender.getLocation()))

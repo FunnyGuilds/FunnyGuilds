@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
@@ -7,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -34,7 +34,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        FunnyFormatter formatter = FunnyFormatter.of("{PLAYER}", userToMove.getName());
+        Replaceable formatter = null; //FunnyFormatter.of("{PLAYER}", userToMove.getName()); //TODO
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);

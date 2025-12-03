@@ -1,26 +1,19 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import panda.std.stream.PandaStream;
-import panda.utilities.text.Joiner;
 
 public abstract class StaticPlaceholdersService<T, P extends Placeholders<T, P>> implements PlaceholdersService<T> {
-
-    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT =
-            (list, listNoValue) -> list.isEmpty()
-                    ? listNoValue
-                    : Joiner.on(", ").join(list).toString();
 
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
@@ -43,21 +36,21 @@ public abstract class StaticPlaceholdersService<T, P extends Placeholders<T, P>>
      * @return formatted text
      */
     @Override
-    public String format(@Nullable Object entity, String text, T data) {
+    public Component format(@Nullable Object entity, Component text, T data) {
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatVariables(entity, text, data);
         }
         return text;
     }
 
-    public String formatCustom(@Nullable Object entity, @Nullable String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public Component formatCustom(@Nullable Object entity, @Nullable Component text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatCustom(entity, text, data, prefix, suffix, nameModifier);
         }
         return text;
     }
 
-    public String formatCustom(@Nullable String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public Component formatCustom(@Nullable Component text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
         return this.formatCustom(null, text, data, prefix, suffix, nameModifier);
     }
 

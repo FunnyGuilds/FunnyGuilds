@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -37,7 +38,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
 
         ItemStack need = this.config.enlargeItems.get(currentEnlargementLevel);
         when(!player.getInventory().containsAtLeast(need, need.getAmount()), config -> config.enlargeItem,
-                FunnyFormatter.of("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT)));
+             Replacement.string("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase(Locale.ROOT)));
         when(this.regionManager.isNearRegion(region.getCenter()), config -> config.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, deputy, guild))) {

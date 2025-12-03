@@ -57,8 +57,18 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
         Bukkit.getPluginManager().registerEvents(this, this.plugin);
         Bukkit.getScheduler().runTaskTimer(this.plugin, () -> this.guilds.forEach((guild, dynmapGuild) -> {
-            dynmapGuild.getCenterMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild), true));
-            dynmapGuild.getAreaMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild), true));
+            dynmapGuild.getCenterMarker()
+                    .peek(marker -> {
+                        String labelText = this.hookConfig.center.label;
+                        //TODO reimplement placeholders
+                        marker.setLabel(labelText, true);
+                    });
+            dynmapGuild.getAreaMarker()
+                    .peek(marker -> {
+                        String labelText = this.hookConfig.area.label;
+                        //TODO reimplement placeholders
+                        marker.setLabel(labelText, true);
+                    });
         }), 0, this.hookConfig.updateInterval);
 
         return HookInitResult.SUCCESS;
@@ -105,7 +115,8 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
                 return this.guildsMarkerSet.createMarker(
                         "fg_guild_center_" + guild.getName(),
-                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
+                        //this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
+                        null, //TODO: reimplement
                         region.getWorld().getName(),
                         center.getX(),
                         center.getY(),
@@ -121,7 +132,8 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
                 AreaMarker marker = this.guildsMarkerSet.createAreaMarker(
                         "fg_guild_area_" + guild.getName(),
-                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild),
+                        //this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild),
+                        null, //TODO: reimplement
                         true,
                         region.getWorld().getName(),
                         new double[]{firstCorner.getX(), secondCorner.getX()},

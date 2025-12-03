@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Placeholders<T, P extends Placeholders<T, P>> {
@@ -54,11 +55,11 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @param data data to use to formatting
      * @return formatted text
      */
-    public String format(@Nullable Object entity, String text, T data) {
-        return this.toFormatter(entity, data).format(text);
+    public Component format(@Nullable Object entity, Component text, T data) {
+        return this.toFormatter(entity, data).replace(text);
     }
 
-    public String format(String text, T data) {
+    public Component format(Component text, T data) {
         return this.format(null, text, data);
     }
 
@@ -77,11 +78,11 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @param data data to use to formatting
      * @return formatted text
      */
-    public String formatVariables(@Nullable Object entity, String text, T data) {
-        return this.toVariablesFormatter(entity, data).format(text);
+    public Component formatVariables(@Nullable Object entity, Component text, T data) {
+        return this.toVariablesFormatter(entity, data).replace(text);
     }
 
-    public String formatVariables(String text, T data) {
+    public Component formatVariables(Component text, T data) {
         return this.formatVariables(null, text, data);
     }
 
@@ -103,11 +104,11 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @param nameModifier function to modify placeholder name (for eg. upper case)
      * @return formatted text
      */
-    public String formatCustom(@Nullable Object entity, String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
-        return this.toCustomFormatter(entity, data, prefix, suffix, nameModifier).format(text);
+    public Component formatCustom(@Nullable Object entity, Component text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        return this.toCustomFormatter(entity, data, prefix, suffix, nameModifier).replace(text);
     }
 
-    public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+    public Component formatCustom(Component text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
         return this.formatCustom(null, text, data, prefix, suffix, nameModifier);
     }
 

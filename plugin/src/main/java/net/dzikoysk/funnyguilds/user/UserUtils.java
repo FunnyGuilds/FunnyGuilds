@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
@@ -110,13 +111,9 @@ public final class UserUtils {
      * @param users collection of users
      * @return set of usernames (with tags to format)
      */
-    public static Set<String> getOnlineNames(Collection<User> users) {
-        Set<String> set = new HashSet<>();
-        for (User user : users) {
-            set.add(user.isOnline() ? "<online>" + user.getName() + "</online>" : user.getName());
-        }
-
-        return set;
+    public static Set<Component> getOnlineNames(Collection<User> users) {
+        // TODO reimplement
+        throw new UnsupportedOperationException("Drop usage/replace/whatever");
     }
 
     public static String getUserPosition(GuildPermissionChecker permissionChecker, @Nullable User user) {

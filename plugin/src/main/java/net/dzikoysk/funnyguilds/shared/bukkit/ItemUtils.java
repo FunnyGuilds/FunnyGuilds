@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import dev.peri.yetanothermessageslibrary.message.Sendable;
-import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import java.util.Arrays;
@@ -11,8 +10,8 @@ import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
-import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -42,8 +41,9 @@ public final class ItemUtils {
 
             FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
                     .receiver(player)
-                    .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
-                    .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
+//                    .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
+//                    .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
+                    // TODO: fix replacements
                     .send();
 
             return false;
@@ -51,20 +51,22 @@ public final class ItemUtils {
         return true;
     }
 
-    public static String translateTextPlaceholder(String text, Collection<ItemStack> items, ItemStack item) {
-        return StringReplacer.replace(
-                text,
-                ItemComponentHelper.prepareItemReplacement(item),
-                ItemComponentHelper.prepareItemsReplacement(items)
-        );
+    public static Component translateTextPlaceholder(Component text, Collection<ItemStack> items, ItemStack item) {
+//        return StringReplacer.replace(
+//                text
+////                ItemComponentHelper.prepareItemReplacement(item),
+////                ItemComponentHelper.prepareItemsReplacement(items) //TODO: fix replacements
+//        );
+        throw new UnsupportedOperationException();
     }
 
-    public static String itemAsString(ItemStack item, boolean displayAmount) {
-        String materialName = MaterialUtils.getMaterialName(item.getType());
-        if (!displayAmount) {
-            return materialName;
-        }
-        return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
+    public static Component itemAsString(ItemStack item, boolean displayAmount) {
+//        String materialName = MaterialUtils.getMaterialName(item.getType());
+//        if (!displayAmount) {
+//            return materialName;
+//        }
+//        return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     public static ItemStack parseItem(String itemString) {
@@ -98,11 +100,13 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    item.setName(formatter.format(attributeValue), true);
+                    //item.setName(formatter.format(attributeValue), true);
+                    //TODO
                     continue;
                 case "lore":
-                    List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
-                    item.setLore(lore, true);
+                    //List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
+                   // item.setLore(lore, true);
+                    //TODO
                     continue;
                 case "enchant":
                 case "enchantment":
@@ -181,13 +185,14 @@ public final class ItemUtils {
         }
 
         if (meta.hasDisplayName()) {
-            itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
+            //itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
+            //TODO
         }
 
         if (meta.hasLore()) {
             List<String> lore = PandaStream.of(meta.getLore())
                     .map(ChatUtils::decolor)
-                    .map(formatter::format)
+                    //.map(formatter::format) //TODO
                     .toList();
 
             itemString.append(" lore:").append(Joiner.on("#").join(lore));

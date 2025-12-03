@@ -56,7 +56,7 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastBan)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

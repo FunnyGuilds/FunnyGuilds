@@ -1,64 +1,47 @@
 package net.dzikoysk.funnyguilds.shared.formatter;
 
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import java.util.Objects;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class FunnyFormatter implements Replaceable {
 
-    private final List<Replacement<?>> replacements = new ArrayList<>();
-
-    @Deprecated
-    public String format(String message) {
-        return this.replace(message);
-    }
+    private final List<Replacement> replacements = new ArrayList<>();
 
     @Override
-    public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
-        if (FunnyStringUtils.isEmpty(text)) {
-            return "";
+    public @NotNull Component replace(
+            @Nullable Locale locale,
+            @NotNull Component text
+    ) {
+        Component result = text;
+        for (Replaceable replacement : this.replacements) {
+            result = replacement.replace(locale, result);
         }
-
-        for (Replacement<?> replacement : this.replacements) {
-            text = replacement.replaceInString(text);
-        }
-
-        return text;
+        return result;
     }
 
-    @Override
-    public @NotNull Component replace(@Nullable Locale locale, @NotNull Component text) {
-        for (Replacement<?> replacement : this.replacements) {
-            text = replacement.replaceInComponent(text);
-        }
-
-        return text;
-    }
-
-    public FunnyFormatter register(String placeholder, Component value) {
-        this.replacements.add(new ComponentReplacement(placeholder, () -> value));
+    public FunnyFormatter register(@NotNull Replacement replacement) {
+        this.replacements.add(replacement);
         return this;
     }
-
+    
     public FunnyFormatter register(String placeholder, Object value) {
-        this.replacements.add(new StringReplacement(placeholder, value::toString));
-        return this;
+        return this.register(Replacement.string(placeholder, () -> Objects.toString(value)));
+    }
+    
+    public FunnyFormatter register(String placeholder, String value) {
+        return this.register(Replacement.string(placeholder, value));
+    }
+    
+    public FunnyFormatter register(String placeholder, ComponentLike value) {
+        return this.register(Replacement.component(placeholder, value));
     }
 
-    public static FunnyFormatter of(String placeholder, Component value) {
-        return new FunnyFormatter().register(placeholder, value);
-    }
-
-    public static FunnyFormatter of(String placeholder, Object value) {
-        return new FunnyFormatter().register(placeholder, value);
-    }
-
-    public static String format(String text, String placeholder, Object value) {
-        return new FunnyFormatter().register(placeholder, value).replace(text);
-    }
 }

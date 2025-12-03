@@ -5,6 +5,7 @@ import eu.okaeri.configs.serdes.DeserializationData;
 import eu.okaeri.configs.serdes.ObjectSerializer;
 import eu.okaeri.configs.serdes.SerializationData;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class TablistPageSerializer implements ObjectSerializer<TablistPage> {
@@ -16,18 +17,21 @@ public class TablistPageSerializer implements ObjectSerializer<TablistPage> {
 
     @Override
     public void serialize(TablistPage page, SerializationData data, @NotNull GenericsDeclaration generics) {
-        data.add("cycles", page.cycles);
+        data.set("cycles", page.cycles());
 
-        if (page.cells != null) {
-            data.addAsMap("cells", page.cells, Integer.class, String.class);
+        data.setMap(
+                "cells",
+                page.cells(),
+                Integer.class,
+                Component.class
+        );
+
+        if (page.header() != null) {
+            data.set("header", page.header());
         }
 
-        if (page.header != null) {
-            data.add("header", page.header);
-        }
-
-        if (page.footer != null) {
-            data.add("footer", page.footer);
+        if (page.footer() != null) {
+            data.set("footer", page.footer());
         }
     }
 
@@ -35,38 +39,17 @@ public class TablistPageSerializer implements ObjectSerializer<TablistPage> {
     public TablistPage deserialize(DeserializationData data, @NotNull GenericsDeclaration generics) {
         int cycles = data.get("cycles", Integer.class);
 
-        Map<Integer, String> cells = data.containsKey("cells")
-                ? data.getAsMap("cells", Integer.class, String.class)
+        Map<Integer, Component> cells = data.containsKey("cells")
+                ? data.getAsMap("cells", Integer.class, Component.class)
                 : null;
 
-        //TODO: remove in 5.0
-        if (cells == null) {
-            cells = data.containsKey("player-list")
-                    ? data.getAsMap("player-list", Integer.class, String.class)
-                    : null;
-        }
-
-        String header = data.containsKey("header")
-                ? data.get("header", String.class)
+        Component header = data.containsKey("header")
+                ? data.get("header", Component.class)
                 : null;
 
-        //TODO: remove in 5.0
-        if (header == null) {
-            header = data.containsKey("player-list-header")
-                    ? data.get("player-list-header", String.class)
-                    : null;
-        }
-
-        String footer = data.containsKey("footer")
-                ? data.get("footer", String.class)
+        Component footer = data.containsKey("footer")
+                ? data.get("footer", Component.class)
                 : null;
-
-        //TODO: remove in 5.0
-        if (footer == null) {
-            footer = data.containsKey("player-list-footer")
-                    ? data.get("player-list-footer", String.class)
-                    : null;
-        }
 
         return new TablistPage(cycles, cells, header, footer);
     }

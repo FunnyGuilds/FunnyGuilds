@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.config;
 
-import dev.peri.yetanothermessageslibrary.config.serdes.SerdesMessages;
+import dev.peri.yetanothermessageslibrary.config.serdes.YAMLSerdes;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
@@ -18,7 +18,6 @@ import net.dzikoysk.funnyguilds.config.serdes.ItemStackTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.NumberRangeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
-import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
@@ -36,7 +35,7 @@ public final class ConfigurationFactory {
                 opt.serdes(
                     new DecolorTransformer(),
                     new FunnyTimeFormatterTransformer(),
-                    new SerdesMessages()
+                    new YAMLSerdes()
                 );
                 opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.bindFile(messageConfigurationFile);
@@ -52,7 +51,6 @@ public final class ConfigurationFactory {
                 opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
                 opt.validator(new OkaeriValidator(true));
                 opt.serdes(
-                    new RawStringTransformer(),
                     new ColorSerializer(),
                     new MaterialTransformer(),
                     new ItemStackTransformer(),

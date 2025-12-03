@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.gui;
 
 import java.util.function.Consumer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,7 +13,7 @@ public class GuiWindow {
     private final Inventory inv;
     private final FunnyHolder holder;
 
-    public GuiWindow(String name, int rows) {
+    public GuiWindow(Component name, int rows) {
         this.holder = new FunnyHolder(this);
         this.inv = Bukkit.createInventory(this.holder, rows > 6 ? 6 * 9 : rows * 9, name);
         this.holder.setInventory(this.inv);

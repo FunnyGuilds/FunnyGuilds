@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.shared.Position;
+import net.kyori.adventure.text.Component;
 
 public class FakeUserProfile implements UserProfile {
 
@@ -50,7 +51,7 @@ public class FakeUserProfile implements UserProfile {
     }
 
     @Override
-    public void kick(String reason) {
+    public void kick(Component reason) {
     }
 
     @Override

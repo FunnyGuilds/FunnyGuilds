@@ -13,8 +13,11 @@ import java.lang.reflect.Field;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 @Header("Dla większości wiadomości poprawny jest format: https://github.com/P3ridot/YetAnotherMessagesLibrary/blob/master/repository/okaeri/FORMAT.md")
 @Header("Pozwala on m.in. na zmianę miejsca wyświetlania wiadomości (np. wyświetlanie danej wiadomość na actionbarze zamiast chacie)")
@@ -31,21 +34,21 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- No Value Messages -------> #")
-    public String gNameNoValue = "Brak (G-NAME/NAME)";
-    public String gTagNoValue = "Brak (G-TAG/TAG)";
-    public String gOwnerNoValue = "Brak (G-OWNER)";
-    public String gDeputiesNoValue = "Brak (G-DEPUTIES)";
-    public String gDeputyNoValue = "Brak (G-DEPUTY)";
-    public String gValidityNoValue = "Brak (G-VALIDITY)";
-    public String gProtectionNoValue = "Brak (G-PROTECTION)";
-    public String gRegionSizeNoValue = "Brak (G-REGION-SIZE)";
-    public String livesNoValue = "Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)";
-    public String alliesNoValue = "Brak (ALLIES)";
-    public String enemiesNoValue = "Brak (ENEMIES)";
-    public String gtopNoValue = "Brak (GTOP-x)";
-    public String ptopNoValue = "Brak (PTOP-x)";
-    public String wgRegionNoValue = "Brak (WG-REGION)";
-    public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
+    public Component gNameNoValue = ComponentUtil.colored("Brak (G-NAME/NAME)");
+    public Component gTagNoValue = ComponentUtil.colored("Brak (G-TAG/TAG)");
+    public Component gOwnerNoValue = ComponentUtil.colored("Brak (G-OWNER)");
+    public Component gDeputiesNoValue = ComponentUtil.colored("Brak (G-DEPUTIES)");
+    public Component gDeputyNoValue = ComponentUtil.colored("Brak (G-DEPUTY)");
+    public Component gValidityNoValue = ComponentUtil.colored("Brak (G-VALIDITY)");
+    public Component gProtectionNoValue = ComponentUtil.colored("Brak (G-PROTECTION)");
+    public Component gRegionSizeNoValue = ComponentUtil.colored("Brak (G-REGION-SIZE)");
+    public Component livesNoValue = ComponentUtil.colored("Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)");
+    public Component alliesNoValue = ComponentUtil.colored("Brak (ALLIES)");
+    public Component enemiesNoValue = ComponentUtil.colored("Brak (ENEMIES)");
+    public Component gtopNoValue = ComponentUtil.colored("Brak (GTOP-x)");
+    public Component ptopNoValue = ComponentUtil.colored("Brak (PTOP-x)");
+    public Component wgRegionNoValue = ComponentUtil.colored("Brak (WG-REGION)");
+    public Component minMembersToIncludeNoValue = ComponentUtil.colored("Brak (guild-min-members w config.yml)");
 
     @Comment("")
     @Comment("<------- Permission Messages -------> #")
@@ -74,11 +77,11 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {VICTIM}, {+}, {PLUS-FORMATTED}, {SHARE}")
     public SendableMessage rankDeathAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
-    public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
+    public Component rankAssistMessage = ComponentUtil.colored("&7Asystowali: {ASSISTS}");
     @Comment("Dostępne zmienne: {PLAYER}, {+}, {PLUS-FORMATTED}, {SHARE}")
-    public String rankAssistEntry = "&b{PLAYER} &7({PLUS-FORMATTED}&7, {SHARE}% dmg)";
+    public Component rankAssistEntry = ComponentUtil.colored("&b{PLAYER} &7({PLUS-FORMATTED}&7, {SHARE}% dmg)");
     @Comment("Znaki oddzielające kolejne wpisy o asystujących graczach")
-    public String rankAssistDelimiter = "&8, ";
+    public Component rankAssistDelimiter = ComponentUtil.colored("&8, ");
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
     public SendableMessage rankResetItems = ChatHolder.message("&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}");
     @Comment("Dostępne zmienne: {LAST-RANK}, {CURRENT-RANK}")
@@ -98,7 +101,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("<------- Ban Messages -------> #")
     @Comment("Dostępne zmienne: {PLAYER}, {REASON}, {DATE}, {NEWLINE}")
-    public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
+    public Component banMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}");
 
     @Comment("")
     @Comment("<------- Region Messages -------> #")
@@ -169,7 +172,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage broadcastValidity = ChatHolder.message("&7Gildia &b{TAG} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!");
     @Comment("Dostępne zmienne: {WINNER}, {LOSER}")
     public SendableMessage broadcastWar = ChatHolder.message("&7Gildia &4{WINNER}&7 podblila gildie &4{LOSER}&7!!");
-    public String noInformation = "Brak informacji";
+    public Component noInformation = ComponentUtil.colored("Brak informacji");
 
     @Comment("")
     @Comment("<------- Help Messages -------> #")

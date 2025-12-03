@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.config;
 
 import com.google.common.collect.ImmutableMap;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
@@ -44,10 +45,12 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -67,6 +70,12 @@ import panda.std.Option;
 @Header("Jeżeli chcesz, aby dana wiadomość była pusta, zamiast wiadomości umieść: ''")
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class PluginConfiguration extends OkaeriConfig {
+    
+    @Exclude
+    private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.legacyAmpersand()
+            .toBuilder()
+            .hexColors()
+            .build();
 
     @Exclude
     public final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
@@ -191,11 +200,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public int minMembersToInclude = 1;
 
     @Comment("")
-    @Comment("Czy wiadomości o braku potrzebnych przedmiotów maja zawierać elementy, na które można najechać")
-    @Comment("Takie elementy pokazują informacje o przedmiocie, np. jego typ, nazwę czy opis")
-    public boolean enableItemComponent = false;
-
-    @Comment("")
     @Comment("Przedmioty wymagane do założenia gildii")
     @Comment("Tylko wartości ujęte w <> są wymagane - reszta, ujeta w [], jest opcjonalna")
     @Comment("Wzór: <ilosc> <przedmiot>:[metadata] [name:lore:enchants:eggtype:skullowner:armorcolor:flags]")
@@ -277,8 +281,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Nazwa GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
-    @Comment("Nazwa może zawierać max. 32 znaki, wliczając w to kody kolorów")
-    public RawString guiItemsTitle = new RawString("&5&lPrzedmioty na gildie");
+    public Component guiItemsTitle = ComponentUtil.colored("&5&lPrzedmioty na gildie");
 
     @Comment("")
     @Comment("GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
@@ -294,15 +297,14 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Nazwa GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
-    @Comment("Nazwa może zawierać max. 32 znaki, wliczając w to kody kolorów")
-    public RawString guiItemsVipTitle = new RawString("&5&lPrzedmioty na gildie (VIP)");
+    public Component guiItemsVipTitle = ComponentUtil.colored("&5&lPrzedmioty na gildie (VIP)");
 
     @Comment("")
     @Comment("Zmiana nazwy i koloru przedmiotów na gildię (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
     @Comment("Jeśli nie chcesz używac tej funkcji - to pozostaw gui-items-name: \"\"")
     @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
     @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby (np. golden_apple)")
-    public RawString guiItemsName = new RawString("&7>> &a{ITEM-NO-AMOUNT} &7<<");
+    public Component guiItemsName = ComponentUtil.colored("&7>> &a{ITEM-NO-AMOUNT} &7<<");
 
     @Comment("")
     @Comment("Czy do przedmiotów na gildię, które są w GUI, mają być dodawane dodatkowe linie opisu")
@@ -320,8 +322,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("{EC-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma w enderchescie")
     @Comment("{ALL-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie i w enderchescie")
     @Comment("{ALL-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
-            "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
+    public List<Component> guiItemsLore = ComponentUtil.coloredByNewLine("""
+                    
+                                                                                 &aPosiadasz juz:
+                                                                                 &a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)
+                                                                                 &a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)
+                                                                                 &a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)
+                                                                                 """);
 
     @Comment("")
     @Comment("Minimalna odległość od spawnu")
@@ -813,79 +820,65 @@ public class PluginConfiguration extends OkaeriConfig {
     public static class LivesRepeatingSymbol extends OkaeriConfig {
 
         @Comment("Symbol (lub słowo), który ma być powtarzany przy użyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
-        public RawString full = new RawString("&c\u2764");
+        public Component full = AMPERSAND_SERIALIZER.deserialize("&c\u2764");
 
         @Comment("")
         @Comment("Symbol (lub słowo), który ma być powtarzany przy użyciu placeholdera LIVES-SYMBOL")
-        public RawString empty = new RawString("&8\u2764");
+        public Component empty = AMPERSAND_SERIALIZER.deserialize("&8\u2764");
 
         @Comment("")
         @Comment("Symbol (lub słowo), który ma być pokazywany na końcu placeholdera LIVES-SYMBOL, kiedy gildia posiada więcej żyć niz podstawowe (war-lives)")
-        public RawString more = new RawString("&a+");
+        public Component more = AMPERSAND_SERIALIZER.deserialize("&a+");
 
     }
 
     @Comment("")
     @Comment("Wygląd znacznika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktoś jest liderem, zastępcą lub zwykłym członkiem gildii")
-    public RawString chatPosition = new RawString("&b{POS} ");
+    public String chatPosition = "&b{POS} ";
 
     @Comment("")
     @Comment("Znacznik dla lidera gildii")
     @CustomKey("chat-position-leader")
-    public RawString chatPositionLeader = new RawString("**");
+    public Component chatPositionLeader = Component.text("**");
 
     @Comment("")
     @Comment("Znacznik dla zastępcy gildii")
     @CustomKey("chat-position-deputy")
-    public RawString chatPositionDeputy = new RawString("*");
+    public Component chatPositionDeputy = Component.text("*");
 
     @Comment("")
     @Comment("Znacznik dla członka gildii")
     @CustomKey("chat-position-member")
-    public RawString chatPositionMember = new RawString("");
+    public Component chatPositionMember = Component.text("");
 
     @Comment("")
     @Comment("Wygląd znacznika {TAG} wstawionego w format chatu")
-    public RawString chatGuild = new RawString("&b{TAG} ");
+    public String chatGuild = "&b{TAG} ";
 
     @Comment("")
     @Comment("Wygląd znacznika {RANK} wstawionego w format chatu")
-    public RawString chatRank = new RawString("&b{RANK} ");
+    public String chatRank = "&b{RANK} ";
 
     @Comment("")
     @Comment("Wygląd znacznika {POINTS} wstawionego w format chatu")
     @Comment("Możesz tu także użyć znacznika {POINTS-FORMAT}")
-    public RawString chatPoints = new RawString("&b{POINTS} ");
+    public String chatPoints = "&b{POINTS} ";
 
     @Comment("")
     public TopConfiguration top = new TopConfiguration();
 
     @Comment("")
-    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zależności od wartości punktów")
-    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS}, jest używane jedynie na liście graczy")
-    @Comment("Lista powinna być podana od najmniejszych do największych rankingów i zawierać tylko liczby naturalne, z zerem włącznie")
-    @Comment("Elementy listy powinny być postaci: \"minRank-maxRank wygląd\", np.: \"0-750 &4{POINTS}\"")
-    @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    public List<RangeFormatting> pointsFormat = Arrays.asList(
-            new RangeFormatting(0, 749, "&4{POINTS}"),
-            new RangeFormatting(750, 999, "&c{POINTS}"),
-            new RangeFormatting(1000, 1499, "&a{POINTS}"),
-            new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
-    );
-
-    @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Używaj zmiennych {POINTS}")
     @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam nick - nie podawaj tu nic")
-    public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
+    public Component ptopPoints = AMPERSAND_SERIALIZER.deserialize(" &7[{POINTS}&7]");
 
     @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Używaj zmiennych {POINTS}")
     @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam tag - nie podawaj tu nic")
-    public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
+    public Component gtopPoints = AMPERSAND_SERIALIZER.deserialize(" &7[&b{POINTS}&7]");
 
     @Comment("")
     @Comment("Wygląd znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED}, w zależności od wartości zmiany w rankingu")
@@ -897,18 +890,6 @@ public class PluginConfiguration extends OkaeriConfig {
             new RangeFormatting(Integer.MIN_VALUE, -1, "&c-{CHANGE}"),
             new RangeFormatting(0, 0, "&7{CHANGE}"),
             new RangeFormatting(1, Integer.MAX_VALUE, "&a+{CHANGE}")
-    );
-
-    @Comment("")
-    @Comment("Wygląd znacznika {PING-FORMAT} w zależności od wartości pingu")
-    @Comment("Lista powinna być podana od najmniejszych do największych wartości i zawierać tylko liczby naturalne, z zerem włącznie")
-    @Comment("Elementy listy powinny być postaci: \"minPing-maxPing wygląd\", np.: \"0-75 &a{PING}\"")
-    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minPing w górę, np.: \"301-* &c{PING}\"")
-    public List<RangeFormatting> pingFormat = Arrays.asList(
-            new RangeFormatting(0, 75, "&a{PING}"),
-            new RangeFormatting(76, 150, "&e{PING}"),
-            new RangeFormatting(151, 300, "&c{PING}"),
-            new RangeFormatting(301, Integer.MAX_VALUE, "&c{PING}")
     );
 
     @NotBlank
@@ -932,22 +913,22 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatPrivDesign = new RawString("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
+    public Component chatPrivDesign = AMPERSAND_SERIALIZER.deserialize("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie dla sojuszników")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatAllyDesign = new RawString("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
+    public Component chatAllyDesign = AMPERSAND_SERIALIZER.deserialize("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie globalnym gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatGlobalDesign = new RawString("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
+    public Component chatGlobalDesign = AMPERSAND_SERIALIZER.deserialize("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomoci wysyłanej na czacie gildyjnym/sojuszniczym/globalnym gildii, dla osób z włączonym /ga spy")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatSpyDesign = new RawString("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
+    public Component chatSpyDesign = AMPERSAND_SERIALIZER.deserialize("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Czy wiadomości z chatów gildyjnych powinny być wyświetlane w logach serwera")
@@ -960,19 +941,19 @@ public class PluginConfiguration extends OkaeriConfig {
     public static class RelationalTag extends OkaeriConfig {
 
         @Comment("Wygląd tagu osób w tej samej gildii")
-        public RawString our = new RawString("&a{TAG}&f");
+        public String our = "&a{TAG}&f";
 
         @Comment("")
         @Comment("Wygląd tagu gildii sojuszniczej")
-        public RawString allies = new RawString("&6{TAG}&f");
+        public String allies = "&6{TAG}&f";
 
         @Comment("")
         @Comment("Wygląd tagu wrogiej gildii")
-        public RawString enemies = new RawString("&c{TAG}&f");
+        public String enemies = "&c{TAG}&f";
 
         @Comment("")
         @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
-        public RawString other = new RawString("&7{TAG}&f");
+        public String other = "&7{TAG}&f";
 
         public String chooseTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
@@ -980,31 +961,31 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             if (guild == null) {
-                return this.other.getValue();
+                return this.other;
             }
 
             if (guild.equals(targetGuild)) {
-                return this.our.getValue();
+                return this.our;
             }
 
             if (guild.isAlly(targetGuild)) {
-                return this.allies.getValue();
+                return this.allies;
             }
 
             if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
-                return this.enemies.getValue();
+                return this.enemies;
             }
 
-            return this.other.getValue();
+            return this.other;
         }
 
-        public String chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
+        public Component chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
-                return "";
+                return Component.empty();
             }
 
-            return FunnyFormatter.of("{TAG}", targetGuild.getTag())
-                    .format(this.chooseTag(guild, targetGuild));
+            return AMPERSAND_SERIALIZER.deserialize(Replacement.string("{TAG}", targetGuild.getTag())
+                    .replace(this.chooseTag(guild, targetGuild)));
         }
 
     }
@@ -1018,12 +999,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-offline) pustą")
-    public RawString ptopOnline = new RawString("&a");
+    public String ptopOnline = "&a";
 
     @Comment("")
     @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
-    public RawString ptopOffline = new RawString("&c");
+    public String ptopOffline = "&c";
 
     @Comment("")
     @Comment("Czy gtop-online/gtop-offline mają uznawać graczy na vanishu za graczy offline")
@@ -1034,12 +1015,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Kolory dodawane przed tagiem gildii online (przynajmniej 1 członek online) przy zamianie zmiennej {GTOP-x}")
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-offline) pustą")
-    public RawString gtopOnline = new RawString("&a");
+    public String gtopOnline = "&a";
 
     @Comment("")
     @Comment("Kolory dodawane przed tagiem gildii offline (wszyscy członkowie offline) przy zamianie zmiennej {GTOP-x}")
     @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-online) pustą")
-    public RawString gtopOffline = new RawString("&c");
+    public String gtopOffline = "&c";
 
     @Comment("")
     public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();
@@ -1057,29 +1038,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean guildTagUppercase = false;
 
     @Comment("")
-    @Comment("Czy włączyć tłumaczenie nazw przedmiotów?")
-    @CustomKey("translated-materials-enable")
-    public boolean translatedMaterialsEnable = true;
-
-    @Comment("")
-    @Comment("Czy do tłumaczenia nazw przedmiotów plugin ma używać tzw. TranslatableComponents - nazwy przedmiotów będą wyświetlane wtedy w języku gracza")
-    @Comment("Jeśli opcja będzie włączona opcja 'translated-materials-name' nie będzie miała wpływu na nazwy przedmiotów")
-    public boolean useTranslatableComponentsForMaterials = false;
-
-    @Comment("")
-    @Comment("Tłumaczenia nazw przedmiotów dla znaczników {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
-    @Comment("Wpisywać w formacie - nazwa_przedmiotu: \"tłumaczona nazwa przedmiotu\"")
-    @CustomKey("translated-materials-name")
-    public Map<Material, String> translatedMaterials = ImmutableMap.<Material, String>builder()
-            .put(Material.DIAMOND_SWORD, "&3diamentowy miecz")
-            .put(Material.IRON_SWORD, "&7zelazny miecz")
-            .put(Material.GOLD_INGOT, "&ezloto")
-            .build();
-
-    @Comment("")
     @Comment("Wygląd znaczników {ITEM} i {ITEMS} za liczbą przedmiotu")
     @Comment("Dla np. item-amount-suffix: \"szt. \" otrzymamy 1szt. golden_apple")
-    public RawString itemAmountSuffix = new RawString("x ");
+    public Component itemAmountSuffix = Component.text("x ");
 
     @Comment("")
     @Comment("Czy sprawdzanie zakazanych nazw i tagów gildii powinno być włączone")

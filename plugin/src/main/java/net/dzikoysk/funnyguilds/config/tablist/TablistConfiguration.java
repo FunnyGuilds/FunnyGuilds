@@ -8,11 +8,12 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.validator.annotation.Min;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
+import net.kyori.adventure.text.Component;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TablistConfiguration extends OkaeriConfig {
@@ -97,7 +98,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{PTOP-<typ>-<pozycja>} - gracz na podanej pozycji w rankingu (np. {PTOP-KILLS-1}, {PTOP-DEATHS-60}), dla danego typu rankingu")
     @Comment("{GTOP-<pozycja>} - gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @Comment("{GTOP-<typ>-<pozycja>} - gildia na podanej pozycji w rankingu (np. {GTOP-KILLS-1}, {PTOP-DEATHS-50}), dla danego typu rankingu")
-    public Map<Integer, String> cells = ImmutableMap.<Integer, String>builder()
+    public Map<Integer, Component> cells = ComponentUtil.<Integer>coloredMapBuilder()
             .put(2, " &b&lSTATYSTYKI")
             .put(4, " &7Nick: &b{PLAYER}")
             .put(6, " &7Punkty: &b{POINTS}")
@@ -148,11 +149,11 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd nagłówka listy graczy")
-    public String header = "&7FunnyGuilds &b5.0.0 Primrose &8- &bgithub.com/funnyguilds";
+    public Component header = ComponentUtil.colored("&7FunnyGuilds &b5.0.0 Primrose &8- &bgithub.com/funnyguilds");
 
     @Comment("")
     @Comment("Wygląd stopki listy graczy")
-    public String footer = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &6&lmessages.yml&c&l!";
+    public Component footer = ComponentUtil.colored("&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &6&lmessages.yml&c&l!");
 
     @Comment("")
     @Comment("Wygląd głowek na liście graczy")
@@ -212,9 +213,8 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("Podsekcję 'cells' konfiguruje się analogicznie jak główną sekcje 'cells' - ustawia się w niej wszystkie komórki, które mają się zmieniać (nadpisując zwykłą konfigurację)")
     @Comment("Podsekcję 'header' konfiguruje się analogicznie jak główną sekcje 'header'")
     @Comment("Podsekcję 'footer' konfiguruje się analogicznie jak główną sekcje 'footer'")
-    public List<TablistPage> pages = new LinkedList<>(
-            Arrays.asList(
-                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+    public List<TablistPage> pages = Arrays.asList(
+                    new TablistPage(10, ComponentUtil.<Integer>coloredMapBuilder()
                             .put(42, " &b&lTOP &8- &b&lPunkty")
                             .put(46, " &b1. &7{PTOP-POINTS-1}")
                             .put(47, " &b2. &7{PTOP-POINTS-2}")
@@ -240,9 +240,11 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(75, " &b10. &7{GTOP-AVG_POINTS-10}")
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-AVG_POINTS}")
                             .build(),
-                            null, null),
+                            null, 
+                                    null
+                    ),
 
-                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+                    new TablistPage(10, ComponentUtil.<Integer>coloredMapBuilder()
                             .put(42, " &b&lTOP &8- &b&lZabojstwa")
                             .put(46, " &b1. &7{PTOP-KILLS-1}")
                             .put(47, " &b2. &7{PTOP-KILLS-2}")
@@ -268,10 +270,11 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(75, " &b10. &7{GTOP-KILLS-10}")
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-KILLS}")
                             .build(),
-                            "&7GitHub: &agithub.com/funnyguilds",
-                            "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &7&lmessages.yml&c&l!"),
+                            ComponentUtil.colored("&7GitHub: &agithub.com/funnyguilds"),
+                            ComponentUtil.colored("&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &7&lmessages.yml&c&l!")
+                    ),
 
-                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+                    new TablistPage(10, ComponentUtil.<Integer>coloredMapBuilder()
                             .put(42, " &b&lTOP &8- &b&lSmierci")
                             .put(46, " &b1. &7{PTOP-DEATHS-1}")
                             .put(47, " &b2. &7{PTOP-DEATHS-2}")
@@ -297,9 +300,9 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(75, " &b10. &7{GTOP-DEATHS-10}")
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-DEATHS}")
                             .build(),
-                            "&7Strona: &6funnyguilds.dzikoysk.net",
-                            "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &b&lmessages.yml&c&l!")
-            )
+                            ComponentUtil.colored("&7Strona: &6funnyguilds.dzikoysk.net"),
+                            ComponentUtil.colored("&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &b&lmessages.yml&c&l!")
+                    )
     );
 
     @Min(0)

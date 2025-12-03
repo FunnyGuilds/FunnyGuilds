@@ -8,9 +8,11 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -29,11 +31,11 @@ public final class ItemsCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player) {
         List<ItemStack> guiItems = this.config.guiItems;
-        String title = this.config.guiItemsTitle.getValue();
+        Component title = this.config.guiItemsTitle;
 
         if (!this.config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
             guiItems = this.config.guiItemsVip;
-            title = this.config.guiItemsVipTitle.getValue();
+            title = this.config.guiItemsVipTitle;
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
@@ -52,7 +54,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 int inventoryAmount = ItemUtils.getItemAmount(item, player.getInventory());
                 int enderChestAmount = ItemUtils.getItemAmount(item, player.getEnderChest());
 
-                List<String> lore = meta.getLore();
+                List<Component> lore = meta.lore();
                 if (lore == null) {
                     lore = new ArrayList<>(this.config.guiItemsLore.size());
                 }
@@ -66,13 +68,13 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                         .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
                         .register("{ALL-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
 
-                lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
+                lore.addAll(PandaStream.of(this.config.guiItemsLore).map(formatter::replace).toList());
 
-                if (!this.config.guiItemsName.isEmpty()) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), Collections.emptySet(), item));
+                if (!ComponentUtil.isEmpty(this.config.guiItemsName)) {
+                    meta.displayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName, Collections.emptySet(), item));
                 }
 
-                meta.setLore(lore);
+                meta.lore(lore);
                 item.setItemMeta(meta);
             }
 

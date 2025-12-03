@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -88,8 +89,8 @@ public class BukkitUserProfile implements UserProfile {
     }
 
     @Override
-    public void kick(String reason) {
-        this.getPlayer().peek(player -> player.kickPlayer(reason));
+    public void kick(Component reason) {
+        this.getPlayer().peek(player -> player.kick(reason));
     }
 
     @Override
