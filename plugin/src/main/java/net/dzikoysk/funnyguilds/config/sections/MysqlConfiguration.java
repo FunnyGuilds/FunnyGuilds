@@ -34,5 +34,7 @@ public class MysqlConfiguration extends OkaeriConfig {
     public String guildsTableName = "guilds";
     @Variable("FG_MYSQL_REGIONS_TABLE_NAME")
     public String regionsTableName = "regions";
+    @Variable("FG_MYSQL_MEMBER_PERMISSIONS_TABLE_NAME")
+    public String memberPermissionsTableName = "member_permissions";
 
 }
