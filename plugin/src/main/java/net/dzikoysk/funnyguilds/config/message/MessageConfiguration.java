@@ -607,6 +607,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {ITEM}, {AMOUNT}")
     public SendableMessage panelNotEnoughItems = ChatHolder.message("&cNie masz wystarczajacej ilosci przedmiotow! Potrzebujesz &7{AMOUNT}x {ITEM}&c!");
     public SendableMessage panelVaultNotAvailable = ChatHolder.message("&cPlug ekonomii nie jest dostepny! Skontaktuj sie z administracja.");
+    public String panelFreePrice = "Za darmo";
 
     @Comment("")
     @Comment("<------- Admin Messages -------> #")

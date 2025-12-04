@@ -32,6 +32,8 @@ import panda.std.Option;
 @FunnyComponent
 public class PanelCommand extends AbstractFunnyCommand {
 
+    private static final int MILLIS_PER_TICK = 50;
+
     @FunnyCommand(
             name = "${user.panel.name}",
             description = "${user.panel.description}",
@@ -328,14 +330,14 @@ public class PanelCommand extends AbstractFunnyCommand {
             }
 
             // Nadaj efekt wszystkim członkom gildii
-            int durationTicks = (int) (effectConfig.duration.toMillis() / 50);
+            int durationTicks = (int) (effectConfig.duration.toMillis() / MILLIS_PER_TICK);
             PotionEffect effect = new PotionEffect(effectType, durationTicks, effectConfig.amplifier);
             
             for (User member : currentGuild.getMembers()) {
                 this.funnyServer.getPlayer(member).peek(memberPlayer -> memberPlayer.addPotionEffect(effect));
             }
 
-            String effectName = effectConfig.name.getValue().replaceAll("&[a-fA-F0-9klmnor]", "");
+            String effectName = ChatUtils.decolor(effectConfig.name.getValue()).replaceAll("&[0-9a-fA-FklmnorKLMNOR]", "");
             this.messageService.getMessage(config -> config.panelEffectBought)
                     .receiver(currentGuild)
                     .with("{EFFECT}", effectName)
@@ -350,7 +352,7 @@ public class PanelCommand extends AbstractFunnyCommand {
 
     private String formatItemPrice(List<ItemStack> items) {
         if (items.isEmpty()) {
-            return "Za darmo";
+            return this.messageService.get(this.config.defaultLocale, config -> config.panelFreePrice);
         }
         
         StringBuilder sb = new StringBuilder();
