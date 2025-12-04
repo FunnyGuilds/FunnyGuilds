@@ -38,7 +38,7 @@ public final class ItemBuilder {
     public ItemBuilder setName(String name, boolean color) {
         if (name != null) {
             Component displayName = color
-                    ? LegacyComponentSerializer.legacySection().deserialize(name)
+                    ? LegacyComponentSerializer.legacyAmpersand().deserialize(name)
                     : Component.text(name);
             this.itemStack.editMeta(meta -> meta.displayName(displayName));
         }
@@ -50,7 +50,7 @@ public final class ItemBuilder {
             List<Component> loreComponents = new ArrayList<>();
             for (String line : lore) {
                 loreComponents.add(color
-                        ? LegacyComponentSerializer.legacySection().deserialize(line)
+                        ? LegacyComponentSerializer.legacyAmpersand().deserialize(line)
                         : Component.text(line));
             }
             this.itemStack.editMeta(meta -> meta.lore(loreComponents));
@@ -85,16 +85,10 @@ public final class ItemBuilder {
         return this;
     }
 
-    /**
-     * Zwraca aktualne ItemMeta z itemStack.
-     */
     public ItemMeta getMeta() {
         return this.itemStack.getItemMeta();
     }
 
-    /**
-     * Zwraca budowany ItemStack.
-     */
     public ItemStack getItem() {
         return this.itemStack;
     }

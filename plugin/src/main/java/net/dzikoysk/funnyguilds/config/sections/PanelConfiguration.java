@@ -398,7 +398,6 @@ public class PanelConfiguration extends OkaeriConfig {
         public int itemCostAmount;
 
         public EffectItem() {
-            // Domyślny konstruktor dla konfiguracji
         }
 
         public EffectItem(int slot, Material material, String name, String effectType, int amplifier,
