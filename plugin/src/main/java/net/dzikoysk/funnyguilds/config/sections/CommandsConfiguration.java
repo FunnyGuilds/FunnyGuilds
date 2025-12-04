@@ -70,6 +70,8 @@ public class CommandsConfiguration extends OkaeriConfig {
     public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
     @Comment("")
     public FunnyCommand panel = new FunnyCommand("panel", Collections.singletonList("zarzadzaj"));
+    @Comment("")
+    public FunnyCommand permissions = new FunnyCommand("uprawnienia", Arrays.asList("perms", "permissions"));
 
     @Comment
     @Comment("Komendy administratora")

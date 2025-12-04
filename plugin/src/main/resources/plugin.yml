@@ -62,3 +62,4 @@ permissions:
       funnyguilds.validity: true
       funnyguilds.war: true
       funnyguilds.panel: true
+      funnyguilds.permissions: true

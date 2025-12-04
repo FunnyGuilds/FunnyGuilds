@@ -9,10 +9,12 @@ import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.CostType;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.EffectItem;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.GuildEffects;
+import net.dzikoysk.funnyguilds.config.sections.PermissionsPanelConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
+import net.dzikoysk.funnyguilds.feature.gui.permission.MemberPermissionsListGui;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -53,10 +55,10 @@ public class PanelCommand extends AbstractFunnyCommand {
             return;
         }
 
-        openPanelGui(player, guild, panelConfig);
+        openPanelGui(player, user, guild, panelConfig);
     }
 
-    private void openPanelGui(Player player, Guild guild, PanelConfiguration panelConfig) {
+    private void openPanelGui(Player player, User user, Guild guild, PanelConfiguration panelConfig) {
         String title = new FunnyFormatter()
                 .register("{TAG}", guild.getTag())
                 .register("{GUILD}", guild.getName())
@@ -97,8 +99,57 @@ public class PanelCommand extends AbstractFunnyCommand {
         if (panelConfig.effectsMenuItem.enabled && panelConfig.effects.enabled) {
             addEffectsMenuItem(gui, player, guild, panelConfig);
         }
+        
+        // Item zarządzania uprawnieniami
+        PermissionsPanelConfiguration permissionsConfig = this.config.permissionsPanel;
+        if (permissionsConfig.enabled && permissionsConfig.panelIcon.enabled) {
+            addPermissionsMenuItem(gui, player, user, guild, permissionsConfig);
+        }
 
         gui.open(player);
+    }
+    
+    private void addPermissionsMenuItem(GuiWindow gui, Player player, User user, Guild guild, PermissionsPanelConfiguration permissionsConfig) {
+        PermissionsPanelConfiguration.PanelIconItem iconConfig = permissionsConfig.panelIcon;
+        
+        List<String> lore = new ArrayList<>();
+        for (var line : iconConfig.lore) {
+            lore.add(line.getValue());
+        }
+
+        ItemStack item = new ItemBuilder(iconConfig.material)
+                .setName(iconConfig.name.getValue(), true)
+                .setLore(lore, true)
+                .getItem();
+
+        gui.setItem(iconConfig.slot, item, event -> {
+            event.setCancelled(true);
+            
+            // Only leader can manage permissions
+            if (!guild.isOwner(user)) {
+                this.messageService.getMessage(config -> config.permissionsPanelNotLeader)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Check if there are other members
+            if (guild.getMembers().size() <= 1) {
+                this.messageService.getMessage(config -> config.permissionsPanelNoMembers)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Open permissions panel
+            new MemberPermissionsListGui(
+                    this.config,
+                    this.messageService,
+                    guild,
+                    user,
+                    0
+            ).open(player);
+        });
     }
 
     private void addInfoItem(GuiWindow gui, Guild guild, PanelConfiguration panelConfig) {
