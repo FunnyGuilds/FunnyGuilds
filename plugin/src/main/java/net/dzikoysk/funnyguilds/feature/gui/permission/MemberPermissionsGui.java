@@ -230,14 +230,16 @@ public class MemberPermissionsGui {
         String status = effectiveValue ? itemConfig.statusOn : itemConfig.statusOff;
         String source = hasOverride ? itemConfig.sourceOverride : itemConfig.sourceRole.replace("{ROLE}", role.getDisplayName());
         
+        String unknownValue = this.config.permissionsPanel.unknownValue;
+        
         // Get change info if available
         String changedBy = "";
         String changedAt = "";
         if (hasOverride && memberPerms != null) {
             GuildMemberPermissions.PermissionOverride override = memberPerms.getOverrideDetails(permType);
             if (override != null) {
-                changedBy = override.getChangedBy() != null ? override.getChangedBy().toString() : "Nieznany";
-                changedAt = override.getChangedAt() != null ? this.messageService.get(this.config.defaultLocale, c -> c.dateFormat).format(override.getChangedAt()) : "Nieznany";
+                changedBy = override.getChangedBy() != null ? override.getChangedBy().toString() : unknownValue;
+                changedAt = override.getChangedAt() != null ? this.messageService.get(this.config.defaultLocale, c -> c.dateFormat).format(override.getChangedAt()) : unknownValue;
             }
         }
         

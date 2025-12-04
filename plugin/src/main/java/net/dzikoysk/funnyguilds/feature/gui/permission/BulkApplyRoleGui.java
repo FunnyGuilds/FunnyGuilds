@@ -1,7 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.gui.permission;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.PermissionsPanelConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
@@ -45,8 +47,9 @@ public class BulkApplyRoleGui {
     
     public void open(Player player) {
         PermissionsPanelConfiguration panelConfig = this.config.permissionsPanel;
+        PermissionsPanelConfiguration.BulkApplyGuiConfig bulkApplyConfig = panelConfig.bulkApplyGui;
         
-        String title = ChatUtils.colored("&b&lWYBIERZ ROLĘ");
+        String title = ChatUtils.colored(bulkApplyConfig.title.getValue());
         
         GuiWindow gui = new GuiWindow(title, 3);
         
@@ -61,14 +64,14 @@ public class BulkApplyRoleGui {
         GuildPermissionsManager permissionsManager = this.guild.getPermissionsManager();
         
         // Deputy role button
+        List<String> deputyLore = new ArrayList<>();
+        for (RawString line : bulkApplyConfig.deputyLore) {
+            deputyLore.add(ChatUtils.colored(line.getValue()));
+        }
+        
         ItemStack deputyItem = new ItemBuilder(Material.GOLDEN_HELMET)
-                .setName(ChatUtils.colored("&e&lZASTĘPCY"), false)
-                .setLore(List.of(
-                        ChatUtils.colored("&7Zastosuj uprawnienia do wszystkich"),
-                        ChatUtils.colored("&7zastępców gildii."),
-                        "",
-                        ChatUtils.colored("&eKliknij, aby zastosować!")
-                ), false)
+                .setName(ChatUtils.colored(bulkApplyConfig.deputyName.getValue()), false)
+                .setLore(deputyLore, false)
                 .getItem();
         
         gui.setItem(11, deputyItem, event -> {
@@ -98,14 +101,14 @@ public class BulkApplyRoleGui {
         });
         
         // Member role button
+        List<String> memberLore = new ArrayList<>();
+        for (RawString line : bulkApplyConfig.memberLore) {
+            memberLore.add(ChatUtils.colored(line.getValue()));
+        }
+        
         ItemStack memberItem = new ItemBuilder(Material.LEATHER_HELMET)
-                .setName(ChatUtils.colored("&a&lCZŁONKOWIE"), false)
-                .setLore(List.of(
-                        ChatUtils.colored("&7Zastosuj uprawnienia do wszystkich"),
-                        ChatUtils.colored("&7zwykłych członków gildii."),
-                        "",
-                        ChatUtils.colored("&aKliknij, aby zastosować!")
-                ), false)
+                .setName(ChatUtils.colored(bulkApplyConfig.memberName.getValue()), false)
+                .setLore(memberLore, false)
                 .getItem();
         
         gui.setItem(15, memberItem, event -> {

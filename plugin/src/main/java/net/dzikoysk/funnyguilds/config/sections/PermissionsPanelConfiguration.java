@@ -283,6 +283,67 @@ public class PermissionsPanelConfiguration extends OkaeriConfig {
     }
 
     @Comment("")
+    @Comment("Konfiguracja GUI kopiowania uprawnień")
+    public CopyTargetGuiConfig copyTargetGui = new CopyTargetGuiConfig();
+
+    @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+    public static class CopyTargetGuiConfig extends OkaeriConfig {
+
+        @Comment("Tytuł GUI wyboru odbiorcy")
+        public RawString title = new RawString("&b&lWYBIERZ ODBIORCĘ");
+
+        @Comment("")
+        @Comment("Opis główki w GUI kopiowania")
+        public List<RawString> headLore = RawString.listOf(
+                "&7Rola: &e{ROLE}",
+                "&7Status: {STATUS}",
+                "",
+                "&aKliknij, aby skopiować uprawnienia!"
+        );
+    }
+
+    @Comment("")
+    @Comment("Konfiguracja GUI wyboru roli")
+    public BulkApplyGuiConfig bulkApplyGui = new BulkApplyGuiConfig();
+
+    @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+    public static class BulkApplyGuiConfig extends OkaeriConfig {
+
+        @Comment("Tytuł GUI wyboru roli")
+        public RawString title = new RawString("&b&lWYBIERZ ROLĘ");
+
+        @Comment("")
+        @Comment("Nazwa ikonki zastępców")
+        public RawString deputyName = new RawString("&e&lZASTĘPCY");
+
+        @Comment("")
+        @Comment("Opis ikonki zastępców")
+        public List<RawString> deputyLore = RawString.listOf(
+                "&7Zastosuj uprawnienia do wszystkich",
+                "&7zastępców gildii.",
+                "",
+                "&eKliknij, aby zastosować!"
+        );
+
+        @Comment("")
+        @Comment("Nazwa ikonki członków")
+        public RawString memberName = new RawString("&a&lCZŁONKOWIE");
+
+        @Comment("")
+        @Comment("Opis ikonki członków")
+        public List<RawString> memberLore = RawString.listOf(
+                "&7Zastosuj uprawnienia do wszystkich",
+                "&7zwykłych członków gildii.",
+                "",
+                "&aKliknij, aby zastosować!"
+        );
+    }
+
+    @Comment("")
+    @Comment("Tekst 'Nieznany' dla nieznanych wartości")
+    public String unknownValue = "Nieznany";
+
+    @Comment("")
     @Comment("Czy archiwizować uprawnienia gdy gracz opuści gildię")
     @Comment("(uprawnienia zostaną przywrócone gdy gracz wróci)")
     public boolean archiveOnLeave = true;
