@@ -91,7 +91,7 @@ public final class ItemUtils {
             if (lore != null && !lore.isEmpty()) {
                 sb.append(" lore:");
                 lore.forEach(line -> sb.append(LegacyComponentSerializer.legacyAmpersand().serialize(line)).append(","));
-                sb.setLength(sb.length() - 1); // usuń ostatni przecinek
+                sb.setLength(sb.length() - 1);
             }
 
             if (!meta.getEnchants().isEmpty()) {
