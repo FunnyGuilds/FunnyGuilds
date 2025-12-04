@@ -197,7 +197,39 @@ public class PanelConfiguration extends OkaeriConfig {
     }
 
     @Comment("")
-    @Comment("Konfiguracja efektów gildii")
+    @Comment("Konfiguracja itemu otwierającego menu efektów dla członków gildii")
+    public EffectsMenuItem effectsMenuItem = new EffectsMenuItem();
+
+    @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+    public static class EffectsMenuItem extends OkaeriConfig {
+
+        @Comment("Czy item efektów ma być włączony")
+        public boolean enabled = true;
+
+        @Comment("")
+        @Comment("Slot itemu (0-53)")
+        public int slot = 16;
+
+        @Comment("")
+        @Comment("Typ materiału itemu")
+        public Material material = Material.BREWING_STAND;
+
+        @Comment("")
+        @Comment("Nazwa itemu")
+        public RawString name = new RawString("&d&lEFEKTY DLA CZŁONKÓW GILDII");
+
+        @Comment("")
+        @Comment("Opis itemu")
+        public List<RawString> lore = RawString.listOf(
+                "&7Kup efekty dla wszystkich",
+                "&7członków Twojej gildii!",
+                "",
+                "&aKliknij, aby otworzyć!"
+        );
+    }
+
+    @Comment("")
+    @Comment("Konfiguracja GUI efektów gildii")
     public GuildEffects effects = new GuildEffects();
 
     @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
@@ -207,9 +239,48 @@ public class PanelConfiguration extends OkaeriConfig {
         public boolean enabled = true;
 
         @Comment("")
+        @Comment("Tytuł GUI efektów")
+        @Comment("Dostępne zmienne: {TAG}, {GUILD}")
+        public RawString title = new RawString("&d&lEFEKTY GILDII {TAG}");
+
+        @Comment("")
+        @Comment("Ilość wierszy w GUI efektów (1-6)")
+        public int rows = 3;
+
+        @Comment("")
+        @Comment("Konfiguracja itemu powrotu do głównego panelu")
+        public BackItem backItem = new BackItem();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class BackItem extends OkaeriConfig {
+
+            @Comment("Czy item powrotu ma być włączony")
+            public boolean enabled = true;
+
+            @Comment("")
+            @Comment("Slot itemu (0-53)")
+            public int slot = 22;
+
+            @Comment("")
+            @Comment("Typ materiału itemu")
+            public Material material = Material.ARROW;
+
+            @Comment("")
+            @Comment("Nazwa itemu")
+            public RawString name = new RawString("&c&lPowrót");
+
+            @Comment("")
+            @Comment("Opis itemu")
+            public List<RawString> lore = RawString.listOf(
+                    "&7Kliknij, aby wrócić",
+                    "&7do głównego panelu."
+            );
+        }
+
+        @Comment("")
         @Comment("Konfiguracja efektu siły")
         public EffectItem strength = new EffectItem(
-                16, 
+                10, 
                 Material.BLAZE_POWDER,
                 "&c&lSiła",
                 "STRENGTH",
@@ -224,7 +295,7 @@ public class PanelConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Konfiguracja efektu szybkości")
         public EffectItem speed = new EffectItem(
-                18,
+                12,
                 Material.SUGAR,
                 "&b&lSzybkość",
                 "SPEED",
@@ -239,7 +310,7 @@ public class PanelConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Konfiguracja efektu odporności na ogień")
         public EffectItem fireResistance = new EffectItem(
-                20,
+                14,
                 Material.MAGMA_CREAM,
                 "&6&lOdporność na ogień",
                 "FIRE_RESISTANCE",
@@ -254,7 +325,7 @@ public class PanelConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Konfiguracja efektu regeneracji")
         public EffectItem regeneration = new EffectItem(
-                22,
+                16,
                 Material.GHAST_TEAR,
                 "&d&lRegeneracja",
                 "REGENERATION",

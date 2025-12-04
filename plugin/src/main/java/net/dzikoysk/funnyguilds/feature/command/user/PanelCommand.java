@@ -8,6 +8,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.CostType;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.EffectItem;
+import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.GuildEffects;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
@@ -92,9 +93,9 @@ public class PanelCommand extends AbstractFunnyCommand {
             addPvpItem(gui, player, guild, panelConfig);
         }
 
-        // Efekty gildii
-        if (panelConfig.effects.enabled) {
-            addEffectItems(gui, player, guild, panelConfig);
+        // Item menu efektów
+        if (panelConfig.effectsMenuItem.enabled && panelConfig.effects.enabled) {
+            addEffectsMenuItem(gui, player, guild, panelConfig);
         }
 
         gui.open(player);
@@ -231,14 +232,74 @@ public class PanelCommand extends AbstractFunnyCommand {
         });
     }
 
-    private void addEffectItems(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig) {
-        addSingleEffectItem(gui, player, guild, panelConfig.effects.strength);
-        addSingleEffectItem(gui, player, guild, panelConfig.effects.speed);
-        addSingleEffectItem(gui, player, guild, panelConfig.effects.fireResistance);
-        addSingleEffectItem(gui, player, guild, panelConfig.effects.regeneration);
+    private void addEffectsMenuItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig) {
+        List<String> lore = new ArrayList<>();
+        for (var line : panelConfig.effectsMenuItem.lore) {
+            lore.add(line.getValue());
+        }
+
+        ItemStack item = new ItemBuilder(panelConfig.effectsMenuItem.material)
+                .setName(panelConfig.effectsMenuItem.name.getValue(), true)
+                .setLore(lore, true)
+                .getItem();
+
+        gui.setItem(panelConfig.effectsMenuItem.slot, item, event -> {
+            event.setCancelled(true);
+            openEffectsGui(player, guild, panelConfig);
+        });
     }
 
-    private void addSingleEffectItem(GuiWindow gui, Player player, Guild guild, EffectItem effectConfig) {
+    private void openEffectsGui(Player player, Guild guild, PanelConfiguration panelConfig) {
+        GuildEffects effectsConfig = panelConfig.effects;
+        
+        String title = new FunnyFormatter()
+                .register("{TAG}", guild.getTag())
+                .register("{GUILD}", guild.getName())
+                .replace(effectsConfig.title.getValue());
+        title = ChatUtils.colored(title);
+
+        GuiWindow gui = new GuiWindow(title, effectsConfig.rows);
+
+        // Wypełnienie pustych slotów
+        if (panelConfig.fillItem.enabled) {
+            ItemStack fillItem = new ItemBuilder(panelConfig.fillItem.material)
+                    .setName(panelConfig.fillItem.name.getValue(), true)
+                    .getItem();
+            gui.fillEmpty(fillItem);
+        }
+
+        // Efekty
+        addSingleEffectItem(gui, player, guild, panelConfig, effectsConfig.strength);
+        addSingleEffectItem(gui, player, guild, panelConfig, effectsConfig.speed);
+        addSingleEffectItem(gui, player, guild, panelConfig, effectsConfig.fireResistance);
+        addSingleEffectItem(gui, player, guild, panelConfig, effectsConfig.regeneration);
+
+        // Przycisk powrotu
+        if (effectsConfig.backItem.enabled) {
+            addBackItem(gui, player, guild, panelConfig, effectsConfig);
+        }
+
+        gui.open(player);
+    }
+
+    private void addBackItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig, GuildEffects effectsConfig) {
+        List<String> lore = new ArrayList<>();
+        for (var line : effectsConfig.backItem.lore) {
+            lore.add(line.getValue());
+        }
+
+        ItemStack item = new ItemBuilder(effectsConfig.backItem.material)
+                .setName(effectsConfig.backItem.name.getValue(), true)
+                .setLore(lore, true)
+                .getItem();
+
+        gui.setItem(effectsConfig.backItem.slot, item, event -> {
+            event.setCancelled(true);
+            openPanelGui(player, guild, panelConfig);
+        });
+    }
+
+    private void addSingleEffectItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig, EffectItem effectConfig) {
         if (!effectConfig.enabled) {
             return;
         }
@@ -337,9 +398,8 @@ public class PanelCommand extends AbstractFunnyCommand {
                     .with("{DURATION}", TimeUtils.formatTime(effectConfig.duration))
                     .send();
 
-            // Odśwież GUI
-            player.closeInventory();
-            openPanelGui(player, currentGuild, this.config.guildPanel);
+            // Odśwież GUI efektów
+            openEffectsGui(player, currentGuild, panelConfig);
         });
     }
 
