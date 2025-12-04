@@ -596,6 +596,19 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage pvpStatusOff = ChatHolder.message("&cWylaczone");
 
     @Comment("")
+    @Comment("<------- Panel Messages -------> #")
+    public SendableMessage panelIsNotLeader = ChatHolder.message("&cMusisz byc liderem gildii, aby uzyc panelu!");
+    public SendableMessage panelNoGuild = ChatHolder.message("&cMusisz miec gildie, aby uzyc panelu!");
+    public SendableMessage panelDisabled = ChatHolder.message("&cPanel zarzadzania gildia jest wylaczony!");
+    @Comment("Dostępne zmienne: {EFFECT}, {DURATION}")
+    public SendableMessage panelEffectBought = ChatHolder.message("&aZakupiono efekt &7{EFFECT} &ana &7{DURATION} &adla calej gildii!");
+    @Comment("Dostępne zmienne: {PRICE}")
+    public SendableMessage panelNotEnoughMoney = ChatHolder.message("&cNie masz wystarczajacej ilosci pieniedzy! Potrzebujesz &7{PRICE}&c!");
+    @Comment("Dostępne zmienne: {ITEM}, {AMOUNT}")
+    public SendableMessage panelNotEnoughItems = ChatHolder.message("&cNie masz wystarczajacej ilosci przedmiotow! Potrzebujesz &7{AMOUNT}x {ITEM}&c!");
+    public SendableMessage panelVaultNotAvailable = ChatHolder.message("&cPlug ekonomii nie jest dostepny! Skontaktuj sie z administracja.");
+
+    @Comment("")
     @Comment("<------- Admin Messages -------> #")
     @Comment("Dostępne zmienne: {ADMIN}")
     public SendableMessage adminGuildBroken = ChatHolder.message("&cTwoja gildia zostala rozwiazana przez &7{ADMIN}");

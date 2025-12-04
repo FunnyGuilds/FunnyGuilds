@@ -36,6 +36,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
@@ -327,11 +328,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
             "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
 
-    @Exclude
-    public List<ItemStack> guiPanel;
-    @Comment("Tutaj będzie konfiguracja panelu zarządzania gildią dla lidera")
-    public RawString guiPanelTitle = new RawString("&b&lPANEL GILDII {TAG}");
-
+    @Comment("")
+    @Comment("Konfiguracja panelu zarządzania gildią dla lidera")
+    @CustomKey("guild-panel")
+    public PanelConfiguration guildPanel = new PanelConfiguration();
 
     @Comment("")
     @Comment("Minimalna odległość od spawnu")
