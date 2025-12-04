@@ -721,8 +721,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage adminUserNotMemberOf = ChatHolder.message("&cTen gracz nie jest czlonkiem tej gildii!");
     public SendableMessage adminAlreadyLeader = ChatHolder.message("&cTen gracz jest juz liderem gildii!");
 
-    public SendableMessage adminNoProtectionDateGive = ChatHolder.message("&cPodaj date ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)");
-    public SendableMessage adminInvalidProtectionDate = ChatHolder.message("&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss");
+    public SendableMessage adminNoProtectionDateGive = ChatHolder.message("&cPodaj date ochrony dla gildii! (W formacie: dd.MM.yyyy HH:mm:ss)");
+    public SendableMessage adminInvalidProtectionDate = ChatHolder.message("&cTo nie jest poprawna data! Poprawny format to: dd.MM.yyyy HH:mm:ss");
     public SendableMessage adminProtectionSetSuccessfully = ChatHolder.message("&aPomyslnie ustawiono ochrone dla gildii &7{TAG} &ado &7{DATE}");
 
     public SendableMessage adminGuildHasNoHome = ChatHolder.message("&cGildia gracza nie ma ustawionej bazy!");

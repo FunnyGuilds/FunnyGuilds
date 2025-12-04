@@ -18,7 +18,7 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class ProtectionCommand extends AbstractFunnyCommand {
 
-    private static final DateTimeFormatter PROTECTION_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter PROTECTION_DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 
     @FunnyCommand(
             name = "${admin.protection.name}",
