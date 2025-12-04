@@ -14,9 +14,9 @@ Community: <a href="https://discord.gg/CYvyq3u">Discord</a>
 Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/ENG)</a>
 
 #### Supported Paper versions
-Spigot versions listed below and 1.20.6+
+Only 1.21+ like 1.21.4
 
-#### (DEPRECATED) Supported Spigot versions
+#### (DEPRECATED) Spigot versions
 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.18.2, 1.19.4, 1.20.1, 1.20.2
 
 #### Download
@@ -30,7 +30,6 @@ FunnyGuilds hooks into those plugins:
 - [PlaceholderAPI](https://www.spigotmc.org/resources/6245/)
 - [dynmap](https://github.com/webbukkit/dynmap)
 - [DecentHolograms](https://www.spigotmc.org/resources/96927/)
-- [Holographic Displays](https://dev.bukkit.org/projects/holographic-displays)
 
 #### Maven
 ```xml
