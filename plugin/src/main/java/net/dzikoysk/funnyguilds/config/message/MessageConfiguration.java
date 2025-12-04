@@ -197,7 +197,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
             "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
             "&a/usun &8- &7Usuwa gildie",
-            "a/ustawpvp &8- &7Ustawia pvp między członkami gildii",
+            "&a/ustawpvp &8- &7Ustawia pvp między członkami gildii",
             "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
             "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii",
             "&a/ranking &8- &7Wyswietla top'ke najlepszych gracz",
