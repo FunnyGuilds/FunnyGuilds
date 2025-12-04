@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
@@ -143,6 +144,34 @@ public class EntityExplode extends AbstractFunnyListener {
         additionalExplodedBlocks.stream()
                 .filter(block -> !explodedBlocks.contains(block))
                 .forEach(explodedBlocks::add);
+
+        // Register destroyed blocks for regeneration system
+        if (this.config.guildPanel.regeneration.enabled) {
+            registerDestroyedBlocksForRegeneration(explodedBlocks);
+        }
+    }
+
+    /**
+     * Registers destroyed blocks for the regeneration system, grouped by guild.
+     */
+    private void registerDestroyedBlocksForRegeneration(List<Block> explodedBlocks) {
+        Map<Guild, List<Block>> blocksByGuild = new HashMap<>();
+
+        for (Block block : explodedBlocks) {
+            // Skip air blocks
+            if (block.getType() == Material.AIR || block.getType() == Material.CAVE_AIR) {
+                continue;
+            }
+
+            this.regionManager.findRegionAtLocation(block.getLocation())
+                    .map(Region::getGuild)
+                    .peek(guild -> blocksByGuild.computeIfAbsent(guild, k -> new ArrayList<>()).add(block));
+        }
+
+        // Register blocks for each guild
+        for (Map.Entry<Guild, List<Block>> entry : blocksByGuild.entrySet()) {
+            this.regenerationManager.registerDestroyedBlocks(entry.getKey(), entry.getValue());
+        }
     }
 
 }

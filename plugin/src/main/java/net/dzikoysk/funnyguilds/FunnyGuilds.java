@@ -126,6 +126,7 @@ public class FunnyGuilds extends JavaPlugin {
     private RegionManager regionManager;
     private FunnyServer funnyServer;
     private GuildPermissionChecker guildPermissionChecker;
+    private net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager regionRegenerationManager;
 
     private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
     private Option<DummyManager> dummyManager = Option.none();
@@ -257,6 +258,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
         this.guildPermissionChecker = GuildPermissionChecker.create(this);
+        this.regionRegenerationManager = new net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager();
 
         this.prepareScoreboardServices();
 
@@ -344,6 +346,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
             resources.on(DataModel.class).assignInstance(this.dataModel);
+            resources.on(net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager.class).assignInstance(this.regionRegenerationManager);
         });
 
         MetricsCollector collector = new MetricsCollector(this);
@@ -627,6 +630,10 @@ public class FunnyGuilds extends JavaPlugin {
     
     public GuildPermissionChecker getGuildPermissionChecker() {
         return this.guildPermissionChecker;
+    }
+
+    public net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager getRegionRegenerationManager() {
+        return this.regionRegenerationManager;
     }
 
     public Option<IndividualNameTagManager> getIndividualNameTagManager() {

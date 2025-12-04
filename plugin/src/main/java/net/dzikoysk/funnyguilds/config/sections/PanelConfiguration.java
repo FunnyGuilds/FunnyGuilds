@@ -442,4 +442,293 @@ public class PanelConfiguration extends OkaeriConfig {
         @Comment("Nazwa itemu wypełnienia")
         public RawString name = new RawString(" ");
     }
+
+    @Comment("")
+    @Comment("Konfiguracja itemu otwierającego menu regeneracji terenu gildii")
+    public RegenerationMenuItem regenerationMenuItem = new RegenerationMenuItem();
+
+    @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+    public static class RegenerationMenuItem extends OkaeriConfig {
+
+        @Comment("Czy item regeneracji ma być włączony")
+        public boolean enabled = true;
+
+        @Comment("")
+        @Comment("Slot itemu (0-53)")
+        public int slot = 22;
+
+        @Comment("")
+        @Comment("Typ materiału itemu")
+        public Material material = Material.GRASS_BLOCK;
+
+        @Comment("")
+        @Comment("Nazwa itemu")
+        public RawString name = new RawString("&a&lREGENERACJA TERENU");
+
+        @Comment("")
+        @Comment("Opis itemu")
+        public List<RawString> lore = RawString.listOf(
+                "&7Przywróć zniszczone bloki",
+                "&7na terenie Twojej gildii!",
+                "",
+                "&aKliknij, aby otworzyć!"
+        );
+    }
+
+    @Comment("")
+    @Comment("Konfiguracja GUI regeneracji terenu gildii")
+    public RegenerationConfig regeneration = new RegenerationConfig();
+
+    @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+    public static class RegenerationConfig extends OkaeriConfig {
+
+        @Comment("Czy system regeneracji ma być włączony")
+        public boolean enabled = true;
+
+        @Comment("")
+        @Comment("Tytuł GUI regeneracji")
+        @Comment("Dostępne zmienne: {TAG}, {GUILD}")
+        public RawString title = new RawString("&a&lREGENERACJA TERENU {TAG}");
+
+        @Comment("")
+        @Comment("Ilość wierszy w GUI regeneracji (1-6)")
+        public int rows = 6;
+
+        @Comment("")
+        @Comment("Typ kosztu regeneracji (VAULT lub ITEM)")
+        public CostType costType = CostType.ITEM;
+
+        @Comment("")
+        @Comment("Cena za blok w pieniądzach (gdy costType = VAULT)")
+        public double vaultPricePerBlock = 10.0;
+
+        @Comment("")
+        @Comment("Typ przedmiotu jako koszt regeneracji (gdy costType = ITEM)")
+        public Material itemCostMaterial = Material.DIAMOND;
+
+        @Comment("")
+        @Comment("Ilość przedmiotów za 100 bloków (gdy costType = ITEM)")
+        @Comment("Koszt jest obliczany proporcjonalnie: (ilość bloków * itemCostPer100Blocks) / 100")
+        public int itemCostPer100Blocks = 64;
+
+        @Comment("")
+        @Comment("Ilość bloków przywracanych w jednym ticku (większa wartość = szybsza regeneracja, ale większe obciążenie serwera)")
+        public int batchSize = 10;
+
+        @Comment("")
+        @Comment("Minimalna ilość bloków do regeneracji w jednej operacji")
+        public int minBlocksToRegenerate = 1;
+
+        @Comment("")
+        @Comment("Maksymalna ilość bloków do regeneracji w jednej operacji (0 = bez limitu)")
+        public int maxBlocksToRegenerate = 0;
+
+        @Comment("")
+        @Comment("Konfiguracja itemu informacyjnego o regeneracji")
+        public RegenerationInfoItem infoItem = new RegenerationInfoItem();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class RegenerationInfoItem extends OkaeriConfig {
+
+            @Comment("Slot itemu (0-53)")
+            public int slot = 4;
+
+            @Comment("")
+            @Comment("Typ materiału itemu")
+            public Material material = Material.BOOK;
+
+            @Comment("")
+            @Comment("Nazwa itemu")
+            @Comment("Dostępne zmienne: {BLOCKS-COUNT}")
+            public RawString name = new RawString("&b&lINFORMACJE O REGENERACJI");
+
+            @Comment("")
+            @Comment("Opis itemu")
+            @Comment("Dostępne zmienne: {BLOCKS-COUNT}, {SELECTED-BLOCKS}, {TOTAL-COST}")
+            public List<RawString> lore = RawString.listOf(
+                    "&7Zniszczone bloki: &b{BLOCKS-COUNT}",
+                    "&7Wybrane do regeneracji: &a{SELECTED-BLOCKS}",
+                    "",
+                    "&7Koszt całkowity: &e{TOTAL-COST}",
+                    "",
+                    "&7Użyj przycisków poniżej,",
+                    "&7aby wybrać ilość bloków."
+            );
+        }
+
+        @Comment("")
+        @Comment("Konfiguracja przycisków zmiany ilości")
+        public AmountButtons amountButtons = new AmountButtons();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class AmountButtons extends OkaeriConfig {
+
+            @Comment("Slot przycisku -10")
+            public int slotMinus10 = 19;
+
+            @Comment("")
+            @Comment("Slot przycisku -1")
+            public int slotMinus1 = 20;
+
+            @Comment("")
+            @Comment("Slot przycisku +1")
+            public int slotPlus1 = 24;
+
+            @Comment("")
+            @Comment("Slot przycisku +10")
+            public int slotPlus10 = 25;
+
+            @Comment("")
+            @Comment("Materiał przycisku -10")
+            public Material materialMinus10 = Material.RED_STAINED_GLASS_PANE;
+
+            @Comment("")
+            @Comment("Materiał przycisku -1")
+            public Material materialMinus1 = Material.ORANGE_STAINED_GLASS_PANE;
+
+            @Comment("")
+            @Comment("Materiał przycisku +1")
+            public Material materialPlus1 = Material.LIME_STAINED_GLASS_PANE;
+
+            @Comment("")
+            @Comment("Materiał przycisku +10")
+            public Material materialPlus10 = Material.GREEN_STAINED_GLASS_PANE;
+
+            @Comment("")
+            @Comment("Nazwa przycisku -10")
+            public RawString nameMinus10 = new RawString("&c-10 bloków");
+
+            @Comment("")
+            @Comment("Nazwa przycisku -1")
+            public RawString nameMinus1 = new RawString("&c-1 blok");
+
+            @Comment("")
+            @Comment("Nazwa przycisku +1")
+            public RawString namePlus1 = new RawString("&a+1 blok");
+
+            @Comment("")
+            @Comment("Nazwa przycisku +10")
+            public RawString namePlus10 = new RawString("&a+10 bloków");
+        }
+
+        @Comment("")
+        @Comment("Konfiguracja przycisków presetów (25%, 50%, 100%)")
+        public PresetButtons presetButtons = new PresetButtons();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class PresetButtons extends OkaeriConfig {
+
+            @Comment("Slot przycisku 25%")
+            public int slot25 = 29;
+
+            @Comment("")
+            @Comment("Slot przycisku 50%")
+            public int slot50 = 31;
+
+            @Comment("")
+            @Comment("Slot przycisku 100%")
+            public int slot100 = 33;
+
+            @Comment("")
+            @Comment("Materiał przycisków presetów")
+            public Material material = Material.YELLOW_STAINED_GLASS_PANE;
+
+            @Comment("")
+            @Comment("Nazwa przycisku 25%")
+            public RawString name25 = new RawString("&e25% bloków");
+
+            @Comment("")
+            @Comment("Nazwa przycisku 50%")
+            public RawString name50 = new RawString("&e50% bloków");
+
+            @Comment("")
+            @Comment("Nazwa przycisku 100%")
+            public RawString name100 = new RawString("&e100% bloków");
+        }
+
+        @Comment("")
+        @Comment("Konfiguracja przycisku potwierdzenia")
+        public ConfirmButton confirmButton = new ConfirmButton();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class ConfirmButton extends OkaeriConfig {
+
+            @Comment("Slot przycisku potwierdzenia")
+            public int slot = 49;
+
+            @Comment("")
+            @Comment("Materiał przycisku")
+            public Material material = Material.EMERALD_BLOCK;
+
+            @Comment("")
+            @Comment("Nazwa przycisku")
+            public RawString name = new RawString("&a&lPOTWIERDŹ REGENERACJĘ");
+
+            @Comment("")
+            @Comment("Opis przycisku")
+            @Comment("Dostępne zmienne: {SELECTED-BLOCKS}, {TOTAL-COST}")
+            public List<RawString> lore = RawString.listOf(
+                    "&7Kliknij, aby rozpocząć",
+                    "&7regenerację &a{SELECTED-BLOCKS} &7bloków.",
+                    "",
+                    "&7Koszt: &e{TOTAL-COST}"
+            );
+        }
+
+        @Comment("")
+        @Comment("Konfiguracja przycisku anulowania")
+        public CancelButton cancelButton = new CancelButton();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class CancelButton extends OkaeriConfig {
+
+            @Comment("Slot przycisku anulowania")
+            public int slot = 45;
+
+            @Comment("")
+            @Comment("Materiał przycisku")
+            public Material material = Material.REDSTONE_BLOCK;
+
+            @Comment("")
+            @Comment("Nazwa przycisku")
+            public RawString name = new RawString("&c&lANULUJ");
+
+            @Comment("")
+            @Comment("Opis przycisku")
+            public List<RawString> lore = RawString.listOf(
+                    "&7Kliknij, aby wrócić",
+                    "&7do panelu gildii."
+            );
+        }
+
+        @Comment("")
+        @Comment("Konfiguracja itemu powrotu")
+        public BackItem backItem = new BackItem();
+
+        @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+        public static class BackItem extends OkaeriConfig {
+
+            @Comment("Czy item powrotu ma być włączony")
+            public boolean enabled = true;
+
+            @Comment("")
+            @Comment("Slot itemu (0-53)")
+            public int slot = 45;
+
+            @Comment("")
+            @Comment("Typ materiału itemu")
+            public Material material = Material.ARROW;
+
+            @Comment("")
+            @Comment("Nazwa itemu")
+            public RawString name = new RawString("&c&lPowrót");
+
+            @Comment("")
+            @Comment("Opis itemu")
+            public List<RawString> lore = RawString.listOf(
+                    "&7Kliknij, aby wrócić",
+                    "&7do głównego panelu."
+            );
+        }
+    }
 }

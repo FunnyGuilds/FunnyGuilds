@@ -106,7 +106,77 @@ public class PanelCommand extends AbstractFunnyCommand {
             addPermissionsMenuItem(gui, player, user, guild, permissionsConfig);
         }
 
+        // Item regeneracji terenu
+        if (panelConfig.regenerationMenuItem.enabled && panelConfig.regeneration.enabled) {
+            addRegenerationMenuItem(gui, player, user, guild, panelConfig);
+        }
+
         gui.open(player);
+    }
+
+    private void addRegenerationMenuItem(GuiWindow gui, Player player, User user, Guild guild, PanelConfiguration panelConfig) {
+        PanelConfiguration.RegenerationMenuItem menuItem = panelConfig.regenerationMenuItem;
+        
+        List<String> lore = new ArrayList<>();
+        for (var line : menuItem.lore) {
+            lore.add(line.getValue());
+        }
+
+        ItemStack item = new ItemBuilder(menuItem.material)
+                .setName(menuItem.name.getValue(), true)
+                .setLore(lore, true)
+                .getItem();
+
+        gui.setItem(menuItem.slot, item, event -> {
+            event.setCancelled(true);
+            
+            // Only leader can manage regeneration
+            if (!guild.isOwner(user)) {
+                this.messageService.getMessage(config -> config.panelIsNotLeader)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Check if regeneration is enabled
+            if (!panelConfig.regeneration.enabled) {
+                this.messageService.getMessage(config -> config.regenerationDisabled)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Get the regeneration manager and check for blocks
+            net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager regenManager = 
+                    this.plugin.getRegionRegenerationManager();
+            
+            int blockCount = regenManager.getDestroyedBlockCount(guild);
+            if (blockCount <= 0) {
+                this.messageService.getMessage(config -> config.regenerationNoBlocks)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Check if regeneration is in progress
+            if (regenManager.isRegenerationInProgress(guild)) {
+                this.messageService.getMessage(config -> config.regenerationInProgress)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Open regeneration GUI
+            new net.dzikoysk.funnyguilds.feature.regen.RegenerationGui(
+                    this.plugin,
+                    this.config,
+                    this.messageService,
+                    regenManager,
+                    guild,
+                    user,
+                    player
+            ).open();
+        });
     }
     
     private void addPermissionsMenuItem(GuiWindow gui, Player player, User user, Guild guild, PermissionsPanelConfiguration permissionsConfig) {

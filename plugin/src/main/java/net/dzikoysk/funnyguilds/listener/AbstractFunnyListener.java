@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
+import net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -30,5 +31,7 @@ public abstract class AbstractFunnyListener implements Listener {
     public UserManager userManager;
     @Inject
     public RegionManager regionManager;
+    @Inject
+    public RegionRegenerationManager regenerationManager;
 
 }

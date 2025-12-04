@@ -614,6 +614,27 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public String panelFreePrice = "Za darmo";
 
     @Comment("")
+    @Comment("<------- Regeneration Panel Messages -------> #")
+    public SendableMessage regenerationDisabled = ChatHolder.message("&cSystem regeneracji terenu jest wyłączony!");
+    public SendableMessage regenerationNoBlocks = ChatHolder.message("&cNie ma żadnych bloków do regeneracji na terenie Twojej gildii!");
+    public SendableMessage regenerationInProgress = ChatHolder.message("&cRegeneracja już trwa! Poczekaj na jej zakończenie.");
+    @Comment("Dostępne zmienne: {PRICE}")
+    public SendableMessage regenerationNotEnoughMoney = ChatHolder.message("&cNie masz wystarczającej ilości pieniędzy! Potrzebujesz &7{PRICE}&c!");
+    @Comment("Dostępne zmienne: {ITEM}, {AMOUNT}")
+    public SendableMessage regenerationNotEnoughItems = ChatHolder.message("&cNie masz wystarczającej ilości przedmiotów! Potrzebujesz &7{AMOUNT}x {ITEM}&c!");
+    @Comment("Dostępne zmienne: {BLOCKS}")
+    public SendableMessage regenerationStarted = ChatHolder.message("&aRozpoczęto regenerację &7{BLOCKS} &abloków na terenie gildii!");
+    @Comment("Dostępne zmienne: {REGENERATED}, {SKIPPED}, {TOTAL}")
+    public SendableMessage regenerationCompleted = ChatHolder.message("&aRegeneracja zakończona! Przywrócono &7{REGENERATED}&a bloków. Pominięto &7{SKIPPED}&a bloków (już były postawione).");
+    @Comment("Dostępne zmienne: {REFUND}")
+    public SendableMessage regenerationRefund = ChatHolder.message("&aZwrócono &7{REFUND} &aza bloki, które nie zostały zregenerowane.");
+    public SendableMessage regenerationMinBlocks = ChatHolder.message("&cMusisz wybrać przynajmniej &7{MIN}&c bloków do regeneracji!");
+    public SendableMessage regenerationSelectAmount = ChatHolder.message("&cWybierz ilość bloków do regeneracji!");
+    public String regenerationCostVault = "{AMOUNT}$";
+    @Comment("Dostępne zmienne: {AMOUNT}, {ITEM}")
+    public String regenerationCostItem = "{AMOUNT}x {ITEM}";
+
+    @Comment("")
     @Comment("<------- Permissions Panel Messages -------> #")
     public SendableMessage permissionsPanelDisabled = ChatHolder.message("&cPanel uprawnień jest wyłączony!");
     public SendableMessage permissionsPanelNotLeader = ChatHolder.message("&cMusisz być liderem gildii, aby zarządzać uprawnieniami!");
