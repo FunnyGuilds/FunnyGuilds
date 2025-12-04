@@ -65,7 +65,7 @@ public final class DatabaseMemberPermissionsSerializer {
             // Apply loaded permissions to guilds
             for (Map.Entry<UUID, Map<UUID, GuildMemberPermissions>> entry : guildPermissions.entrySet()) {
                 UUID guildUuid = entry.getKey();
-                Option<Guild> guildOption = guildManager.findByUUID(guildUuid);
+                Option<Guild> guildOption = guildManager.findByUuid(guildUuid);
                 
                 if (guildOption.isEmpty()) {
                     continue;

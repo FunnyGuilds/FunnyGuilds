@@ -97,7 +97,7 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         // Item menu efektów
         if (panelConfig.effectsMenuItem.enabled && panelConfig.effects.enabled) {
-            addEffectsMenuItem(gui, player, guild, panelConfig);
+            addEffectsMenuItem(gui, player, user, guild, panelConfig);
         }
         
         // Item zarządzania uprawnieniami
@@ -283,7 +283,7 @@ public class PanelCommand extends AbstractFunnyCommand {
         });
     }
 
-    private void addEffectsMenuItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig) {
+    private void addEffectsMenuItem(GuiWindow gui, Player player, User user, Guild guild, PanelConfiguration panelConfig) {
         List<String> lore = new ArrayList<>();
         for (var line : panelConfig.effectsMenuItem.lore) {
             lore.add(line.getValue());
@@ -296,11 +296,11 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         gui.setItem(panelConfig.effectsMenuItem.slot, item, event -> {
             event.setCancelled(true);
-            openEffectsGui(player, guild, panelConfig);
+            openEffectsGui(player, user, guild, panelConfig);
         });
     }
 
-    private void openEffectsGui(Player player, Guild guild, PanelConfiguration panelConfig) {
+    private void openEffectsGui(Player player, User user, Guild guild, PanelConfiguration panelConfig) {
         GuildEffects effectsConfig = panelConfig.effects;
         
         String title = new FunnyFormatter()
@@ -327,13 +327,13 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         // Przycisk powrotu
         if (effectsConfig.backItem.enabled) {
-            addBackItem(gui, player, guild, panelConfig, effectsConfig);
+            addBackItem(gui, player, user, guild, panelConfig, effectsConfig);
         }
 
         gui.open(player);
     }
 
-    private void addBackItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig, GuildEffects effectsConfig) {
+    private void addBackItem(GuiWindow gui, Player player, User user, Guild guild, PanelConfiguration panelConfig, GuildEffects effectsConfig) {
         List<String> lore = new ArrayList<>();
         for (var line : effectsConfig.backItem.lore) {
             lore.add(line.getValue());
@@ -346,7 +346,7 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         gui.setItem(effectsConfig.backItem.slot, item, event -> {
             event.setCancelled(true);
-            openPanelGui(player, guild, panelConfig);
+            openPanelGui(player, user, guild, panelConfig);
         });
     }
 
