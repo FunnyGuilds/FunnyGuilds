@@ -254,7 +254,7 @@ public class MemberPermissionsGui {
         
         List<String> lore = new ArrayList<>();
         for (var line : itemConfig.lore) {
-            lore.add(formatter.replace(line.getValue()));
+            lore.add(ChatUtils.colored(formatter.replace(line.getValue())));
         }
         
         return new ItemBuilder(material)
