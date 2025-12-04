@@ -20,7 +20,6 @@ public final class FunnyFormatter implements Replaceable {
 
     // NOWA METODA – bez Locale
     public @NotNull String replace(@NotNull String text) {
-        // delegacja do metody z Locale
         return this.replace(null, text);
     }
 

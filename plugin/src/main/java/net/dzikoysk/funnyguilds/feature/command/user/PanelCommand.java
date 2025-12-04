@@ -450,7 +450,7 @@ public class PanelCommand extends AbstractFunnyCommand {
                     .send();
 
             // Odśwież GUI efektów
-            openEffectsGui(player, currentGuild, panelConfig);
+            openEffectsGui(player, user, currentGuild, panelConfig);
         });
     }
 

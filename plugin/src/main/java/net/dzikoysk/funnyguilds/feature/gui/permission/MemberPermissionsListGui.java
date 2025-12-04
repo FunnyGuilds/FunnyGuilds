@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.PermissionsPanelConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
@@ -182,7 +183,7 @@ public class MemberPermissionsListGui {
         
         String name = formatter.replace(panelConfig.memberHead.name.getValue());
         
-        List<String> loreSource = isOnline ? panelConfig.memberHead.loreOnline : panelConfig.memberHead.loreOffline;
+        List<RawString> loreSource = isOnline ? panelConfig.memberHead.loreOnline : panelConfig.memberHead.loreOffline;
         List<String> lore = new ArrayList<>();
         for (var line : loreSource) {
             lore.add(formatter.replace(line.getValue()));
