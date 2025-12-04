@@ -236,7 +236,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isAlly(@Nullable Guild guild) {
-        return this.allies.contains(guild);
+        return guild != null && this.allies.contains(guild);
     }
 
     public void setAllies(Set<Guild> guilds) {
@@ -263,7 +263,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isEnemy(@Nullable Guild guild) {
-        return this.enemies.contains(guild);
+        return guild != null && this.enemies.contains(guild);
     }
 
     public void setEnemies(Set<Guild> guilds) {
