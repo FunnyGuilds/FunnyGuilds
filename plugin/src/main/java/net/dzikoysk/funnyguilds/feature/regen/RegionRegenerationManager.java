@@ -177,16 +177,27 @@ public class RegionRegenerationManager {
 
     /**
      * Extracts tile entity data from a block if applicable.
+     * 
+     * <p><b>Limitations:</b> The current implementation only marks blocks as having tile entity data
+     * but does not preserve the actual contents. This means:
+     * <ul>
+     *     <li>Chests will be regenerated as empty chests</li>
+     *     <li>Signs will be regenerated without text</li>
+     *     <li>Furnaces will be regenerated without items or smelting progress</li>
+     *     <li>Other tile entities will similarly lose their data</li>
+     * </ul>
+     * Full tile entity restoration would require NBT data serialization, which is complex
+     * and version-dependent. This is a known limitation of the regeneration system.
      *
      * @param block The block
-     * @return Tile entity data as string, or null if not applicable
+     * @return Tile entity data marker as string, or null if not a tile entity
      */
     @Nullable
     private String extractTileEntityData(Block block) {
         BlockState state = block.getState();
         if (state instanceof TileState) {
-            // For simplicity, we just mark that it had tile data
-            // Full tile entity restoration would require more complex NBT handling
+            // Mark that this block had tile entity data
+            // Note: Actual tile entity contents are NOT preserved
             return "tile_entity";
         }
         return null;

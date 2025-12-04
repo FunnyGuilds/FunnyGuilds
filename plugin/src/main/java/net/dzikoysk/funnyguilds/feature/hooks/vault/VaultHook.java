@@ -63,6 +63,11 @@ public class VaultHook extends AbstractPluginHook {
         return economyHook.withdrawPlayer(player, money);
     }
 
+    public static EconomyResponse depositToPlayerBank(OfflinePlayer player, double money) {
+        Validate.notNull(player, "Player can not be null!");
+        return economyHook.depositPlayer(player, money);
+    }
+
     public static boolean hasPermission(OfflinePlayer player, String permission) {
         return permissionHook != null && permissionHook.playerHas(null, player, permission);
     }

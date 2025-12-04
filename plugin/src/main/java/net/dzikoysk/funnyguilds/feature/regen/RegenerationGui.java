@@ -411,13 +411,8 @@ public class RegenerationGui {
 
         if (regenConfig.costType == CostType.VAULT) {
             if (HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked()) {
-                // Deposit refund - we need to get player by UUID since they might have logged off
-                this.plugin.getFunnyServer().getPlayer(this.user).peek(p -> {
-                    // Give back money (note: we're using withdrawPlayer with negative amount is not standard)
-                    // Instead, let's find another way - just use economy.depositPlayer
-                    // But VaultHook doesn't have deposit method, so we'll skip actual refund for VAULT
-                    // In real implementation, you'd need to add deposit method to VaultHook
-                });
+                // Deposit refund to the player who initiated the regeneration
+                VaultHook.depositToPlayerBank(this.player, refundAmount);
                 
                 this.messageService.getMessage(config -> config.regenerationRefund)
                         .with("{REFUND}", String.format("%.2f$", refundAmount))

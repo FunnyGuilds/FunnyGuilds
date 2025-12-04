@@ -45,13 +45,15 @@ public class RegenerationTask implements Runnable {
         this.callback = callback;
     }
 
+    private static final long TASK_INTERVAL_TICKS = 2L; // Run every 2 ticks for balance between speed and performance
+
     /**
      * Starts the regeneration task.
      */
     public void start() {
         this.regenerationManager.setRegenerationInProgress(this.guild, true);
         // Run synchronously since we need to modify blocks
-        this.task = Bukkit.getScheduler().runTaskTimer(this.plugin, this, 1L, 1L);
+        this.task = Bukkit.getScheduler().runTaskTimer(this.plugin, this, 1L, TASK_INTERVAL_TICKS);
     }
 
     /**

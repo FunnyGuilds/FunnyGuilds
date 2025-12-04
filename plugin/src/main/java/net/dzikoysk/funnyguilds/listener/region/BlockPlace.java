@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,10 +47,15 @@ public class BlockPlace extends AbstractFunnyListener {
                 .isPresent();
 
         if (!isProtected) {
+            // Block was placed successfully in unprotected area or by member
+            // Remove from regeneration tracking if applicable
+            removeBlockFromRegenerationTracking(blockLocation);
             return;
         }
 
         if (this.config.placingBlocksBypassOnRegion.contains(type)) {
+            // Block bypass allowed - remove from regeneration tracking
+            removeBlockFromRegenerationTracking(blockLocation);
             return;
         }
 
@@ -100,6 +106,19 @@ public class BlockPlace extends AbstractFunnyListener {
             }, this.config.buggedBlocksTimer);
 
         });
+    }
+
+    /**
+     * Removes a block from regeneration tracking when a player places a block at that location.
+     */
+    private void removeBlockFromRegenerationTracking(Location location) {
+        if (!this.config.guildPanel.regeneration.enabled) {
+            return;
+        }
+
+        this.regionManager.findRegionAtLocation(location)
+                .map(Region::getGuild)
+                .peek(guild -> this.regenerationManager.removeBlockAtLocation(guild, location));
     }
 
 }

@@ -256,6 +256,9 @@ public class GuildManager {
                     });
         }
 
+        // Clear regeneration data for the guild
+        plugin.getRegionRegenerationManager().clearGuildData(guild);
+
         guild.getMembers().forEach(User::removeGuild);
         guild.getAllies().forEach(ally -> ally.removeAlly(guild));
         this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
