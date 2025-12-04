@@ -52,13 +52,6 @@ public class PanelCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (!guild.isOwner(user)) {
-            this.messageService.getMessage(config -> config.panelIsNotLeader)
-                    .receiver(player)
-                    .send();
-            return;
-        }
-
         openPanelGui(player, guild, panelConfig);
     }
 

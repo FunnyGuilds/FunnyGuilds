@@ -37,7 +37,8 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
             GuildCommandPermission.DEPUTY,
             GuildCommandPermission.ALLY,
             GuildCommandPermission.WAR,
-            GuildCommandPermission.DELETE
+            GuildCommandPermission.DELETE,
+            GuildCommandPermission.PANEL
     );
 
     private final PluginConfiguration pluginConfiguration;
