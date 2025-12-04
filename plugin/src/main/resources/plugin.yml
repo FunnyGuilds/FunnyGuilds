@@ -58,7 +58,7 @@ permissions:
       funnyguilds.statsreset: true
       funnyguilds.setbase: true
       funnyguilds.tnt: true
-      funnyguilds.top: true
+      funnyguilds.topg: true
       funnyguilds.validity: true
       funnyguilds.war: true
       funnyguilds.panel: true

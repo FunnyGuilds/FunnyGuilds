@@ -7,13 +7,13 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
 @FunnyComponent
-public final class TopCommand extends AbstractFunnyCommand {
+public final class TopGCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-            name = "${user.top.name}",
-            description = "${user.top.description}",
-            aliases = "${user.top.aliases}",
-            permission = "funnyguilds.top",
+            name = "${user.topg.name}",
+            description = "${user.topg.description}",
+            aliases = "${user.topg.aliases}",
+            permission = "funnyguilds.topg",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {

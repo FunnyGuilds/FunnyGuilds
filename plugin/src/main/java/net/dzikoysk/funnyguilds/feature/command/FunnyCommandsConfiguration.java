@@ -81,7 +81,7 @@ public final class FunnyCommandsConfiguration {
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
                 .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
-                .command("top", commands.top, TopCommand.class)
+                .command("topg", commands.top, TopGCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class)
