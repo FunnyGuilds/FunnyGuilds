@@ -137,13 +137,13 @@ public class BulkApplyRoleGui {
             ).open(player);
         });
         
-        // Back button
+        // Back button - use slot 22 (bottom row center) since this is a 3-row GUI
         PermissionsPanelConfiguration.NavigationItems nav = panelConfig.navigation;
         ItemStack backItem = new ItemBuilder(nav.backMaterial)
                 .setName(nav.backName.getValue(), true)
                 .getItem();
         
-        gui.setItem(nav.backSlot, backItem, event -> {
+        gui.setItem(22, backItem, event -> {
             event.setCancelled(true);
             new MemberPermissionsGui(
                     this.config,
