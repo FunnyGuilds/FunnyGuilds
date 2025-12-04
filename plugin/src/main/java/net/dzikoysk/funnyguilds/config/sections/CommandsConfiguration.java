@@ -68,6 +68,8 @@ public class CommandsConfiguration extends OkaeriConfig {
     public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
     @Comment("")
     public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+    @Comment("")
+    public FunnyCommand panel = new FunnyCommand("panel", Collections.singletonList("zarzadzaj"));
 
     @Comment
     @Comment("Komendy administratora")

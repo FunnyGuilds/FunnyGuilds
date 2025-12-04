@@ -327,6 +327,12 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
             "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
 
+    @Exclude
+    public List<ItemStack> guiPanel;
+    @Comment("Tutaj będzie konfiguracja panelu zarządzania gildią dla lidera")
+    public RawString guiPanelTitle = new RawString("&b&lPANEL GILDII {TAG}");
+
+
     @Comment("")
     @Comment("Minimalna odległość od spawnu")
     public int createDistance = 100;
