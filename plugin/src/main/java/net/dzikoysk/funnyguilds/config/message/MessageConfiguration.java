@@ -614,6 +614,26 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public String panelFreePrice = "Za darmo";
 
     @Comment("")
+    @Comment("<------- Permissions Panel Messages -------> #")
+    public SendableMessage permissionsPanelDisabled = ChatHolder.message("&cPanel uprawnień jest wyłączony!");
+    public SendableMessage permissionsPanelNotLeader = ChatHolder.message("&cMusisz być liderem gildii, aby zarządzać uprawnieniami!");
+    public SendableMessage permissionsPanelNoMembers = ChatHolder.message("&cGildia nie ma innych członków do zarządzania!");
+    @Comment("Dostępne zmienne: {PLAYER}, {PERMISSION}")
+    public SendableMessage permissionsPanelPermissionEnabled = ChatHolder.message("&aWłączono uprawnienie &7{PERMISSION} &adla gracza &7{PLAYER}&a!");
+    @Comment("Dostępne zmienne: {PLAYER}, {PERMISSION}")
+    public SendableMessage permissionsPanelPermissionDisabled = ChatHolder.message("&cWyłączono uprawnienie &7{PERMISSION} &cdla gracza &7{PLAYER}&c!");
+    @Comment("Dostępne zmienne: {PLAYER}, {PERMISSION}")
+    public SendableMessage permissionsPanelPermissionReset = ChatHolder.message("&7Zresetowano uprawnienie &e{PERMISSION} &7dla gracza &e{PLAYER}&7!");
+    @Comment("Dostępne zmienne: {PLAYER}")
+    public SendableMessage permissionsPanelAllReset = ChatHolder.message("&7Zresetowano wszystkie uprawnienia dla gracza &e{PLAYER}&7!");
+    @Comment("Dostępne zmienne: {SOURCE}, {TARGET}")
+    public SendableMessage permissionsPanelCopySuccess = ChatHolder.message("&aSkopiowano uprawnienia z &7{SOURCE} &ado &7{TARGET}&a!");
+    @Comment("Dostępne zmienne: {SOURCE}, {ROLE}")
+    public SendableMessage permissionsPanelBulkApplySuccess = ChatHolder.message("&aZastosowano uprawnienia z &7{SOURCE} &ado wszystkich członków o roli &7{ROLE}&a!");
+    public SendableMessage permissionsPanelCannotManageOwner = ChatHolder.message("&cNie możesz zarządzać uprawnieniami lidera gildii!");
+    public SendableMessage permissionsPanelCannotManageSelf = ChatHolder.message("&cNie możesz zarządzać własnymi uprawnieniami!");
+
+    @Comment("")
     @Comment("<------- Admin Messages -------> #")
     @Comment("Dostępne zmienne: {ADMIN}")
     public SendableMessage adminGuildBroken = ChatHolder.message("&cTwoja gildia zostala rozwiazana przez &7{ADMIN}");

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.guild.permission.member.GuildPermissionsManager;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -42,6 +43,8 @@ public class Guild extends AbstractMutableEntity {
     private Option<Instant> ban = Option.none();
 
     private boolean pvp;
+    
+    private final GuildPermissionsManager permissionsManager;
 
     public Guild(UUID uuid, String name, String tag) {
         this.uuid = uuid != null ? uuid : UUID.randomUUID();
@@ -50,6 +53,7 @@ public class Guild extends AbstractMutableEntity {
 
         this.rank = new GuildRank(this);
         this.born = Instant.now();
+        this.permissionsManager = new GuildPermissionsManager(this);
     }
 
     public Guild(String name, String tag) {
@@ -395,6 +399,13 @@ public class Guild extends AbstractMutableEntity {
 
         this.markChanged();
         return enabled;
+    }
+    
+    /**
+     * @return the guild's member permissions manager
+     */
+    public GuildPermissionsManager getPermissionsManager() {
+        return this.permissionsManager;
     }
 
     @Override
