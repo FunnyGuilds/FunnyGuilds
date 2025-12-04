@@ -63,7 +63,7 @@ public class CopyPermissionsTargetGui {
                 .<User, Integer>comparing(user -> this.guild.isDeputy(user) ? 0 : 1)
                 .thenComparing(User::getName));
         
-        String title = ChatUtils.colored("&b&lWYBIERZ ODBIORCĘ");
+        String title = ChatUtils.colored(panelConfig.copyTargetGui.title.getValue());
         
         GuiWindow gui = new GuiWindow(title, panelConfig.membersRows);
         
@@ -81,7 +81,7 @@ public class CopyPermissionsTargetGui {
         for (int i = 0; i < members.size() && i < MEMBERS_PER_PAGE; i++) {
             User member = members.get(i);
             
-            ItemStack head = createTargetHead(member, permissionsManager);
+            ItemStack head = createTargetHead(member, permissionsManager, panelConfig);
             
             gui.setItem(i, head, event -> {
                 event.setCancelled(true);
@@ -133,7 +133,7 @@ public class CopyPermissionsTargetGui {
     }
     
     @SuppressWarnings("deprecation")
-    private ItemStack createTargetHead(User member, GuildPermissionsManager permissionsManager) {
+    private ItemStack createTargetHead(User member, GuildPermissionsManager permissionsManager, PermissionsPanelConfiguration panelConfig) {
         GuildRole role = permissionsManager.getUserRole(member);
         boolean isOnline = member.isOnline();
         
@@ -143,12 +143,11 @@ public class CopyPermissionsTargetGui {
                 .register("{STATUS}", isOnline ? "&aOnline" : "&cOffline");
         
         String name = ChatUtils.colored("&a" + member.getName());
-        List<String> lore = List.of(
-                ChatUtils.colored("&7Rola: &e" + role.getDisplayName()),
-                ChatUtils.colored("&7Status: " + (isOnline ? "&aOnline" : "&cOffline")),
-                "",
-                ChatUtils.colored("&aKliknij, aby skopiować uprawnienia!")
-        );
+        
+        List<String> lore = new ArrayList<>();
+        for (var line : panelConfig.copyTargetGui.headLore) {
+            lore.add(ChatUtils.colored(formatter.replace(line.getValue())));
+        }
         
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();

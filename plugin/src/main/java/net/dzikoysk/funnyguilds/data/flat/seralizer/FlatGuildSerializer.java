@@ -362,10 +362,17 @@ public final class FlatGuildSerializer {
                 Long changedAtMillis = overrideData.get("changed-at") != null ? 
                         ((Number) overrideData.get("changed-at")).longValue() : null;
                 
-                UUID changedBy = changedByStr != null ? UUID.fromString(changedByStr) : null;
+                UUID changedBy = null;
+                if (changedByStr != null && !changedByStr.isEmpty()) {
+                    try {
+                        changedBy = UUID.fromString(changedByStr);
+                    } catch (IllegalArgumentException e) {
+                        FunnyGuilds.getPluginLogger().warning("Invalid changedBy UUID in permissions: " + changedByStr);
+                    }
+                }
                 Instant changedAt = changedAtMillis != null ? Instant.ofEpochMilli(changedAtMillis) : Instant.now();
                 
-                memberPerms.setOverride(permType, value, changedBy);
+                memberPerms.setOverrideWithTimestamp(permType, value, changedBy, changedAt);
             }
             
             if (memberPerms.hasAnyOverrides()) {

@@ -92,6 +92,17 @@ public class GuildMemberPermissions {
     }
     
     /**
+     * Set a permission override with specific timestamp (used during deserialization).
+     * @param permission the permission to set
+     * @param value the value to set (true = allow, false = deny)
+     * @param changedBy UUID of the user who made the change
+     * @param changedAt timestamp when the change was made
+     */
+    public void setOverrideWithTimestamp(GuildMemberPermissionType permission, boolean value, UUID changedBy, Instant changedAt) {
+        this.overrides.put(permission, new PermissionOverride(value, changedBy, changedAt));
+    }
+    
+    /**
      * Remove a permission override, returning to role default.
      * @param permission the permission to reset
      * @return true if an override was removed
