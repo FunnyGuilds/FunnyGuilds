@@ -37,6 +37,7 @@ import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.PermissionsPanelConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
@@ -332,6 +333,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Konfiguracja panelu zarządzania gildią dla lidera")
     @CustomKey("guild-panel")
     public PanelConfiguration guildPanel = new PanelConfiguration();
+
+    @Comment("")
+    @Comment("Konfiguracja panelu uprawnień członków gildii")
+    @CustomKey("permissions-panel")
+    public PermissionsPanelConfiguration permissionsPanel = new PermissionsPanelConfiguration();
 
     @Comment("")
     @Comment("Minimalna odległość od spawnu")

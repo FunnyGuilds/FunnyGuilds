@@ -4,8 +4,10 @@ import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +23,10 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.guild.permission.member.GuildMemberPermissionType;
+import net.dzikoysk.funnyguilds.guild.permission.member.GuildMemberPermissions;
+import net.dzikoysk.funnyguilds.guild.permission.member.GuildMemberPermissions.PermissionOverride;
+import net.dzikoysk.funnyguilds.guild.permission.member.GuildPermissionsManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
@@ -166,7 +172,12 @@ public final class FlatGuildSerializer {
         values[14] = deputies;
         values[15] = pvp;
 
-        return DeserializationUtils.deserializeGuild(config, guildManager, values);
+        Option<Guild> guildOption = DeserializationUtils.deserializeGuild(config, guildManager, values);
+        
+        // Deserialize member permissions after guild is created
+        guildOption.peek(g -> deserializeMemberPermissions(wrapper, g));
+        
+        return guildOption;
     }
 
     public static boolean serialize(Guild guild) {
@@ -210,6 +221,9 @@ public final class FlatGuildSerializer {
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
+        
+        // Serialize member permissions
+        serializeMemberPermissions(wrapper, guild);
 
         wrapper.save();
         guild.markUnchanged();
@@ -232,6 +246,141 @@ public final class FlatGuildSerializer {
         }
 
         return Collections.emptySet();
+    }
+    
+    private static void serializeMemberPermissions(YamlWrapper wrapper, Guild guild) {
+        GuildPermissionsManager permissionsManager = guild.getPermissionsManager();
+        Map<UUID, GuildMemberPermissions> allPermissions = permissionsManager.getAllMemberPermissions();
+        
+        if (allPermissions.isEmpty()) {
+            wrapper.set("member-permissions", null);
+            return;
+        }
+        
+        Map<String, Object> permissionsData = new HashMap<>();
+        
+        for (Map.Entry<UUID, GuildMemberPermissions> entry : allPermissions.entrySet()) {
+            UUID memberUuid = entry.getKey();
+            GuildMemberPermissions memberPerms = entry.getValue();
+            
+            if (!memberPerms.hasAnyOverrides()) {
+                continue;
+            }
+            
+            Map<String, Object> memberData = new HashMap<>();
+            Map<GuildMemberPermissionType, PermissionOverride> overrides = memberPerms.getAllOverrides();
+            
+            for (Map.Entry<GuildMemberPermissionType, PermissionOverride> overrideEntry : overrides.entrySet()) {
+                GuildMemberPermissionType permType = overrideEntry.getKey();
+                PermissionOverride override = overrideEntry.getValue();
+                
+                Map<String, Object> overrideData = new HashMap<>();
+                overrideData.put("value", override.getValue());
+                overrideData.put("changed-by", override.getChangedBy() != null ? override.getChangedBy().toString() : null);
+                overrideData.put("changed-at", override.getChangedAt() != null ? override.getChangedAt().toEpochMilli() : null);
+                
+                memberData.put(permType.getKeyString(), overrideData);
+            }
+            
+            permissionsData.put(memberUuid.toString(), memberData);
+        }
+        
+        wrapper.set("member-permissions", permissionsData);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private static void deserializeMemberPermissions(YamlWrapper wrapper, Guild guild) {
+        Object permissionsObj = wrapper.get("member-permissions");
+        if (permissionsObj == null) {
+            return;
+        }
+        
+        GuildPermissionsManager permissionsManager = guild.getPermissionsManager();
+        
+        Map<String, Object> permissionsData;
+        if (permissionsObj instanceof ConfigurationSection) {
+            ConfigurationSection section = (ConfigurationSection) permissionsObj;
+            permissionsData = new HashMap<>();
+            for (String key : section.getKeys(false)) {
+                permissionsData.put(key, section.get(key));
+            }
+        } else if (permissionsObj instanceof Map) {
+            permissionsData = (Map<String, Object>) permissionsObj;
+        } else {
+            return;
+        }
+        
+        Map<UUID, GuildMemberPermissions> allPermissions = new HashMap<>();
+        
+        for (Map.Entry<String, Object> memberEntry : permissionsData.entrySet()) {
+            UUID memberUuid;
+            try {
+                memberUuid = UUID.fromString(memberEntry.getKey());
+            } catch (IllegalArgumentException e) {
+                FunnyGuilds.getPluginLogger().warning("Invalid member UUID in permissions: " + memberEntry.getKey());
+                continue;
+            }
+            
+            GuildMemberPermissions memberPerms = new GuildMemberPermissions(memberUuid);
+            
+            Object memberDataObj = memberEntry.getValue();
+            Map<String, Object> memberData;
+            if (memberDataObj instanceof ConfigurationSection) {
+                ConfigurationSection section = (ConfigurationSection) memberDataObj;
+                memberData = new HashMap<>();
+                for (String key : section.getKeys(false)) {
+                    memberData.put(key, section.get(key));
+                }
+            } else if (memberDataObj instanceof Map) {
+                memberData = (Map<String, Object>) memberDataObj;
+            } else {
+                continue;
+            }
+            
+            for (Map.Entry<String, Object> permEntry : memberData.entrySet()) {
+                GuildMemberPermissionType permType = GuildMemberPermissionType.fromKeyString(permEntry.getKey());
+                if (permType == null) {
+                    continue;
+                }
+                
+                Object overrideObj = permEntry.getValue();
+                Map<String, Object> overrideData;
+                if (overrideObj instanceof ConfigurationSection) {
+                    ConfigurationSection section = (ConfigurationSection) overrideObj;
+                    overrideData = new HashMap<>();
+                    for (String key : section.getKeys(false)) {
+                        overrideData.put(key, section.get(key));
+                    }
+                } else if (overrideObj instanceof Map) {
+                    overrideData = (Map<String, Object>) overrideObj;
+                } else {
+                    continue;
+                }
+                
+                boolean value = (Boolean) overrideData.getOrDefault("value", false);
+                String changedByStr = (String) overrideData.get("changed-by");
+                Long changedAtMillis = overrideData.get("changed-at") != null ? 
+                        ((Number) overrideData.get("changed-at")).longValue() : null;
+                
+                UUID changedBy = null;
+                if (changedByStr != null && !changedByStr.isEmpty()) {
+                    try {
+                        changedBy = UUID.fromString(changedByStr);
+                    } catch (IllegalArgumentException e) {
+                        FunnyGuilds.getPluginLogger().warning("Invalid changedBy UUID in permissions: " + changedByStr);
+                    }
+                }
+                Instant changedAt = changedAtMillis != null ? Instant.ofEpochMilli(changedAtMillis) : Instant.now();
+                
+                memberPerms.setOverrideWithTimestamp(permType, value, changedBy, changedAt);
+            }
+            
+            if (memberPerms.hasAnyOverrides()) {
+                allPermissions.put(memberUuid, memberPerms);
+            }
+        }
+        
+        permissionsManager.setMemberPermissions(allPermissions);
     }
 
 }

@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseMemberPermissionsSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
@@ -27,6 +28,7 @@ public class SQLDataModel implements DataModel {
     private final SQLTable usersTable;
     private final SQLTable guildsTable;
     private final SQLTable regionsTable;
+    private final SQLTable memberPermissionsTable;
 
 
     public SQLDataModel(FunnyGuilds plugin) {
@@ -36,6 +38,7 @@ public class SQLDataModel implements DataModel {
         this.usersTable = new SQLTable(this.pluginConfiguration.mysql.usersTableName);
         this.guildsTable = new SQLTable(this.pluginConfiguration.mysql.guildsTableName);
         this.regionsTable = new SQLTable(this.pluginConfiguration.mysql.regionsTableName);
+        this.memberPermissionsTable = new SQLTable(this.pluginConfiguration.mysql.memberPermissionsTableName);
 
         this.prepareTables();
     }
@@ -78,12 +81,23 @@ public class SQLDataModel implements DataModel {
         this.regionsTable.add("size", SQLType.INT, true);
         this.regionsTable.add("enlarge", SQLType.INT, true);
         this.regionsTable.setPrimaryKey("name");
+        
+        // Member permissions table
+        this.memberPermissionsTable.add("id", SQLType.INT, true);
+        this.memberPermissionsTable.add("guild_uuid", SQLType.VARCHAR, 36, true);
+        this.memberPermissionsTable.add("member_uuid", SQLType.VARCHAR, 36, true);
+        this.memberPermissionsTable.add("permission_type", SQLType.VARCHAR, 100, true);
+        this.memberPermissionsTable.add("permission_value", SQLType.BOOLEAN, true);
+        this.memberPermissionsTable.add("changed_by", SQLType.VARCHAR, 36);
+        this.memberPermissionsTable.add("changed_at", SQLType.BIGINT);
+        this.memberPermissionsTable.setPrimaryKey("id");
     }
 
     public void load() throws SQLException {
         createTableIfNotExists(this.usersTable);
         createTableIfNotExists(this.regionsTable);
         createTableIfNotExists(this.guildsTable);
+        createTableIfNotExists(this.memberPermissionsTable);
 
         this.loadUsers();
         this.loadRegions();
@@ -139,6 +153,9 @@ public class SQLDataModel implements DataModel {
             }
         });
 
+        // Load member permissions for all guilds
+        DatabaseMemberPermissionsSerializer.loadAllPermissions(this.memberPermissionsTable, guildManager);
+
         guildManager.getGuilds().stream()
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> guildManager.deleteGuild(FunnyGuilds.getInstance(), guild));
@@ -171,7 +188,10 @@ public class SQLDataModel implements DataModel {
 
         this.plugin.getGuildManager().getGuilds().stream()
                 .filter(guild -> !ignoreNotChanged || guild.wasChanged())
-                .forEach(DatabaseGuildSerializer::serialize);
+                .forEach(guild -> {
+                    DatabaseGuildSerializer.serialize(guild);
+                    DatabaseMemberPermissionsSerializer.savePermissions(this.memberPermissionsTable, guild);
+                });
 
         if (!this.plugin.getPluginConfiguration().regionsEnabled) {
             return;
@@ -192,6 +212,10 @@ public class SQLDataModel implements DataModel {
 
     public SQLTable getRegionsTable() {
         return this.regionsTable;
+    }
+    
+    public SQLTable getMemberPermissionsTable() {
+        return this.memberPermissionsTable;
     }
 
     private static void createTableIfNotExists(SQLTable table) {

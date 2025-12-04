@@ -9,10 +9,12 @@ import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.CostType;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.EffectItem;
 import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration.GuildEffects;
+import net.dzikoysk.funnyguilds.config.sections.PermissionsPanelConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
+import net.dzikoysk.funnyguilds.feature.gui.permission.MemberPermissionsListGui;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -53,10 +55,10 @@ public class PanelCommand extends AbstractFunnyCommand {
             return;
         }
 
-        openPanelGui(player, guild, panelConfig);
+        openPanelGui(player, user, guild, panelConfig);
     }
 
-    private void openPanelGui(Player player, Guild guild, PanelConfiguration panelConfig) {
+    private void openPanelGui(Player player, User user, Guild guild, PanelConfiguration panelConfig) {
         String title = new FunnyFormatter()
                 .register("{TAG}", guild.getTag())
                 .register("{GUILD}", guild.getName())
@@ -95,10 +97,59 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         // Item menu efektów
         if (panelConfig.effectsMenuItem.enabled && panelConfig.effects.enabled) {
-            addEffectsMenuItem(gui, player, guild, panelConfig);
+            addEffectsMenuItem(gui, player, user, guild, panelConfig);
+        }
+        
+        // Item zarządzania uprawnieniami
+        PermissionsPanelConfiguration permissionsConfig = this.config.permissionsPanel;
+        if (permissionsConfig.enabled && permissionsConfig.panelIcon.enabled) {
+            addPermissionsMenuItem(gui, player, user, guild, permissionsConfig);
         }
 
         gui.open(player);
+    }
+    
+    private void addPermissionsMenuItem(GuiWindow gui, Player player, User user, Guild guild, PermissionsPanelConfiguration permissionsConfig) {
+        PermissionsPanelConfiguration.PanelIconItem iconConfig = permissionsConfig.panelIcon;
+        
+        List<String> lore = new ArrayList<>();
+        for (var line : iconConfig.lore) {
+            lore.add(line.getValue());
+        }
+
+        ItemStack item = new ItemBuilder(iconConfig.material)
+                .setName(iconConfig.name.getValue(), true)
+                .setLore(lore, true)
+                .getItem();
+
+        gui.setItem(iconConfig.slot, item, event -> {
+            event.setCancelled(true);
+            
+            // Only leader can manage permissions
+            if (!guild.isOwner(user)) {
+                this.messageService.getMessage(config -> config.permissionsPanelNotLeader)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Check if there are other members
+            if (guild.getMembers().size() <= 1) {
+                this.messageService.getMessage(config -> config.permissionsPanelNoMembers)
+                        .receiver(player)
+                        .send();
+                return;
+            }
+            
+            // Open permissions panel
+            new MemberPermissionsListGui(
+                    this.config,
+                    this.messageService,
+                    guild,
+                    user,
+                    0
+            ).open(player);
+        });
     }
 
     private void addInfoItem(GuiWindow gui, Guild guild, PanelConfiguration panelConfig) {
@@ -232,7 +283,7 @@ public class PanelCommand extends AbstractFunnyCommand {
         });
     }
 
-    private void addEffectsMenuItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig) {
+    private void addEffectsMenuItem(GuiWindow gui, Player player, User user, Guild guild, PanelConfiguration panelConfig) {
         List<String> lore = new ArrayList<>();
         for (var line : panelConfig.effectsMenuItem.lore) {
             lore.add(line.getValue());
@@ -245,11 +296,11 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         gui.setItem(panelConfig.effectsMenuItem.slot, item, event -> {
             event.setCancelled(true);
-            openEffectsGui(player, guild, panelConfig);
+            openEffectsGui(player, user, guild, panelConfig);
         });
     }
 
-    private void openEffectsGui(Player player, Guild guild, PanelConfiguration panelConfig) {
+    private void openEffectsGui(Player player, User user, Guild guild, PanelConfiguration panelConfig) {
         GuildEffects effectsConfig = panelConfig.effects;
         
         String title = new FunnyFormatter()
@@ -276,13 +327,13 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         // Przycisk powrotu
         if (effectsConfig.backItem.enabled) {
-            addBackItem(gui, player, guild, panelConfig, effectsConfig);
+            addBackItem(gui, player, user, guild, panelConfig, effectsConfig);
         }
 
         gui.open(player);
     }
 
-    private void addBackItem(GuiWindow gui, Player player, Guild guild, PanelConfiguration panelConfig, GuildEffects effectsConfig) {
+    private void addBackItem(GuiWindow gui, Player player, User user, Guild guild, PanelConfiguration panelConfig, GuildEffects effectsConfig) {
         List<String> lore = new ArrayList<>();
         for (var line : effectsConfig.backItem.lore) {
             lore.add(line.getValue());
@@ -295,7 +346,7 @@ public class PanelCommand extends AbstractFunnyCommand {
 
         gui.setItem(effectsConfig.backItem.slot, item, event -> {
             event.setCancelled(true);
-            openPanelGui(player, guild, panelConfig);
+            openPanelGui(player, user, guild, panelConfig);
         });
     }
 
@@ -399,7 +450,7 @@ public class PanelCommand extends AbstractFunnyCommand {
                     .send();
 
             // Odśwież GUI efektów
-            openEffectsGui(player, currentGuild, panelConfig);
+            openEffectsGui(player, user, currentGuild, panelConfig);
         });
     }
 
