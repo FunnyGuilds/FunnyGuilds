@@ -25,5 +25,4 @@ public final class TopGCommand extends AbstractFunnyCommand {
                 })
                 .send();
     }
-
 }
