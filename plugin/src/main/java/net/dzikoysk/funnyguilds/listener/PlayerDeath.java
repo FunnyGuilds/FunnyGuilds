@@ -110,7 +110,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
 
-        if (HookManager.WORLD_GUARD.isPresent()) {
+        if (HookManager.WORLD_GUARD.isPresent() && playerAttacker != null) {
             WorldGuardHook worldGuard = HookManager.WORLD_GUARD.get();
             if (worldGuard.isInNonPointsRegion(playerVictim.getLocation()) || worldGuard.isInNonPointsRegion(playerAttacker.getLocation())) {
                 victimDamageState.clear();
