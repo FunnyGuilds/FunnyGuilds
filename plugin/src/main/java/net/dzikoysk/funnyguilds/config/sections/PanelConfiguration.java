@@ -25,6 +25,14 @@ public class PanelConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Ilość wierszy w GUI (1-6)")
     public int rows = 3;
+    
+    /**
+     * Gets validated rows value (clamped to 1-6 range).
+     * @return rows value between 1 and 6
+     */
+    public int getValidatedRows() {
+        return Math.max(1, Math.min(6, this.rows));
+    }
 
     @Comment("")
     @Comment("Konfiguracja itemu informacyjnego o gildii")
@@ -246,6 +254,14 @@ public class PanelConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Ilość wierszy w GUI efektów (1-6)")
         public int rows = 3;
+        
+        /**
+         * Gets validated rows value (clamped to 1-6 range).
+         * @return rows value between 1 and 6
+         */
+        public int getValidatedRows() {
+            return Math.max(1, Math.min(6, this.rows));
+        }
 
         @Comment("")
         @Comment("Konfiguracja itemu powrotu do głównego panelu")
@@ -414,8 +430,18 @@ public class PanelConfiguration extends OkaeriConfig {
             this.itemCostAmount = itemCostAmount;
         }
 
+        /**
+         * Gets the PotionEffectType for this effect.
+         * @return the PotionEffectType or null if the effectType is invalid
+         */
         public PotionEffectType getPotionEffectType() {
-            return PotionEffectType.getByName(this.effectType);
+            PotionEffectType type = PotionEffectType.getByName(this.effectType);
+            if (type == null) {
+                net.dzikoysk.funnyguilds.FunnyGuilds.getPluginLogger().warning(
+                    "Unknown potion effect type: " + this.effectType + ". Check your panel configuration."
+                );
+            }
+            return type;
         }
     }
 

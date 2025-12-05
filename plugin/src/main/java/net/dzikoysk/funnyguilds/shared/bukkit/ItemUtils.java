@@ -66,9 +66,6 @@ public final class ItemUtils {
     }
 
     public static String toString(@NotNull ItemStack item) {
-        if (item == null) {
-            return "null";
-        }
 
         StringBuilder sb = new StringBuilder();
         sb.append(item.getAmount())
@@ -185,6 +182,7 @@ public final class ItemUtils {
                         FunnyGuilds.getPluginLogger().parser("Invalid armor color attribute, item is not leather armor: " + split[index]);
                     }
                 }
+                default -> FunnyGuilds.getPluginLogger().parser("Unknown item meta attribute: " + attrName);
             }
         }
 
@@ -226,7 +224,10 @@ public final class ItemUtils {
     private static Pair<Enchantment, Integer> parseEnchant(String enchantString) {
         String[] split = enchantString.split(":");
         Enchantment enchant = matchEnchant(split[0]);
-        int level = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1])).orElseGet(1);
+        int level = 1;
+        if (split.length > 1) {
+            level = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1])).orElseGet(1);
+        }
         if (enchant == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant: " + split[0]);
         }

@@ -65,7 +65,7 @@ public class PanelCommand extends AbstractFunnyCommand {
                 .replace(panelConfig.title.getValue());
         title = ChatUtils.colored(title);
 
-        GuiWindow gui = new GuiWindow(title, panelConfig.rows);
+        GuiWindow gui = new GuiWindow(title, panelConfig.getValidatedRows());
 
         // Wypełnienie pustych slotów
         if (panelConfig.fillItem.enabled) {
@@ -379,7 +379,7 @@ public class PanelCommand extends AbstractFunnyCommand {
                 .replace(effectsConfig.title.getValue());
         title = ChatUtils.colored(title);
 
-        GuiWindow gui = new GuiWindow(title, effectsConfig.rows);
+        GuiWindow gui = new GuiWindow(title, effectsConfig.getValidatedRows());
 
         // Wypełnienie pustych slotów
         if (panelConfig.fillItem.enabled) {
@@ -512,7 +512,7 @@ public class PanelCommand extends AbstractFunnyCommand {
                 this.funnyServer.getPlayer(member).peek(memberPlayer -> memberPlayer.addPotionEffect(effect));
             }
 
-            String effectName = ChatUtils.decolor(effectConfig.name.getValue()).replaceAll("&[0-9a-fA-FklmnorKLMNOR]", "");
+            String effectName = ChatUtils.decolor(effectConfig.name.getValue());
             this.messageService.getMessage(config -> config.panelEffectBought)
                     .receiver(currentGuild)
                     .with("{EFFECT}", effectName)
