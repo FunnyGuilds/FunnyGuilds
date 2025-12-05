@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.regen;
 
+import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -11,7 +12,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -20,12 +23,102 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Manages destroyed blocks for all guilds that can be regenerated.
+ * Data is persisted to YAML files to survive server restarts and reduce RAM usage.
  */
 public class RegionRegenerationManager {
 
     private final Map<UUID, List<DestroyedBlock>> destroyedBlocksByGuild = new ConcurrentHashMap<>();
     private final Map<UUID, Boolean> regenerationInProgress = new ConcurrentHashMap<>();
     private final Map<UUID, Instant> lastRegenerationTime = new ConcurrentHashMap<>();
+    private final Map<UUID, Boolean> dirtyFlags = new ConcurrentHashMap<>();
+    
+    private File dataFolder;
+
+    /**
+     * Initializes the regeneration manager with a data folder for persistence.
+     *
+     * @param plugin The FunnyGuilds plugin instance
+     */
+    public void initialize(FunnyGuilds plugin) {
+        this.dataFolder = new File(plugin.getPluginDataFolder(), "regeneration");
+        if (!this.dataFolder.exists()) {
+            this.dataFolder.mkdirs();
+        }
+        
+        // Load all existing regeneration data
+        loadAllData();
+        
+        FunnyGuilds.getPluginLogger().info("Regeneration data folder initialized: " + this.dataFolder.getAbsolutePath());
+    }
+
+    /**
+     * Loads all regeneration data from files.
+     */
+    private void loadAllData() {
+        if (this.dataFolder == null || !this.dataFolder.exists()) {
+            return;
+        }
+        
+        List<UUID> guildIds = RegenerationDataSerializer.getAllGuildIds(this.dataFolder);
+        int loadedGuilds = 0;
+        int totalBlocks = 0;
+        
+        for (UUID guildId : guildIds) {
+            List<DestroyedBlock> blocks = RegenerationDataSerializer.load(this.dataFolder, guildId);
+            if (!blocks.isEmpty()) {
+                this.destroyedBlocksByGuild.put(guildId, new CopyOnWriteArrayList<>(blocks));
+                loadedGuilds++;
+                totalBlocks += blocks.size();
+            }
+        }
+        
+        if (loadedGuilds > 0) {
+            FunnyGuilds.getPluginLogger().info("Loaded regeneration data for " + loadedGuilds + " guilds (" + totalBlocks + " blocks total)");
+        }
+    }
+
+    /**
+     * Saves all dirty data to files.
+     * Should be called periodically and on server shutdown.
+     */
+    public void saveAllDirtyData() {
+        if (this.dataFolder == null) {
+            return;
+        }
+        
+        for (Map.Entry<UUID, Boolean> entry : this.dirtyFlags.entrySet()) {
+            if (entry.getValue()) {
+                UUID guildId = entry.getKey();
+                List<DestroyedBlock> blocks = this.destroyedBlocksByGuild.get(guildId);
+                RegenerationDataSerializer.save(this.dataFolder, guildId, blocks != null ? new ArrayList<>(blocks) : null);
+                this.dirtyFlags.put(guildId, false);
+            }
+        }
+    }
+
+    /**
+     * Saves data for a specific guild.
+     *
+     * @param guildId The guild UUID
+     */
+    private void saveGuildData(UUID guildId) {
+        if (this.dataFolder == null) {
+            return;
+        }
+        
+        List<DestroyedBlock> blocks = this.destroyedBlocksByGuild.get(guildId);
+        RegenerationDataSerializer.save(this.dataFolder, guildId, blocks != null ? new ArrayList<>(blocks) : null);
+        this.dirtyFlags.put(guildId, false);
+    }
+
+    /**
+     * Marks guild data as dirty (needs saving).
+     *
+     * @param guildId The guild UUID
+     */
+    private void markDirty(UUID guildId) {
+        this.dirtyFlags.put(guildId, true);
+    }
 
     /**
      * Registers a destroyed block for a guild.
@@ -47,6 +140,8 @@ public class RegionRegenerationManager {
         this.destroyedBlocksByGuild
                 .computeIfAbsent(guildId, k -> new CopyOnWriteArrayList<>())
                 .add(destroyedBlock);
+        
+        markDirty(guildId);
     }
 
     /**
@@ -59,6 +154,8 @@ public class RegionRegenerationManager {
         for (Block block : blocks) {
             registerDestroyedBlock(guild, block);
         }
+        // Save after batch registration
+        saveGuildData(guild.getUUID());
     }
 
     /**
@@ -96,9 +193,14 @@ public class RegionRegenerationManager {
             return;
         }
         
-        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guild.getUUID());
+        UUID guildId = guild.getUUID();
+        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guildId);
         if (guildBlocks != null) {
+            int sizeBefore = guildBlocks.size();
             guildBlocks.removeIf(block -> block.isExpired(maxBlockAge));
+            if (guildBlocks.size() != sizeBefore) {
+                markDirty(guildId);
+            }
         }
     }
 
@@ -164,9 +266,11 @@ public class RegionRegenerationManager {
      * @param blocks The blocks that were regenerated
      */
     public void removeRegeneratedBlocks(Guild guild, Collection<DestroyedBlock> blocks) {
-        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guild.getUUID());
+        UUID guildId = guild.getUUID();
+        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guildId);
         if (guildBlocks != null) {
             guildBlocks.removeAll(blocks);
+            saveGuildData(guildId);
         }
     }
 
@@ -178,9 +282,14 @@ public class RegionRegenerationManager {
      * @return true if a block was removed
      */
     public boolean removeBlockAtLocation(Guild guild, Location location) {
-        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guild.getUUID());
+        UUID guildId = guild.getUUID();
+        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guildId);
         if (guildBlocks != null) {
-            return guildBlocks.removeIf(block -> block.getLocation().equals(location));
+            boolean removed = guildBlocks.removeIf(block -> block.getLocation().equals(location));
+            if (removed) {
+                markDirty(guildId);
+            }
+            return removed;
         }
         return false;
     }
@@ -229,6 +338,12 @@ public class RegionRegenerationManager {
         this.destroyedBlocksByGuild.remove(guildId);
         this.regenerationInProgress.remove(guildId);
         this.lastRegenerationTime.remove(guildId);
+        this.dirtyFlags.remove(guildId);
+        
+        // Delete the file
+        if (this.dataFolder != null) {
+            RegenerationDataSerializer.delete(this.dataFolder, guildId);
+        }
     }
 
     /**

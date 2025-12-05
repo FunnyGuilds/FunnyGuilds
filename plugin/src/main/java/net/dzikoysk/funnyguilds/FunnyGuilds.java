@@ -259,6 +259,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.regionManager = new RegionManager(this.pluginConfiguration);
         this.guildPermissionChecker = GuildPermissionChecker.create(this);
         this.regionRegenerationManager = new net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager();
+        this.regionRegenerationManager.initialize(this);
 
         this.prepareScoreboardServices();
 
@@ -472,6 +473,11 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.invitationPersistenceHandler.saveInvitations();
         this.invitationPersistenceHandler.stopHandler();
+
+        // Save regeneration data
+        if (this.regionRegenerationManager != null) {
+            this.regionRegenerationManager.saveAllDirtyData();
+        }
 
         this.getServer().getScheduler().cancelTasks(this);
         this.database.peek(Database::shutdown);

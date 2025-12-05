@@ -19,11 +19,21 @@ public class DestroyedBlock {
     @Nullable
     private final String tileEntityData;
 
+    /**
+     * Creates a new DestroyedBlock with the current time as destruction time.
+     */
     public DestroyedBlock(Location location, Material material, BlockData blockData, @Nullable String tileEntityData) {
+        this(location, material, blockData, Instant.now(), tileEntityData);
+    }
+
+    /**
+     * Creates a new DestroyedBlock with a specific destruction time (for deserialization).
+     */
+    public DestroyedBlock(Location location, Material material, BlockData blockData, Instant destroyedAt, @Nullable String tileEntityData) {
         this.location = location.clone();
         this.material = material;
         this.blockData = blockData.clone();
-        this.destroyedAt = Instant.now();
+        this.destroyedAt = destroyedAt;
         this.tileEntityData = tileEntityData;
     }
 
