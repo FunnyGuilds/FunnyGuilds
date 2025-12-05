@@ -16,8 +16,7 @@ public final class ChatUtils {
     public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
     public static final String DECOLOR_REPLACEMENT = "&$1";
 
-    private static final Pattern HEX_TO_LEGACY_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})([0-9A-Fa-f]{1})");
-    private static final String LEGACY_COLOR_REPLACEMENT = "&x&$1&$2&$3&$4&$5&$6";
+    private static final Pattern HEX_COLOR_PATTERN = Pattern.compile("&#([0-9A-Fa-f]{6})");
 
     private static final Pattern LEGACY_TO_HEX_PATTERN = Pattern.compile("&[xX]&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})&([0-9A-Fa-f]{1})");
     private static final String HEX_COLOR_REPLACEMENT = "&#$1$2$3$4$5$6";
@@ -25,20 +24,31 @@ public final class ChatUtils {
     // Pattern for extracting last color code from text (section symbol based)
     private static final Pattern LAST_COLOR_PATTERN = Pattern.compile("(?:\u00a7[0-9A-Fa-fK-Ok-oRrXx])+");
 
+    // Pattern for valid color codes after the ampersand
+    private static final Pattern AMPERSAND_COLOR_PATTERN = Pattern.compile("&([0-9A-Fa-fK-Ok-oRrXx])");
+
     /**
      * Translates color codes from ampersand (&) format to section symbol (§) format.
      * Supports hex colors in &#RRGGBB format.
-     * Uses Adventure API's LegacyComponentSerializer for translation.
+     * This is a direct replacement for ChatColor.translateAlternateColorCodes().
      */
     public static String colored(String message) {
         if (message == null) {
             return "";
         }
-        // Convert hex colors (&#RRGGBB) to legacy format (&x&R&R&G&G&B&B)
-        message = HEX_TO_LEGACY_PATTERN.matcher(message).replaceAll(LEGACY_COLOR_REPLACEMENT);
-        // Use Adventure's serializer to handle color code translation
-        Component component = LegacyComponentSerializer.legacyAmpersand().deserialize(message);
-        return LegacyComponentSerializer.legacySection().serialize(component);
+        // Convert hex colors (&#RRGGBB) to legacy format (&x&r&r&g&g&b&b) with lowercase
+        Matcher hexMatcher = HEX_COLOR_PATTERN.matcher(message);
+        StringBuffer sb = new StringBuffer();
+        while (hexMatcher.find()) {
+            String hex = hexMatcher.group(1).toLowerCase();
+            String replacement = "&x&" + hex.charAt(0) + "&" + hex.charAt(1) + "&" + hex.charAt(2) 
+                    + "&" + hex.charAt(3) + "&" + hex.charAt(4) + "&" + hex.charAt(5);
+            hexMatcher.appendReplacement(sb, replacement);
+        }
+        hexMatcher.appendTail(sb);
+        message = sb.toString();
+        // Replace &X with §X for valid color codes (0-9, a-f, k-o, r, x)
+        return AMPERSAND_COLOR_PATTERN.matcher(message).replaceAll("\u00a7$1");
     }
 
     /**
@@ -100,8 +110,17 @@ public final class ChatUtils {
         if (text == null) {
             return Component.empty();
         }
-        // Convert hex colors first
-        text = HEX_TO_LEGACY_PATTERN.matcher(text).replaceAll(LEGACY_COLOR_REPLACEMENT);
+        // Convert hex colors first with lowercase
+        Matcher hexMatcher = HEX_COLOR_PATTERN.matcher(text);
+        StringBuffer sb = new StringBuffer();
+        while (hexMatcher.find()) {
+            String hex = hexMatcher.group(1).toLowerCase();
+            String replacement = "&x&" + hex.charAt(0) + "&" + hex.charAt(1) + "&" + hex.charAt(2) 
+                    + "&" + hex.charAt(3) + "&" + hex.charAt(4) + "&" + hex.charAt(5);
+            hexMatcher.appendReplacement(sb, replacement);
+        }
+        hexMatcher.appendTail(sb);
+        text = sb.toString();
         return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
     }
 }
