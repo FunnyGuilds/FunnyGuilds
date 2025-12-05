@@ -524,6 +524,13 @@ public class PanelConfiguration extends OkaeriConfig {
         public int maxBlocksToRegenerate = 0;
 
         @Comment("")
+        @Comment("Maksymalny czas przechowywania zniszczonych bloków do regeneracji")
+        @Comment("Po upływie tego czasu bloki automatycznie znikają z listy i nie można ich zregenerować")
+        @Comment("Format: np. 4h (4 godziny), 30m (30 minut), 1d (1 dzień)")
+        @Comment("Ustaw 0 aby wyłączyć limit czasowy (bloki będą przechowywane do restartu serwera)")
+        public Duration maxBlockAge = Duration.ofHours(4);
+
+        @Comment("")
         @Comment("Konfiguracja itemu informacyjnego o regeneracji")
         public RegenerationInfoItem infoItem = new RegenerationInfoItem();
 

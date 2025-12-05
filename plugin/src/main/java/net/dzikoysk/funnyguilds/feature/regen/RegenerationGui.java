@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.regen;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,6 +33,7 @@ public class RegenerationGui {
     private final Guild guild;
     private final User user;
     private final Player player;
+    private final Duration maxBlockAge;
     
     private int selectedBlocks;
     private final int totalBlocks;
@@ -52,7 +54,8 @@ public class RegenerationGui {
         this.guild = guild;
         this.user = user;
         this.player = player;
-        this.totalBlocks = regenerationManager.getDestroyedBlockCount(guild);
+        this.maxBlockAge = config.guildPanel.regeneration.maxBlockAge;
+        this.totalBlocks = regenerationManager.getDestroyedBlockCount(guild, maxBlockAge);
         this.selectedBlocks = Math.min(totalBlocks, 1);
     }
 
@@ -309,10 +312,11 @@ public class RegenerationGui {
             return;
         }
 
-        // Get blocks to regenerate
+        // Get blocks to regenerate (with expiration check)
         List<DestroyedBlock> blocksToRegenerate = this.regenerationManager.getBlocksForRegeneration(
                 this.guild, 
-                this.selectedBlocks
+                this.selectedBlocks,
+                this.maxBlockAge
         );
 
         if (blocksToRegenerate.isEmpty()) {

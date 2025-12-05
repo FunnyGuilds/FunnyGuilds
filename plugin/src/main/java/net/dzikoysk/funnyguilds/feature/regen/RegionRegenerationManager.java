@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.regen;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,13 +63,62 @@ public class RegionRegenerationManager {
 
     /**
      * Gets the number of destroyed blocks for a guild that can be regenerated.
+     * This method also removes expired blocks based on the maxBlockAge parameter.
+     *
+     * @param guild The guild
+     * @param maxBlockAge The maximum age for blocks, or null to disable expiration
+     * @return Number of destroyed blocks that are still valid
+     */
+    public int getDestroyedBlockCount(Guild guild, @Nullable Duration maxBlockAge) {
+        removeExpiredBlocks(guild, maxBlockAge);
+        List<DestroyedBlock> blocks = this.destroyedBlocksByGuild.get(guild.getUUID());
+        return blocks != null ? blocks.size() : 0;
+    }
+
+    /**
+     * Gets the number of destroyed blocks for a guild (without expiration check).
      *
      * @param guild The guild
      * @return Number of destroyed blocks
      */
     public int getDestroyedBlockCount(Guild guild) {
+        return getDestroyedBlockCount(guild, null);
+    }
+
+    /**
+     * Removes expired blocks from a guild's list.
+     *
+     * @param guild The guild
+     * @param maxBlockAge The maximum age for blocks, or null to skip removal
+     */
+    public void removeExpiredBlocks(Guild guild, @Nullable Duration maxBlockAge) {
+        if (maxBlockAge == null || maxBlockAge.isZero() || maxBlockAge.isNegative()) {
+            return;
+        }
+        
+        List<DestroyedBlock> guildBlocks = this.destroyedBlocksByGuild.get(guild.getUUID());
+        if (guildBlocks != null) {
+            guildBlocks.removeIf(block -> block.isExpired(maxBlockAge));
+        }
+    }
+
+    /**
+     * Gets destroyed blocks for a guild, sorted by destruction time (oldest first).
+     * This method also removes expired blocks based on the maxBlockAge parameter.
+     *
+     * @param guild The guild
+     * @param maxBlockAge The maximum age for blocks, or null to disable expiration
+     * @return List of destroyed blocks that are still valid
+     */
+    public List<DestroyedBlock> getDestroyedBlocks(Guild guild, @Nullable Duration maxBlockAge) {
+        removeExpiredBlocks(guild, maxBlockAge);
         List<DestroyedBlock> blocks = this.destroyedBlocksByGuild.get(guild.getUUID());
-        return blocks != null ? blocks.size() : 0;
+        if (blocks == null || blocks.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return blocks.stream()
+                .sorted(Comparator.comparing(DestroyedBlock::getDestroyedAt))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -78,12 +128,21 @@ public class RegionRegenerationManager {
      * @return List of destroyed blocks
      */
     public List<DestroyedBlock> getDestroyedBlocks(Guild guild) {
-        List<DestroyedBlock> blocks = this.destroyedBlocksByGuild.get(guild.getUUID());
-        if (blocks == null || blocks.isEmpty()) {
-            return new ArrayList<>();
-        }
+        return getDestroyedBlocks(guild, null);
+    }
+
+    /**
+     * Gets a specified number of destroyed blocks for regeneration.
+     *
+     * @param guild The guild
+     * @param count The number of blocks to get
+     * @param maxBlockAge The maximum age for blocks, or null to disable expiration
+     * @return List of destroyed blocks to regenerate
+     */
+    public List<DestroyedBlock> getBlocksForRegeneration(Guild guild, int count, @Nullable Duration maxBlockAge) {
+        List<DestroyedBlock> blocks = getDestroyedBlocks(guild, maxBlockAge);
         return blocks.stream()
-                .sorted(Comparator.comparing(DestroyedBlock::getDestroyedAt))
+                .limit(count)
                 .collect(Collectors.toList());
     }
 
@@ -95,10 +154,7 @@ public class RegionRegenerationManager {
      * @return List of destroyed blocks to regenerate
      */
     public List<DestroyedBlock> getBlocksForRegeneration(Guild guild, int count) {
-        List<DestroyedBlock> blocks = getDestroyedBlocks(guild);
-        return blocks.stream()
-                .limit(count)
-                .collect(Collectors.toList());
+        return getBlocksForRegeneration(guild, count, null);
     }
 
     /**

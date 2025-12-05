@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.regen;
 
+import java.time.Duration;
 import java.time.Instant;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -49,6 +50,20 @@ public class DestroyedBlock {
 
     public boolean hasTileEntityData() {
         return this.tileEntityData != null && !this.tileEntityData.isEmpty();
+    }
+
+    /**
+     * Checks if this block is expired based on the maximum age.
+     *
+     * @param maxAge The maximum age for blocks, or null/zero to disable expiration
+     * @return true if the block is expired and should not be regenerated
+     */
+    public boolean isExpired(@Nullable Duration maxAge) {
+        if (maxAge == null || maxAge.isZero() || maxAge.isNegative()) {
+            return false;
+        }
+        Instant expirationTime = this.destroyedAt.plus(maxAge);
+        return Instant.now().isAfter(expirationTime);
     }
 
     @Override

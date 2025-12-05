@@ -146,11 +146,11 @@ public class PanelCommand extends AbstractFunnyCommand {
                 return;
             }
             
-            // Get the regeneration manager and check for blocks
+            // Get the regeneration manager and check for blocks (with expiration check)
             net.dzikoysk.funnyguilds.feature.regen.RegionRegenerationManager regenManager = 
                     this.plugin.getRegionRegenerationManager();
             
-            int blockCount = regenManager.getDestroyedBlockCount(guild);
+            int blockCount = regenManager.getDestroyedBlockCount(guild, panelConfig.regeneration.maxBlockAge);
             if (blockCount <= 0) {
                 this.messageService.getMessage(config -> config.regenerationNoBlocks)
                         .receiver(player)
