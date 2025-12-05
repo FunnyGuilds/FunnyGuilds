@@ -18,8 +18,7 @@ public final class FunnyFormatter implements Replaceable {
         return this.replace(message);
     }
 
-    // NOWA METODA – bez Locale
-    public @NotNull String replace(@NotNull String text) {
+    public String replace(String text) {
         return this.replace(null, text);
     }
 

@@ -192,6 +192,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/przedluz &8- &7Przedluza waznosc gildii",
             "&a/lider [gracz] &8- &7Oddaje zalozyciela gildii",
             "&a/zastepca [gracz] &8- &7Nadaje zastepce gildii",
+            "&a/panel &8- &7Panel lidera do zarządzania gildią",
             "&a/sojusz [tag] &8- &7Pozwala nawiazac sojusz",
             "&a/opusc &8- &7Opuszcza gildie",
             "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
@@ -200,7 +201,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/ustawpvp &8- &7Ustawia pvp między członkami gildii",
             "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
             "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii",
-            "&a/ranking &8- &7Wyswietla top'ke najlepszych gracz",
+            "&a/ranking &8- &7Wyswietla top'ke najlepszych graczy",
             "&a/topg &8- &7Wyswietla top'ke najlepszych gildii",
             "&a/rankreset &8- &7Resetuje ranking do stanu pierwotnego"
     );
