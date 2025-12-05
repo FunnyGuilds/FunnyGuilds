@@ -23,7 +23,7 @@ public final class FunnyFormatter implements Replaceable {
     }
 
     @Override
-    public @NotNull String replace(@Nullable Locale locale, @NotNull String text) {
+    public @NotNull String replace(@Nullable Locale locale, @Nullable String text) {
         if (FunnyStringUtils.isEmpty(text)) {
             return "";
         }
