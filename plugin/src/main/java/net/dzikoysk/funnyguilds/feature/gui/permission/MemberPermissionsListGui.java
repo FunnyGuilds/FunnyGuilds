@@ -166,7 +166,6 @@ public class MemberPermissionsListGui {
         gui.open(player);
     }
     
-    @SuppressWarnings("deprecation")
     private ItemStack createMemberHead(User member, GuildPermissionsManager permissionsManager, PermissionsPanelConfiguration panelConfig) {
         GuildRole role = permissionsManager.getUserRole(member);
         boolean isOnline = member.isOnline();
@@ -193,8 +192,8 @@ public class MemberPermissionsListGui {
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         if (meta != null) {
             meta.setOwningPlayer(Bukkit.getOfflinePlayer(member.getUUID()));
-            meta.setDisplayName(ChatUtils.colored(name));
-            meta.setLore(lore.stream().map(ChatUtils::colored).toList());
+            meta.displayName(ChatUtils.toComponent(name));
+            meta.lore(lore.stream().map(ChatUtils::toComponent).toList());
             head.setItemMeta(meta);
         }
         

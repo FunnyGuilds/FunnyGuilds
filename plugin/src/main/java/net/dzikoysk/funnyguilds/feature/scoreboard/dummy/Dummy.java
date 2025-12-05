@@ -2,7 +2,9 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.dummy;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -20,7 +22,6 @@ public class Dummy {
         this.user = user;
     }
 
-    @SuppressWarnings("deprecation")
     Option<Objective> initialize() {
         if (this.user.hasPermission("funnyguilds.admin.disabledummy")) {
             return Option.none();
@@ -38,9 +39,9 @@ public class Dummy {
             return Option.of(objective);
         }
 
-        objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
+        objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, Criteria.DUMMY, 
+                ChatUtils.toComponent(this.pluginConfiguration.scoreboard.dummy.suffix.getValue()));
         objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        objective.setDisplayName(this.pluginConfiguration.scoreboard.dummy.suffix.getValue());
 
         return Option.of(objective);
     }

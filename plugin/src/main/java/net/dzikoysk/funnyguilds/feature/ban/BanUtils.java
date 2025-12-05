@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
-import org.bukkit.ChatColor;
 import panda.std.stream.PandaStream;
 
 public final class BanUtils {
@@ -48,7 +47,7 @@ public final class BanUtils {
         return user.getBan()
                 .map(ban -> {
                     FunnyFormatter formatter = new FunnyFormatter()
-                            .register("{NEWLINE}", ChatColor.RESET + "\n")
+                            .register("{NEWLINE}", "§r\n")
                             .register("{DATE}", messageService.get(user, config -> config.dateFormat).format(ban.getTime()))
                             .register("{REASON}", ban.getReason())
                             .register("{PLAYER}", user.getName());

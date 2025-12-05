@@ -132,7 +132,6 @@ public class CopyPermissionsTargetGui {
         gui.open(player);
     }
     
-    @SuppressWarnings("deprecation")
     private ItemStack createTargetHead(User member, GuildPermissionsManager permissionsManager, PermissionsPanelConfiguration panelConfig) {
         GuildRole role = permissionsManager.getUserRole(member);
         boolean isOnline = member.isOnline();
@@ -142,19 +141,17 @@ public class CopyPermissionsTargetGui {
                 .register("{ROLE}", role.getDisplayName())
                 .register("{STATUS}", isOnline ? "&aOnline" : "&cOffline");
         
-        String name = ChatUtils.colored("&a" + member.getName());
-        
         List<String> lore = new ArrayList<>();
         for (var line : panelConfig.copyTargetGui.headLore) {
-            lore.add(ChatUtils.colored(formatter.replace(line.getValue())));
+            lore.add(formatter.replace(line.getValue()));
         }
         
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) head.getItemMeta();
         if (meta != null) {
             meta.setOwningPlayer(Bukkit.getOfflinePlayer(member.getUUID()));
-            meta.setDisplayName(name);
-            meta.setLore(lore);
+            meta.displayName(ChatUtils.toComponent("&a" + member.getName()));
+            meta.lore(lore.stream().map(ChatUtils::toComponent).toList());
             head.setItemMeta(meta);
         }
         
