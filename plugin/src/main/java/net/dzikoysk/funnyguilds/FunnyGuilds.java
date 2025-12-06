@@ -301,7 +301,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         if (pluginConfiguration.dataModel.isSQL()) {
             try {
-                this.database = Option.of(new Database());
+                this.database = Option.of(new Database(this.pluginConfiguration));
             } catch (Exception ex) {
                 logger.error("Could not create data from database", ex);
                 this.shutdown("Critical error has been encountered!");

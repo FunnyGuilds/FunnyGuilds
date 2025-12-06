@@ -188,7 +188,7 @@ public class FlatDataModel implements DataModel {
     }
 
     private void loadRegions() {
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!this.pluginConfiguration.regionsEnabled) {
             FunnyGuilds.getPluginLogger().info("Regions are disabled and thus - not loaded");
             return;
         }

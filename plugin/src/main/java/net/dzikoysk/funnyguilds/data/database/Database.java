@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 
@@ -12,10 +13,10 @@ public class Database {
 
     private final HikariDataSource dataSource;
 
-    public Database() throws ClassNotFoundException {
-        Class.forName(FunnyGuilds.getInstance().getPluginConfiguration().dataModel.getJDBCClassName());
+    public Database(PluginConfiguration pluginConfiguration) throws ClassNotFoundException {
+        Class.forName(pluginConfiguration.dataModel.getJDBCClassName());
         this.dataSource = new HikariDataSource();
-        MysqlConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
+        MysqlConfiguration c = pluginConfiguration.mysql;
 
         int poolSize = c.poolSize;
         if (poolSize <= 0) {
@@ -31,7 +32,7 @@ public class Database {
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
-        this.dataSource.setJdbcUrl("jdbc:" + FunnyGuilds.getInstance().getPluginConfiguration().dataModel.name().toLowerCase() + "://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + characterEncoding);
+        this.dataSource.setJdbcUrl("jdbc:" + pluginConfiguration.dataModel.name().toLowerCase() + "://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL + characterEncoding);
         this.dataSource.setUsername(c.user);
 
         if (!FunnyStringUtils.isEmpty(c.password)) {
