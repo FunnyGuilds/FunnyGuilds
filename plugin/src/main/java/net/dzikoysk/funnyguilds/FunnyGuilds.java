@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicReference;
 import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -151,9 +152,9 @@ public class FunnyGuilds extends JavaPlugin {
 
     private Injector injector;
 
-    private volatile BukkitTask guildValidationTask;
-    private volatile BukkitTask tablistBroadcastTask;
-    private volatile BukkitTask rankRecalculationTask;
+    private final AtomicReference<BukkitTask> guildValidationTask = new AtomicReference<>();
+    private final AtomicReference<BukkitTask> tablistBroadcastTask = new AtomicReference<>();
+    private final AtomicReference<BukkitTask> rankRecalculationTask = new AtomicReference<>();
 
     private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
     private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
@@ -353,9 +354,9 @@ public class FunnyGuilds extends JavaPlugin {
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
-        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.guildValidationTask.set(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L));
+        this.tablistBroadcastTask.set(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval));
+        this.rankRecalculationTask.set(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval));
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
@@ -464,9 +465,20 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager.unregisterAll();
         this.guildEntityHelper.despawnGuildEntities(this.guildManager);
 
-        this.guildValidationTask.cancel();
-        this.tablistBroadcastTask.cancel();
-        this.rankRecalculationTask.cancel();
+        BukkitTask validationTask = this.guildValidationTask.getAndSet(null);
+        if (validationTask != null) {
+            validationTask.cancel();
+        }
+
+        BukkitTask broadcastTask = this.tablistBroadcastTask.getAndSet(null);
+        if (broadcastTask != null) {
+            broadcastTask.cancel();
+        }
+
+        BukkitTask recalcTask = this.rankRecalculationTask.getAndSet(null);
+        if (recalcTask != null) {
+            recalcTask.cancel();
+        }
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();

@@ -5,10 +5,12 @@ import net.dzikoysk.funnyguilds.data.database.DataSaveAsyncTask;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 public class DataPersistenceHandler {
 
     private final FunnyGuilds plugin;
-    private volatile BukkitTask dataPersistenceHandlerTask;
+    private final AtomicReference<BukkitTask> dataPersistenceHandlerTask = new AtomicReference<>();
 
     public DataPersistenceHandler(FunnyGuilds plugin) {
         this.plugin = plugin;
@@ -17,22 +19,22 @@ public class DataPersistenceHandler {
     public void startHandler() {
         long interval = this.plugin.getPluginConfiguration().dataInterval * 60L * 20L;
 
-        if (this.dataPersistenceHandlerTask != null) {
-            this.dataPersistenceHandlerTask.cancel();
-        }
+        BukkitTask oldTask = this.dataPersistenceHandlerTask.getAndSet(
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
+                this.plugin.scheduleFunnyTasks(new DataSaveAsyncTask(this.plugin.getDataModel(), false));
+            }, interval, interval)
+        );
 
-        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
-            this.plugin.scheduleFunnyTasks(new DataSaveAsyncTask(this.plugin.getDataModel(), false));
-        }, interval, interval);
+        if (oldTask != null) {
+            oldTask.cancel();
+        }
     }
 
     public void stopHandler() {
-        if (this.dataPersistenceHandlerTask == null) {
-            return;
+        BukkitTask task = this.dataPersistenceHandlerTask.getAndSet(null);
+        if (task != null) {
+            task.cancel();
         }
-
-        this.dataPersistenceHandlerTask.cancel();
-        this.dataPersistenceHandlerTask = null;
     }
 
     public void reloadHandler() {

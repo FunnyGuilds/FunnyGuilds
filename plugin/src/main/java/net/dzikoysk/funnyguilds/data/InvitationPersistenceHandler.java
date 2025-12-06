@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data;
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
@@ -24,7 +25,7 @@ public class InvitationPersistenceHandler {
     private final GuildInvitationList guildInvitationList;
     private final AllyInvitationList allyInvitationList;
     private final File invitationsFile;
-    private volatile BukkitTask invitationPersistenceHandlerTask;
+    private final AtomicReference<BukkitTask> invitationPersistenceHandlerTask = new AtomicReference<>();
 
     public InvitationPersistenceHandler(FunnyGuilds plugin) {
         this.plugin = plugin;
@@ -37,21 +38,21 @@ public class InvitationPersistenceHandler {
     public void startHandler() {
         long interval = this.plugin.getPluginConfiguration().dataInterval * 60L * 20L;
 
-        if (this.invitationPersistenceHandlerTask != null) {
-            this.invitationPersistenceHandlerTask.cancel();
-        }
+        BukkitTask oldTask = this.invitationPersistenceHandlerTask.getAndSet(
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin,
+                this::saveInvitations, interval, interval)
+        );
 
-        this.invitationPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin,
-                this::saveInvitations, interval, interval);
+        if (oldTask != null) {
+            oldTask.cancel();
+        }
     }
 
     public void stopHandler() {
-        if (this.invitationPersistenceHandlerTask == null) {
-            return;
+        BukkitTask task = this.invitationPersistenceHandlerTask.getAndSet(null);
+        if (task != null) {
+            task.cancel();
         }
-
-        this.invitationPersistenceHandlerTask.cancel();
-        this.invitationPersistenceHandlerTask = null;
     }
 
     public void saveInvitations() {
