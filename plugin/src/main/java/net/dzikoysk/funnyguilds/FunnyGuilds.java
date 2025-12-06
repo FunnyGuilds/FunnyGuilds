@@ -354,9 +354,26 @@ public class FunnyGuilds extends JavaPlugin {
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
-        this.guildValidationTask.set(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L));
-        this.tablistBroadcastTask.set(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval));
-        this.rankRecalculationTask.set(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval));
+        BukkitTask oldValidationTask = this.guildValidationTask.getAndSet(
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L)
+        );
+        if (oldValidationTask != null) {
+            oldValidationTask.cancel();
+        }
+
+        BukkitTask oldBroadcastTask = this.tablistBroadcastTask.getAndSet(
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval)
+        );
+        if (oldBroadcastTask != null) {
+            oldBroadcastTask.cancel();
+        }
+
+        BukkitTask oldRecalcTask = this.rankRecalculationTask.getAndSet(
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval)
+        );
+        if (oldRecalcTask != null) {
+            oldRecalcTask.cancel();
+        }
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
