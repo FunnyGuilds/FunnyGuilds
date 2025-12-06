@@ -21,6 +21,8 @@ public class Database {
         if (poolSize <= 0) {
             poolSize = Runtime.getRuntime().availableProcessors() * 2 + 1; // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
         }
+        // Cap pool size at 20 to prevent resource exhaustion (medium priority improvement from #8)
+        poolSize = Math.min(poolSize, 20);
 
         String characterEncoding = c.characterEncoding == null || c.characterEncoding.isEmpty()
                 ? ""

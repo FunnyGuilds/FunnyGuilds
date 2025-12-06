@@ -195,7 +195,9 @@ public class FunnyGuilds extends JavaPlugin {
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
-            logger.error("Could not load plugin configuration", exception);
+            logger.error("Could not load plugin configuration from files: " + 
+                this.pluginConfigurationFile.getAbsolutePath() + ", " + 
+                this.tablistConfigurationFile.getAbsolutePath(), exception);
             this.shutdown("Critical error has been encountered!");
             return;
         }
@@ -245,7 +247,8 @@ public class FunnyGuilds extends JavaPlugin {
             this.messageService = MessageService.prepareMessageService(this, this.pluginLanguageFolderFile);
         }
         catch (Exception exception) {
-            logger.error("Could not initialize message service", exception);
+            logger.error("Could not initialize message service from directory: " + 
+                this.pluginLanguageFolderFile.getAbsolutePath(), exception);
             this.shutdown("Critical error has been encountered!");
             return;
         }
@@ -311,7 +314,9 @@ public class FunnyGuilds extends JavaPlugin {
             this.dataModel.load();
         }
         catch (Exception ex) {
-            logger.error("Could not load data from database", ex);
+            logger.error("Could not load data from database (model: " + 
+                this.pluginConfiguration.dataModel + ", data folder: " + 
+                this.pluginDataFolderFile.getAbsolutePath() + ")", ex);
             this.shutdown("Critical error has been encountered!");
             return;
         }
