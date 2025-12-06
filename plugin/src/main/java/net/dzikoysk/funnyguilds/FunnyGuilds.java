@@ -156,9 +156,9 @@ public class FunnyGuilds extends JavaPlugin {
     private final AtomicReference<BukkitTask> tablistBroadcastTask = new AtomicReference<>();
     private final AtomicReference<BukkitTask> rankRecalculationTask = new AtomicReference<>();
 
-    private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
-    private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
-    private volatile Option<BukkitTask> scoreboardQueueUpdateTask = Option.none();
+    private final AtomicReference<Option<BukkitTask>> nameTagUpdateTask = new AtomicReference<>(Option.none());
+    private final AtomicReference<Option<BukkitTask>> dummyUpdateTask = new AtomicReference<>(Option.none());
+    private final AtomicReference<Option<BukkitTask>> scoreboardQueueUpdateTask = new AtomicReference<>(Option.none());
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -732,9 +732,9 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void prepareScoreboardServices() {
-        this.nameTagUpdateTask.peek(BukkitTask::cancel);
-        this.dummyUpdateTask.peek(BukkitTask::cancel);
-        this.scoreboardQueueUpdateTask.peek(BukkitTask::cancel);
+        this.nameTagUpdateTask.getAndSet(Option.none()).peek(BukkitTask::cancel);
+        this.dummyUpdateTask.getAndSet(Option.none()).peek(BukkitTask::cancel);
+        this.scoreboardQueueUpdateTask.getAndSet(Option.none()).peek(BukkitTask::cancel);
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
         if (!scoreboardConfig.enabled) {
@@ -746,25 +746,25 @@ public class FunnyGuilds extends JavaPlugin {
                 scoreboardConfig.nametag.enabled,
                 () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, this.guildPermissionChecker, scoreboardService)
         );
-        this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
+        this.nameTagUpdateTask.set(this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 () -> manager.updatePlayers(false),
                 100,
                 scoreboardConfig.nametag.updateRate.getSeconds() * 20L
-        ));
+        )));
 
         this.dummyManager = Option.when(
                 scoreboardConfig.dummy.enabled,
                 () -> new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService)
         );
-        this.dummyUpdateTask = this.dummyManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
+        this.dummyUpdateTask.set(this.dummyManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
                 () -> manager.updatePlayers(false),
                 100,
                 scoreboardConfig.dummy.updateRate.getSeconds() * 20L
-        ));
+        )));
 
-        this.scoreboardQueueUpdateTask = Option.when(
+        this.scoreboardQueueUpdateTask.set(Option.when(
                 this.individualNameTagManager.isPresent() || this.dummyManager.isPresent(),
                 () -> Bukkit.getScheduler().runTaskTimer(
                         plugin,
@@ -780,7 +780,7 @@ public class FunnyGuilds extends JavaPlugin {
                         100,
                         scoreboardConfig.queueConfiguration.updateRate
                 )
-        );
+        ));
     }
 
     public static FunnyGuilds getInstance() {
