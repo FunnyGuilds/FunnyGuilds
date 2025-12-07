@@ -23,7 +23,7 @@ idea {
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
-    version = "5.0.0-SNAPSHOT"
+    version = "5.0.0"
 
     apply(plugin = "java-library")
     apply(plugin = "kotlin")

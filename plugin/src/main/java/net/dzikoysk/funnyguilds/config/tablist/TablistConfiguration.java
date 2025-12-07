@@ -148,7 +148,7 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd nagłówka listy graczy")
-    public String header = "&7FunnyGuilds &b4.13.0 Poinsettia &8- &bgithub.com/funnyguilds";
+    public String header = "&7FunnyGuilds &b5.0.0 Poinsettia &8- &bgithub.com/funnyguilds";
 
     @Comment("")
     @Comment("Wygląd stopki listy graczy")
