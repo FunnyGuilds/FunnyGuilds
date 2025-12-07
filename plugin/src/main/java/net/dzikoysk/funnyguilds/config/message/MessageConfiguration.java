@@ -68,11 +68,23 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
     public SendableMessage rankDeathMessage = ChatHolder.message("{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{ITEM-NO-AMOUNT}");
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}, {REMAINING-HEALTH}, {REMAINING-HEARTS}")
-    public SendableMessage rankKillMessage = TitleHolder.message("&cZabiles gracza {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
+    public SendableMessage rankKillMessage = SendableMessage.of(TitleHolder.builder()
+            .title("&cZabiles gracza {VICTIM}")
+            .subTitle("&7{PLUS-FORMATTED}")
+            .times(10, 10, 10)
+            .build());
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {MINUS-FORMATTED}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}")
-    public SendableMessage rankDeathVictimMessage = TitleHolder.message("&cZostales zabity przez {ATTACKER}", "&7{MINUS-FORMATTED}", 10, 10, 10);
+    public SendableMessage rankDeathVictimMessage = SendableMessage.of(TitleHolder.builder()
+            .title("&cZostales zabity przez {ATTACKER}")
+            .subTitle("&7{MINUS-FORMATTED}")
+            .times(10, 10, 10)
+            .build());
     @Comment("Dostępne zmienne: {VICTIM}, {+}, {PLUS-FORMATTED}, {SHARE}")
-    public SendableMessage rankDeathAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
+    public SendableMessage rankDeathAssistMessage = SendableMessage.of(TitleHolder.builder()
+            .title("&aAsysta przy zabiciu {VICTIM}")
+            .subTitle("&7{PLUS-FORMATTED}")
+            .times(10, 10, 10)
+            .build());
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
     @Comment("Dostępne zmienne: {PLAYER}, {+}, {PLUS-FORMATTED}, {SHARE}")
