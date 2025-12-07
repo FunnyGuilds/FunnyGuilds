@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.migration.M0001_Migrate_old_region_notification_keys;
 import net.dzikoysk.funnyguilds.config.migration.M0002_Migrate_old_rank_kill_message;
+import net.dzikoysk.funnyguilds.config.migration.M0003_Fix_rank_title_messages_format;
 import net.dzikoysk.funnyguilds.config.migration.P0001_Fix_freecam_compensation_key_case;
 import net.dzikoysk.funnyguilds.config.migration.P0002_Migrate_old_heart_configuration;
 import net.dzikoysk.funnyguilds.config.migration.P0003_Migrate_old_tnt_protection_configuration;
@@ -60,7 +61,8 @@ public final class ConfigurationFactory {
 
             it.migrate(
                     new M0001_Migrate_old_region_notification_keys(),
-                    new M0002_Migrate_old_rank_kill_message()
+                    new M0002_Migrate_old_rank_kill_message(),
+                    new M0003_Fix_rank_title_messages_format()
             );
         });
     }
