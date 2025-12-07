@@ -29,14 +29,16 @@ public class M0003_Fix_rank_title_messages_format extends NamedMigration {
             // Check if the message is already in the correct format by checking if it has "holders" key
             Object currentValue = view.get(key);
             if (currentValue instanceof java.util.Map) {
-                java.util.Map<?, ?> map = (java.util.Map<?, ?>) currentValue;
+                @SuppressWarnings("unchecked")
+                java.util.Map<String, Object> map = (java.util.Map<String, Object>) currentValue;
                 // If it already has holders, it's in the correct format
                 if (map.containsKey("holders") && map.get("holders") instanceof java.util.List) {
                     java.util.List<?> holders = (java.util.List<?>) map.get("holders");
                     // Check if there's at least one holder that looks like a TitleHolder
                     for (Object holder : holders) {
                         if (holder instanceof java.util.Map) {
-                            java.util.Map<?, ?> holderMap = (java.util.Map<?, ?>) holder;
+                            @SuppressWarnings("unchecked")
+                            java.util.Map<String, Object> holderMap = (java.util.Map<String, Object>) holder;
                             if ("TITLE".equals(holderMap.get("type"))) {
                                 // Already in correct format, skip migration
                                 return false;
