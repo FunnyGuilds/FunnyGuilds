@@ -158,7 +158,9 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
             );
         }
 
-        // For other permission types, just check membership
+        // For non-protection permissions, guild members have full access by default.
+        // This maintains backwards compatibility - if a permission type doesn't have
+        // individual member permission settings, membership alone grants access.
         return this.handlePermission(
                 true,
                 user,
