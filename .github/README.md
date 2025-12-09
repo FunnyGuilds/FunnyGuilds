@@ -14,10 +14,10 @@ Community: <a href="https://discord.gg/CYvyq3u">Discord</a>
 Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/ENG)</a>
 
 #### Supported Paper versions
-FG 5.0 requires only 1.21+ (e.g. 1.21.4)
+FG 5.0 requires only 1.21+ (e.g. 1.21, 1.21.4)
 
 #### (DEPRECATED) Spigot versions
-1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.18.2, 1.19.4, 1.20.1, 1.20.2
+1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.18.2, 1.19.4, 1.20.1, 1.20.2...
 
 #### Download
 Get the latest version: [FunnyGuilds 4.13.0+ Nightly](https://ci.insertt.dev/job/FunnyGuilds/job/4.x/) <br>
