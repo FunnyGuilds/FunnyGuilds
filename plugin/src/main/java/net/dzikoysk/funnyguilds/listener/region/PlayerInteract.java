@@ -7,12 +7,15 @@ import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
+import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
+import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -20,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import panda.std.Option;
 
 public class PlayerInteract extends AbstractFunnyListener {
@@ -61,6 +65,24 @@ public class PlayerInteract extends AbstractFunnyListener {
 
         if (eventAction == Action.RIGHT_CLICK_BLOCK) {
             Guild guild = region.getGuild();
+            
+            // Check for TNT ignition (right-click TNT with flint and steel or fire charge)
+            if (clicked.getType() == Material.TNT && isTntIgnitionItem(player)) {
+                boolean isProtected = ProtectionSystem.isProtected(
+                                player,
+                                clicked.getLocation(),
+                                event,
+                                GuildProtectionPermission.BLOCK_IGNITE,
+                                false
+                        )
+                        .peek(ProtectionSystem::defaultResponse)
+                        .isPresent();
+                
+                if (isProtected) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
 
             this.userManager.findByPlayer(player).peek(user -> {
                 boolean blocked = this.config.blockedInteract.contains(clicked.getType());
@@ -73,6 +95,27 @@ public class PlayerInteract extends AbstractFunnyListener {
                 }
             });
         }
+    }
+    
+    /**
+     * Check if the player is holding an item that can ignite TNT.
+     */
+    private boolean isTntIgnitionItem(Player player) {
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        
+        return isIgnitionMaterial(mainHand) || isIgnitionMaterial(offHand);
+    }
+    
+    /**
+     * Check if the item can ignite TNT.
+     */
+    private boolean isIgnitionMaterial(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+        Material material = item.getType();
+        return material == Material.FLINT_AND_STEEL || material == Material.FIRE_CHARGE;
     }
 
     private void handleHeartClick(Player player, Action eventAction, Guild guild, Cancellable event) {
