@@ -36,11 +36,14 @@ public class BlockPlace extends AbstractFunnyListener {
             }
         }
 
+        // Determine which protection permission to check based on block type
+        GuildProtectionPermission protectionPermission = getProtectionPermissionForBlock(type);
+        
         boolean isProtected = ProtectionSystem.isProtected(
                         player,
                         blockLocation,
                         event,
-                        GuildProtectionPermission.BLOCK_PLACE,
+                        protectionPermission,
                         true
                 )
                 .peek(ProtectionSystem::defaultResponse)
@@ -106,6 +109,20 @@ public class BlockPlace extends AbstractFunnyListener {
             }, this.config.buggedBlocksTimer);
 
         });
+    }
+
+    /**
+     * Determines the appropriate protection permission based on block type.
+     * Special blocks like TNT and Obsidian use more specific permissions.
+     */
+    private GuildProtectionPermission getProtectionPermissionForBlock(Material type) {
+        if (type == Material.TNT) {
+            return GuildProtectionPermission.TNT_PLACE;
+        }
+        if (type == Material.OBSIDIAN) {
+            return GuildProtectionPermission.OBSIDIAN_PLACE;
+        }
+        return GuildProtectionPermission.BLOCK_PLACE;
     }
 
     /**

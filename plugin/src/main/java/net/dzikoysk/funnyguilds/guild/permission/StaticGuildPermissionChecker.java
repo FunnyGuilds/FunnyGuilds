@@ -8,7 +8,9 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
+import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.permission.member.GuildMemberPermissionType;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -135,8 +137,30 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
             GuildPermission<Boolean> permission,
             @Nullable Event event
     ) {
+        // First check if user is a member of the guild
+        if (!guild.isMember(user)) {
+            return this.handlePermission(
+                    false,
+                    user,
+                    config -> config.regionUnauthorized
+            );
+        }
+
+        // If this is a protection permission, check individual member permissions
+        if (permission instanceof GuildProtectionPermission protectionPermission) {
+            GuildMemberPermissionType memberPermissionType = protectionPermission.getMemberPermissionType();
+            boolean hasPermission = guild.getPermissionsManager().hasPermission(user, memberPermissionType);
+            
+            return this.handlePermission(
+                    hasPermission,
+                    user,
+                    config -> config.regionUnauthorized
+            );
+        }
+
+        // For other permission types, just check membership
         return this.handlePermission(
-                guild.isMember(user),
+                true,
                 user,
                 config -> config.regionUnauthorized
         );
