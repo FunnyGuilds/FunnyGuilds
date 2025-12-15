@@ -36,14 +36,14 @@ FunnyGuilds hooks into those plugins:
 ```xml
 <repository>
     <id>reposilite-snapshots-repository</id>
-    <url>https://maven.reposilite.com/releases</url>
+    <url>https://maven.reposilite.com/snapshots</url>
 </repository>
 ```
 ```xml
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.14.0</version>
+    <version>4.14.1-SNAPSHOT</version>
     <classifier>all</classifier>
     <scope>provided</scope>
 </dependency>
@@ -61,7 +61,7 @@ repositories {
 ```
 ```groovy
 dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:4.14.0:all'
+    implementation 'net.dzikoysk.funnyguilds:plugin:4.14.1-SNAPSHOT:all'
 }
 ```
 
@@ -77,7 +77,7 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:4.14.0:all")
+    implementation("net.dzikoysk.funnyguilds:plugin:4.14.1-SNAPSHOT:all")
 }
 ```
 
