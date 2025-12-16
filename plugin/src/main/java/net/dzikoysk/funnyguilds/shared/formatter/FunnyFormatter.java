@@ -62,7 +62,6 @@ public final class FunnyFormatter implements Replaceable {
         return new FunnyFormatter().register(placeholder, value);
     }
 
-    // Tu dalej możesz korzystać z replace(String)
     public static String format(String text, String placeholder, Object value) {
         return new FunnyFormatter().register(placeholder, value).replace(text);
     }

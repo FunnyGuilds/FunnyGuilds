@@ -55,8 +55,6 @@ dependencies {
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
-    // okaeri holographicdisplays commons
-    implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.27")
 
     /* messages libraries */
     val adventureVersion = "4.18.0"
@@ -105,7 +103,6 @@ dependencies {
         // because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
     shadow("us.dynmap:DynmapCoreAPI:3.6")
 

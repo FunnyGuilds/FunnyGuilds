@@ -24,7 +24,7 @@ public class PanelConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Ilość wierszy w GUI (1-6)")
-    public int rows = 3;
+    public int rows = 6;
     
     /**
      * Gets validated rows value (clamped to 1-6 range).
