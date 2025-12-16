@@ -3,7 +3,7 @@ FunnyGuilds
 ===========
 
 #### About
-Moja wersja FunnyGuilds z Panelem Lidera, uprawnieniami, regeneracją terenu innymi bajerami ! TYLKO 1.21.4 !
+Moja wersja FunnyGuilds z Panelem Lidera, uprawnieniami, regeneracją terenu oraz innymi bajerami - ! TYLKO 1.21.4 !
 
 ---
 
