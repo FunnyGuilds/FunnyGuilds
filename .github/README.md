@@ -3,7 +3,7 @@ FunnyGuilds
 ===========
 
 #### About
-FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to create guilds.
+Moja wersja FunnyGuilds z Panelem Lidera, uprawnieniami, regeneracją terenu innymi bajerami ! TYLKO 1.21.4 !
 
 ---
 
