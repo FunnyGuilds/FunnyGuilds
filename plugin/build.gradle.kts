@@ -98,7 +98,6 @@ dependencies {
         // because("PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason")
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    shadow("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
     shadow("us.dynmap:DynmapCoreAPI:3.6")
 
