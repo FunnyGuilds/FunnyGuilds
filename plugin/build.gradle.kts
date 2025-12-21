@@ -83,7 +83,7 @@ dependencies {
     /* hooks */
     shadow("com.sk89q.worldguard:worldguard-bukkit:7.0.5")
     shadow("net.milkbowl.vault:VaultAPI:1.7")
-    shadow("me.clip:placeholderapi:2.11.6")
+    shadow("me.clip:placeholderapi:2.11.7")
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
     shadow("us.dynmap:DynmapCoreAPI:3.6")
 
