@@ -58,13 +58,6 @@ dependencies {
     // okaeri holographicdisplays commons
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.27")
 
-    /* messages libraries */
-    val adventureVersion = "4.18.0"
-    implementation("net.kyori:adventure-api:$adventureVersion")
-    implementation("net.kyori:adventure-text-serializer-legacy:$adventureVersion")
-    implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.4") // adventure-platform has other versioning than adventure-api
-
     val yamlVersion = "6.8.0-SNAPSHOT"
     implementation("dev.peri.yetanothermessageslibrary:core:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
@@ -143,7 +136,6 @@ tasks.withType<ShadowJar> {
     relocate("org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j")
     relocate("org.bstats", "net.dzikoysk.funnyguilds.libs.bstats")
     relocate("eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri")
-    relocate("net.kyori", "net.dzikoysk.funnyguilds.libs.net.kyori")
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
     relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")

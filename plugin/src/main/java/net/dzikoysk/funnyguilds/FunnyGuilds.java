@@ -473,8 +473,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.getServer().getScheduler().cancelTasks(this);
         this.database.peek(Database::shutdown);
 
-        this.messageService.close();
-
         plugin = null;
     }
 
