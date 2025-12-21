@@ -2,6 +2,7 @@ import io.papermc.paperweight.tasks.RemapJar
 import io.papermc.paperweight.util.constants.OBF_NAMESPACE
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -111,6 +112,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs = listOf("-Xjvm-default=all") // Generate default methods in interfaces by default
         }
     }
