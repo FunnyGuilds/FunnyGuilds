@@ -30,7 +30,6 @@ FunnyGuilds hooks into those plugins:
 - [PlaceholderAPI](https://www.spigotmc.org/resources/6245/)
 - [dynmap](https://github.com/webbukkit/dynmap)
 - [DecentHolograms](https://www.spigotmc.org/resources/96927/)
-- [Holographic Displays](https://dev.bukkit.org/projects/holographic-displays)
 
 #### Maven
 ```xml

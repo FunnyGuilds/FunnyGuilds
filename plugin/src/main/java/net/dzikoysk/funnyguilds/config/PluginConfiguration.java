@@ -1184,7 +1184,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
-    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, HolographicDisplays, DecentHolograms, dynmap")
+    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, DecentHolograms, dynmap")
     @Comment("Aby zostawić wszystkie hooki włączone wystarczy wpisać: disabled-hooks: []")
     public Set<String> disabledHooks = new HashSet<>();
 
