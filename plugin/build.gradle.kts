@@ -51,7 +51,7 @@ dependencies {
     testImplementation("org.panda-lang:expressible-junit:$expressible")
 
     /* okaeri config library */
-    val okaeriConfigs = "5.0.5"
+    val okaeriConfigs = "6.0.0-beta.27"
     implementation("eu.okaeri:okaeri-configs-yaml-bukkit:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-serdes-commons:$okaeriConfigs")
     implementation("eu.okaeri:okaeri-configs-validator-okaeri:$okaeriConfigs")
@@ -85,11 +85,11 @@ dependencies {
     shadow("net.milkbowl.vault:VaultAPI:1.7")
     shadow("me.clip:placeholderapi:2.11.7")
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
-    shadow("us.dynmap:DynmapCoreAPI:3.6")
+    shadow("us.dynmap:DynmapCoreAPI:3.7-beta-6")
 
     /* tests */
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
-    testImplementation("com.mojang:authlib:3.2.38")
+    testImplementation("com.mojang:authlib:6.0.57")
 }
 
 tasks.processResources {

@@ -62,8 +62,10 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                 type = PasteType.CONFIG;
 
                 PluginConfiguration config = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                    it.withConfigurer(new YamlBukkitConfigurer(), new SerdesCommons());
-                    it.withBindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
+                    it.configure(opt -> {
+                        opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
+                        opt.bindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
+                    });
                     it.load();
                 });
 

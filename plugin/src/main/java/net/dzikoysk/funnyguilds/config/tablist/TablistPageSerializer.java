@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class TablistPageSerializer implements ObjectSerializer<TablistPage> {
 
     @Override
-    public boolean supports(@NotNull Class<? super TablistPage> type) {
+    public boolean supports(@NotNull Class<?> type) {
         return TablistPage.class.isAssignableFrom(type);
     }
 
