@@ -20,9 +20,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.lenient
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
-import java.util.*
+import java.util.Locale
 import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
@@ -62,7 +64,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         config = MockPluginConfiguration()
         tablistConfig = TablistConfiguration()
-        messages = MessageService(null, null)
+        messages = MessageService(null)
         messages.defaultLocale = Locale.forLanguageTag("pl")
         messages.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
 
