@@ -64,7 +64,6 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.listener.region.PlayerTeleport;
-import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
@@ -217,9 +216,6 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
         this.guildEntityHelper = new GuildEntityHelper(this.pluginConfiguration, this.nmsAccessor);
-
-        DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
-        descriptionChanger.rename(this.pluginConfiguration.pluginName);
 
         this.dynamicListenerManager = new DynamicListenerManager(this);
 
