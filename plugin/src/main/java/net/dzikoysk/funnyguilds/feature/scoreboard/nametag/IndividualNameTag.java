@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -116,7 +117,8 @@ public class IndividualNameTag {
     private Component prepareValue(String value, Player targetPlayer, User targetUser) {
         //return this.decorateValue(value, targetPlayer, targetUser);
         //TODO: reimplement Component serialization
-        throw new UnsupportedOperationException("Reimplement Component serialization");
+        //throw new UnsupportedOperationException("Reimplement Component serialization");
+        return ComponentUtil.colored(value);
     }
 
     private Component decorateValue(Component value, Player targetPlayer, User targetUser) {

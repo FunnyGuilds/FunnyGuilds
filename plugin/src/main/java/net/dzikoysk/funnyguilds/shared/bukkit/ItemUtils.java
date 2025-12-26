@@ -50,15 +50,7 @@ public final class ItemUtils {
         }
         return true;
     }
-
-    public static Component translateTextPlaceholder(Component text, Collection<ItemStack> items, ItemStack item) {
-//        return StringReplacer.replace(
-//                text
-////                ItemComponentHelper.prepareItemReplacement(item),
-////                ItemComponentHelper.prepareItemsReplacement(items) //TODO: fix replacements
-//        );
-        throw new UnsupportedOperationException();
-    }
+    
 
     public static Component itemAsString(ItemStack item, boolean displayAmount) {
 //        String materialName = MaterialUtils.getMaterialName(item.getType());

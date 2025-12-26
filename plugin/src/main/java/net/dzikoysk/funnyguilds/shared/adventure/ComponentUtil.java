@@ -106,11 +106,6 @@ public final class ComponentUtil {
         return LEGACY_SECTION.serialize(component);
     }
     
-    //TODO: some better naming for this method
-    public static String decolord(Component component) {
-        return MINI_MESSAGE.serialize(component);
-    }
-    
     public static boolean isEmpty(Component component) {
         return component == null || component.equals(Component.empty());
     }
