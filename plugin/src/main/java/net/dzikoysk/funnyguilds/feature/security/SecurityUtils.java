@@ -2,11 +2,12 @@ package net.dzikoysk.funnyguilds.feature.security;
 
 import com.google.common.cache.Cache;
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.security.cheat.CheatType;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class SecurityUtils {
@@ -23,19 +24,15 @@ public final class SecurityUtils {
     public static void sendToOperator(Player player, CheatType cheatType, Replaceable... noteReplacements) {
         MessageService messageService = FunnyGuilds.getInstance().getMessageService();
 
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", player.getName())
-                .register("{CHEAT}", cheatType.getName());
-
         FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.securitySystemInfo)
                 .all()
-                .with(formatter)
-//                .with(
-//                        CommandSender.class,
-//                        receiver -> Replacement.string("{NOTE}", messageService.get(receiver, cheatType.getNoteSupplier(), noteReplacements))
-//                )
-                // TODO
                 .permission("funnyguilds.admin")
+                .with("{PLAYER}", player.getName())
+                .with("{CHEAT}", cheatType.getName())
+                .with(
+                        CommandSender.class,
+                        receiver -> Replacement.component("{NOTE}", messageService.getComponent(receiver, cheatType.getNoteSupplier(), noteReplacements))
+                )
                 .send();
     }
 

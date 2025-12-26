@@ -683,9 +683,9 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&8[&4Security&8] &7Notatka: &7{NOTE}"
     );
     @Comment("Dostępne zmienne: {DISTANCE}")
-    public String securitySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
+    public Component securitySystemReach = ComponentUtil.colored("&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!");
     @Comment("Dostępne zmienne: {BLOCKS}")
-    public String securitySystemFreeCam = "&7Zaatakowal krysztal przez bloki: &c{BLOCKS}";
+    public Component securitySystemFreeCam = ComponentUtil.colored("&7Zaatakowal krysztal przez bloki: &c{BLOCKS}");
 
     @Comment("")
     @Comment("<------- FunnyGuilds Version Messages -------> #")
