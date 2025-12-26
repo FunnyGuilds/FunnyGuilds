@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config;
 
 import com.google.common.collect.ImmutableMap;
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
+import dev.peri.yetanothermessageslibrary.replace.replacement.SimpleStringReplacement;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
@@ -954,7 +955,20 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
         public String other = "&7{TAG}&f";
+        
+        public Component chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
+            if (targetGuild == null) {
+                return Component.empty();
+            }
 
+            SimpleStringReplacement tagReplacement = Replacement.string(
+                    "{TAG}",
+                    targetGuild.getTag()
+            );
+            String rawPreparedTag = tagReplacement.replace(this.chooseTag(guild, targetGuild));
+            return ComponentUtil.colored(rawPreparedTag);
+        }
+        
         public String chooseTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return "";
@@ -978,16 +992,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
             return this.other;
         }
-
-        public Component chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
-            if (targetGuild == null) {
-                return Component.empty();
-            }
-
-            return AMPERSAND_SERIALIZER.deserialize(Replacement.string("{TAG}", targetGuild.getTag())
-                    .replace(this.chooseTag(guild, targetGuild)));
-        }
-
     }
 
     @Comment("")
@@ -1063,18 +1067,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wyrażenia zakazane/dozwolone do użycia jako tag gildii")
     @CustomKey("restricted-guild-tags")
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
-
-    @Comment("")
-    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy")
-    public boolean displayNotificationForKiller = false;
-
-    @Comment("")
-    @Comment("Czy powiadomienie o śmierci powinno się wyświetlać dla ofiary")
-    public boolean displayNotificationForVictim = false;
-
-    @Comment("")
-    @Comment("Czy powiadomienie o asyście powinno się wyświetlać dla asystujących graczy")
-    public boolean displayNotificationForAssist = false;
 
     @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")

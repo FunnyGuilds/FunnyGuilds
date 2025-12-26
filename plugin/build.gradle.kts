@@ -58,7 +58,7 @@ dependencies {
     // okaeri holographicdisplays commons
     implementation("eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.27")
 
-    val yamlVersion = "7.0.0"
+    val yamlVersion = "7.1.0"
     implementation("dev.peri.yetanothermessageslibrary:core:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:tools:$yamlVersion")
     implementation("dev.peri.yetanothermessageslibrary:repository-okaeri:$yamlVersion")
