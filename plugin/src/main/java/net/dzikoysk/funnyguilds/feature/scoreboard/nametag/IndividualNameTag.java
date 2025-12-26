@@ -115,10 +115,8 @@ public class IndividualNameTag {
     }
 
     private Component prepareValue(String value, Player targetPlayer, User targetUser) {
-        //return this.decorateValue(value, targetPlayer, targetUser);
-        //TODO: reimplement Component serialization
-        //throw new UnsupportedOperationException("Reimplement Component serialization");
-        return ComponentUtil.colored(value);
+        Component componentValue = ComponentUtil.colored(value);
+        return this.decorateValue(componentValue, targetPlayer, targetUser);
     }
 
     private Component decorateValue(Component value, Player targetPlayer, User targetUser) {
