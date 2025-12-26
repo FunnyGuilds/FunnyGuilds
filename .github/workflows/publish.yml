@@ -14,14 +14,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: false
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Publish FunnyGuilds
-        run: ./gradlew build :plugin:publish --stacktrace
+      - uses: burrunan/gradle-cache-action@v2
+        name: Publish FunnyGuilds
+        with:
+          arguments: build :plugin:publish --stacktrace
         env:
           MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}

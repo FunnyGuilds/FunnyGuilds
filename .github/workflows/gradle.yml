@@ -48,14 +48,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.jdk }}
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-read-only: ${{ github.ref != 'refs/heads/4.x' && github.ref != 'refs/heads/5.x' && github.ref != 'refs/heads/6.x' }}
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build FunnyGuilds
-        run: ./gradlew build --stacktrace -i
+      - uses: burrunan/gradle-cache-action@v2
+        name: Build FunnyGuilds
+        with:
+          arguments: build --stacktrace -i
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         id: upload-artifact
