@@ -64,7 +64,8 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                                 .map(User::getName)
                                 .orElse(null),
                         entity -> messages.get(entity, config -> config.gDeputyNoValue))
-                .property("members", (entity, guild) -> ComponentUtil.join(UserUtils.getOnlineNames(guild.getMembers()), ", "))
+                .property("members", (entity, guild) -> ComponentUtil.join(UserUtils.getOnlineNames(guild.getMembers()), ", "), 
+                        entity -> messages.get(entity, config -> config.gMembersNoValue))
                 .property("members-online", guild -> guild.getOnlineMembers().size(), entity -> 0)
                 .property("members-all", guild -> guild.getMembers().size(), entity -> 0)
                 .property("allies", 
