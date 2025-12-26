@@ -9,7 +9,8 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberRevokeInviteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.feature.command.CanManage;
+import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
+import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
@@ -38,7 +39,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(@CanManage User deputy, Player sender, Guild guild, String[] args) {
+    public void execute(@HasGuildPermission(GuildCommandPermission.INVITE) User deputy, Player sender, Guild guild, String[] args) {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{AMOUNT}", this.config.maxMembersInGuild)
                 .register("{OWNER}", deputy.getName())

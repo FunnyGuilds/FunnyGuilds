@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -9,16 +10,16 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.feature.command.CanManage;
+import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
+import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -32,7 +33,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @CanManage User deputy, Guild guild) {
+    public void execute(Player player, @HasGuildPermission(GuildCommandPermission.EXTEND_VALIDITY) User deputy, Guild guild) {
         if (!this.config.validityWhen.isZero()) {
             Instant validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), validity);

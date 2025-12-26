@@ -5,7 +5,8 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.feature.command.IsOwner;
+import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
+import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -27,7 +28,7 @@ public final class DeleteCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(@IsOwner User owner, Guild guild) {
+    public void execute(@HasGuildPermission(GuildCommandPermission.DELETE) User owner, Guild guild) {
         when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
                 guild.getMembers()), config -> config.deleteSomeoneIsNear);
         ConfirmationList.add(owner.getUUID());

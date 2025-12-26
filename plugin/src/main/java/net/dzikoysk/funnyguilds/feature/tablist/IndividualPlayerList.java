@@ -154,7 +154,7 @@ public class IndividualPlayerList {
         Player player = playerOption.get();
 
         formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, formatted, this.user);
-        formatted = ChatUtils.colored(formatted);
+        formatted = ChatUtils.coloredWithMiniMessage(formatted);
         formatted = HookUtils.replacePlaceholders(player, formatted);
 
         return formatted;

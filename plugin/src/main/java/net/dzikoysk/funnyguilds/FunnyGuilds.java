@@ -35,6 +35,7 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -95,7 +96,6 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
-
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -126,6 +126,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DamageManager damageManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
+    private GuildPermissionChecker guildPermissionChecker;
 
     private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
     private Option<DummyManager> dummyManager = Option.none();
@@ -256,6 +257,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.damageManager = new DamageManager();
         this.regionManager = new RegionManager(this.pluginConfiguration);
+        this.guildPermissionChecker = GuildPermissionChecker.create(this);
 
         this.prepareScoreboardServices();
 
@@ -331,6 +333,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(GuildPermissionChecker.class).assignInstance(this.guildPermissionChecker);
             resources.on(DamageManager.class).assignInstance(this.damageManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
@@ -626,6 +629,10 @@ public class FunnyGuilds extends JavaPlugin {
     public FunnyServer getFunnyServer() {
         return this.funnyServer;
     }
+    
+    public GuildPermissionChecker getGuildPermissionChecker() {
+        return this.guildPermissionChecker;
+    }
 
     public Option<IndividualNameTagManager> getIndividualNameTagManager() {
         return this.individualNameTagManager;
@@ -700,7 +707,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.individualNameTagManager = Option.when(
                 scoreboardConfig.nametag.enabled,
-                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, scoreboardService)
+                () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, this.guildPermissionChecker, scoreboardService)
         );
         this.nameTagUpdateTask = this.individualNameTagManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,
