@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.shared.adventure;
 
 import com.google.common.collect.ImmutableMap;
-import dev.peri.yetanothermessageslibrary.adventure.GlobalAdventureSerializer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +14,6 @@ import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.ApiStatus;
@@ -25,9 +23,6 @@ import org.jetbrains.annotations.Nullable;
 public final class ComponentUtil {
     
     private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
-    
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.builder()
-            .build();
 
     public static Component toComponent(@Nullable Object value) {
         if (value instanceof ComponentLike componentLike) {
@@ -47,7 +42,7 @@ public final class ComponentUtil {
     }
     
     public static Component colored(String text) {
-        return GlobalAdventureSerializer.deserialize(text);
+        return MiniLegacyHelper.colored(text);
     }
     
     public static List<Component> coloredByNewLine(String text) {

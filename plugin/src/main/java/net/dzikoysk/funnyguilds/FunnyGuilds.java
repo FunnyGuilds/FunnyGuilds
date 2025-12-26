@@ -74,6 +74,7 @@ import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.ExceptionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
+import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
@@ -160,6 +161,7 @@ public class FunnyGuilds extends JavaPlugin {
     @Override
     public void onLoad() {
         Reflections.prepareServerVersion();
+        MiniLegacyHelper.miniMessage(); // Invoke class to call static initializer
 
         plugin = this;
         logger = new FunnyGuildsLogger.DefaultLogger(this);
