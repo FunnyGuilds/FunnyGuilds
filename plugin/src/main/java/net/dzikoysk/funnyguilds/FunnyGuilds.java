@@ -383,6 +383,7 @@ public class FunnyGuilds extends JavaPlugin {
                 setBuilder.add(PaperPlayerChat.class);
             }
 
+
             if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
                 setBuilder.add(BlockFlow.class);
             }
