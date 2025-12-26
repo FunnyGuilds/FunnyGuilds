@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
+import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
@@ -132,10 +133,7 @@ public class IndividualPlayerList {
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = header;
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = footer;
 
-        //TODO: reimplement
-        //Component mergedCells = Joiner.on("\0").join(allCells);
-        //return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
-        throw new UnsupportedOperationException("Reimplement splitPreserveAllTokens for Component");
+        return allCells;
     }
 
     private Component putTop(Component cell) {
@@ -149,10 +147,8 @@ public class IndividualPlayerList {
         }
 
         Player player = playerOption.get();
-
-        //TODO: reimplement
-//        formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, formatted, this.user);
-//        formatted = HookUtils.replacePlaceholders(player, formatted);
+        cell = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, cell, this.user);
+        cell = HookUtils.replacePlaceholders(player, cell);
 
         return cell;
     }
