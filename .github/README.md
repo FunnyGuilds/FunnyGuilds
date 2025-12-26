@@ -43,7 +43,7 @@ FunnyGuilds hooks into those plugins:
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.13.1-SNAPSHOT</version>
+    <version>4.14.1-SNAPSHOT</version>
     <classifier>all</classifier>
     <scope>provided</scope>
 </dependency>
@@ -61,7 +61,7 @@ repositories {
 ```
 ```groovy
 dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:4.13.1-SNAPSHOT:all'
+    implementation 'net.dzikoysk.funnyguilds:plugin:4.14.1-SNAPSHOT:all'
 }
 ```
 
@@ -77,7 +77,7 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:4.13.1-SNAPSHOT:all")
+    implementation("net.dzikoysk.funnyguilds:plugin:4.14.1-SNAPSHOT:all")
 }
 ```
 

@@ -681,6 +681,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration rankFarmingCooldown = Duration.ofHours(2);
 
     @Comment("")
+    @Comment("Czy blokada nabijania rankingu powinna działać również na adres IP gracza zabitego")
+    @Comment("Zapobiega to nabijaniu rankingu przez logowanie się na wielu kontach z tego samego adresu IP")
+    public boolean rankFarmingCooldownIP = true;
+
+    @Comment("")
     @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki mają taki sam adres IP")
     public boolean rankIPProtect = false;
 
@@ -1056,6 +1061,22 @@ public class PluginConfiguration extends OkaeriConfig {
     public RawString ptopOffline = new RawString("&c");
 
     @Comment("")
+    @Comment("Czy gtop-online/gtop-offline mają uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean gtopRespectVanish = true;
+
+    @Comment("")
+    @Comment("Kolory dodawane przed tagiem gildii online (przynajmniej 1 członek online) przy zamianie zmiennej {GTOP-x}")
+    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-offline) pustą")
+    public RawString gtopOnline = new RawString("&a");
+
+    @Comment("")
+    @Comment("Kolory dodawane przed tagiem gildii offline (wszyscy członkowie offline) przy zamianie zmiennej {GTOP-x}")
+    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-online) pustą")
+    public RawString gtopOffline = new RawString("&c");
+
+    @Comment("")
     public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();
 
     @Comment("")
@@ -1120,6 +1141,14 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy")
     public boolean displayNotificationForKiller = false;
+
+    @Comment("")
+    @Comment("Czy powiadomienie o śmierci powinno się wyświetlać dla ofiary")
+    public boolean displayNotificationForVictim = false;
+
+    @Comment("")
+    @Comment("Czy powiadomienie o asyście powinno się wyświetlać dla asystujących graczy")
+    public boolean displayNotificationForAssist = false;
 
     @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")

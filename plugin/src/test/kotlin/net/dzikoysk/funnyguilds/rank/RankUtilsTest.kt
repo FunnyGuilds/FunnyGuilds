@@ -24,6 +24,8 @@ class RankUtilsTest : FunnyGuildsSpec() {
 
         config.gtopPoints = RawString(" {POINTS-FORMAT}")
         config.pointsFormat = ArrayList(listOf(RangeFormatting(0, Int.MAX_VALUE, "{POINTS}")))
+        config.gtopOnline = RawString("")
+        config.gtopOffline = RawString("")
 
         // when: the GTOP placeholder is requested to parse
         val rank = rankPlaceholdersService.formatRank("{GTOP-1}", user)

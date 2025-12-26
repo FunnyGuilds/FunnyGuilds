@@ -22,7 +22,6 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd listy graczy, przedział slotów - od 1 do 80")
-    @Comment("Obsługuje formatowanie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html) oraz legacy color codes (&X, &#XXXXXX)")
     @Comment("Schemat wyglądu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/assets/tab-scheme.png")
     @Comment(" ")
     @Comment("> Spis zmiennych gracza:")
