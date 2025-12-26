@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -42,11 +43,9 @@ public final class EntityUtils {
             return allowNullReturn ? null : EntityType.UNKNOWN;
         }
 
-        EntityType entityType = (EntityType) Option.attempt(IllegalArgumentException.class, () -> {
-            //return EntityType.valueOf(FunnyFormatter.format(stringEntity.toUpperCase(Locale.ROOT), " ", "_"));
-            return null; //TODO
+        EntityType entityType = Option.attempt(IllegalArgumentException.class, () -> {
+            return EntityType.valueOf(stringEntity.toUpperCase(Locale.ROOT).replace(" ", "_"));
         }).orNull();
-
         if (entityType != null) {
             return entityType;
         }
