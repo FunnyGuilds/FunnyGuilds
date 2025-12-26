@@ -10,6 +10,9 @@ import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
+import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
+import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
@@ -41,24 +44,13 @@ public final class ItemUtils {
 
             FunnyGuilds.getInstance().getMessageService().getMessage(messageSupplier)
                     .receiver(player)
-//                    .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
-//                    .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
-                    // TODO: fix replacements
+                    .with(ItemComponentHelper.prepareItemReplacement(requiredItem))
+                    .with(ItemComponentHelper.prepareItemsReplacement(requiredItems))
                     .send();
 
             return false;
         }
         return true;
-    }
-    
-
-    public static Component itemAsString(ItemStack item, boolean displayAmount) {
-//        String materialName = MaterialUtils.getMaterialName(item.getType());
-//        if (!displayAmount) {
-//            return materialName;
-//        }
-//        return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
-        throw new UnsupportedOperationException("Method not implemented");
     }
 
     public static ItemStack parseItem(String itemString) {
@@ -92,13 +84,16 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    //item.setName(formatter.format(attributeValue), true);
-                    //TODO
+                    Component coloredName = ComponentUtil.colored(attributeValue);
+                    Component formattedName = formatter.replace(coloredName);
+                    item.setName(formattedName);
                     continue;
                 case "lore":
-                    //List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
-                   // item.setLore(lore, true);
-                    //TODO
+                    List<Component> lore = PandaStream.of(attributeValue.split("#"))
+                            .map(ComponentUtil::colored)
+                            .map(formatter::replace)
+                            .toList();
+                    item.setLore(lore);
                     continue;
                 case "enchant":
                 case "enchantment":
@@ -177,14 +172,17 @@ public final class ItemUtils {
         }
 
         if (meta.hasDisplayName()) {
-            //itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
-            //TODO
+            Component replacedDisplayName = formatter.replace(meta.displayName());
+            String displayName = MiniLegacyHelper.miniMessage().serialize(replacedDisplayName);
+            itemString.append(" name:").append(displayName);
         }
 
         if (meta.hasLore()) {
-            List<String> lore = PandaStream.of(meta.getLore())
-                    .map(ChatUtils::decolor)
-                    //.map(formatter::format) //TODO
+            List<String> lore = PandaStream.of(meta.lore())
+                    .map(line -> {
+                        Component replacedLine = formatter.replace(line);
+                        return MiniLegacyHelper.miniMessage().serialize(replacedLine);
+                    })
                     .toList();
 
             itemString.append(" lore:").append(Joiner.on("#").join(lore));

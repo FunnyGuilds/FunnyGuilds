@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.util.Arrays;
+import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -43,6 +45,13 @@ public final class ItemBuilder {
 
         return this;
     }
+    
+    public ItemBuilder setName(Component name) {
+        this.itemMeta.displayName(name);
+        this.refreshMeta();
+
+        return this;
+    }
 
     public ItemBuilder setLore(Iterable<String> lore, boolean color) {
         this.itemMeta.setLore(PandaStream.of(lore).map(line -> color ? ChatUtils.colored(line) : line).toList());
@@ -53,6 +62,13 @@ public final class ItemBuilder {
 
     public ItemBuilder setLore(String... lore) {
         return this.setLore(Arrays.asList(lore), true);
+    }
+    
+    public ItemBuilder setLore(List<Component> lore) {
+        this.itemMeta.lore(lore);
+        this.refreshMeta();
+
+        return this;
     }
 
     public ItemBuilder addEnchant(Enchantment enchant, int level) {
