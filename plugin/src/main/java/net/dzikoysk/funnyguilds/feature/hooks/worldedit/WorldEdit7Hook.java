@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.hooks.worldedit;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -12,7 +11,6 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Location;
@@ -49,7 +47,7 @@ public class WorldEdit7Hook extends WorldEditHook {
             editSession.close();
             return true;
         }
-        catch (IOException | WorldEditException e) {
+        catch (Exception e) {
             FunnyGuilds.getPluginLogger().error("Could not paste schematic: " + schematicFile.getAbsolutePath(), e);
             return false;
         }
