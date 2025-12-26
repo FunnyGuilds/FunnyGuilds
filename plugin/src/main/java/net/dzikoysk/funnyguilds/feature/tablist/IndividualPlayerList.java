@@ -127,17 +127,13 @@ public class IndividualPlayerList {
     private Component[] putVarsPrepareCells(Map<Integer, Component> tablistPattern, Component header, Component footer) {
         Component[] allCells = new Component[PlayerListConstants.DEFAULT_CELL_COUNT + 2]; // Additional two for header/footer
         for (int i = 0; i < this.cellCount; i++) {
-            allCells[i] = this.putTop(tablistPattern.getOrDefault(i + 1, Component.empty()));
+            allCells[i] = this.putVars(tablistPattern.getOrDefault(i + 1, Component.empty()));
         }
 
-        allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = header;
-        allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = footer;
+        allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = this.putVars(header);
+        allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = this.putVars(footer);
 
         return allCells;
-    }
-
-    private Component putTop(Component cell) {
-        return FunnyGuilds.getInstance().getRankPlaceholdersService().format(this.user, cell, this.user);
     }
 
     private Component putVars(Component cell) {
@@ -148,6 +144,7 @@ public class IndividualPlayerList {
 
         Player player = playerOption.get();
         cell = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, cell, this.user);
+        cell = FunnyGuilds.getInstance().getRankPlaceholdersService().format(this.user, cell, this.user);
         cell = HookUtils.replacePlaceholders(player, cell);
 
         return cell;
