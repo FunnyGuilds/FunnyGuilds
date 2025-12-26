@@ -92,7 +92,6 @@ import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
-import panda.utilities.ClassUtils;
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -371,6 +370,7 @@ public class FunnyGuilds extends JavaPlugin {
             setBuilder
                     .add(EntityDamage.class)
                     .add(EntityInteract.class)
+                    .add(EntityPlace.class)
                     //.add(PlayerChat.class) //TODO reimplement
                     .add(PlayerDeath.class)
                     .add(PlayerJoin.class)
@@ -381,13 +381,6 @@ public class FunnyGuilds extends JavaPlugin {
 
             if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
                 setBuilder.add(BlockFlow.class);
-            }
-
-            if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
-                setBuilder.add(EntityPlace.class);
-            }
-            else {
-                logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
             }
 
             for (Class<? extends Listener> listenerClass : setBuilder.build()) {
