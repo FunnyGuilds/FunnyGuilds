@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SequencedMap;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
@@ -18,6 +19,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 @ApiStatus.Internal
 public final class ComponentUtil {
@@ -27,6 +29,23 @@ public final class ComponentUtil {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.builder()
             .build();
 
+    public static Component toComponent(@Nullable Object value) {
+        if (value instanceof ComponentLike componentLike) {
+            return componentLike.asComponent();
+        }
+        return Component.text(Objects.toString(value));
+    }
+    
+    public static Component toComponent(@Nullable Object value, Component defaultValue) {
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof ComponentLike componentLike) {
+            return componentLike.asComponent();
+        }
+        return Component.text(Objects.toString(value));
+    }
+    
     public static Component colored(String text) {
         return GlobalAdventureSerializer.deserialize(text);
     }

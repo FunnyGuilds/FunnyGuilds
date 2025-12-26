@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
-import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
@@ -13,11 +12,10 @@ import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocalePairResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 
 public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
 
@@ -46,25 +44,32 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
         );
     }
 
-    public GuildPlaceholders timeProperty(String name, Function<Guild, Instant> timeSupplier, MessageService messages, Function<MessageConfiguration, String> fallbackSupplier) {
-        String noValue = Objects.toString(messages.get(fallbackSupplier), "");
-        SimpleResolver fallbackResolver = () -> noValue;
-        return this.property(name, (entity, guild) -> formatDate(guild, timeSupplier, messages.get(entity, config -> config.dateFormat), noValue), fallbackResolver)
-                .property(name + "-time", (entity, guild) -> formatTime(guild, timeSupplier, noValue), fallbackResolver);
+    public GuildPlaceholders timeProperty(String name, Function<Guild, Instant> timeSupplier, MessageService messages, LocaleSimpleResolver fallbackResolver) {
+        return this
+                .property(
+                        name,
+                        (entity, guild) -> formatDate(entity, guild, timeSupplier, messages.get(entity, config -> config.dateFormat), fallbackResolver),
+                        fallbackResolver
+                )
+                .property(
+                        name + "-time", 
+                        (entity, guild) -> formatTime(entity, guild, timeSupplier, fallbackResolver),
+                        fallbackResolver
+                );
     }
 
-    private static String formatDate(Guild guild, Function<Guild, Instant> timeSupplier, FunnyTimeFormatter formatter, String noValue) {
+    private static Object formatDate(Object entity, Guild guild, Function<Guild, Instant> timeSupplier, FunnyTimeFormatter formatter, LocaleSimpleResolver fallbackResolver) {
         Instant endTime = timeSupplier.apply(guild);
         return endTime.isBefore(Instant.now())
-                ? noValue
-                : formatter.format(endTime);
+                ? fallbackResolver.resolve(entity)
+                : ComponentUtil.toComponent(formatter.format(endTime));
     }
 
-    private static String formatTime(Guild guild, Function<Guild, Instant> timeSupplier, String noValue) {
+    private static Object formatTime(Object entity, Guild guild, Function<Guild, Instant> timeSupplier, LocaleSimpleResolver fallbackResolver) {
         Instant endTime = timeSupplier.apply(guild);
         return endTime.isBefore(Instant.now())
-                ? noValue
-                : TimeUtils.formatTime(Duration.between(Instant.now(), endTime));
+                ? fallbackResolver.resolve(entity)
+                : ComponentUtil.toComponent(TimeUtils.formatTime(Duration.between(Instant.now(), endTime)));
     }
 
     @Override

@@ -131,13 +131,9 @@ public class IndividualNameTag {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
                 .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
+        GuildPlaceholdersService.getSimplePlaceholders().peek(placeholders -> formatter.register(placeholders, guild));
         value = formatter.replace(null, value);
-
-        Component finalValue = value;
-        value = GuildPlaceholdersService.getSimplePlaceholders()
-                .map(placeholders -> placeholders.formatVariables(targetPlayer, finalValue, targetGuild))
-                .orElseGet(value);
-
+        
         value = HookUtils.replacePlaceholders(targetPlayer, value);
         value = HookUtils.replacePlaceholders(player, targetPlayer, value);
 

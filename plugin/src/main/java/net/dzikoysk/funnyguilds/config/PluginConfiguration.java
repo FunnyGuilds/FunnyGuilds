@@ -51,6 +51,8 @@ import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -993,6 +995,12 @@ public class PluginConfiguration extends OkaeriConfig {
             return this.other;
         }
     }
+    
+    @Comment("")
+    @Comment("Czy placeholdery wyświetlające listę graczy online/offline mają uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean usersListRespectVanish = true;
 
     @Comment("")
     @Comment("Czy ptop-online/ptop-offline mają uznawać graczy na vanishu za graczy offline")
@@ -1001,30 +1009,18 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean ptopRespectVanish = true;
 
     @Comment("")
-    @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
-    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-offline) pustą")
-    public String ptopOnline = "&a";
-
-    @Comment("")
-    @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
-    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
-    public String ptopOffline = "&c";
-
-    @Comment("")
     @Comment("Czy gtop-online/gtop-offline mają uznawać graczy na vanishu za graczy offline")
     @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
     @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
     public boolean gtopRespectVanish = true;
+    
+    @Comment("")
+    @Comment("Kolory dodawane dla nicków graczy/nazw gildii online")
+    public TextColor onlineColor = NamedTextColor.GREEN;
 
     @Comment("")
-    @Comment("Kolory dodawane przed tagiem gildii online (przynajmniej 1 członek online) przy zamianie zmiennej {GTOP-x}")
-    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-offline) pustą")
-    public String gtopOnline = "&a";
-
-    @Comment("")
-    @Comment("Kolory dodawane przed tagiem gildii offline (wszyscy członkowie offline) przy zamianie zmiennej {GTOP-x}")
-    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i gtop-online) pustą")
-    public String gtopOffline = "&c";
+    @Comment("Kolory dodawane dla nicków graczy/nazw gildii offline")
+    public TextColor offlineColor = NamedTextColor.RED;
 
     @Comment("")
     public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();

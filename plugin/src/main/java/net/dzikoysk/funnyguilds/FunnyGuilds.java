@@ -266,20 +266,19 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
-        this.basicPlaceholdersService = new BasicPlaceholdersService();
+        this.basicPlaceholdersService = new BasicPlaceholdersService(this.messageService);
         this.basicPlaceholdersService.register(this, "simple", BasicPlaceholdersService.createSimplePlaceholders(this));
 
-        this.timePlaceholdersService = new TimePlaceholdersService();
+        this.timePlaceholdersService = new TimePlaceholdersService(this.messageService);
         this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
 
-        this.userPlaceholdersService = new UserPlaceholdersService();
+        this.userPlaceholdersService = new UserPlaceholdersService(this.messageService);
         this.userPlaceholdersService.register(this, "player", UserPlaceholdersService.createPlayerPlaceholders(this));
         this.userPlaceholdersService.register(this, "user", UserPlaceholdersService.createUserPlaceholders(this));
 
-        this.guildPlaceholdersService = new GuildPlaceholdersService();
+        this.guildPlaceholdersService = new GuildPlaceholdersService(this.messageService);
         this.guildPlaceholdersService.register(this, "simple", GuildPlaceholdersService.createSimplePlaceholders(this));
         this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
-        this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
 
         this.rankPlaceholdersService = new RankPlaceholdersService(
                 this.pluginConfiguration,
@@ -289,6 +288,7 @@ public class FunnyGuilds extends JavaPlugin {
                 this.guildRankManager
         );
         this.tablistPlaceholdersService = new TablistPlaceholdersService(
+                this.messageService,
                 this.basicPlaceholdersService,
                 this.timePlaceholdersService,
                 this.userPlaceholdersService,

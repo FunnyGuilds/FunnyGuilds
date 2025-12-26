@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
@@ -20,6 +21,10 @@ import org.bukkit.entity.Player;
 import panda.utilities.text.Joiner;
 
 public class UserPlaceholdersService extends StaticPlaceholdersService<User, UserPlaceholders> {
+
+    public UserPlaceholdersService(EntityLocaleProvider entityLocaleProvider) {
+        super(entityLocaleProvider);
+    }
 
     public static UserPlaceholders createUserPlaceholders(FunnyGuilds plugin) {
         PluginConfiguration config = plugin.getPluginConfiguration();

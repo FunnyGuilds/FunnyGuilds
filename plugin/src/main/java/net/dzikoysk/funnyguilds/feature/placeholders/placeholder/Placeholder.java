@@ -1,8 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.placeholder;
 
-import java.util.Objects;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver;
-import org.jetbrains.annotations.Nullable;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
+import net.kyori.adventure.text.Component;
 
 public class Placeholder<T> {
 
@@ -12,12 +13,12 @@ public class Placeholder<T> {
         this.resolver = resolver;
     }
 
-    public Object getRaw(@Nullable Object entity, T data) {
-        return this.resolver.resolve(entity, data);
+    public Object getRaw(Locale entity, T data) {
+        return ComponentUtil.toComponent(this.resolver.resolve(entity, data));
     }
 
-    public String get(@Nullable Object entity, T data) {
-        return Objects.toString(this.getRaw(entity, data), "");
+    public Component get(Locale entity, T data) {
+        return ComponentUtil.toComponent(this.getRaw(entity, data), Component.empty());
     }
 
 }

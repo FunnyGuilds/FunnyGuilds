@@ -5,6 +5,7 @@ import dev.peri.yetanothermessageslibrary.SimpleSendableMessageService;
 import dev.peri.yetanothermessageslibrary.viewer.ViewerFactory;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -13,9 +14,12 @@ import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import panda.std.stream.PandaStream;
 
-public class MessageService extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> {
+public class MessageService extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> implements
+                                                                                                                              EntityLocaleProvider {
 
     public MessageService(FunnyGuilds plugin) {
         super(
@@ -23,6 +27,11 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
                 ViewerFactory.create(BukkitMessageService.wrapScheduler(plugin)),
                 (viewerService, localeSupplier, messageSupplier) -> new FunnyMessageDispatcher(viewerService, localeSupplier, messageSupplier, user -> Bukkit.getPlayer(user.getUUID()))
         );
+    }
+    
+    @Override
+    public @NotNull Locale getEntityLocale(@Nullable Object entity) {
+        return super.getLocale(entity);
     }
 
     public void reload() {

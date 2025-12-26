@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.rank.placeholders;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -71,6 +72,21 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         );
 
         return text;
+    }
+
+    @Override
+    public FunnyFormatter toFormatter(
+            User data,
+            String prefix,
+            String suffix,
+            UnaryOperator<String> nameModifier
+    ) {
+        return null; // TODO
+    }
+
+    @Override
+    public Locale getEntityLocale(@Nullable Object entity) {
+        return null; // TODO
     }
 
     /**

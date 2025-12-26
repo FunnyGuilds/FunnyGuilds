@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -18,6 +19,7 @@ import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
@@ -106,14 +108,29 @@ public final class UserUtils {
     }
 
     /**
-     * Gets the set of usernames (with tags to format) from collection of users.
+     * Gets the set of components 
      *
      * @param users collection of users
-     * @return set of usernames (with tags to format)
+     * @return list of components with usernames
      */
-    public static Set<Component> getOnlineNames(Collection<User> users) {
-        // TODO reimplement
-        throw new UnsupportedOperationException("Drop usage/replace/whatever");
+    public static List<Component> getOnlineNames(Collection<User> users) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        
+        boolean respectVanish = config.usersListRespectVanish;
+        TextColor onlineColor = config.onlineColor;
+        TextColor offlineColor = config.offlineColor;
+
+        return users.stream()
+                // TODO: Add sorting
+                .<Component>map(user -> {
+                    boolean online = user.isOnline();
+                    if (!online && respectVanish && user.isVanished()) {
+                        online = true;
+                    }
+                    TextColor applicableColor = online ? onlineColor : offlineColor;
+                    return Component.text(user.getName(), applicableColor);
+                })
+                .toList();
     }
 
     public static String getUserPosition(GuildPermissionChecker permissionChecker, @Nullable User user) {
