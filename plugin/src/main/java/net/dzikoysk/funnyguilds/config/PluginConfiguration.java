@@ -21,7 +21,6 @@ import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -45,10 +44,8 @@ import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.shared.LegacyUtils;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -261,77 +258,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Minimalny ranking wymagany do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.rank")
     public int rankCreateVip = 800;
-
-    @Comment("")
-    @Comment("Czy GUI z przedmiotami na gildię ma być wspólne dla wszystkich")
-    @Comment("Jeśli włączone - wszyscy gracze będą widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip będzie ignorowane")
-    public boolean useCommonGUI = false;
-
-    @Comment("")
-    @Comment("GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
-    @Comment("Jeśli włączone jest use-common-gui - poniższe GUI jest używane także dla osób z uprawnieniem funnyguilds.vip.items")
-    @Comment("Każda linijka listy oznacza jeden slot, liczba slotów powinna byc wielokrotnością liczby 9 i nie powinna byc większa niz 54")
-    @Comment("Aby użyć przedmiotu, stworzonego w jednym slocie, w innym - można użyć {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, który jest w pierwszym slocie")
-    @Comment("Aby wstawić przedmiot na gildię należy użyć {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildię")
-    @Comment("Aby wstawić przedmiot na gildię z listy vip należy użyć {VIPITEM-nr}")
-    @CustomKey("gui-items")
-    public List<String> guiItems_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-            "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
-            "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
-
-    @Exclude
-    public List<ItemStack> guiItems;
-
-    @Comment("")
-    @Comment("Nazwa GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
-    public Component guiItemsTitle = ComponentUtil.colored("&5&lPrzedmioty na gildie");
-
-    @Comment("")
-    @Comment("GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
-    @Comment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
-    @Comment("Poniższe GUI będzie ignorowane, jeśli wlaczone jest use-common-gui")
-    @CustomKey("gui-items-vip")
-    public List<String> guiItemsVip_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-            "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
-            "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
-
-    @Exclude
-    public List<ItemStack> guiItemsVip;
-
-    @Comment("")
-    @Comment("Nazwa GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
-    public Component guiItemsVipTitle = ComponentUtil.colored("&5&lPrzedmioty na gildie (VIP)");
-
-    @Comment("")
-    @Comment("Zmiana nazwy i koloru przedmiotów na gildię (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
-    @Comment("Jeśli nie chcesz używac tej funkcji - to pozostaw gui-items-name: \"\"")
-    @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
-    @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby (np. golden_apple)")
-    public Component guiItemsName = ComponentUtil.colored("&7>> &a{ITEM-NO-AMOUNT} &7<<");
-
-    @Comment("")
-    @Comment("Czy do przedmiotów na gildię, które są w GUI, mają być dodawane dodatkowe linie opisu")
-    @Comment("Linie te można ustawić poniżej")
-    public boolean addLoreLines = true;
-
-    @Comment("")
-    @Comment("Dodatkowe linie opisu, dodawane do każdego przedmiotu, który jest jednocześnie przedmiotem na gildię")
-    @Comment("Dodawane linie nie zależą od otwieranego GUI - są wspólne dla zwykłego i VIP")
-    @Comment("Możliwe do użycia zmienne:")
-    @Comment("{REQ-AMOUNT} - całkowita wymagana liczba przedmiotów")
-    @Comment("{PINV-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie")
-    @Comment("{PINV-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie")
-    @Comment("{EC-AMOUNT} - liczba danego przedmiotu, jaką gracz ma w enderchescie")
-    @Comment("{EC-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma w enderchescie")
-    @Comment("{ALL-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie i w enderchescie")
-    @Comment("{ALL-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    public List<Component> guiItemsLore = ComponentUtil.coloredByNewLine("""
-                    
-                                                                                 &aPosiadasz juz:
-                                                                                 &a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)
-                                                                                 &a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)
-                                                                                 &a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)
-                                                                                 """);
 
     @Comment("")
     @Comment("Minimalna odległość od spawnu")
@@ -1256,55 +1182,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("3. Zmień nazwy tabel w bazie używając np. phpMyAdmin")
     public MysqlConfiguration mysql = new MysqlConfiguration();
 
-    private List<ItemStack> loadGUI(List<String> contents) {
-        List<ItemStack> items = new ArrayList<>();
-
-        for (String guiEntry : contents) {
-            ItemStack item = null;
-
-            if (guiEntry.contains("GUI-")) {
-                int index = LegacyUtils.getIndex(guiEntry);
-                if (index > 0 && index <= items.size()) {
-                    item = items.get(index - 1);
-                }
-            }
-            else if (guiEntry.contains("VIPITEM-")) {
-                try {
-                    int index = LegacyUtils.getIndex(guiEntry);
-                    if (index > 0 && index <= this.createItemsVip.size()) {
-                        item = this.createItemsVip.get(index - 1);
-                    }
-                }
-                catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItemsVip.size() + " or <= 0");
-                }
-            }
-            else if (guiEntry.contains("ITEM-")) {
-                try {
-                    int index = LegacyUtils.getIndex(guiEntry);
-                    if (index > 0 && index <= this.createItems.size()) {
-                        item = this.createItems.get(index - 1);
-                    }
-                }
-                catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItems.size() + " or <= 0");
-                }
-            }
-            else {
-                item = ItemUtils.parseItem(guiEntry);
-            }
-
-            if (item == null) {
-                item = new ItemBuilder(Material.RED_STAINED_GLASS_PANE, 1, 14)
-                        .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
-            }
-
-            items.add(item);
-        }
-
-        return items;
-    }
-
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();
@@ -1326,12 +1203,6 @@ public class PluginConfiguration extends OkaeriConfig {
             placingBlocksBypassOnRegion = placingBlocksBypassOnRegion_.stream()
                     .map(Material::matchMaterial)
                     .collect(Collectors.toSet());
-        }
-
-        this.guiItems = this.loadGUI(this.guiItems_);
-
-        if (!this.useCommonGUI) {
-            this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
         if (this.heart.createMaterial != null && this.heart.createMaterial.hasGravity()) {
