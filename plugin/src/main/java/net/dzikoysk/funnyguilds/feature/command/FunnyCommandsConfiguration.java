@@ -54,11 +54,9 @@ import net.dzikoysk.funnyguilds.feature.command.user.LeaveCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.PvPCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.RankResetCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.RankingCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.SetBaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.StatsResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -104,11 +102,9 @@ public final class FunnyCommandsConfiguration {
                 .command("leave", commands.leave, LeaveCommand.class)
                 .command("player", commands.player, PlayerInfoCommand.class)
                 .command("pvp", commands.pvp, PvPCommand.class)
-                .command("ranking", commands.ranking, RankingCommand.class)
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
                 .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
-                .command("top", commands.top, TopCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class);
