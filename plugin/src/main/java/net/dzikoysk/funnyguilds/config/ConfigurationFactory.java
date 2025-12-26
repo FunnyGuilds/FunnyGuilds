@@ -19,6 +19,7 @@ import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.NumberRangeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
+import net.dzikoysk.funnyguilds.config.serdes.TextColorSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
@@ -35,6 +36,7 @@ public final class ConfigurationFactory {
                 opt.serdes(
                     new DecolorTransformer(),
                     new FunnyTimeFormatterTransformer(),
+                    new TextColorSerializer(),
                     new YAMLSerdes()
                 );
                 opt.logger(FunnyGuilds.getInstance().getLogger());
@@ -51,6 +53,8 @@ public final class ConfigurationFactory {
                 opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
                 opt.validator(new OkaeriValidator(true));
                 opt.serdes(
+                    new YAMLSerdes(),
+                    new TextColorSerializer(),
                     new ColorSerializer(),
                     new MaterialTransformer(),
                     new ItemStackTransformer(),
@@ -77,7 +81,8 @@ public final class ConfigurationFactory {
                 opt.serdes(
                     new NumberRangeTransformer(),
                     new TablistPageSerializer(),
-                    new SkinTextureSerializer()
+                    new SkinTextureSerializer(),
+                    new YAMLSerdes()
                 );
                 opt.bindFile(tablistConfigurationFile);
                 opt.logger(FunnyGuilds.getInstance().getLogger());
