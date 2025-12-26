@@ -14,7 +14,7 @@ public class Placeholder<T> {
     }
 
     public Object getRaw(Locale entity, T data) {
-        return ComponentUtil.toComponent(this.resolver.resolve(entity, data));
+        return this.resolver.resolve(entity, data);
     }
 
     public Component get(Locale entity, T data) {

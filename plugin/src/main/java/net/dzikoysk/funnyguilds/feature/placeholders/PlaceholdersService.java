@@ -34,7 +34,7 @@ public interface PlaceholdersService<T> {
     }
     
     default Replaceable asReplaceable(T data) {
-        return this.asReplaceable(data, "{", "}", name -> name.toLowerCase(Locale.ROOT));
+        return this.asReplaceable(data, "{", "}", name -> name.toUpperCase(Locale.ROOT));
     }
     
     Replaceable asReplaceable(T data, String prefix, String suffix, UnaryOperator<String> nameModifier);

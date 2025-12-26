@@ -48,7 +48,7 @@ public final class FunnyFormatter implements Replaceable {
     }
 
     public <T> FunnyFormatter register(Placeholders<T, ?> placeholders, T data) {
-        return this.register(placeholders, data, "{", "}", name -> name.toLowerCase(Locale.ROOT));
+        return this.register(placeholders, data, "{", "}", name -> name.toUpperCase(Locale.ROOT));
     }
         
     public <T> FunnyFormatter register(Placeholders<T, ?> placeholders, T data, String prefix, String suffix, UnaryOperator<String> nameModifier) {
