@@ -16,10 +16,12 @@ jobs:
           java-version: 21
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - uses: burrunan/gradle-cache-action@v2
+      - uses: burrunan/gradle-cache-action@v3
         name: Publish FunnyGuilds
         with:
+          job-id: jdk21
           arguments: build :plugin:publish --stacktrace
+          read-only: false
         env:
           MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
           MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
