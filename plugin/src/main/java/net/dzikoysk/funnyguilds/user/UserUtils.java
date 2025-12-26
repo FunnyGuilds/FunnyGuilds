@@ -133,11 +133,11 @@ public final class UserUtils {
                 .toList();
     }
 
-    public static String getUserPosition(GuildPermissionChecker permissionChecker, @Nullable User user) {
+    public static Component getUserPosition(GuildPermissionChecker permissionChecker, @Nullable User user) {
         return Option.of(user)
                 .flatMap(User::getGuild)
                 .flatMap(guild -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.USER_POSITION))
-                .orElseGet("");
+                .orElseGet(Component.empty());
     }
 
     /**
