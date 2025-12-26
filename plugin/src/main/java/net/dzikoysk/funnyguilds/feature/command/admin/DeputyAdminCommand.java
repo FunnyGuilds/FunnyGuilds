@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
@@ -34,8 +33,6 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Replaceable formatter = null; //FunnyFormatter.of("{PLAYER}", userToMove.getName()); //TODO
-
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
             this.messageService.getMessage(config -> config.deputyRemove)
@@ -45,7 +42,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
                     .receiver(userToMove)
                     .send();
             this.messageService.getMessage(config -> config.deputyNoLongerMembers)
-                    .with(formatter)
+                    .with("{PLAYER}", userToMove.getName())
                     .receiver(guild)
                     .send();
             return;
@@ -60,7 +57,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
                 .receiver(userToMove)
                 .send();
         this.messageService.getMessage(config -> config.deputyMembers)
-                .with(formatter)
+                .with("{PLAYER}", userToMove.getName())
                 .receiver(guild)
                 .send();
     }
