@@ -10,12 +10,14 @@ public final class HookUtils {
 
     public static Component replacePlaceholders(Player observer, Player target, Component message) {
         //return HookManager.PLACEHOLDER_API.map(api -> api.replacePlaceholders(observer, target, message)).orElseGet(message);
-        throw new UnsupportedOperationException("Not implemented yet"); //TODO: reimplment
+        //throw new UnsupportedOperationException("Not implemented yet"); //TODO: reimplment
+        return message;
     }
 
     public static Component replacePlaceholders(Player player, Component message) {
         //return HookManager.PLACEHOLDER_API.map(api -> api.replacePlaceholders(player, message)).orElseGet(message);
-        throw new UnsupportedOperationException("Not implemented yet"); //TODO: reimplment
+        //throw new UnsupportedOperationException("Not implemented yet"); //TODO: reimplment
+        return message;
     }
 
 }
