@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.time.OffsetDateTime;
 import java.util.Locale;
 import java.util.function.UnaryOperator;
@@ -36,17 +37,17 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
     }
 
     @Override
-    public FunnyFormatter toFormatter(
+    public Replaceable asReplaceable(
             User data,
             String prefix,
             String suffix,
             UnaryOperator<String> nameModifier
     ) {
         return new FunnyFormatter()
-                .register(this.basicPlaceholdersService.toFormatter(null, prefix, suffix, nameModifier))
-                .register(this.timePlaceholdersService.toFormatter(OffsetDateTime.now(), prefix, suffix, nameModifier))
-                .register(this.userPlaceholdersService.toFormatter(data, prefix, suffix, nameModifier))
-                .register(this.guildPlaceholdersService.toFormatter(data.getGuild().orNull(), prefix + "G-", suffix, nameModifier));
+                .register(this.basicPlaceholdersService.asReplaceable(null, prefix, suffix, nameModifier))
+                .register(this.timePlaceholdersService.asReplaceable(OffsetDateTime.now(), prefix, suffix, nameModifier))
+                .register(this.userPlaceholdersService.asReplaceable(data, prefix, suffix, nameModifier))
+                .register(this.guildPlaceholdersService.asReplaceable(data.getGuild().orNull(), prefix + "G-", suffix, nameModifier));
     }
 
     @Override

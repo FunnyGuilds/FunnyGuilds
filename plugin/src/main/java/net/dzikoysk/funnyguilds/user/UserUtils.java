@@ -124,8 +124,8 @@ public final class UserUtils {
                 // TODO: Add sorting
                 .<Component>map(user -> {
                     boolean online = user.isOnline();
-                    if (!online && respectVanish && user.isVanished()) {
-                        online = true;
+                    if (online && respectVanish) {
+                        online = !user.isVanished();
                     }
                     TextColor applicableColor = online ? onlineColor : offlineColor;
                     return Component.text(user.getName(), applicableColor);

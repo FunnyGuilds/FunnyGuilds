@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
+import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +35,7 @@ public abstract class StaticPlaceholdersService<T, P extends Placeholders<T, P>>
     }
     
     @Override
-    public FunnyFormatter toFormatter(T data, String prefix, String suffix, UnaryOperator<String> nameModifier) {
+    public Replaceable asReplaceable(T data, String prefix, String suffix, UnaryOperator<String> nameModifier) {
         FunnyFormatter formatter = new FunnyFormatter();
         for (P placeholders : this.placeholders.values()) {
             formatter.register(placeholders, data, prefix, suffix, nameModifier);

@@ -15,6 +15,10 @@ import net.dzikoysk.funnyguilds.config.RangeFormatting;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TopConfiguration extends OkaeriConfig {
+    
+    @Comment("")
+    @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
+    public boolean useRelationshipColors = false;
 
     @Comment("Lista topek graczy, które mają być obliczane i parsowane")
     @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")

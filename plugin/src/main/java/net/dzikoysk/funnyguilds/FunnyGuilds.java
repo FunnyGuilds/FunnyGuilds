@@ -281,8 +281,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
 
         this.rankPlaceholdersService = new RankPlaceholdersService(
+                this.messageService,
                 this.pluginConfiguration,
-                this.tablistConfiguration,
                 this.messageService,
                 this.userRankManager,
                 this.guildRankManager

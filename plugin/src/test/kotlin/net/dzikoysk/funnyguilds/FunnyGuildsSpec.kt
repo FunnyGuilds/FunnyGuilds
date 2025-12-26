@@ -89,8 +89,8 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
         rankPlaceholdersService = RankPlaceholdersService(
+            messages,
             config,
-            tablistConfig,
             messages,
             userRankManager,
             guildRankManager
