@@ -121,6 +121,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             this.plugin.reloadConfiguration();
             this.plugin.getDataPersistenceHandler().reloadHandler();
             this.plugin.getDynamicListenerManager().reloadAll();
+            this.plugin.reloadTablistRendering();
             
             String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
             FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.reloadTime)

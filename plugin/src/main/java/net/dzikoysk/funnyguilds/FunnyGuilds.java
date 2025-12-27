@@ -355,22 +355,6 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-
-        if (this.tablistConfiguration.enabled) {
-            TablistRenderer renderer = new TablistRenderer(
-                    this.nmsAccessor.getPlayerListAccessor(),
-                    this.userManager,
-                    this.tablistConfiguration.cells,
-                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
-                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
-                    this.tablistConfiguration.heads.textures,
-                    this.tablistConfiguration.cellsPing,
-                    this.tablistConfiguration.fillCells
-            );
-            this.tablistRenderer = Option.of(renderer);
-            this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(renderer), 20L, this.tablistConfiguration.updateInterval);
-        }
-
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
@@ -461,6 +445,27 @@ public class FunnyGuilds extends JavaPlugin {
         logger.info("~ Created by FunnyGuilds Team ~");
     }
 
+    public void reloadTablistRendering() {
+        if (this.tablistBroadcastTask != null) {
+            Bukkit.getScheduler().cancelTask(this.tablistBroadcastTask.getTaskId());
+        }
+        
+        if (this.tablistConfiguration.enabled) {
+            TablistRenderer renderer = new TablistRenderer(
+                    this.nmsAccessor.getPlayerListAccessor(),
+                    this.userManager,
+                    this.tablistConfiguration.cells,
+                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
+                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
+                    this.tablistConfiguration.heads.textures,
+                    this.tablistConfiguration.cellsPing,
+                    this.tablistConfiguration.fillCells
+            );
+            this.tablistRenderer = Option.of(renderer);
+            this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(renderer), 20L, this.tablistConfiguration.updateInterval);
+        }
+    }
+
     @Override
     public void onDisable() {
         if (this.forceDisabling) {
@@ -514,7 +519,8 @@ public class FunnyGuilds extends JavaPlugin {
             outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
         }
-
+        
+        this.reloadTablistRendering();
         this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
         this.getDummyManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
 
