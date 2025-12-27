@@ -149,11 +149,11 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd nagłówka listy graczy")
-    public Component header = ComponentUtil.colored("&7FunnyGuilds &b5.0.0 Primrose &8- &bgithub.com/funnyguilds");
+    public Component header = ComponentUtil.colored("&7FunnyGuilds &b5.0.0 Primrose &8- &bgithub.com/funnyguilds\nDruga linia nagłówka\nTrzecia linia nagłówka");
 
     @Comment("")
     @Comment("Wygląd stopki listy graczy")
-    public Component footer = ComponentUtil.colored("&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &6&lmessages.yml&c&l!");
+    public Component footer = ComponentUtil.colored("&c&lWartości \"BRAK\" (pokazujące się, gdy gracz nie ma gildii) można zmienić w plikach językowych w katalogu &b&lplugins/FunnyGuilds/lang&c&l!\nDruga linia stopki\nTrzecia linia stopki");
 
     @Comment("")
     @Comment("Wygląd głowek na liście graczy")
