@@ -37,10 +37,18 @@ allprojects {
     }
 
     repositories {
-        /* Libs */
+        /* Panda libs & Maven Central */
         maven("https://maven.reposilite.com/maven-central")
         maven("https://maven.reposilite.com/releases")
         maven("https://maven.reposilite.com/snapshots")
+        
+        /* Servers */
+        maven("https://libraries.minecraft.net")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
+
+        /* 3rd party libs */
         maven("https://storehouse.okaeri.eu/repository/maven-public") {
             mavenContent {
                 releasesOnly()
@@ -57,12 +65,6 @@ allprojects {
             }
         }
         maven("https://maven.reposilite.com/jitpack")
-
-        /* Servers */
-        maven("https://libraries.minecraft.net")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
-        maven("https://repo.papermc.io/repository/maven-public/")
-        maven("https://oss.sonatype.org/content/repositories/snapshots")
 
         /* Hooks */
         maven("https://maven.enginehub.org/repo")
