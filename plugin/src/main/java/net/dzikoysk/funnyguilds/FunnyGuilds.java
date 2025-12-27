@@ -446,24 +446,33 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public void reloadTablistRendering() {
+        this.tablistRenderer = Option.none();
         if (this.tablistBroadcastTask != null) {
             Bukkit.getScheduler().cancelTask(this.tablistBroadcastTask.getTaskId());
         }
         
-        if (this.tablistConfiguration.enabled) {
-            TablistRenderer renderer = new TablistRenderer(
-                    this.nmsAccessor.getPlayerListAccessor(),
-                    this.userManager,
-                    this.tablistConfiguration.cells,
-                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
-                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
-                    this.tablistConfiguration.heads.textures,
-                    this.tablistConfiguration.cellsPing,
-                    this.tablistConfiguration.fillCells
-            );
-            this.tablistRenderer = Option.of(renderer);
-            this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(renderer), 20L, this.tablistConfiguration.updateInterval);
-        }
+        this.tablistRenderer = Option.when(
+                this.tablistConfiguration.enabled,
+                () -> new TablistRenderer(
+                        this.nmsAccessor.getPlayerListAccessor(),
+                        this.userManager,
+                        this.tablistConfiguration.cells,
+                        this.tablistConfiguration.header,
+                        this.tablistConfiguration.footer,
+                        this.tablistConfiguration.animated,
+                        this.tablistConfiguration.pages,
+                        this.tablistConfiguration.heads.textures,
+                        this.tablistConfiguration.cellsPing,
+                        this.tablistConfiguration.fillCells
+                )
+        ).orElse(Option.none())
+                .peek(renderer -> this.tablistBroadcastTask = Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(
+                        this,
+                        new TablistBroadcastHandler(renderer),
+                        20L,
+                        this.tablistConfiguration.updateInterval
+                ));
     }
 
     @Override
