@@ -241,7 +241,7 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-AVG_POINTS}")
                             .build(),
                             null, 
-                                    null
+                            ComponentUtil.colored("<rainbow><bold>Wartości \"BRAK\" (pokazujące się, gdy gracz nie ma gildii) można zmienić w plikach językowych w katalogu </rainbow>&b&lpluginsFunnyGuilds/lang&c&l!")
                     ),
 
                     new TablistPage(10, ComponentUtil.<Integer>coloredMapBuilder()
@@ -270,8 +270,8 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(75, " &b10. &7{GTOP-KILLS-10}")
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-KILLS}")
                             .build(),
-                            ComponentUtil.colored("&7GitHub: &agithub.com/funnyguilds"),
-                            ComponentUtil.colored("&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &7&lmessages.yml&c&l!")
+                            ComponentUtil.colored("&7GitHub: &agithub.com/funnyguilds\nO a tak można zrobić nową linijkę w nagłówku ;)"),
+                            ComponentUtil.colored("<gradient:green:blue><bold>Wartości \"BRAK\" (pokazujące się, gdy gracz nie ma gildii) można zmienić w plikach językowych w katalogu </gradient>&b&lplugins/FunnyGuilds/lang&c&l!")
                     ),
 
                     new TablistPage(10, ComponentUtil.<Integer>coloredMapBuilder()
@@ -301,7 +301,7 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-DEATHS}")
                             .build(),
                             ComponentUtil.colored("&7Strona: &6funnyguilds.dzikoysk.net"),
-                            ComponentUtil.colored("&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku &b&lmessages.yml&c&l!")
+                            ComponentUtil.colored("<gradient:#5e4fa2:#f79459:red><bold>Wartości \"BRAK\" (pokazujące się, gdy gracz nie ma gildii) można zmienić w plikach językowych w katalogu </gradient>&b&lplugins/FunnyGuilds/lang&c&l!\n<white>A tak nawet możesz zrobić kilka nowych linijek w stopce</white>\n<rainbow>Trzecia linijka!")
                     )
     );
 
