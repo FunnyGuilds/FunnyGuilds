@@ -449,6 +449,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistRenderer = Option.none();
         if (this.tablistBroadcastTask != null) {
             Bukkit.getScheduler().cancelTask(this.tablistBroadcastTask.getTaskId());
+            this.tablistBroadcastTask = null;
         }
         
         this.tablistRenderer = Option.when(
