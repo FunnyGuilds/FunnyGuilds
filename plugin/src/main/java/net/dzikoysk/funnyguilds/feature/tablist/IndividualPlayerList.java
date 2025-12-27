@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -143,11 +144,13 @@ public class IndividualPlayerList {
         }
 
         Player player = playerOption.get();
-        cell = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, cell, this.user);
-        cell = FunnyGuilds.getInstance().getRankPlaceholdersService().format(this.user, cell, this.user);
-        cell = HookUtils.replacePlaceholders(player, cell);
-
-        return cell;
+        FunnyFormatter formatter = new FunnyFormatter();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        formatter.register(plugin.getTablistPlaceholdersService().asReplaceable(this.user));
+        formatter.register(plugin.getRankPlaceholdersService().asReplaceable(this.user));
+        formatter.register(HookUtils.placeholdersReplaceable(player));
+        
+        return plugin.getMessageService().replaceInComponent(this.user, cell, formatter);
     }
 
     public SkinTexture[] putTexturePrepareCells() {

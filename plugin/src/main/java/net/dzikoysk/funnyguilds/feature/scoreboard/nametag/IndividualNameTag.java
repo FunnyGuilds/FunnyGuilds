@@ -132,12 +132,9 @@ public class IndividualNameTag {
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
                 .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
         GuildPlaceholdersService.getSimplePlaceholders().peek(placeholders -> formatter.register(placeholders, guild));
-        value = formatter.replace(null, value);
-        
-        value = HookUtils.replacePlaceholders(targetPlayer, value);
-        value = HookUtils.replacePlaceholders(player, targetPlayer, value);
-
-        return value;
+        formatter.register(HookUtils.placeholdersReplaceable(targetPlayer));
+        formatter.register(HookUtils.placeholdersReplaceable(player, targetPlayer));
+        return formatter.replace(null, value);
     }
 
     private String getNameTagFormat(ScoreboardConfiguration.NameTag.Value value, User target) {
