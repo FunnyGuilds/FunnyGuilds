@@ -51,6 +51,10 @@ public class FakeUserProfile implements UserProfile {
     }
 
     @Override
+    public void sendMessage(Component message) {
+    }
+
+    @Override
     public void kick(Component reason) {
     }
 

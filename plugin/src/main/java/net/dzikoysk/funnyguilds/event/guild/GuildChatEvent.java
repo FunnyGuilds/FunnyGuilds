@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.event.guild;
 
-import java.util.Collections;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +13,8 @@ public class GuildChatEvent extends GuildEvent {
     private static final HandlerList handlers = new HandlerList();
     private final Type type;
     private final Set<Guild> receivers;
-    private final String message;
+    private final Component inputMessage;
+    private final Component formattedMessage;
 
     @Override
     public @NotNull HandlerList getHandlers() {
@@ -24,11 +25,14 @@ public class GuildChatEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildChatEvent(EventCause eventCause, @Nullable User doer, Guild guild, Type type, Set<Guild> receivers, String message) {
+    public GuildChatEvent(EventCause eventCause, @Nullable User doer, Guild guild, Type type, Set<Guild> receivers,
+                          Component inputMessage, Component formattedMessage
+    ) {
         super(eventCause, doer, guild);
         this.type = type;
-        this.receivers = Collections.unmodifiableSet(receivers);
-        this.message = message;
+        this.receivers = Set.copyOf(receivers);
+        this.inputMessage = inputMessage;
+        this.formattedMessage = formattedMessage;
     }
 
     public Type getType() {
@@ -38,9 +42,13 @@ public class GuildChatEvent extends GuildEvent {
     public Set<Guild> getReceivers() {
         return this.receivers;
     }
+    
+    public Component getInputMessage() {
+        return this.inputMessage;
+    }
 
-    public String getMessage() {
-        return this.message;
+    public Component getFormattedMessage() {
+        return this.formattedMessage;
     }
 
     @Override

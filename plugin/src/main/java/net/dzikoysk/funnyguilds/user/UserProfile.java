@@ -22,6 +22,8 @@ public interface UserProfile {
     }
 
     void sendMessage(String message);
+    
+    void sendMessage(Component message);
 
     void kick(Component reason);
 

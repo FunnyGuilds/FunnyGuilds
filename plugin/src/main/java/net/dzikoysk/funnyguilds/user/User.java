@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -74,6 +75,10 @@ public class User extends AbstractMutableEntity {
     }
 
     public void sendMessage(String message) {
+        this.profile.sendMessage(message);
+    }
+    
+    public void sendMessage(Component message) {
         this.profile.sendMessage(message);
     }
 
