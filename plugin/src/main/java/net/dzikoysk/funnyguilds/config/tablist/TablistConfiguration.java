@@ -241,7 +241,7 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(77, " &7Pozycja gildii: &b{G-POSITION-AVG_POINTS}")
                             .build(),
                             null, 
-                            ComponentUtil.colored("<rainbow><bold>Wartości \"BRAK\" (pokazujące się, gdy gracz nie ma gildii) można zmienić w plikach językowych w katalogu </rainbow>&b&lpluginsFunnyGuilds/lang&c&l!")
+                            ComponentUtil.colored("<rainbow><bold>Wartości \"BRAK\" (pokazujące się, gdy gracz nie ma gildii) można zmienić w plikach językowych w katalogu </rainbow>&b&lplugins/FunnyGuilds/lang&c&l!")
                     ),
 
                     new TablistPage(10, ComponentUtil.<Integer>coloredMapBuilder()
