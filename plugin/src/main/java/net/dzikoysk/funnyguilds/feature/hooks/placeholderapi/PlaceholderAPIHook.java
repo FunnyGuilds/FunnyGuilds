@@ -32,12 +32,14 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public String replacePlaceholders(Player user, String base) {
-        return PlaceholderAPI.setPlaceholders(user, base);
+    public Option<String> replacePlaceholders(Player user, String base) {
+        return Option.of(PlaceholderAPI.setPlaceholders(user, base))
+                .filter(replaced -> !replaced.equals(base));
     }
 
-    public String replacePlaceholders(Player userOne, Player userTwo, String base) {
-        return PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base);
+    public Option<String> replacePlaceholders(Player userOne, Player userTwo, String base) {
+        return Option.of(PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base))
+                .filter(replaced -> !replaced.equals(base));
     }
 
     private static final class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
