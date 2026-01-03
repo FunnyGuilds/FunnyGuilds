@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.nms.v1_21_4.playerlist;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import io.papermc.paper.adventure.AdventureComponent;
-import java.lang.reflect.Field;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -25,21 +24,8 @@ import org.bukkit.entity.Player;
 public class V1_21_4PlayerList implements PlayerList {
 
     private static final GameType DEFAULT_GAME_MODE = GameType.SURVIVAL;
-    private static final Component EMPTY_COMPONENT = Component.empty();
     // base chosen randomly to override other entries
     private static final int PRIORITY_BASE = 999;
-
-    private static final Field playerInfoEntriesField;
-
-    static {
-        try {
-            playerInfoEntriesField = ClientboundPlayerInfoUpdatePacket.class.getDeclaredField("c");
-            playerInfoEntriesField.setAccessible(true);
-        }
-        catch (NoSuchFieldException ex) {
-            throw new IllegalStateException("missing 'b' field in ClientboundPlayerInfoUpdatePacket", ex);
-        }
-    }
 
     private final int cellCount;
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
@@ -143,20 +129,13 @@ public class V1_21_4PlayerList implements PlayerList {
         }
     }
 
-    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(EnumSet<Action> actions,
-                                                                     List<Entry> entries) {
-        // NOTE: this whole hack exists just because Mojang does stupid things and collects list of entries
-        //       into an immutable list without any ability to modify or pass direct entries through constructor.
-        ClientboundPlayerInfoUpdatePacket playerInfoPacket =
-                new ClientboundPlayerInfoUpdatePacket(actions, List.<Entry>of());
-
-        try {
-            playerInfoEntriesField.set(playerInfoPacket, entries);
-        }
-        catch (IllegalAccessException ex) {
-            throw new IllegalStateException("could not create player info packet", ex);
-        }
-
-        return playerInfoPacket;
+    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(
+            EnumSet<Action> actions,
+            List<Entry> entries
+    ) {
+        return new ClientboundPlayerInfoUpdatePacket(
+                actions,
+                entries
+        );
     }
 }

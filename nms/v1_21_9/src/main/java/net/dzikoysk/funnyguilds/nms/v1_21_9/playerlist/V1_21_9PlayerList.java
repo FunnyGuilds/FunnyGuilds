@@ -1,13 +1,13 @@
-package net.dzikoysk.funnyguilds.nms.v1_21.playerlist;
+package net.dzikoysk.funnyguilds.nms.v1_21_9.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import io.papermc.paper.adventure.AdventureComponent;
+import io.papermc.paper.profile.MutablePropertyMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import net.dzikoysk.funnyguilds.nms.api.ProtocolDependentHelper;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
@@ -22,15 +22,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class V1_21PlayerList implements PlayerList {
+public class V1_21_9PlayerList implements PlayerList {
 
     private static final GameType DEFAULT_GAME_MODE = GameType.SURVIVAL;
+    // base chosen randomly to override other entries
+    private static final int PRIORITY_BASE = 999;
 
     private final int cellCount;
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
     private boolean firstPacket = true;
 
-    public V1_21PlayerList(int cellCount) {
+    public V1_21_9PlayerList(int cellCount) {
         this.cellCount = cellCount;
     }
 
@@ -44,12 +46,13 @@ public class V1_21PlayerList implements PlayerList {
         try {
             for (int i = 0; i < this.cellCount; i++) {
                 String paddedIdentifier = StringUtils.leftPad(String.valueOf(i), 2, '0');
-                String gameProfileName = ProtocolDependentHelper.getGameProfileNameBasedOnPlayerProtocolVersion(player, paddedIdentifier, paddedIdentifier);
+                String gameProfileName = " ";
 
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
                             UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
-                            gameProfileName
+                            gameProfileName,
+                            new MutablePropertyMap()
                     );
                 }
 
@@ -60,19 +63,23 @@ public class V1_21PlayerList implements PlayerList {
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];
                     if (texture != null) {
-                        gameProfile.getProperties().removeAll("textures");
-                        gameProfile.getProperties().put("textures", texture.getProperty());
+                        gameProfile.properties().removeAll("textures");
+                        gameProfile.properties().put("textures", texture.getProperty());
                     }
                 }
 
-                ClientboundPlayerInfoUpdatePacket.Entry playerInfoData = new Entry(
-                    gameProfile.getId(),
-                    gameProfile,
-                    true,
-                    ping,
-                    DEFAULT_GAME_MODE,
-                    component,
-                    null
+                // higher priority first
+                int cellPriority = PRIORITY_BASE - i;
+                Entry playerInfoData = new Entry(
+                        gameProfile.id(),
+                        gameProfile,
+                        true,
+                        ping,
+                        DEFAULT_GAME_MODE,
+                        component,
+                        false,
+                        cellPriority,
+                        null
                 );
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
@@ -87,20 +94,21 @@ public class V1_21PlayerList implements PlayerList {
             }
 
             ClientboundPlayerInfoUpdatePacket addPlayerPacket = createPlayerInfoPacket(
-                EnumSet.of(
-                    Action.ADD_PLAYER,
-                    Action.UPDATE_GAME_MODE,
-                    Action.UPDATE_LISTED,
-                    Action.UPDATE_LATENCY,
-                    Action.UPDATE_DISPLAY_NAME
-                ),
-                addPlayerList
+                    EnumSet.of(
+                            Action.ADD_PLAYER,
+                            Action.UPDATE_GAME_MODE,
+                            Action.UPDATE_LISTED,
+                            Action.UPDATE_LATENCY,
+                            Action.UPDATE_DISPLAY_NAME,
+                            Action.UPDATE_LIST_ORDER
+                    ),
+                    addPlayerList
             );
             packets.add(addPlayerPacket);
 
             ClientboundPlayerInfoUpdatePacket updatePlayerPacket = createPlayerInfoPacket(
-                EnumSet.of(Action.UPDATE_LATENCY, Action.UPDATE_DISPLAY_NAME),
-                updatePlayerList
+                    EnumSet.of(Action.UPDATE_LATENCY, Action.UPDATE_DISPLAY_NAME),
+                    updatePlayerList
             );
             packets.add(updatePlayerPacket);
 
@@ -123,7 +131,13 @@ public class V1_21PlayerList implements PlayerList {
         }
     }
 
-    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(EnumSet<Action> actions, List<Entry> entries) {
-        return new ClientboundPlayerInfoUpdatePacket(actions, entries);
+    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(
+            EnumSet<Action> actions,
+            List<Entry> entries
+    ) {
+        return new ClientboundPlayerInfoUpdatePacket(
+                actions,
+                entries
+        );
     }
 }

@@ -8,7 +8,6 @@ import java.util.TreeMap;
 import org.bukkit.Bukkit;
 import org.bukkit.UnsafeValues;
 import org.jetbrains.annotations.Nullable;
-
 import static java.lang.String.format;
 
 public final class NmsAccessorHolder {
@@ -17,6 +16,7 @@ public final class NmsAccessorHolder {
     private static final TreeMap<Integer, String> NMS_VERSION_MAPPING = new TreeMap<>(ImmutableMap.<Integer, String>builder()
             .put(3953, "v1_21")
             .put(4189, "v1_21_4")
+            .put(4554, "v1_21_9")
             .build());
 
     static final NmsAccessor INSTANCE = newAccessorInstance();
