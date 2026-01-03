@@ -52,7 +52,6 @@ public class PlayerQuit extends AbstractFunnyListener {
             cache.setIndividualNameTag(null);
             cache.setScoreboard(null);
             cache.setDummy(null);
-            cache.setPlayerList(null);
             damageState.clear();
         });
 

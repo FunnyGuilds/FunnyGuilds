@@ -26,9 +26,9 @@ import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTas
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.dummy.DummyManager;
 import net.dzikoysk.funnyguilds.feature.scoreboard.nametag.IndividualNameTagManager;
-import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.tablist.TablistRenderer;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -140,6 +140,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
+    private Option<TablistRenderer> tablistRenderer = Option.none();
 
     private Option<Database> database = Option.none();
     private DataModel dataModel;
@@ -354,7 +355,6 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
@@ -445,6 +445,37 @@ public class FunnyGuilds extends JavaPlugin {
         logger.info("~ Created by FunnyGuilds Team ~");
     }
 
+    public void reloadTablistRendering() {
+        this.tablistRenderer = Option.none();
+        if (this.tablistBroadcastTask != null) {
+            Bukkit.getScheduler().cancelTask(this.tablistBroadcastTask.getTaskId());
+            this.tablistBroadcastTask = null;
+        }
+        
+        this.tablistRenderer = Option.when(
+                this.tablistConfiguration.enabled,
+                () -> new TablistRenderer(
+                        this.nmsAccessor.getPlayerListAccessor(),
+                        this.userManager,
+                        this.tablistConfiguration.cells,
+                        this.tablistConfiguration.header,
+                        this.tablistConfiguration.footer,
+                        this.tablistConfiguration.animated,
+                        this.tablistConfiguration.pages,
+                        this.tablistConfiguration.heads.textures,
+                        this.tablistConfiguration.cellsPing,
+                        this.tablistConfiguration.fillCells
+                )
+        ).orElse(Option.none())
+                .peek(renderer -> this.tablistBroadcastTask = Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(
+                        this,
+                        new TablistBroadcastHandler(renderer),
+                        20L,
+                        this.tablistConfiguration.updateInterval
+                ));
+    }
+
     @Override
     public void onDisable() {
         if (this.forceDisabling) {
@@ -497,26 +528,9 @@ public class FunnyGuilds extends JavaPlugin {
             FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
             outboundChannelHandler.getPacketSuppliersRegistry().setOwner(player);
             outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
-
-            if (!this.tablistConfiguration.enabled) {
-                continue;
-            }
-
-            IndividualPlayerList individualPlayerList = new IndividualPlayerList(
-                    user,
-                    this.nmsAccessor.getPlayerListAccessor(),
-                    this.funnyServer,
-                    this.tablistConfiguration.cells,
-                    this.tablistConfiguration.header, this.tablistConfiguration.footer,
-                    this.tablistConfiguration.animated, this.tablistConfiguration.pages,
-                    this.tablistConfiguration.heads.textures,
-                    this.tablistConfiguration.cellsPing,
-                    this.tablistConfiguration.fillCells
-            );
-
-            user.getCache().setPlayerList(individualPlayerList);
         }
-
+        
+        this.reloadTablistRendering();
         this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
         this.getDummyManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
 
@@ -626,6 +640,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public Option<DummyManager> getDummyManager() {
         return this.dummyManager;
+    }
+
+    public Option<TablistRenderer> getTablistRenderer() {
+        return this.tablistRenderer;
     }
 
     public GuildInvitationList getGuildInvitationList() {
