@@ -5,7 +5,6 @@ import com.sk89q.worldguard.protection.flags.EnumFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -74,8 +73,7 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
     public boolean isInNonAssistsRegion(Location location) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         return PandaStream.of(this.getRegions(location))
-                .find(region -> region.getFlag(this.noAssistsFlag) == StateFlag.State.ALLOW
-                        || config.assistsRegionsIgnored.contains(region.getId()))
+                .find(region -> region.getFlag(this.noAssistsFlag) == StateFlag.State.ALLOW)
                 .isPresent();
     }
 

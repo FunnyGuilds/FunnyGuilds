@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -120,24 +119,12 @@ public class RegionManager {
                 .isPresent();
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isAnyPlayerInRegion(Region region) {
-        return this.isAnyPlayerInRegion(region, Collections.emptySet());
-    }
-
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
         return this.isAnyPlayerInRegion(region, PandaStream.of(ignoredUsers)
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
-        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers)).orElseGet(false);
-    }
-
+    
     /**
      * Checks if there is any region in area (used to check if it's possible to create a new guild in given location).
      *
@@ -160,9 +147,7 @@ public class RegionManager {
                 .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
                 .isPresent();
     }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    
     public boolean isNearRegion(Option<Location> center) {
         return center.map(this::isNearRegion).orElseGet(false);
     }

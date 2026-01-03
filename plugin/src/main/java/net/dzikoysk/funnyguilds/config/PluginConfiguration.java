@@ -647,13 +647,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean assistKillerAlwaysShare = false;
 
     @Comment("")
-    @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")
-    @Comment("UWAGA: wymagany plugin WorldGuard")
-    @Comment("Zamiast tej opcji w configu, zalecamy ustawienie flagi 'fg-no-assists' na regionach, na których asysty nie powinny być naliczane")
-    @Comment("Ta opcja konfiguracji zniknie z configu w przyszłych wydaniach i nie powinna być używana")
-    public Set<String> assistsRegionsIgnored = Collections.emptySet(); //TODO [5.0]: Remove
-
-    @Comment("")
     @Comment("System rankingowy używany przez plugin, do wyboru:")
     @Comment(" ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
     @Comment(" PERCENT - system, który obu graczom zabiera procent rankingu osoby zabitej")
