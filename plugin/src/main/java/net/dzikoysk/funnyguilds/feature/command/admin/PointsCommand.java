@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -27,7 +27,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
         when(args.length < 2, config -> config.adminNoPointsGiven);
 
         int points = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(config -> config.adminErrorInNumber, Replacement.string("{ERROR}", args[0]));
         });
 
         User user = UserValidation.requireUserByName(args[0]);
@@ -46,7 +46,6 @@ public final class PointsCommand extends AbstractFunnyCommand {
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", user.getName())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, this.config.pointsFormat))
                 .register("{POINTS}", finalPoints);
 
         this.messageService.getMessage(config -> config.adminPointsChanged)

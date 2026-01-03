@@ -14,13 +14,12 @@ import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.StringUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-import panda.utilities.text.Joiner;
 
 public class IndividualPlayerList {
 
@@ -28,10 +27,10 @@ public class IndividualPlayerList {
     private final PlayerList playerList;
     private final FunnyServer funnyServer;
 
-    private final Map<Integer, String> unformattedCells;
+    private final Map<Integer, Component> unformattedCells;
     private final int cellCount;
-    private final String header;
-    private final String footer;
+    private final Component header;
+    private final Component footer;
 
     private final boolean animated;
     private final List<TablistPage> pages;
@@ -44,7 +43,7 @@ public class IndividualPlayerList {
     private int currentPage;
 
     public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, FunnyServer funnyServer,
-                                Map<Integer, String> unformattedCells, String header, String footer, boolean animated,
+                                Map<Integer, Component> unformattedCells, Component header, Component footer, boolean animated,
                                 List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
                                 int cellPing, boolean fillCells) {
         this.user = user;
@@ -60,7 +59,7 @@ public class IndividualPlayerList {
         this.cellPing = cellPing;
 
         if (!fillCells) {
-            Entry<Integer, String> entry = MapUtils.findTheMaximumEntryByKey(unformattedCells);
+            Entry<Integer, Component> entry = MapUtils.findTheMaximumEntryByKey(unformattedCells);
             if (entry != null) {
                 this.cellCount = entry.getKey();
             }
@@ -76,30 +75,30 @@ public class IndividualPlayerList {
     }
 
     public void send() {
-        Map<Integer, String> unformattedCells = new HashMap<>(this.unformattedCells);
-        String header = this.header;
-        String footer = this.footer;
+        Map<Integer, Component> unformattedCells = new HashMap<>(this.unformattedCells);
+        Component header = this.header;
+        Component footer = this.footer;
 
         if (this.animated) {
             TablistPage page = this.pages.get(this.currentPage);
             if (page != null) {
-                if (page.cells != null) {
-                    unformattedCells.putAll(page.cells);
+                if (page.cells() != null) {
+                    unformattedCells.putAll(page.cells());
                 }
 
-                if (page.header != null) {
-                    header = page.header;
+                if (page.header() != null) {
+                    header = page.header();
                 }
 
-                if (page.footer != null) {
-                    footer = page.footer;
+                if (page.footer() != null) {
+                    footer = page.footer();
                 }
             }
         }
 
-        String[] preparedCells = this.putVarsPrepareCells(unformattedCells, header, footer);
-        String preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
-        String preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
+        Component[] preparedCells = this.putVarsPrepareCells(unformattedCells, header, footer);
+        Component preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
+        Component preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
@@ -115,7 +114,7 @@ public class IndividualPlayerList {
 
         this.cycle++;
 
-        int pageCycles = this.pages.get(this.currentPage).cycles;
+        int pageCycles = this.pages.get(this.currentPage).cycles();
         if (this.cycle + 1 >= pageCycles) {
             this.cycle = 0;
             this.currentPage++;
@@ -126,38 +125,32 @@ public class IndividualPlayerList {
         }
     }
 
-    private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
-        String[] allCells = new String[PlayerListConstants.DEFAULT_CELL_COUNT + 2]; // Additional two for header/footer
+    private Component[] putVarsPrepareCells(Map<Integer, Component> tablistPattern, Component header, Component footer) {
+        Component[] allCells = new Component[PlayerListConstants.DEFAULT_CELL_COUNT + 2]; // Additional two for header/footer
         for (int i = 0; i < this.cellCount; i++) {
-            allCells[i] = this.putTop(tablistPattern.getOrDefault(i + 1, ""));
+            allCells[i] = this.putVars(tablistPattern.getOrDefault(i + 1, Component.empty()));
         }
 
-        allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = header;
-        allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = footer;
+        allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = this.putVars(header);
+        allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = this.putVars(footer);
 
-        String mergedCells = Joiner.on("\0").join(allCells).toString();
-        return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
+        return allCells;
     }
 
-    private String putTop(String cell) {
-        return FunnyGuilds.getInstance().getRankPlaceholdersService().format(this.user, cell, this.user);
-    }
-
-    private String putVars(String cell) {
-        String formatted = cell;
-
+    private Component putVars(Component cell) {
         Option<Player> playerOption = this.funnyServer.getPlayer(this.user);
         if (playerOption.isEmpty()) {
-            return formatted;
+            return cell;
         }
 
         Player player = playerOption.get();
-
-        formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(this.user, formatted, this.user);
-        formatted = ChatUtils.colored(formatted);
-        formatted = HookUtils.replacePlaceholders(player, formatted);
-
-        return formatted;
+        FunnyFormatter formatter = new FunnyFormatter();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        formatter.register(plugin.getTablistPlaceholdersService().asReplaceable(this.user));
+        formatter.register(plugin.getRankPlaceholdersService().asReplaceable(this.user));
+        formatter.register(HookUtils.placeholdersReplaceable(player));
+        
+        return plugin.getMessageService().replaceInComponent(this.user, cell, formatter);
     }
 
     public SkinTexture[] putTexturePrepareCells() {

@@ -9,11 +9,15 @@ import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public class PlaceholderAPIHook extends AbstractPluginHook {
+    
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
 
     private final FunnyGuilds plugin;
 
@@ -28,12 +32,14 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public String replacePlaceholders(Player user, String base) {
-        return PlaceholderAPI.setPlaceholders(user, base);
+    public Option<String> replacePlaceholders(Player user, String base) {
+        return Option.of(PlaceholderAPI.setPlaceholders(user, base))
+                .filter(replaced -> !replaced.equals(base));
     }
 
-    public String replacePlaceholders(Player userOne, Player userTwo, String base) {
-        return PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base);
+    public Option<String> replacePlaceholders(Player userOne, Player userTwo, String base) {
+        return Option.of(PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base))
+                .filter(replaced -> !replaced.equals(base));
     }
 
     private static final class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
@@ -60,27 +66,19 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             User user = userOption.get();
-            String lowerIdentifier = identifier.toLowerCase(Locale.ROOT);
-
-            if (lowerIdentifier.contains("position-")) {
-                return this.rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
-            }
-            else if (lowerIdentifier.contains("top-")) {
-                String temp = this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase(Locale.ROOT) + "}", user);
-                if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
-                    temp = this.rankPlaceholdersService.formatRank(temp, user);
-                }
-                return temp;
-            }
-            else {
-                return this.plugin.getTablistPlaceholdersService().formatIdentifier(user, identifier, user);
-            }
+            
+            Component inputText = Component.text("{" + identifier.toUpperCase(Locale.ROOT) + "}");
+            Component replacedText = this.plugin.getTablistPlaceholdersService().format(
+                    user,
+                    inputText,
+                    user
+            );
+            return LEGACY_SERIALIZER.serialize(replacedText);
         }
 
         @Override // one - seeing the placeholder, two - about which the placeholder is
         public String onPlaceholderRequest(Player observer, Player target, String identifier) {
-            // TODO: [5.0] Remove `prefix` placeholder
-            if (observer == null || target == null || (!identifier.equalsIgnoreCase("prefix") && !identifier.equalsIgnoreCase("tag"))) {
+            if (observer == null || target == null || !identifier.equalsIgnoreCase("tag")) {
                 return "";
             }
 
@@ -92,10 +90,11 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return "";
             }
 
-            return this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
+            Component relationalTag = this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
                     userObserverOption.get().getGuild().orNull(),
                     userTargetOption.get().getGuild().orNull()
             );
+            return LEGACY_SERIALIZER.serialize(relationalTag);
         }
 
         @Override

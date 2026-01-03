@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -83,7 +83,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
         }
         lines.addAll(PandaStream.of(holoConfig.displayedLines)
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
-                .map(ChatUtils::colored)
+                .map(ComponentUtil::toLegacy)
                 .toList());
         DHAPI.setHologramLines(holo, lines);
     }

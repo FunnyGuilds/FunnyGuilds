@@ -55,7 +55,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastKick)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

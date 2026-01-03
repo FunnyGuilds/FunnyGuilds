@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -20,11 +20,11 @@ import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyn
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Location;
@@ -33,7 +33,6 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -69,13 +68,13 @@ public final class CreateCommand extends AbstractFunnyCommand {
         World world = player.getWorld();
 
         when(tag.length() > this.config.createTagLength,
-                config -> config.createTagLength, FunnyFormatter.of("{LENGTH}", this.config.createTagLength));
+                config -> config.createTagLength, Replacement.string("{LENGTH}", this.config.createTagLength));
         when(tag.length() < this.config.createTagMinLength,
-                config -> config.createTagMinLength, FunnyFormatter.of("{LENGTH}", this.config.createTagMinLength));
+                config -> config.createTagMinLength, Replacement.string("{LENGTH}", this.config.createTagMinLength));
         when(name.length() > this.config.createNameLength,
-                config -> config.createNameLength, FunnyFormatter.of("{LENGTH}", this.config.createNameLength));
+                config -> config.createNameLength, Replacement.string("{LENGTH}", this.config.createNameLength));
         when(name.length() < this.config.createNameMinLength,
-                config -> config.createNameMinLength, FunnyFormatter.of("{LENGTH}", this.config.createNameMinLength));
+                config -> config.createNameMinLength, Replacement.string("{LENGTH}", this.config.createNameMinLength));
 
         when(!this.config.tagRegex.matches(tag), config -> config.createOLTag);
         when(!this.config.nameRegex.matches(name), config -> config.createOLName);
@@ -106,7 +105,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
             when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation),
-                    config -> config.createSpawn, FunnyFormatter.of("{DISTANCE}", distance));
+                    config -> config.createSpawn, Replacement.string("{DISTANCE}", distance));
         }
 
         if (this.config.rankCreateEnable) {
@@ -115,10 +114,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             if (points < requiredRank) {
                 FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{REQUIRED-FORMAT}", NumberRange.inRangeToString(requiredRank, this.config.pointsFormat))
-                        .register("{POINTS}", requiredRank)
                         .register("{REQUIRED}", requiredRank)
-                        .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
                         .register("{POINTS}", points);
 
                 this.messageService.getMessage(config -> config.createRank)
@@ -273,7 +269,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastCreate)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
 

@@ -10,15 +10,15 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import panda.utilities.text.Joiner;
 
 public final class SecurityFreeCam {
 
@@ -46,10 +46,10 @@ public final class SecurityFreeCam {
             return;
         }
 
-        String blocksString = Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString();
+        Component blocksString = ItemComponentHelper.blocksAsComponent(blocks);
 
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
-        SecurityUtils.sendToOperator(player, CheatType.FREE_CAM, Replacement.of("{BLOCKS}", blocksString));
+        SecurityUtils.sendToOperator(player, CheatType.FREE_CAM, Replacement.component("{BLOCKS}", blocksString));
     }
 
 }

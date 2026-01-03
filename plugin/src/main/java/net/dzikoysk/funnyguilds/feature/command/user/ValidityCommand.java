@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +37,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             Instant validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), validity);
 
-            when(delta.compareTo(this.config.validityWhen) > 0,config -> config.validityWhen, FunnyFormatter.of("{TIME}",
+            when(delta.compareTo(this.config.validityWhen) > 0,config -> config.validityWhen, Replacement.string("{TIME}",
                     TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
         }
 
@@ -67,7 +66,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
                 .receiver(player)
                 .with(CommandSender.class, receiver -> {
                     String formattedValidity = this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity);
-                    return Replacement.of("{DATE}", formattedValidity);
+                    return Replacement.string("{DATE}", formattedValidity);
                 })
                 .send();
     }

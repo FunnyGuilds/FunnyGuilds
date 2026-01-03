@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import panda.std.stream.PandaStream;
 
@@ -42,7 +43,7 @@ public final class BanUtils {
                 .peek(time -> user.setBan(null));
     }
 
-    public static String getBanMessage(User user) {
+    public static Component getBanMessage(User user) {
         MessageService messageService = FunnyGuilds.getInstance().getMessageService();
 
         return user.getBan()
@@ -53,9 +54,9 @@ public final class BanUtils {
                             .register("{REASON}", ban.getReason())
                             .register("{PLAYER}", user.getName());
 
-                    return messageService.get(user, config -> config.banMessage, formatter);
+                    return messageService.getComponent(user, config -> config.banMessage, formatter);
                 })
-                .orElseGet("");
+                .orElseGet(() -> Component.text("You are not banned."));
     }
 
 }

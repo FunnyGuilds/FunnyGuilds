@@ -5,7 +5,6 @@ import eu.okaeri.configs.exception.OkaeriConfigException;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
-import me.pikamug.localelib.LocaleManager;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -18,7 +17,6 @@ import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
-import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
@@ -77,6 +75,7 @@ import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.ExceptionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyTask;
+import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
@@ -95,7 +94,6 @@ import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
-import panda.utilities.ClassUtils;
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -115,7 +113,6 @@ public class FunnyGuilds extends JavaPlugin {
     private TablistConfiguration tablistConfiguration;
 
     private MessageService messageService;
-    private LocaleManager localeManager;
 
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
@@ -165,6 +162,7 @@ public class FunnyGuilds extends JavaPlugin {
     @Override
     public void onLoad() {
         Reflections.prepareServerVersion();
+        MiniLegacyHelper.miniMessage(); // Invoke class to call static initializer
 
         plugin = this;
         logger = new FunnyGuildsLogger.DefaultLogger(this);
@@ -254,7 +252,6 @@ public class FunnyGuilds extends JavaPlugin {
             this.shutdown("Critical error has been encountered!");
             return;
         }
-        this.localeManager = new LocaleManager();
         this.userManager = new UserManager(this.pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
@@ -270,29 +267,29 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
-        this.basicPlaceholdersService = new BasicPlaceholdersService();
+        this.basicPlaceholdersService = new BasicPlaceholdersService(this.messageService);
         this.basicPlaceholdersService.register(this, "simple", BasicPlaceholdersService.createSimplePlaceholders(this));
 
-        this.timePlaceholdersService = new TimePlaceholdersService();
+        this.timePlaceholdersService = new TimePlaceholdersService(this.messageService);
         this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
 
-        this.userPlaceholdersService = new UserPlaceholdersService();
+        this.userPlaceholdersService = new UserPlaceholdersService(this.messageService);
         this.userPlaceholdersService.register(this, "player", UserPlaceholdersService.createPlayerPlaceholders(this));
         this.userPlaceholdersService.register(this, "user", UserPlaceholdersService.createUserPlaceholders(this));
 
-        this.guildPlaceholdersService = new GuildPlaceholdersService();
+        this.guildPlaceholdersService = new GuildPlaceholdersService(this.messageService);
         this.guildPlaceholdersService.register(this, "simple", GuildPlaceholdersService.createSimplePlaceholders(this));
         this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
-        this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
 
         this.rankPlaceholdersService = new RankPlaceholdersService(
+                this.messageService,
                 this.pluginConfiguration,
-                this.tablistConfiguration,
                 this.messageService,
                 this.userRankManager,
                 this.guildRankManager
         );
         this.tablistPlaceholdersService = new TablistPlaceholdersService(
+                this.messageService,
                 this.basicPlaceholdersService,
                 this.timePlaceholdersService,
                 this.userPlaceholdersService,
@@ -374,10 +371,10 @@ public class FunnyGuilds extends JavaPlugin {
             ImmutableSet.Builder<Class<? extends Listener>> setBuilder = ImmutableSet.builder();
 
             setBuilder
-                    .add(GuiActionHandler.class)
                     .add(EntityDamage.class)
                     .add(EntityInteract.class)
-                    .add(PlayerChat.class)
+                    .add(EntityPlace.class)
+                    .add(PlayerChat.class) 
                     .add(PlayerDeath.class)
                     .add(PlayerJoin.class)
                     .add(PlayerLogin.class)
@@ -387,13 +384,6 @@ public class FunnyGuilds extends JavaPlugin {
 
             if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
                 setBuilder.add(BlockFlow.class);
-            }
-
-            if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
-                setBuilder.add(EntityPlace.class);
-            }
-            else {
-                logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
             }
 
             for (Class<? extends Listener> listenerClass : setBuilder.build()) {
@@ -447,7 +437,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         if (NmsUtils.getReloadCount() > 0) {
             this.messageService.getMessage(config -> config.reloadWarn)
-                    .broadcast()
+                    .all()
                     .permission("funnyguilds.admin")
                     .send();
         }
@@ -592,10 +582,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public MessageService getMessageService() {
         return this.messageService;
-    }
-
-    public LocaleManager getLocaleManager() {
-        return this.localeManager;
     }
 
     public DynamicListenerManager getDynamicListenerManager() {

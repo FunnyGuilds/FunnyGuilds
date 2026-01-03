@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.nms.v1_21.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import io.papermc.paper.adventure.AdventureComponent;
 import java.lang.reflect.Field;
 import java.util.EnumSet;
 import java.util.List;
@@ -20,7 +21,6 @@ import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 import net.minecraft.world.level.GameType;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 public class V1_21PlayerList implements PlayerList {
@@ -49,7 +49,7 @@ public class V1_21PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping,
+    public void send(Player player, net.kyori.adventure.text.Component[] playerListCells, net.kyori.adventure.text.Component header, net.kyori.adventure.text.Component footer, SkinTexture[] cellTextures, int ping,
                      Set<Integer> forceUpdateSlots) {
         List<Packet<?>> packets = Lists.newArrayList();
         List<Entry> addPlayerList = Lists.newArrayList();
@@ -62,14 +62,14 @@ public class V1_21PlayerList implements PlayerList {
 
                 if (this.profileCache[i] == null) {
                     this.profileCache[i] = new GameProfile(
-                        UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
-                        gameProfileName
+                            UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, paddedIdentifier)),
+                            gameProfileName
                     );
                 }
 
-                String text = playerListCells[i];
+                net.kyori.adventure.text.Component text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                Component component = CraftChatMessage.fromString(text, false)[0];
+                Component component = new AdventureComponent(text);
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];
@@ -118,25 +118,15 @@ public class V1_21PlayerList implements PlayerList {
             );
             packets.add(updatePlayerPacket);
 
-            boolean headerNotEmpty = !header.isEmpty();
-            boolean footerNotEmpty = !footer.isEmpty();
+            Component headerComponent = new AdventureComponent(header);
+            Component footerComponent = new AdventureComponent(footer);
 
-            if (headerNotEmpty || footerNotEmpty) {
-                Component headerComponent = EMPTY_COMPONENT;
-                Component footerComponent = EMPTY_COMPONENT;
-
-                if (headerNotEmpty) {
-                    headerComponent = CraftChatMessage.fromStringOrNull(header, true);
-                }
-
-                if (footerNotEmpty) {
-                    footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
-                }
-
-                ClientboundTabListPacket headerFooterPacket =
-                    new ClientboundTabListPacket(headerComponent, footerComponent);
-                packets.add(headerFooterPacket);
-            }
+            ClientboundTabListPacket headerFooterPacket =
+                    new ClientboundTabListPacket(
+                            headerComponent,
+                            footerComponent
+                    );
+            packets.add(headerFooterPacket);
 
             for (Packet<?> packet : packets) {
                 ((CraftPlayer) player).getHandle().connection.send(packet);

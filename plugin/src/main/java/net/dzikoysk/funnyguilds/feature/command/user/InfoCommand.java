@@ -26,7 +26,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
     public void execute(CommandSender sender, String[] args) {
         UserManager userManager = this.userManager;
         String tag = Option.when(args.length > 0, () -> args[0])
-                .orElse(Option.of(sender)
+                .orElse(() -> Option.of(sender)
                         .is(Player.class)
                         .flatMap(userManager::findByPlayer)
                         .filter(User::hasGuild)
@@ -37,7 +37,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(tag);
         this.messageService.getMessage(config -> config.infoList)
                 .receiver(sender)
-                .with(this.guildPlaceholdersService.prepareReplacements(sender, guild))
+                .with(this.guildPlaceholdersService.asReplaceable(guild))
                 .send();
     }
 

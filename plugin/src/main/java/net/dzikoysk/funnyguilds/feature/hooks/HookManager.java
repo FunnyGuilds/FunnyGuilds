@@ -39,7 +39,7 @@ public class HookManager {
         this.<WorldGuardHook>setupHook(
                 "WorldGuard",
                 false,
-                WorldGuard7Hook::new,
+                pluginName -> new WorldGuard7Hook(pluginName),
                 true
         ).subscribe(hook -> WORLD_GUARD = hook);
     }
@@ -47,8 +47,8 @@ public class HookManager {
     public void setupHooks() {
         this.<WorldEditHook>setupHook(
                 "WorldEdit",
-                true,
-                WorldEdit7Hook::new,
+                false,
+                pluginName -> new WorldEdit7Hook(pluginName),
                 true
         ).subscribe(hook -> WORLD_EDIT = hook);
 

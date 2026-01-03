@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Result;
@@ -113,16 +114,16 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
         return Result.error(null);
     }
     
-    private Result<String, Runnable> getGuildUserPositionValue(User user) {
-        String value;
+    private Result<Component, Runnable> getGuildUserPositionValue(User user) {
+        Component value;
         if (user.isOwner()) {
-            value = this.pluginConfiguration.chatPositionLeader.getValue();
+            value = this.pluginConfiguration.chatPositionLeader;
         }
         else if (user.isDeputy()) {
-            value = this.pluginConfiguration.chatPositionDeputy.getValue();
+            value = this.pluginConfiguration.chatPositionDeputy;
         }
         else {
-            value = this.pluginConfiguration.chatPositionMember.getValue();
+            value = this.pluginConfiguration.chatPositionMember;
         }
         return Result.ok(value);
     }

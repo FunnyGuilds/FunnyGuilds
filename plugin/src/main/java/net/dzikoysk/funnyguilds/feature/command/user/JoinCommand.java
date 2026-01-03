@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.List;
 import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
@@ -14,14 +15,13 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.panda_lang.utilities.inject.annotations.Inject;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -47,11 +47,10 @@ public final class JoinCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             String guildNames = FunnyStringUtils.join(this.guildInvitationList.getInvitationGuildNames(user), true);
-            FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", guildNames);
-
+            
             this.messageService.getMessage(config -> config.joinInvitationList)
                     .receiver(player)
-                    .with(formatter)
+                    .with("{GUILDS}", guildNames)
                     .send();
             return;
         }
@@ -66,7 +65,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
 
         when(
                 guild.getMembers().size() >= this.config.maxMembersInGuild,
-                config -> config.inviteAmountJoin, FunnyFormatter.of("{AMOUNT}", this.config.maxMembersInGuild)
+                config -> config.inviteAmountJoin, Replacement.string("{AMOUNT}", this.config.maxMembersInGuild)
         );
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
@@ -97,7 +96,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastJoin)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
 
