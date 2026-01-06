@@ -311,26 +311,30 @@ public class FunnyGuilds extends JavaPlugin {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
         }
-        catch (net.dzikoysk.funnyguilds.data.UUIDConflictException ex) {
-            logger.error("================================================================================");
-            logger.error("                    UUID CONFLICT DETECTED - PLUGIN DISABLED");
-            logger.error("================================================================================");
-            logger.error("");
-            logger.error("  Player: " + ex.getUserName());
-            logger.error("  UUID 1: " + ex.getFirstUuid());
-            logger.error("  UUID 2: " + ex.getSecondUuid());
-            logger.error("");
-            logger.error("  This typically happens when the server switches between online-mode and");
-            logger.error("  offline-mode in server.properties. The same player name now has different");
-            logger.error("  UUIDs, causing data conflicts.");
-            logger.error("");
-            logger.error("  TO FIX THIS ISSUE:");
-            logger.error("  1. Restore the original online-mode setting in server.properties, OR");
-            logger.error("  2. Clear the user data files (backup first!)");
-            logger.error("");
-            logger.error("================================================================================");
-            this.shutdown("UUID conflict detected - see above for details");
-            return;
+        catch (IllegalStateException ex) {
+            if (ex.getMessage() != null && ex.getMessage().contains("UUID conflict detected")) {
+                String errorMessage = """
+                    ================================================================================
+                                        UUID CONFLICT DETECTED - PLUGIN DISABLED
+                    ================================================================================
+                    
+                    %s
+                    
+                    This typically happens when the server switches between online-mode and
+                    offline-mode in server.properties. The same player name now has different
+                    UUIDs, causing data conflicts.
+                    
+                    TO FIX THIS ISSUE:
+                    1. Restore the original online-mode setting in server.properties, OR
+                    2. Clear the user data files (backup first!)
+                    
+                    ================================================================================
+                    """.formatted(ex.getMessage());
+                logger.error(errorMessage);
+                this.shutdown("UUID conflict detected - see above for details");
+                return;
+            }
+            throw ex;
         }
         catch (Exception ex) {
             logger.error("Could not load data from database", ex);
