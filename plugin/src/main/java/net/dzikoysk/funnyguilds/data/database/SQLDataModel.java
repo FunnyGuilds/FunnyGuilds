@@ -117,7 +117,7 @@ public class SQLDataModel implements DataModel {
                     conflictDetector.checkAndRegister(userName, userUuid);
                     DatabaseUserSerializer.deserialize(result);
                 } catch (IllegalArgumentException e) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - invalid UUID format: " + uuidString);
+                    FunnyGuilds.getPluginLogger().warning("Skipping conflict check for user '" + userName + "' - invalid UUID format: " + uuidString);
                 }
             }
         });

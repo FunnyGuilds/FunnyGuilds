@@ -133,7 +133,7 @@ public class FlatDataModel implements DataModel {
                             UUID userUuid = UUID.fromString(uuidString);
                             conflictDetector.checkAndRegister(userName, userUuid);
                         } catch (IllegalArgumentException e) {
-                            // Invalid UUID format - will be caught during deserialization
+                            FunnyGuilds.getPluginLogger().warning("Skipping conflict check for user '" + userName + "' - invalid UUID format: " + uuidString);
                         }
                     }
                     
