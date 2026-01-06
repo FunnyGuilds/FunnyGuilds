@@ -1,13 +1,10 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.UUIDConflictException;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
@@ -21,7 +18,6 @@ import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
-import net.dzikoysk.funnyguilds.user.User;
 import panda.std.Option;
 
 public class SQLDataModel implements DataModel {
@@ -98,8 +94,8 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadUsers() {
-        // Map to track usernames and their UUIDs to detect conflicts
-        Map<String, UUID> nameToUuidMap = new HashMap<>();
+        net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector conflictDetector = 
+            new net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector();
 
         SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(result -> {
             while (result.next()) {
@@ -113,12 +109,7 @@ public class SQLDataModel implements DataModel {
                 String uuidString = result.getString("uuid");
                 UUID userUuid = UUID.fromString(uuidString);
 
-                // Check for duplicate names with different UUIDs
-                UUID existingUuid = nameToUuidMap.get(userName);
-                if (existingUuid != null && !existingUuid.equals(userUuid)) {
-                    throw new UUIDConflictException(userName, existingUuid, userUuid);
-                }
-                nameToUuidMap.put(userName, userUuid);
+                conflictDetector.checkAndRegister(userName, userUuid);
 
                 DatabaseUserSerializer.deserialize(result);
             }

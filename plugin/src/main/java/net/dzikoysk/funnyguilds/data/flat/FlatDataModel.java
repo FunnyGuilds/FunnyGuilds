@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,7 +8,6 @@ import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.UUIDConflictException;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
@@ -117,24 +114,31 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        // Map to track usernames and their UUIDs to detect conflicts
-        Map<String, UUID> nameToUuidMap = new HashMap<>();
+        net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector conflictDetector = 
+            new net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector();
 
         AtomicInteger deserializationErrors = new AtomicInteger();
         PandaStream.of(userFiles)
                 .filter(file -> file.length() != 0)
                 .mapOpt(file -> UserUtils.checkUserFile(this.pluginConfiguration, file))
-                .forEach(file -> FlatUserSerializer.deserialize(file)
-                        .peek(user -> {
-                            // Check for duplicate names with different UUIDs
-                            UUID existingUuid = nameToUuidMap.get(user.getName());
-                            if (existingUuid != null && !existingUuid.equals(user.getUUID())) {
-                                throw new UUIDConflictException(user.getName(), existingUuid, user.getUUID());
-                            }
-                            nameToUuidMap.put(user.getName(), user.getUUID());
-                        })
-                        .onEmpty(deserializationErrors::incrementAndGet)
-                );
+                .forEach(file -> {
+                    // Read name and UUID first to check for conflicts before full deserialization
+                    net.dzikoysk.funnyguilds.data.util.YamlWrapper wrapper = new net.dzikoysk.funnyguilds.data.util.YamlWrapper(file);
+                    String userName = wrapper.getString("name");
+                    String uuidString = wrapper.getString("uuid");
+                    
+                    if (userName != null && uuidString != null) {
+                        try {
+                            UUID userUuid = UUID.fromString(uuidString);
+                            conflictDetector.checkAndRegister(userName, userUuid);
+                        } catch (IllegalArgumentException e) {
+                            // Invalid UUID format - will be caught during deserialization
+                        }
+                    }
+                    
+                    // Now perform full deserialization
+                    FlatUserSerializer.deserialize(file).onEmpty(deserializationErrors::incrementAndGet);
+                });
 
         if (deserializationErrors.get() > 0) {
             FunnyGuilds.getPluginLogger().error("Users load errors " + deserializationErrors.get());
