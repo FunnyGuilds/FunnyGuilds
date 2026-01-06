@@ -1,12 +1,16 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.UUIDConflictException;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
@@ -113,11 +117,22 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
+        // Map to track usernames and their UUIDs to detect conflicts
+        Map<String, UUID> nameToUuidMap = new HashMap<>();
+
         AtomicInteger deserializationErrors = new AtomicInteger();
         PandaStream.of(userFiles)
                 .filter(file -> file.length() != 0)
                 .mapOpt(file -> UserUtils.checkUserFile(this.pluginConfiguration, file))
                 .forEach(file -> FlatUserSerializer.deserialize(file)
+                        .peek(user -> {
+                            // Check for duplicate names with different UUIDs
+                            UUID existingUuid = nameToUuidMap.get(user.getName());
+                            if (existingUuid != null && !existingUuid.equals(user.getUUID())) {
+                                throw new UUIDConflictException(user.getName(), existingUuid, user.getUUID());
+                            }
+                            nameToUuidMap.put(user.getName(), user.getUUID());
+                        })
                         .onEmpty(deserializationErrors::incrementAndGet)
                 );
 
