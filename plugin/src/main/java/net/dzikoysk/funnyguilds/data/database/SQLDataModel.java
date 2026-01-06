@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
+import net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -94,8 +95,7 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadUsers() {
-        net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector conflictDetector = 
-            new net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector();
+        UUIDConflictDetector conflictDetector = new UUIDConflictDetector();
 
         SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(result -> {
             while (result.next()) {
@@ -107,11 +107,18 @@ public class SQLDataModel implements DataModel {
                 }
 
                 String uuidString = result.getString("uuid");
-                UUID userUuid = UUID.fromString(uuidString);
+                if (uuidString == null) {
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - UUID is null");
+                    continue;
+                }
 
-                conflictDetector.checkAndRegister(userName, userUuid);
-
-                DatabaseUserSerializer.deserialize(result);
+                try {
+                    UUID userUuid = UUID.fromString(uuidString);
+                    conflictDetector.checkAndRegister(userName, userUuid);
+                    DatabaseUserSerializer.deserialize(result);
+                } catch (IllegalArgumentException e) {
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - invalid UUID format: " + uuidString);
+                }
             }
         });
 

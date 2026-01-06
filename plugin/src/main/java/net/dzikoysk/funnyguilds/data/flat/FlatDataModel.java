@@ -12,6 +12,8 @@ import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseFixAlliesAsyncTask;
+import net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -114,8 +116,7 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector conflictDetector = 
-            new net.dzikoysk.funnyguilds.data.util.UUIDConflictDetector();
+        UUIDConflictDetector conflictDetector = new UUIDConflictDetector();
 
         AtomicInteger deserializationErrors = new AtomicInteger();
         PandaStream.of(userFiles)
@@ -123,7 +124,7 @@ public class FlatDataModel implements DataModel {
                 .mapOpt(file -> UserUtils.checkUserFile(this.pluginConfiguration, file))
                 .forEach(file -> {
                     // Read name and UUID first to check for conflicts before full deserialization
-                    net.dzikoysk.funnyguilds.data.util.YamlWrapper wrapper = new net.dzikoysk.funnyguilds.data.util.YamlWrapper(file);
+                    YamlWrapper wrapper = new YamlWrapper(file);
                     String userName = wrapper.getString("name");
                     String uuidString = wrapper.getString("uuid");
                     
