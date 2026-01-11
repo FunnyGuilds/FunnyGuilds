@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
@@ -24,8 +26,10 @@ import panda.std.function.TriConsumer;
 
 public class TablistRenderer {
 
-    private final PlayerList playerList;
+    private final PlayerListAccessor playerListAccessor;
     private final UserManager userManager;
+    
+    private final Map<UUID, PlayerList> playerLists = new ConcurrentHashMap<>();
 
     private final Map<Integer, Component> unformattedCells;
     private final int cellCount;
@@ -54,6 +58,7 @@ public class TablistRenderer {
             int cellPing,
             boolean fillCells
     ) {
+        this.playerListAccessor = playerListAccessor;
         this.userManager = userManager;
         this.unformattedCells = new HashMap<>(unformattedCells);
         this.header = header;
@@ -76,8 +81,6 @@ public class TablistRenderer {
         else {
             this.cellCount = PlayerListConstants.DEFAULT_CELL_COUNT;
         }
-
-        this.playerList = playerListAccessor.createPlayerList(this.cellCount);
     }
 
     public void broadcast() {
@@ -100,10 +103,18 @@ public class TablistRenderer {
         });
     }
 
-    public void send(Player player, User user) {
+    public void startSending(Player player, User user) {
         this.createUnformattedCellsAndRun((currentUnformattedCells, currentHeader, currentFooter) -> {
             this.sendToPlayer(player, user, currentUnformattedCells, currentHeader, currentFooter);
         });
+    }
+    
+    public void stopSending(Player player) {
+        PlayerList playerList = this.playerLists.remove(player.getUniqueId());
+        if (playerList == null) {
+            return;
+        }
+        FunnyGuilds.getPluginLogger().debug("Removing PlayerList for player " + player.getName() + " (" + player.getUniqueId() + ")");
     }
    
     private void sendToPlayer(Player player, User user, Map<Integer, Component> unformattedCells, Component header, Component footer) {
@@ -111,7 +122,11 @@ public class TablistRenderer {
         Component preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
         Component preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
-        this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, this.cellTextures, this.cellPing, Collections.emptySet());
+        PlayerList playerList = this.playerLists.computeIfAbsent(player.getUniqueId(), uuid -> {
+            FunnyGuilds.getPluginLogger().debug("Creating PlayerList for player " + player.getName() + " (" + player.getUniqueId() + ")");
+            return this.playerListAccessor.createPlayerList(this.cellCount);
+        });
+        playerList.send(player, preparedCells, preparedHeader, preparedFooter, this.cellTextures, this.cellPing, Collections.emptySet());
     }
 
     private void createUnformattedCellsAndRun(TriConsumer<Map<Integer, Component>, Component, Component> unformattedCellsConsumer) {

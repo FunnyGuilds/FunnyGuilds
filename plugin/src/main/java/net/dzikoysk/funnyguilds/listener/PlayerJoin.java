@@ -37,7 +37,7 @@ public class PlayerJoin extends AbstractFunnyListener {
             this.userManager.updateUsername(user, playerName);
         }
 
-        this.plugin.getTablistRenderer().peek(renderer -> renderer.send(player, user));
+        this.plugin.getTablistRenderer().peek(renderer -> renderer.startSending(player, user));
 
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
