@@ -228,8 +228,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         Player finalPlayerAttacker = playerAttacker;
         Guild attackerGuild = attacker.getGuild().orNull();
         Guild victimGuild = victim.getGuild().orNull();
-        
-        // Format points change according to killPointsChangeFormat
+
         String plusFormatted = NumberRange.inRangeToString(attackerPointsChange, this.config.killPointsChangeFormat, true)
                 .replace("{CHANGE}", String.valueOf(Math.abs(attackerPointsChange)));
         String minusFormatted = NumberRange.inRangeToString(victimPointsChange, this.config.killPointsChangeFormat, true)
