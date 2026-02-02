@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.user.placeholders;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +53,7 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                         .map(World::getName)
                         .orElseGet(""))
                 .playerOptionProperty("online", playerOption -> playerOption
-                        .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
+                        .map(player -> new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(player::canSee).count())
                         .orElseGet(0L))
                 .playerProperty("wg-region", player -> {
                     List<String> regionNames = getWorldGuardRegionNames(player);

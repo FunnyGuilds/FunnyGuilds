@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
@@ -222,18 +223,35 @@ public class PlayerDeath extends AbstractFunnyListener {
         });
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
-        int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
+        int victimPointsChange = combatPointsChangeEvent.getVictimPointsChange();
 
         Player finalPlayerAttacker = playerAttacker;
         Guild attackerGuild = attacker.getGuild().orNull();
         Guild victimGuild = victim.getGuild().orNull();
         
+        // Format points change according to killPointsChangeFormat
+        String plusFormatted = NumberRange.inRangeToString(attackerPointsChange, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(attackerPointsChange)));
+        String minusFormatted = NumberRange.inRangeToString(victimPointsChange, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(victimPointsChange)));
+
         MessageDispatcherModifier<CommandSender, FunnyMessageDispatcher> dispatcherModifier = dispatcher -> dispatcher
                 .with("{ATTACKER}", attacker.getName())
                 .with("{VICTIM}", victim.getName())
                 .with("{ATTACKER-CHANGE}", attackerPointsChange)
                 .with("{VICTIM-CHANGE}", victimPointsChange)
+                .with("{+}", attackerPointsChange)
+                .with("{-}", victimPointsChange)
+                .with("{PLUS-FORMATTED}", plusFormatted)
+                .with("{MINUS-FORMATTED}", minusFormatted)
+                .with("{POINTS}", attackerPointsChange)
+                .with("{POINTS-FORMAT}", plusFormatted)
                 .with("{WEAPON}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
+                .with("{WEAPON-NAME}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
+                .with("{ITEM}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), true))
+                .with("{ITEM-NO-AMOUNT}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
+                .with("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
+                .with("{REMAINING-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
                 .with("{VICTIM-REMAINING-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
                 .with("{VICTIM-REMAINING-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
                 .with(
@@ -264,6 +282,46 @@ public class PlayerDeath extends AbstractFunnyListener {
                                     .flatMap(User::getGuild)
                                     .orNull();
                             return Replacement.component(
+                                    "{ATAG}",
+                                    this.config.relationalTag.chooseAndPrepareTag(
+                                            receiverGuild,
+                                            attackerGuild
+                                    )
+                            );
+                        },
+                        fallbackReceiver -> Replacement.string(
+                                "{ATAG}",
+                                attackerGuild != null ? attackerGuild.getTag() : ""
+                        )
+                )
+                .with(
+                        Player.class,
+                        messageReceiver -> {
+                            Guild receiverGuild = this.userManager
+                                    .findByUuid(messageReceiver.getUniqueId())
+                                    .flatMap(User::getGuild)
+                                    .orNull();
+                            return Replacement.component(
+                                    "{VTAG}",
+                                    this.config.relationalTag.chooseAndPrepareTag(
+                                            receiverGuild,
+                                            victimGuild
+                                    )
+                            );
+                        },
+                        fallbackReceiver -> Replacement.string(
+                                "{VTAG}",
+                                victimGuild != null ? victimGuild.getTag() : ""
+                        )
+                )
+                .with(
+                        Player.class,
+                        messageReceiver -> {
+                            Guild receiverGuild = this.userManager
+                                    .findByUuid(messageReceiver.getUniqueId())
+                                    .flatMap(User::getGuild)
+                                    .orNull();
+                            return Replacement.component(
                                     "{ATTACKER-TAG}",
                                     this.config.relationalTag.chooseAndPrepareTag(
                                             receiverGuild,
@@ -273,7 +331,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         },
                         fallbackReceiver -> Replacement.string(
                                 "{ATTACKER-TAG}",
-                                attackerGuild.getName()
+                                attackerGuild != null ? attackerGuild.getName() : attacker.getName()
                         )
                 )
                 .with(
@@ -293,7 +351,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         },
                         fallbackReceiver -> Replacement.string(
                                 "{VICTIM-TAG}",
-                                victimGuild.getName()
+                                victimGuild != null ? victimGuild.getName() : victim.getName()
                         )
                 )
                 .with(
