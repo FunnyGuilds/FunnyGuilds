@@ -239,80 +239,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .with("{VICTIM}", victim.getName())
                 .with("{ATTACKER-CHANGE}", attackerPointsChange)
                 .with("{VICTIM-CHANGE}", victimPointsChange)
-                .with("{+}", attackerPointsChange)
-                .with("{-}", victimPointsChange)
-                .with("{PLUS-FORMATTED}", plusFormatted)
-                .with("{MINUS-FORMATTED}", minusFormatted)
-                .with("{POINTS}", attackerPointsChange)
-                .with("{POINTS-FORMAT}", plusFormatted)
-                .with("{WEAPON}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
-                .with("{WEAPON-NAME}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
-                .with("{ITEM}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), true))
-                .with("{ITEM-NO-AMOUNT}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
-                .with("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
-                .with("{REMAINING-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
-                .with("{VICTIM-REMAINING-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
-                .with("{VICTIM-REMAINING-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
-                .with(
-                        Player.class,
-                        messageReceiver -> {
-                            Guild receiverGuild = this.userManager
-                                    .findByUuid(messageReceiver.getUniqueId())
-                                    .flatMap(User::getGuild)
-                                    .orNull();
-                            return Replacement.component(
-                                    "{RECEIVER-TAG}",
-                                    this.config.relationalTag.chooseAndPrepareTag(
-                                            receiverGuild,
-                                            attackerGuild
-                                    )
-                            );
-                        },
-                        fallbackReceiver -> Replacement.string(
-                                "{RECEIVER-TAG}",
-                                "NO GUILD"
-                        )
-                )
-                .with(
-                        Player.class,
-                        messageReceiver -> {
-                            Guild receiverGuild = this.userManager
-                                    .findByUuid(messageReceiver.getUniqueId())
-                                    .flatMap(User::getGuild)
-                                    .orNull();
-                            return Replacement.component(
-                                    "{ATAG}",
-                                    this.config.relationalTag.chooseAndPrepareTag(
-                                            receiverGuild,
-                                            attackerGuild
-                                    )
-                            );
-                        },
-                        fallbackReceiver -> Replacement.string(
-                                "{ATAG}",
-                                attackerGuild != null ? attackerGuild.getTag() : ""
-                        )
-                )
-                .with(
-                        Player.class,
-                        messageReceiver -> {
-                            Guild receiverGuild = this.userManager
-                                    .findByUuid(messageReceiver.getUniqueId())
-                                    .flatMap(User::getGuild)
-                                    .orNull();
-                            return Replacement.component(
-                                    "{VTAG}",
-                                    this.config.relationalTag.chooseAndPrepareTag(
-                                            receiverGuild,
-                                            victimGuild
-                                    )
-                            );
-                        },
-                        fallbackReceiver -> Replacement.string(
-                                "{VTAG}",
-                                victimGuild != null ? victimGuild.getTag() : ""
-                        )
-                )
+                .with("{ATTACKER-CHANGE-FORMATTED}", plusFormatted)
+                .with("{VICTIM-CHANGE-FORMATTED}", minusFormatted)
+                .with("{WEAPON}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), true))
+                .with("{WEAPON-NO-AMOUNT}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
+                .with("{ATTACKER-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
+                .with("{ATTACKER-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
                 .with(
                         Player.class,
                         messageReceiver -> {
@@ -330,7 +262,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         },
                         fallbackReceiver -> Replacement.string(
                                 "{ATTACKER-TAG}",
-                                attackerGuild != null ? attackerGuild.getName() : attacker.getName()
+                                attackerGuild != null ? attackerGuild.getTag() + " " : ""
                         )
                 )
                 .with(
@@ -350,7 +282,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         },
                         fallbackReceiver -> Replacement.string(
                                 "{VICTIM-TAG}",
-                                victimGuild != null ? victimGuild.getName() : victim.getName()
+                                victimGuild != null ? victimGuild.getTag() + " " : ""
                         )
                 )
                 .with(

@@ -40,6 +40,10 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationToRegionAllowed(Guild guild, @Nullable Guild userGuild) {
+        if (userGuild == null) {
+            return true;
+        }
+
         return this.isTeleportationOnNeutralRegionAllowed(guild, userGuild) &&
                 this.isTeleportationOnEnemyRegionAllowed(guild, userGuild) &&
                 this.isTeleportationOnAllyRegionAllowed(guild, userGuild);
