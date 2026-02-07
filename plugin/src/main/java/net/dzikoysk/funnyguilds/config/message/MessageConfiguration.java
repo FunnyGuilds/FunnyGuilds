@@ -69,18 +69,18 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage rankMemberAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja dodane!");
     public SendableMessage rankAllyVictim = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja odebrane!");
     public SendableMessage rankAllyAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja dodane!");
-    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public SendableMessage rankDeathMessage = ChatHolder.message("{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{ITEM-NO-AMOUNT}");
-    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}, {REMAINING-HEALTH}, {REMAINING-HEARTS}")
-    public SendableMessage rankKillAttackerMessage = TitleHolder.message("&cZabiles gracza {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
-    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {MINUS-FORMATTED}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}")
-    public SendableMessage rankDeathVictimMessage = TitleHolder.message("&cZostales zabity przez {ATTACKER}", "&7{MINUS-FORMATTED}", 10, 10, 10);
-    @Comment("Dostępne zmienne: {VICTIM}, {+}, {PLUS-FORMATTED}, {SHARE}")
-    public SendableMessage rankKillAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {ATTACKER-TAG}, {VICTIM-TAG}, {ATTACKER-CHANGE}, {VICTIM-CHANGE}, {ATTACKER-CHANGE-FORMATTED}, {VICTIM-CHANGE-FORMATTED}, {WEAPON}, {WEAPON-NO-AMOUNT}, {ATTACKER-HEALTH}, {ATTACKER-HEARTS}, {ASSISTS}")
+    public SendableMessage rankDeathMessage = ChatHolder.message("{ATTACKER-TAG}&b{ATTACKER} &7({ATTACKER-CHANGE-FORMATTED}&7) zabil {VICTIM-TAG}&b{VICTIM} &7({VICTIM-CHANGE-FORMATTED}&7) uzywajac &b{WEAPON-NO-AMOUNT}");
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {ATTACKER-TAG}, {VICTIM-TAG}, {ATTACKER-CHANGE}, {VICTIM-CHANGE}, {ATTACKER-CHANGE-FORMATTED}, {VICTIM-CHANGE-FORMATTED}, {WEAPON}, {WEAPON-NO-AMOUNT}, {ATTACKER-HEALTH}, {ATTACKER-HEARTS}")
+    public SendableMessage rankKillAttackerMessage = TitleHolder.message("&cZabiles gracza {VICTIM}", "&7{ATTACKER-CHANGE-FORMATTED}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {ATTACKER-TAG}, {VICTIM-TAG}, {VICTIM-CHANGE}, {VICTIM-CHANGE-FORMATTED}, {WEAPON}, {WEAPON-NO-AMOUNT}")
+    public SendableMessage rankDeathVictimMessage = TitleHolder.message("&cZostales zabity przez {ATTACKER}", "&7{VICTIM-CHANGE-FORMATTED}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {VICTIM}, {ASSIST-CHANGE}, {SHARE}")
+    public SendableMessage rankKillAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7+{ASSIST-CHANGE}", 10, 10, 10);
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public Component rankAssistMessage = ComponentUtil.colored("&7Asystowali: {ASSISTS}");
-    @Comment("Dostępne zmienne: {PLAYER}, {+}, {PLUS-FORMATTED}, {SHARE}")
-    public Component rankAssistEntry = ComponentUtil.colored("&b{PLAYER} &7({PLUS-FORMATTED}&7, {SHARE}% dmg)");
+    @Comment("Dostępne zmienne: {PLAYER}, {CHANGE}, {SHARE}")
+    public Component rankAssistEntry = ComponentUtil.colored("&b{PLAYER} &7(+{CHANGE}&7, {SHARE}% dmg)");
     @Comment("Znaki oddzielające kolejne wpisy o asystujących graczach")
     public Component rankAssistDelimiter = ComponentUtil.colored("&8, ");
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")

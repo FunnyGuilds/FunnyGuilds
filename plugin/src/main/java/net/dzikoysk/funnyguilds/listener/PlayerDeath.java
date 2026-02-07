@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
@@ -222,40 +223,28 @@ public class PlayerDeath extends AbstractFunnyListener {
         });
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
-        int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
+        int victimPointsChange = combatPointsChangeEvent.getVictimPointsChange();
 
         Player finalPlayerAttacker = playerAttacker;
         Guild attackerGuild = attacker.getGuild().orNull();
         Guild victimGuild = victim.getGuild().orNull();
-        
+
+        String plusFormatted = NumberRange.inRangeToString(attackerPointsChange, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(attackerPointsChange)));
+        String minusFormatted = NumberRange.inRangeToString(victimPointsChange, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(victimPointsChange)));
+
         MessageDispatcherModifier<CommandSender, FunnyMessageDispatcher> dispatcherModifier = dispatcher -> dispatcher
                 .with("{ATTACKER}", attacker.getName())
                 .with("{VICTIM}", victim.getName())
                 .with("{ATTACKER-CHANGE}", attackerPointsChange)
                 .with("{VICTIM-CHANGE}", victimPointsChange)
-                .with("{WEAPON}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
-                .with("{VICTIM-REMAINING-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
-                .with("{VICTIM-REMAINING-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
-                .with(
-                        Player.class,
-                        messageReceiver -> {
-                            Guild receiverGuild = this.userManager
-                                    .findByUuid(messageReceiver.getUniqueId())
-                                    .flatMap(User::getGuild)
-                                    .orNull();
-                            return Replacement.component(
-                                    "{RECEIVER-TAG}",
-                                    this.config.relationalTag.chooseAndPrepareTag(
-                                            receiverGuild,
-                                            attackerGuild
-                                    )
-                            );
-                        },
-                        fallbackReceiver -> Replacement.string(
-                                "{RECEIVER-TAG}",
-                                "NO GUILD"
-                        )
-                )
+                .with("{ATTACKER-CHANGE-FORMATTED}", plusFormatted)
+                .with("{VICTIM-CHANGE-FORMATTED}", minusFormatted)
+                .with("{WEAPON}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), true))
+                .with("{WEAPON-NO-AMOUNT}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
+                .with("{ATTACKER-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
+                .with("{ATTACKER-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
                 .with(
                         Player.class,
                         messageReceiver -> {
@@ -273,7 +262,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         },
                         fallbackReceiver -> Replacement.string(
                                 "{ATTACKER-TAG}",
-                                attackerGuild.getName()
+                                attackerGuild != null ? attackerGuild.getTag() + " " : ""
                         )
                 )
                 .with(
@@ -293,7 +282,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                         },
                         fallbackReceiver -> Replacement.string(
                                 "{VICTIM-TAG}",
-                                victimGuild.getName()
+                                victimGuild != null ? victimGuild.getTag() + " " : ""
                         )
                 )
                 .with(

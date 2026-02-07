@@ -803,7 +803,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public Component gtopPoints = AMPERSAND_SERIALIZER.deserialize(" &7[&b{POINTS}&7]");
 
     @Comment("")
-    @Comment("Wygląd znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED}, w zależności od wartości zmiany w rankingu")
+    @Comment("Wygląd znacznika {ATTACKER-CHANGE-FORMATTED} i {VICTIM-CHANGE-FORMATTED}, w zależności od wartości zmiany w rankingu")
     @Comment("Lista powinna być podana od najmniejszych do największych wartości i zawierać tylko liczby naturalne, z zerem włącznie")
     @Comment("Elementy listy powinny być postaci: \"minChange-maxChange wygląd\", np.: \"0-50 &a+{CHANGE}\"")
     @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minChange w górę, np.: \"50-* &2+{CHANGE}\"")
@@ -863,20 +863,20 @@ public class PluginConfiguration extends OkaeriConfig {
     public static class RelationalTag extends OkaeriConfig {
 
         @Comment("Wygląd tagu osób w tej samej gildii")
-        public String our = "&a{TAG}&f";
+        public String our = "&a{TAG}&f ";
 
         @Comment("")
         @Comment("Wygląd tagu gildii sojuszniczej")
-        public String allies = "&6{TAG}&f";
+        public String allies = "&6{TAG}&f ";
 
         @Comment("")
         @Comment("Wygląd tagu wrogiej gildii")
-        public String enemies = "&c{TAG}&f";
+        public String enemies = "&c{TAG}&f ";
 
         @Comment("")
         @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
-        public String other = "&7{TAG}&f";
-        
+        public String other = "&7{TAG}&f ";
+
         public Component chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return Component.empty();
