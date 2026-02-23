@@ -69,8 +69,14 @@ dependencies {
     implementation("com.zaxxer:HikariCP:4.0.3")
 
     implementation("org.mariadb.jdbc:mariadb-java-client:3.1.4")
-    
+
     implementation("org.bstats:bstats-bukkit:3.1.0")
+
+    /* GUI */
+    implementation("com.github.stefvanschie.inventoryframework:IF:0.11.6")
+
+    /* Cache */
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
     // probably fix for some exception?
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
@@ -86,6 +92,8 @@ dependencies {
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
     shadow("us.dynmap:DynmapCoreAPI:3.7-beta-6")
 
+
+
     /* tests */
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:6.0.57")
@@ -94,10 +102,10 @@ dependencies {
 tasks.processResources {
     val grgit = grgitService.service.get().grgit
     val isCiServer = System.getenv().containsKey("CI")
-    
+
     val version = "${project.version}${if (isCiServer) "+CI" else ""}"
     val commitId = grgit.head().abbreviatedId
-    
+
     expand(
         "funnyGuildsVersion" to version,
         "funnyGuildsCommit" to commitId
@@ -119,6 +127,8 @@ tasks.withType<ShadowJar> {
     relocate("dev.peri", "net.dzikoysk.funnyguilds.libs.dev.peri")
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
     relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")
+    relocate("com.github.stefvanschie.inventoryframework", "net.dzikoysk.funnyguilds.libs.inventoryframework")
+    relocate("com.github.benmanes.caffeine", "net.dzikoysk.funnyguilds.libs.caffeine")
 
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")
@@ -130,6 +140,7 @@ tasks.withType<ShadowJar> {
         exclude(dependency("net.dzikoysk:funnycommands:.*"))
         exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
+        exclude(dependency("com.github.stefvanschie.inventoryframework:IF:.*"))
 
         // nms implementation modules are not referenced in the project but are required at runtime
         parent!!.project(":nms").subprojects.forEach {
