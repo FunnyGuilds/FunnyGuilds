@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.feature.command.admin.DeathsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeleteAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeputyAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.GuildsEnabledCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KickAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KillsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LeaderAdminCommand;
@@ -132,7 +133,8 @@ public final class FunnyCommandsConfiguration {
                 .command("tag", commands.admin.tag, TagCommand.class)
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
-                .command("validity", commands.admin.validity, ValidityAdminCommand.class);
+                .command("validity", commands.admin.validity, ValidityAdminCommand.class)
+                .command("items", commands.admin.items, ItemsAdminCommand.class);
 
         return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()

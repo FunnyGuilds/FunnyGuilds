@@ -73,6 +73,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                     inputText,
                     user
             );
+            replacedText = this.rankPlaceholdersService.format(user, replacedText, user);
             return LEGACY_SERIALIZER.serialize(replacedText);
         }
 

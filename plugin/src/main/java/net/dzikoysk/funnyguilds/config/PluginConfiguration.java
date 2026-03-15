@@ -199,65 +199,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
 
-    @Comment("")
-    @Comment("Przedmioty wymagane do założenia gildii")
-    @Comment("Tylko wartości ujęte w <> są wymagane - reszta, ujeta w [], jest opcjonalna")
-    @Comment("Wzór: <ilosc> <przedmiot>:[metadata] [name:lore:enchants:eggtype:skullowner:armorcolor:flags]")
-    @Comment("Przykład: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
-    @Comment(" ")
-    @Comment("Zamiast spacji wstawiaj podkreślnik: _")
-    @Comment("Aby zrobić nową linię lore wstaw hash: #")
-    @Comment("Aby w lore użyć znaku # wstaw {HASH}")
-    @Comment(" ")
-    @Comment("eggtype to typ jajka do spawnu moba, używane tylko gdy typem przedmiotu jest MONSTER_EGG")
-    @Comment("skullowner to nick gracza, którego głowa jest tworzona, używane tylko gdy typem przedmiotu jest SKULL_ITEM")
-    @Comment("armorcolor to kolor, w którym będzie przedmiot, używane tylko gdy przedmiot jest częścią zbroi skórzanej")
-    @Comment("flags to flagi, które maja byc nałożone na przedmiot. Dostepne flagi: HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_DESTROYS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS")
-    @Comment("Kolor musi byc podany w postaci: \"R_G_B\"")
-    @Comment(" ")
-    @Comment("UWAGA: Nazwy przedmiotów musza pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    @Comment("UWAGA: Typ jajka musi pasować do typów entity podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
-    @CustomKey("items")
-    public List<ItemStack> createItems = ItemUtils.parseItems("5 stone", "5 dirt", "5 tnt");
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość doświadczenia wymagana do założenia gildii")
-    public int requiredExperience = 0;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość pieniędzy wymagana do założenia gildii")
-    @Comment("UWAGA: Aby ta opcja mogła działać - na serwerze musi być plugin Vault oraz plugin dodający ekonomię")
-    public double requiredMoney = 0;
-
-    @Comment("")
-    @Comment("Przedmioty wymagane do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CustomKey("items-vip")
-    public List<ItemStack> createItemsVip = ItemUtils.parseItems("1 gold_ingot");
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość doświadczenia wymagana do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
-    public int requiredExperienceVip = 0;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość pieniędzy wymagana do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
-    @Comment("UWAGA: Aby ta opcja mogła działać - na serwerze musi być plugin Vault oraz plugin dodający ekonomię")
-    public double requiredMoneyVip = 0;
-
-    @Comment("")
-    @Comment("Czy opcja wymaganego rankingu do założenia gildii ma byc włączona")
-    public boolean rankCreateEnable = true;
-
-    @Comment("")
-    @Comment("Minimalny ranking wymagany do założenia gildii")
-    public int rankCreate = 1000;
-
-    @Comment("")
-    @Comment("Minimalny ranking wymagany do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.rank")
-    public int rankCreateVip = 800;
 
     @Comment("")
     @Comment("Minimalna odległość od spawnu")

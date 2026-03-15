@@ -261,8 +261,37 @@ public final class ItemUtils {
                 .sum();
     }
 
+    public static int getItemAmountByMaterial(Material material, Inventory inv) {
+        int amount = 0;
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && item.getType() == material) {
+                amount += item.getAmount();
+            }
+        }
+        return amount;
+    }
+
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
         return collection.toArray(new ItemStack[0]);
+    }
+
+    public static List<ItemStack> buildRequiredItems(
+            net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet set,
+            net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration config
+    ) {
+        List<ItemStack> items = new java.util.ArrayList<>();
+        if (!set.requirements.itemsEnabled) {
+            return items;
+        }
+        for (java.util.Map.Entry<String, Integer> entry : set.getItems().entrySet()) {
+            config.getLibraryItem(entry.getKey()).ifPresent(def -> {
+                Material material = Material.matchMaterial(def.material);
+                if (material != null) {
+                    items.add(new ItemStack(material, entry.getValue()));
+                }
+            });
+        }
+        return items;
     }
 
 }

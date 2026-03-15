@@ -125,6 +125,7 @@ public class CommandsConfiguration extends OkaeriConfig {
         public String base = "ga baza";
         public String logouts = "ga logouts";
         public String assists = "ga assists";
+        public String items = "ga items";
 
     }
 
