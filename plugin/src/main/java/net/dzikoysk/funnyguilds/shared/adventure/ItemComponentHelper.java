@@ -23,16 +23,26 @@ public final class ItemComponentHelper {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfiguration config = plugin.getPluginConfiguration();
 
+        if (item == null) {
+            return Component.translatable(Material.AIR).style(Style.empty());
+        }
+
+        Material material = item.getType();
+        if (material.isAir() || item.getAmount() <= 0) {
+            return Component.translatable(material).style(Style.empty());
+        }
+
         Component itemComponent = Component.empty();
         if (displayAmount) {
             itemComponent = itemComponent.append(Component.text(item.getAmount()).append(config.itemAmountSuffix));
         }
 
-        Material material = item.getType();
         itemComponent = itemComponent.append(Component.translatable(item));
         itemComponent = itemComponent.style(Style.empty());
 
-        itemComponent = itemComponent.hoverEvent(item);
+        ItemStack hoverItem = item.clone();
+        hoverItem.setAmount(Math.max(1, Math.min(99, hoverItem.getAmount())));
+        itemComponent = itemComponent.hoverEvent(hoverItem);
 
         return itemComponent;
     }
