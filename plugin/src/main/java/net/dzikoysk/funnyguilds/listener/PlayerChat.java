@@ -48,8 +48,8 @@ public class PlayerChat extends AbstractFunnyListener {
             return;
         }
         User user = userOption.get();
-        
-        Component message = event.message();
+
+        Component message = event.originalMessage();
         user.getGuild()
                 .map(guild -> this.sendGuildMessage(
                         user,
