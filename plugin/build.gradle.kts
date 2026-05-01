@@ -73,7 +73,7 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.1.0")
 
     /* GUI */
-    implementation("com.github.stefvanschie.inventoryframework:IF:0.11.6")
+    implementation("com.github.stefvanschie.inventoryframework:IF:0.12.0")
 
     // probably fix for some exception?
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")

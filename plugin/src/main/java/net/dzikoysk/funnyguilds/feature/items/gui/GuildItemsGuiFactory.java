@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
+import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -80,7 +81,7 @@ public final class GuildItemsGuiFactory {
         List<String> pattern = guiConfig.pattern;
         int rows = guiConfig.rows;
 
-        StaticPane pane = new StaticPane(0, 0, 9, rows, Pane.Priority.NORMAL);
+        StaticPane pane = new StaticPane(9, rows, Pane.Priority.NORMAL);
 
         for (int row = 0; row < Math.min(pattern.size(), rows); row++) {
             String line = pattern.get(row);
@@ -96,7 +97,7 @@ public final class GuildItemsGuiFactory {
             }
         }
 
-        chestGui.addPane(pane);
+        chestGui.addPane(Slot.fromXY(0, 0), pane);
     }
 
     static List<String> extractTokens(String line) {
