@@ -12,14 +12,15 @@ import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
-import net.dzikoysk.funnyguilds.feature.items.gui.GuiItemBuilder;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -277,9 +278,99 @@ public final class ItemUtils {
         }
         for (Map.Entry<String, Integer> entry : set.getItems().entrySet()) {
             config.getLibraryItem(entry.getKey())
-                    .ifPresent(def -> items.add(GuiItemBuilder.toItemStack(def, entry.getValue())));
+                    .ifPresent(def -> items.add(toItemStack(def, entry.getValue())));
         }
         return items;
+    }
+
+    public static ItemStack toItemStack(GuildItemDefinition def, int amount) {
+        if (def == null) return new ItemStack(Material.STONE, amount);
+
+        Material material = Material.matchMaterial(def.material);
+        if (material == null) material = Material.STONE;
+
+        ItemStack item = new ItemStack(material, amount);
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return item;
+
+        if (def.name != null && !def.name.isEmpty()) {
+            meta.displayName(MiniLegacyHelper.miniMessage().deserialize(def.name));
+        }
+
+        if (def.lore != null && !def.lore.isEmpty()) {
+            List<Component> lore = new ArrayList<>();
+            for (String line : def.lore) {
+                lore.add(line == null || line.isEmpty()
+                        ? Component.empty()
+                        : MiniLegacyHelper.miniMessage().deserialize(line));
+            }
+            meta.lore(lore);
+        }
+
+        applyDefinitionEnchants(meta, def.getEnchantsOrEmpty());
+        applyDefinitionFlags(meta, def.getFlagsOrEmpty());
+        applySkullOwner(meta, def.skullOwner, def.material);
+        applyArmorColor(meta, def.armorColor, def.material);
+
+        if (def.customModelData != null) {
+            meta.setCustomModelData(def.customModelData);
+        }
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private static void applyDefinitionEnchants(ItemMeta meta, List<String> enchants) {
+        for (String enchantStr : enchants) {
+            String[] parts = enchantStr.split(":");
+            if (parts.length < 1) continue;
+            Enchantment enchant = matchEnchant(parts[0]);
+            if (enchant == null) continue;
+            int level = 1;
+            if (parts.length >= 2) {
+                try { level = Integer.parseInt(parts[1]); }
+                catch (NumberFormatException ignored) { /* default to 1 */ }
+            }
+            meta.addEnchant(enchant, level, true);
+        }
+    }
+
+    private static void applyDefinitionFlags(ItemMeta meta, List<String> flags) {
+        for (String flagStr : flags) {
+            matchItemFlag(flagStr).peek(meta::addItemFlags);
+        }
+    }
+
+    private static void applySkullOwner(ItemMeta meta, String skullOwner, String material) {
+        if (skullOwner == null || skullOwner.isEmpty()) return;
+        if (!(meta instanceof SkullMeta skullMeta)) {
+            FunnyGuilds.getPluginLogger().parser("skull-owner ignored: material " + material + " is not a skull");
+            return;
+        }
+        skullMeta.setPlayerProfile(Bukkit.createProfile(skullOwner));
+    }
+
+    private static void applyArmorColor(ItemMeta meta, String armorColor, String material) {
+        if (armorColor == null || armorColor.isEmpty()) return;
+        if (!(meta instanceof LeatherArmorMeta armorMeta)) {
+            FunnyGuilds.getPluginLogger().parser("armor-color ignored: material " + material + " is not leather armor");
+            return;
+        }
+        String[] parts = armorColor.split("_");
+        if (parts.length != 3) {
+            FunnyGuilds.getPluginLogger().parser("Invalid armor-color (expected R_G_B): " + armorColor);
+            return;
+        }
+        try {
+            armorMeta.setColor(Color.fromRGB(
+                    Integer.parseInt(parts[0]),
+                    Integer.parseInt(parts[1]),
+                    Integer.parseInt(parts[2])
+            ));
+        }
+        catch (NumberFormatException ex) {
+            FunnyGuilds.getPluginLogger().parser("Invalid armor-color (non-integer): " + armorColor);
+        }
     }
 
 }

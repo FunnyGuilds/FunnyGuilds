@@ -26,11 +26,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, User user) {
         GuildItemSet set = this.guildItemSetService.getSetForPlayer(player);
-
-        String setName = this.itemsConfiguration.getGuildItemSets().entrySet().stream()
-                .filter(e -> e.getValue() == set)
-                .map(Map.Entry::getKey)
-                .findFirst().orElse("default");
+        String setName = this.guildItemSetService.getNameForSet(set);
 
         if (this.itemsConfiguration.gui.enabled) {
             GuildItemsGui gui = GuildItemsGuiFactory.create(
@@ -79,7 +75,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                             .receiver(player)
                             .with("{ITEM}", counts.getDisplayName())
                             .with("{KEY}", entry.getKey())
-                            .with("{CURRENT}", counts.getTotal())
+                            .with("{CURRENT}", counts.getInv())
                             .with("{REQUIRED}", counts.getRequired())
                             .send();
                 }

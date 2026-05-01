@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.items;
 
 import java.util.List;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import org.bukkit.entity.Player;
@@ -18,7 +19,18 @@ public class GuildItemSetService {
         return sorted.stream()
                 .filter(set -> set.permission == null || player.hasPermission(set.permission))
                 .findFirst()
-                .orElseGet(() -> sorted.isEmpty() ? new GuildItemSet() : sorted.get(sorted.size() - 1));
+                .orElseGet(() -> sorted.stream()
+                        .filter(set -> set.permission == null)
+                        .findFirst()
+                        .orElseGet(GuildItemSet::new));
+    }
+
+    public String getNameForSet(GuildItemSet set) {
+        return config.getGuildItemSets().entrySet().stream()
+                .filter(entry -> entry.getValue() == set)
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse("default");
     }
 
 }

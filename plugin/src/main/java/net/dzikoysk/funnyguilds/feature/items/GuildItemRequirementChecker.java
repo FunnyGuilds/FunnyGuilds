@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.SetRequirements;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
-import net.dzikoysk.funnyguilds.feature.items.gui.GuiItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -52,7 +51,7 @@ public class GuildItemRequirementChecker {
                 int ender = 0;
 
                 if (libraryItem.isPresent()) {
-                    ItemStack template = GuiItemBuilder.toItemStack(libraryItem.get(), 1);
+                    ItemStack template = ItemUtils.toItemStack(libraryItem.get(), 1);
                     inv = ItemUtils.getItemAmount(template, player.getInventory());
                     ender = ItemUtils.getItemAmount(template, player.getEnderChest());
                 }

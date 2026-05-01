@@ -41,23 +41,28 @@ public final class ItemsAdminCommand extends AbstractFunnyCommand {
         GuildItemSet set;
         String setName;
         if (args.length >= 2) {
-            setName = args[1];
-            set = itemsConfiguration.getGuildItemSets().get(setName);
+            String requestedName = args[1];
+            Map<String, GuildItemSet> sets = itemsConfiguration.getGuildItemSets();
+            set = sets.get(requestedName);
+            if (set == null) {
+                set = sets.entrySet().stream()
+                        .filter(e -> e.getKey().equalsIgnoreCase(requestedName))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .orElse(null);
+            }
             if (set == null) {
                 this.messageService.getMessage(config -> config.itemsSetNotFound)
                         .receiver(sender)
-                        .with("{SET}", setName)
-                        .with("{SETS}", String.join(", ", itemsConfiguration.getGuildItemSets().keySet()))
+                        .with("{SET}", requestedName)
+                        .with("{SETS}", String.join(", ", sets.keySet()))
                         .send();
                 return;
             }
+            setName = guildItemSetService.getNameForSet(set);
         } else {
             set = guildItemSetService.getSetForPlayer(targetPlayer);
-            setName = itemsConfiguration.getGuildItemSets().entrySet().stream()
-                    .filter(e -> e.getValue() == set)
-                    .map(Map.Entry::getKey)
-                    .findFirst()
-                    .orElse("default");
+            setName = guildItemSetService.getNameForSet(set);
         }
 
         // Budujemy przedmioty z setu i dajemy graczowi
@@ -73,11 +78,14 @@ public final class ItemsAdminCommand extends AbstractFunnyCommand {
 
         int givenCount = 0;
         for (ItemStack item : items) {
+            int requested = item.getAmount();
             Map<Integer, ItemStack> overflow = targetPlayer.getInventory().addItem(item);
+            int leftoverAmount = 0;
             for (ItemStack leftover : overflow.values()) {
+                leftoverAmount += leftover.getAmount();
                 targetPlayer.getWorld().dropItemNaturally(targetPlayer.getLocation(), leftover);
             }
-            givenCount += item.getAmount();
+            givenCount += requested - leftoverAmount;
         }
 
         final String finalSetName = setName;

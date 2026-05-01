@@ -159,7 +159,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                                                 .receiver(player)
                                                 .with("{ITEM}", counts.getDisplayName())
                                                 .with("{KEY}", entry.getKey())
-                                                .with("{CURRENT}", counts.getTotal())
+                                                .with("{CURRENT}", counts.getInv())
                                                 .with("{REQUIRED}", counts.getRequired())
                                                 .send();
                                     }
@@ -217,14 +217,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         boolean adminBypass = player.hasPermission(this.itemsConfiguration.adminItemsBypassPermission);
 
         if (!adminBypass) {
-            player.getInventory().removeItem(ItemUtils.toArray(ItemUtils.buildRequiredItems(
-                    activeSet, this.itemsConfiguration)));
-
-            if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
-                int newLevel = player.getLevel() - activeSet.requiredLevel;
-                player.setLevel(Math.max(0, newLevel));
-            }
-
+            // Withdraw money first — it's the only deduction that can fail. If we did items/levels first
+            // and Vault failed, the player would be charged without getting a guild.
             if (VaultHook.isEconomyHooked() && activeSet.requirements.moneyEnabled && activeSet.requiredMoney > 0) {
                 EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, activeSet.requiredMoney);
 
@@ -235,6 +229,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
                             .send();
                     return;
                 }
+            }
+
+            player.getInventory().removeItem(ItemUtils.toArray(ItemUtils.buildRequiredItems(
+                    activeSet, this.itemsConfiguration)));
+
+            if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
+                int newLevel = player.getLevel() - activeSet.requiredLevel;
+                player.setLevel(Math.max(0, newLevel));
             }
         }
 
