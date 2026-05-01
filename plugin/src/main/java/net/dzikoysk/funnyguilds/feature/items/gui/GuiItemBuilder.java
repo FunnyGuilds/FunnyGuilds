@@ -23,16 +23,20 @@ public final class GuiItemBuilder {
     private GuiItemBuilder() {}
 
     public static ItemStack buildSimple(GuildItemDefinition def) {
+        return toItemStack(def, 1);
+    }
+
+    public static ItemStack toItemStack(GuildItemDefinition def, int amount) {
         if (def == null) return fallback();
 
         Material material = Material.matchMaterial(def.material);
         if (material == null) material = Material.STONE;
 
-        ItemStack item = new ItemStack(material);
+        ItemStack item = new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
-        if (def.name != null) {
+        if (def.name != null && !def.name.isEmpty()) {
             meta.displayName(miniMessage(def.name));
         }
 
@@ -65,7 +69,7 @@ public final class GuiItemBuilder {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
-        String rawName = def.name != null ? def.name : def.material;
+        String rawName = (def.name != null && !def.name.isEmpty()) ? def.name : def.material;
         String prefix = display.namePrefix != null ? display.namePrefix : "";
         meta.displayName(miniMessage(prefix + rawName));
 

@@ -132,11 +132,11 @@ public final class CreateCommand extends AbstractFunnyCommand {
                                 .with("{REQUIRED}", String.format("%.0f", activeSet.requiredMoney))
                                 .send();
                     }
-                    if (!result.isMeetsExperience() && activeSet.requirements.experienceEnabled) {
-                        this.messageService.getMessage(config -> config.itemsRequirementExperience)
+                    if (!result.isMeetsLevel() && activeSet.requirements.levelEnabled) {
+                        this.messageService.getMessage(config -> config.itemsRequirementLevel)
                                 .receiver(player)
                                 .with("{CURRENT}", player.getLevel())
-                                .with("{REQUIRED}", activeSet.requiredExperience)
+                                .with("{REQUIRED}", activeSet.requiredLevel)
                                 .send();
                     }
                     if (!result.isMeetsRank() && activeSet.requirements.rankEnabled) {
@@ -220,8 +220,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
             player.getInventory().removeItem(ItemUtils.toArray(ItemUtils.buildRequiredItems(
                     activeSet, this.itemsConfiguration)));
 
-            if (activeSet.requirements.experienceEnabled && activeSet.requiredExperience > 0) {
-                int newLevel = player.getLevel() - activeSet.requiredExperience;
+            if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
+                int newLevel = player.getLevel() - activeSet.requiredLevel;
                 player.setLevel(Math.max(0, newLevel));
             }
 

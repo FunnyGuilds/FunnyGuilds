@@ -35,7 +35,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         if (this.itemsConfiguration.gui.enabled) {
             GuildItemsGui gui = GuildItemsGuiFactory.create(
                     player, user, set, setName,
-                    this.itemsConfiguration, this.messageService, this.plugin
+                    this.itemsConfiguration, this.messageService
             );
             gui.open();
         } else {
@@ -55,11 +55,11 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                         .with("{REQUIRED}", String.format("%.0f", set.requiredMoney))
                         .send();
             }
-            if (set.requirements.experienceEnabled) {
-                this.messageService.getMessage(config -> config.itemsRequirementExperience)
+            if (set.requirements.levelEnabled) {
+                this.messageService.getMessage(config -> config.itemsRequirementLevel)
                         .receiver(player)
                         .with("{CURRENT}", player.getLevel())
-                        .with("{REQUIRED}", set.requiredExperience)
+                        .with("{REQUIRED}", set.requiredLevel)
                         .send();
             }
             if (set.requirements.rankEnabled) {

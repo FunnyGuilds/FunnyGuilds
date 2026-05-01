@@ -13,7 +13,7 @@ public class SetRequirements extends OkaeriConfig {
 
     public boolean itemsEnabled = true;
 
-    public boolean experienceEnabled = true;
+    public boolean levelEnabled = true;
 
     public boolean moneyEnabled = true;
 

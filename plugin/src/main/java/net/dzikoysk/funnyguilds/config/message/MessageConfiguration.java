@@ -738,7 +738,6 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("<------- Items System Messages -------> #")
     public SendableMessage itemsAdminBypass = ChatHolder.message("<yellow>⚡ Posiadasz uprawnienia admina — wymagania zostają pominięte.");
-    public SendableMessage itemsNotConfigured = ChatHolder.message("<red>System przedmiotów nie jest skonfigurowany!");
     @Comment("Dostępne zmienne: {PLAYER}")
     public SendableMessage itemsPlayerOffline = ChatHolder.message("<red>Gracz <white>{PLAYER} <red>nie jest online!");
     @Comment("Dostępne zmienne: {SET}, {SETS}")
@@ -750,7 +749,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {CURRENT}, {REQUIRED}")
     public SendableMessage itemsRequirementMoney = ChatHolder.message("<gray>  Pieniądze: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
     @Comment("Dostępne zmienne: {CURRENT}, {REQUIRED}")
-    public SendableMessage itemsRequirementExperience = ChatHolder.message("<gray>  Doświadczenie: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    public SendableMessage itemsRequirementLevel = ChatHolder.message("<gray>  Poziom: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
     @Comment("Dostępne zmienne: {CURRENT}, {REQUIRED}")
     public SendableMessage itemsRequirementRank = ChatHolder.message("<gray>  Ranking: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
     public SendableMessage itemsRequirementItemsHeader = ChatHolder.message("<gray>  Brakujące przedmioty:");
@@ -775,7 +774,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Linie GUI summary (MiniMessage, wstawiane do lore ItemStack)")
     @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
     public String itemsGuiMoneyLine = "<gray>Pieniądze: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
-    public String itemsGuiExperienceLine = "<gray>Doświadczenie: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiLevelLine = "<gray>Poziom: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
     public String itemsGuiRankLine = "<gray>Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
     public String itemsGuiStatusReady = "<green>✔ Możesz założyć gildię!";
     public String itemsGuiStatusNotReady = "<red>✘ Brakuje Ci wymagań";

@@ -75,9 +75,6 @@ dependencies {
     /* GUI */
     implementation("com.github.stefvanschie.inventoryframework:IF:0.11.6")
 
-    /* Cache */
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-
     // probably fix for some exception?
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
 
@@ -91,8 +88,6 @@ dependencies {
     shadow("me.clip:placeholderapi:2.11.7")
     shadow("com.github.decentsoftware-eu:decentholograms:2.8.12")
     shadow("us.dynmap:DynmapCoreAPI:3.7-beta-6")
-
-
 
     /* tests */
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
@@ -128,7 +123,6 @@ tasks.withType<ShadowJar> {
     relocate("me.pikamug", "net.dzikoysk.funnyguilds.libs.me.pikamug")
     relocate("org.mariadb", "net.dzikoysk.funnyguilds.libs.org.mariadb")
     relocate("com.github.stefvanschie.inventoryframework", "net.dzikoysk.funnyguilds.libs.inventoryframework")
-    relocate("com.github.benmanes.caffeine", "net.dzikoysk.funnyguilds.libs.caffeine")
 
     exclude("org/checkerframework/**")
     exclude("org/intellij/lang/annotations/**")

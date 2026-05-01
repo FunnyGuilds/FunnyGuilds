@@ -6,24 +6,24 @@ import java.util.Map;
 public final class ItemRequirementResult {
 
     private final boolean meetsMoney;
-    private final boolean meetsExperience;
+    private final boolean meetsLevel;
     private final boolean meetsRank;
     private final Map<String, ItemCountResult> itemCounts;
 
     public ItemRequirementResult(
             boolean meetsMoney,
-            boolean meetsExperience,
+            boolean meetsLevel,
             boolean meetsRank,
             Map<String, ItemCountResult> itemCounts
     ) {
         this.meetsMoney = meetsMoney;
-        this.meetsExperience = meetsExperience;
+        this.meetsLevel = meetsLevel;
         this.meetsRank = meetsRank;
         this.itemCounts = Collections.unmodifiableMap(itemCounts);
     }
 
     public boolean meetsAll() {
-        if (!meetsMoney || !meetsExperience || !meetsRank) {
+        if (!meetsMoney || !meetsLevel || !meetsRank) {
             return false;
         }
         for (ItemCountResult count : itemCounts.values()) {
@@ -38,8 +38,8 @@ public final class ItemRequirementResult {
         return meetsMoney;
     }
 
-    public boolean isMeetsExperience() {
-        return meetsExperience;
+    public boolean isMeetsLevel() {
+        return meetsLevel;
     }
 
     public boolean isMeetsRank() {

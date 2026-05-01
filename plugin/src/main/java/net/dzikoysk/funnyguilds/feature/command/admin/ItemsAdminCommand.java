@@ -27,12 +27,6 @@ public final class ItemsAdminCommand extends AbstractFunnyCommand {
     public void execute(CommandSender sender, String[] args) {
         when(args.length < 1, config -> config.generalNoNickGiven);
 
-        if (itemsConfiguration == null) {
-            this.messageService.getMessage(config -> config.itemsNotConfigured)
-                    .receiver(sender).send();
-            return;
-        }
-
         User target = UserValidation.requireUserByName(args[0]);
         Player targetPlayer = Bukkit.getPlayer(target.getUUID());
 

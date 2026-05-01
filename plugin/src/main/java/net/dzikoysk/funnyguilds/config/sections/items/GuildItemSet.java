@@ -30,7 +30,7 @@ public class GuildItemSet extends OkaeriConfig {
     public Map<String, Integer> items = new LinkedHashMap<>();
 
     /** Wymagane doświadczenie. */
-    public int requiredExperience = 0;
+    public int requiredLevel = 0;
 
     /** Wymagane pieniądze (Vault). */
     public double requiredMoney = 0.0;

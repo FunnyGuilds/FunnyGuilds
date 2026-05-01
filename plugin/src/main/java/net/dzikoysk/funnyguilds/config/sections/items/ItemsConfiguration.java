@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 /**
  * Główna klasa konfiguracji {@code items.yml}.
@@ -37,6 +38,9 @@ public class ItemsConfiguration extends OkaeriConfig {
     @Comment("=======================================")
     @Comment("Wszystkie itemy — zarówno wymagane do gildii jak i GUI — definiowane tu.")
     @Comment("Klucz = unikalna nazwa, referencjonowana w setach i patternie GUI.")
+    @Comment("UWAGA: Dla itemów wymaganych do gildii, ustawione pola (name/lore/enchants/custom-model-data)")
+    @Comment("są wymuszane przy sprawdzaniu — gracz musi mieć item z dokładnie taką metadaną.")
+    @Comment("Pozostaw pola puste, by akceptować vanilla itemy danego materiału.")
     public Map<String, GuildItemDefinition> guildItemLibrary = defaultLibrary();
 
     @Comment("")
@@ -185,8 +189,11 @@ public class ItemsConfiguration extends OkaeriConfig {
         }
         try {
             subConfig.updateDeclaration();
-        } catch (Exception ignored) {
-            // updateDeclaration may fail on already-initialized configs, that's OK
+        }
+        catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().debug(
+                    "Failed to update declaration for sub-config " + subConfig.getClass().getSimpleName() + ": " + exception.getMessage()
+            );
         }
     }
 
@@ -197,17 +204,11 @@ public class ItemsConfiguration extends OkaeriConfig {
     private static Map<String, GuildItemDefinition> defaultLibrary() {
         Map<String, GuildItemDefinition> library = new LinkedHashMap<>();
 
-        GuildItemDefinition diamonds = new GuildItemDefinition("DIAMOND");
-        diamonds.name = "Diamenty";
-        library.put("diamonds", diamonds);
-
-        GuildItemDefinition emeralds = new GuildItemDefinition("EMERALD");
-        emeralds.name = "Szmaragdy";
-        library.put("emeralds", emeralds);
-
-        GuildItemDefinition iron = new GuildItemDefinition("IRON_INGOT");
-        iron.name = "Żelazo";
-        library.put("iron", iron);
+        // Required-item entries: leave name/lore/enchants empty so vanilla items satisfy them.
+        // Setting any metadata here makes matching strict (player must have an item with the same metadata).
+        library.put("diamonds", new GuildItemDefinition("DIAMOND"));
+        library.put("emeralds", new GuildItemDefinition("EMERALD"));
+        library.put("iron", new GuildItemDefinition("IRON_INGOT"));
 
         GuildItemDefinition itemX = new GuildItemDefinition("BLACK_STAINED_GLASS_PANE");
         itemX.name = " ";
@@ -219,7 +220,7 @@ public class ItemsConfiguration extends OkaeriConfig {
                 "<gray>Twój status:",
                 "",
                 "{MONEY_LINE}",
-                "{EXPERIENCE_LINE}",
+                "{LEVEL_LINE}",
                 "{RANK_LINE}",
                 "",
                 "{STATUS}"
@@ -255,7 +256,7 @@ public class ItemsConfiguration extends OkaeriConfig {
         GuildItemSet defaultSet = new GuildItemSet();
         defaultSet.priority = 0;
         defaultSet.items = new LinkedHashMap<>(Map.of("diamonds", 64, "emeralds", 64, "iron", 64));
-        defaultSet.requiredExperience = 30;
+        defaultSet.requiredLevel = 30;
         defaultSet.requiredMoney = 10000.0;
         defaultSet.requiredRank = 1000;
         sets.put("default", defaultSet);
@@ -266,7 +267,7 @@ public class ItemsConfiguration extends OkaeriConfig {
         vip.requirements = new SetRequirements();
         vip.requirements.moneyEnabled = false;
         vip.items = new LinkedHashMap<>(Map.of("diamonds", 32, "emeralds", 32, "iron", 32));
-        vip.requiredExperience = 20;
+        vip.requiredLevel = 20;
         vip.requiredRank = 800;
         sets.put("vip", vip);
 

@@ -2,15 +2,18 @@ package net.dzikoysk.funnyguilds.feature.items;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.SetRequirements;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
+import net.dzikoysk.funnyguilds.feature.items.gui.GuiItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GuildItemRequirementChecker {
 
@@ -22,9 +25,9 @@ public class GuildItemRequirementChecker {
             meetsMoney = VaultHook.isEconomyHooked() && VaultHook.canAfford(player, set.requiredMoney);
         }
 
-        boolean meetsExperience = true;
-        if (req.experienceEnabled && set.requiredExperience > 0) {
-            meetsExperience = player.getLevel() >= set.requiredExperience;
+        boolean meetsLevel = true;
+        if (req.levelEnabled && set.requiredLevel > 0) {
+            meetsLevel = player.getLevel() >= set.requiredLevel;
         }
 
         boolean meetsRank = true;
@@ -38,10 +41,7 @@ public class GuildItemRequirementChecker {
                 String itemKey = entry.getKey();
                 int required = entry.getValue();
 
-                var libraryItem = config.getLibraryItem(itemKey);
-                Material material = libraryItem
-                        .map(def -> Material.matchMaterial(def.material))
-                        .orElse(null);
+                Optional<GuildItemDefinition> libraryItem = config.getLibraryItem(itemKey);
 
                 String displayName = libraryItem
                         .map(def -> def.name)
@@ -51,21 +51,17 @@ public class GuildItemRequirementChecker {
                 int inv = 0;
                 int ender = 0;
 
-                if (material != null) {
-                    inv = ItemUtils.getItemAmountByMaterial(material, player.getInventory());
-                    ender = ItemUtils.getItemAmountByMaterial(material, player.getEnderChest());
+                if (libraryItem.isPresent()) {
+                    ItemStack template = GuiItemBuilder.toItemStack(libraryItem.get(), 1);
+                    inv = ItemUtils.getItemAmount(template, player.getInventory());
+                    ender = ItemUtils.getItemAmount(template, player.getEnderChest());
                 }
 
                 itemCounts.put(itemKey, new ItemCountResult(required, inv, ender, displayName));
             }
         }
 
-        return new ItemRequirementResult(meetsMoney, meetsExperience, meetsRank, itemCounts);
-    }
-
-    public ItemRequirementResult check(Player player, GuildItemSet set, ItemsConfiguration config) {
-        return check(player, null, set, config);
+        return new ItemRequirementResult(meetsMoney, meetsLevel, meetsRank, itemCounts);
     }
 
 }
-
