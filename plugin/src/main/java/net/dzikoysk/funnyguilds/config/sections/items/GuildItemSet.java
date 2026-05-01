@@ -22,8 +22,7 @@ public class GuildItemSet extends OkaeriConfig {
     @Nullable
     public String permission;
 
-    /** Priorytet setu — wyższy = sprawdzany wcześniej. */
-    @Min(0)
+    /** Priorytet setu — wyższy = sprawdzany wcześniej. Wartości ujemne dozwolone (set "poniżej domyślnego"). */
     public int priority = 0;
 
     /** Flagi wymagań (które wymagania są aktywne). */

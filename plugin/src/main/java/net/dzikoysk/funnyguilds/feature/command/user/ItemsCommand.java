@@ -70,7 +70,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                         .send();
             }
             if (set.requirements.itemsEnabled) {
-                this.messageService.getMessage(config -> config.itemsRequirementItemsHeader)
+                this.messageService.getMessage(config -> config.itemsCheckItemsHeader)
                         .receiver(player)
                         .send();
                 for (Map.Entry<String, ItemCountResult> entry : result.getItemCounts().entrySet()) {

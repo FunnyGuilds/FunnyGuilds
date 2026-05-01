@@ -753,6 +753,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
     public SendableMessage itemsRequirementRank = ChatHolder.message("<gray>  Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
     public SendableMessage itemsRequirementItemsHeader = ChatHolder.message("<gray>  Brakujące przedmioty:");
+    public SendableMessage itemsCheckItemsHeader = ChatHolder.message("<gray>  Wymagane przedmioty:");
     @Comment("Dostępne zmienne: {STATUS_COLOR}, {ITEM} (nazwa wyświetlana), {KEY} (klucz z library), {CURRENT}, {REQUIRED}")
     public SendableMessage itemsRequirementItemLine = ChatHolder.message("<gray>    • <white>{ITEM}<gray>: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
 
