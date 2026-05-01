@@ -4,6 +4,8 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
+import eu.okaeri.validator.annotation.Max;
+import eu.okaeri.validator.annotation.Min;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -23,6 +25,8 @@ public class GuiConfiguration extends OkaeriConfig {
     public String title = "<dark_gray><bold>Przedmioty na gildie <gray>({SET})";
 
     /** Liczba wierszy GUI (1-6). */
+    @Min(1)
+    @Max(6)
     public int rows = 6;
 
     /**

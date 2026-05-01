@@ -80,11 +80,13 @@ public class ItemsConfiguration extends OkaeriConfig {
      * Sprawdza najpierw zwykłe itemy, potem toggle (zwraca stan "all").
      */
     public Optional<GuildItemDefinition> getLibraryItem(String key) {
-        if (guildItemLibrary != null && guildItemLibrary.containsKey(key)) {
-            return Optional.of(guildItemLibrary.get(key));
+        if (guildItemLibrary != null) {
+            GuildItemDefinition direct = guildItemLibrary.get(key);
+            if (direct != null) return Optional.of(direct);
         }
-        if (guildToggleLibrary != null && guildToggleLibrary.containsKey(key)) {
-            return Optional.of(guildToggleLibrary.get(key).all);
+        if (guildToggleLibrary != null) {
+            GuildItemToggleDefinition toggle = guildToggleLibrary.get(key);
+            if (toggle != null) return Optional.ofNullable(toggle.all);
         }
         return Optional.empty();
     }
@@ -93,18 +95,17 @@ public class ItemsConfiguration extends OkaeriConfig {
      * Pobiera definicję toggle itemu z library.
      */
     public Optional<GuildItemToggleDefinition> getToggleItem(String key) {
-        if (guildToggleLibrary != null && guildToggleLibrary.containsKey(key)) {
-            return Optional.of(guildToggleLibrary.get(key));
-        }
-        return Optional.empty();
+        if (guildToggleLibrary == null) return Optional.empty();
+        return Optional.ofNullable(guildToggleLibrary.get(key));
     }
 
     /**
      * Rozwiązuje item — najpierw sprawdza per-set overrides, potem library.
      */
     public Optional<GuildItemDefinition> resolveItem(String key, PerSetConfig perSet) {
-        if (perSet != null && perSet.libraryOverrides != null && perSet.libraryOverrides.containsKey(key)) {
-            return Optional.of(perSet.libraryOverrides.get(key));
+        if (perSet != null && perSet.libraryOverrides != null) {
+            GuildItemDefinition override = perSet.libraryOverrides.get(key);
+            if (override != null) return Optional.of(override);
         }
         return getLibraryItem(key);
     }

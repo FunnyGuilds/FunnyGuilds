@@ -6,6 +6,7 @@ import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
@@ -283,7 +284,7 @@ public final class GuildItemsGuiFactory {
         if (value == Math.floor(value)) {
             return String.valueOf((long) value);
         }
-        return String.format("%.2f", value);
+        return String.format(Locale.ROOT, "%.2f", value);
     }
 
 }

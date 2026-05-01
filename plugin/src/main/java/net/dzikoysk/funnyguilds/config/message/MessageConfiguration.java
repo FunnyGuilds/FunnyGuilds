@@ -746,15 +746,15 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("Wiadomości tekstowe wymagań (gdy GUI wyłączone)")
     public SendableMessage itemsRequirementsNotMet = ChatHolder.message("<red>✘ Nie spełniasz wymagań do założenia gildii!");
-    @Comment("Dostępne zmienne: {CURRENT}, {REQUIRED}")
-    public SendableMessage itemsRequirementMoney = ChatHolder.message("<gray>  Pieniądze: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
-    @Comment("Dostępne zmienne: {CURRENT}, {REQUIRED}")
-    public SendableMessage itemsRequirementLevel = ChatHolder.message("<gray>  Poziom: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
-    @Comment("Dostępne zmienne: {CURRENT}, {REQUIRED}")
-    public SendableMessage itemsRequirementRank = ChatHolder.message("<gray>  Ranking: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR} (<green> gdy spełniony, <red> gdy nie), {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementMoney = ChatHolder.message("<gray>  Pieniądze: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementLevel = ChatHolder.message("<gray>  Poziom: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementRank = ChatHolder.message("<gray>  Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
     public SendableMessage itemsRequirementItemsHeader = ChatHolder.message("<gray>  Brakujące przedmioty:");
-    @Comment("Dostępne zmienne: {ITEM} (nazwa wyświetlana), {KEY} (klucz z library), {CURRENT}, {REQUIRED}")
-    public SendableMessage itemsRequirementItemLine = ChatHolder.message("<gray>    • <white>{ITEM}<gray>: <red>{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {ITEM} (nazwa wyświetlana), {KEY} (klucz z library), {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementItemLine = ChatHolder.message("<gray>    • <white>{ITEM}<gray>: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
 
     @Comment("")
     @Comment("Nagłówek podglądu wymagań /przedmioty (tryb tekstowy, gdy GUI wyłączone)")

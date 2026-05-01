@@ -111,63 +111,66 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         GuildItemSet activeSet = this.guildItemSetService.getSetForPlayer(player);
-        {
-            if (player.hasPermission(this.itemsConfiguration.adminItemsBypassPermission)) {
-                this.messageService.getMessage(config -> config.itemsAdminBypass)
+        if (player.hasPermission(this.itemsConfiguration.adminItemsBypassPermission)) {
+            this.messageService.getMessage(config -> config.itemsAdminBypass)
+                    .receiver(player)
+                    .send();
+        }
+        else {
+            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, activeSet, this.itemsConfiguration);
+
+            if (!result.meetsAll()) {
+                this.messageService.getMessage(config -> config.itemsRequirementsNotMet)
                         .receiver(player)
                         .send();
-            } else {
-                ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, activeSet, this.itemsConfiguration);
 
-                if (!result.meetsAll()) {
-                    this.messageService.getMessage(config -> config.itemsRequirementsNotMet)
+                if (!result.isMeetsMoney() && activeSet.requirements.moneyEnabled) {
+                    double current = VaultHook.isEconomyHooked() ? VaultHook.accountBalance(player) : 0;
+                    this.messageService.getMessage(config -> config.itemsRequirementMoney)
                             .receiver(player)
+                            .with("{STATUS_COLOR}", "<red>")
+                            .with("{CURRENT}", String.format(Locale.ROOT, "%.0f", current))
+                            .with("{REQUIRED}", String.format(Locale.ROOT, "%.0f", activeSet.requiredMoney))
                             .send();
-
-                    if (!result.isMeetsMoney() && activeSet.requirements.moneyEnabled) {
-                        double current = VaultHook.isEconomyHooked() ? VaultHook.accountBalance(player) : 0;
-                        this.messageService.getMessage(config -> config.itemsRequirementMoney)
+                }
+                if (!result.isMeetsLevel() && activeSet.requirements.levelEnabled) {
+                    this.messageService.getMessage(config -> config.itemsRequirementLevel)
+                            .receiver(player)
+                            .with("{STATUS_COLOR}", "<red>")
+                            .with("{CURRENT}", player.getLevel())
+                            .with("{REQUIRED}", activeSet.requiredLevel)
+                            .send();
+                }
+                if (!result.isMeetsRank() && activeSet.requirements.rankEnabled) {
+                    this.messageService.getMessage(config -> config.itemsRequirementRank)
+                            .receiver(player)
+                            .with("{STATUS_COLOR}", "<red>")
+                            .with("{CURRENT}", user.getRank().getPoints())
+                            .with("{REQUIRED}", activeSet.requiredRank)
+                            .send();
+                }
+                if (activeSet.requirements.itemsEnabled) {
+                    boolean hasAnyMissing = result.getItemCounts().values().stream().anyMatch(c -> !c.isMet());
+                    if (hasAnyMissing) {
+                        this.messageService.getMessage(config -> config.itemsRequirementItemsHeader)
                                 .receiver(player)
-                                .with("{CURRENT}", String.format("%.0f", current))
-                                .with("{REQUIRED}", String.format("%.0f", activeSet.requiredMoney))
                                 .send();
-                    }
-                    if (!result.isMeetsLevel() && activeSet.requirements.levelEnabled) {
-                        this.messageService.getMessage(config -> config.itemsRequirementLevel)
-                                .receiver(player)
-                                .with("{CURRENT}", player.getLevel())
-                                .with("{REQUIRED}", activeSet.requiredLevel)
-                                .send();
-                    }
-                    if (!result.isMeetsRank() && activeSet.requirements.rankEnabled) {
-                        this.messageService.getMessage(config -> config.itemsRequirementRank)
-                                .receiver(player)
-                                .with("{CURRENT}", user.getRank().getPoints())
-                                .with("{REQUIRED}", activeSet.requiredRank)
-                                .send();
-                    }
-                    if (activeSet.requirements.itemsEnabled) {
-                        boolean hasAnyMissing = result.getItemCounts().values().stream().anyMatch(c -> !c.isMet());
-                        if (hasAnyMissing) {
-                            this.messageService.getMessage(config -> config.itemsRequirementItemsHeader)
-                                    .receiver(player)
-                                    .send();
-                            for (Map.Entry<String, ItemCountResult> entry : result.getItemCounts().entrySet()) {
-                                    ItemCountResult counts = entry.getValue();
-                                    if (!counts.isMet()) {
-                                        this.messageService.getMessage(config -> config.itemsRequirementItemLine)
-                                                .receiver(player)
-                                                .with("{ITEM}", counts.getDisplayName())
-                                                .with("{KEY}", entry.getKey())
-                                                .with("{CURRENT}", counts.getInv())
-                                                .with("{REQUIRED}", counts.getRequired())
-                                                .send();
-                                    }
-                                }
+                        for (Map.Entry<String, ItemCountResult> entry : result.getItemCounts().entrySet()) {
+                            ItemCountResult counts = entry.getValue();
+                            if (!counts.isMet()) {
+                                this.messageService.getMessage(config -> config.itemsRequirementItemLine)
+                                        .receiver(player)
+                                        .with("{STATUS_COLOR}", "<red>")
+                                        .with("{ITEM}", counts.getDisplayName())
+                                        .with("{KEY}", entry.getKey())
+                                        .with("{CURRENT}", counts.getInv())
+                                        .with("{REQUIRED}", counts.getRequired())
+                                        .send();
+                            }
                         }
                     }
-                    return;
                 }
+                return;
             }
         }
 

@@ -78,29 +78,24 @@ public final class ItemsAdminCommand extends AbstractFunnyCommand {
 
         int givenCount = 0;
         for (ItemStack item : items) {
-            int requested = item.getAmount();
+            givenCount += item.getAmount();
             Map<Integer, ItemStack> overflow = targetPlayer.getInventory().addItem(item);
-            int leftoverAmount = 0;
             for (ItemStack leftover : overflow.values()) {
-                leftoverAmount += leftover.getAmount();
                 targetPlayer.getWorld().dropItemNaturally(targetPlayer.getLocation(), leftover);
             }
-            givenCount += requested - leftoverAmount;
         }
 
-        final String finalSetName = setName;
-        final int finalGivenCount = givenCount;
         this.messageService.getMessage(config -> config.itemsAdminGiven)
                 .receiver(sender)
                 .with("{PLAYER}", target.getName())
-                .with("{SET}", finalSetName)
-                .with("{COUNT}", finalGivenCount)
+                .with("{SET}", setName)
+                .with("{COUNT}", givenCount)
                 .send();
 
         this.messageService.getMessage(config -> config.itemsAdminReceived)
                 .receiver(targetPlayer)
-                .with("{SET}", finalSetName)
-                .with("{COUNT}", finalGivenCount)
+                .with("{SET}", setName)
+                .with("{COUNT}", givenCount)
                 .send();
     }
 

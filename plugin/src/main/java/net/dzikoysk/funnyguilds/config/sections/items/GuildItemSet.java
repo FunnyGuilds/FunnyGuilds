@@ -4,6 +4,8 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
+import eu.okaeri.validator.annotation.DecimalMin;
+import eu.okaeri.validator.annotation.Min;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,6 +23,7 @@ public class GuildItemSet extends OkaeriConfig {
     public String permission;
 
     /** Priorytet setu — wyższy = sprawdzany wcześniej. */
+    @Min(0)
     public int priority = 0;
 
     /** Flagi wymagań (które wymagania są aktywne). */
@@ -30,12 +33,15 @@ public class GuildItemSet extends OkaeriConfig {
     public Map<String, Integer> items = new LinkedHashMap<>();
 
     /** Wymagane doświadczenie. */
+    @Min(0)
     public int requiredLevel = 0;
 
     /** Wymagane pieniądze (Vault). */
+    @DecimalMin("0")
     public double requiredMoney = 0.0;
 
     /** Wymagany ranking. */
+    @Min(0)
     public int requiredRank = 0;
 
     public GuildItemSet() {

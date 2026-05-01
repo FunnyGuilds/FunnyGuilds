@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.Locale;
 import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -47,13 +48,15 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 double current = VaultHook.isEconomyHooked() ? VaultHook.accountBalance(player) : 0;
                 this.messageService.getMessage(config -> config.itemsRequirementMoney)
                         .receiver(player)
-                        .with("{CURRENT}", String.format("%.0f", current))
-                        .with("{REQUIRED}", String.format("%.0f", set.requiredMoney))
+                        .with("{STATUS_COLOR}", result.isMeetsMoney() ? "<green>" : "<red>")
+                        .with("{CURRENT}", String.format(Locale.ROOT, "%.0f", current))
+                        .with("{REQUIRED}", String.format(Locale.ROOT, "%.0f", set.requiredMoney))
                         .send();
             }
             if (set.requirements.levelEnabled) {
                 this.messageService.getMessage(config -> config.itemsRequirementLevel)
                         .receiver(player)
+                        .with("{STATUS_COLOR}", result.isMeetsLevel() ? "<green>" : "<red>")
                         .with("{CURRENT}", player.getLevel())
                         .with("{REQUIRED}", set.requiredLevel)
                         .send();
@@ -61,6 +64,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
             if (set.requirements.rankEnabled) {
                 this.messageService.getMessage(config -> config.itemsRequirementRank)
                         .receiver(player)
+                        .with("{STATUS_COLOR}", result.isMeetsRank() ? "<green>" : "<red>")
                         .with("{CURRENT}", user.getRank().getPoints())
                         .with("{REQUIRED}", set.requiredRank)
                         .send();
@@ -73,6 +77,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                     ItemCountResult counts = entry.getValue();
                     this.messageService.getMessage(config -> config.itemsRequirementItemLine)
                             .receiver(player)
+                            .with("{STATUS_COLOR}", counts.isMet() ? "<green>" : "<red>")
                             .with("{ITEM}", counts.getDisplayName())
                             .with("{KEY}", entry.getKey())
                             .with("{CURRENT}", counts.getInv())
