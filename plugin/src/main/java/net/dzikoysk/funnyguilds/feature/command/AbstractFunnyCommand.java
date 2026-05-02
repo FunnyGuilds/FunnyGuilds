@@ -4,7 +4,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
+import net.dzikoysk.funnyguilds.feature.items.GuildItemSetService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -59,4 +62,11 @@ public abstract class AbstractFunnyCommand {
     public GuildPlaceholdersService guildPlaceholdersService;
     @Inject
     public RankPlaceholdersService rankPlaceholdersService;
+
+    @Inject
+    public ItemsConfiguration itemsConfiguration;
+    @Inject
+    public GuildItemSetService guildItemSetService;
+    @Inject
+    public GuildItemRequirementChecker guildItemRequirementChecker;
 }

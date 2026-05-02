@@ -735,6 +735,51 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public String loginNickTooLong = "&cNick jest za dlugi!";
     public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
 
+    @Comment("")
+    @Comment("<------- Items System Messages -------> #")
+    public SendableMessage itemsAdminBypass = ChatHolder.message("<yellow>⚡ Posiadasz uprawnienia admina — wymagania zostają pominięte.");
+    @Comment("Dostępne zmienne: {PLAYER}")
+    public SendableMessage itemsPlayerOffline = ChatHolder.message("<red>Gracz <white>{PLAYER} <red>nie jest online!");
+    @Comment("Dostępne zmienne: {SET}, {SETS}")
+    public SendableMessage itemsSetNotFound = ChatHolder.message("<red>Set <white>{SET} <red>nie istnieje. Dostępne: <white>{SETS}");
+
+    @Comment("")
+    @Comment("Wiadomości tekstowe wymagań (gdy GUI wyłączone)")
+    public SendableMessage itemsRequirementsNotMet = ChatHolder.message("<red>✘ Nie spełniasz wymagań do założenia gildii!");
+    @Comment("Dostępne zmienne: {STATUS_COLOR} (<green> gdy spełniony, <red> gdy nie), {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementMoney = ChatHolder.message("<gray>  Pieniądze: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementLevel = ChatHolder.message("<gray>  Poziom: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementRank = ChatHolder.message("<gray>  Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    public SendableMessage itemsRequirementItemsHeader = ChatHolder.message("<gray>  Brakujące przedmioty:");
+    public SendableMessage itemsCheckItemsHeader = ChatHolder.message("<gray>  Wymagane przedmioty:");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {ITEM} (nazwa wyświetlana), {KEY} (klucz z library), {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementItemLine = ChatHolder.message("<gray>    • <white>{ITEM}<gray>: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+
+    @Comment("")
+    @Comment("Nagłówek podglądu wymagań /przedmioty (tryb tekstowy, gdy GUI wyłączone)")
+    @Comment("Dostępne zmienne: {PLAYER}, {SET}")
+    public SendableMessage itemsCheckHeader = ChatHolder.message("<gray>--- Wymagania do założenia gildii <gray>(set: <white>{SET}<gray>) ---");
+
+    @Comment("")
+    @Comment("Wiadomości komendy admina /ga items")
+    @Comment("Dostępne zmienne: {SET}")
+    public SendableMessage itemsAdminNoItems = ChatHolder.message("<red>Set <white>{SET} <red>nie zawiera żadnych przedmiotów do wydania.");
+    @Comment("Dostępne zmienne: {PLAYER}, {SET}, {COUNT}")
+    public SendableMessage itemsAdminGiven = ChatHolder.message("<green>✔ Wydano przedmioty z setu <white>{SET} <green>graczowi <white>{PLAYER} <green>(<white>{COUNT} <green>sztuk).");
+    @Comment("Dostępne zmienne: {SET}, {COUNT}")
+    public SendableMessage itemsAdminReceived = ChatHolder.message("<green>✔ Otrzymałeś przedmioty z setu <white>{SET} <green>(<white>{COUNT} <green>sztuk).");
+
+    @Comment("")
+    @Comment("Linie GUI summary (MiniMessage, wstawiane do lore ItemStack)")
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public String itemsGuiMoneyLine = "<gray>Pieniądze: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiLevelLine = "<gray>Poziom: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiRankLine = "<gray>Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiStatusReady = "<green>✔ Możesz założyć gildię!";
+    public String itemsGuiStatusNotReady = "<red>✘ Brakuje Ci wymagań";
+
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();

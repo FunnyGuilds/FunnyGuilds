@@ -8,6 +8,7 @@ import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.serdes.ColorSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.EntityTypeTransformer;
@@ -65,6 +66,23 @@ public final class ConfigurationFactory {
                     new RangeFormattingTransformer()
                 );
                 opt.bindFile(pluginConfigurationFile);
+                opt.logger(FunnyGuilds.getInstance().getLogger());
+                opt.errorComments(true);
+            });
+            it.saveDefaults();
+            it.load(true);
+        });
+    }
+
+    public static ItemsConfiguration createItemsConfiguration(File itemsConfigurationFile) {
+        return ConfigManager.create(ItemsConfiguration.class, (it) -> {
+            it.configure(opt -> {
+                opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
+                opt.validator(new OkaeriValidator(true));
+                opt.serdes(
+                    new YAMLSerdes()
+                );
+                opt.bindFile(itemsConfigurationFile);
                 opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.errorComments(true);
             });

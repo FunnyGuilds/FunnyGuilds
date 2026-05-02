@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -18,6 +19,8 @@ import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
+import net.dzikoysk.funnyguilds.feature.items.GuildItemSetService;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
@@ -102,6 +105,7 @@ public class FunnyGuilds extends JavaPlugin {
     private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
+    private final File itemsConfigurationFile = new File(this.getDataFolder(), "items.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
@@ -110,9 +114,13 @@ public class FunnyGuilds extends JavaPlugin {
     private FunnyCommands funnyCommands;
 
     private PluginConfiguration pluginConfiguration;
+    private ItemsConfiguration itemsConfiguration;
     private TablistConfiguration tablistConfiguration;
 
     private MessageService messageService;
+
+    private GuildItemSetService guildItemSetService;
+    private GuildItemRequirementChecker guildItemRequirementChecker;
 
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
@@ -190,6 +198,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
+            this.itemsConfiguration = ConfigurationFactory.createItemsConfiguration(this.itemsConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
@@ -254,6 +263,9 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
         this.userManager = new UserManager(this.pluginConfiguration);
+
+        this.guildItemSetService = new GuildItemSetService(this.itemsConfiguration);
+        this.guildItemRequirementChecker = new GuildItemRequirementChecker();
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
         this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
@@ -330,6 +342,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
+            resources.on(ItemsConfiguration.class).assignInstance(this.itemsConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(MessageService.class).assignInstance(this.messageService);
             resources.on(UserManager.class).assignInstance(this.userManager);
@@ -348,6 +361,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(RankPlaceholdersService.class).assignInstance(this.rankPlaceholdersService);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
+            resources.on(GuildItemSetService.class).assignInstance(this.guildItemSetService);
+            resources.on(GuildItemRequirementChecker.class).assignInstance(this.guildItemRequirementChecker);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
