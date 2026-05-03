@@ -37,6 +37,13 @@ public class PlayerJoin extends AbstractFunnyListener {
             this.userManager.updateUsername(user, playerName);
         }
 
+        if (this.config.rankIPProtectPlayersFromGuild && player.getAddress() != null) {
+            String currentIP = player.getAddress().getHostString();
+            if (currentIP != null && !currentIP.equals(user.getLastIP())) {
+                user.setLastIP(currentIP);
+            }
+        }
+
         this.plugin.getTablistRenderer().peek(renderer -> renderer.startSending(player, user));
 
         this.plugin.getIndividualNameTagManager()

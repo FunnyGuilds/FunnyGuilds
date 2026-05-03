@@ -31,12 +31,13 @@ public final class FlatUserSerializer {
         int logouts = wrapper.getInt("logouts");
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         String reason = wrapper.getString("reason");
+        String lastIP = wrapper.getString("last_ip");
 
         if (id == null || name == null) {
             return Option.none();
         }
 
-        Object[] values = new Object[9];
+        Object[] values = new Object[10];
         values[0] = id;
         values[1] = name;
         values[2] = points;
@@ -46,6 +47,7 @@ public final class FlatUserSerializer {
         values[6] = logouts;
         values[7] = ban;
         values[8] = reason;
+        values[9] = lastIP;
 
         return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
     }
@@ -71,6 +73,7 @@ public final class FlatUserSerializer {
         wrapper.set("deaths", user.getRank().getDeaths());
         wrapper.set("assists", user.getRank().getAssists());
         wrapper.set("logouts", user.getRank().getLogouts());
+        wrapper.set("last_ip", user.getLastIP());
 
         user.getBan().peek(ban -> {
             wrapper.set("ban", ban.getTime().toEpochMilli());

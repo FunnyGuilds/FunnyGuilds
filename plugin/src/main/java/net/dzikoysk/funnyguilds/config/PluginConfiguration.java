@@ -545,6 +545,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean rankIPProtect = false;
 
     @Comment("")
+    @Comment("Czy ma być zablokowana zmiana rankingu, jeśli atakujący ma taki sam adres IP jak członek gildii ofiary")
+    public boolean rankIPProtectPlayersFromGuild = false;
+
+    @Comment("")
     @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki są członkami tej samej gildii")
     public boolean rankMemberProtect = false;
 

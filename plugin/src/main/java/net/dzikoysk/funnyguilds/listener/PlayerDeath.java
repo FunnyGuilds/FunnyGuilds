@@ -130,6 +130,12 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
 
+        if (this.checkIPRankFarmingGuildMembersProtection(playerVictim, playerAttacker, attacker)) {
+            victimDamageState.clear();
+            event.setDeathMessage(null);
+            return;
+        }
+
         if (this.checkMemberRankChangeProtection(victim, attacker)) {
             victimDamageState.clear();
             event.deathMessage(null);
@@ -439,6 +445,57 @@ public class PlayerDeath extends AbstractFunnyListener {
             return true;
         }
 
+        return false;
+    }
+
+    // Function to check if victim shares IP with any guild member of the attacker (alt account protection)
+    private boolean checkIPRankFarmingGuildMembersProtection(Player playerVictim, Player playerAttacker, User attacker) {
+        if (!this.config.rankIPProtectPlayersFromGuild) {
+            return false;
+        }
+
+        if (playerAttacker.hasPermission("funnyguilds.bypass.rank-ip-protect-guild")) {
+            return false;
+        }
+
+        Option<Guild> attackerGuildOption = attacker.getGuild();
+        if (attackerGuildOption.isEmpty()) {
+            return false;
+        }
+
+        if (playerVictim.getAddress() == null) {
+            return false;
+        }
+
+        Guild attackerGuild = attackerGuildOption.get();
+        String victimIP = playerVictim.getAddress().getHostString();
+
+        if (!victimSharesIPWithGuildMember(victimIP, attackerGuild, attacker)) {
+            return false;
+        }
+
+        this.messageService.getMessage(config -> config.rankIPGuildMemberVictim)
+                .receiver(playerVictim)
+                .send();
+        this.messageService.getMessage(config -> config.rankIPGuildMemberAttacker)
+                .receiver(playerAttacker)
+                .send();
+        return true;
+    }
+
+    static boolean victimSharesIPWithGuildMember(String victimIP, Guild attackerGuild, User attacker) {
+        if (victimIP == null) {
+            return false;
+        }
+        for (User guildMember : attackerGuild.getMembers()) {
+            if (guildMember.equals(attacker)) {
+                continue;
+            }
+            String guildMemberIP = guildMember.getLastIP();
+            if (guildMemberIP != null && guildMemberIP.equals(victimIP)) {
+                return true;
+            }
+        }
         return false;
     }
 

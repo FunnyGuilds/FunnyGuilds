@@ -41,6 +41,10 @@ public final class DeserializationUtils {
             user.setBan(new UserBan((String) values[8], ban));
         }
 
+        if (values.length > 9 && values[9] != null) {
+            user.setLastIP((String) values[9]);
+        }
+
         user.markUnchanged();
         return Option.of(user);
     }
