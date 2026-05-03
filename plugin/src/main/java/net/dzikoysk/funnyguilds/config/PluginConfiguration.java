@@ -873,7 +873,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
     @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
     public boolean gtopRespectVanish = true;
-    
+
+    @Comment("")
+    @Comment("Czy placeholder G-MEMBER-X ma uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean gMemberRespectVanish = true;
+
     @Comment("")
     @Comment("Kolory dodawane dla nicków graczy/nazw gildii online")
     public TextColor onlineColor = NamedTextColor.GREEN;

@@ -20,6 +20,11 @@ public final class GenericGuildPermissions {
     public static final GuildPermission<Component> USER_POSITION = GuildPermission.permission("user.position", Component.class);
 
     /**
+     * Member ordering priority for the {@code G-MEMBER-X} placeholder (lower value = shown earlier).
+     */
+    public static final GuildPermission<Integer> MEMBER_LIST_PRIORITY = GuildPermission.permission("member.list.priority", Integer.class);
+
+    /**
      * Allow to use and see guild chat.
      */
     public static final GuildPermission<Boolean> GUILD_CHAT_USE = GuildPermission.booleanPermission("guild.chat.use");

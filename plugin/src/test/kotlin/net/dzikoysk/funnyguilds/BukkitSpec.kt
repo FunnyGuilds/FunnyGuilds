@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds
 
 import org.bukkit.Bukkit
 import org.bukkit.World
+import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,8 +26,10 @@ open class BukkitSpec {
     @BeforeEach
     protected open fun prepareBukkit() {
         val world = Mockito.mock(World::class.java)
+        val pluginManager = Mockito.mock(PluginManager::class.java)
         mockedBukkit.`when`<Any?> { Bukkit.getPlayer(any(UUID::class.java)) }.thenReturn(null)
         mockedBukkit.`when`<Any> { Bukkit.getWorlds() }.thenReturn(listOf(world))
+        mockedBukkit.`when`<Any> { Bukkit.getPluginManager() }.thenReturn(pluginManager)
     }
 
     @AfterEach

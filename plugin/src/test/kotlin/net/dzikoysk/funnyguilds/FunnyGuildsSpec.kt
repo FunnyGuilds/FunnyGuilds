@@ -46,7 +46,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var config: PluginConfiguration
     private lateinit var tablistConfig: TablistConfiguration
-    private lateinit var messages: MessageService
+    protected lateinit var messageService: MessageService
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
@@ -64,15 +64,16 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         config = MockPluginConfiguration()
         tablistConfig = TablistConfiguration()
-        messages = MessageService(null)
-        messages.defaultLocale = Locale.forLanguageTag("pl")
-        messages.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
+        messageService = MessageService(null)
+        messageService.defaultLocale = Locale.forLanguageTag("pl")
+        messageService.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
 
         preparePluginConfiguration()
 
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
-        lenient().`when`(funnyGuilds.messageService).thenReturn(messages)
+        lenient().`when`(funnyGuilds.messageService).thenReturn(messageService)
+        lenient().`when`(funnyGuilds.name).thenReturn("FunnyGuilds")
 
         userManager = UserManager(config)
         guildManager = GuildManager(config)
@@ -89,9 +90,9 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
         rankPlaceholdersService = RankPlaceholdersService(
-            messages,
+            messageService,
             config,
-            messages,
+            messageService,
             userRankManager,
             guildRankManager
         )

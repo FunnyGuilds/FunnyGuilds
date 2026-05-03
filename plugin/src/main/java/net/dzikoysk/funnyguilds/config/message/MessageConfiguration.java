@@ -40,6 +40,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public Component gDeputiesNoValue = ComponentUtil.colored("Brak (G-DEPUTIES)");
     public Component gDeputyNoValue = ComponentUtil.colored("Brak (G-DEPUTY)");
     public Component gMembersNoValue = ComponentUtil.colored("Brak (G-MEMBERS)");
+    public Component gMemberNoValue = ComponentUtil.colored("Brak (G-MEMBER-x)");
     public Component gValidityNoValue = ComponentUtil.colored("Brak (G-VALIDITY)");
     public Component gProtectionNoValue = ComponentUtil.colored("Brak (G-PROTECTION)");
     public Component gRegionSizeNoValue = ComponentUtil.colored("Brak (G-REGION-SIZE)");
