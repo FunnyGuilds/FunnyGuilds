@@ -1,5 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.damage.DamageState;
@@ -8,11 +13,8 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook.Friendly
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,6 +30,8 @@ public class EntityDamage extends AbstractFunnyListener {
     private DamageManager damageManager;
     @Inject
     private RankSystem rankSystem;
+
+    private final Map<PredictionKey, Instant> predictionCooldowns = new ConcurrentHashMap<>();
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
@@ -131,64 +135,64 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            DamageState damageState = this.damageManager.getDamageState(victimUser.getUUID());
-            double previousDamage = damageState.getTotalDamage(attackerUser);
-
             if (this.config.displayCombatPredictionAttacker || this.config.displayCombatPredictionVictim) {
-                // damage history is wiped after 1 minute, so if we haven't landed a hit during 1 minute,
-                // let's consider this a good moment to remind players what point could they get.
-                if (previousDamage == 0.0) {
-                    int attackerPoints = attackerUser.getRank().getPoints();
-                    int victimPoints = victimUser.getRank().getPoints();
-
-                    RankSystem.RankResult predictedResult = this.rankSystem.calculate(
-                            this.config.rankSystem,
-                            attackerPoints,
-                            victimPoints
-                    );
-
-                    if (this.config.displayCombatPredictionAttacker) {
-                        int predictedGain = predictedResult.getAttackerPoints();
-
-                        FunnyFormatter attackerFormatter = new FunnyFormatter()
-                                .register("{VICTIM}", victimUser.getName())
-                                .register("{+}", predictedGain)
-                                .register("{PLUS-FORMATTED}", formatChangeWithRange(predictedGain))
-                                .register("{CHANGE}", Math.abs(predictedGain))
-                                .register("{POINTS-FORMATTED}", formatChangeWithRange(predictedGain));
-
-                        this.messageService.getMessage(config -> config.combatPredictionAttackerMessage)
-                                .with(attackerFormatter)
-                                .receiver(attackerUser)
-                                .send();
-                    }
-
-                    if (this.config.displayCombatPredictionVictim) {
-                        int predictedLoss = -predictedResult.getVictimPoints();
-
-                        FunnyFormatter victimFormatter = new FunnyFormatter()
-                                .register("{ATTACKER}", attackerUser.getName())
-                                .register("{-}", predictedLoss)
-                                .register("{MINUS-FORMATTED}", formatChangeWithRange(predictedLoss))
-                                .register("{CHANGE}", Math.abs(predictedLoss))
-                                .register("{POINTS-FORMATTED}", formatChangeWithRange(predictedLoss));
-
-                        this.messageService.getMessage(config -> config.combatPredictionVictimMessage)
-                                .with(victimFormatter)
-                                .receiver(victimUser)
-                                .send();
-                    }
-                }
+                this.sendCombatPrediction(attackerUser, victimUser);
             }
 
+            DamageState damageState = this.damageManager.getDamageState(victimUser.getUUID());
             damageState.addDamage(attackerUser, event.getDamage());
         });
     }
 
-    private Component formatChangeWithRange(int change) {
-        String value = NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true)
-                .replace("{CHANGE}", String.valueOf(Math.abs(change)));
-        return ChatUtils.deserializeSection(value);
+    private void sendCombatPrediction(User attacker, User victim) {
+        if (this.isOnPredictionCooldown(attacker.getUUID(), victim.getUUID())) {
+            return;
+        }
+
+        RankSystem.RankResult predicted = this.rankSystem.calculate(
+                this.config.rankSystem,
+                attacker.getRank().getPoints(),
+                victim.getRank().getPoints()
+        );
+
+        if (this.config.displayCombatPredictionAttacker) {
+            int change = predicted.getAttackerPoints();
+            this.messageService.getMessage(config -> config.combatPredictionAttackerMessage)
+                    .with("{VICTIM}", victim.getName())
+                    .with("{ATTACKER-CHANGE}", change)
+                    .with("{ATTACKER-CHANGE-FORMATTED}", formatChange(change))
+                    .receiver(attacker)
+                    .send();
+        }
+
+        if (this.config.displayCombatPredictionVictim) {
+            int change = -predicted.getVictimPoints();
+            this.messageService.getMessage(config -> config.combatPredictionVictimMessage)
+                    .with("{ATTACKER}", attacker.getName())
+                    .with("{VICTIM-CHANGE}", change)
+                    .with("{VICTIM-CHANGE-FORMATTED}", formatChange(change))
+                    .receiver(victim)
+                    .send();
+        }
     }
 
+    private boolean isOnPredictionCooldown(UUID attackerUuid, UUID victimUuid) {
+        Duration interval = this.config.combatPredictionInterval;
+        Instant now = Instant.now();
+        PredictionKey key = new PredictionKey(attackerUuid, victimUuid);
+        Instant lastFire = this.predictionCooldowns.get(key);
+        if (lastFire != null && lastFire.plus(interval).isAfter(now)) {
+            return true;
+        }
+        this.predictionCooldowns.put(key, now);
+        return false;
+    }
+
+    private String formatChange(int change) {
+        return NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(change)));
+    }
+
+    private record PredictionKey(UUID attacker, UUID victim) {
+    }
 }
