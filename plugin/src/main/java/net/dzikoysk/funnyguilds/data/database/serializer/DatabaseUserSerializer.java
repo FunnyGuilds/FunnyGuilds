@@ -33,7 +33,7 @@ public final class DatabaseUserSerializer {
             int logouts = resultSet.getInt("logouts");
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             String reason = resultSet.getString("reason");
-            String lastIP = resultSet.getString("lastIP");
+            String lastIP = resultSet.getString("last_ip");
 
             Object[] values = new Object[10];
             values[0] = uuid;
@@ -69,7 +69,7 @@ public final class DatabaseUserSerializer {
         statement.set("logouts", user.getRank().getLogouts());
         statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("reason", user.getBan().map(UserBan::getReason).orNull());
-        statement.set("lastIP", user.getLastIP());
+        statement.set("last_ip", user.getLastIP());
 
         statement.executeUpdate();
         user.markUnchanged();

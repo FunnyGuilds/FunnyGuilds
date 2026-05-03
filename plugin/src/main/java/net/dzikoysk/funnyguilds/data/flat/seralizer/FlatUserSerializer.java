@@ -31,7 +31,7 @@ public final class FlatUserSerializer {
         int logouts = wrapper.getInt("logouts");
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         String reason = wrapper.getString("reason");
-        String lastIP = wrapper.getString("lastIP");
+        String lastIP = wrapper.getString("last_ip");
 
         if (id == null || name == null) {
             return Option.none();
@@ -73,7 +73,7 @@ public final class FlatUserSerializer {
         wrapper.set("deaths", user.getRank().getDeaths());
         wrapper.set("assists", user.getRank().getAssists());
         wrapper.set("logouts", user.getRank().getLogouts());
-        wrapper.set("lastIP", user.getLastIP());
+        wrapper.set("last_ip", user.getLastIP());
 
         user.getBan().peek(ban -> {
             wrapper.set("ban", ban.getTime().toEpochMilli());
