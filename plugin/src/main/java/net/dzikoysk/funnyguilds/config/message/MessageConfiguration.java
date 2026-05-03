@@ -237,7 +237,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- Info Messages -------> #")
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
     public SendableMessage playerInfoList = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -251,7 +251,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&8-------------.------------------"
     );
 
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
     public SendableMessage playerRightClickInfo = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -263,7 +263,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage infoTag = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage infoExists = ChatHolder.message("&cGildia o takim tagu nie istnieje!");
 
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}")
     public SendableMessage infoList = ChatHolder.message(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
@@ -371,7 +371,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {DISTANCE}")
     public SendableMessage createSpawn = ChatHolder.message("&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}");
     public SendableMessage createIsNear = ChatHolder.message("&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!");
-    @Comment("Dostępne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
+    @Comment("Dostępne zmienne: {POINTS}, {REQUIRED}")
     public SendableMessage createRank = ChatHolder.message("&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.");
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
     public SendableMessage createItems = ChatHolder.message("&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. Najedz na przedmiot, aby dowiedziec sie wiecej");
@@ -616,7 +616,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage adminNoPointsGiven = ChatHolder.message("&cPodaj liczbe punktow!");
     @Comment("Dostępne zmienne: {ERROR}")
     public SendableMessage adminErrorInNumber = ChatHolder.message("&cNieznana jest liczba: {ERROR}");
-    @Comment("Dostępne zmienne: {PLAYER}, {POINTS}, {POINTS-FORMAT}")
+    @Comment("Dostępne zmienne: {PLAYER}, {POINTS}")
     public SendableMessage adminPointsChanged = ChatHolder.message("&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}");
 
     public SendableMessage adminNoKillsGiven = ChatHolder.message("&cPodaj liczbe zabojstw!");

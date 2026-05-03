@@ -28,7 +28,7 @@ public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Tekst wyświetlany przez hologram")
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {NAME}, {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}")
     public List<Component> displayedLines = ComponentUtil.coloredByNewLine("""
                                                                           &7&m-------------------
                                                                           &7- &bFunnyGuilds &7-
