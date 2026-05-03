@@ -1,7 +1,14 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.base.Joiner;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -9,18 +16,25 @@ import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import panda.std.Option;
 
 public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, GuildPlaceholders> {
+
+    private static final int DEFAULT_MEMBER_PRIORITY = Integer.MAX_VALUE;
 
     private static Option<GuildPlaceholders> SIMPLE = Option.none();
 
@@ -179,5 +193,63 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .rankProperty("avg-kdr", GuildRank::getAverageKDR, 0.00)
                 .rankProperty("kda", GuildRank::getKDA, 0.00)
                 .rankProperty("avg-kda", GuildRank::getAverageKDA, 0.00);
+    }
+
+    public static GuildPlaceholders createMemberPlaceholders(FunnyGuilds plugin) {
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageService messages = plugin.getMessageService();
+        GuildManager guildManager = plugin.getGuildManager();
+        UserManager userManager = plugin.getUserManager();
+        GuildPermissionChecker permissionChecker = plugin.getGuildPermissionChecker();
+
+        LoadingCache<MemberPriorityKey, Integer> priorityCache = Caffeine.newBuilder()
+                .expireAfterWrite(1, TimeUnit.MINUTES)
+                .build(key -> guildManager.findByUuid(key.guildUuid())
+                        .flatMap(guild -> userManager.findByUuid(key.userUuid())
+                                .flatMap(user -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.MEMBER_LIST_PRIORITY)))
+                        .orElseGet(DEFAULT_MEMBER_PRIORITY));
+
+        GuildPlaceholders placeholders = new GuildPlaceholders();
+        for (int i = 1; i <= config.maxMembersInGuild; i++) {
+            int index = i;
+            placeholders = placeholders.property("member-" + index,
+                    (entity, guild) -> {
+                        List<MemberView> sorted = sortedMembers(guild, config, priorityCache);
+                        if (index > sorted.size()) {
+                            return messages.get(entity, msgConfig -> msgConfig.gMemberNoValue);
+                        }
+                        MemberView view = sorted.get(index - 1);
+                        TextColor color = view.online() ? config.onlineColor : config.offlineColor;
+                        return Component.text(view.user().getName(), color);
+                    },
+                    entity -> messages.get(entity, msgConfig -> msgConfig.gMemberNoValue));
+        }
+        return placeholders;
+    }
+
+    private static boolean isOnline(User user, PluginConfiguration config) {
+        if (!user.isOnline()) {
+            return false;
+        }
+        return !(config.gMemberRespectVanish && user.isVanished());
+    }
+
+    private static List<MemberView> sortedMembers(Guild guild, PluginConfiguration config, LoadingCache<MemberPriorityKey, Integer> priorityCache) {
+        return guild.getMembers().stream()
+                .map(user -> new MemberView(
+                        user,
+                        isOnline(user, config),
+                        priorityCache.get(new MemberPriorityKey(guild.getUUID(), user.getUUID()))))
+                .sorted(Comparator
+                        .comparingInt((MemberView view) -> view.online() ? 0 : 1)
+                        .thenComparingInt(MemberView::priority)
+                        .thenComparing(view -> view.user().getName(), String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+    }
+
+    private record MemberView(User user, boolean online, int priority) {
+    }
+
+    private record MemberPriorityKey(UUID guildUuid, UUID userUuid) {
     }
 }
