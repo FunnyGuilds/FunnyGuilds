@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Expiry;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -13,6 +11,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook.Friendly
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
+import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Animals;
@@ -31,7 +30,24 @@ public class EntityDamage extends AbstractFunnyListener {
     @Inject
     private RankSystem rankSystem;
 
-    private final Map<PredictionKey, Instant> predictionCooldowns = new ConcurrentHashMap<>();
+    private final Cache<PredictionKey, Boolean> predictionCooldowns = Caffeine.newBuilder()
+            .expireAfter(new Expiry<PredictionKey, Boolean>() {
+                @Override
+                public long expireAfterCreate(PredictionKey key, Boolean value, long currentTime) {
+                    return Math.max(0L, EntityDamage.this.config.combatPredictionInterval.toNanos());
+                }
+
+                @Override
+                public long expireAfterUpdate(PredictionKey key, Boolean value, long currentTime, long currentDuration) {
+                    return currentDuration;
+                }
+
+                @Override
+                public long expireAfterRead(PredictionKey key, Boolean value, long currentTime, long currentDuration) {
+                    return currentDuration;
+                }
+            })
+            .build();
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
@@ -122,11 +138,15 @@ public class EntityDamage extends AbstractFunnyListener {
                 }
             }
 
-            if (attacker.equals(victim)) {
+            if (attacker.equals(victim) || event.isCancelled()) {
                 return;
             }
 
-            if (!this.config.assistEnable || event.isCancelled()) {
+            if (this.config.displayCombatPredictionAttacker || this.config.displayCombatPredictionVictim) {
+                this.sendCombatPrediction(attackerUser, victimUser);
+            }
+
+            if (!this.config.assistEnable) {
                 return;
             }
 
@@ -135,19 +155,17 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            if (this.config.displayCombatPredictionAttacker || this.config.displayCombatPredictionVictim) {
-                this.sendCombatPrediction(attackerUser, victimUser);
-            }
-
             DamageState damageState = this.damageManager.getDamageState(victimUser.getUUID());
             damageState.addDamage(attackerUser, event.getDamage());
         });
     }
 
     private void sendCombatPrediction(User attacker, User victim) {
-        if (this.isOnPredictionCooldown(attacker.getUUID(), victim.getUUID())) {
+        PredictionKey key = new PredictionKey(attacker.getUUID(), victim.getUUID());
+        if (this.predictionCooldowns.getIfPresent(key) != null) {
             return;
         }
+        this.predictionCooldowns.put(key, Boolean.TRUE);
 
         RankSystem.RankResult predicted = this.rankSystem.calculate(
                 this.config.rankSystem,
@@ -160,7 +178,7 @@ public class EntityDamage extends AbstractFunnyListener {
             this.messageService.getMessage(config -> config.combatPredictionAttackerMessage)
                     .with("{VICTIM}", victim.getName())
                     .with("{ATTACKER-CHANGE}", change)
-                    .with("{ATTACKER-CHANGE-FORMATTED}", formatChange(change))
+                    .with("{ATTACKER-CHANGE-FORMATTED}", RankFormatter.formatPointsChange(change, this.config.killPointsChangeFormat))
                     .receiver(attacker)
                     .send();
         }
@@ -170,27 +188,10 @@ public class EntityDamage extends AbstractFunnyListener {
             this.messageService.getMessage(config -> config.combatPredictionVictimMessage)
                     .with("{ATTACKER}", attacker.getName())
                     .with("{VICTIM-CHANGE}", change)
-                    .with("{VICTIM-CHANGE-FORMATTED}", formatChange(change))
+                    .with("{VICTIM-CHANGE-FORMATTED}", RankFormatter.formatPointsChange(change, this.config.killPointsChangeFormat))
                     .receiver(victim)
                     .send();
         }
-    }
-
-    private boolean isOnPredictionCooldown(UUID attackerUuid, UUID victimUuid) {
-        Duration interval = this.config.combatPredictionInterval;
-        Instant now = Instant.now();
-        PredictionKey key = new PredictionKey(attackerUuid, victimUuid);
-        Instant lastFire = this.predictionCooldowns.get(key);
-        if (lastFire != null && lastFire.plus(interval).isAfter(now)) {
-            return true;
-        }
-        this.predictionCooldowns.put(key, now);
-        return false;
-    }
-
-    private String formatChange(int change) {
-        return NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true)
-                .replace("{CHANGE}", String.valueOf(Math.abs(change)));
     }
 
     private record PredictionKey(UUID attacker, UUID victim) {
