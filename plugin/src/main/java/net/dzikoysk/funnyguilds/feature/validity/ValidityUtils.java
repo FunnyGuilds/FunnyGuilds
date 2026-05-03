@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,7 @@ public final class ValidityUtils {
         boolean hasCenter = regionOption.isPresent() && regionOption.get().getCenter() != null;
 
         messageService.getMessage(config -> config.broadcastValidity)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .with(CommandSender.class, receiver -> {
                     FunnyFormatter cordFormatter = new FunnyFormatter();
@@ -41,7 +42,7 @@ public final class ValidityUtils {
                         cordFormatter.register("{Z}", center.getBlockZ());
                     }
                     else {
-                        String noInformation = messageService.get(receiver, config -> config.noInformation);
+                        Component noInformation = messageService.get(receiver, config -> config.noInformation);
                         cordFormatter.register("{X}", noInformation);
                         cordFormatter.register("{Y}", noInformation);
                         cordFormatter.register("{Z}", noInformation);

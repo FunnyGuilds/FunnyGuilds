@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 
 public final class GuildValidation {
 
@@ -13,7 +13,7 @@ public final class GuildValidation {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
         return plugin.getGuildManager().findByTag(tag, true).orThrow(() -> {
-            return new InternalValidationException(config -> config.generalGuildNotExists, FunnyFormatter.of("{TAG}", tag));
+            return new InternalValidationException(config -> config.generalGuildNotExists, Replacement.string("{TAG}", tag));
         });
     }
 

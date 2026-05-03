@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
@@ -196,7 +197,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public Set<User> getDeputies() {
+    public Collection<User> getDeputies() {
         return this.deputies;
     }
 
@@ -223,7 +224,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public Set<Guild> getAllies() {
+    public Collection<Guild> getAllies() {
         return this.allies;
     }
 
@@ -232,6 +233,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isAlly(@Nullable Guild guild) {
+        if (guild == null) {
+            return false;
+        }
         return this.allies.contains(guild);
     }
 
@@ -250,7 +254,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public Set<Guild> getEnemies() {
+    public Collection<Guild> getEnemies() {
         return this.enemies;
     }
 
@@ -259,6 +263,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isEnemy(@Nullable Guild guild) {
+        if (guild == null) {
+            return false;
+        }
         return this.enemies.contains(guild);
     }
 
@@ -278,6 +285,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isNeutral(@Nullable Guild guild) {
+        if (guild == null) {
+            return true;
+        }
         return !this.isEnemy(guild) && !this.isAlly(guild);
     }
 

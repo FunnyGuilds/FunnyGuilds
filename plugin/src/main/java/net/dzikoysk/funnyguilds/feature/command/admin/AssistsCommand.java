@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
@@ -26,7 +27,7 @@ public final class AssistsCommand extends AbstractFunnyCommand {
         when(args.length < 2, config -> config.adminNoAssistsGiven);
 
         int assists = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(config -> config.adminErrorInNumber, Replacement.string("{ERROR}", args[0]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);

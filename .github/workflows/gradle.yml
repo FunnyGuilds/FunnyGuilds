@@ -21,12 +21,14 @@ jobs:
         uses: peter-evans/find-comment@v3
         if: github.event_name == 'pull_request'
         id: init-find-comment
+        continue-on-error: true
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
       - name: Create initial comment for artifact link
         uses: peter-evans/create-or-update-comment@v4
         id: create-comment
+        continue-on-error: true
         if: |
           github.event_name == 'pull_request' &&
           steps.init-find-comment.outputs.comment-id == ''
@@ -48,13 +50,16 @@ jobs:
           java-version: ${{ matrix.jdk }}
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - uses: burrunan/gradle-cache-action@v2
+      - uses: burrunan/gradle-cache-action@v3
         name: Build FunnyGuilds
         with:
+          job-id: jdk${{ matrix.jdk }}
           arguments: build --stacktrace -i
+          read-only: ${{ github.ref != 'refs/heads/4.x' && github.ref != 'refs/heads/5.x' && github.ref != 'refs/heads/6.x' }}
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         id: upload-artifact
+        continue-on-error: true
         with:
           name: FunnyGuilds Dev Build
           path: plugin/build/libs/FunnyGuilds*.jar
@@ -65,12 +70,14 @@ jobs:
         uses: peter-evans/find-comment@v3
         if: github.event_name == 'pull_request'
         id: find-comment
+        continue-on-error: true
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
       - name: Update comment with artifact link
         uses: peter-evans/create-or-update-comment@v4
         if: github.event_name == 'pull_request'
+        continue-on-error: true
         with:
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           body: |

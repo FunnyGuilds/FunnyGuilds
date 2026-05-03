@@ -30,6 +30,7 @@ public class PlayerQuit extends AbstractFunnyListener {
     }
 
     private void handleQuit(Player player) {
+        this.plugin.getTablistRenderer().peek(renderer -> renderer.stopSending(player));
         this.userManager.findByUuid(player.getUniqueId()).peek(user -> {
             UserCache cache = user.getCache();
             DamageState damageState = damageManager.getDamageState(user.getUUID());
@@ -52,7 +53,6 @@ public class PlayerQuit extends AbstractFunnyListener {
             cache.setIndividualNameTag(null);
             cache.setScoreboard(null);
             cache.setDummy(null);
-            cache.setPlayerList(null);
             damageState.clear();
         });
 

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -63,7 +64,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
         }
 
         when(guild.getAllies().size() >= this.config.maxAlliesBetweenGuilds,
-                config -> config.inviteAllyAmount, FunnyFormatter.of("{AMOUNT}", this.config.maxAlliesBetweenGuilds));
+                config -> config.inviteAllyAmount, Replacement.string("{AMOUNT}", this.config.maxAlliesBetweenGuilds));
 
         if (invitedGuild.getAllies().size() >= this.config.maxAlliesBetweenGuilds) {
             FunnyFormatter formatter = new FunnyFormatter()

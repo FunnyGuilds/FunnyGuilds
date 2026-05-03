@@ -12,10 +12,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
-import net.dzikoysk.funnyguilds.config.RawString;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TopConfiguration extends OkaeriConfig {
+    
+    @Comment("")
+    @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
+    public boolean useRelationshipColors = false;
 
     @Comment("Lista topek graczy, które mają być obliczane i parsowane")
     @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
@@ -31,11 +34,6 @@ public class TopConfiguration extends OkaeriConfig {
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")
-    @Comment("Czy placeholdery {PTOP-x} oraz {GTOP-x} mają byc właczone na tabie oraz w PlaceholderAPI")
-    @Comment("Wyłączenie tej funkcji może minimalnie odciążyć serwer")
-    public boolean enableLegacyPlaceholders = true;
-
-    @Comment("")
     public Format format = new Format();
 
     public static class Format extends OkaeriConfig {
@@ -43,13 +41,13 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Znacznik z wartością dodawany do zmiennej {PTOP-typ-x}")
         @Comment("Używaj zmiennych {VALUE} i {VALUE-FORMAT}")
         @Comment("Jeśli nie chcesz wyświetlać wartości, tylko sam nick - nie podawaj tu nic")
-        public RawString ptop = new RawString(" &7[{VALUE}&7]");
+        public String ptop = " &7[{VALUE}&7]";
 
         @Comment("")
         @Comment("Znacznik z wartością dodawany do zmiennej {GTOP-typ-x}")
         @Comment("Używaj zmiennych {VALUE} i {VALUE-FORMAT}")
         @Comment("Jeśli nie chcesz wyświetlać wartości, tylko sam tag - nie podawaj tu nic")
-        public RawString gtop = new RawString(" &7[&b{VALUE}&7]");
+        public String gtop = " &7[&b{VALUE}&7]";
 
         @Comment("")
         @Comment("Wygląd znacznika {VALUE-FORMAT} w zależności od wartości topki graczy")

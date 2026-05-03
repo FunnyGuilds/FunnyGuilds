@@ -11,13 +11,11 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.util.Vector;
-import panda.std.Pair;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
@@ -33,7 +31,7 @@ public class HeartConfiguration extends OkaeriConfig {
     @Comment("Jeśli pojawi sie w powietrzu - spadnie i plugin nie będzie odczytywał go poprawnie!")
     public String createType = "ender_crystal";
     @Exclude
-    public Pair<Material, Byte> createMaterial;
+    public Material createMaterial;
     @Exclude
     public EntityType createEntityType;
 
@@ -167,7 +165,7 @@ public class HeartConfiguration extends OkaeriConfig {
     public void loadProcessedProperties() {
         this.createEntityType = EntityUtils.parseEntityType(this.createType, true, false);
         if (this.createEntityType == null) {
-            this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
+            this.createMaterial = Material.matchMaterial(this.createType);
         }
 
         if (this.pasteSchematicOnCreation) {

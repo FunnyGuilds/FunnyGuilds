@@ -39,7 +39,7 @@ public final class SecurityReach {
         }
 
         SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
-        SecurityUtils.sendToOperator(player, CheatType.REACH, Replacement.of("{DISTANCE}", FORMAT.format(distance)));
+        SecurityUtils.sendToOperator(player, CheatType.REACH, Replacement.string("{DISTANCE}", FORMAT.format(distance)));
     }
 
 }

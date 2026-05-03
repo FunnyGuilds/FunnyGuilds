@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -7,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -28,13 +28,13 @@ public final class PvPCommand extends AbstractFunnyCommand {
             when(!this.config.damageAlly, config -> config.generalAllyPvpDisabled);
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
-            FunnyFormatter guildTagFormatter = FunnyFormatter.of("{TAG}", targetAlliedGuild.getTag());
-            when(!guild.isAlly(targetAlliedGuild), config -> config.allyDoesntExist, guildTagFormatter);
+            Replacement guildTagReplacement = Replacement.string("{TAG}", targetAlliedGuild.getTag());
+            when(!guild.isAlly(targetAlliedGuild), config -> config.allyDoesntExist, guildTagReplacement);
 
             boolean newPvpValue = guild.toggleAllyPvP(targetAlliedGuild);
             this.messageService.getMessage(config -> newPvpValue ? config.pvpAllyOn : config.pvpAllyOff)
                     .receiver(deputy)
-                    .with(guildTagFormatter)
+                    .with(guildTagReplacement)
                     .send();
 
             return;

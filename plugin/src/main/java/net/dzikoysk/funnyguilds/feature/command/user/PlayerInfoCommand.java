@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.message.Sendable;
 import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -12,9 +12,9 @@ import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -42,7 +42,6 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", infoUser.getName())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), this.config.pointsFormat))
                 .register("{POINTS}", rank.getPoints())
                 .register("{KILLS}", rank.getKills())
                 .register("{DEATHS}", rank.getDeaths())
@@ -62,8 +61,8 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                         guildFormatter.register("{GUILD}", guild.getName());
                         guildFormatter.register("{TAG}", guild.getTag());
                     } else {
-                        guildFormatter.register("{GUILD}", this.messageService.<String>get(receiver, config -> config.gNameNoValue));
-                        guildFormatter.register("{TAG}", this.messageService.<String>get(receiver, config -> config.gTagNoValue));
+                        guildFormatter.register("{GUILD}", this.messageService.<Component>get(receiver, config -> config.gNameNoValue));
+                        guildFormatter.register("{TAG}", this.messageService.<Component>get(receiver, config -> config.gTagNoValue));
                     }
                     return guildFormatter;
                 })

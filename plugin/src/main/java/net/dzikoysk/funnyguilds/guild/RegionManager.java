@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +24,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
-import panda.std.Pair;
 import panda.std.stream.PandaStream;
 
 public class RegionManager {
@@ -121,24 +119,12 @@ public class RegionManager {
                 .isPresent();
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isAnyPlayerInRegion(Region region) {
-        return this.isAnyPlayerInRegion(region, Collections.emptySet());
-    }
-
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
         return this.isAnyPlayerInRegion(region, PandaStream.of(ignoredUsers)
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
-        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers)).orElseGet(false);
-    }
-
+    
     /**
      * Checks if there is any region in area (used to check if it's possible to create a new guild in given location).
      *
@@ -161,9 +147,7 @@ public class RegionManager {
                 .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
                 .isPresent();
     }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    
     public boolean isNearRegion(Option<Location> center) {
         return center.map(this::isNearRegion).orElseGet(false);
     }
@@ -175,8 +159,8 @@ public class RegionManager {
      * @return if given block is guild's heart
      */
     public boolean isGuildHeart(Block block) {
-        Pair<Material, Byte> md = this.pluginConfiguration.heart.createMaterial;
-        if (md == null || block.getType() != md.getFirst()) {
+        Material md = this.pluginConfiguration.heart.createMaterial;
+        if (md == null || block.getType() != md) {
             return false;
         }
 

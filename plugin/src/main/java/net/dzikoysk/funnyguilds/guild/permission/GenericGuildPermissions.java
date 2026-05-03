@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Collection;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
+import net.kyori.adventure.text.Component;
 
 /**
  * Generic guild permissions used in various features.
@@ -16,7 +17,12 @@ public final class GenericGuildPermissions {
     /**
      * Specifies how the user position is displayed in messages.
      */
-    public static final GuildPermission<String> USER_POSITION = GuildPermission.permission("user.position", String.class);
+    public static final GuildPermission<Component> USER_POSITION = GuildPermission.permission("user.position", Component.class);
+
+    /**
+     * Member ordering priority for the {@code G-MEMBER-X} placeholder (lower value = shown earlier).
+     */
+    public static final GuildPermission<Integer> MEMBER_LIST_PRIORITY = GuildPermission.permission("member.list.priority", Integer.class);
 
     /**
      * Allow to use and see guild chat.

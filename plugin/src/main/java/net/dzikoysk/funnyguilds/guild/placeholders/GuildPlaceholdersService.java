@@ -1,49 +1,45 @@
 package net.dzikoysk.funnyguilds.guild.placeholders;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.base.Joiner;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholders;
-import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
+import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import org.bukkit.ChatColor;
-import org.jetbrains.annotations.Nullable;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import panda.std.Option;
-import panda.std.Pair;
-import panda.utilities.StringUtils;
 
 public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, GuildPlaceholders> {
 
-    public static final BasicPlaceholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT = new BasicPlaceholders<Pair<String, Guild>>()
-            .property("members", pair -> {
-                String text = JOIN_OR_DEFAULT.apply(UserUtils.getOnlineNames(pair.getSecond().getMembers()), "");
-
-                return !text.contains("<online>")
-                        ? text
-                        : BasicPlaceholdersService.ONLINE.toFormatter(pair.getFirst()).format(text);
-            });
+    private static final int DEFAULT_MEMBER_PRIORITY = Integer.MAX_VALUE;
 
     private static Option<GuildPlaceholders> SIMPLE = Option.none();
 
-    @Override
-    public String format(@Nullable Object entity, String text, Guild guild) {
-        text = super.format(entity, text, guild);
-        text = GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(ChatUtils.getLastColorBefore(text, "{MEMBERS}"), guild))
-                .format(text);
-        return text;
+    public GuildPlaceholdersService(EntityLocaleProvider entityLocaleProvider) {
+        super(entityLocaleProvider);
     }
 
     public static Option<GuildPlaceholders> getSimplePlaceholders() {
@@ -54,9 +50,9 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
         MessageService messages = plugin.getMessageService();
 
         GuildPlaceholders placeholders = new GuildPlaceholders()
-                .property("name", Guild::getName, entity -> messages.get(entity, config -> config.gNameNoValue))
-                .property("guild", Guild::getName, entity -> messages.get(entity, config -> config.gNameNoValue))
-                .property("tag", Guild::getTag, entity -> messages.get(entity, config -> config.gTagNoValue));
+                .property("name", Guild::getName, entity -> messages.getComponent(entity, config -> config.gNameNoValue))
+                .property("guild", Guild::getName, entity -> messages.getComponent(entity, config -> config.gNameNoValue))
+                .property("tag", Guild::getTag, entity -> messages.getComponent(entity, config -> config.gTagNoValue));
         SIMPLE = Option.of(placeholders);
 
         return placeholders;
@@ -70,44 +66,108 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
         return new GuildPlaceholders()
                 .property("owner", guild -> guild.getOwner().getName(), entity -> messages.get(entity, config -> config.gOwnerNoValue))
                 .property("deputies",
-                        (entity, guild) -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getDeputies()), messages.get(entity, config -> config.gDeputiesNoValue)),
+                        (entity, guild) -> ComponentUtil.joinColoredOrDefault(
+                                Entity.names(guild.getDeputies()),
+                                null
+                        ),
                         entity -> messages.get(entity, config -> config.gDeputiesNoValue))
                 .property("deputy",
-                        (entity, guild) -> guild.getDeputies().isEmpty()
-                                ? messages.get(entity, config -> config.gDeputyNoValue)
-                                : guild.getDeputies().iterator().next().getName(),
+                        (entity, guild) -> guild.getDeputies()
+                                .stream()
+                                .findFirst()
+                                .map(User::getName)
+                                .orElse(null),
                         entity -> messages.get(entity, config -> config.gDeputyNoValue))
+                .property("members", (entity, guild) -> ComponentUtil.join(UserUtils.getOnlineNames(guild.getMembers()), ", "), 
+                        entity -> messages.get(entity, config -> config.gMembersNoValue))
                 .property("members-online", guild -> guild.getOnlineMembers().size(), entity -> 0)
                 .property("members-all", guild -> guild.getMembers().size(), entity -> 0)
+                .property("allies", 
+                        (entity, guild) -> {
+                            Collection<Guild> allies = guild.getAllies();
+                            if (allies.isEmpty()) {
+                                return null;
+                            }
+                            return Joiner.on(", ").join(Entity.names(allies));
+                        },
+                        entity -> messages.get(entity, config -> config.alliesNoValue))
+                .property("allies-tags",
+                        (entity, guild) -> {
+                            Collection<Guild> allies = guild.getAllies();
+                            if (allies.isEmpty()) {
+                                return null;
+                            }
+                            return Joiner.on(", ").join(GuildUtils.getTags(allies));
+                        },
+                        entity -> messages.get(entity, config -> config.alliesNoValue))
                 .property("allies-all", guild -> guild.getAllies().size(), entity -> 0)
+                .property("enemies",
+                        (entity, guild) -> {
+                            Collection<Guild> enemies = guild.getEnemies();
+                            if (enemies.isEmpty()) {
+                                return null;
+                            }
+                            return Joiner.on(", ").join(Entity.names(enemies));
+                        },
+                        entity -> messages.get(entity, config -> config.enemiesNoValue))
+                .property("enemies-tags",
+                        (entity, guild) -> {    
+                            Collection<Guild> enemies = guild.getEnemies();
+                            if (enemies.isEmpty()) {
+                                return null;
+                            }
+                            return Joiner.on(", ").join(GuildUtils.getTags(enemies));
+                        },
+                        entity -> messages.get(entity, config -> config.enemiesNoValue))
                 .property("enemies-all", guild -> guild.getEnemies().size(), entity -> 0)
                 .property("region-size",
                         (entity, guild) -> guild.getRegion()
                                 .map(Region::getSize)
                                 .map(value -> Integer.toString(value))
-                                .orElseGet(messages.<String>get(entity, config -> config.gRegionSizeNoValue)),
-                        entity -> messages.get(entity, config -> config.gRegionSizeNoValue))
+                                .orNull(),
+                       entity -> messages.get(entity, config -> config.gRegionSizeNoValue))
                 .property("pvp",
                         (entity, guild) -> guild.hasPvPEnabled()
                                 ? messages.get(entity, config -> config.pvpStatusOn)
                                 : messages.get(entity, config -> config.pvpStatusOff),
                         entity -> messages.get(entity, config -> config.pvpStatusOff))
-                .timeProperty("validity", Guild::getValidity, messages, config -> config.gValidityNoValue)
-                .timeProperty("protection", Guild::getProtection, messages, config -> config.gProtectionNoValue)
+                .timeProperty(
+                        "validity",
+                        Guild::getValidity,
+                        messages,
+                        entity -> messages.get(entity, config -> config.gValidityNoValue)
+                )
+                .timeProperty(
+                        "protection",
+                        Guild::getProtection,
+                        messages,
+                        entity -> messages.get(entity, config -> config.gProtectionNoValue)
+                )
                 .property("lives", Guild::getLives, entity -> 0)
                 .property("lives-symbol",
                         guild -> {
                             int lives = guild.getLives();
                             if (lives <= pluginConfiguration.warLives) {
-                                return StringUtils.repeated(lives, pluginConfiguration.livesRepeatingSymbol.full.getValue()) +
-                                        StringUtils.repeated(pluginConfiguration.warLives - lives, pluginConfiguration.livesRepeatingSymbol.empty.getValue());
+                                return Component.text()
+                                        .append(ComponentUtil.repeat(
+                                                pluginConfiguration.livesRepeatingSymbol.full,
+                                                lives
+                                        ))
+                                        .append(ComponentUtil.repeat(
+                                                pluginConfiguration.livesRepeatingSymbol.empty, 
+                                                pluginConfiguration.warLives - lives
+                                        ));
                             } else {
-                                return StringUtils.repeated(pluginConfiguration.warLives, pluginConfiguration.livesRepeatingSymbol.full.getValue()) +
-                                        pluginConfiguration.livesRepeatingSymbol.more.getValue();
+                                return Component.text()
+                                        .append(ComponentUtil.repeat(
+                                                pluginConfiguration.livesRepeatingSymbol.full,
+                                                pluginConfiguration.warLives
+                                        ))
+                                        .append(pluginConfiguration.livesRepeatingSymbol.more);
                             }
                         }, entity -> messages.get(config -> config.livesNoValue))
                 .property("lives-symbol-all",
-                        guild -> StringUtils.repeated(guild.getLives(), pluginConfiguration.livesRepeatingSymbol.full.getValue()),
+                        guild -> ComponentUtil.repeat(pluginConfiguration.livesRepeatingSymbol.full, guild.getLives()),
                         entity -> messages.get(entity, config -> config.livesNoValue))
                 .rankProperty("position",
                         (entity, guild, rank) -> rankManager.isRankedGuild(guild)
@@ -119,14 +179,8 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                                 ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                                 : messages.get(entity, config -> config.minMembersToIncludeNoValue),
                         entity -> messages.get(entity, config -> config.minMembersToIncludeNoValue))
-                //TODO total-points -> points (I know this will break up backwards compatibility so I'm not doing it now)
-                .rankProperty("total-points", GuildRank::getPoints, 0)
+                .rankProperty("points", GuildRank::getPoints, 0)
                 .rankProperty("avg-points", GuildRank::getAveragePoints,0)
-                .rankProperty("points", GuildRank::getAveragePoints, 0)
-                .rankProperty("points-format",
-                        (entity, guild, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getAveragePoints(),
-                                pluginConfiguration.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
-                        entity -> FunnyFormatter.format(NumberRange.inRangeToString(0, pluginConfiguration.pointsFormat), "{POINTS}", 0))
                 .rankProperty("kills", GuildRank::getKills, 0)
                 .rankProperty("avg-kills", GuildRank::getAverageKills, 0)
                 .rankProperty("deaths", GuildRank::getDeaths, 0)
@@ -141,28 +195,61 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .rankProperty("avg-kda", GuildRank::getAverageKDA, 0.00);
     }
 
-    public static GuildPlaceholders createAlliesEnemiesPlaceholders(FunnyGuilds plugin) {
+    public static GuildPlaceholders createMemberPlaceholders(FunnyGuilds plugin) {
+        PluginConfiguration config = plugin.getPluginConfiguration();
         MessageService messages = plugin.getMessageService();
-        return new GuildPlaceholders()
-                .property("allies",
-                        (entity, guild) -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getAllies()), messages.get(entity, config -> config.alliesNoValue)),
-                        entity -> messages.get(entity, config -> config.alliesNoValue))
-                .property("allies-tags",
-                        (entity, guild) -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getAllies()), messages.get(entity, config -> config.alliesNoValue)),
-                        entity -> messages.get(entity, config -> config.alliesNoValue))
-                .property("enemies",
-                        (entity, guild) -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getEnemies()), messages.get(entity, config -> config.enemiesNoValue)),
-                        entity -> messages.get(entity, config -> config.enemiesNoValue))
-                .property("enemies-tags",
-                        (entity, guild) -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.get(entity, config -> config.enemiesNoValue)),
-                        entity -> messages.get(entity, config -> config.enemiesNoValue));
+        GuildManager guildManager = plugin.getGuildManager();
+        UserManager userManager = plugin.getUserManager();
+        GuildPermissionChecker permissionChecker = plugin.getGuildPermissionChecker();
+
+        LoadingCache<MemberPriorityKey, Integer> priorityCache = Caffeine.newBuilder()
+                .expireAfterWrite(1, TimeUnit.MINUTES)
+                .build(key -> guildManager.findByUuid(key.guildUuid())
+                        .flatMap(guild -> userManager.findByUuid(key.userUuid())
+                                .flatMap(user -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.MEMBER_LIST_PRIORITY)))
+                        .orElseGet(DEFAULT_MEMBER_PRIORITY));
+
+        GuildPlaceholders placeholders = new GuildPlaceholders();
+        for (int i = 1; i <= config.maxMembersInGuild; i++) {
+            int index = i;
+            placeholders = placeholders.property("member-" + index,
+                    (entity, guild) -> {
+                        List<MemberView> sorted = sortedMembers(guild, config, priorityCache);
+                        if (index > sorted.size()) {
+                            return messages.get(entity, msgConfig -> msgConfig.gMemberNoValue);
+                        }
+                        MemberView view = sorted.get(index - 1);
+                        TextColor color = view.online() ? config.onlineColor : config.offlineColor;
+                        return Component.text(view.user().getName(), color);
+                    },
+                    entity -> messages.get(entity, msgConfig -> msgConfig.gMemberNoValue));
+        }
+        return placeholders;
     }
 
-    @Override
-    public Set<FunnyFormatter> prepareReplacements(@Nullable Object entity, Guild data) {
-        Set<FunnyFormatter> formatters = new LinkedHashSet<>(super.prepareReplacements(entity, data));
-        formatters.add(GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(ChatColor.RESET.toString(), data)));
-        return formatters;
+    private static boolean isOnline(User user, PluginConfiguration config) {
+        if (!user.isOnline()) {
+            return false;
+        }
+        return !(config.gMemberRespectVanish && user.isVanished());
     }
 
+    private static List<MemberView> sortedMembers(Guild guild, PluginConfiguration config, LoadingCache<MemberPriorityKey, Integer> priorityCache) {
+        return guild.getMembers().stream()
+                .map(user -> new MemberView(
+                        user,
+                        isOnline(user, config),
+                        priorityCache.get(new MemberPriorityKey(guild.getUUID(), user.getUUID()))))
+                .sorted(Comparator
+                        .comparingInt((MemberView view) -> view.online() ? 0 : 1)
+                        .thenComparingInt(MemberView::priority)
+                        .thenComparing(view -> view.user().getName(), String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+    }
+
+    private record MemberView(User user, boolean online, int priority) {
+    }
+
+    private record MemberPriorityKey(UUID guildUuid, UUID userUuid) {
+    }
 }

@@ -40,7 +40,7 @@ public class Dummy {
 
         objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
         objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        objective.setDisplayName(this.pluginConfiguration.scoreboard.dummy.suffix.getValue());
+        objective.displayName(this.pluginConfiguration.scoreboard.dummy.suffix);
 
         return Option.of(objective);
     }

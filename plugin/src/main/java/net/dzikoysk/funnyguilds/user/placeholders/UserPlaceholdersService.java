@@ -1,19 +1,20 @@
 package net.dzikoysk.funnyguilds.user.placeholders;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -22,20 +23,20 @@ import panda.utilities.text.Joiner;
 
 public class UserPlaceholdersService extends StaticPlaceholdersService<User, UserPlaceholders> {
 
+    public UserPlaceholdersService(EntityLocaleProvider entityLocaleProvider) {
+        super(entityLocaleProvider);
+    }
+
     public static UserPlaceholders createUserPlaceholders(FunnyGuilds plugin) {
         PluginConfiguration config = plugin.getPluginConfiguration();
         return new UserPlaceholders()
                 .property("name", User::getName)
                 .property("player", User::getName)
                 .property("ping", User::getPing)
-                .property("ping-format", user -> FunnyFormatter.format(NumberRange.inRangeToString(user.getPing(),
-                        config.pingFormat), "{PING}", user.getPing()))
-                .property("has-guild", user -> user.hasGuild())
+                .property("has-guild", User::hasGuild)
                 .property("guild-position", user -> UserUtils.getUserPosition(plugin.getGuildPermissionChecker(), user))
                 .rankProperty("position", (rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
                 .rankProperty("points", UserRank::getPoints)
-                .rankProperty("points-format", (UserRank rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getPoints(),
-                        config.pointsFormat), "{POINTS}", rank.getPoints()))
                 .rankProperty("kills", UserRank::getKills)
                 .rankProperty("deaths", UserRank::getDeaths)
                 .rankProperty("kdr", UserRank::getKDR)
@@ -45,18 +46,18 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
     }
 
     public static UserPlaceholders createPlayerPlaceholders(FunnyGuilds plugin) {
-        String wgRegionNoValue = plugin.getMessageService().get(config -> config.wgRegionNoValue);
+        Component wgRegionNoValue = plugin.getMessageService().get(config -> config.wgRegionNoValue);
         return new UserPlaceholders()
                 .playerOptionProperty("world", playerOption -> playerOption
                         .map(Player::getWorld)
                         .map(World::getName)
                         .orElseGet(""))
                 .playerOptionProperty("online", playerOption -> playerOption
-                        .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
+                        .map(player -> new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(player::canSee).count())
                         .orElseGet(0L))
                 .playerProperty("wg-region", player -> {
                     List<String> regionNames = getWorldGuardRegionNames(player);
-                    return !regionNames.isEmpty() ? regionNames.get(0) : wgRegionNoValue;
+                    return !regionNames.isEmpty() ? regionNames.getFirst() : wgRegionNoValue;
                 })
                 .playerProperty("wg-regions", player -> {
                     List<String> regionNames = getWorldGuardRegionNames(player);
