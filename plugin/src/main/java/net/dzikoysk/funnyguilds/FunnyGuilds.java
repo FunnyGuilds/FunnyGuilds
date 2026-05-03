@@ -157,9 +157,9 @@ public class FunnyGuilds extends JavaPlugin {
 
     private Injector injector;
 
-    private volatile BukkitTask guildValidationTask;
-    private volatile BukkitTask tablistBroadcastTask;
-    private volatile BukkitTask rankRecalculationTask;
+    private volatile Option<BukkitTask> guildValidationTask = Option.none();
+    private volatile Option<BukkitTask> tablistBroadcastTask = Option.none();
+    private volatile Option<BukkitTask> rankRecalculationTask = Option.none();
 
     private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
     private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
@@ -369,8 +369,8 @@ public class FunnyGuilds extends JavaPlugin {
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
-        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.guildValidationTask = Option.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L));
+        this.rankRecalculationTask = Option.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval));
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
@@ -462,10 +462,8 @@ public class FunnyGuilds extends JavaPlugin {
 
     public void reloadTablistRendering() {
         this.tablistRenderer = Option.none();
-        if (this.tablistBroadcastTask != null) {
-            Bukkit.getScheduler().cancelTask(this.tablistBroadcastTask.getTaskId());
-            this.tablistBroadcastTask = null;
-        }
+        this.tablistBroadcastTask.peek(task -> Bukkit.getScheduler().cancelTask(task.getTaskId()));
+        this.tablistBroadcastTask = Option.none();
         
         this.tablistRenderer = Option.when(
                 this.tablistConfiguration.enabled,
@@ -482,13 +480,13 @@ public class FunnyGuilds extends JavaPlugin {
                         this.tablistConfiguration.fillCells
                 )
         ).orElse(Option.none())
-                .peek(renderer -> this.tablistBroadcastTask = Bukkit.getScheduler()
+                .peek(renderer -> this.tablistBroadcastTask = Option.of(Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(
                         this,
                         new TablistBroadcastHandler(renderer),
                         20L,
                         this.tablistConfiguration.updateInterval
-                ));
+                )));
     }
 
     @Override
@@ -503,9 +501,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager.unregisterAll();
         this.guildEntityHelper.despawnGuildEntities(this.guildManager);
 
-        this.guildValidationTask.cancel();
-        this.tablistBroadcastTask.cancel();
-        this.rankRecalculationTask.cancel();
+        this.guildValidationTask.peek(BukkitTask::cancel);
+        this.tablistBroadcastTask.peek(BukkitTask::cancel);
+        this.rankRecalculationTask.peek(BukkitTask::cancel);
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
