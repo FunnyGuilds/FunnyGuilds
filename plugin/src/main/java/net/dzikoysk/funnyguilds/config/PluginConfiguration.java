@@ -935,6 +935,19 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
     @Comment("")
+    @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla atakującego")
+    public boolean displayCombatPredictionAttacker = false;
+
+    @Comment("")
+    @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla ofiary")
+    public boolean displayCombatPredictionVictim = false;
+
+    @PositiveOrZero
+    @Comment("")
+    @Comment("Minimalny odstęp między kolejnymi powiadomieniami o przewidywanej zmianie punktów dla tej samej pary atakujący-ofiara")
+    public Duration combatPredictionInterval = Duration.ofSeconds(30);
+
+    @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
     @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;

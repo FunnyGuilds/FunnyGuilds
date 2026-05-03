@@ -80,6 +80,10 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage rankDeathVictimMessage = TitleHolder.message("&cZostales zabity przez {ATTACKER}", "&7{VICTIM-CHANGE-FORMATTED}", 10, 10, 10);
     @Comment("Dostępne zmienne: {VICTIM}, {ASSIST-CHANGE}, {SHARE}")
     public SendableMessage rankKillAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7+{ASSIST-CHANGE}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {VICTIM}, {ATTACKER-CHANGE}, {ATTACKER-CHANGE-FORMATTED}")
+    public SendableMessage combatPredictionAttackerMessage = TitleHolder.message("", "&7Punkty z walki: {ATTACKER-CHANGE-FORMATTED}", 10, 20, 10);
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM-CHANGE}, {VICTIM-CHANGE-FORMATTED}")
+    public SendableMessage combatPredictionVictimMessage = TitleHolder.message("", "&7Punkty z walki: {VICTIM-CHANGE-FORMATTED}", 10, 20, 10);
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public Component rankAssistMessage = ComponentUtil.colored("&7Asystowali: {ASSISTS}");
     @Comment("Dostępne zmienne: {PLAYER}, {CHANGE}, {SHARE}")
@@ -233,7 +237,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- Info Messages -------> #")
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
     public SendableMessage playerInfoList = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -247,7 +251,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&8-------------.------------------"
     );
 
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
     public SendableMessage playerRightClickInfo = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
