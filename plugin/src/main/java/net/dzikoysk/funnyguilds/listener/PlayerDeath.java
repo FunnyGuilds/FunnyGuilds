@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
@@ -36,6 +35,7 @@ import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyn
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
@@ -229,10 +229,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         Guild attackerGuild = attacker.getGuild().orNull();
         Guild victimGuild = victim.getGuild().orNull();
 
-        String plusFormatted = NumberRange.inRangeToString(attackerPointsChange, this.config.killPointsChangeFormat, true)
-                .replace("{CHANGE}", String.valueOf(Math.abs(attackerPointsChange)));
-        String minusFormatted = NumberRange.inRangeToString(victimPointsChange, this.config.killPointsChangeFormat, true)
-                .replace("{CHANGE}", String.valueOf(Math.abs(victimPointsChange)));
+        String plusFormatted = RankFormatter.formatPointsChange(attackerPointsChange, this.config.killPointsChangeFormat);
+        String minusFormatted = RankFormatter.formatPointsChange(victimPointsChange, this.config.killPointsChangeFormat);
 
         MessageDispatcherModifier<CommandSender, FunnyMessageDispatcher> dispatcherModifier = dispatcher -> dispatcher
                 .with("{ATTACKER}", attacker.getName())

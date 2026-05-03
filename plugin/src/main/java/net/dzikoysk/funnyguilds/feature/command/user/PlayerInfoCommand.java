@@ -5,12 +5,12 @@ import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
+import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
@@ -89,14 +89,9 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             }
         }
         formatter.register("{POINTS-GAIN}", gain);
-        formatter.register("{POINTS-GAIN-FORMATTED}", formatChange(gain));
+        formatter.register("{POINTS-GAIN-FORMATTED}", RankFormatter.formatPointsChange(gain, this.config.killPointsChangeFormat));
         formatter.register("{POINTS-LOSS}", loss);
-        formatter.register("{POINTS-LOSS-FORMATTED}", formatChange(loss));
-    }
-
-    private String formatChange(int change) {
-        return NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true)
-                .replace("{CHANGE}", String.valueOf(Math.abs(change)));
+        formatter.register("{POINTS-LOSS-FORMATTED}", RankFormatter.formatPointsChange(loss, this.config.killPointsChangeFormat));
     }
 
 }
