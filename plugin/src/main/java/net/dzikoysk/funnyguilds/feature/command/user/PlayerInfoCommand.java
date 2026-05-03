@@ -5,20 +5,26 @@ import java.util.Locale;
 import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.inject.annotations.Inject;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class PlayerInfoCommand extends AbstractFunnyCommand {
+
+    @Inject
+    private RankSystem rankSystem;
 
     @FunnyCommand(
             name = "${user.player.name}",
@@ -55,18 +61,42 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 .receiver(messageTarget)
                 .with(formatter)
                 .with(CommandSender.class, receiver -> {
-                    FunnyFormatter guildFormatter = new FunnyFormatter();
+                    FunnyFormatter perReceiverFormatter = new FunnyFormatter();
                     if (infoUser.hasGuild()) {
                         Guild guild = infoUser.getGuild().get();
-                        guildFormatter.register("{GUILD}", guild.getName());
-                        guildFormatter.register("{TAG}", guild.getTag());
+                        perReceiverFormatter.register("{GUILD}", guild.getName());
+                        perReceiverFormatter.register("{TAG}", guild.getTag());
                     } else {
-                        guildFormatter.register("{GUILD}", this.messageService.<Component>get(receiver, config -> config.gNameNoValue));
-                        guildFormatter.register("{TAG}", this.messageService.<Component>get(receiver, config -> config.gTagNoValue));
+                        perReceiverFormatter.register("{GUILD}", this.messageService.<Component>get(receiver, config -> config.gNameNoValue));
+                        perReceiverFormatter.register("{TAG}", this.messageService.<Component>get(receiver, config -> config.gTagNoValue));
                     }
-                    return guildFormatter;
+                    this.registerPredictedPointsPlaceholders(perReceiverFormatter, receiver, infoUser);
+                    return perReceiverFormatter;
                 })
                 .send();
+    }
+
+    private void registerPredictedPointsPlaceholders(FunnyFormatter formatter, CommandSender receiver, User infoUser) {
+        int gain = 0;
+        int loss = 0;
+        if (receiver instanceof Player) {
+            User receiverUser = this.userManager.findByPlayer((Player) receiver).orNull();
+            if (receiverUser != null && !receiverUser.equals(infoUser)) {
+                int receiverPoints = receiverUser.getRank().getPoints();
+                int infoUserPoints = infoUser.getRank().getPoints();
+                gain = this.rankSystem.calculate(this.config.rankSystem, receiverPoints, infoUserPoints).getAttackerPoints();
+                loss = -this.rankSystem.calculate(this.config.rankSystem, infoUserPoints, receiverPoints).getVictimPoints();
+            }
+        }
+        formatter.register("{POINTS-GAIN}", gain);
+        formatter.register("{POINTS-GAIN-FORMATTED}", formatChange(gain));
+        formatter.register("{POINTS-LOSS}", loss);
+        formatter.register("{POINTS-LOSS-FORMATTED}", formatChange(loss));
+    }
+
+    private String formatChange(int change) {
+        return NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(change)));
     }
 
 }

@@ -235,7 +235,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- Info Messages -------> #")
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
     public SendableMessage playerInfoList = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -249,7 +249,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&8-------------.------------------"
     );
 
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
     public SendableMessage playerRightClickInfo = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
