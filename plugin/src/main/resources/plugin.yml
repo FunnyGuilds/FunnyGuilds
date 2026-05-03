@@ -24,6 +24,9 @@ permissions:
       funnyguilds.admin.notification: true
       funnyguilds.admin.disabledummy: false
 
+  funnyguilds.bypass.rank-ip-protect-guild:
+    default: false
+
   funnyguilds.vip:
     default: op
     children:

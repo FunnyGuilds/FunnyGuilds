@@ -454,6 +454,10 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
+        if (playerAttacker.hasPermission("funnyguilds.bypass.rank-ip-protect-guild")) {
+            return false;
+        }
+
         Option<Guild> attackerGuildOption = attacker.getGuild();
         if (attackerGuildOption.isEmpty()) {
             return false;
