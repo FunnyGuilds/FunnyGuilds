@@ -29,7 +29,7 @@ public final class NmsUtils {
     }
 
     public static int getPing(Player player) {
-        return Math.max(0, FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getPlayerPing(player));
+        return Math.max(0, player.getPing());
     }
 
 }

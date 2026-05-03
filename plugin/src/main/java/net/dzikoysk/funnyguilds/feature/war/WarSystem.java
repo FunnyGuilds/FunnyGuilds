@@ -125,7 +125,7 @@ public class WarSystem {
         conqueror.updateLives(lives -> lives + 1);
 
         messageService.getMessage(config -> config.broadcastWar)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

@@ -1,12 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Instant;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -16,15 +17,17 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
+import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
+import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Location;
@@ -32,8 +35,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -69,13 +70,13 @@ public final class CreateCommand extends AbstractFunnyCommand {
         World world = player.getWorld();
 
         when(tag.length() > this.config.createTagLength,
-                config -> config.createTagLength, FunnyFormatter.of("{LENGTH}", this.config.createTagLength));
+                config -> config.createTagLength, Replacement.string("{LENGTH}", this.config.createTagLength));
         when(tag.length() < this.config.createTagMinLength,
-                config -> config.createTagMinLength, FunnyFormatter.of("{LENGTH}", this.config.createTagMinLength));
+                config -> config.createTagMinLength, Replacement.string("{LENGTH}", this.config.createTagMinLength));
         when(name.length() > this.config.createNameLength,
-                config -> config.createNameLength, FunnyFormatter.of("{LENGTH}", this.config.createNameLength));
+                config -> config.createNameLength, Replacement.string("{LENGTH}", this.config.createNameLength));
         when(name.length() < this.config.createNameMinLength,
-                config -> config.createNameMinLength, FunnyFormatter.of("{LENGTH}", this.config.createNameMinLength));
+                config -> config.createNameMinLength, Replacement.string("{LENGTH}", this.config.createNameMinLength));
 
         when(!this.config.tagRegex.matches(tag), config -> config.createOLTag);
         when(!this.config.nameRegex.matches(name), config -> config.createOLName);
@@ -106,57 +107,71 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
             when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation),
-                    config -> config.createSpawn, FunnyFormatter.of("{DISTANCE}", distance));
+                    config -> config.createSpawn, Replacement.string("{DISTANCE}", distance));
         }
 
-        if (this.config.rankCreateEnable) {
-            int requiredRank = player.hasPermission("funnyguilds.vip.rank") ? this.config.rankCreateVip : this.config.rankCreate;
-            int points = user.getRank().getPoints();
+        GuildItemSet activeSet = this.guildItemSetService.getSetForPlayer(player);
+        if (player.hasPermission(this.itemsConfiguration.adminItemsBypassPermission)) {
+            this.messageService.getMessage(config -> config.itemsAdminBypass)
+                    .receiver(player)
+                    .send();
+        }
+        else {
+            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, activeSet, this.itemsConfiguration);
 
-            if (points < requiredRank) {
-                FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{REQUIRED-FORMAT}", NumberRange.inRangeToString(requiredRank, this.config.pointsFormat))
-                        .register("{POINTS}", requiredRank)
-                        .register("{REQUIRED}", requiredRank)
-                        .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
-                        .register("{POINTS}", points);
-
-                this.messageService.getMessage(config -> config.createRank)
+            if (!result.meetsAll()) {
+                this.messageService.getMessage(config -> config.itemsRequirementsNotMet)
                         .receiver(player)
-                        .with(formatter)
                         .send();
+
+                if (!result.isMeetsMoney() && activeSet.requirements.moneyEnabled) {
+                    double current = VaultHook.isEconomyHooked() ? VaultHook.accountBalance(player) : 0;
+                    this.messageService.getMessage(config -> config.itemsRequirementMoney)
+                            .receiver(player)
+                            .with("{STATUS_COLOR}", "<red>")
+                            .with("{CURRENT}", String.format(Locale.ROOT, "%.0f", current))
+                            .with("{REQUIRED}", String.format(Locale.ROOT, "%.0f", activeSet.requiredMoney))
+                            .send();
+                }
+                if (!result.isMeetsLevel() && activeSet.requirements.levelEnabled) {
+                    this.messageService.getMessage(config -> config.itemsRequirementLevel)
+                            .receiver(player)
+                            .with("{STATUS_COLOR}", "<red>")
+                            .with("{CURRENT}", player.getLevel())
+                            .with("{REQUIRED}", activeSet.requiredLevel)
+                            .send();
+                }
+                if (!result.isMeetsRank() && activeSet.requirements.rankEnabled) {
+                    this.messageService.getMessage(config -> config.itemsRequirementRank)
+                            .receiver(player)
+                            .with("{STATUS_COLOR}", "<red>")
+                            .with("{CURRENT}", user.getRank().getPoints())
+                            .with("{REQUIRED}", activeSet.requiredRank)
+                            .send();
+                }
+                if (activeSet.requirements.itemsEnabled) {
+                    boolean hasAnyMissing = result.getItemCounts().values().stream().anyMatch(c -> !c.isMet());
+                    if (hasAnyMissing) {
+                        this.messageService.getMessage(config -> config.itemsRequirementItemsHeader)
+                                .receiver(player)
+                                .send();
+                        for (Map.Entry<String, ItemCountResult> entry : result.getItemCounts().entrySet()) {
+                            ItemCountResult counts = entry.getValue();
+                            if (!counts.isMet()) {
+                                this.messageService.getMessage(config -> config.itemsRequirementItemLine)
+                                        .receiver(player)
+                                        .with("{STATUS_COLOR}", "<red>")
+                                        .with("{ITEM}", counts.getDisplayName())
+                                        .with("{KEY}", entry.getKey())
+                                        .with("{CURRENT}", counts.getInv())
+                                        .with("{REQUIRED}", counts.getRequired())
+                                        .send();
+                            }
+                        }
+                    }
+                }
                 return;
             }
-        }
-
-        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items")
-                ? this.config.createItemsVip
-                : this.config.createItems;
-        int requiredExperience = player.hasPermission("funnyguilds.vip.items")
-                ? this.config.requiredExperienceVip
-                : this.config.requiredExperience;
-        double requiredMoney = player.hasPermission("funnyguilds.vip.items")
-                ? this.config.requiredMoneyVip
-                : this.config.requiredMoney;
-
-        if (player.getTotalExperience() < requiredExperience) {
-            this.messageService.getMessage(config -> config.createExperience)
-                    .receiver(player)
-                    .with("{EXP}", requiredExperience)
-                    .send();
-            return;
-        }
-
-        if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-            this.messageService.getMessage(config -> config.createMoney)
-                    .receiver(player)
-                    .with("{MONEY}", requiredMoney)
-                    .send();
-            return;
-        }
-
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, config -> config.createItems)) {
-            return;
         }
 
         if (HookManager.WORLD_GUARD.isPresent() && HookManager.WORLD_GUARD.get().isInNonGuildsRegion(guildLocation)) {
@@ -189,7 +204,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     world.getMaxHeight(), radius - this.config.createMinDistanceFromBorder);
             FunnyBox gbox = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
 
-            // border box does not contain guild box
             if (!bbox.contains(gbox)) {
                 this.messageService.getMessage(config -> config.createNotEnoughDistanceFromBorder)
                         .receiver(player)
@@ -203,18 +217,29 @@ public final class CreateCommand extends AbstractFunnyCommand {
             return;
         }
 
-        player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
-        player.setTotalExperience(player.getTotalExperience() - requiredExperience);
+        boolean adminBypass = player.hasPermission(this.itemsConfiguration.adminItemsBypassPermission);
 
-        if (VaultHook.isEconomyHooked()) {
-            EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, requiredMoney);
+        if (!adminBypass) {
+            // Withdraw money first — it's the only deduction that can fail. If we did items/levels first
+            // and Vault failed, the player would be charged without getting a guild.
+            if (VaultHook.isEconomyHooked() && activeSet.requirements.moneyEnabled && activeSet.requiredMoney > 0) {
+                EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, activeSet.requiredMoney);
 
-            if (!withdrawResult.transactionSuccess()) {
-                this.messageService.getMessage(config -> config.withdrawError)
-                        .receiver(player)
-                        .with("{ERROR}", withdrawResult.errorMessage)
-                        .send();
-                return;
+                if (!withdrawResult.transactionSuccess()) {
+                    this.messageService.getMessage(config -> config.withdrawError)
+                            .receiver(player)
+                            .with("{ERROR}", withdrawResult.errorMessage)
+                            .send();
+                    return;
+                }
+            }
+
+            player.getInventory().removeItem(ItemUtils.toArray(ItemUtils.buildRequiredItems(
+                    activeSet, this.itemsConfiguration)));
+
+            if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
+                int newLevel = player.getLevel() - activeSet.requiredLevel;
+                player.setLevel(Math.max(0, newLevel));
             }
         }
 
@@ -247,7 +272,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
             this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
-            //player.teleport(guildLocation);
             guild.teleportHome(player);
         }
 
@@ -273,7 +297,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastCreate)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
 

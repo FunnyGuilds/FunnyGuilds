@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -8,16 +9,15 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class MoveCommand extends AbstractFunnyCommand {
@@ -50,7 +50,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                config -> config.createSpawn, FunnyFormatter.of("{DISTANCE}", distance));
+                config -> config.createSpawn, Replacement.string("{DISTANCE}", distance));
         when(this.regionManager.isNearRegion(location), config -> config.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
@@ -62,7 +62,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
                     if (heartConfig.createEntityType != null) {
                         this.plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                     }
-                    else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getFirst() != Material.AIR) {
+                    else if (heartConfig.createMaterial != null && heartConfig.createMaterial != Material.AIR) {
                         peekRegion.getHeartBlock()
                                 .filter(heart -> heart.getLocation().getBlockY() > 1)
                                 .peek(heart -> Bukkit.getScheduler().runTask(this.plugin, () -> heart.setType(Material.AIR)));

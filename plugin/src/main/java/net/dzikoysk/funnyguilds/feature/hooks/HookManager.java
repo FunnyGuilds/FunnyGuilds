@@ -4,18 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.decentholograms.DecentHologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.dynmap.DynmapHook;
-import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEditHook;
-import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
@@ -28,7 +23,6 @@ public class HookManager {
 
     public static Option<WorldGuardHook> WORLD_GUARD = Option.none();
     public static Option<WorldEditHook> WORLD_EDIT = Option.none();
-    public static Option<FunnyTabHook> FUNNY_TAB = Option.none();
     public static Option<VaultHook> VAULT = Option.none();
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
     public static Option<HologramsHook> HOLOGRAMS = Option.none();
@@ -42,43 +36,27 @@ public class HookManager {
     }
 
     public void setupEarlyHooks() {
-        this.setupHook("WorldGuard", false, pluginName -> {
-            try {
-                Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
-                Class.forName("com.sk89q.worldguard.protection.flags.Flag");
-
-                String worldGuardVersion = Bukkit.getPluginManager().getPlugin(pluginName).getDescription().getVersion();
-                return worldGuardVersion.startsWith("7") ? new WorldGuard7Hook(pluginName) : new WorldGuard6Hook(pluginName);
-            }
-            catch (ClassNotFoundException exception) {
-                FunnyGuilds.getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
-                return null;
-            }
-        }, true).subscribe(hook -> WORLD_GUARD = hook);
-
-        this.setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, this.plugin), false)
-                .subscribe(hook -> FUNNY_TAB = hook);
+        this.<WorldGuardHook>setupHook(
+                "WorldGuard",
+                false,
+                pluginName -> new WorldGuard7Hook(pluginName),
+                true
+        ).subscribe(hook -> WORLD_GUARD = hook);
     }
 
     public void setupHooks() {
-        this.setupHook("WorldEdit", true, pluginName -> {
-            try {
-                Class.forName("com.sk89q.worldedit.Vector");
-                return new WorldEdit6Hook(pluginName);
-            }
-            catch (ClassNotFoundException exception) {
-                return new WorldEdit7Hook(pluginName);
-            }
-        }, true).subscribe(hook -> WORLD_EDIT = hook);
+        this.<WorldEditHook>setupHook(
+                "WorldEdit",
+                false,
+                pluginName -> new WorldEdit7Hook(pluginName),
+                true
+        ).subscribe(hook -> WORLD_EDIT = hook);
 
         this.setupHook("Vault", true, VaultHook::new, true)
                 .subscribe(hook -> VAULT = hook);
 
         this.setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, this.plugin), true)
                 .subscribe(hook -> PLACEHOLDER_API = hook);
-
-        this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, this.plugin), true)
-                .subscribe(hook -> hook.peek(hdHook -> HOLOGRAMS = Option.of(hdHook)));
 
         this.<HologramsHook>setupHook("DecentHolograms", true, pluginName -> new DecentHologramsHook(pluginName, this.plugin), true)
                 .subscribe(hook -> hook.peek(dhHook -> HOLOGRAMS = Option.of(dhHook)));

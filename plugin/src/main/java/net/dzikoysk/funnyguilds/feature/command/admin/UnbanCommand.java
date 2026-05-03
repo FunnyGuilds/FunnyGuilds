@@ -43,7 +43,7 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastUnban)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
@@ -27,7 +28,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         int lives = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new InternalValidationException(config -> config.adminErrorInNumber, FunnyFormatter.of("{ERROR}", args[0]));
+            return new InternalValidationException(config -> config.adminErrorInNumber, Replacement.string("{ERROR}", args[0]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);

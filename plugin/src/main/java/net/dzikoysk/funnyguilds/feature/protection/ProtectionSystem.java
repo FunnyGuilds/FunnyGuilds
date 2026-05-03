@@ -12,14 +12,12 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermission;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import panda.std.Option;
-import panda.std.Pair;
 import panda.std.Triple;
 
 public final class ProtectionSystem {
@@ -44,8 +42,8 @@ public final class ProtectionSystem {
         PluginConfiguration config = plugin.getPluginConfiguration();
         HeartConfiguration heartConfig = config.heart;
         if (region.getHeart().contentEquals(location)) {
-            Pair<Material, Byte> heartMaterial = heartConfig.createMaterial;
-            return Option.when(heartMaterial != null && heartMaterial.getFirst() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+            Material heartMaterial = heartConfig.createMaterial;
+            return Option.when(heartMaterial != null && heartMaterial != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
         if (player.hasPermission("funnyguilds.admin.build")) {
@@ -127,7 +125,7 @@ public final class ProtectionSystem {
         guild.getBuild().peek(build -> {
             Duration time = Duration.between(Instant.now(), build);
             FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.regionExplodeInteract)
-                    .with(FunnyFormatter.of("{TIME}", time.getSeconds()))
+                    .with("{TIME}", time.getSeconds())
                     .receiver(player)
                     .send();
         });

@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.feature.command.admin.DeathsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeleteAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeputyAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.GuildsEnabledCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KickAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KillsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LeaderAdminCommand;
@@ -54,11 +55,9 @@ import net.dzikoysk.funnyguilds.feature.command.user.LeaveCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.PvPCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.RankResetCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.RankingCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.SetBaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.StatsResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -104,11 +103,9 @@ public final class FunnyCommandsConfiguration {
                 .command("leave", commands.leave, LeaveCommand.class)
                 .command("player", commands.player, PlayerInfoCommand.class)
                 .command("pvp", commands.pvp, PvPCommand.class)
-                .command("ranking", commands.ranking, RankingCommand.class)
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
                 .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
-                .command("top", commands.top, TopCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class);
@@ -136,7 +133,8 @@ public final class FunnyCommandsConfiguration {
                 .command("tag", commands.admin.tag, TagCommand.class)
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
-                .command("validity", commands.admin.validity, ValidityAdminCommand.class);
+                .command("validity", commands.admin.validity, ValidityAdminCommand.class)
+                .command("items", commands.admin.items, ItemsAdminCommand.class);
 
         return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()

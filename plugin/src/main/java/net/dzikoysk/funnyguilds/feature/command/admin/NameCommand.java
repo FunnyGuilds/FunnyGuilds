@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
@@ -66,7 +65,7 @@ public final class NameCommand extends AbstractFunnyCommand {
 
         guild.setName(args[1]);
         this.messageService.getMessage(config -> config.adminNameChanged)
-                .with(FunnyFormatter.of("{GUILD}", guild.getName()))
+                .with("{GUILD}", guild.getName())
                 .receiver(sender)
                 .send();
 

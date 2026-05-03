@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Result;
@@ -106,6 +107,9 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
         else if (GenericGuildPermissions.USER_POSITION.equals(permission)) {
             return this.getGuildUserPositionValue(user);
         }
+        else if (GenericGuildPermissions.MEMBER_LIST_PRIORITY.equals(permission)) {
+            return this.getMemberListPriorityValue(guild, user);
+        }
         else if (GenericGuildPermissions.CHAT_PERMISSIONS.contains(permission)) {
             return Result.ok(true);
         }
@@ -113,18 +117,32 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
         return Result.error(null);
     }
     
-    private Result<String, Runnable> getGuildUserPositionValue(User user) {
-        String value;
+    private Result<Component, Runnable> getGuildUserPositionValue(User user) {
+        Component value;
         if (user.isOwner()) {
-            value = this.pluginConfiguration.chatPositionLeader.getValue();
+            value = this.pluginConfiguration.chatPositionLeader;
         }
         else if (user.isDeputy()) {
-            value = this.pluginConfiguration.chatPositionDeputy.getValue();
+            value = this.pluginConfiguration.chatPositionDeputy;
         }
         else {
-            value = this.pluginConfiguration.chatPositionMember.getValue();
+            value = this.pluginConfiguration.chatPositionMember;
         }
         return Result.ok(value);
+    }
+
+    private Result<Integer, Runnable> getMemberListPriorityValue(Guild guild, User user) {
+        int priority;
+        if (guild.isOwner(user)) {
+            priority = 1;
+        }
+        else if (guild.isDeputy(user)) {
+            priority = 2;
+        }
+        else {
+            priority = 3;
+        }
+        return Result.ok(priority);
     }
 
     @Override

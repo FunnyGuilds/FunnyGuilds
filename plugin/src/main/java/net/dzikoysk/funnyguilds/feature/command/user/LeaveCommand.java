@@ -49,7 +49,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastLeave)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

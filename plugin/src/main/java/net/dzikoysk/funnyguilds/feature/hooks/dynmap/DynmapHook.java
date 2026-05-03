@@ -13,6 +13,8 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -28,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public class DynmapHook extends AbstractPluginHook implements Listener {
+    
+    private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration.DynmapHook hookConfig;
@@ -57,8 +61,26 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
         Bukkit.getPluginManager().registerEvents(this, this.plugin);
         Bukkit.getScheduler().runTaskTimer(this.plugin, () -> this.guilds.forEach((guild, dynmapGuild) -> {
-            dynmapGuild.getCenterMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild), true));
-            dynmapGuild.getAreaMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild), true));
+            dynmapGuild.getCenterMarker()
+                    .peek(marker -> {
+                        Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                                null,
+                                Component.text(this.hookConfig.center.label),
+                                guild
+                        );
+                        String labelText = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
+                        marker.setLabel(labelText, true);
+                    });
+            dynmapGuild.getAreaMarker()
+                    .peek(marker -> {
+                        Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                                null,
+                                Component.text(this.hookConfig.area.label),
+                                guild
+                        );
+                        String labelText = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
+                        marker.setLabel(labelText, true);
+                    });
         }), 0, this.hookConfig.updateInterval);
 
         return HookInitResult.SUCCESS;
@@ -103,9 +125,15 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
                     center.setY(world.getHighestBlockYAt(center) + 0.5);
                 }
 
+                Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                        null,
+                        Component.text(this.hookConfig.center.label),
+                        guild
+                );
+                String formattedLabel = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
                 return this.guildsMarkerSet.createMarker(
                         "fg_guild_center_" + guild.getName(),
-                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
+                        formattedLabel,
                         region.getWorld().getName(),
                         center.getX(),
                         center.getY(),
@@ -119,9 +147,15 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
                 Location firstCorner = region.getFirstCorner();
                 Location secondCorner = region.getSecondCorner();
 
+                Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                        null,
+                        Component.text(this.hookConfig.area.label),
+                        guild
+                );
+                String formattedLabel = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
                 AreaMarker marker = this.guildsMarkerSet.createAreaMarker(
                         "fg_guild_area_" + guild.getName(),
-                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild),
+                        formattedLabel,
                         true,
                         region.getWorld().getName(),
                         new double[]{firstCorner.getX(), secondCorner.getX()},

@@ -3,17 +3,16 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 import java.lang.ref.WeakReference;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -81,8 +80,8 @@ public class IndividualNameTag {
         Team targetTeam = this.prepareTeam(scoreboard, targetUser.getName());
 
         ScoreboardConfiguration.NameTag nameTagConfig = this.pluginConfiguration.scoreboard.nametag;
-        targetTeam.setPrefix(this.prepareValue(this.prepareConfigValue(nameTagConfig.prefix, targetUser), targetPlayer, targetUser));
-        targetTeam.setSuffix(this.prepareValue(this.prepareConfigValue(nameTagConfig.suffix, targetUser), targetPlayer, targetUser));
+        targetTeam.prefix(this.prepareValue(this.getNameTagFormat(nameTagConfig.prefix, targetUser), targetPlayer, targetUser));
+        targetTeam.suffix(this.prepareValue(this.getNameTagFormat(nameTagConfig.suffix, targetUser), targetPlayer, targetUser));
     }
 
     public void removePlayer(User target) {
@@ -115,15 +114,12 @@ public class IndividualNameTag {
         return team;
     }
 
-    private String prepareValue(RawString value, Player targetPlayer, User targetUser) {
-        String formatted = this.decorateValue(value.getValue(), targetPlayer, targetUser);
-        if (Reflections.USE_PRE_13_METHODS && formatted.length() > 16) {
-            formatted = formatted.substring(0, 16);
-        }
-        return formatted;
+    private Component prepareValue(String value, Player targetPlayer, User targetUser) {
+        Component componentValue = ComponentUtil.colored(value);
+        return this.decorateValue(componentValue, targetPlayer, targetUser);
     }
 
-    private String decorateValue(String value, Player targetPlayer, User targetUser) {
+    private Component decorateValue(Component value, Player targetPlayer, User targetUser) {
         Player player = this.getPlayer();
         if (player == null) {
             return value;
@@ -135,47 +131,40 @@ public class IndividualNameTag {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
                 .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
-        value = formatter.format(value);
-
-        String finalValue = value;
-        value = GuildPlaceholdersService.getSimplePlaceholders()
-                .map(placeholders -> placeholders.formatVariables(targetPlayer, finalValue, targetGuild))
-                .orElseGet(value);
-
-        value = HookUtils.replacePlaceholders(targetPlayer, value);
-        value = HookUtils.replacePlaceholders(player, targetPlayer, value);
-
-        // Some placeholders may pass color codes (e.g. &6) - we should recolor them
-        value = ChatUtils.colored(value);
-
-        return value;
+        GuildPlaceholdersService.getSimplePlaceholders().peek(placeholders -> formatter.register(placeholders, guild));
+        formatter.register(HookUtils.placeholdersReplaceable(targetPlayer));
+        formatter.register(HookUtils.placeholdersReplaceable(player, targetPlayer));
+        return formatter.replace(null, value);
     }
 
-    private RawString prepareConfigValue(ScoreboardConfiguration.NameTag.Value value, User target) {
+    private String getNameTagFormat(ScoreboardConfiguration.NameTag.Value value, User target) {
         Option<Guild> guildOption = this.user.getGuild();
         Option<Guild> targetGuildOption = target.getGuild();
 
         if (targetGuildOption.isEmpty()) {
             return value.getNoGuild();
         }
-        else if (guildOption.isEmpty()) {
+        
+        if (guildOption.isEmpty()) {
             return value.getOtherGuild();
         }
 
         Guild guild = guildOption.get();
         Guild targetGuild = targetGuildOption.get();
-
-        RawString finalValue = value.getOtherGuild();
+        
         if (guild.equals(targetGuild)) {
-            finalValue = value.getOurGuild();
+            return value.getOurGuild();
         }
-        else if (guild.isAlly(targetGuild) || targetGuild.isAlly(guild)) {
-            finalValue = value.getAlliesGuild();
+        
+        if (guild.isAlly(targetGuild) || targetGuild.isAlly(guild)) {
+            return value.getAlliesGuild();
         }
-        else if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
-            finalValue = value.getEnemiesGuild();
+        
+        if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
+            return value.getEnemiesGuild();
         }
-        return finalValue;
+        
+        return value.getOtherGuild();
     }
 
 }

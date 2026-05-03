@@ -186,8 +186,8 @@ public class EntityDamage extends AbstractFunnyListener {
     }
 
     private Component formatChangeWithRange(int change) {
-        String format = NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true);
-        String value = FunnyFormatter.format(format, "{CHANGE}", Math.abs(change));
+        String value = NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true)
+                .replace("{CHANGE}", String.valueOf(Math.abs(change)));
         return ChatUtils.deserializeSection(value);
     }
 

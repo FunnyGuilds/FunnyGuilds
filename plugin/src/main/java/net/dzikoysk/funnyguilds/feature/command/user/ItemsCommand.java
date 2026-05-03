@@ -1,20 +1,18 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
+import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
+import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
+import net.dzikoysk.funnyguilds.feature.items.gui.GuildItemsGui;
+import net.dzikoysk.funnyguilds.feature.items.gui.GuildItemsGuiFactory;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import panda.std.stream.PandaStream;
 
 @FunnyComponent
 public final class ItemsCommand extends AbstractFunnyCommand {
@@ -27,59 +25,67 @@ public final class ItemsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player) {
-        List<ItemStack> guiItems = this.config.guiItems;
-        String title = this.config.guiItemsTitle.getValue();
+    public void execute(Player player, User user) {
+        GuildItemSet set = this.guildItemSetService.getSetForPlayer(player);
+        String setName = this.guildItemSetService.getNameForSet(set);
 
-        if (!this.config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
-            guiItems = this.config.guiItemsVip;
-            title = this.config.guiItemsVipTitle.getValue();
-        }
+        if (this.itemsConfiguration.gui.enabled) {
+            GuildItemsGui gui = GuildItemsGuiFactory.create(
+                    player, user, set, setName,
+                    this.itemsConfiguration, this.messageService
+            );
+            gui.open();
+        } else {
+            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, set, this.itemsConfiguration);
 
-        GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
-        PandaStream.of(guiItems).forEach(item -> {
-            item = item.clone();
+            this.messageService.getMessage(config -> config.itemsCheckHeader)
+                    .receiver(player)
+                    .with("{PLAYER}", player.getName())
+                    .with("{SET}", setName)
+                    .send();
 
-            if (this.config.addLoreLines && (this.config.createItems.contains(item) || this.config.createItemsVip.contains(item))) {
-                ItemMeta meta = item.getItemMeta();
-
-                if (meta == null) {
-                    FunnyGuilds.getPluginLogger().warning("Item meta is not defined (" + item + ")");
-                    return;
-                }
-
-                int requiredAmount = item.getAmount();
-                int inventoryAmount = ItemUtils.getItemAmount(item, player.getInventory());
-                int enderChestAmount = ItemUtils.getItemAmount(item, player.getEnderChest());
-
-                List<String> lore = meta.getLore();
-                if (lore == null) {
-                    lore = new ArrayList<>(this.config.guiItemsLore.size());
-                }
-
-                FunnyFormatter formatter = new FunnyFormatter()
-                        .register("{REQ-AMOUNT}", requiredAmount)
-                        .register("{PINV-AMOUNT}", inventoryAmount)
-                        .register("{PINV-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount, requiredAmount))
-                        .register("{EC-AMOUNT}", enderChestAmount)
-                        .register("{EC-PERCENT}", FunnyStringUtils.getPercent(enderChestAmount, requiredAmount))
-                        .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
-                        .register("{ALL-PERCENT}", FunnyStringUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
-
-                lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
-
-                if (!this.config.guiItemsName.isEmpty()) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), Collections.emptySet(), item));
-                }
-
-                meta.setLore(lore);
-                item.setItemMeta(meta);
+            if (set.requirements.moneyEnabled) {
+                double current = VaultHook.isEconomyHooked() ? VaultHook.accountBalance(player) : 0;
+                this.messageService.getMessage(config -> config.itemsRequirementMoney)
+                        .receiver(player)
+                        .with("{STATUS_COLOR}", result.isMeetsMoney() ? "<green>" : "<red>")
+                        .with("{CURRENT}", String.format(Locale.ROOT, "%.0f", current))
+                        .with("{REQUIRED}", String.format(Locale.ROOT, "%.0f", set.requiredMoney))
+                        .send();
             }
-
-            gui.setToNextFree(item);
-        });
-
-        gui.open(player);
+            if (set.requirements.levelEnabled) {
+                this.messageService.getMessage(config -> config.itemsRequirementLevel)
+                        .receiver(player)
+                        .with("{STATUS_COLOR}", result.isMeetsLevel() ? "<green>" : "<red>")
+                        .with("{CURRENT}", player.getLevel())
+                        .with("{REQUIRED}", set.requiredLevel)
+                        .send();
+            }
+            if (set.requirements.rankEnabled) {
+                this.messageService.getMessage(config -> config.itemsRequirementRank)
+                        .receiver(player)
+                        .with("{STATUS_COLOR}", result.isMeetsRank() ? "<green>" : "<red>")
+                        .with("{CURRENT}", user.getRank().getPoints())
+                        .with("{REQUIRED}", set.requiredRank)
+                        .send();
+            }
+            if (set.requirements.itemsEnabled) {
+                this.messageService.getMessage(config -> config.itemsCheckItemsHeader)
+                        .receiver(player)
+                        .send();
+                for (Map.Entry<String, ItemCountResult> entry : result.getItemCounts().entrySet()) {
+                    ItemCountResult counts = entry.getValue();
+                    this.messageService.getMessage(config -> config.itemsRequirementItemLine)
+                            .receiver(player)
+                            .with("{STATUS_COLOR}", counts.isMet() ? "<green>" : "<red>")
+                            .with("{ITEM}", counts.getDisplayName())
+                            .with("{KEY}", entry.getKey())
+                            .with("{CURRENT}", counts.getInv())
+                            .with("{REQUIRED}", counts.getRequired())
+                            .send();
+                }
+            }
+        }
     }
 
 }

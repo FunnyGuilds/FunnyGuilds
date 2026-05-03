@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import org.bukkit.ChatColor;
 
@@ -9,6 +10,10 @@ public class BasicPlaceholdersService extends StaticPlaceholdersService<Object, 
     public static final BasicPlaceholders<String> ONLINE = new BasicPlaceholders<String>()
             .property("<online>", () -> ChatColor.GREEN)
             .property("</online>", end -> end);
+
+    public BasicPlaceholdersService(EntityLocaleProvider entityLocaleProvider) {
+        super(entityLocaleProvider);
+    }
 
     public static BasicPlaceholders<Object> createSimplePlaceholders(FunnyGuilds plugin) {
         return new BasicPlaceholders<>()

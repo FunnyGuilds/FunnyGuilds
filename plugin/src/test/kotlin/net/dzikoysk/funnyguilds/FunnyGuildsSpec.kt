@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds
 
+import net.dzikoysk.funnyguilds.config.MockPluginConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration
@@ -19,9 +20,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
-import org.mockito.Mockito.*
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.lenient
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
-import java.util.*
+import java.util.Locale
 import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
@@ -43,7 +46,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var config: PluginConfiguration
     private lateinit var tablistConfig: TablistConfiguration
-    private lateinit var messages: MessageService
+    protected lateinit var messageService: MessageService
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
@@ -59,17 +62,18 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
-        config = PluginConfiguration()
+        config = MockPluginConfiguration()
         tablistConfig = TablistConfiguration()
-        messages = MessageService(null, null)
-        messages.defaultLocale = Locale.forLanguageTag("pl")
-        messages.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
+        messageService = MessageService(null)
+        messageService.defaultLocale = Locale.forLanguageTag("pl")
+        messageService.registerRepository(Locale.forLanguageTag("pl"), MessageConfiguration())
 
         preparePluginConfiguration()
 
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
-        lenient().`when`(funnyGuilds.messageService).thenReturn(messages)
+        lenient().`when`(funnyGuilds.messageService).thenReturn(messageService)
+        lenient().`when`(funnyGuilds.name).thenReturn("FunnyGuilds")
 
         userManager = UserManager(config)
         guildManager = GuildManager(config)
@@ -86,9 +90,9 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
         rankPlaceholdersService = RankPlaceholdersService(
+            messageService,
             config,
-            tablistConfig,
-            messages,
+            messageService,
             userRankManager,
             guildRankManager
         )
