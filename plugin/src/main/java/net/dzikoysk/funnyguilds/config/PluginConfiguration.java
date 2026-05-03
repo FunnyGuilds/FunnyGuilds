@@ -938,6 +938,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla ofiary")
     public boolean displayCombatPredictionVictim = false;
 
+    @PositiveOrZero
     @Comment("")
     @Comment("Minimalny odstęp między kolejnymi powiadomieniami o przewidywanej zmianie punktów dla tej samej pary atakujący-ofiara")
     public Duration combatPredictionInterval = Duration.ofSeconds(30);
