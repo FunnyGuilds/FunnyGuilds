@@ -459,17 +459,20 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Guild attackerGuild = attackerGuildOption.get();
-        String victimIP = playerVictim.getAddress().getHostString();
-
-        if (victimIP == null) {
+        if (playerVictim.getAddress() == null) {
             return false;
         }
 
-        for (User guildMember : attackerGuild.getMembers()) {
-            String guildMemberIP = guildMember.getLastIP();
+        Guild attackerGuild = attackerGuildOption.get();
+        String victimIP = playerVictim.getAddress().getHostString();
 
-            if (guildMemberIP != null && guildMemberIP.equalsIgnoreCase(victimIP)) {
+        for (User guildMember : attackerGuild.getMembers()) {
+            if (guildMember.equals(attacker)) {
+                continue;
+            }
+
+            String guildMemberIP = guildMember.getLastIP();
+            if (guildMemberIP != null && guildMemberIP.equals(victimIP)) {
                 this.messageService.getMessage(config -> config.rankIPGuildMemberVictim)
                         .receiver(playerVictim)
                         .send();
