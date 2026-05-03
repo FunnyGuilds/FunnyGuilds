@@ -79,9 +79,9 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {VICTIM}, {ASSIST-CHANGE}, {SHARE}")
     public SendableMessage rankKillAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7+{ASSIST-CHANGE}", 10, 10, 10);
     @Comment("Dostępne zmienne: {VICTIM}, {ATTACKER-CHANGE}, {ATTACKER-CHANGE-FORMATTED}")
-    public SendableMessage combatPredictionAttackerMessage = TitleHolder.message("", "&7Zdobędziesz {ATTACKER-CHANGE-FORMATTED} &7punktów", 10, 20, 10);
+    public SendableMessage combatPredictionAttackerMessage = TitleHolder.message("", "&7Punkty z walki: {ATTACKER-CHANGE-FORMATTED}", 10, 20, 10);
     @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM-CHANGE}, {VICTIM-CHANGE-FORMATTED}")
-    public SendableMessage combatPredictionVictimMessage = TitleHolder.message("", "&7Stracisz {VICTIM-CHANGE-FORMATTED} &7punktów", 10, 20, 10);
+    public SendableMessage combatPredictionVictimMessage = TitleHolder.message("", "&7Punkty z walki: {VICTIM-CHANGE-FORMATTED}", 10, 20, 10);
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
     public Component rankAssistMessage = ComponentUtil.colored("&7Asystowali: {ASSISTS}");
     @Comment("Dostępne zmienne: {PLAYER}, {CHANGE}, {SHARE}")
