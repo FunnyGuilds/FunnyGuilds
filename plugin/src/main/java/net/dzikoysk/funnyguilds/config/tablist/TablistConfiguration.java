@@ -23,6 +23,7 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Wygląd listy graczy, przedział slotów - od 1 do 80")
+    @Comment("Obecnie tablista zawsze zajmuje 4 kolumny (80 komórek) i nie można tego zmienić - jest to ograniczenie po stronie FunnyGuilds.")
     @Comment("Schemat wyglądu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/assets/tab-scheme.png")
     @Comment(" ")
     @Comment("> Spis zmiennych gracza:")
