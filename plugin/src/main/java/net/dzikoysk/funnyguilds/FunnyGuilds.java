@@ -612,6 +612,18 @@ public class FunnyGuilds extends JavaPlugin {
         return this.tablistConfigurationFile;
     }
 
+    public ItemsConfiguration getItemsConfiguration() {
+        return this.itemsConfiguration;
+    }
+
+    public GuildItemSetService getGuildItemSetService() {
+        return this.guildItemSetService;
+    }
+
+    public GuildItemRequirementChecker getGuildItemRequirementChecker() {
+        return this.guildItemRequirementChecker;
+    }
+
     public MessageService getMessageService() {
         return this.messageService;
     }
