@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildHeartLivesChangeEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
@@ -80,23 +81,35 @@ public class WarSystem {
         }
 
         guild.setProtection(Instant.now().plus(pluginConfiguration.warWait));
-        guild.updateHeartLives(heartLives -> heartLives - 1);
 
-        if (guild.getHeartLives() > 0) {
-            messageService.getMessage(config -> config.warAttacker)
-                    .receiver(attacker)
-                    .with("{ATTACKED}", guild.getName())
-                    .send();
-            messageService.getMessage(config -> config.warAttacked)
-                    .receiver(guild)
-                    .with("{ATTACKER}", attacker.getName())
-                    .send();
+        int newHeartLives = guild.getHeartLives() - 1;
+
+        if (newHeartLives > 0) {
+            if (!SimpleEventHandler.handle(new GuildHeartLivesChangeEvent(EventCause.SYSTEM, user, guild, newHeartLives))) {
+                return;
+            }
+
+            guild.setHeartLives(newHeartLives);
+
+            if (pluginConfiguration.warHeartLives > 1) {
+                messageService.getMessage(config -> config.warAttackerHeart)
+                        .receiver(attacker)
+                        .with("{ATTACKED}", guild.getName())
+                        .with("{HEART-LIVES}", newHeartLives)
+                        .with("{HEART-LIVES-MAX}", pluginConfiguration.warHeartLives)
+                        .send();
+                messageService.getMessage(config -> config.warAttackedHeart)
+                        .receiver(guild)
+                        .with("{ATTACKER}", attacker.getName())
+                        .with("{HEART-LIVES}", newHeartLives)
+                        .with("{HEART-LIVES-MAX}", pluginConfiguration.warHeartLives)
+                        .send();
+            }
             return;
         }
 
-        guild.setHeartLives(pluginConfiguration.warHeartLives);
-
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
+            guild.setHeartLives(pluginConfiguration.warHeartLives);
             guild.updateLives(lives -> lives - 1);
         }
 

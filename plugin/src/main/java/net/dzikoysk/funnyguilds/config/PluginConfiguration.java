@@ -425,6 +425,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Min(1)
     @Comment("Ile HP ma pojedyncze serce gildii")
     @Comment("Po zbiciu HP serca gildia traci 1 życie, a serce odnawia HP")
+    @Comment("Wartość 1 efektywnie wyłącza mechanikę HP serca - każde uderzenie od razu odbiera życie, a wiadomości o uderzeniach w serce nie są wysyłane")
     public int warHeartLives = 1;
 
     @PositiveOrZero
