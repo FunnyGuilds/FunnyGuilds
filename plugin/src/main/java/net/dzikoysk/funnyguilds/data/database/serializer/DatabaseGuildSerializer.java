@@ -53,6 +53,7 @@ public final class DatabaseGuildSerializer {
             Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("protection"));
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
+            int heartLives = resultSet.getInt("heart_lives");
 
             FunnyGuilds plugin = FunnyGuilds.getInstance();
             FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
@@ -114,7 +115,11 @@ public final class DatabaseGuildSerializer {
                 lives = config.warLives;
             }
 
-            Object[] values = new Object[17];
+            if (heartLives == 0) {
+                heartLives = config.warHeartLives;
+            }
+
+            Object[] values = new Object[18];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -131,6 +136,7 @@ public final class DatabaseGuildSerializer {
             values[13] = ban;
             values[14] = deputies;
             values[15] = pvp;
+            values[16] = heartLives;
 
             return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
@@ -163,6 +169,7 @@ public final class DatabaseGuildSerializer {
         statement.set("enemies", enemies);
         statement.set("points", guild.getRank().getAveragePoints());
         statement.set("lives", guild.getLives());
+        statement.set("heart_lives", guild.getHeartLives());
         statement.set("born", guild.getBorn().toEpochMilli());
         statement.set("validity", guild.getValidity().toEpochMilli());
         statement.set("protection", guild.getProtection().toEpochMilli());

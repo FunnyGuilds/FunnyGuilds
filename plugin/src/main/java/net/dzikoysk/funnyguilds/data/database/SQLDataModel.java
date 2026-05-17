@@ -63,6 +63,7 @@ public class SQLDataModel implements DataModel {
         this.guildsTable.add("members", SQLType.TEXT, true);
         this.guildsTable.add("points", SQLType.INT, true);
         this.guildsTable.add("lives", SQLType.INT, true);
+        this.guildsTable.add("heart_lives", SQLType.INT, true);
         this.guildsTable.add("ban", SQLType.BIGINT, true);
         this.guildsTable.add("born", SQLType.BIGINT, true);
         this.guildsTable.add("validity", SQLType.BIGINT, true);

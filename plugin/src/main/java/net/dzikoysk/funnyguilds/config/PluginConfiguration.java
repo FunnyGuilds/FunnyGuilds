@@ -419,9 +419,14 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("")
-    @Comment("Ile żyć (HP serca) ma gildia")
-    @Comment("Każdy udany atak na serce gildii zmniejsza tę wartość o 1")
+    @Comment("Ile żyć ma gildia")
     public int warLives = 3;
+
+    @Min(1)
+    @Comment("")
+    @Comment("Ile HP ma pojedyncze serce gildii")
+    @Comment("Po zbiciu HP serca gildia traci 1 życie, a serce odnawia HP")
+    public int warHeartLives = 1;
 
     @PositiveOrZero
     @DurationSpec(fallbackUnit = ChronoUnit.HOURS)

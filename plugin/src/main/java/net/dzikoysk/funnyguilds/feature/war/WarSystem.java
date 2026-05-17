@@ -80,6 +80,21 @@ public class WarSystem {
         }
 
         guild.setProtection(Instant.now().plus(pluginConfiguration.warWait));
+        guild.updateHeartLives(heartLives -> heartLives - 1);
+
+        if (guild.getHeartLives() > 0) {
+            messageService.getMessage(config -> config.warAttacker)
+                    .receiver(attacker)
+                    .with("{ATTACKED}", guild.getName())
+                    .send();
+            messageService.getMessage(config -> config.warAttacked)
+                    .receiver(guild)
+                    .with("{ATTACKER}", attacker.getName())
+                    .send();
+            return;
+        }
+
+        guild.setHeartLives(pluginConfiguration.warHeartLives);
 
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
             guild.updateLives(lives -> lives - 1);

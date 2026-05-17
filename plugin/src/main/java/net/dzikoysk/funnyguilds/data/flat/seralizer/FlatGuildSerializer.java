@@ -62,6 +62,7 @@ public final class FlatGuildSerializer {
         Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("protection"));
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
+        int heartLives = wrapper.getInt("heart-lives");
 
         if (name == null) {
             logger.deserialize("Cannot deserialize guild, caused by: name is null");
@@ -148,7 +149,11 @@ public final class FlatGuildSerializer {
             lives = config.warLives;
         }
 
-        Object[] values = new Object[17];
+        if (heartLives == 0) {
+            heartLives = config.warHeartLives;
+        }
+
+        Object[] values = new Object[18];
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -165,6 +170,7 @@ public final class FlatGuildSerializer {
         values[13] = ban;
         values[14] = deputies;
         values[15] = pvp;
+        values[16] = heartLives;
 
         return DeserializationUtils.deserializeGuild(config, guildManager, values);
     }
@@ -207,6 +213,7 @@ public final class FlatGuildSerializer {
         wrapper.set("validity", guild.getValidity().toEpochMilli());
         wrapper.set("protection", guild.getProtection().toEpochMilli());
         wrapper.set("lives", guild.getLives());
+        wrapper.set("heart-lives", guild.getHeartLives());
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
