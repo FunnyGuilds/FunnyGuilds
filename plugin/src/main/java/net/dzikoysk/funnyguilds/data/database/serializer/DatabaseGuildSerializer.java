@@ -119,7 +119,7 @@ public final class DatabaseGuildSerializer {
                 heartLives = config.warHeartLives;
             }
 
-            Object[] values = new Object[18];
+            Object[] values = new Object[17];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
