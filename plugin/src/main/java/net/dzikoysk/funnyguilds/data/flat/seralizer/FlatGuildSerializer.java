@@ -62,7 +62,7 @@ public final class FlatGuildSerializer {
         Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("protection"));
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
-        int heartLives = wrapper.getInt("heart-lives");
+        int heartLives = wrapper.contains("heart-lives") ? wrapper.getInt("heart-lives") : config.warHeartLives;
 
         if (name == null) {
             logger.deserialize("Cannot deserialize guild, caused by: name is null");
@@ -147,10 +147,6 @@ public final class FlatGuildSerializer {
 
         if (lives == 0) {
             lives = config.warLives;
-        }
-
-        if (heartLives == 0) {
-            heartLives = config.warHeartLives;
         }
 
         Object[] values = new Object[17];

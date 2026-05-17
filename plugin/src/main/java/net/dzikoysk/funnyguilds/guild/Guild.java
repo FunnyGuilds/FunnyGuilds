@@ -25,7 +25,7 @@ public class Guild extends AbstractMutableEntity {
 
     private final GuildRank rank;
     private int lives;
-    private int heartLives = 1;
+    private int heartLives;
 
     private Option<Region> region = Option.none();
     private Option<Location> home = Option.none();
