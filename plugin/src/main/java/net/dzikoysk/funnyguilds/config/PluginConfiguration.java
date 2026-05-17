@@ -419,7 +419,8 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("")
-    @Comment("Ile żyć ma gildia")
+    @Comment("Ile żyć (HP serca) ma gildia")
+    @Comment("Każdy udany atak na serce gildii zmniejsza tę wartość o 1")
     public int warLives = 3;
 
     @PositiveOrZero
