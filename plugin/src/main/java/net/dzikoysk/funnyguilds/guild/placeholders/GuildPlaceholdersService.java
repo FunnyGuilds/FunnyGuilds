@@ -144,6 +144,8 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                         entity -> messages.get(entity, config -> config.gProtectionNoValue)
                 )
                 .property("lives", Guild::getLives, entity -> 0)
+                .property("heart-lives", Guild::getHeartLives, entity -> 0)
+                .property("heart-lives-max", guild -> pluginConfiguration.warHeartLives, entity -> 0)
                 .property("lives-symbol",
                         guild -> {
                             int lives = guild.getLives();
