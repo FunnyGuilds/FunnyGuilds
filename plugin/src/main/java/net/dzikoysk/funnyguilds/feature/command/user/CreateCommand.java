@@ -184,6 +184,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         Guild guild = new Guild(name, tag);
         guild.setOwner(user);
         guild.setLives(this.config.warLives);
+        guild.setHeartLives(this.config.warHeartLives);
         guild.setValidity(Instant.now().plus(this.config.validityStart));
         guild.setProtection(Instant.now().plus(this.config.warProtection));
         guild.setPvP(this.config.damageGuild);

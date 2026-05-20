@@ -25,6 +25,7 @@ public class Guild extends AbstractMutableEntity {
 
     private final GuildRank rank;
     private int lives;
+    private int heartLives;
 
     private Option<Region> region = Option.none();
     private Option<Location> home = Option.none();
@@ -104,6 +105,19 @@ public class Guild extends AbstractMutableEntity {
 
     public void updateLives(IntFunction<Integer> update) {
         this.setLives(update.apply(this.lives));
+    }
+
+    public int getHeartLives() {
+        return this.heartLives;
+    }
+
+    public void setHeartLives(int heartLives) {
+        this.heartLives = Math.max(0, heartLives);
+        this.markChanged();
+    }
+
+    public void updateHeartLives(IntFunction<Integer> update) {
+        this.setHeartLives(update.apply(this.heartLives));
     }
 
     /**

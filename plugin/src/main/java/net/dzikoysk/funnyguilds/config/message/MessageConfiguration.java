@@ -558,6 +558,11 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage warAttacker = ChatHolder.message("&7Twoja gildia pozbawila gildie &4{ATTACKED} &7z &41 zycia&7!");
     @Comment("Dostępne zmienne: {ATTACKER}")
     public SendableMessage warAttacked = ChatHolder.message("&7Twoja gildia stracila &41 zycie &7przez &4{ATTACKER}&7!");
+    @Comment("Wiadomosc wysylana, gdy atak zbije HP serca, ale gildia nie traci jeszcze zycia")
+    @Comment("Dostępne zmienne: {ATTACKED}, {HEART-LIVES}, {HEART-LIVES-MAX}")
+    public SendableMessage warAttackerHeart = ChatHolder.message("&7Twoja gildia zbila serce gildii &4{ATTACKED} &7do &4{HEART-LIVES}&7/&4{HEART-LIVES-MAX} &7HP!");
+    @Comment("Dostępne zmienne: {ATTACKER}, {HEART-LIVES}, {HEART-LIVES-MAX}")
+    public SendableMessage warAttackedHeart = ChatHolder.message("&7Serce twojej gildii zostalo zbite do &4{HEART-LIVES}&7/&4{HEART-LIVES-MAX} &7HP przez &4{ATTACKER}&7!");
     @Comment("Dostępne zmienne: {LOSER}")
     public SendableMessage warWin = ChatHolder.message("&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!");
     @Comment("Dostępne zmienne: {WINNER}")

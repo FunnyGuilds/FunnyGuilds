@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import com.google.common.collect.Sets;
+import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.time.Instant;
 import java.util.HashSet;
@@ -39,6 +40,11 @@ public final class DatabaseGuildSerializer {
         String name = null;
 
         try {
+            FunnyGuilds plugin = FunnyGuilds.getInstance();
+            FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
+            PluginConfiguration config = plugin.getPluginConfiguration();
+            UserManager userManager = plugin.getUserManager();
+
             id = resultSet.getString("uuid");
             name = resultSet.getString("name");
             String tag = resultSet.getString("tag");
@@ -53,11 +59,18 @@ public final class DatabaseGuildSerializer {
             Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("protection"));
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
+            int heartLives = config.warHeartLives;
 
-            FunnyGuilds plugin = FunnyGuilds.getInstance();
-            FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
-            PluginConfiguration config = plugin.getPluginConfiguration();
-            UserManager userManager = plugin.getUserManager();
+            try {
+                heartLives = resultSet.getInt("heart_lives");
+
+                if (resultSet.wasNull()) {
+                    heartLives = config.warHeartLives;
+                }
+            }
+            catch (SQLException ignored) {
+                heartLives = config.warHeartLives;
+            }
 
             if (name == null) {
                 logger.deserialize("Cannot deserialize guild, caused by: name is null");
@@ -131,6 +144,7 @@ public final class DatabaseGuildSerializer {
             values[13] = ban;
             values[14] = deputies;
             values[15] = pvp;
+            values[16] = heartLives;
 
             return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
@@ -163,6 +177,7 @@ public final class DatabaseGuildSerializer {
         statement.set("enemies", enemies);
         statement.set("points", guild.getRank().getAveragePoints());
         statement.set("lives", guild.getLives());
+        statement.set("heart_lives", guild.getHeartLives());
         statement.set("born", guild.getBorn().toEpochMilli());
         statement.set("validity", guild.getValidity().toEpochMilli());
         statement.set("protection", guild.getProtection().toEpochMilli());
