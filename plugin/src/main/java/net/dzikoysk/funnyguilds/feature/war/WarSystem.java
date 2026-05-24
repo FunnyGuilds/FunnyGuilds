@@ -80,8 +80,6 @@ public class WarSystem {
             return;
         }
 
-        guild.setProtection(Instant.now().plus(pluginConfiguration.warWait));
-
         int newHeartLives = guild.getHeartLives() - 1;
 
         if (newHeartLives > 0) {
@@ -107,6 +105,8 @@ public class WarSystem {
             }
             return;
         }
+
+        guild.setProtection(Instant.now().plus(pluginConfiguration.warWait));
 
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
             guild.setHeartLives(pluginConfiguration.warHeartLives);
