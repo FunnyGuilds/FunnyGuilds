@@ -15,6 +15,7 @@ include(
     ":plugin",
     ":nms:api",
     ":nms:v1_21",
+    ":nms:v1_21_2",
     ":nms:v1_21_4",
     ":nms:v1_21_9",
 )
