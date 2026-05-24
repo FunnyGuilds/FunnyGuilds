@@ -160,7 +160,7 @@ public class IndividualNameTag {
             return value.getAlliesGuild();
         }
         
-        if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
+        if (guild.isAtWar(targetGuild)) {
             return value.getEnemiesGuild();
         }
         

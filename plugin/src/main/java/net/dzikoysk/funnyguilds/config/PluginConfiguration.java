@@ -428,6 +428,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wartość 1 efektywnie wyłącza mechanikę HP serca - każde uderzenie od razu odbiera życie, a wiadomości o uderzeniach w serce nie są wysyłane")
     public int warHeartLives = 1;
 
+    @Comment("")
+    @Comment("Czy do zaatakowania gildii wymagana jest aktywna wojna (komenda /g war)")
+    @Comment("Przy ustawieniu na false zachowanie jest zgodne z poprzednim - można atakować każdą nie-sojuszniczą gildię bez wypowiadania wojny")
+    public boolean warRequireDeclaration = true;
+
     @PositiveOrZero
     @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
     @Comment("")
@@ -857,7 +862,7 @@ public class PluginConfiguration extends OkaeriConfig {
                 return this.allies;
             }
 
-            if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
+            if (guild.isAtWar(targetGuild)) {
                 return this.enemies;
             }
 
