@@ -95,15 +95,8 @@ internal abstract class SQLDataModelMigrationTest {
         setPrimaryKey("uuid")
     }
 
-    private fun readColumns(tableName: String): Set<String> {
-        connection.metaData.getColumns(connection.catalog, null, tableName, null).use { resultSet ->
-            val columns = mutableSetOf<String>()
-            while (resultSet.next()) {
-                columns.add(resultSet.getString("COLUMN_NAME").lowercase())
-            }
-            return columns
-        }
-    }
+    private fun readColumns(tableName: String): Set<String> =
+        SQLDataModel.fetchExistingColumns(connection, tableName)
 
     private fun uniqueTableName(): String = "users_${UUID.randomUUID().toString().substring(0, 8)}"
 

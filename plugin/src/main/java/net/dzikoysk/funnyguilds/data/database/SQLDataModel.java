@@ -213,7 +213,7 @@ public class SQLDataModel implements DataModel {
     static void migrateSchema(Connection connection, SQLTable table) throws SQLException {
         SQLBasicUtils.getCreate(table).executeUpdate(connection);
 
-        Set<String> existingColumns = fetchExistingColumns(connection, table);
+        Set<String> existingColumns = fetchExistingColumns(connection, table.getName());
         for (SQLElement sqlElement : table.getSqlElements()) {
             if (existingColumns.contains(sqlElement.getKey().toLowerCase(Locale.ROOT))) {
                 continue;
@@ -222,10 +222,10 @@ public class SQLDataModel implements DataModel {
         }
     }
 
-    private static Set<String> fetchExistingColumns(Connection connection, SQLTable table) throws SQLException {
+    static Set<String> fetchExistingColumns(Connection connection, String tableName) throws SQLException {
         Set<String> columns = new HashSet<>();
         DatabaseMetaData metaData = connection.getMetaData();
-        try (ResultSet resultSet = metaData.getColumns(connection.getCatalog(), null, table.getName(), null)) {
+        try (ResultSet resultSet = metaData.getColumns(connection.getCatalog(), null, tableName, null)) {
             while (resultSet.next()) {
                 columns.add(resultSet.getString("COLUMN_NAME").toLowerCase(Locale.ROOT));
             }
