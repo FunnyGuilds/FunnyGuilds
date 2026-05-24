@@ -11,7 +11,7 @@ public class BlockPhysics extends AbstractFunnyListener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
-        if (this.regionManager.isGuildHeart(event.getBlock())) {
+        if (this.regionManager.isGuildHeart(event.getBlock()) || ProtectionSystem.isGuildHeartProtectedRegion(event.getBlock().getLocation())) {
             event.setCancelled(true);
         }
     }

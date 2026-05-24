@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.bukkit.event.world.PortalCreateEvent;
@@ -79,6 +80,13 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
     @EventHandler
     public void onBlockForm(BlockFormEvent event) {
+        if (ProtectionSystem.isGuildHeartProtectedRegion(event.getBlock().getLocation())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockSpread(BlockSpreadEvent event) {
         if (ProtectionSystem.isGuildHeartProtectedRegion(event.getBlock().getLocation())) {
             event.setCancelled(true);
         }
