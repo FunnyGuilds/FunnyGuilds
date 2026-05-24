@@ -92,6 +92,12 @@ dependencies {
     /* tests */
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:6.0.57")
+
+    val testcontainers = "1.20.4"
+    testImplementation("org.testcontainers:testcontainers:$testcontainers")
+    testImplementation("org.testcontainers:junit-jupiter:$testcontainers")
+    testImplementation("org.testcontainers:mariadb:$testcontainers")
+    testImplementation("org.testcontainers:mysql:$testcontainers")
 }
 
 tasks.processResources {

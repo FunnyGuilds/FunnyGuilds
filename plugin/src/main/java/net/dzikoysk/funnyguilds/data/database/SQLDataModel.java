@@ -1,10 +1,17 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
@@ -83,9 +90,16 @@ public class SQLDataModel implements DataModel {
     }
 
     public void load() throws SQLException {
-        createTableIfNotExists(this.usersTable);
-        createTableIfNotExists(this.regionsTable);
-        createTableIfNotExists(this.guildsTable);
+        Option<Database> database = this.plugin.getDatabase();
+        if (database.isEmpty()) {
+            throw new SQLException("Database is not initialized");
+        }
+
+        try (Connection connection = database.get().getConnection()) {
+            migrateSchema(connection, this.usersTable);
+            migrateSchema(connection, this.regionsTable);
+            migrateSchema(connection, this.guildsTable);
+        }
 
         this.loadUsers();
         this.loadRegions();
@@ -196,9 +210,27 @@ public class SQLDataModel implements DataModel {
         return this.regionsTable;
     }
 
-    private static void createTableIfNotExists(SQLTable table) {
-        SQLBasicUtils.getCreate(table).executeUpdate();
-        table.getSqlElements().forEach(sqlElement -> SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true));
+    static void migrateSchema(Connection connection, SQLTable table) throws SQLException {
+        SQLBasicUtils.getCreate(table).executeUpdate(connection);
+
+        Set<String> existingColumns = fetchExistingColumns(connection, table);
+        for (SQLElement sqlElement : table.getSqlElements()) {
+            if (existingColumns.contains(sqlElement.getKey().toLowerCase(Locale.ROOT))) {
+                continue;
+            }
+            SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(connection);
+        }
+    }
+
+    private static Set<String> fetchExistingColumns(Connection connection, SQLTable table) throws SQLException {
+        Set<String> columns = new HashSet<>();
+        DatabaseMetaData metaData = connection.getMetaData();
+        try (ResultSet resultSet = metaData.getColumns(connection.getCatalog(), null, table.getName(), null)) {
+            while (resultSet.next()) {
+                columns.add(resultSet.getString("COLUMN_NAME").toLowerCase(Locale.ROOT));
+            }
+        }
+        return columns;
     }
 
 }
