@@ -38,6 +38,12 @@ public class SQLNamedStatement {
         this.executeUpdate(false);
     }
 
+    public void executeUpdate(Connection connection) throws SQLException {
+        try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql))) {
+            statement.executeUpdate();
+        }
+    }
+
     public void executeUpdate(boolean ignoreFails) {
         Option<Database> database = FunnyGuilds.getInstance().getDatabase();
         if (database.isEmpty()) {
