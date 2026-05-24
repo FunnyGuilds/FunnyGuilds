@@ -283,6 +283,13 @@ public class Guild extends AbstractMutableEntity {
         return this.enemies.contains(guild);
     }
 
+    public boolean isAtWar(@Nullable Guild guild) {
+        if (guild == null) {
+            return false;
+        }
+        return this.isEnemy(guild) || guild.isEnemy(this);
+    }
+
     public void setEnemies(Set<Guild> guilds) {
         this.enemies = guilds;
         this.markChanged();

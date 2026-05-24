@@ -54,7 +54,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !this.config.blockTeleportOnRegion.enemy || !guild.isEnemy(userGuild);
+        return !this.config.blockTeleportOnRegion.enemy || !guild.isAtWar(userGuild);
     }
 
     private boolean isTeleportationOnAllyRegionAllowed(Guild guild, @Nullable Guild userGuild) {

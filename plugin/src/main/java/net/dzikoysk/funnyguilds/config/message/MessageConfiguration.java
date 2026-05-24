@@ -552,6 +552,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage warDisabled = ChatHolder.message("&cPodbijanie gildii jest wyłączone.");
     public SendableMessage warHasNotGuild = ChatHolder.message("&cMusisz miec gildie, aby zaatkowac inna!");
     public SendableMessage warAlly = ChatHolder.message("&cNie mozesz zaatakowac sojusznika!");
+    @Comment("Wiadomosc wysylana, gdy gracz próbuje zaatakować gildię, z którą nie ma aktywnej wojny (gdy war-require-declaration jest włączone)")
+    public SendableMessage warNotEnemy = ChatHolder.message("&cMusisz najpierw wypowiedziec wojne tej gildii (/g war <tag>)!");
     @Comment("Dostępne zmienne: {TIME}")
     public SendableMessage warWait = ChatHolder.message("&7Atak na gildie mozliwy za &4{TIME}");
     @Comment("Dostępne zmienne: {ATTACKED}")

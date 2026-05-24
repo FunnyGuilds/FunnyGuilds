@@ -72,6 +72,13 @@ public class WarSystem {
             return;
         }
 
+        if (pluginConfiguration.warRequireDeclaration && !attacker.isAtWar(guild)) {
+            messageService.getMessage(config -> config.warNotEnemy)
+                    .receiver(player)
+                    .send();
+            return;
+        }
+
         if (!guild.canBeAttacked()) {
             messageService.getMessage(config -> config.warWait)
                     .receiver(player)
