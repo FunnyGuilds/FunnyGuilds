@@ -6,6 +6,7 @@ import java.util.Map;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
+import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
@@ -84,6 +85,9 @@ public class EntityExplode extends AbstractFunnyListener {
                 blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
             });
         });
+
+        explodedBlocks.removeIf(block -> ProtectionSystem.isGuildHeartProtectedRegion(block.getLocation()));
+        blocksInSphere.removeIf(block -> ProtectionSystem.isGuildHeartProtectedRegion(block.getLocation()));
 
         if (this.config.warTntProtection) {
             // Remove block if protected

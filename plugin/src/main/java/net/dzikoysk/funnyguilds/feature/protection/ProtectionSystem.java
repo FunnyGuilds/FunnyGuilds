@@ -68,7 +68,7 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
-        if (heartConfig.interactionProtection.enabled && isGuildHeartProtectedRegion(location)) {
+        if (isGuildHeartProtectedRegion(location)) {
             return Option.of(Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
         }
 
@@ -77,6 +77,10 @@ public final class ProtectionSystem {
 
     public static boolean isGuildHeartProtectedRegion(Location location) {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
+        HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
+        if (!heartConfig.interactionProtection.enabled) {
+            return false;
+        }
 
         Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
         if (regionOption.isEmpty()) {
@@ -85,7 +89,6 @@ public final class ProtectionSystem {
         Region region = regionOption.get();
         Guild guild = region.getGuild();
 
-        HeartConfiguration heartConfig = plugin.getPluginConfiguration().heart;
         return guild.getEnderCrystal()
                 .map(Location::getBlock)
                 .map(FunnyBox::of)
