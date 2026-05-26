@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import com.destroystokyo.paper.MaterialTags;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.Material;
@@ -27,8 +28,7 @@ import panda.std.stream.PandaStream;
 public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
     private static boolean isBucketItem(Material material) {
-        String name = material.name();
-        return name.equals("BUCKET") || name.endsWith("_BUCKET");
+        return MaterialTags.BUCKETS.isTagged(material);
     }
 
     @EventHandler
