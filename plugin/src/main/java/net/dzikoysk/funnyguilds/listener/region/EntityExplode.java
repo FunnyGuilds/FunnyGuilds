@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.dzikoysk.funnyguilds.config.ExplosionControlScope;
+import net.dzikoysk.funnyguilds.config.ExplosionControlConfiguration.Scope;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
@@ -136,7 +136,7 @@ public class EntityExplode extends AbstractFunnyListener {
                 .forEach(explodedBlocks::add);
     }
 
-    private ExplosionControlScope scopeFor(Block block) {
+    private Scope scopeFor(Block block) {
         boolean onGuildTerritory = this.regionManager.findRegionAtLocation(block.getLocation())
                 .filter(region -> region.getGuild() != null)
                 .isPresent();

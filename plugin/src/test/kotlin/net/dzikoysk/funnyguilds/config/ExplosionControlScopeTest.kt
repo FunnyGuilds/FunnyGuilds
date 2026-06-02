@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.config
 
+import net.dzikoysk.funnyguilds.config.ExplosionControlConfiguration.Scope
 import org.bukkit.Material
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -9,8 +10,8 @@ import org.junit.jupiter.api.Test
 
 class ExplosionControlScopeTest {
 
-    private fun scope(default: Double, vararg materials: Pair<String, Double>): ExplosionControlScope {
-        val scope = ExplosionControlScope.of(3, default, linkedMapOf(*materials))
+    private fun scope(default: Double, vararg materials: Pair<String, Double>): Scope {
+        val scope = Scope.of(3, default, linkedMapOf(*materials))
         scope.loadProcessedProperties()
         return scope
     }

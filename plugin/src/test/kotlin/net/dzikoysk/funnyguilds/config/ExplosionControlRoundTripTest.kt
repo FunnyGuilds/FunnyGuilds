@@ -5,6 +5,7 @@ import eu.okaeri.configs.OkaeriConfig
 import eu.okaeri.configs.annotation.CustomKey
 import eu.okaeri.configs.serdes.commons.SerdesCommons
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
+import net.dzikoysk.funnyguilds.config.ExplosionControlConfiguration.Scope
 import org.bukkit.Material
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -56,8 +57,8 @@ class ExplosionControlRoundTripTest {
         val file = tempDir.resolve("config.yml").toFile()
 
         create(file).also { cfg ->
-            cfg.explosionControl.guild = ExplosionControlScope.of(5, 0.0, linkedMapOf("water" to 33.0, "lava" to 33.0))
-            cfg.explosionControl.global = ExplosionControlScope.of(0, -1.0, linkedMapOf("obsidian" to 20.0))
+            cfg.explosionControl.guild = Scope.of(5, 0.0, linkedMapOf("water" to 33.0, "lava" to 33.0))
+            cfg.explosionControl.global = Scope.of(0, -1.0, linkedMapOf("obsidian" to 20.0))
             cfg.save()
         }
 
