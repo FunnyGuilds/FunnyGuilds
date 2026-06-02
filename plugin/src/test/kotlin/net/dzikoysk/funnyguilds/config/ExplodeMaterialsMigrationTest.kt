@@ -6,7 +6,6 @@ import eu.okaeri.configs.annotation.CustomKey
 import eu.okaeri.configs.migrate.view.RawConfigView
 import eu.okaeri.configs.serdes.commons.SerdesCommons
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
-import net.dzikoysk.funnyguilds.config.ExplodeMaterialsScope.WildcardMode
 import org.bukkit.Material
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -85,12 +84,11 @@ class ExplodeMaterialsMigrationTest {
         val guild = scope(migrated, "guild")
         val global = scope(migrated, "global")
 
-        assertEquals(WildcardMode.DEFAULT, guild.wildcardMode)
+        assertFalse(guild.dropsVanillaBlocks())
         assertEquals(20.0, guild.explosionChance(Material.ENDER_CHEST)!!, 1e-9)
         assertEquals(33.0, guild.explosionChance(Material.WATER)!!, 1e-9)
 
         assertTrue(global.dropsVanillaBlocks())
-        assertEquals(WildcardMode.NONE, global.wildcardMode)
 
         // The legacy flag must be dropped from the persisted file.
         assertFalse(file.readText().contains("explode-should-affect-only-guild"))
@@ -115,8 +113,8 @@ class ExplodeMaterialsMigrationTest {
         val guild = scope(migrated, "guild")
         val global = scope(migrated, "global")
 
-        assertEquals(WildcardMode.DEFAULT, guild.wildcardMode)
-        assertEquals(WildcardMode.DEFAULT, global.wildcardMode)
+        assertFalse(guild.dropsVanillaBlocks())
+        assertFalse(global.dropsVanillaBlocks())
         assertEquals(20.0, guild.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertEquals(33.0, global.explosionChance(Material.WATER)!!, 1e-9)
         assertNull(global.explosionChance(Material.STONE))
@@ -129,11 +127,13 @@ class ExplodeMaterialsMigrationTest {
             """
             explode-materials:
               guild:
-                '*': none
-                water: 33.0
+                default: none
+                overrides:
+                  water: 33.0
               global:
-                '*': default
-                obsidian: 20.0
+                default: vanilla
+                overrides:
+                  obsidian: 20.0
             """.trimIndent()
         )
 
@@ -142,9 +142,9 @@ class ExplodeMaterialsMigrationTest {
         val guild = scope(loaded, "guild")
         val global = scope(loaded, "global")
 
-        assertEquals(WildcardMode.NONE, guild.wildcardMode)
+        assertTrue(guild.dropsVanillaBlocks())
         assertEquals(33.0, guild.explosionChance(Material.WATER)!!, 1e-9)
-        assertEquals(WildcardMode.DEFAULT, global.wildcardMode)
+        assertFalse(global.dropsVanillaBlocks())
         assertEquals(20.0, global.explosionChance(Material.OBSIDIAN)!!, 1e-9)
     }
 }

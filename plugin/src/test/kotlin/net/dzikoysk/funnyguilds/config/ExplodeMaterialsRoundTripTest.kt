@@ -5,10 +5,11 @@ import eu.okaeri.configs.OkaeriConfig
 import eu.okaeri.configs.annotation.CustomKey
 import eu.okaeri.configs.serdes.commons.SerdesCommons
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
-import net.dzikoysk.funnyguilds.config.ExplodeMaterialsScope.WildcardMode
 import org.bukkit.Material
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
@@ -58,8 +59,8 @@ class ExplodeMaterialsRoundTripTest {
         val guild = scope(loaded, "guild")
         val global = scope(loaded, "global")
 
-        assertEquals(WildcardMode.DEFAULT, guild.wildcardMode)
-        assertEquals(WildcardMode.DEFAULT, global.wildcardMode)
+        assertFalse(guild.dropsVanillaBlocks())
+        assertFalse(global.dropsVanillaBlocks())
         assertEquals(20.0, guild.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertEquals(33.0, global.explosionChance(Material.WATER)!!, 1e-9)
     }
@@ -71,8 +72,8 @@ class ExplodeMaterialsRoundTripTest {
         // Write a hand-authored config mirroring the issue's requested layout.
         create(file).also { cfg ->
             cfg.explodeMaterials = linkedMapOf(
-                "guild" to linkedMapOf<String, Any>("*" to "none", "water" to 33.0, "lava" to 33.0),
-                "global" to linkedMapOf<String, Any>("*" to "default", "obsidian" to 20.0)
+                "guild" to linkedMapOf<String, Any>("default" to "none", "overrides" to linkedMapOf("water" to 33.0, "lava" to 33.0)),
+                "global" to linkedMapOf<String, Any>("default" to "vanilla", "overrides" to linkedMapOf("obsidian" to 20.0))
             )
             cfg.save()
         }
@@ -81,11 +82,11 @@ class ExplodeMaterialsRoundTripTest {
         val guild = scope(loaded, "guild")
         val global = scope(loaded, "global")
 
-        assertEquals(WildcardMode.NONE, guild.wildcardMode)
+        assertTrue(guild.dropsVanillaBlocks())
         assertEquals(33.0, guild.explosionChance(Material.WATER)!!, 1e-9)
         assertNull(guild.explosionChance(Material.STONE))
 
-        assertEquals(WildcardMode.DEFAULT, global.wildcardMode)
+        assertFalse(global.dropsVanillaBlocks())
         assertEquals(20.0, global.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertNull(global.explosionChance(Material.WATER))
     }

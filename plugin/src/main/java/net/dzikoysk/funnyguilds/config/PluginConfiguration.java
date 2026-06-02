@@ -51,7 +51,6 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -400,10 +399,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Konfiguracja jest podzielona na dwie sekcje:")
     @Comment("  guild  - bloki znajdujące się na terenie gildii")
     @Comment("  global - bloki poza terenem gildii")
-    @Comment("Specjalny klucz '*' okresla zachowanie dla materiałów nie wymienionych na liście:")
-    @Comment("  'none'    - blok nie zostanie zniszczony, a bloki niszczone domyślnie przez wybuch zostaną pominięte")
-    @Comment("  'default' - zachowanie domyślne (vanilla)")
-    @Comment("  <liczba>  - szansa (w %) na zniszczenie każdego niewymienionego materiału")
+    @Comment("'default' okresla zachowanie dla materiałów spoza listy 'overrides':")
+    @Comment("  'none'    - nie niszcz nic poza wymienionymi materiałami (pomija tez bloki niszczone domyślnie przez wybuch)")
+    @Comment("  'vanilla' - zachowanie domyślne")
+    @Comment("  <liczba>  - szansa (w %) na zniszczenie każdego innego materiału")
+    @Comment("'overrides' to lista materiałów z indywidualną szansą zniszczenia (w %)")
     @CustomKey("explode-materials")
     public Map<String, Object> explodeMaterials = ExplodeMaterialsScope.defaultConfiguration();
 
@@ -1180,16 +1180,8 @@ public class PluginConfiguration extends OkaeriConfig {
         FunnyGuilds.getPluginLogger().info("Migrated legacy 'explode-materials' configuration to the new guild/global format");
     }
 
-    @SuppressWarnings("unchecked")
-    private static Map<String, Object> getExplodeScope(Map<String, Object> root, String scope) {
-        Object value = root == null ? null : root.get(scope);
-        if (value instanceof Map) {
-            return (Map<String, Object>) value;
-        }
-        if (value instanceof ConfigurationSection) {
-            return ((ConfigurationSection) value).getValues(false);
-        }
-        return Collections.emptyMap();
+    private Map<String, Object> explodeScope(String scope) {
+        return ExplodeMaterialsScope.asMap(this.explodeMaterials == null ? null : this.explodeMaterials.get(scope));
     }
 
     public void loadProcessedProperties() {
@@ -1226,8 +1218,8 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventTeleport = true;
         }
 
-        this.explodeMaterialsGuild = ExplodeMaterialsScope.parse(getExplodeScope(this.explodeMaterials, ExplodeMaterialsScope.GUILD_SCOPE));
-        this.explodeMaterialsGlobal = ExplodeMaterialsScope.parse(getExplodeScope(this.explodeMaterials, ExplodeMaterialsScope.GLOBAL_SCOPE));
+        this.explodeMaterialsGuild = ExplodeMaterialsScope.parse(this.explodeScope(ExplodeMaterialsScope.GUILD_SCOPE));
+        this.explodeMaterialsGlobal = ExplodeMaterialsScope.parse(this.explodeScope(ExplodeMaterialsScope.GLOBAL_SCOPE));
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
     }
