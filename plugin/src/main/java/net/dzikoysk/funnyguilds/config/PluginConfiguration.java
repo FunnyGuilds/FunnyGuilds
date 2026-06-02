@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.config;
 
-import com.google.common.collect.ImmutableMap;
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import dev.peri.yetanothermessageslibrary.replace.replacement.SimpleStringReplacement;
 import eu.okaeri.configs.OkaeriConfig;
@@ -12,6 +11,7 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
+import eu.okaeri.configs.migrate.view.RawConfigView;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
 import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
@@ -23,13 +23,11 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -53,6 +51,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -390,28 +389,21 @@ public class PluginConfiguration extends OkaeriConfig {
     public int explodeRadius = 3;
 
     @Comment("")
-    @Comment("Jakie materiały, i z jaka szansą, maja byc niszczone po wybuchu")
-    @Comment("<material>: <szansa (w %)>")
-    @Comment("Jeżeli wszystkie materiały mają mieć określony % na wybuch - uzyj specjalnego znaku '*'")
+    @Comment("Jakie materiały, i z jaka szansą (w %), maja byc niszczone po wybuchu")
+    @Comment("Konfiguracja jest podzielona na dwie sekcje:")
+    @Comment("  guild  - bloki znajdujące się na terenie gildii")
+    @Comment("  global - bloki poza terenem gildii")
+    @Comment("Specjalny klucz '*' okresla zachowanie dla materiałów nie wymienionych na liście:")
+    @Comment("  'none'    - blok nie zostanie zniszczony, a bloki niszczone domyślnie przez wybuch zostaną pominięte")
+    @Comment("  'default' - zachowanie domyślne (vanilla)")
+    @Comment("  <liczba>  - szansa (w %) na zniszczenie każdego niewymienionego materiału")
     @CustomKey("explode-materials")
-    public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
-            "ender_chest", 20.0,
-            "enchantment_table", 20.0,
-            "obsidian", 20.0,
-            "water", 33.0,
-            "lava", 33.0
-    );
+    public Map<String, Object> explodeMaterials = ExplodeMaterialsScope.defaultConfiguration();
 
     @Exclude
-    public Map<Material, Double> explodeMaterials;
+    public ExplodeMaterialsScope explodeMaterialsGuild = ExplodeMaterialsScope.parse(null);
     @Exclude
-    public boolean allMaterialsAreExplosive;
-    @Exclude
-    public double defaultExplodeChance = -1.0;
-
-    @Comment("")
-    @Comment("Czy powstałe wybuchy powinny niszczyć bloki wyłącznie na terenach gildii")
-    public boolean explodeShouldAffectOnlyGuild = false;
+    public ExplodeMaterialsScope explodeMaterialsGlobal = ExplodeMaterialsScope.parse(null);
 
     @Comment("")
     @Comment("Możliwość podbijania gildii")
@@ -1153,10 +1145,44 @@ public class PluginConfiguration extends OkaeriConfig {
     public OkaeriConfig load() throws OkaeriException {
         super.load();
 
+        this.migrateLegacyExplodeMaterials();
         this.heart.loadProcessedProperties();
         this.loadProcessedProperties();
 
         return this;
+    }
+
+    /**
+     * Converts the legacy flat {@code explode-materials} map (together with the removed
+     * {@code explode-should-affect-only-guild} flag) into the new {@code guild}/{@code global} structure.
+     * The rewritten field is persisted on the next save performed by {@code load(true)}.
+     */
+    private void migrateLegacyExplodeMaterials() {
+        Map<String, Object> raw = this.explodeMaterials;
+        if (raw == null || raw.containsKey(ExplodeMaterialsScope.GUILD_SCOPE) || raw.containsKey(ExplodeMaterialsScope.GLOBAL_SCOPE)) {
+            return;
+        }
+
+        RawConfigView view = new RawConfigView(this);
+        Object legacyFlag = view.getRaw("explode-should-affect-only-guild");
+        boolean affectOnlyGuild = legacyFlag instanceof Boolean && (Boolean) legacyFlag;
+
+        this.explodeMaterials = ExplodeMaterialsScope.convertLegacy(raw, affectOnlyGuild);
+        view.remove("explode-should-affect-only-guild");
+
+        FunnyGuilds.getPluginLogger().info("Migrated legacy 'explode-materials' configuration to the new guild/global format");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> getExplodeScope(Map<String, Object> root, String scope) {
+        Object value = root == null ? null : root.get(scope);
+        if (value instanceof Map) {
+            return (Map<String, Object>) value;
+        }
+        if (value instanceof ConfigurationSection) {
+            return ((ConfigurationSection) value).getValues(false);
+        }
+        return Collections.emptyMap();
     }
 
     public void loadProcessedProperties() {
@@ -1193,26 +1219,8 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventTeleport = true;
         }
 
-        this.explodeMaterials = new EnumMap<>(Material.class);
-        for (Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
-            double chance = entry.getValue();
-            if (chance < 0) {
-                continue;
-            }
-
-            if (entry.getKey().equalsIgnoreCase("*")) {
-                this.allMaterialsAreExplosive = true;
-                this.defaultExplodeChance = chance;
-                continue;
-            }
-
-            Material material = Material.matchMaterial(entry.getKey());
-            if (material == null || material == Material.AIR) {
-                continue;
-            }
-
-            this.explodeMaterials.put(material, chance);
-        }
+        this.explodeMaterialsGuild = ExplodeMaterialsScope.parse(getExplodeScope(this.explodeMaterials, ExplodeMaterialsScope.GUILD_SCOPE));
+        this.explodeMaterialsGlobal = ExplodeMaterialsScope.parse(getExplodeScope(this.explodeMaterials, ExplodeMaterialsScope.GLOBAL_SCOPE));
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
     }

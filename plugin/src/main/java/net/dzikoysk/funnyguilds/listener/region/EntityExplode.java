@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import net.dzikoysk.funnyguilds.config.ExplodeMaterialsScope;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
@@ -29,7 +29,6 @@ public class EntityExplode extends AbstractFunnyListener {
 
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        Map<Material, Double> explosiveMaterials = this.config.explodeMaterials;
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
                 explodeLocation,
                 this.config.explodeRadius,
@@ -49,16 +48,9 @@ public class EntityExplode extends AbstractFunnyListener {
             return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
         });
 
-        if (this.config.explodeShouldAffectOnlyGuild) {
-            explodedBlocks.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
-                    .filterNot(region -> region.getGuild() == null)
-                    .filter(region -> block.getType() != Material.TNT)
-                    .isEmpty());
-
-            blocksInSphere.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
-                    .filterNot(region -> region.getGuild() == null)
-                    .isEmpty());
-        }
+        // Drop blocks destroyed by the vanilla explosion in scopes whose wildcard is 'none' (nothing but explicitly
+        // listed materials should be destroyed there). TNT is preserved as well, keeping chain explosions intact.
+        explodedBlocks.removeIf(block -> this.scopeFor(block).dropsVanillaBlocks());
 
         this.regionManager.findRegionAtLocation(explodeLocation).peek(region -> {
             Guild guild = region.getGuild();
@@ -103,8 +95,7 @@ public class EntityExplode extends AbstractFunnyListener {
                             .isPresent());
 
             if (anyBlockRemovedInSphere || anyBlockRemovedInExplosion) {
-                if (explosionEntity instanceof TNTPrimed) {
-                    TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
+                if (explosionEntity instanceof TNTPrimed entityTnt) {
                     Entity explosionSource = entityTnt.getSource();
 
                     if (explosionSource instanceof Player) {
@@ -123,15 +114,9 @@ public class EntityExplode extends AbstractFunnyListener {
                 continue;
             }
 
-            Material material = block.getType();
-            Double explodeChance = explosiveMaterials.get(material);
-
+            Double explodeChance = this.scopeFor(block).explosionChance(block.getType());
             if (explodeChance == null) {
-                if (!this.config.allMaterialsAreExplosive) {
-                    continue;
-                }
-
-                explodeChance = this.config.defaultExplodeChance;
+                continue;
             }
 
             if (SpaceUtils.chance(explodeChance)) {
@@ -147,6 +132,13 @@ public class EntityExplode extends AbstractFunnyListener {
         additionalExplodedBlocks.stream()
                 .filter(block -> !explodedBlocks.contains(block))
                 .forEach(explodedBlocks::add);
+    }
+
+    private ExplodeMaterialsScope scopeFor(Block block) {
+        boolean onGuildTerritory = this.regionManager.findRegionAtLocation(block.getLocation())
+                .filter(region -> region.getGuild() != null)
+                .isPresent();
+        return onGuildTerritory ? this.config.explodeMaterialsGuild : this.config.explodeMaterialsGlobal;
     }
 
 }
