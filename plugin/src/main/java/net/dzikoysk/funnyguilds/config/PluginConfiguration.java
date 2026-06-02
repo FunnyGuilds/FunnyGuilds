@@ -131,6 +131,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean blockFlow = false;
 
     @Comment("")
+    @Comment("Zablokuj rozlewanie się wody i lawy na teren gildii")
+    @Comment("Przydatne, aby chronić teren gildii przed zalewaniem przez wrogów")
+    @Comment("Działa tylko jeśli regiony są włączone")
+    @CustomKey("block-water-and-lava-flow-on-region")
+    public boolean blockFlowOnRegion = false;
+
+    @Comment("")
     @Comment("Czy gracz po śmierci ma się pojawiać w bazie swojej gildii")
     @Comment("Działa tylko jeśli regiony są włączone")
     public boolean respawnInBase = true;

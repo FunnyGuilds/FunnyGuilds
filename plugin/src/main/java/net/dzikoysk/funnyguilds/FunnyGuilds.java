@@ -402,7 +402,7 @@ public class FunnyGuilds extends JavaPlugin {
                     .add(GuildHeartProtectionHandler.class)
                     .add(TntProtection.class);
 
-            if (this.pluginConfiguration.regionsEnabled && this.pluginConfiguration.blockFlow) {
+            if (this.pluginConfiguration.regionsEnabled && (this.pluginConfiguration.blockFlow || this.pluginConfiguration.blockFlowOnRegion)) {
                 setBuilder.add(BlockFlow.class);
             }
 
