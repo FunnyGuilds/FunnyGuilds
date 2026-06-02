@@ -7,6 +7,7 @@ import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
+import eu.okaeri.validator.annotation.Min;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -15,7 +16,7 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A single {@code explode-materials} scope ({@code guild} or {@code global}).
+ * Explosion profile for a single scope ({@code guild} - blocks on guild territory, or {@code global} - elsewhere).
  *
  * <p>The {@code default} value controls materials that are not listed under {@code materials}:</p>
  * <ul>
@@ -25,8 +26,13 @@ import org.jetbrains.annotations.Nullable;
  * </ul>
  */
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
-public class ExplodeMaterialsScope extends OkaeriConfig {
+public class ExplosionControlScope extends OkaeriConfig {
 
+    @Min(0)
+    @Comment("Zasięg pobieranych przedmiotów po wybuchu, jeżeli chcesz wyłączyć - wpisz 0")
+    public int radius = 3;
+
+    @Comment("")
     @Comment("Zachowanie dla materiałów spoza listy 'materials':")
     @Comment("-1  = zachowanie domyślne (vanilla)")
     @Comment(" 0  = nie niszcz nic poza listą oraz pomiń bloki niszczone domyślnie przez wybuch (ochrona terenu)")
@@ -56,6 +62,10 @@ public class ExplodeMaterialsScope extends OkaeriConfig {
         this.resolvedMaterials = resolved;
     }
 
+    public int getRadius() {
+        return this.radius;
+    }
+
     /** @return whether blocks destroyed by the vanilla explosion should be preserved ({@code default: 0}) */
     public boolean dropsVanillaBlocks() {
         return this.defaultChance == 0.0;
@@ -70,8 +80,9 @@ public class ExplodeMaterialsScope extends OkaeriConfig {
         return this.defaultChance > 0.0 ? this.defaultChance : null;
     }
 
-    static ExplodeMaterialsScope of(double defaultChance, Map<String, Double> materials) {
-        ExplodeMaterialsScope scope = new ExplodeMaterialsScope();
+    static ExplosionControlScope of(int radius, double defaultChance, Map<String, Double> materials) {
+        ExplosionControlScope scope = new ExplosionControlScope();
+        scope.radius = radius;
         scope.defaultChance = defaultChance;
         scope.materials = materials;
         return scope;

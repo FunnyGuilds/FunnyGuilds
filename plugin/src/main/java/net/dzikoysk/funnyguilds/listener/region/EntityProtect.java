@@ -16,7 +16,7 @@ public class EntityProtect extends AbstractFunnyListener {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         // Protect mobs from explosion damage when explosions do not affect terrain outside guilds (global default is 0).
-        if (!this.config.explodeMaterials.global.dropsVanillaBlocks()) {
+        if (!this.config.explosionControl.global.dropsVanillaBlocks()) {
             return;
         }
 

@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.dzikoysk.funnyguilds.config.ExplodeMaterialsScope;
+import net.dzikoysk.funnyguilds.config.ExplosionControlScope;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
@@ -29,10 +29,12 @@ public class EntityExplode extends AbstractFunnyListener {
 
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
+        // The radius is taken from the scope of the explosion's location (it defines the whole sphere).
+        int radius = this.scopeFor(explodeLocation.getBlock()).getRadius();
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
                 explodeLocation,
-                this.config.explodeRadius,
-                this.config.explodeRadius,
+                radius,
+                radius,
                 0,
                 false,
                 true
@@ -134,11 +136,11 @@ public class EntityExplode extends AbstractFunnyListener {
                 .forEach(explodedBlocks::add);
     }
 
-    private ExplodeMaterialsScope scopeFor(Block block) {
+    private ExplosionControlScope scopeFor(Block block) {
         boolean onGuildTerritory = this.regionManager.findRegionAtLocation(block.getLocation())
                 .filter(region -> region.getGuild() != null)
                 .isPresent();
-        return onGuildTerritory ? this.config.explodeMaterials.guild : this.config.explodeMaterials.global;
+        return onGuildTerritory ? this.config.explosionControl.guild : this.config.explosionControl.global;
     }
 
 }

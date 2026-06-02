@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class ExplodeMaterialsScopeTest {
+class ExplosionControlScopeTest {
 
-    private fun scope(default: Double, vararg materials: Pair<String, Double>): ExplodeMaterialsScope {
-        val scope = ExplodeMaterialsScope.of(default, linkedMapOf(*materials))
+    private fun scope(default: Double, vararg materials: Pair<String, Double>): ExplosionControlScope {
+        val scope = ExplosionControlScope.of(3, default, linkedMapOf(*materials))
         scope.loadProcessedProperties()
         return scope
     }

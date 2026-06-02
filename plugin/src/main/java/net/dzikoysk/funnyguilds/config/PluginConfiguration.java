@@ -388,16 +388,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy blokada po wybuchu ma obejmować rownież interakcje z blocked-interact")
     public boolean regionExplodeBlockInteractions = false;
 
-    @Min(0)
     @Comment("")
-    @Comment("Zasięg pobieranych przedmiotów po wybuchu, jeżeli chcesz wyłączyć - wpisz 0")
-    public int explodeRadius = 3;
-
-    @Comment("")
-    @Comment("Jakie materiały, i z jaka szansą (w %), maja byc niszczone po wybuchu")
-    @Comment("Konfiguracja jest podzielona na sekcje 'guild' (teren gildii) oraz 'global' (poza terenem gildii)")
-    @CustomKey("explode-materials")
-    public ExplodeMaterialsConfiguration explodeMaterials = new ExplodeMaterialsConfiguration();
+    @Comment("Kontrola niszczenia bloków przez wybuchy")
+    @Comment("Podzielona na sekcje 'guild' (wybuchy na terenie gildii) oraz 'global' (wybuchy poza terenem gildii)")
+    @CustomKey("explosion-control")
+    public ExplosionControlConfiguration explosionControl = new ExplosionControlConfiguration();
 
     @Comment("")
     @Comment("Możliwość podbijania gildii")
@@ -1179,7 +1174,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventTeleport = true;
         }
 
-        this.explodeMaterials.loadProcessedProperties();
+        this.explosionControl.loadProcessedProperties();
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
     }

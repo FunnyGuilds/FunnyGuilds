@@ -9,32 +9,32 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Materials destroyed by explosions, split into a {@code guild} scope (blocks on guild territory)
- * and a {@code global} scope (blocks elsewhere).
+ * Controls how explosions destroy blocks, split into a {@code guild} scope (explosions on guild territory)
+ * and a {@code global} scope (explosions elsewhere). The active scope is chosen by the explosion's location.
  */
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
-public class ExplodeMaterialsConfiguration extends OkaeriConfig {
+public class ExplosionControlConfiguration extends OkaeriConfig {
 
-    @Comment("Bloki niszczone po wybuchu na terenie gildii")
-    public ExplodeMaterialsScope guild = defaultScope();
+    @Comment("Wybuchy na terenie gildii")
+    public ExplosionControlScope guild = defaultScope();
 
     @Comment("")
-    @Comment("Bloki niszczone po wybuchu poza terenem gildii")
-    public ExplodeMaterialsScope global = defaultScope();
+    @Comment("Wybuchy poza terenem gildii")
+    public ExplosionControlScope global = defaultScope();
 
     public void loadProcessedProperties() {
         this.guild.loadProcessedProperties();
         this.global.loadProcessedProperties();
     }
 
-    private static ExplodeMaterialsScope defaultScope() {
+    private static ExplosionControlScope defaultScope() {
         Map<String, Double> materials = new LinkedHashMap<>();
         materials.put("ender_chest", 20.0);
         materials.put("enchantment_table", 20.0);
         materials.put("obsidian", 20.0);
         materials.put("water", 33.0);
         materials.put("lava", 33.0);
-        return ExplodeMaterialsScope.of(-1.0, materials);
+        return ExplosionControlScope.of(3, -1.0, materials);
     }
 
 }
