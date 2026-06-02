@@ -16,16 +16,14 @@ import java.io.File
 import java.nio.file.Path
 
 /**
- * Verifies that the `Map<String, Object>` representation of `explode-materials` survives an okaeri save/load
- * round-trip (this is the shape used by [PluginConfiguration]), regardless of whether nested sections come back
- * as a [Map] or a Bukkit `ConfigurationSection`.
+ * Verifies that the typed [ExplodeMaterialsConfiguration] survives an okaeri save/load round-trip.
  */
 class ExplodeMaterialsRoundTripTest {
 
     class SampleConfig : OkaeriConfig() {
-        @CustomKey("explode-materials")
         @JvmField
-        var explodeMaterials: MutableMap<String, Any> = ExplodeMaterialsScope.defaultConfiguration()
+        @CustomKey("explode-materials")
+        var explodeMaterials = ExplodeMaterialsConfiguration()
     }
 
     private fun create(file: File): SampleConfig =
@@ -38,56 +36,39 @@ class ExplodeMaterialsRoundTripTest {
             cfg.load(true)
         }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun scope(config: SampleConfig, key: String): ExplodeMaterialsScope {
-        val value = config.explodeMaterials[key]
-        val raw = when (value) {
-            is Map<*, *> -> value as Map<String, Any>
-            is org.bukkit.configuration.ConfigurationSection -> value.getValues(false)
-            else -> emptyMap()
-        }
-        return ExplodeMaterialsScope.parse(raw)
+    @Test
+    fun `default configuration round-trips through okaeri`(@TempDir tempDir: Path) {
+        val file = tempDir.resolve("config.yml").toFile()
+
+        create(file)
+        val loaded = create(file)
+        loaded.explodeMaterials.loadProcessedProperties()
+
+        assertFalse(loaded.explodeMaterials.guild.dropsVanillaBlocks())
+        assertFalse(loaded.explodeMaterials.global.dropsVanillaBlocks())
+        assertEquals(20.0, loaded.explodeMaterials.guild.explosionChance(Material.OBSIDIAN)!!, 1e-9)
+        assertEquals(33.0, loaded.explodeMaterials.global.explosionChance(Material.WATER)!!, 1e-9)
     }
 
     @Test
-    fun `nested default configuration round-trips through okaeri`(@TempDir tempDir: Path) {
+    fun `custom configuration round-trips through okaeri`(@TempDir tempDir: Path) {
         val file = tempDir.resolve("config.yml").toFile()
 
-        create(file)              // writes the nested default
-        val loaded = create(file) // reads it back
-
-        val guild = scope(loaded, "guild")
-        val global = scope(loaded, "global")
-
-        assertFalse(guild.dropsVanillaBlocks())
-        assertFalse(global.dropsVanillaBlocks())
-        assertEquals(20.0, guild.explosionChance(Material.OBSIDIAN)!!, 1e-9)
-        assertEquals(33.0, global.explosionChance(Material.WATER)!!, 1e-9)
-    }
-
-    @Test
-    fun `custom scoped configuration round-trips through okaeri`(@TempDir tempDir: Path) {
-        val file = tempDir.resolve("config.yml").toFile()
-
-        // Write a hand-authored config mirroring the issue's requested layout.
         create(file).also { cfg ->
-            cfg.explodeMaterials = linkedMapOf(
-                "guild" to linkedMapOf<String, Any>("default" to "none", "overrides" to linkedMapOf("water" to 33.0, "lava" to 33.0)),
-                "global" to linkedMapOf<String, Any>("default" to "vanilla", "overrides" to linkedMapOf("obsidian" to 20.0))
-            )
+            cfg.explodeMaterials.guild = ExplodeMaterialsScope.of(0.0, linkedMapOf("water" to 33.0, "lava" to 33.0))
+            cfg.explodeMaterials.global = ExplodeMaterialsScope.of(-1.0, linkedMapOf("obsidian" to 20.0))
             cfg.save()
         }
 
         val loaded = create(file)
-        val guild = scope(loaded, "guild")
-        val global = scope(loaded, "global")
+        loaded.explodeMaterials.loadProcessedProperties()
 
-        assertTrue(guild.dropsVanillaBlocks())
-        assertEquals(33.0, guild.explosionChance(Material.WATER)!!, 1e-9)
-        assertNull(guild.explosionChance(Material.STONE))
+        assertTrue(loaded.explodeMaterials.guild.dropsVanillaBlocks())
+        assertEquals(33.0, loaded.explodeMaterials.guild.explosionChance(Material.WATER)!!, 1e-9)
+        assertNull(loaded.explodeMaterials.guild.explosionChance(Material.STONE))
 
-        assertFalse(global.dropsVanillaBlocks())
-        assertEquals(20.0, global.explosionChance(Material.OBSIDIAN)!!, 1e-9)
-        assertNull(global.explosionChance(Material.WATER))
+        assertFalse(loaded.explodeMaterials.global.dropsVanillaBlocks())
+        assertEquals(20.0, loaded.explodeMaterials.global.explosionChance(Material.OBSIDIAN)!!, 1e-9)
+        assertNull(loaded.explodeMaterials.global.explosionChance(Material.WATER))
     }
 }

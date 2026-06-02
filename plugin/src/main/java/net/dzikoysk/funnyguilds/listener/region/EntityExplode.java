@@ -138,7 +138,7 @@ public class EntityExplode extends AbstractFunnyListener {
         boolean onGuildTerritory = this.regionManager.findRegionAtLocation(block.getLocation())
                 .filter(region -> region.getGuild() != null)
                 .isPresent();
-        return onGuildTerritory ? this.config.explodeMaterialsGuild : this.config.explodeMaterialsGlobal;
+        return onGuildTerritory ? this.config.explodeMaterials.guild : this.config.explodeMaterials.global;
     }
 
 }

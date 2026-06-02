@@ -11,7 +11,6 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
-import eu.okaeri.configs.migrate.view.RawConfigView;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
 import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
@@ -396,21 +395,9 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Jakie materiały, i z jaka szansą (w %), maja byc niszczone po wybuchu")
-    @Comment("Konfiguracja jest podzielona na dwie sekcje:")
-    @Comment("  guild  - bloki znajdujące się na terenie gildii")
-    @Comment("  global - bloki poza terenem gildii")
-    @Comment("'default' okresla zachowanie dla materiałów spoza listy 'overrides':")
-    @Comment("  'none'    - nie niszcz nic poza wymienionymi materiałami (pomija tez bloki niszczone domyślnie przez wybuch)")
-    @Comment("  'vanilla' - zachowanie domyślne")
-    @Comment("  <liczba>  - szansa (w %) na zniszczenie każdego innego materiału")
-    @Comment("'overrides' to lista materiałów z indywidualną szansą zniszczenia (w %)")
+    @Comment("Konfiguracja jest podzielona na sekcje 'guild' (teren gildii) oraz 'global' (poza terenem gildii)")
     @CustomKey("explode-materials")
-    public Map<String, Object> explodeMaterials = ExplodeMaterialsScope.defaultConfiguration();
-
-    @Exclude
-    public ExplodeMaterialsScope explodeMaterialsGuild = ExplodeMaterialsScope.parse(null);
-    @Exclude
-    public ExplodeMaterialsScope explodeMaterialsGlobal = ExplodeMaterialsScope.parse(null);
+    public ExplodeMaterialsConfiguration explodeMaterials = new ExplodeMaterialsConfiguration();
 
     @Comment("")
     @Comment("Możliwość podbijania gildii")
@@ -1152,36 +1139,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public OkaeriConfig load() throws OkaeriException {
         super.load();
 
-        this.migrateLegacyExplodeMaterials();
         this.heart.loadProcessedProperties();
         this.loadProcessedProperties();
 
         return this;
-    }
-
-    /**
-     * Converts the legacy flat {@code explode-materials} map (together with the removed
-     * {@code explode-should-affect-only-guild} flag) into the new {@code guild}/{@code global} structure.
-     * The rewritten field is persisted on the next save performed by {@code load(true)}.
-     */
-    private void migrateLegacyExplodeMaterials() {
-        Map<String, Object> raw = this.explodeMaterials;
-        if (raw == null || raw.containsKey(ExplodeMaterialsScope.GUILD_SCOPE) || raw.containsKey(ExplodeMaterialsScope.GLOBAL_SCOPE)) {
-            return;
-        }
-
-        RawConfigView view = new RawConfigView(this);
-        Object legacyFlag = view.getRaw("explode-should-affect-only-guild");
-        boolean affectOnlyGuild = legacyFlag instanceof Boolean && (Boolean) legacyFlag;
-
-        this.explodeMaterials = ExplodeMaterialsScope.convertLegacy(raw, affectOnlyGuild);
-        view.remove("explode-should-affect-only-guild");
-
-        FunnyGuilds.getPluginLogger().info("Migrated legacy 'explode-materials' configuration to the new guild/global format");
-    }
-
-    private Map<String, Object> explodeScope(String scope) {
-        return ExplodeMaterialsScope.asMap(this.explodeMaterials == null ? null : this.explodeMaterials.get(scope));
     }
 
     public void loadProcessedProperties() {
@@ -1218,8 +1179,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventTeleport = true;
         }
 
-        this.explodeMaterialsGuild = ExplodeMaterialsScope.parse(this.explodeScope(ExplodeMaterialsScope.GUILD_SCOPE));
-        this.explodeMaterialsGlobal = ExplodeMaterialsScope.parse(this.explodeScope(ExplodeMaterialsScope.GLOBAL_SCOPE));
+        this.explodeMaterials.loadProcessedProperties();
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
     }
