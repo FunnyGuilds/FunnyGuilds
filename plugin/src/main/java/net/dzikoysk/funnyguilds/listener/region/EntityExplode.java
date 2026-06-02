@@ -20,6 +20,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import panda.std.Option;
 
 public class EntityExplode extends AbstractFunnyListener {
 
@@ -29,8 +30,8 @@ public class EntityExplode extends AbstractFunnyListener {
 
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        // The radius is taken from the scope of the explosion's location (it defines the whole sphere).
-        int radius = this.scopeFor(explodeLocation.getBlock()).getRadius();
+        Option<Region> explodeRegion = this.regionManager.findRegionAtLocation(explodeLocation);
+        int radius = this.scopeFor(explodeRegion).getRadius();
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
                 explodeLocation,
                 radius,
@@ -50,11 +51,9 @@ public class EntityExplode extends AbstractFunnyListener {
             return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
         });
 
-        // Drop blocks destroyed by the vanilla explosion in scopes whose wildcard is 'none' (nothing but explicitly
-        // listed materials should be destroyed there). TNT is preserved as well, keeping chain explosions intact.
-        explodedBlocks.removeIf(block -> this.scopeFor(block).dropsVanillaBlocks());
+        explodedBlocks.removeIf(block -> this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).dropsVanillaBlocks());
 
-        this.regionManager.findRegionAtLocation(explodeLocation).peek(region -> {
+        explodeRegion.peek(region -> {
             Guild guild = region.getGuild();
 
             if (this.config.warTntProtection && !guild.canBeAttacked()) {
@@ -116,7 +115,7 @@ public class EntityExplode extends AbstractFunnyListener {
                 continue;
             }
 
-            Double explodeChance = this.scopeFor(block).explosionChance(block.getType());
+            Double explodeChance = this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).explosionChance(block.getType());
             if (explodeChance == null) {
                 continue;
             }
@@ -136,10 +135,8 @@ public class EntityExplode extends AbstractFunnyListener {
                 .forEach(explodedBlocks::add);
     }
 
-    private Scope scopeFor(Block block) {
-        boolean onGuildTerritory = this.regionManager.findRegionAtLocation(block.getLocation())
-                .filter(region -> region.getGuild() != null)
-                .isPresent();
+    private Scope scopeFor(Option<Region> region) {
+        boolean onGuildTerritory = region.filter(found -> found.getGuild() != null).isPresent();
         return onGuildTerritory ? this.config.explosionControl.guild : this.config.explosionControl.global;
     }
 
