@@ -51,7 +51,10 @@ public class EntityExplode extends AbstractFunnyListener {
             return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
         });
 
-        explodedBlocks.removeIf(block -> this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).dropsVanillaBlocks());
+        // Only scan the vanilla block list when a scope actually protects terrain (default: 0).
+        if (this.config.explosionControl.guild.protectsVanillaBlocks() || this.config.explosionControl.global.protectsVanillaBlocks()) {
+            explodedBlocks.removeIf(block -> this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).protectsVanillaBlocks());
+        }
 
         explodeRegion.peek(region -> {
             Guild guild = region.getGuild();

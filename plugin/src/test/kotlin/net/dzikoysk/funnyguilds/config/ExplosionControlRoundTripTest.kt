@@ -47,7 +47,7 @@ class ExplosionControlRoundTripTest {
 
         assertEquals(3, loaded.explosionControl.guild.radius)
         assertEquals(3, loaded.explosionControl.global.radius)
-        assertFalse(loaded.explosionControl.guild.dropsVanillaBlocks())
+        assertFalse(loaded.explosionControl.guild.protectsVanillaBlocks())
         assertEquals(20.0, loaded.explosionControl.guild.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertEquals(33.0, loaded.explosionControl.global.explosionChance(Material.WATER)!!, 1e-9)
     }
@@ -66,12 +66,12 @@ class ExplosionControlRoundTripTest {
         loaded.explosionControl.loadProcessedProperties()
 
         assertEquals(5, loaded.explosionControl.guild.radius)
-        assertTrue(loaded.explosionControl.guild.dropsVanillaBlocks())
+        assertTrue(loaded.explosionControl.guild.protectsVanillaBlocks())
         assertEquals(33.0, loaded.explosionControl.guild.explosionChance(Material.WATER)!!, 1e-9)
         assertNull(loaded.explosionControl.guild.explosionChance(Material.STONE))
 
         assertEquals(0, loaded.explosionControl.global.radius)
-        assertFalse(loaded.explosionControl.global.dropsVanillaBlocks())
+        assertFalse(loaded.explosionControl.global.protectsVanillaBlocks())
         assertEquals(20.0, loaded.explosionControl.global.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertNull(loaded.explosionControl.global.explosionChance(Material.WATER))
     }

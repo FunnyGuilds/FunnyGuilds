@@ -19,8 +19,11 @@ public class BlockFlow extends AbstractFunnyListener {
             return;
         }
 
-        // Protect guild territory: cancel configured liquids flowing onto a region.
-        if (this.config.blockFlowOnRegion.contains(block.getType()) && this.regionManager.isInRegion(event.getToBlock().getLocation())) {
+        // Protect guild territory: cancel configured liquids flowing onto a guild-owned region.
+        if (this.config.blockFlowOnRegion.contains(block.getType())
+                && this.regionManager.findRegionAtLocation(event.getToBlock().getLocation())
+                        .filter(region -> region.getGuild() != null)
+                        .isPresent()) {
             event.setCancelled(true);
         }
     }

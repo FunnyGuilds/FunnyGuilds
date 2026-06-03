@@ -17,10 +17,10 @@ class ExplosionControlScopeTest {
     }
 
     @Test
-    fun `default 0 drops vanilla blocks and destroys only the listed materials`() {
+    fun `default 0 protects vanilla blocks and destroys only the listed materials`() {
         val scope = scope(0.0, "water" to 33.0, "lava" to 33.0)
 
-        assertTrue(scope.dropsVanillaBlocks())
+        assertTrue(scope.protectsVanillaBlocks())
         assertEquals(33.0, scope.explosionChance(Material.WATER)!!, 1e-9)
         assertEquals(33.0, scope.explosionChance(Material.LAVA)!!, 1e-9)
         assertNull(scope.explosionChance(Material.STONE))
@@ -30,7 +30,7 @@ class ExplosionControlScopeTest {
     fun `default -1 keeps vanilla and destroys only the listed materials`() {
         val scope = scope(-1.0, "obsidian" to 20.0)
 
-        assertFalse(scope.dropsVanillaBlocks())
+        assertFalse(scope.protectsVanillaBlocks())
         assertEquals(20.0, scope.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertNull(scope.explosionChance(Material.STONE))
     }
@@ -39,15 +39,16 @@ class ExplosionControlScopeTest {
     fun `positive default destroys every other material`() {
         val scope = scope(50.0, "obsidian" to 20.0)
 
-        assertFalse(scope.dropsVanillaBlocks())
+        assertFalse(scope.protectsVanillaBlocks())
         assertEquals(20.0, scope.explosionChance(Material.OBSIDIAN)!!, 1e-9)
         assertEquals(50.0, scope.explosionChance(Material.STONE)!!, 1e-9)
     }
 
     @Test
-    fun `negative override disables a material`() {
-        val scope = scope(-1.0, "water" to -1.0)
+    fun `negative override disables a material even when the default is positive`() {
+        val scope = scope(50.0, "water" to -1.0)
 
         assertNull(scope.explosionChance(Material.WATER))
+        assertEquals(50.0, scope.explosionChance(Material.STONE)!!, 1e-9)
     }
 }

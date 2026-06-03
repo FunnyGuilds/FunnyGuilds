@@ -65,12 +65,13 @@ public class ExplosionControlConfiguration extends OkaeriConfig {
         public void loadProcessedProperties() {
             Map<Material, Double> resolved = new EnumMap<>(Material.class);
             this.materials.forEach((name, chance) -> {
-                if (chance == null || chance < 0) {
+                if (chance == null) {
                     return;
                 }
 
                 Material material = Material.matchMaterial(name);
                 if (material != null && material != Material.AIR) {
+                    // A negative chance is kept as an explicit "never destroy this material" marker.
                     resolved.put(material, chance);
                 }
             });
@@ -81,14 +82,14 @@ public class ExplosionControlConfiguration extends OkaeriConfig {
             return this.radius;
         }
 
-        public boolean dropsVanillaBlocks() {
+        public boolean protectsVanillaBlocks() {
             return this.defaultChance == 0.0;
         }
 
         public @Nullable Double explosionChance(Material material) {
             Double chance = this.resolvedMaterials.get(material);
             if (chance != null) {
-                return chance;
+                return chance < 0 ? null : chance;
             }
             return this.defaultChance > 0.0 ? this.defaultChance : null;
         }
