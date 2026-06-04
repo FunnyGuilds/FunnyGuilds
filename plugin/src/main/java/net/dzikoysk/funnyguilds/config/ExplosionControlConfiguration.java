@@ -49,9 +49,10 @@ public class ExplosionControlConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Zachowanie dla materiałów spoza listy 'materials':")
-        @Comment("-1  = zachowanie domyślne (vanilla)")
-        @Comment(" 0  = nie niszcz nic poza listą oraz pomiń bloki niszczone domyślnie przez wybuch (ochrona terenu)")
-        @Comment(">0  = szansa (w %) na zniszczenie każdego innego materiału")
+        @Comment("-1  = zachowanie domyślne (wybuch jak w vanilli, dodatkowo niszczone są materiały z listy)")
+        @Comment(" 0  = wyczyść to, co niszczy wybuch i niszcz tylko materiały z listy (ochrona terenu)")
+        @Comment(">0  = wyczyść to, co niszczy wybuch i rozlosuj zniszczenia samodzielnie")
+        @Comment("      (szansa w % dla materiałów spoza listy; zasięg równy 'radius')")
         @CustomKey("default")
         public double defaultChance = -1.0;
 
@@ -84,6 +85,14 @@ public class ExplosionControlConfiguration extends OkaeriConfig {
 
         public boolean protectsVanillaBlocks() {
             return this.defaultChance == 0.0;
+        }
+
+        /**
+         * @return whether this scope takes over from the vanilla explosion (default &gt;= 0): the blocks the
+         * vanilla explosion would destroy are cleared and destruction is rolled from {@code materials}/{@code default}.
+         */
+        public boolean overridesVanilla() {
+            return this.defaultChance >= 0.0;
         }
 
         public @Nullable Double explosionChance(Material material) {

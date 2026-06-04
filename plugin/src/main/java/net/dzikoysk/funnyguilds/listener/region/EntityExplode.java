@@ -51,9 +51,10 @@ public class EntityExplode extends AbstractFunnyListener {
             return height < this.config.tntProtection.explode.minHeight || height > this.config.tntProtection.explode.maxHeight;
         });
 
-        // Only scan the vanilla block list when a scope actually protects terrain (default: 0).
-        if (this.config.explosionControl.guild.protectsVanillaBlocks() || this.config.explosionControl.global.protectsVanillaBlocks()) {
-            explodedBlocks.removeIf(block -> this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).protectsVanillaBlocks());
+        // When a scope overrides vanilla (default >= 0), clear what the vanilla explosion would destroy there;
+        // the sphere loop below then rolls all destruction from the scope's materials/default.
+        if (this.config.explosionControl.guild.overridesVanilla() || this.config.explosionControl.global.overridesVanilla()) {
+            explodedBlocks.removeIf(block -> this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).overridesVanilla());
         }
 
         explodeRegion.peek(region -> {
