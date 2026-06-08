@@ -107,7 +107,7 @@ public class UserManager {
      */
     public Option<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
+            return Option.none(); // Ignore NPCs (Citizens, Shopkeepers, [...])
         }
 
         return this.findByUuid(player.getUniqueId());
