@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.config;
 
-import com.google.common.collect.ImmutableMap;
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import dev.peri.yetanothermessageslibrary.replace.replacement.SimpleStringReplacement;
 import eu.okaeri.configs.OkaeriConfig;
@@ -23,13 +22,11 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -130,6 +127,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Działa tylko jeśli regiony są włączone")
     @CustomKey("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
+
+    @Comment("")
+    @Comment("Zablokuj rozlewanie się wybranych cieczy na teren gildii (np. woda, lawa)")
+    @Comment("Przydatne, aby chronić teren gildii przed zalewaniem przez wrogów")
+    @Comment("Zostaw puste, aby wyłączyć. Działa tylko jeśli regiony są włączone")
+    @CustomKey("block-flow-on-region")
+    public Set<Material> blockFlowOnRegion = new HashSet<>();
 
     @Comment("")
     @Comment("Czy gracz po śmierci ma się pojawiać w bazie swojej gildii")
@@ -384,34 +388,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy blokada po wybuchu ma obejmować rownież interakcje z blocked-interact")
     public boolean regionExplodeBlockInteractions = false;
 
-    @Min(0)
     @Comment("")
-    @Comment("Zasięg pobieranych przedmiotów po wybuchu, jeżeli chcesz wyłączyć - wpisz 0")
-    public int explodeRadius = 3;
-
-    @Comment("")
-    @Comment("Jakie materiały, i z jaka szansą, maja byc niszczone po wybuchu")
-    @Comment("<material>: <szansa (w %)>")
-    @Comment("Jeżeli wszystkie materiały mają mieć określony % na wybuch - uzyj specjalnego znaku '*'")
-    @CustomKey("explode-materials")
-    public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
-            "ender_chest", 20.0,
-            "enchantment_table", 20.0,
-            "obsidian", 20.0,
-            "water", 33.0,
-            "lava", 33.0
-    );
-
-    @Exclude
-    public Map<Material, Double> explodeMaterials;
-    @Exclude
-    public boolean allMaterialsAreExplosive;
-    @Exclude
-    public double defaultExplodeChance = -1.0;
-
-    @Comment("")
-    @Comment("Czy powstałe wybuchy powinny niszczyć bloki wyłącznie na terenach gildii")
-    public boolean explodeShouldAffectOnlyGuild = false;
+    @Comment("Kontrola niszczenia bloków przez wybuchy")
+    @Comment("Podzielona na sekcje 'guild' (wybuchy na terenie gildii) oraz 'global' (wybuchy poza terenem gildii)")
+    @CustomKey("explosion-control")
+    public ExplosionControlConfiguration explosionControl = new ExplosionControlConfiguration();
 
     @Comment("")
     @Comment("Możliwość podbijania gildii")
@@ -1193,26 +1174,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventTeleport = true;
         }
 
-        this.explodeMaterials = new EnumMap<>(Material.class);
-        for (Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
-            double chance = entry.getValue();
-            if (chance < 0) {
-                continue;
-            }
-
-            if (entry.getKey().equalsIgnoreCase("*")) {
-                this.allMaterialsAreExplosive = true;
-                this.defaultExplodeChance = chance;
-                continue;
-            }
-
-            Material material = Material.matchMaterial(entry.getKey());
-            if (material == null || material == Material.AIR) {
-                continue;
-            }
-
-            this.explodeMaterials.put(material, chance);
-        }
+        this.explosionControl.loadProcessedProperties();
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
     }
