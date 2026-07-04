@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
-import net.dzikoysk.funnyguilds.feature.command.ItemsGiveTypeCompleter;
+import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand.ItemsGiveType;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.kyori.adventure.bossbar.BossBar;
@@ -785,12 +785,12 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Wiadomości komendy admina /ga items")
     public SendableMessage itemsAdminUsage = ChatHolder.message(
         "<red>Poprawne użycie: <gray>/ga items <nick> <typ> [set]",
-        "<red>Dostępne typy: <gray>" + String.join(", ", ItemsGiveTypeCompleter.TYPES)
+        "<red>Dostępne typy: <gray>" + String.join(", ", ItemsGiveType.ALL_COMMAND_ARGS)
     );
     @Comment("Dostępne zmienne: {TYPE}")
     public SendableMessage itemsAdminUnknownType = ChatHolder.message(
         "<red>Nieznany typ: <gray>{TYPE}",
-        "<red>Dostępne typy: <gray>" + String.join(", ", ItemsGiveTypeCompleter.TYPES)
+        "<red>Dostępne typy: <gray>" + String.join(", ", ItemsGiveType.ALL_COMMAND_ARGS)
     );
     @Comment("Dostępne zmienne: {TYPE}")
     public SendableMessage itemsAdminNoItems = ChatHolder.message("<red>Podany typ <gray>{TYPE} <red>nie zawiera żadnych przedmiotów do wydania");

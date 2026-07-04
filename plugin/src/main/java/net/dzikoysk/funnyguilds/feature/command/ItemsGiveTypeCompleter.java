@@ -7,17 +7,16 @@ import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand.ItemsGiveType;
 
 @FunnyComponent
 public class ItemsGiveTypeCompleter implements Completer {
 
-    public static final List<String> TYPES = List.of(
-        "guild", "base", "join", "enlarge", "validity", "rankReset", "statsReset", "firstGuildReward"
-    );
-
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
-        return CommandUtils.collectCompletions(TYPES, prefix, limit, ArrayList::new, Function.identity());
+        return CommandUtils.collectCompletions(
+            ItemsGiveType.ALL_COMMAND_ARGS, prefix, limit, ArrayList::new, Function.identity()
+        );
     }
 
     @Override
