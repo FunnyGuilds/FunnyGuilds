@@ -127,6 +127,26 @@ public class ItemsConfiguration extends OkaeriConfig {
         return guildItemSets != null ? guildItemSets : Map.of();
     }
 
+    public Optional<GuildItemSet> findGuildItemSet(String name, boolean ignoreCase) {
+        if (guildItemSets == null || guildItemSets.isEmpty()) {
+            return Optional.empty();
+        }
+
+        GuildItemSet exactSet = guildItemSets.get(name);
+        if (exactSet != null) {
+            return Optional.of(exactSet);
+        }
+
+        if (ignoreCase) {
+            return guildItemSets.entrySet().stream()
+                .filter(e -> e.getKey().equalsIgnoreCase(name))
+                .map(Map.Entry::getValue)
+                .findFirst();
+        }
+
+        return Optional.empty();
+    }
+
     @Override
     public OkaeriConfig save() throws OkaeriException {
         propagateConfigurer();

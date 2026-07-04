@@ -778,12 +778,21 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("Wiadomości komendy admina /ga items")
-    @Comment("Dostępne zmienne: {SET}")
-    public SendableMessage itemsAdminNoItems = ChatHolder.message("<red>Set <white>{SET} <red>nie zawiera żadnych przedmiotów do wydania.");
-    @Comment("Dostępne zmienne: {PLAYER}, {SET}, {COUNT}")
-    public SendableMessage itemsAdminGiven = ChatHolder.message("<green>✔ Wydano przedmioty z setu <white>{SET} <green>graczowi <white>{PLAYER} <green>(<white>{COUNT} <green>sztuk).");
-    @Comment("Dostępne zmienne: {SET}, {COUNT}")
-    public SendableMessage itemsAdminReceived = ChatHolder.message("<green>✔ Otrzymałeś przedmioty z setu <white>{SET} <green>(<white>{COUNT} <green>sztuk).");
+    public SendableMessage itemsAdminUsage = ChatHolder.message(
+        "<red>Poprawne użycie: <gray>/ga items <nick> <typ> [set]",
+        "<red>Dostępne typy: <gray>guild, base, join, enlarge, validity, rankReset, statsReset, firstGuildReward"
+    );
+    @Comment("Dostępne zmienne: {TYPE}")
+    public SendableMessage itemsAdminUnknownType = ChatHolder.message(
+        "<red>Nieznany typ: <gray>{TYPE}",
+        "<red>Dostępne typy: <gray>guild, base, join, enlarge, validity, rankReset, statsReset, firstGuildReward"
+    );
+    @Comment("Dostępne zmienne: {TYPE}")
+    public SendableMessage itemsAdminNoItems = ChatHolder.message("<red>Podany typ <gray>{TYPE} <red>nie zawiera żadnych przedmiotów do wydania");
+    @Comment("Dostępne zmienne: {PLAYER}, {TYPE}, {COUNT}, {COUNT_ADDED}, {COUNT_DROPPED}")
+    public SendableMessage itemsAdminGiven = ChatHolder.message("<green>Wydano przedmioty typu <gray>{TYPE} <green>graczowi <gray>{PLAYER} <green>(<gray>{COUNT} <green>przedmiotów).");
+    @Comment("Dostępne zmienne: {TYPE}, {COUNT}, {COUNT_ADDED}, {COUNT_DROPPED}")
+    public SendableMessage itemsAdminReceived = ChatHolder.message("<green>Otrzymałeś przedmioty typu <gray>{TYPE} <green>(<gray>{COUNT} <green>przedmiotów).");
 
     @Comment("")
     @Comment("Linie GUI summary (MiniMessage, wstawiane do lore ItemStack)")
