@@ -11,29 +11,29 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.AssistsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BaseAdminCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.DeathsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeleteAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeputyAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.GuildsEnabledCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KickAdminCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.KillsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LeaderAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LivesCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.LogoutsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.MainCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.MoveCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.NameCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.PointsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ProtectionCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.SpyCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TagCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TeleportCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.UnbanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ValidityAdminCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.AssistsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.DeathsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.KillsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.LogoutsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.PointsCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.AllyCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BreakCommand;
@@ -149,6 +149,7 @@ public final class FunnyCommandsConfiguration {
                 .completer(new AlliesCompleter(userManager))
                 .completer(new GuildInvitationsCompleter(userManager, plugin.getGuildInvitationList()))
                 .completer(new InvitePlayersCompleter(config, userManager))
+                .completer(new StatsOperationsCompleter())
                 .completer(new ItemsGiveTypeCompleter())
                 .validator(new HasGuildPermissionValidator(plugin.getGuildPermissionChecker()))
                 .validator(new OwnerValidator())
