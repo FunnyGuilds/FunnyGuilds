@@ -149,6 +149,7 @@ public final class FunnyCommandsConfiguration {
                 .completer(new AlliesCompleter(userManager))
                 .completer(new GuildInvitationsCompleter(userManager, plugin.getGuildInvitationList()))
                 .completer(new InvitePlayersCompleter(config, userManager))
+                .completer(new ItemsGiveTypeCompleter())
                 .validator(new HasGuildPermissionValidator(plugin.getGuildPermissionChecker()))
                 .validator(new OwnerValidator())
                 .commands(userCommands.commands)
