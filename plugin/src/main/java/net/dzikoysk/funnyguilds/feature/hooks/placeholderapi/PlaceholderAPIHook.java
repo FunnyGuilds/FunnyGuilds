@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
@@ -55,7 +56,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String onPlaceholderRequest(Player player, @NotNull String identifier) {
+        public String onRequest(OfflinePlayer player, @NotNull String identifier) {
             if (player == null) {
                 return "";
             }
