@@ -20,6 +20,7 @@ import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -90,13 +91,13 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    Component coloredName = ComponentUtil.colored(attributeValue);
+                    Component coloredName = coloredWithoutItalics(attributeValue);
                     Component formattedName = formatter.replace(coloredName);
                     item.setName(formattedName);
                     continue;
                 case "lore":
                     List<Component> lore = PandaStream.of(attributeValue.split("#"))
-                            .map(ComponentUtil::colored)
+                            .map(ItemUtils::coloredWithoutItalics)
                             .map(formatter::replace)
                             .toList();
                     item.setLore(lore);
@@ -371,6 +372,10 @@ public final class ItemUtils {
         catch (NumberFormatException ex) {
             FunnyGuilds.getPluginLogger().parser("Invalid armor-color (non-integer): " + armorColor);
         }
+    }
+
+    private static Component coloredWithoutItalics(String text) {
+        return ComponentUtil.colored(text).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
 }
