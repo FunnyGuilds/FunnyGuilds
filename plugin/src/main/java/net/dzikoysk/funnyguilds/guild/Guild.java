@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
@@ -14,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -185,10 +185,11 @@ public class Guild extends AbstractMutableEntity {
         return this.members;
     }
 
-    public Set<User> getOnlineMembers() {
-        return PandaStream.of(this.members)
-                .filter(User::isOnline)
-                .toSet();
+    public Set<User> getOnlineMembers(boolean includeVanished) {
+        return this.members.stream()
+            .filter(User::isOnline)
+            .filter(user -> includeVanished || !user.isVanished())
+            .collect(Collectors.toSet());
     }
 
     public boolean isMember(User user) {
