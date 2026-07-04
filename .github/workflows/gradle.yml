@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        jdk: [ 21 ]
+        jdk: [ 25 ]
     steps:
       - name: Find comment with artifact link
         uses: peter-evans/find-comment@v3

@@ -37,12 +37,23 @@ publishing {
     }
 }
 
+// paper-api provides the full Bukkit API and (since 26.1) declares the org.spigotmc:spigot-api
+// capability, which conflicts with the legacy spigot-api transitively pulled in by libraries such as
+// funnycommands. Drop the transitive spigot-api everywhere and let paper-api provide the API surface.
+configurations.configureEach {
+    exclude(group = "org.spigotmc", module = "spigot-api")
+}
+
+// NMS implementation modules (":nms" minus the shared "api") are Mojang-mapped against a Paper dev
+// bundle and consumed only at runtime via reflection (see NmsAccessorHolder). paperweight's reobf
+// variant - which a normal project dependency would resolve - has no mappings for 26.1+ dev bundles,
+// so they are merged into the plugin jar from their shadow output in the ShadowJar block below.
+val nmsImplementationModules = project.project(":nms").subprojects.filter { it.name != "api" }
+
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     /* funnyguilds */
-    project.project(":nms").subprojects.forEach {
-        implementation(it)
-    }
+    implementation(project(":nms:api"))
     implementation("net.dzikoysk:funnycommands:0.8.0")
 
     /* std */
@@ -79,7 +90,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
 
     // bukkit stuff
-    shadow("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    shadow("io.papermc.paper:paper-api:26.1.2.build.72-stable")
     shadow("org.apache.logging.log4j:log4j-core:2.20.0")
 
     /* hooks */
@@ -90,7 +101,7 @@ dependencies {
     shadow("us.dynmap:DynmapCoreAPI:3.7-beta-6")
 
     /* tests */
-    testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:26.1.2.build.72-stable")
     testImplementation("com.mojang:authlib:6.0.57")
 
     val testcontainers = "1.20.4"
@@ -115,7 +126,17 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     val commitCount = grgitService.service.get().grgit.log().size
-    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.21.x).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 26.x).jar"
+
+    // NMS implementation modules aren't pulled in via the `implementation` configuration (a plain
+    // project dependency would resolve paperweight's reobf variant, which has no mappings for 26.1+
+    // dev bundles). Merge their Mojang-mapped shadow output in directly here instead - this also
+    // keeps them out of `minimize` below, which only prunes dependency-sourced classes.
+    nmsImplementationModules.forEach {
+        val nmsShadowJar = it.tasks.named("shadowJar", ShadowJar::class)
+        dependsOn(nmsShadowJar)
+        from(nmsShadowJar.map { task -> zipTree(task.archiveFile) })
+    }
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
@@ -142,15 +163,14 @@ tasks.withType<ShadowJar> {
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
         exclude(dependency("com.github.stefvanschie.inventoryframework:IF:.*"))
 
-        // nms implementation modules are not referenced in the project but are required at runtime
-        parent!!.project(":nms").subprojects.forEach {
-            exclude(project(it.path))
-        }
+        // nms:api classes are reached reflectively by the merged nms implementation modules, so keep
+        // all of them (the implementation modules themselves are merged as files, not minimized).
+        exclude(project(":nms:api"))
     }
 }
 
 tasks {
     runServer {
-        minecraftVersion("1.21.4")
+        minecraftVersion("26.1.2")
     }
 }

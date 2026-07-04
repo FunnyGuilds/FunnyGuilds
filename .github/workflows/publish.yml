@@ -13,13 +13,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 25
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - uses: burrunan/gradle-cache-action@v3
         name: Publish FunnyGuilds
         with:
-          job-id: jdk21
+          job-id: jdk25
           arguments: build :plugin:publish --stacktrace
           read-only: false
         env:
