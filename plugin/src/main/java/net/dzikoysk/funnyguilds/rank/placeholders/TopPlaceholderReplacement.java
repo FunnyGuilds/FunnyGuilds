@@ -152,7 +152,6 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
         return switch (subType) {
             case "NAME" -> Component.text(guild.getName());
             case "TAG" -> Component.text(guild.getTag());
-            case "UUID" -> Component.text(guild.getUUID().toString());
             case "VALUE" -> Component.text(rawValueString(topValue));
             default -> Component.empty();
         };
