@@ -48,7 +48,7 @@ public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessage
     }
 
     public FunnyMessageDispatcher receiver(Guild guild) {
-        return this.receivers(guild.getOnlineMembers());
+        return this.receivers(guild.getOnlineMembers(true));
     }
 
 }

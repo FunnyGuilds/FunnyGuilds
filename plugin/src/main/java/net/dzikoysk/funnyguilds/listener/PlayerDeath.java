@@ -333,10 +333,10 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         switch (this.config.deathMessageReceivers) {
             case GUILD:
-                attacker.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers()));
-                victim.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers()));
+                attacker.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers(true)));
+                victim.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers(true)));
                 calculatedAssists.keySet()
-                        .forEach(user -> user.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers())));
+                        .forEach(user -> user.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers(true))));
                 break;
             case WORLD:
                 event.getEntity()
