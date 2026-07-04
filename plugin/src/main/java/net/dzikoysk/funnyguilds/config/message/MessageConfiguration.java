@@ -620,6 +620,10 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage adminGuildOwner = ChatHolder.message("&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!");
     public SendableMessage adminNoRegionFound = ChatHolder.message("&cGildia nie posiada terenu!");
 
+    public SendableMessage adminNoStatsOperationGiven = ChatHolder.message("&cPodaj operację: set/add/remove!");
+    @Comment("Dostępne zmienne: {OPERATION}")
+    public SendableMessage adminInvalidStatsOperation = ChatHolder.message("&cNieznana operacja: {OPERATION}! Dostępne: set, add, remove");
+
     public SendableMessage adminNoPointsGiven = ChatHolder.message("&cPodaj liczbe punktow!");
     @Comment("Dostępne zmienne: {ERROR}")
     public SendableMessage adminErrorInNumber = ChatHolder.message("&cNieznana jest liczba: {ERROR}");
