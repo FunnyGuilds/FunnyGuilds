@@ -13,14 +13,6 @@ public class V26_1_2FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
 
     @Override
     public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
-        // As of Minecraft 26.1 ServerboundInteractPacket is a flat record instead of the old
-        // Action/Handler dispatch. The action is encoded by which fields are present:
-        //   attack       -> hand == null, location == null
-        //   interact     -> hand != null, location == null
-        //   interact-at  -> hand != null, location != null
-        // A single right-click sends both an interact and an interact-at packet, so - matching the
-        // previous behaviour - only interact-at (location != null) is treated as a right-click to
-        // avoid firing the callback twice.
         if (msg instanceof ServerboundInteractPacket interactPacket) {
             int entityId = interactPacket.entityId();
             InteractionHand interactionHand = interactPacket.hand();

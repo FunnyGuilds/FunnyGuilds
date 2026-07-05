@@ -12,8 +12,7 @@ import static java.lang.String.format;
 
 public final class NmsAccessorHolder {
 
-    // Version can be found in server jar in version.json under `world_version` key.
-    // FunnyGuilds targets Minecraft 26.1+ as its baseline; older releases are not supported.
+    // Version can be found in server jar in version.json under `world_version` key
     private static final TreeMap<Integer, String> NMS_VERSION_MAPPING = new TreeMap<>(ImmutableMap.<Integer, String>builder()
             .put(4790, "v26_1_2")
             .build());

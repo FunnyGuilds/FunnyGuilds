@@ -37,17 +37,10 @@ publishing {
     }
 }
 
-// paper-api provides the full Bukkit API and (since 26.1) declares the org.spigotmc:spigot-api
-// capability, which conflicts with the legacy spigot-api transitively pulled in by libraries such as
-// funnycommands. Drop the transitive spigot-api everywhere and let paper-api provide the API surface.
 configurations.configureEach {
     exclude(group = "org.spigotmc", module = "spigot-api")
 }
 
-// NMS implementation modules (":nms" minus the shared "api") are Mojang-mapped against a Paper dev
-// bundle and consumed only at runtime via reflection (see NmsAccessorHolder). paperweight's reobf
-// variant - which a normal project dependency would resolve - has no mappings for 26.1+ dev bundles,
-// so they are merged into the plugin jar from their shadow output in the ShadowJar block below.
 val nmsImplementationModules = project.project(":nms").subprojects.filter { it.name != "api" }
 
 @Suppress("VulnerableLibrariesLocal")
@@ -128,10 +121,6 @@ tasks.withType<ShadowJar> {
     val commitCount = grgitService.service.get().grgit.log().size
     archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 26.x).jar"
 
-    // NMS implementation modules aren't pulled in via the `implementation` configuration (a plain
-    // project dependency would resolve paperweight's reobf variant, which has no mappings for 26.1+
-    // dev bundles). Merge their Mojang-mapped shadow output in directly here instead - this also
-    // keeps them out of `minimize` below, which only prunes dependency-sourced classes.
     nmsImplementationModules.forEach {
         val nmsShadowJar = it.tasks.named("shadowJar", ShadowJar::class)
         dependsOn(nmsShadowJar)
@@ -163,8 +152,7 @@ tasks.withType<ShadowJar> {
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
         exclude(dependency("com.github.stefvanschie.inventoryframework:IF:.*"))
 
-        // nms:api classes are reached reflectively by the merged nms implementation modules, so keep
-        // all of them (the implementation modules themselves are merged as files, not minimized).
+        // nms:api classes are referenced reflectively and required at runtime
         exclude(project(":nms:api"))
     }
 }

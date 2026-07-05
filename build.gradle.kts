@@ -86,7 +86,6 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 
-        // 5.20+ bundles Byte Buddy >= 1.17.5, which is required to mock under Java 25
         val mockito = "5.23.0"
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
@@ -96,7 +95,6 @@ subprojects {
     }
 
     java {
-        // Minecraft 26.1+ requires Java 25 (both to run Paper and to resolve its API artifacts).
         toolchain {
             languageVersion = JavaLanguageVersion.of(25)
         }
@@ -148,15 +146,9 @@ project(":nms").subprojects {
     }
 }
 
-// NMS implementation modules are version-specific and compiled against a Mojang-mapped Paper dev
-// bundle. The `:nms:api` module only touches the Bukkit/Adventure API surface (no net.minecraft),
-// so it is a plain paper-api consumer and is intentionally excluded from paperweight here.
 configure(listOf(project(":nms:v26_1_2"))) {
     apply(plugin = "io.papermc.paperweight.userdev")
 
-    // Minecraft 26.1+ dropped obfuscated server jars entirely (Mojang stopped publishing them, and
-    // Spigot/Paper followed), so there is no obf namespace left to reobfuscate into. Ship the
-    // Mojang-mapped jar as the production artifact instead of the (now impossible) reobf jar.
     configure<PaperweightUserExtension> {
         reobfArtifactConfiguration.set(ReobfArtifactConfiguration.MOJANG_PRODUCTION)
     }
