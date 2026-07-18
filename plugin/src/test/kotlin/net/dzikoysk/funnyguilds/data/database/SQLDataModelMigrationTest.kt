@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database
 
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable
 import net.dzikoysk.funnyguilds.data.database.element.SQLType
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assumptions
@@ -30,6 +31,14 @@ internal class MariaDBSQLDataModelMigrationTest : SQLDataModelMigrationTest() {
             )
             mariadb = MariaDBContainer("mariadb:11.4")
             mariadb.start()
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun stopContainer() {
+            if (::mariadb.isInitialized) {
+                mariadb.stop()
+            }
         }
     }
 
