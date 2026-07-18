@@ -65,6 +65,14 @@ internal class MySQLSQLDataModelMigrationTest : SQLDataModelMigrationTest() {
             }
             mysql.start()
         }
+
+        @JvmStatic
+        @AfterAll
+        fun stopContainer() {
+            if (::mysql.isInitialized) {
+                mysql.stop()
+            }
+        }
     }
 
     override val container: JdbcDatabaseContainer<*> get() = mysql
