@@ -3,44 +3,64 @@ package net.dzikoysk.funnyguilds.data.database
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable
 import net.dzikoysk.funnyguilds.data.database.element.SQLType
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assumptions
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.testcontainers.DockerClientFactory
 import org.testcontainers.containers.JdbcDatabaseContainer
 import org.testcontainers.containers.MariaDBContainer
 import org.testcontainers.containers.MySQLContainer
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.sql.Connection
 import java.sql.DriverManager
 import java.util.UUID
 
 internal class MariaDBSQLDataModelMigrationTest : SQLDataModelMigrationTest() {
+
     companion object {
-        @Container
+        private lateinit var mariadb: MariaDBContainer<*>
+
         @JvmStatic
-        val mariadb: MariaDBContainer<*> = MariaDBContainer("mariadb:11.4")
+        @BeforeAll
+        fun startContainer() {
+            Assumptions.assumeTrue(
+                DockerClientFactory.instance().isDockerAvailable,
+                "Docker is not available, skipping MariaDB migration test"
+            )
+            mariadb = MariaDBContainer("mariadb:11.4")
+            mariadb.start()
+        }
     }
+
     override val container: JdbcDatabaseContainer<*> get() = mariadb
 }
 
 internal class MySQLSQLDataModelMigrationTest : SQLDataModelMigrationTest() {
+
     companion object {
-        @Container
+        private lateinit var mysql: MySQLContainer<Nothing>
+
         @JvmStatic
-        val mysql: MySQLContainer<Nothing> =
-            object : MySQLContainer<Nothing>("mysql:8.0") {
+        @BeforeAll
+        fun startContainer() {
+            Assumptions.assumeTrue(
+                DockerClientFactory.instance().isDockerAvailable,
+                "Docker is not available, skipping MySQL migration test"
+            )
+            mysql = object : MySQLContainer<Nothing>("mysql:8.0") {
                 override fun getDriverClassName(): String = "org.mariadb.jdbc.Driver"
                 override fun getJdbcUrl(): String = "jdbc:mariadb://$host:${getMappedPort(MYSQL_PORT)}/$databaseName"
             }.apply {
                 withCommand("--default-authentication-plugin=mysql_native_password")
             }
+            mysql.start()
+        }
     }
+
     override val container: JdbcDatabaseContainer<*> get() = mysql
 }
 
-@Testcontainers
 internal abstract class SQLDataModelMigrationTest {
 
     protected abstract val container: JdbcDatabaseContainer<*>
@@ -68,7 +88,7 @@ internal abstract class SQLDataModelMigrationTest {
         SQLDataModel.migrateSchema(connection, table)
         SQLDataModel.migrateSchema(connection, table)
 
-        assertEquals(setOf("uuid", "name", "points"), readColumns(tableName))
+        Assertions.assertEquals(setOf("uuid", "name", "points"), readColumns(tableName))
     }
 
     @Test
@@ -80,12 +100,12 @@ internal abstract class SQLDataModelMigrationTest {
             setPrimaryKey("uuid")
         }
         SQLDataModel.migrateSchema(connection, initial)
-        assertEquals(setOf("uuid", "name"), readColumns(tableName))
+        Assertions.assertEquals(setOf("uuid", "name"), readColumns(tableName))
 
         SQLDataModel.migrateSchema(connection, usersTable(tableName))
 
         val columns = readColumns(tableName)
-        assertTrue("points" in columns, "expected 'points' column to be added, got $columns")
+        Assertions.assertTrue("points" in columns, "expected 'points' column to be added, got $columns")
     }
 
     private fun usersTable(name: String): SQLTable = SQLTable(name).apply {
