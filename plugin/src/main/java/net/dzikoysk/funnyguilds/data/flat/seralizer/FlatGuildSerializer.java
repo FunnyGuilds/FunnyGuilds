@@ -61,6 +61,7 @@ public final class FlatGuildSerializer {
         Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
         Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("protection"));
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
+        Instant tntProtectionBypass = TimeUtils.positiveOrNullInstant(wrapper.getLong("tnt-protection-bypass"));
         int lives = wrapper.getInt("lives");
         int heartLives = wrapper.contains("heart-lives") ? wrapper.getInt("heart-lives") : config.warHeartLives;
 
@@ -149,7 +150,7 @@ public final class FlatGuildSerializer {
             lives = config.warLives;
         }
 
-        Object[] values = new Object[17];
+        Object[] values = new Object[18];
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -165,8 +166,9 @@ public final class FlatGuildSerializer {
         values[12] = lives;
         values[13] = ban;
         values[14] = deputies;
-        values[15] = pvp;
-        values[16] = heartLives;
+        values[15] = tntProtectionBypass;
+        values[16] = pvp;
+        values[17] = heartLives;
 
         return DeserializationUtils.deserializeGuild(config, guildManager, values);
     }
@@ -211,6 +213,7 @@ public final class FlatGuildSerializer {
         wrapper.set("lives", guild.getLives());
         wrapper.set("heart-lives", guild.getHeartLives());
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
+        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 

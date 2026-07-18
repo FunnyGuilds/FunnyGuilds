@@ -27,6 +27,7 @@ import net.dzikoysk.funnyguilds.feature.command.admin.ProtectionCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.SpyCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TagCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TeleportCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.TntAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.UnbanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ValidityAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.stats.AssistsCommand;
@@ -132,6 +133,7 @@ public final class FunnyCommandsConfiguration {
                 .command("spy", commands.admin.spy, SpyCommand.class)
                 .command("tag", commands.admin.tag, TagCommand.class)
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
+                .command("tnt", commands.admin.tnt, TntAdminCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
                 .command("validity", commands.admin.validity, ValidityAdminCommand.class)
                 .command("items", commands.admin.items, ItemsAdminCommand.class);
