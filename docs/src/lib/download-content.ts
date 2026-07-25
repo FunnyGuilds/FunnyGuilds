@@ -101,8 +101,8 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       archiveLabel: 'Pełne archiwum wersji 1.x–3.x ↗',
     },
     mcVersionTable: {
-      title: 'Której wersji Minecrafta używasz?',
-      intro: 'Każda wersja Minecrafta i wszystkie wydania FunnyGuilds, które ją obsługiwały — zrekonstruowane z rzeczywistych plików .jar, plików budowania (pom.xml/.classpath) i changelogów, nie z dat wydania. Starsze wydania (1.x–3.x) nie miały szerokiego wsparcia wielu wersji na raz, dlatego widnieją pod dokładną wersją, którą kompilowały.',
+      title: 'Pełne archiwum wydań',
+      intro: 'Każde wydanie FunnyGuilds i zakres wersji Minecrafta, które obsługiwało — zrekonstruowane z rzeczywistych plików .jar, plików budowania (pom.xml/.classpath) i changelogów, nie z dat wydania. Starsze wydania (1.x–3.x) nie miały szerokiego wsparcia wielu wersji na raz, dlatego widnieją pod dokładną wersją, którą kompilowały, zamiast zakresu.',
       currentLabel: 'aktualne',
       inferredLabel: 'szacunkowo',
       changelogLinkLabel: 'Zobacz na GitHubie ↗',
@@ -162,8 +162,8 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       archiveLabel: 'Full 1.x–3.x archive ↗',
     },
     mcVersionTable: {
-      title: 'Which Minecraft version are you running?',
-      intro: "Every Minecraft version and every FunnyGuilds release that supported it — reconstructed from the real .jar files, build files (pom.xml/.classpath), and changelogs, not release dates. Older releases (1.x-3.x) didn't support many versions at once, so they're listed under the exact version they compiled against.",
+      title: 'Full release archive',
+      intro: "Every FunnyGuilds release and the range of Minecraft versions it supported — reconstructed from the real .jar files, build files (pom.xml/.classpath), and changelogs, not release dates. Older releases (1.x-3.x) didn't support many versions at once, so they're listed under the exact version they compiled against instead of a range.",
       currentLabel: 'current',
       inferredLabel: 'estimated',
       changelogLinkLabel: 'View on GitHub ↗',
