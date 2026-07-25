@@ -1,0 +1,98 @@
+---
+// Temporary comparison page - not linked from nav. Delete once a direction is picked.
+import '../styles/base.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import { DOWNLOAD_CONTENT } from '../lib/download-content';
+import { getMcVersionArchive } from '../lib/mc-version-archive';
+import Nav from '../components/Nav.astro';
+import ReleaseChipPopover from '../components/ReleaseChipPopover.astro';
+import ReleaseChipDialog from '../components/ReleaseChipDialog.astro';
+import ReleaseChipAnchored from '../components/ReleaseChipAnchored.astro';
+import ReleaseChipDrawer from '../components/ReleaseChipDrawer.astro';
+import ReleaseChipHover from '../components/ReleaseChipHover.astro';
+
+const t = DOWNLOAD_CONTENT.en;
+const mcArchive = getMcVersionArchive('en');
+
+const variants = [
+  { label: 'Version 1', title: 'Native popover — floating card', note: 'Click pops a centered card above the page; click outside or Esc to dismiss. Table stays exactly as-is, no reflow. Zero JS.', Chip: ReleaseChipPopover },
+  { label: 'Version 2', title: 'Native <dialog> — centered modal', note: 'Same idea as the popover but a real modal dialog with its own header/close row. Needs one inline onclick to call .showModal().', Chip: ReleaseChipDialog },
+  { label: 'Version 3', title: 'Compact anchored dropdown', note: "A <details> that expands into a small floating panel positioned right under that one chip - other chips in the row don't move.", Chip: ReleaseChipAnchored },
+  { label: 'Version 4', title: 'Side drawer', note: 'Click slides in a full-height reading pane from the right, page dims behind it. Most room of any option here, most "app-like."', Chip: ReleaseChipDrawer },
+  { label: 'Version 5', title: 'Hover preview, click still links out', note: "Chip stays a real link to GitHub (today's behavior) - hovering/focusing shows a short plain-text peek. No full changelog ever renders on this page.", Chip: ReleaseChipHover },
+];
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Changelog UI lab — FunnyGuilds</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+    .main { flex: 1 1 auto; min-width: 0; }
+    .wrap { width: 100%; min-width: 0; max-width: 980px; margin: 0 auto; padding: 40px 24px 100px; }
+    .lab-intro { font-size: 0.85rem; color: var(--slate); line-height: 1.6; margin-bottom: 36px; padding-bottom: 24px; border-bottom: 1px solid var(--hairline); max-width: 70ch; }
+    .lab-intro strong { color: var(--ink); }
+
+    .variant-block { margin-bottom: 56px; padding-bottom: 40px; border-bottom: 1px solid var(--hairline); }
+    .variant-block:last-child { border-bottom: none; }
+    .variant-label { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue); font-weight: 700; margin-bottom: 4px; }
+    .variant-block h2 { font-size: 1.15rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+    .variant-note { font-size: 0.82rem; color: var(--slate-soft); margin: 0 0 18px; line-height: 1.5; max-width: 60ch; }
+
+    .mc-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .mc-table tr { border-bottom: 1px solid var(--hairline); }
+    .mc-table tr:last-child { border-bottom: none; }
+    .mc-table td { padding: 10px 6px; vertical-align: top; }
+    .mc-table .mc-col { font-family: var(--mono); font-weight: 700; color: var(--ink); white-space: nowrap; width: 1%; padding-top: 12px; }
+    .release-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <Nav content={t} active="download" />
+    <main class="main">
+      <div class="wrap">
+        <p class="lab-intro">
+          Comparing 5 ways to reveal a release's changelog from its chip in the <a href="/download/">real archive table</a>,
+          using the real data for every release (same <code>getMcVersionArchive</code> the actual download page uses) so the
+          "many chips in one row" case (see <strong>MC 1.7.2</strong> below, 58 releases) is genuinely stress-tested, not just
+          a cherry-picked example.
+        </p>
+
+        {variants.map(({ label, title, note, Chip }) => (
+          <section class="variant-block">
+            <div class="variant-label">{label}</div>
+            <h2>{title}</h2>
+            <p class="variant-note">{note}</p>
+            <table class="mc-table">
+              <tbody>
+                {mcArchive.map((group) => (
+                  <tr>
+                    <td class="mc-col">MC {group.mcRange}</td>
+                    <td class="release-col">
+                      <div class="release-chips">
+                        {group.releases.map((entry) => (
+                          <Chip entry={entry} />
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        ))}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+---
+import type { McArchiveRelease } from '../lib/mc-version-archive';
+
+interface Props {
+  entry: McArchiveRelease;
+}
+const { entry } = Astro.props;
+const id = `v1-${entry.tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
+---
+
+<button class="release-chip" popovertarget={id}>
+  {entry.tag}
+  {entry.current && <span class="current-tag">current</span>}
+  {entry.confidence === 'inferred' && <span class="inferred-tag">estimated</span>}
+</button>
+<div popover id={id} class="popover-panel">
+  <div class="popover-title">
+    {entry.tag}
+    <button class="popover-close" popovertarget={id} popovertargetaction="hide">close ✕</button>
+  </div>
+  <div class="cl-body" set:html={entry.changelogHtml} />
+</div>
+
+<style>
+  .release-chip {
+    display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 11.5px;
+    color: var(--slate); background: #f5f6f8; padding: 4px 8px; border-radius: 4px; border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .release-chip:hover { border-color: var(--blue); color: var(--blue); background: #fff; }
+  .current-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: var(--green); padding: 1px 4px; border-radius: 2px; }
+  .inferred-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--slate-soft); border: 1px solid var(--hairline); border-radius: 2px; padding: 1px 4px; }
+
+  .popover-panel {
+    border: none; border-radius: 10px; padding: 20px 22px; max-width: 480px; width: 90vw;
+    max-height: 72vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(20, 23, 26, 0.28);
+  }
+  .popover-panel::backdrop { background: rgba(20, 23, 26, 0.35); }
+  .popover-title {
+    font-family: var(--mono); font-weight: 700; font-size: 0.95rem; margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .popover-close { font-family: var(--mono); font-size: 11px; color: var(--slate-soft); background: none; border: none; cursor: pointer; padding: 2px 6px; }
+  .popover-close:hover { color: var(--blue); }
+
+  .cl-body { font-size: 0.84rem; line-height: 1.55; color: var(--slate); }
+  .cl-body :global(p) { margin: 6px 0; }
+  .cl-body :global(:first-child) { margin-top: 0; }
+  .cl-body :global(h3), .cl-body :global(h4), .cl-body :global(h5), .cl-body :global(h6) { font-size: 0.88rem; font-weight: 700; color: var(--ink); margin: 12px 0 4px; }
+  .cl-body :global(ul) { margin: 4px 0 8px 18px; padding: 0; }
+  .cl-body :global(li) { margin: 2px 0; }
+  .cl-body :global(a) { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+  .cl-body :global(code) { font-family: var(--mono); font-size: 0.85em; background: #eceef1; padding: 1px 4px; border-radius: 3px; }
+  .cl-body :global(pre) { background: #14171a; color: #e2e5ea; padding: 10px 12px; border-radius: 6px; overflow-x: auto; font-size: 0.78rem; }
+  .cl-body :global(pre code) { background: none; padding: 0; color: inherit; }
+  .cl-body :global(strong) { color: var(--ink); }
+  .cl-body :global(blockquote) { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
+</style>
