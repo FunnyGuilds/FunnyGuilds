@@ -37,8 +37,7 @@ const { releases, currentLabel, releasedLabel, changelogEyebrow, changelogLinkLa
 
 <style>
   .detail-pane {
-    position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; overflow-x: hidden;
-    border-left: 1px solid var(--hairline); padding-left: 28px; min-width: 0;
+    border-left: 1px solid var(--hairline); padding-left: 28px; min-width: 0; overflow-x: hidden;
   }
 
   .changelog-target { display: none; min-width: 0; }
@@ -67,6 +66,6 @@ const { releases, currentLabel, releasedLabel, changelogEyebrow, changelogLinkLa
   .cl-body :global(blockquote) { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
 
   @media (max-width: 900px) {
-    .detail-pane { position: static; max-height: none; margin-top: 24px; border-left: none; border-top: 1px solid var(--hairline); padding-left: 0; padding-top: 20px; }
+    .detail-pane { margin-top: 24px; border-left: none; border-top: 1px solid var(--hairline); padding-left: 0; padding-top: 20px; }
   }
 </style>

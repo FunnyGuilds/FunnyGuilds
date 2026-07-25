@@ -15,11 +15,12 @@ function renderInline(text: string): string {
 }
 
 // Every changelog carries its own "Pobierz"/"Download" section (jar mirrors, Maven
-// coordinates, CI links) - redundant on this page since the site's own download UI is right
-// there, so it's dropped rather than rendered. Modern releases write it as a bold pseudo-heading
-// paragraph (**Pobierz:**) followed by a list; old ones (pre-2017) just inline a single
-// "<b>Download</b>: <a>...</a>" line with no section structure at all.
-function stripDownloadSection(markdown: string): string {
+// coordinates, CI links) and usually a "Discord:" section (an invite link) - both redundant on
+// this page, since the site already has its own download UI and its own Discord widget, so
+// both are dropped rather than rendered. Modern releases write these as a bold pseudo-heading
+// paragraph (**Pobierz:**/**Discord:**) followed by a list; old download links (pre-2017) are
+// just a single inline "<b>Download</b>: <a>...</a>" line with no section structure at all.
+function stripRedundantSections(markdown: string): string {
   const lines = markdown.split('\n');
   const out: string[] = [];
   let skipping = false;
@@ -32,7 +33,7 @@ function stripDownloadSection(markdown: string): string {
 
     if (headingText !== undefined) {
       // The colon usually sits inside the bold markers (**Pobierz:**), not after them.
-      skipping = /^(pobierz|download):?$/i.test(headingText.trim());
+      skipping = /^(pobierz|download|discord):?$/i.test(headingText.trim());
       if (skipping) continue;
     }
     if (skipping) continue;
@@ -55,7 +56,7 @@ function escapeHtml(text: string): string {
 }
 
 export function renderChangelog(markdown: string): string {
-  const lines = stripDownloadSection(markdown.replace(/\r\n/g, '\n')).split('\n');
+  const lines = stripRedundantSections(markdown.replace(/\r\n/g, '\n')).split('\n');
   const out: string[] = [];
   let listDepth = -1;
   let inQuote = false;
