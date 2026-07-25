@@ -16,6 +16,10 @@ function listIndent(line: string): number {
   return Math.floor((match ? match[1].length : 0) / 2);
 }
 
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 export function renderChangelog(markdown: string): string {
   const lines = markdown.replace(/\r\n/g, '\n').split('\n');
   const out: string[] = [];
@@ -42,13 +46,25 @@ export function renderChangelog(markdown: string): string {
     }
   };
 
-  for (const raw of lines) {
-    const line = raw.trimEnd();
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trimEnd();
+    const fence = line.match(/^```/);
     const heading = line.match(/^(#{1,6})\s+(.*)$/);
     const listItem = line.match(/^(\s*)[-*]\s+(.*)$/);
     const quote = line.match(/^>\s?(.*)$/);
 
-    if (heading) {
+    if (fence) {
+      flushParagraph();
+      closeLists();
+      closeQuote();
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].trimEnd().match(/^```/)) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      out.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+    } else if (heading) {
       flushParagraph();
       closeLists();
       closeQuote();
