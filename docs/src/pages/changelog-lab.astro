@@ -15,6 +15,7 @@ import ReleaseChipDialog from '../components/ReleaseChipDialog.astro';
 import ReleaseChipAnchored from '../components/ReleaseChipAnchored.astro';
 import ReleaseChipDrawer from '../components/ReleaseChipDrawer.astro';
 import ReleaseChipHover from '../components/ReleaseChipHover.astro';
+import ReleaseChipSidePanel from '../components/ReleaseChipSidePanel.astro';
 
 const t = DOWNLOAD_CONTENT.en;
 const mcArchive = getMcVersionArchive('en');
@@ -54,6 +55,16 @@ const variants = [
     .mc-table td { padding: 10px 6px; vertical-align: top; }
     .mc-table .mc-col { font-family: var(--mono); font-weight: 700; color: var(--ink); white-space: nowrap; width: 1%; padding-top: 12px; }
     .release-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+
+    .side-placeholder {
+      display: block; position: fixed; top: 96px; right: max(24px, calc(50vw - 640px)); width: 360px;
+      border: 1px dashed var(--hairline-strong); border-radius: 10px; padding: 18px 20px;
+      color: var(--slate-soft); font-size: 0.82rem; line-height: 1.5; z-index: 5;
+    }
+    body:has(.side-changelog:target) .side-placeholder { display: none; }
+    @media (width <= 900px) { .side-placeholder { display: none; } }
+
+    .featured-badge { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; background: var(--blue); padding: 2px 6px; border-radius: 3px; margin-left: 8px; }
   </style>
 </head>
 <body>
@@ -62,11 +73,41 @@ const variants = [
     <main class="main">
       <div class="wrap">
         <p class="lab-intro">
-          Comparing 5 ways to reveal a release's changelog from its chip in the <a href="/download/">real archive table</a>,
+          Comparing ways to reveal a release's changelog from its chip in the <a href="/download/">real archive table</a>,
           using the real data for every release (same <code>getMcVersionArchive</code> the actual download page uses) so the
           "many chips in one row" case (see <strong>MC 1.7.2</strong> below, 58 releases) is genuinely stress-tested, not just
           a cherry-picked example.
         </p>
+
+        <div class="side-placeholder">Click any release below — the changelog pins to the right and stays in view as you scroll (resizes into a bottom sheet under ~900px wide).</div>
+
+        <section class="variant-block">
+          <div class="variant-label">Version 6<span class="featured-badge">requested</span></div>
+          <h2>Persistent side panel</h2>
+          <p class="variant-note">
+            Chips are plain #fragment links; the changelog panel uses <code>:target</code> to show whichever release was
+            last clicked, pinned to the right edge and <code>position: sticky</code>-adjacent (actually <code>fixed</code>,
+            so it doesn't need to live next to the chip in the DOM) so it stays in view while you scroll the list. No JS at
+            all - not even the inline <code>onclick</code> the dialog version needed. Below ~900px it becomes a bottom sheet
+            instead, since there's no room for a real side column.
+          </p>
+          <table class="mc-table">
+            <tbody>
+              {mcArchive.map((group) => (
+                <tr>
+                  <td class="mc-col">MC {group.mcRange}</td>
+                  <td class="release-col">
+                    <div class="release-chips">
+                      {group.releases.map((entry) => (
+                        <ReleaseChipSidePanel entry={entry} />
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
 
         {variants.map(({ label, title, note, Chip }) => (
           <section class="variant-block">
