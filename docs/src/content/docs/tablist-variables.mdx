@@ -1,0 +1,67 @@
+---
+title: Tablist — zmienne
+description: Lista zmiennych dostępnych w tabliście FunnyGuilds.
+---
+
+### Podstawowe zmienne
+
+Mogą zostać użyte w Tablist w [sekcji `player-list`](/tablist/#podstawowe-ustawienia-tablistyml) oraz w [nagłówku i stopce](/tablist/#nagłówek-i-stopka-tablistyml).
+
+### Zmienne gracza
+
+| Zmienna | Opis |
+|:---:|:---|
+| `{PLAYER}` | Nazwa gracza |
+| `{WORLD}` | Świat, w którym znajduje się gracz |
+| `{PING}` | Ping gracza |
+| `{PING-FORMAT}` | Ping gracza z formatowaniem |
+| `{POINTS}` | Punkty gracza |
+| `{POINTS-FORMAT}` | Punkty gracza z formatowaniem |
+| `{POSITION}` | Pozycja gracza w rankingu |
+| `{KILLS}` | Liczba zabójstw gracza |
+| `{DEATHS}` | Liczba śmierci gracza |
+| `{KDR}` | Stosunek zabójstw do śmierci gracza |
+| `{WG-REGION}` | Region WorldGuarda, na którym znajduje się gracz (pierwszy, jeśli jest ich kilka) |
+| `{WG-REGIONS}` | Regiony WorldGuarda, na których znajduje się gracz (oddzielone przecinkami) |
+| `{VAULT-MONEY}` | Balans konta gracza pobierany z pluginu Vault |
+
+### Zmienne gildyjne
+
+| Zmienna | Opis |
+|:---:|:---|
+| `{G-NAME}` | Nazwa gildii, do której należy gracz |
+| `{G-TAG}` | Tag gildii gracza |
+| `{G-OWNER}` | Właściciel gildii |
+| `{G-DEPUTIES}` | Zastępcy gildii |
+| `{G-DEPUTY}` | Losowy z zastępców gildii |
+| `{G-LIVES}` | Liczba żyć gildii |
+| `{G-ALLIES}` | Liczba sojuszników gildii |
+| `{G-POINTS}` | Punkty gildii |
+| `{G-POINTS-FORMAT}` | Punkty gildii z formatowaniem |
+| `{G-POSITION}` | Pozycja gildii gracza w rankingu |
+| `{G-KILLS}` | Suma zabójstw członków gildii |
+| `{G-DEATHS}` | Suma śmierci członków gildii |
+| `{G-KDR}` | Stosunek zabójstw do śmierci członków gildii |
+| `{G-MEMBERS-ONLINE}` | Liczba członków gildii online |
+| `{G-MEMBERS-ALL}` | Liczba wszystkich członków gildii |
+| `{G-VALIDITY}` | Data wygaśnięcia gildii |
+| `{G-REGION-SIZE}` | Rozmiar gildii |
+
+### Pozostałe zmienne
+
+| Zmienna | Opis |
+|:---:|:---|
+| `{GUILDS}` | Liczba gildii na serwerze |
+| `{USERS}` | Liczba użytkowników serwera |
+| `{ONLINE}` | Liczba graczy online |
+| `{TPS}` | TPS serwera (wspierane tylko od wersji 1.8.8+ spigot/paperspigot) |
+| `{SECOND}` | Sekunda |
+| `{MINUTE}` | Minuta |
+| `{HOUR}` | Godzina |
+| `{DAY_OF_WEEK}` | Dzień tygodnia, wyrażony w postaci nazwy dnia |
+| `{DAY_OF_MONTH}` | Dzień miesiąca, wyrażony w postaci liczby |
+| `{MONTH}` | Miesiąc, wyrażony w postaci nazwy miesiąca |
+| `{MONTH_NUMBER}` | Miesiąc, wyrażony w postaci liczby |
+| `{YEAR}` | Rok |
+| `{PTOP-<pozycja>}` | Gracz na podanej pozycji w rankingu (np. `{PTOP-1}`, `{PTOP-60}`) |
+| `{GTOP-<pozycja>}` | Gildia na podanej pozycji w rankingu (np. `{GTOP-1}`, `{GTOP-50}`) |

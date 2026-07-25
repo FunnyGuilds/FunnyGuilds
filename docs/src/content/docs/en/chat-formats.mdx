@@ -1,0 +1,19 @@
+---
+title: Chat formats
+description: Guild placeholders available in FunnyGuilds chat formats.
+---
+
+:::note
+Insert the placeholders below into your chat plugin's format.
+:::
+
+:::caution[Incompatible with LPC]
+Unfortunately, they are not supported by the [LPC](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-19.68965/) plugin. This isn't something we can fix on our end — the problem lies with LPC itself, which uses the wrong priority for the chat event, so FunnyGuilds isn't able to override the placeholders with its own values. You can, however, try using [PlaceholderAPI](/en/placeholderapi/) instead.
+:::
+
+|              Tag                | Description                                                          |
+| :------------------------------: | :---------------------------------------------------------------------- |
+|             `{POS}`              | Shows whether someone is a leader, deputy, or regular guild member      |
+|             `{TAG}`              | Shows the guild's TAG; empty if the player has none                     |
+|             `{RANK}`             | Shows the player's position in the points ranking                       |
+|  `{POINTS}` / `{POINTS-FORMAT}`  | Shows the player's point count                                          |

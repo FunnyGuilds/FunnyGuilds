@@ -1,0 +1,59 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Map renderer preview',
+    description: 'The same isometric map renderer as the homepage, driven by arbitrary input data.',
+  }}
+>
+  <p>
+    The map below runs on the exact same 3D engine as the homepage (<code>mountIsomapScene</code>{' '}
+    in <code>src/lib/isomap/scene.ts</code>) — the only difference is the <strong>input</strong>:
+    instead of the homepage's four guilds, it's given two smaller, neighboring territories. Neither
+    the renderer nor the terrain generator (<code>generateTerrain</code> in{' '}
+    <code>src/lib/isomap/terrain.ts</code>) hardcode any names or coordinates — the whole layout
+    (name, grid position, size) is just data, so any other set of territories renders the same way.
+  </p>
+
+  <div id="demo-map-root" class="demo-map-root"></div>
+
+  <p>The input used above (<code>DEMO_TERRAIN_CONFIG</code>, exported from <code>isomap/terrain.ts</code>):</p>
+
+  <pre><code>{`{
+  territories: [
+    { name: 'Northgate', c0: -6, r0: -6 },
+    { name: 'Southgate', c0: -6, r0: 5 },
+  ],
+  margin: 14,
+}`}</code></pre>
+
+  <p>
+    That input can come from anywhere — e.g. a real guild list pulled from a server — so the same
+    component can later visualize actual territories, or other plugin features, not just the
+    static example on this page.
+  </p>
+</StarlightPage>
+
+<style>
+  .demo-map-root {
+    position: relative;
+    height: 420px;
+    border-radius: 2px;
+    overflow: hidden;
+    border: 1px solid var(--fg-hairline);
+    background: #4f8a41;
+  }
+  .demo-map-root :global(canvas) {
+    display: block;
+  }
+</style>
+
+<script>
+  import { mountIsomapScene } from '../../lib/isomap/scene';
+  import { DEMO_TERRAIN_CONFIG } from '../../lib/isomap/terrain';
+
+  const root = document.getElementById('demo-map-root');
+  if (root) mountIsomapScene(root, DEMO_TERRAIN_CONFIG, { frustumHalfHeight: 20 });
+</script>

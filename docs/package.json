@@ -1,0 +1,33 @@
+{
+  "name": "funnyguilds-docs",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/fetch-latest-release.mjs",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "prebuild": "node scripts/fetch-latest-release.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "npm run build && wrangler pages deploy ./dist",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.3",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/starlight": "^0.41.3",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/ibm-plex-sans": "^5.2.8",
+    "@fontsource/noto-sans": "^5.2.10",
+    "astro": "^7.0.6",
+    "mersenne-twister": "^1.1.0",
+    "sharp": "^0.35.3",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@types/mersenne-twister": "^1.1.7",
+    "@types/three": "^0.185.1",
+    "wrangler": "^4.107.0"
+  }
+}

@@ -1,0 +1,59 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Podgląd renderera mapy',
+    description: 'Ten sam renderer izometrycznej mapy co strona główna, oparty o dowolne dane wejściowe.',
+  }}
+>
+  <p>
+    Poniższa mapa korzysta z tego samego silnika 3D co strona główna (<code>mountIsomapScene</code>{' '}
+    w <code>src/lib/isomap/scene.ts</code>) — różni się tylko <strong>wejściem</strong>: zamiast
+    czterech gildii z homepage'a dostaje dwa mniejsze, sąsiadujące terytoria. Renderer i generator
+    terenu (<code>generateTerrain</code> w <code>src/lib/isomap/terrain.ts</code>) nie mają nigdzie
+    zaszytych na sztywno nazw ani współrzędnych — cały układ (nazwa, pozycja na siatce, rozmiar) to
+    zwykłe dane, więc dowolny inny zestaw terytoriów renderuje się w ten sam sposób.
+  </p>
+
+  <div id="demo-map-root" class="demo-map-root"></div>
+
+  <p>Wejście użyte powyżej (<code>DEMO_TERRAIN_CONFIG</code>, eksportowane z <code>isomap/terrain.ts</code>):</p>
+
+  <pre><code>{`{
+  territories: [
+    { name: 'Northgate', c0: -6, r0: -6 },
+    { name: 'Southgate', c0: -6, r0: 5 },
+  ],
+  margin: 14,
+}`}</code></pre>
+
+  <p>
+    To samo wejście może pochodzić z dowolnego źródła — np. z prawdziwej listy gildii pobranej
+    z serwera — więc ten sam komponent da się później użyć do wizualizacji rzeczywistych
+    terytoriów albo innych funkcji pluginu, nie tylko statycznego przykładu z tej strony.
+  </p>
+</StarlightPage>
+
+<style>
+  .demo-map-root {
+    position: relative;
+    height: 420px;
+    border-radius: 2px;
+    overflow: hidden;
+    border: 1px solid var(--fg-hairline);
+    background: #4f8a41;
+  }
+  .demo-map-root :global(canvas) {
+    display: block;
+  }
+</style>
+
+<script>
+  import { mountIsomapScene } from '../lib/isomap/scene';
+  import { DEMO_TERRAIN_CONFIG } from '../lib/isomap/terrain';
+
+  const root = document.getElementById('demo-map-root');
+  if (root) mountIsomapScene(root, DEMO_TERRAIN_CONFIG, { frustumHalfHeight: 20 });
+</script>

@@ -1,0 +1,60 @@
+---
+title: Instalacja
+description: Jak pobrać i uruchomić FunnyGuilds na serwerze Minecraft.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Wymagania
+
+- Serwer **[Paper](https://papermc.io/)** (lub kompatybilny fork, np. Purpur).
+- Wspierane wersje Minecraft: **1.8 – 1.21.x**.
+- Zgodna wersja **Javy** dla Twojej wersji serwera.
+
+:::tip[Pluginy opcjonalne]
+FunnyGuilds działa samodzielnie, ale potrafi zintegrować się z innymi pluginami —
+zobacz [Integracje](#integracje) poniżej.
+:::
+
+## Pobieranie
+
+Zobacz stronę [Pobierz](/download/) — znajdziesz tam link do builda nightly
+5.x oraz do najnowszego stabilnego wydania 4.x.
+
+:::note
+FunnyGuilds 5.x jest obecnie dostępny wyłącznie jako wersja nightly. Po jej
+pobraniu może pojawić się komunikat o dostępności nowszej wersji — to normalne,
+ponieważ updater uwzględnia tylko wydania oficjalne. Więcej w [FAQ](/faq/).
+:::
+
+## Instalacja krok po kroku
+
+<Steps>
+
+1. Pobierz plik `FunnyGuilds-x.x.x.jar`.
+2. Wrzuć go do katalogu `plugins/` na swoim serwerze.
+3. Uruchom (lub zrestartuj) serwer — plugin wygeneruje pliki konfiguracyjne.
+4. Dostosuj ustawienia w `plugins/FunnyGuilds/config.yml` — zobacz [Konfiguracja](/configuration/).
+5. Wczytaj zmiany komendą `/funnyguilds reload` (nie musisz restartować serwera).
+
+</Steps>
+
+## Integracje
+
+FunnyGuilds automatycznie wykrywa i wykorzystuje poniższe pluginy, jeśli są
+zainstalowane:
+
+| Plugin | Zastosowanie |
+|---|---|
+| [WorldEdit](https://dev.bukkit.org/projects/worldedit) | Operacje na regionach |
+| [WorldGuard](https://dev.bukkit.org/projects/worldguard) | Ochrona i regiony |
+| [Vault](https://dev.bukkit.org/projects/vault) | Ekonomia |
+| [PlaceholderAPI](https://www.spigotmc.org/resources/6245/) | Placeholdery — zobacz [dokumentację integracji](/placeholderapi/) |
+| [dynmap](https://github.com/webbukkit/dynmap) | Znaczniki gildii na mapie |
+| [DecentHolograms](https://www.spigotmc.org/resources/96927/) | Hologramy z rankingami |
+
+## Co dalej?
+
+- [Konfiguracja](/configuration/) — podstawowe ustawienia pluginu.
+- [Komendy](/commands/) — pełna lista komend gracza i administratora.
+- [Uprawnienia](/permissions/) — lista permisji.

@@ -1,0 +1,67 @@
+---
+title: Tablist — variables
+description: List of variables available in the FunnyGuilds tablist.
+---
+
+### Basic variables
+
+These can be used in the Tablist [`player-list` section](/en/tablist/#basic-settings-tablistyml) as well as in the [header and footer](/en/tablist/#header-and-footer-tablistyml).
+
+### Player variables
+
+| Variable | Description |
+|:---:|:---|
+| `{PLAYER}` | The player's name |
+| `{WORLD}` | The world the player is currently in |
+| `{PING}` | The player's ping |
+| `{PING-FORMAT}` | The player's ping, formatted |
+| `{POINTS}` | The player's points |
+| `{POINTS-FORMAT}` | The player's points, formatted |
+| `{POSITION}` | The player's position in the ranking |
+| `{KILLS}` | The player's kill count |
+| `{DEATHS}` | The player's death count |
+| `{KDR}` | The player's kill/death ratio |
+| `{WG-REGION}` | The WorldGuard region the player is in (the first one, if there are several) |
+| `{WG-REGIONS}` | The WorldGuard regions the player is in (comma-separated) |
+| `{VAULT-MONEY}` | The player's account balance, pulled from the Vault plugin |
+
+### Guild variables
+
+| Variable | Description |
+|:---:|:---|
+| `{G-NAME}` | The name of the guild the player belongs to |
+| `{G-TAG}` | The player's guild tag |
+| `{G-OWNER}` | The guild's owner |
+| `{G-DEPUTIES}` | The guild's deputies |
+| `{G-DEPUTY}` | A random one of the guild's deputies |
+| `{G-LIVES}` | The guild's number of lives |
+| `{G-ALLIES}` | The guild's number of allies |
+| `{G-POINTS}` | The guild's points |
+| `{G-POINTS-FORMAT}` | The guild's points, formatted |
+| `{G-POSITION}` | The player's guild's position in the ranking |
+| `{G-KILLS}` | The sum of kills of the guild's members |
+| `{G-DEATHS}` | The sum of deaths of the guild's members |
+| `{G-KDR}` | The kill/death ratio of the guild's members |
+| `{G-MEMBERS-ONLINE}` | The number of online guild members |
+| `{G-MEMBERS-ALL}` | The total number of guild members |
+| `{G-VALIDITY}` | The guild's expiration date |
+| `{G-REGION-SIZE}` | The guild's size |
+
+### Other variables
+
+| Variable | Description |
+|:---:|:---|
+| `{GUILDS}` | The number of guilds on the server |
+| `{USERS}` | The number of server users |
+| `{ONLINE}` | The number of online players |
+| `{TPS}` | The server's TPS (only supported on 1.8.8+ spigot/paperspigot) |
+| `{SECOND}` | Second |
+| `{MINUTE}` | Minute |
+| `{HOUR}` | Hour |
+| `{DAY_OF_WEEK}` | The day of the week, as a name |
+| `{DAY_OF_MONTH}` | The day of the month, as a number |
+| `{MONTH}` | The month, as a name |
+| `{MONTH_NUMBER}` | The month, as a number |
+| `{YEAR}` | The year |
+| `{PTOP-<position>}` | The player at the given ranking position (e.g. `{PTOP-1}`, `{PTOP-60}`) |
+| `{GTOP-<position>}` | The guild at the given ranking position (e.g. `{GTOP-1}`, `{GTOP-50}`) |

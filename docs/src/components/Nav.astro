@@ -1,0 +1,53 @@
+---
+import { getNavItems, type NavActive, type NavContent } from '../lib/nav-content';
+
+interface Props {
+  content: NavContent;
+  active: NavActive;
+}
+const { content: t, active } = Astro.props;
+const items = getNavItems(t, active);
+---
+
+<nav>
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true">
+      <rect x="1" y="1" width="8" height="2.4" fill="#2f74f7"/><rect x="1" y="1" width="2.4" height="8" fill="#2f74f7"/>
+      <rect x="17" y="1" width="8" height="2.4" fill="#f5a623"/><rect x="22.6" y="1" width="2.4" height="8" fill="#f5a623"/>
+      <rect x="22.6" y="17" width="2.4" height="8" fill="#ff5a5f"/><rect x="17" y="22.6" width="8" height="2.4" fill="#ff5a5f"/>
+      <rect x="1" y="17" width="2.4" height="8" fill="#57b894"/><rect x="1" y="22.6" width="8" height="2.4" fill="#57b894"/>
+    </svg>
+    FunnyGuilds
+  </div>
+  <div class="nav-right">
+    <div class="tabs">
+      {items.map((item) => <a href={item.href} class={item.active ? 'active' : ''}>{item.label}</a>)}
+    </div>
+    <div class="lang-switch">
+      <a href={t.plHref} class={t.lang === 'pl' ? 'active' : ''}>PL</a>
+      <span class="sep">/</span>
+      <a href={t.enHref} class={t.lang === 'en' ? 'active' : ''}>EN</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  nav { height: 58px; flex-shrink: 0; background: var(--paper); border-bottom: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: relative; z-index: 3; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-right { display: flex; align-items: center; gap: 26px; }
+  .tabs { display: flex; align-items: center; gap: 24px; font-size: 13.5px; font-weight: 500; }
+  .tabs a { color: var(--slate); }
+  .tabs a:hover { color: var(--ink); }
+  .tabs a.active { color: var(--ink); font-weight: 600; }
+  .lang-switch { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em; padding-left: 22px; border-left: 1px solid var(--hairline); }
+  .lang-switch a { color: var(--slate-soft); }
+  .lang-switch a:hover { color: var(--ink); }
+  .lang-switch a.active { color: var(--blue); }
+  .lang-switch .sep { color: var(--hairline-strong); }
+
+  /* Below this, brand+tabs+lang-switch no longer fit in one row without wrapping/overflow — same
+     breakpoint Header.astro uses to hide its own tabs (sl-hidden md:sl-flex, 768px). */
+  @media (max-width: 640px) {
+    .tabs { display: none; }
+  }
+</style>

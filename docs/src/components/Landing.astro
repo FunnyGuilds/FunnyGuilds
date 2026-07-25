@@ -1,0 +1,196 @@
+---
+// Bypasses the Starlight shell entirely — its own <html>/<head>/<body>, no sidebar.
+import '../styles/base.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+// Noto Sans: base font of "Modern Font Pack" (most-downloaded OptiFine HD pack) — HUD reads as a real resource-pack font.
+import '@fontsource/noto-sans/500.css';
+import '@fontsource/noto-sans/700.css';
+import '@fontsource/noto-sans/800.css';
+import type { LandingContent } from '../lib/landing-content';
+import { generateTerrain, LANDING_TERRAIN_CONFIG } from '../lib/isomap/terrain';
+import Nav from './Nav.astro';
+
+interface Props {
+  content: LandingContent;
+}
+const { content: t } = Astro.props;
+
+// Computed at build time, not in the browser — the map never changes, so every visitor gets the finished result (see mountIsomapSceneFromData).
+const terrainData = generateTerrain(LANDING_TERRAIN_CONFIG);
+---
+
+<!doctype html>
+<html lang={t.lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{t.pageTitle}</title>
+  <meta name="description" content={t.pageDescription} />
+  <link rel="icon" href="/favicon.png" />
+  <link rel="alternate" hreflang={t.lang === 'pl' ? 'en' : 'pl'} href={t.lang === 'pl' ? t.enHref : t.plHref} />
+  <style>
+    :root { --hud: 'Noto Sans', var(--sans); }
+    html, body { height: 100%; overflow: hidden; }
+
+    .app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+
+    .split { flex: 1 1 auto; display: flex; flex-direction: row; min-height: 0; }
+    @media (max-width: 860px) { .split { flex-direction: column; } .pane-right { display: none; } }
+
+    .pane-left { flex: 0 0 32%; display: flex; align-items: center; padding: clamp(22px, 3.4vw, 44px); z-index: 1; min-height: 0; }
+    .content { max-width: 380px; }
+    .eyebrow { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate); margin-bottom: 14px; }
+    h1 { font-weight: 700; font-size: clamp(1.4rem, 2.3vw, 1.9rem); line-height: 1.15; letter-spacing: -0.02em; }
+    .sub { margin-top: 14px; font-size: clamp(0.82rem, 1.05vw, 0.9rem); color: var(--slate); line-height: 1.6; max-width: 34ch; }
+    /* the 4 identity colors, used functionally: one pillar of the plugin per color, not decoration */
+    .tag-cluster { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 7px; }
+    .ftag { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.01em; padding: 4px 9px; }
+    .ftag:nth-child(1) { background: var(--blue); color: #fff; }
+    .ftag:nth-child(2) { background: var(--gold); color: var(--ink); }
+    .ftag:nth-child(3) { background: var(--coral); color: var(--ink); }
+    .ftag:nth-child(4) { background: var(--green); color: var(--ink); }
+    .cta-row { margin-top: 22px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 12.5px; padding: 9px 15px; border-radius: 2px; background: var(--ink); color: #fff; transition: opacity 90ms ease; }
+    .btn:hover { opacity: 0.82; }
+    .cta-row a.plain { font-weight: 600; font-size: 12px; }
+    .cta-row a.plain:hover { text-decoration: underline; }
+    .meta {
+      margin-top: 20px; padding-top: 13px; border-top: 2px solid transparent;
+      border-image: linear-gradient(to right, var(--blue) 0 25%, var(--gold) 25% 50%, var(--coral) 50% 75%, var(--green) 75% 100%) 1;
+      font-family: var(--mono); font-size: 10px; color: var(--slate-soft); display: flex; flex-wrap: wrap; gap: 0 6px; font-variant-numeric: tabular-nums;
+    }
+    .meta .sep { color: var(--hairline-strong); }
+
+    .pane-right { flex: 1 1 auto; position: relative; height: 100%; background: #4f8a41; overflow: hidden; min-width: 0; }
+    .map-root { position: absolute; inset: 0; }
+    .map-root canvas { display: block; }
+
+    /* Same translucent-dark + 4-color gradient border language as .meta, so the HUD reads as part of the same design system. */
+    .hud-panel {
+      background: rgba(20, 23, 26, 0.82);
+      border-top: 2px solid transparent;
+      border-image: linear-gradient(to right, var(--blue) 0 25%, var(--gold) 25% 50%, var(--coral) 50% 75%, var(--green) 75% 100%) 1;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+      color: #fff;
+      font-family: var(--hud);
+    }
+
+    .tablist { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2; padding: 10px 16px 12px; }
+    .tl-head {
+      display: flex; align-items: baseline; justify-content: center; gap: 6px;
+      font-weight: 800; font-size: 13px; letter-spacing: 0.01em; white-space: nowrap;
+      padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .tl-head .srv { color: #fff; }
+    .tl-head .sep { color: rgba(255, 255, 255, 0.35); }
+    .tl-head .count { color: #6bdc7c; font-variant-numeric: tabular-nums; }
+    .tl-head .count .slash { color: rgba(255, 255, 255, 0.35); }
+
+    .tl-cols { display: flex; gap: 20px; }
+    .tl-col { display: flex; flex-direction: column; gap: 5px; }
+    .tl-col-head {
+      font-family: var(--mono); font-weight: 700; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--accent); padding-bottom: 4px; margin-bottom: 1px; border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      white-space: nowrap;
+    }
+    .tl-row { display: flex; align-items: center; gap: 7px; font-size: 12.5px; white-space: nowrap; }
+    .tl-row .pos { color: var(--accent); font-weight: 700; width: 1.1em; flex-shrink: 0; text-align: right; }
+    .tl-row .tag { color: rgba(255, 255, 255, 0.45); font-family: var(--mono); font-size: 10.5px; }
+    .tl-row .nm { color: #fff; font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; }
+    .tl-row .val { color: rgba(255, 255, 255, 0.65); font-variant-numeric: tabular-nums; }
+
+    .scoreboard {
+      position: absolute; top: 50%; right: 16px; transform: translateY(-50%); z-index: 2;
+      padding: 10px 14px 12px; min-width: 150px;
+    }
+    .sb-head {
+      display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 12.5px;
+      padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); white-space: nowrap;
+    }
+    .sb-head .tag { color: var(--blue); font-family: var(--mono); }
+    .sb-row { display: flex; justify-content: space-between; gap: 14px; font-size: 12.5px; line-height: 1.7; white-space: nowrap; }
+    .sb-row .k { color: rgba(255, 255, 255, 0.55); }
+    .sb-row .v { color: #6bdc7c; font-weight: 700; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <Nav content={t} active="home" />
+
+    <div class="split">
+      <div class="pane-left">
+        <div class="content">
+          <span class="eyebrow">{t.eyebrow}</span>
+          <h1>{t.headline}</h1>
+          <p class="sub">{t.sub}</p>
+          <div class="tag-cluster">
+            {t.tags.map((tag) => <span class="ftag">{tag}</span>)}
+          </div>
+          <div class="cta-row">
+            <a class="btn" href={t.downloadHref}>{t.ctaPrimary}</a>
+            <a class="plain" href="https://github.com/FunnyGuilds/FunnyGuilds" target="_blank" rel="noopener">{t.ctaSecondary}</a>
+          </div>
+          <div class="meta">
+            <span>{t.metaParts[0]}</span><span class="sep">·</span>
+            <span>{t.metaParts[1]}</span><span class="sep">·</span>
+            <span>{t.metaParts[2]}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane-right">
+        <div id="map-root" class="map-root"></div>
+
+        <div class="tablist hud-panel">
+          <div class="tl-head">
+            <span class="srv">FunnyGuilds</span><span class="sep">·</span>
+            <span class="count">24<span class="slash">/</span>60</span>
+          </div>
+          <div class="tl-cols">
+            <div class="tl-col" style="--accent: var(--blue)">
+              <div class="tl-col-head">{t.hud.topPoints}</div>
+              <div class="tl-row"><span class="pos">1</span><span class="tag">[NRD]</span><span class="nm">Xylo</span><span class="val">452</span></div>
+              <div class="tl-row"><span class="pos">2</span><span class="tag">[ASH]</span><span class="nm">Rex</span><span class="val">301</span></div>
+            </div>
+            <div class="tl-col" style="--accent: var(--gold)">
+              <div class="tl-col-head">{t.hud.topKdr}</div>
+              <div class="tl-row"><span class="pos">1</span><span class="tag">[WRN]</span><span class="nm">Luna</span><span class="val">2.6</span></div>
+              <div class="tl-row"><span class="pos">2</span><span class="tag">[ASH]</span><span class="nm">Rex</span><span class="val">2.4</span></div>
+            </div>
+            <div class="tl-col" style="--accent: var(--coral)">
+              <div class="tl-col-head">{t.hud.topKills}</div>
+              <div class="tl-row"><span class="pos">1</span><span class="tag">[ASH]</span><span class="nm">Rex</span><span class="val">89</span></div>
+              <div class="tl-row"><span class="pos">2</span><span class="tag">[NRD]</span><span class="nm">Nova</span><span class="val">71</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scoreboard hud-panel">
+          <div class="sb-head"><span class="tag">[NRD]</span><span class="nm">Nordheim</span></div>
+          <div class="sb-row"><span class="k">{t.hud.scoreRank}</span><span class="v">#1</span></div>
+          <div class="sb-row"><span class="k">{t.hud.scorePoints}</span><span class="v">452</span></div>
+          <div class="sb-row"><span class="k">{t.hud.scoreKdr}</span><span class="v">1.9</span></div>
+          <div class="sb-row"><span class="k">{t.hud.scoreLives}</span><span class="v">3/3</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="terrain-data" set:html={JSON.stringify(terrainData)} />
+
+  <script>
+    import { mountIsomapSceneFromData } from '../lib/isomap/scene';
+
+    const root = document.getElementById('map-root');
+    const terrainDataEl = document.getElementById('terrain-data');
+    if (root && terrainDataEl?.textContent) {
+      mountIsomapSceneFromData(root, JSON.parse(terrainDataEl.textContent));
+    }
+  </script>
+</body>
+</html>

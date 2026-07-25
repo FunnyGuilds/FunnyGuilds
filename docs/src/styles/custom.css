@@ -1,0 +1,227 @@
+/* ==========================================================================
+   FunnyGuilds — Starlight theme synced with the custom landing page
+   (src/components/Landing.astro). Same fonts, same brand palette, same
+   light-first identity, so docs pages read as the same product as "/" and
+   "/en/" instead of a generic Starlight site wearing a logo.
+   ========================================================================== */
+
+:root {
+  /* Typography — identical stacks to Landing.astro (bundled via @fontsource,
+     no external requests). */
+  --sl-font: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Brand palette — exact values from Landing.astro's :root. */
+  --fg-ink: #14171a;
+  --fg-slate: #5b6472;
+  --fg-slate-soft: #8a8f97;
+  --fg-hairline: #e2e5ea;
+  --fg-hairline-strong: #ccd1d8;
+  --fg-blue: #2f74f7;
+  --fg-gold: #f5a623;
+  --fg-coral: #ff5a5f;
+  --fg-green: #57b894;
+
+  /* Starlight's badges/asides are driven by 5 hue variables rather than fixed
+     colors — rotating them to the brand family recolors that whole system
+     (note=blue, tip=purple→green, caution=orange→gold, danger=red→coral)
+     without needing to override every component that reads them. Every
+     brand color gets used exactly once across the 4 aside types. */
+  --sl-hue-blue: 219; /* note — --fg-blue #2f74f7 */
+  --sl-hue-purple: 158; /* tip — --fg-green #57b894 (Starlight has no separate "green" aside) */
+  --sl-hue-orange: 37; /* caution — --fg-gold #f5a623 */
+  --sl-hue-red: 358; /* danger — --fg-coral #ff5a5f */
+  --sl-hue-green: 158; /* --fg-green #57b894, for anything else that reads this hue */
+
+  --sl-color-accent-low: #16264d;
+  --sl-color-accent: var(--fg-blue);
+  --sl-color-accent-high: #c6dbff;
+
+  /* Match Landing.astro's fixed 58px nav exactly (Starlight defaults to
+     3.5rem/4rem depending on viewport). */
+  --sl-nav-height: 58px;
+
+  /* Starlight's default heading scale (h1 42px down to h4 24px, desktop) is
+     nearly 3x body text (16px) and towers over Landing's own scale (nothing
+     above ~30px anywhere) — the jump from nav to content read as a different
+     product. Brought down to a tighter progression that still reads as a
+     clear hierarchy. Applies at every viewport: this is unlayered CSS, so it
+     overrides Starlight's own (layered) values whether or not their
+     min-width: 50rem variant is also in effect — see props.css. */
+  --sl-text-h1: 1.875rem; /* 30px, was 42px */
+  --sl-text-h2: 1.5rem; /* 24px, was 35px */
+  --sl-text-h3: 1.25rem; /* 20px, was 29px */
+  --sl-text-h4: 1.0625rem; /* 17px, was 24px */
+
+  /* Body copy line-height: Starlight's 1.75 reads airy next to Landing's own
+     prose (.sub uses 1.6). */
+  --sl-line-height: 1.6;
+}
+
+/* Light-only site, same as Landing.astro (color-scheme: light, no toggle,
+   no dark variant) — see src/components/ThemeProvider.astro, which forces
+   data-theme="light" unconditionally. This selector still matches every
+   page for that reason; it's not a light/dark fork. */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #dbeafe;
+  --sl-color-accent: var(--fg-blue);
+  --sl-color-accent-high: #0a3977;
+
+  --sl-color-bg: #ffffff;
+  --sl-color-bg-nav: rgba(255, 255, 255, 0.9);
+  --sl-color-bg-sidebar: #ffffff;
+  --sl-color-hairline-shade: var(--fg-hairline);
+  --sl-color-text: var(--fg-ink);
+  --sl-color-text-accent: var(--fg-blue);
+  --sl-color-gray-1: var(--fg-ink);
+  --sl-color-gray-2: var(--fg-slate);
+  --sl-color-gray-3: var(--fg-slate-soft);
+}
+
+:where(h1, h2, h3, h4) {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+:root[data-theme='light'] .sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--fg-blue);
+}
+
+/* Same frosted, hairline-bordered nav treatment as Landing.astro's <nav>. */
+.header {
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--fg-hairline);
+}
+
+/* ==========================================================================
+   Header — src/components/Header.astro renders the *same* nav elements as
+   Landing.astro (logo+wordmark, 4 plain text links, a plain PL/EN switcher),
+   not just similarly-colored ones. This block is the visual half of that:
+   exact sizes/colors from Landing's .brand/.tabs/.lang-switch. Search stays
+   mounted for Ctrl+K but is visually removed (`.fg-search`) since Landing has
+   no search box at all.
+   ========================================================================== */
+
+/* Starlight's SiteTitle defaults to the accent color and a much taller logo
+   (nav-height driven) than Landing's fixed 22px mark; both forced to match
+   exactly. Browsers underline <a> by default and Landing explicitly resets
+   that — Starlight only does the same on its own components, not the new
+   ones added here, so it has to be repeated for each of them. */
+.site-title {
+  color: var(--fg-ink) !important;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  /* Starlight's own site-title uses --sl-nav-gap (24px) between icon and
+     wordmark; Landing's .brand uses a tight 9px — a 24px gap read as the
+     logo "floating" away from the text instead of forming one lockup. */
+  gap: 9px !important;
+}
+.site-title img {
+  height: 22px !important;
+  width: 22px !important;
+}
+
+.fg-nav-links {
+  align-items: center;
+  gap: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.fg-nav-links a {
+  color: var(--fg-slate);
+  text-decoration: none;
+}
+.fg-nav-links a:hover {
+  color: var(--fg-ink);
+}
+.fg-nav-links a.active {
+  color: var(--fg-ink);
+  font-weight: 600;
+}
+
+/* Ctrl+K still opens the search dialog (its keydown listener is on
+   `window`, independent of this) — only the visible trigger button is
+   removed, since Landing has no search box to match. */
+.fg-search {
+  display: none;
+}
+
+/* Same mono, hairline-divided PL/EN switcher as Landing.astro's .lang-switch
+   (used here and in src/components/MobileMenuFooter.astro's drawer footer).
+   Safe to set `display: flex` unconditionally here — unlike .fg-nav-links,
+   Header.astro wraps this in its own sl-hidden/md:sl-flex element rather
+   than carrying those classes itself, so there's no conflict with the
+   mobile-hiding toggle. */
+.fg-lang-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sl-font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding-left: 22px;
+  border-left: 1px solid var(--fg-hairline);
+}
+.fg-lang-switch a {
+  color: var(--fg-slate-soft);
+  text-decoration: none;
+}
+.fg-lang-switch a:hover {
+  color: var(--fg-ink);
+}
+.fg-lang-switch a.active {
+  color: var(--fg-blue);
+}
+.fg-lang-switch .sep {
+  color: var(--fg-hairline-strong);
+}
+
+/* GitHub/Discord: only shown in the mobile drawer footer now (Landing's own
+   nav has neither) — plain icon links, brand-neutral color, no separator. */
+.social-icons a {
+  color: var(--fg-slate) !important;
+}
+.social-icons a:hover {
+  color: var(--fg-ink) !important;
+}
+.social-icons::after {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Content chrome — Landing.astro is flat and sharp everywhere (2px radius
+   on buttons/tags, zero box-shadows, hairline borders instead of soft gray
+   ones). Starlight's own defaults for cards/sidebar are the opposite: soft
+   8px-radius drop-shadowed cards and a 4px sidebar pill, which read as a
+   generic doc-template look grafted onto the brand instead of the same
+   product.
+   ========================================================================== */
+
+/* Prev/next pagination cards — Starlight's defaults (1rem padding, 1.5rem
+   icon, 24px page-title text) read oversized against how little text they
+   hold; scaled down across the board. */
+.pagination-links a {
+  border-radius: 2px;
+  border-color: var(--fg-hairline);
+  box-shadow: none;
+  padding: 0.65rem 0.85rem;
+  gap: 0.6rem;
+}
+.pagination-links a:hover {
+  border-color: var(--fg-hairline-strong);
+}
+.pagination-links svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+.pagination-links .link-title {
+  font-size: 15px;
+}
+
+/* Sidebar active-page pill. */
+.sidebar a {
+  border-radius: 2px;
+}

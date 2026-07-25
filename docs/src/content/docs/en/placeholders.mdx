@@ -1,0 +1,108 @@
+---
+title: Placeholders
+description: List of built-in FunnyGuilds placeholders and what they mean.
+---
+
+FunnyGuilds has many built-in placeholders. Here you'll find a list along with information about what value each placeholder returns.
+
+If a placeholder is marked `@Deprecated`, it means that placeholder may be removed in the future and we don't recommend using it. In most cases, a recommended replacement will be given.
+
+## Player Placeholders
+#### - Basic -
+
+|   Placeholder    | Description                                                                                                                |
+|:----------------:|:----------------------------------------------------------------------------------------------------------------------------------|
+| ` PLAYER`/`NAME` | Returns the player's nickname                                                                                                |
+|      `PING`      | Returns the player's current ping                                                                                       |
+|  `PING-FORMAT`   | Returns the player's current ping, formatted using the `ping-format` option in `config.yml`                            |
+|     `WORLD`      | Returns the name of the world the player is currently in                                                                         |
+|     `ONLINE`     | Returns the current number of online players visible to this player (not counting players the player can't see - e.g. while `Vanish`ed) |
+
+#### - Ranking -
+
+|        Placeholder        | Description                                                                                                                                                                       |
+|:-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|         `POINTS`          | Returns the player's current ranking points                                                                                                               |
+|      `POINTS-FORMAT`      | Returns the player's current ranking points, formatted using the `points-format` option in `config.yml`                                                            |
+|          `KILLS`          | Returns the player's current kill count                                                                                                                           |
+|         `DEATHS`          | Returns the player's current death count                                                                                                                            |
+|         `ASSISTS`         | Returns the player's current assist count                                                                                                                              |
+|         `LOGOUTS`         | Returns the player's current count of logouts during combat                                                                                                                            |
+|           `KDR`           | Returns the player's KDR (kills / deaths)                                                                                                                                          |
+|           `KDA`           | Returns the player's KDA ((kills + assists) / deaths)                                                                                                                              |
+| **Deprecated** `POSITION` | We recommend using the `position-{type}` placeholder described below. Returns the player's position in the ranking-points top |
+|     `POSITION-{type}`      | The player's position in the top for the given type (e.g. `DEATHS`). The list of available (and currently enabled) types can be found in the config under `top.enabled-user-tops` in `config.yml`. |
+|     `PTOP-<position>`      | The player at the given ranking position (e.g. `{PTOP-1}`, `{PTOP-60}`)                                                                                                                    |
+|  `PTOP-<type>-<position>`   | The player at the given ranking position (e.g. `{PTOP-KILLS-1}`, `{PTOP-DEATHS-60}`), for the given ranking type                                                                             |
+
+## Guild Placeholders
+
+#### - Basic -
+
+|     Placeholder      | Description                                                                                                                                                                                                                      |
+|:--------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|       `G-NAME`       | The name of the guild the player belongs to                                                                                                                                                                                       |
+|       `G-TAG`        | The player's guild tag                                                                                                                                                                                                         |
+|      `G-OWNER`       | The guild's owner                                                                                                                                                                                                         |
+|     `G-DEPUTIES`     | The guild's deputies                                                                                                                                                                                                           |
+|      `G-DEPUTY`      | A random one of the guild's deputies                                                                                                                                                                                                 |
+|      `G-LIVES`       | The guild's number of lives                                                                                                                                                                                                         |
+|   `G-LIVES-SYMBOL`   | The guild's number of lives, as a repeating symbol (set via `lives-repeating-symbol.full` in `config.yml`), with empty hearts for missing lives (set via `lives-repeating-symbol.empty` in `config.yml`) |
+| `G-LIVES-SYMBOL-ALL` | The guild's total number of lives, as a repeating symbol (set via `lives-repeating-symbol.full` in `config.yml`)                                                                                            |
+|    `G-ALLIES-ALL`    | The guild's number of allies                                                                                                                                                                                                 |
+|   `G-ENEMIES-ALL`    | The guild's number of enemies                                                                                                                                                                                                |
+|  `G-MEMBERS-ONLINE`  | The number of online guild members                                                                                                                                                                                             |
+|   `G-MEMBERS-ALL`    | The total number of guild members                                                                                                                                                                                         |
+|     `G-VALIDITY`     | The guild's expiration date                                                                                                                                                                                                   |
+|  `G-VALIDITY-TIME`   | Time remaining until the guild expires (e.g. 5 days 2 hours 1 minute)                                                                                                                                                                 |
+|    `G-PROTECTION`    | The guild's protection expiration date                                                                                                                                                                                           |
+| `G-PROTECTION-TIME`  | Time remaining until the guild's protection expires (e.g. 5 days 2 hours 1 minute)                                                                                                                                                         |
+|   `G-REGION-SIZE`    | The guild's size                                                                                                                                                                                                            |
+
+#### - Ranking -
+
+|      Placeholder       | Description                                                                                                  |
+|:----------------------:|:------------------------------------------------------------------------------------------------------|
+|    `G-TOTAL-POINTS`    | The sum of the guild members' points                                                                          |
+|     `G-AVG-POINTS`     | (Formerly `{G-POINTS}`) The average number of points among guild members                                            |
+|   `G-POINTS-FORMAT`    | The average number of points among guild members, formatted                                               |
+|      `G-POSITION`      | The player's guild's position in the ranking                                                                      |
+|   `G-POSITION-<type>`   | The player's guild's position in the ranking, for the given ranking type                                            |
+|       `G-KILLS`        | The sum of kills of the guild's members                                                                         |
+|     `G-AVG-KILLS`      | The average number of kills among guild members                                                               |
+|       `G-DEATHS`       | The sum of deaths of the guild's members                                                                          |
+|     `G-AVG-DEATHS`     | The average number of deaths among guild members                                                                |
+|      `G-ASSISTS`       | The sum of assists of the guild's members                                                                            |
+|    `G-AVG-ASSISTS`     | The average number of assists among guild members                                                                  |
+|      `G-LOGOUTS`       | The sum of logouts of the guild's members                                                                        |
+|    `G-AVG-LOGOUTS`     | The average number of logouts among guild members                                                              |
+|        `G-KDR`         | The guild's kill/death ratio                                                                   |
+|        `G-KDA`         | The guild's (kills + assists)/death ratio                                                           |
+|      `G-AVG-KDR`       | The average kill/death ratio among guild members                                                   |
+|      `G-AVG-KDA`       | The average (kills + assists)/death ratio among guild members                                           |
+|    `GTOP-<position>`    | The guild at the given ranking position (e.g. `{GTOP-1}`, `{GTOP-50}`)                                        |
+| `GTOP-<type>-<position>` | The guild at the given ranking position (e.g. `{GTOP-KILLS-1}`, `{GTOP-DEATHS-50}`), for the given ranking type |
+
+## Other
+
+|      Placeholder       | Description                                                                                                  |
+|:----------------------:|:------------------------------------------------------------------------------------------------------|
+|        `GUILDS`        | The number of guilds on the server                                                                             |
+|        `USERS`         | The number of server users                                                                           |
+|        `ONLINE`        | The number of online players                                                                                  |
+|         `TPS`          | The server's TPS                                                                                           |
+|        `SECOND`        | Second                                                                                                |
+|        `MINUTE`        | Minute                                                                                                |
+|         `HOUR`         | Hour                                                                                                 |
+|     `DAY_OF_WEEK`      | The day of the week, as a name                                                         |
+|     `DAY_OF_MONTH`     | The day of the month, as a number                                                             |
+|        `MONTH`         | The month, as a name                                                            |
+|     `MONTH_NUMBER`     | The month, as a number                                                                    |
+|         `YEAR`         | The year                                                                                                   |
+
+## - Additional external integrations -
+|  Placeholder  | Description                                                                                         |
+|:-------------:|:---------------------------------------------------------------------------------------------|
+|  `WG-REGION`  | The current WorldGuard region the player is in                                    |
+| `WG-REGIONS`  | The current comma-separated list of WorldGuard regions the player is in |
+| `VAULT-MONEY` | The player's current account balance, retrieved via the [Vault](https://github.com/MilkBowl/Vault) plugin |

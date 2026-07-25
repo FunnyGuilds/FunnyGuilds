@@ -1,0 +1,66 @@
+---
+title: Configuration
+description: Object types and values used in the FunnyGuilds configuration.
+---
+
+FunnyGuilds has many of its own configuration types besides the already built-in ones like String, Int, etc. This section collects all the possible object types used in FunnyGuilds, along with their possible values, examples, etc.
+
+:::caution[Section in progress]
+This page is still being written — some types (Material, ItemStack) don't have a description yet.
+:::
+
+### Regex
+
+A type used to validate various strings — names, tags, etc.
+
+Predefined values:
+
+| Value                        | Description                                                     |
+| :----------------------------- | :----------------------------------------------------------------- |
+| `LOWERCASE`                  | allows lowercase letters only                                    |
+| `UPPERCASE`                  | allows uppercase letters only                                    |
+| `DIGITS`                     | allows digits only                                               |
+| `LOWERCASE_DIGITS`           | allows lowercase letters and digits                              |
+| `UPPERCASE_DIGITS`           | allows uppercase letters and digits                              |
+| `LETTERS`                    | allows lowercase and uppercase letters                           |
+| `LETTERS_DIGITS`             | allows lowercase and uppercase letters plus digits                |
+| `LETTERS_DIGITS_UNDERSCORE`  | allows lowercase and uppercase letters, digits and underscores    |
+
+**Additionally:** you can define your own custom values for this type. [This site](https://regex101.com/) can be useful for that.
+
+### Duration
+
+Format: `<value><unit><value><unit><...>`
+
+Units:
+- s - seconds
+- m - minutes
+- h - hours
+- d - days
+
+Example: `1m30s` - 1.5 minutes
+
+### Material
+
+Not yet documented.
+
+### ItemStack
+
+Not yet documented.
+
+### Requirements
+
+```yaml
+# priority: <value> (0 to 127) # 1*
+items: (/en/configuration/#itemstack)
+- <item 1>
+- <item 2>
+- ...
+exp: <value>
+money: <value> (requires the Vault plugin)
+# ranking: <value> # 2*
+```
+
+1* - the priority only needs to be given for requirements that depend on held permissions
+
+2* - the ranking value only needs to be given for e.g. creating a guild or joining one

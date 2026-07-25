@@ -1,0 +1,199 @@
+---
+title: Tablist
+description: Configuring the player list (tablist) in FunnyGuilds.
+---
+
+:::caution[Requires an up-to-date plugin version]
+The configuration shown here uses the syntax introduced in FunnyGuilds v4.11.0+. Make sure you're running an up-to-date version of the plugin.
+:::
+
+### The server's player list
+
+The player list, or "TabList", is used to show information about the guild, the player, the server, the top rankings, etc. You can change its appearance through configuration (the `tablist.yml` and `messages.yml` files). Every setting related to it is described here in detail.
+
+Before you start, three tips:
+- A good text editor for editing the configuration is [Notepad++](https://notepad-plus-plus.org/downloads/), which has syntax highlighting that makes the work much easier.
+- To move around the configuration quickly and find the right lines, use the `CTRL + F` shortcut.
+- After uploading a new configuration, don't reload the server with `/reload`! **Use the `/funnyguilds reload` command, or restart the server.**
+
+---
+
+### Basic settings (`tablist.yml`)
+
+In the `cells:` section, you can set the appearance of the tablist's rows. They can be numbered **from 1 to 80**. The [Tablist numbering scheme](#tablist-numbering-scheme) shows how the rows are numbered.
+
+```yml
+cells:
+  1: '&7Player: &b{PLAYER}'
+  2: '&7Ping: &b{PING}'
+  3: '&7Points: &b{POINTS}'
+  4: '&7Kills: &b{KILLS}'
+  5: '&7Deaths: &b{DEATHS}'
+  6: '&7KDR: &b{KDR}'
+  7: '&7Guild: &b{G-NAME}'
+  9: '&7TAG: &b{G-TAG}'
+  10: '&7Guild points: &b{G-POINTS-FORMAT}'
+  11: '&7Guild position: &b{G-POSITION}'
+  12: '&7Online members: &b{G-MEMBERS-ONLINE}'
+  21: '&7Online: &b{ONLINE}'
+  22: '&7TPS: &b{TPS}'
+  41: '&bTop 3 Guilds'
+  42: '&71. &b{GTOP-1}'
+  43: '&72. &b{GTOP-2}'
+  44: '&73. &b{GTOP-3}'
+  61: '&bTop 3 Players'
+  62: '&71. &b{PTOP-1}'
+  63: '&72. &b{PTOP-2}'
+  64: '&73. &b{PTOP-3}'
+```
+
+---
+
+### Header and footer (`tablist.yml`)
+
+The tablist's header and footer are shown in the [Tablist numbering scheme](#tablist-numbering-scheme) (header `header`, footer `footer`); you can change their appearance in the `tablist.yml` file.
+
+```yml
+# Header appearance in the player list.
+header: '&7FunnyGuilds &b4.9.3 Tribute'
+# Footer appearance in the player list.
+footer: '&c&lThe no-value messages (shown when a player has no guild) can be changed in messages.yml!'
+```
+
+To add several lines to the header or footer, use the `|` character, then enter subsequent lines preceded by two spaces:
+
+```yml
+# Footer appearance in the player list.
+footer: |
+  line 1
+  line 2
+```
+
+---
+
+### Pagination (`tablist.yml`)
+
+Since version 4.10.0, tablist pagination is available. The configuration looks very similar to a regular tablist — each page only overrides the main one, and if a page has no value for a given cell, the value from the regular *cells/header/footer* section will be shown instead. The number of cycles (`cycles`) determines how long a given page will be visible (1 cycle = 1 tablist refresh; the refresh rate can be changed via `update-interval` in `tablist.yml`). You can add an unlimited number of pages (but it's best to keep it reasonable 😉).
+
+```yml
+pages:
+- cycles: 10
+  cells:
+    42: ' &b&lTOP &8- &b&lPoints'
+    46: ' &b1. &7{PTOP-POINTS-1}'
+    47: ' &b2. &7{PTOP-POINTS-2}'
+    48: ' &b3. &7{PTOP-POINTS-3}'
+- cycles: 10
+  cells:
+    42: ' &b&lTOP &8- &b&lKills'
+    46: ' &b1. &7{PTOP-KILLS-1}'
+    47: ' &b2. &7{PTOP-KILLS-2}'
+    48: ' &b3. &7{PTOP-KILLS-3}'
+  header: '&7GitHub: &agithub.com/funnyguilds'
+  footer: '&a&lThe no-value messages (shown when a player has no guild)
+   can be changed in messages.yml!'
+```
+
+---
+
+### "No value" messages (`messages.yml`)
+
+All the messages about a missing guild, top ranking, allies, deputies, etc. can be changed here.
+
+```yml
+# <------- No Value Messages -------> #
+gNameNoValue: None (G-NAME/NAME)
+gTagNoValue: None (G-TAG/TAG)
+gOwnerNoValue: None (G-OWNER)
+gDeputiesNoValue: None (G-DEPUTIES)
+gDeputyNoValue: None (G-DEPUTY)
+gValidityNoValue: None (G-VALIDITY)
+gRegionSizeNoValue: None (G-REGION-SIZE)
+alliesNoValue: None (ALLIES)
+enemiesNoValue: None (ENEMIES)
+gtopNoValue: None (GTOP-x)
+ptopNoValue: None (PTOP-x)
+wgRegionNoValue: None (WG-REGION)
+minMembersToIncludeNoValue: None (guild-min-members in config.yml)
+```
+
+---
+
+### Row ping (`tablist.yml`)
+
+`player-list-ping:` controls the ping shown next to each tablist row.
+
+```yml
+# The ping number shown next to each cell.
+cells-ping: 0
+```
+
+---
+
+### Filling rows (`tablist.yml`)
+
+`fill-cells:` — if set to `true`, all player cells will be filled regardless of the number of online players.
+
+```yml
+# Whether all possible cells should be filled, regardless of the number of online players
+fill-cells: true
+```
+
+---
+
+### Tablist activity (`tablist.yml`)
+
+`enabled` — if set to `true`, the tablist will be active; set to `false` if you don't want it shown.
+`update-interval:` — the time interval at which the tablist should update its information.
+
+:::note
+The time is given in ticks! (20 ticks = 1 second)
+:::
+
+```yml
+# Whether the tablist should be enabled
+enabled: true
+# How many ticks should pass before the player list is refreshed
+update-interval: 20
+```
+
+---
+
+### Variable color (`tablist.yml`)
+
+`use-relationship-colors:` — if set to `true`, the colors of the `{PTOP-%}` and `{GTOP-%}` placeholders will depend on guild relationships (neutral, alliance, war). Set to `false` if you don't want that dependency.
+
+```yml
+# Whether {PTOP-%} and {GTOP-%} type variables should be colored based on guild relationships
+use-relationship-colors: false
+```
+
+---
+
+### Basic variables
+
+The basic variables are described in [Tablist — Variables](/en/tablist-variables/).
+
+---
+
+### PlaceholderAPI
+
+FunnyGuilds supports additional placeholders from [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/). Once you've installed the PlaceholderAPI plugin, you can download new placeholder expansions.
+
+:::tip
+For example, to get player-related placeholders, just run `/papi ecloud download Player`, then `/papi reload`.
+
+After running this command, all placeholders such as the amount of HP `%player_health%` will already be supported in the FunnyGuilds TabList.
+:::
+
+The full list of possible placeholders and their commands: [PAPI-placeholders](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#papi-placeholders-1).
+
+---
+
+### Tablist numbering scheme
+
+- `player-list-header` — header
+- `player-list-footer` — footer
+- `Slot X` — row no. X
+
+<img src="https://imgur.com/eJ1sgRg.png" width="80%" alt="List layout scheme" />

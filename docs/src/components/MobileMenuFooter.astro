@@ -1,0 +1,46 @@
+---
+// Override of Starlight's MobileMenuFooter: drops ThemeSelect (no dark mode
+// exists anymore, see ThemeProvider.astro — its script calls
+// StarlightThemeProvider.updatePickers(), which no longer exists) and swaps
+// the <select>-based LanguageSelect for the same plain PL/EN switcher as
+// Header.astro. Only 2 locales, so a dropdown is unnecessary.
+import SocialIcons from 'virtual:starlight/components/SocialIcons';
+import { getLocalePaths } from '../lib/nav-content';
+
+const path = Astro.url.pathname;
+const isEn = path === '/en' || path.startsWith('/en/');
+const { plHref, enHref } = getLocalePaths(path);
+---
+
+<div class="mobile-preferences sl-flex">
+  <div class="social-icons">
+    <SocialIcons />
+  </div>
+  <div class="fg-lang-switch">
+    <a href={plHref} class={!isEn ? 'active' : ''}>PL</a>
+    <span class="sep">/</span>
+    <a href={enHref} class={isEn ? 'active' : ''}>EN</a>
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .social-icons {
+      display: flex;
+      margin-inline-end: auto;
+      gap: 1rem;
+      align-items: center;
+      padding-block: 1rem;
+    }
+    .social-icons:empty {
+      display: none;
+    }
+    .mobile-preferences {
+      justify-content: space-between;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--sl-color-gray-6);
+      column-gap: 1rem;
+      padding: 0.5rem 0;
+    }
+  }
+</style>

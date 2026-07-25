@@ -1,0 +1,66 @@
+---
+title: Konfiguracja
+description: Typy obiektów i wartości używane w konfiguracji FunnyGuilds.
+---
+
+FunnyGuilds posiada wiele różnych własnych typów konfiguracji oprócz tych już wbudowanych jak String, Int itd. Sekcja ta zbiera wszystkie możliwe typy obiektów używane w FunnyGuilds, podając możliwe wartości, przykład itd.
+
+:::caution[Sekcja w budowie]
+Ta strona jest jeszcze w trakcie tworzenia — część typów (Material, ItemStack) nie ma jeszcze opisu.
+:::
+
+### Regex
+
+Typ używany do walidacji różnych Stringów - nazw, tagów itd.
+
+Predefiniowane wartości:
+
+| Wartość                      | Opis                                                              |
+| :---------------------------- | :----------------------------------------------------------------- |
+| `LOWERCASE`                  | umożliwia użycie tylko małych liter                               |
+| `UPPERCASE`                  | umożliwia użycie tylko wielkich liter                              |
+| `DIGITS`                     | umożliwia użycie tylko cyfr                                        |
+| `LOWERCASE_DIGITS`           | umożliwia użycie małych liter i cyfr                               |
+| `UPPERCASE_DIGITS`           | umożliwia użycie wielkich liter i cyfr                             |
+| `LETTERS`                    | umożliwia użycie małych i wielkich liter                           |
+| `LETTERS_DIGITS`             | umożliwia użycie małych i wielkich liter oraz cyfr                 |
+| `LETTERS_DIGITS_UNDERSCORE`  | umożliwia użycie małych i wielkich liter, cyfr oraz podkreślnika   |
+
+**Dodatkowo:** Można dla tego typu zdefiniować własne wartości. Przydatne do tego może okazać się [ta strona](https://regex101.com/).
+
+### Duration
+
+Format: `<wartość><jednostka><wartość><jednostka><...>`
+
+Jednostki:
+- s - sekundy
+- m - minuty
+- h - godziny
+- d - dni
+
+Przykład: `1m30s` - 1.5 minuty
+
+### Material
+
+Jeszcze nieudokumentowane.
+
+### ItemStack
+
+Jeszcze nieudokumentowane.
+
+### Requirements
+
+```yaml
+# priority: <wartość> (od 0 do 127) # 1*
+items: (/configuration/#itemstack)
+- <przedmiot 1>
+- <przedmiot 2>
+- ...
+exp: <wartość>
+money: <wartość> (wymagany plugin Vault)
+# ranking: <wartość> # 2*
+```
+
+1* - priorytet trzeba podać jedynie w przypadku wymagań zależnych od posiadanych uprawnień
+
+2* - wartość rankingu trzeba podać jedynie przy np. zakładaniu gildii lub dołączaniu do niej

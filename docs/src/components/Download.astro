@@ -1,0 +1,321 @@
+---
+import '../styles/base.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import type { DownloadContent } from '../lib/download-content';
+import { getReleaseInfo } from '../lib/format-release';
+import { getSnapshotInfo } from '../lib/format-snapshot';
+import { getMcVersionArchive } from '../lib/mc-version-archive';
+import Nav from './Nav.astro';
+
+interface Props {
+  content: DownloadContent;
+}
+const { content: t } = Astro.props;
+const release = getReleaseInfo(t.lang);
+const snapshot = getSnapshotInfo(t.lang);
+const mcArchive = getMcVersionArchive(t.lang);
+
+// Purely client-fetched (see the script below) — the code itself is a fixed, human-chosen
+// constant, not something that needs an API call to know; nothing else about this widget
+// (name, avatar, counts) is build-time data, so there's no fallback to keep in sync here.
+const DISCORD_INVITE_CODE = 'CYvyq3u';
+---
+
+<!doctype html>
+<html lang={t.lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{t.pageTitle}</title>
+  <meta name="description" content={t.pageDescription} />
+  <link rel="icon" href="/favicon.png" />
+  <link rel="alternate" hreflang={t.lang === 'pl' ? 'en' : 'pl'} href={t.lang === 'pl' ? t.enHref : t.plHref} />
+  <style>
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+    .main { flex: 1 1 auto; display: flex; align-items: center; min-width: 0; }
+    .wrap { width: 100%; max-width: 980px; min-width: 0; margin: 0 auto; padding: 40px 24px 64px; text-align: center; }
+
+    .eyebrow { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate); margin-bottom: 14px; }
+    h1 { font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.02em; }
+    .lede { margin: 12px 0 0; font-size: 1rem; color: var(--slate); }
+    .what-you-get { margin: 6px 0 0; font-size: 0.85rem; color: var(--slate-soft); }
+
+    /* Fixed 2-per-row, not auto-fit — the 4 cards' single-color borders (below) are meant to
+       land in the same TL/TR/BL/BR quadrants as the logo's own 4 colors, which only works if
+       the grid is reliably 2 columns. */
+    .choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 40px; text-align: left; }
+    @media (max-width: 560px) { .choices { grid-template-columns: 1fr; } }
+
+    .choice {
+      position: relative; border-radius: 8px; padding: 24px 22px 22px; min-width: 0;
+      display: flex; flex-direction: column;
+      background: var(--paper); box-shadow: 0 1px 2px rgba(20, 23, 26, 0.05), 0 8px 24px rgba(20, 23, 26, 0.06);
+      border: 1px solid var(--hairline);
+    }
+    .choice.pending { background: #fafbfc; }
+
+    /* One bracket per card, at its own OUTER corner within the 2x2 grid — snapshot(TL)=blue,
+       pending(TR)=gold, stable(BL)=green, legacy(BR)=coral. Step back from any single card and
+       the 4 corners recreate the logo's own 4-bracket arrangement at the scale of the whole grid. */
+    .corner { position: absolute; width: 40px; height: 40px; pointer-events: none; }
+    .corner::before, .corner::after { content: ''; position: absolute; background: currentColor; }
+    .corner::before { width: 100%; height: 3px; }
+    .corner::after { width: 3px; height: 100%; }
+    .choice.recommended .corner { top: -1px; left: -1px; color: var(--blue); }
+    .choice.recommended .corner::before, .choice.recommended .corner::after { top: 0; left: 0; }
+    .choice.pending .corner { top: -1px; right: -1px; color: var(--gold); }
+    .choice.pending .corner::before, .choice.pending .corner::after { top: 0; right: 0; }
+    .choice.stable .corner { bottom: -1px; left: -1px; color: var(--green); }
+    .choice.stable .corner::before, .choice.stable .corner::after { bottom: 0; left: 0; }
+    .choice.legacy .corner { bottom: -1px; right: -1px; color: var(--coral); }
+    .choice.legacy .corner::before, .choice.legacy .corner::after { bottom: 0; right: 0; }
+
+    /* Everything above the button grows to fill the row's full (grid-stretched) height, so the
+       buttons across a row land at the same Y regardless of how much each card's copy wraps. */
+    .choice-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+
+    .tag-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; background: var(--blue); padding: 3px 8px; border-radius: 2px; }
+    .badge.badge-pending { color: var(--ink); background: #f0e4c8; }
+    .badge.badge-legacy { color: var(--slate); background: #eef1f5; }
+    .mc-tag { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--slate); background: #eef1f5; padding: 3px 8px; border-radius: 2px; }
+    .choice h2 { font-size: 1.2rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+    .choice .desc { color: var(--slate); font-size: 0.87rem; line-height: 1.5; margin: 0; }
+
+    /* Always the last child of .choice (nothing after it) — with .choice-body flex-growing
+       above it, its top edge lands at the same Y in every card in the row. */
+    .btn { margin-top: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 13px; padding: 11px 16px; border-radius: 4px; min-width: 0; text-align: center; transition: opacity 90ms ease, transform 90ms ease; }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: translateY(1px); }
+    .choice.recommended .btn { background: var(--blue); color: #fff; }
+    .choice.stable .btn { background: var(--ink); color: #fff; }
+    .choice.legacy .btn { background: var(--ink); color: #fff; }
+    .btn-pending { background: #eef1f5; color: var(--slate-soft); cursor: default; }
+
+    .ci-link { font-size: 0.8rem; }
+    .ci-link a { color: var(--slate); text-decoration: underline; text-underline-offset: 2px; }
+    .ci-link a:hover { color: var(--blue); }
+
+    .fine-print { font-size: 0.78rem; color: var(--slate-soft); }
+    .meta-chip {
+      display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0;
+      font-size: 0.76rem; color: var(--slate-soft); font-family: var(--mono);
+      background: #f5f6f8; padding: 5px 10px; border-radius: 4px;
+    }
+    .meta-chip a { color: var(--slate); text-decoration: underline; text-underline-offset: 2px; }
+    .meta-chip a:hover { color: var(--blue); }
+    .meta-chip .dot { color: var(--hairline-strong); }
+
+    .mc-table-section { margin-top: 48px; text-align: left; }
+    .mc-table-section h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
+    .mc-table-intro { font-size: 0.82rem; color: var(--slate-soft); margin: 0 0 18px; max-width: 70ch; line-height: 1.5; }
+    .mc-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .mc-table tr { border-bottom: 1px solid var(--hairline); }
+    .mc-table tr:last-child { border-bottom: none; }
+    .mc-table td { padding: 10px 6px; vertical-align: top; }
+    .mc-table .mc-col { font-family: var(--mono); font-weight: 700; color: var(--ink); white-space: nowrap; width: 1%; padding-top: 12px; }
+    .release-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .release-chip {
+      display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 11.5px;
+      color: var(--slate); background: #f5f6f8; padding: 4px 8px; border-radius: 4px; border: 1px solid transparent;
+    }
+    .release-chip:hover { border-color: var(--blue); color: var(--blue); background: #fff; }
+    .current-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: var(--green); padding: 1px 4px; border-radius: 2px; }
+    .inferred-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--slate-soft); border: 1px solid var(--hairline); border-radius: 2px; padding: 1px 4px; }
+
+    /* Discord's own dark theme colors (avatar presence dot + blurple button), a deliberate
+       contained accent — same move as Landing.astro's dark .hud-panel inside an otherwise
+       light page, not a site-wide dark mode. Flat row, no banner/hero image. */
+    .discord-card {
+      margin-top: 32px; padding: 20px 22px; border-radius: 10px; background: #313338; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      text-align: left; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .discord-avatar-wrap { position: relative; flex-shrink: 0; }
+    .discord-avatar { width: 52px; height: 52px; border-radius: 50%; display: block; background: #232428; }
+    .discord-presence { position: absolute; right: -1px; bottom: -1px; width: 14px; height: 14px; border-radius: 50%; background: #23a55a; border: 3px solid #313338; }
+    .discord-info { flex: 1 1 220px; min-width: 0; }
+    .discord-heading { display: flex; align-items: center; gap: 8px; }
+    .discord-logo { width: 18px; height: 18px; color: #949ba4; flex-shrink: 0; }
+    .discord-name { color: #fff; font-size: 1rem; font-weight: 700; }
+    .discord-desc { margin: 6px 0 14px; font-size: 0.83rem; color: #b5bac1; line-height: 1.5; }
+    .discord-stats { display: flex; gap: 18px; margin-bottom: 16px; font-size: 0.8rem; color: #dbdee1; font-family: var(--mono); }
+    .discord-stat { display: inline-flex; align-items: center; gap: 6px; }
+    .discord-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .discord-dot-online { background: #23a55a; }
+    .discord-dot-total { background: #80848e; }
+    .discord-count-loading { opacity: 0.5; }
+    .discord-join { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; background: #5865f2; color: #fff; font-weight: 600; font-size: 13.5px; border-radius: 4px; transition: background 90ms ease; }
+    .discord-join:hover { background: #4752c4; opacity: 1; }
+
+    .next-links { margin-top: 32px; font-size: 0.85rem; color: var(--slate-soft); display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; font-family: var(--mono); }
+    .next-links a { color: var(--slate); }
+    .next-links a:hover { color: var(--blue); }
+    .next-links .sep { color: var(--hairline-strong); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <Nav content={t} active="download" />
+
+    <main class="main">
+      <div class="wrap">
+        <span class="eyebrow">{t.eyebrow}</span>
+        <h1>{t.headline}</h1>
+        <p class="lede">{t.lede}</p>
+        <p class="what-you-get">{t.whatYouGet}</p>
+
+        <div class="choices">
+          <div class="choice recommended">
+            <span class="corner" aria-hidden="true"></span>
+            <div class="choice-body">
+              <div class="tag-row">
+                <span class="badge">{t.snapshot.badge}</span>
+                {snapshot.mcRange && <span class="mc-tag">MC {snapshot.mcRange}</span>}
+              </div>
+              <h2>{t.snapshot.title}</h2>
+              <p class="desc">{t.snapshot.description}</p>
+              <span class="fine-print">{t.snapshot.note}</span>
+              <span class="ci-link"><a href={snapshot.jobUrl} target="_blank" rel="noopener">{t.snapshot.ciLabel}</a></span>
+            </div>
+            <a class="btn" href={snapshot.artifactUrl} target="_blank" rel="noopener">{t.snapshot.buttonLabel}</a>
+          </div>
+
+          <div class="choice pending">
+            <span class="corner" aria-hidden="true"></span>
+            <div class="choice-body">
+              <div class="tag-row">
+                <span class="badge badge-pending">{t.intermediate.badge}</span>
+                <span class="mc-tag">{t.intermediate.mcRange}</span>
+              </div>
+              <h2>{t.intermediate.title}</h2>
+              <p class="desc">{t.intermediate.description}</p>
+            </div>
+            <span class="btn btn-pending" aria-disabled="true">{t.intermediate.note}</span>
+          </div>
+
+          <div class="choice stable">
+            <span class="corner" aria-hidden="true"></span>
+            <div class="choice-body">
+              {release.mcRange && (
+                <div class="tag-row">
+                  <span class="mc-tag">MC {release.mcRange}</span>
+                </div>
+              )}
+              <h2>{t.stable.title}</h2>
+              <p class="desc">{t.stable.description}</p>
+              <span class="meta-chip">
+                {release.sizeLabel} <span class="dot">·</span> {release.dateLabel} <span class="dot">·</span>
+                <a href="#mc-versions">{t.stable.historyLabel}</a>
+              </span>
+            </div>
+            <a class="btn" href={release.downloadPath} download>{t.stable.buttonLabel} {release.version}</a>
+          </div>
+
+          <div class="choice legacy">
+            <span class="corner" aria-hidden="true"></span>
+            <div class="choice-body">
+              <div class="tag-row">
+                <span class="badge badge-legacy">{t.legacy.badge}</span>
+                <span class="mc-tag">{t.legacy.mcRange}</span>
+              </div>
+              <h2>{t.legacy.title}</h2>
+              <p class="desc">{t.legacy.description}</p>
+              <span class="fine-print">{t.legacy.sizeLabel}</span>
+              <span class="ci-link"><a href="https://github.com/FunnyGuilds/FunnySite/tree/main/download" target="_blank" rel="noopener">{t.legacy.archiveLabel}</a></span>
+            </div>
+            <a class="btn" href="/downloads/legacy/funnyguilds-3.9.9.15.jar" download>{t.legacy.buttonLabel}</a>
+          </div>
+        </div>
+
+        <section class="mc-table-section" id="mc-versions">
+          <h2>{t.mcVersionTable.title}</h2>
+          <p class="mc-table-intro">{t.mcVersionTable.intro}</p>
+          <table class="mc-table">
+            <tbody>
+              {mcArchive.map((group) => (
+                <tr>
+                  <td class="mc-col">MC {group.mcVersion}</td>
+                  <td class="release-col">
+                    <div class="release-chips">
+                      {group.releases.map((entry) => (
+                        <a class="release-chip" href={entry.htmlUrl} target="_blank" rel="noopener">
+                          {entry.tag}
+                          {entry.current && <span class="current-tag">{t.mcVersionTable.currentLabel}</span>}
+                          {entry.confidence === 'inferred' && <span class="inferred-tag">{t.mcVersionTable.inferredLabel}</span>}
+                        </a>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+
+        <section class="discord-card">
+          <div class="discord-avatar-wrap">
+            <img class="discord-avatar" id="discord-avatar" alt="" width="52" height="52" />
+            <span class="discord-presence" aria-hidden="true"></span>
+          </div>
+          <div class="discord-info">
+            <div class="discord-heading">
+              <svg class="discord-logo" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
+              </svg>
+              <strong class="discord-name discord-count-loading" id="discord-name">···</strong>
+            </div>
+            <p class="discord-desc">{t.community.description}</p>
+            <div class="discord-stats">
+              <span class="discord-stat"><span class="discord-dot discord-dot-online"></span><span id="discord-online-count" class="discord-count-loading">···</span> {t.community.onlineLabel}</span>
+              <span class="discord-stat"><span class="discord-dot discord-dot-total"></span><span id="discord-member-count" class="discord-count-loading">···</span> {t.community.membersLabel}</span>
+            </div>
+          </div>
+          <a class="discord-join" href={`https://discord.gg/${DISCORD_INVITE_CODE}`} target="_blank" rel="noopener">{t.community.buttonLabel}</a>
+        </section>
+
+        <script define:vars={{ inviteCode: DISCORD_INVITE_CODE, fallbackName: t.community.fallbackName }}>
+          // Everything here (name, avatar, counts) is fetched fresh on every load — there's no
+          // build-time snapshot to fall back to, so a failed fetch just gets a generic name and
+          // no counts, rather than a stale number silently pretending to be current.
+          const online = document.getElementById('discord-online-count');
+          const members = document.getElementById('discord-member-count');
+          const name = document.getElementById('discord-name');
+          const avatar = document.getElementById('discord-avatar');
+
+          fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`)
+            .then((res) => (res.ok ? res.json() : null))
+            .then((invite) => {
+              if (!invite) throw new Error('invite fetch failed');
+              if (online) online.textContent = invite.approximate_presence_count;
+              if (members) members.textContent = invite.approximate_member_count;
+              if (name) name.textContent = invite.guild.name;
+              if (avatar && invite.guild.icon) avatar.src = `https://cdn.discordapp.com/icons/${invite.guild.id}/${invite.guild.icon}.png?size=128`;
+              online?.classList.remove('discord-count-loading');
+              members?.classList.remove('discord-count-loading');
+              name?.classList.remove('discord-count-loading');
+            })
+            .catch(() => {
+              if (name) {
+                name.textContent = fallbackName;
+                name.classList.remove('discord-count-loading');
+              }
+              online?.closest('.discord-stat')?.remove();
+              members?.closest('.discord-stat')?.remove();
+            });
+        </script>
+
+        <div class="next-links">
+          <a href={t.nextSteps.installationHref}>{t.nextSteps.installationLabel}</a>
+          <span class="sep">·</span>
+          <a href={t.nextSteps.faqHref}>{t.nextSteps.faqLabel}</a>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
