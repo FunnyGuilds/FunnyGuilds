@@ -41,7 +41,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
   <style>
     .page { min-height: 100vh; display: flex; flex-direction: column; }
     .main { flex: 1 1 auto; display: flex; align-items: center; min-width: 0; }
-    .wrap { width: 100%; max-width: 980px; min-width: 0; margin: 0 auto; padding: 40px 24px 64px; text-align: center; }
+    .wrap { width: 100%; max-width: 1200px; min-width: 0; margin: 0 auto; padding: 40px 24px 64px; text-align: center; }
 
     .eyebrow { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate); margin-bottom: 14px; }
     h1 { font-weight: 700; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.1; letter-spacing: -0.02em; }
@@ -114,15 +114,12 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .meta-chip a:hover { color: var(--blue); }
     .meta-chip .dot { color: var(--hairline-strong); }
 
-    /* This section deliberately breaks out of .wrap's 980px column - the table + changelog
-       pane both need real width, unlike the hero/cards above which read better narrow. */
-    .wrap-wide { max-width: 1560px; }
     .mc-table-section { margin-top: 48px; text-align: left; }
     .mc-table-section h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
     .mc-table-intro { font-size: 0.82rem; color: var(--slate-soft); margin: 0 0 18px; max-width: 70ch; line-height: 1.5; }
 
-    .archive-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(440px, 560px); gap: 48px; align-items: start; min-width: 0; }
-    @media (width <= 1100px) { .archive-grid { grid-template-columns: 1fr; } }
+    .archive-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 32px; align-items: start; min-width: 0; }
+    @media (max-width: 900px) { .archive-grid { grid-template-columns: 1fr; } }
 
     .mc-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
     .mc-table tr { border-bottom: 1px solid var(--hairline); }
@@ -234,9 +231,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
             <a class="btn" href="/downloads/legacy/funnyguilds-3.9.9.15.jar" download>{t.legacy.buttonLabel}</a>
           </div>
         </div>
-      </div>
 
-      <div class="wrap wrap-wide">
         <section class="mc-table-section" id="mc-versions">
           <h2>{t.mcVersionTable.title}</h2>
           <p class="mc-table-intro">{t.mcVersionTable.intro}</p>
@@ -287,9 +282,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
 
           document.querySelectorAll('.archive-grid').forEach(initArchiveGrid);
         </script>
-      </div>
 
-      <div class="wrap">
         <section class="discord-card">
           <div class="discord-avatar-wrap">
             <img class="discord-avatar" id="discord-avatar" alt="" width="52" height="52" />
