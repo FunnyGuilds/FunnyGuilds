@@ -115,9 +115,13 @@ local.properties
 *.war
 *.ear
 
+# archived historical release jars (tracked via Git LFS, see .gitattributes)
+!archive/**/*.jar
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 # Personal debugging stuff
 debugging/
 run/
+.gstack/
