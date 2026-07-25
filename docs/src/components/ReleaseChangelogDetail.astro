@@ -1,0 +1,71 @@
+---
+// The other half of ReleaseChipLink.astro - one shared pane holding every
+// release's changelog, `display:none` except whichever matches the URL's
+// #fragment. Lives as a real grid column next to the table (position: sticky
+// within that grid, not `fixed` to the viewport), so it reads as one part of
+// the archive table itself instead of something that pops up over the page.
+import type { McArchiveRelease } from '../lib/mc-version-archive';
+
+interface Props {
+  releases: McArchiveRelease[];
+}
+const { releases } = Astro.props;
+---
+
+<div class="detail-pane">
+  <div class="detail-placeholder">
+    <p>Pick a release from the list to read its changelog here.</p>
+  </div>
+  {releases.map((entry) => {
+    const id = `cl-${entry.tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    return (
+      <div id={id} class="changelog-target">
+        <div class="target-header">
+          <strong>{entry.tag}</strong>
+          <a class="target-close" href="#" aria-label="Close">✕</a>
+        </div>
+        <div class="target-sub">Released {entry.dateLabel}</div>
+        <div class="cl-body" set:html={entry.changelogHtml} />
+        <a class="gh-link" href={entry.htmlUrl} target="_blank" rel="noopener">View on GitHub ↗</a>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .detail-pane {
+    position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto;
+    border: 1px solid var(--hairline); border-radius: 10px; background: #fbfbfc;
+  }
+  .detail-placeholder { padding: 18px 20px; color: var(--slate-soft); font-size: 0.82rem; line-height: 1.5; }
+  .detail-pane:has(.changelog-target:target) .detail-placeholder { display: none; }
+
+  .changelog-target { display: none; padding: 18px 20px; }
+  .changelog-target:target { display: block; }
+
+  .target-header { display: flex; justify-content: space-between; align-items: center; }
+  .target-header strong { font-family: var(--mono); font-size: 0.95rem; }
+  .target-close { font-size: 13px; color: var(--slate-soft); }
+  .target-close:hover { color: var(--blue); }
+  .target-sub { font-size: 0.76rem; color: var(--slate-soft); margin: 2px 0 12px; }
+
+  .gh-link { display: inline-block; margin-top: 10px; font-size: 0.78rem; color: var(--slate-soft); }
+  .gh-link:hover { color: var(--blue); }
+
+  .cl-body { font-size: 0.84rem; line-height: 1.55; color: var(--slate); }
+  .cl-body :global(p) { margin: 6px 0; }
+  .cl-body :global(:first-child) { margin-top: 0; }
+  .cl-body :global(h3), .cl-body :global(h4), .cl-body :global(h5), .cl-body :global(h6) { font-size: 0.88rem; font-weight: 700; color: var(--ink); margin: 12px 0 4px; }
+  .cl-body :global(ul) { margin: 4px 0 8px 18px; padding: 0; }
+  .cl-body :global(li) { margin: 2px 0; }
+  .cl-body :global(a) { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+  .cl-body :global(code) { font-family: var(--mono); font-size: 0.85em; background: #eceef1; padding: 1px 4px; border-radius: 3px; }
+  .cl-body :global(pre) { background: #14171a; color: #e2e5ea; padding: 10px 12px; border-radius: 6px; overflow-x: auto; font-size: 0.78rem; }
+  .cl-body :global(pre code) { background: none; padding: 0; color: inherit; }
+  .cl-body :global(strong) { color: var(--ink); }
+  .cl-body :global(blockquote) { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
+
+  @media (width <= 900px) {
+    .detail-pane { position: static; max-height: none; margin-top: 20px; }
+  }
+</style>

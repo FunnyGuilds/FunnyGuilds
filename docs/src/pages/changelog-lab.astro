@@ -15,10 +15,12 @@ import ReleaseChipDialog from '../components/ReleaseChipDialog.astro';
 import ReleaseChipAnchored from '../components/ReleaseChipAnchored.astro';
 import ReleaseChipDrawer from '../components/ReleaseChipDrawer.astro';
 import ReleaseChipHover from '../components/ReleaseChipHover.astro';
-import ReleaseChipSidePanel from '../components/ReleaseChipSidePanel.astro';
+import ReleaseChipLink from '../components/ReleaseChipLink.astro';
+import ReleaseChangelogDetail from '../components/ReleaseChangelogDetail.astro';
 
 const t = DOWNLOAD_CONTENT.en;
 const mcArchive = getMcVersionArchive('en');
+const allReleases = mcArchive.flatMap((group) => group.releases);
 
 const variants = [
   { label: 'Version 1', title: 'Native popover — floating card', note: 'Click pops a centered card above the page; click outside or Esc to dismiss. Table stays exactly as-is, no reflow. Zero JS.', Chip: ReleaseChipPopover },
@@ -56,15 +58,10 @@ const variants = [
     .mc-table .mc-col { font-family: var(--mono); font-weight: 700; color: var(--ink); white-space: nowrap; width: 1%; padding-top: 12px; }
     .release-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
 
-    .side-placeholder {
-      display: block; position: fixed; top: 96px; right: max(24px, calc(50vw - 640px)); width: 360px;
-      border: 1px dashed var(--hairline-strong); border-radius: 10px; padding: 18px 20px;
-      color: var(--slate-soft); font-size: 0.82rem; line-height: 1.5; z-index: 5;
-    }
-    body:has(.side-changelog:target) .side-placeholder { display: none; }
-    @media (width <= 900px) { .side-placeholder { display: none; } }
-
     .featured-badge { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; background: var(--blue); padding: 2px 6px; border-radius: 3px; margin-left: 8px; }
+
+    .archive-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+    @media (width <= 900px) { .archive-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -79,34 +76,35 @@ const variants = [
           a cherry-picked example.
         </p>
 
-        <div class="side-placeholder">Click any release below — the changelog pins to the right and stays in view as you scroll (resizes into a bottom sheet under ~900px wide).</div>
-
         <section class="variant-block">
           <div class="variant-label">Version 6<span class="featured-badge">requested</span></div>
-          <h2>Persistent side panel</h2>
+          <h2>Detail pane as a real column of the table</h2>
           <p class="variant-note">
-            Chips are plain #fragment links; the changelog panel uses <code>:target</code> to show whichever release was
-            last clicked, pinned to the right edge and <code>position: sticky</code>-adjacent (actually <code>fixed</code>,
-            so it doesn't need to live next to the chip in the DOM) so it stays in view while you scroll the list. No JS at
-            all - not even the inline <code>onclick</code> the dialog version needed. Below ~900px it becomes a bottom sheet
-            instead, since there's no room for a real side column.
+            The changelog pane is now a genuine part of this table's own layout - a second grid column sitting right next
+            to the list, not something floating over the page. Chips are plain #fragment links; <code>:target</code> shows
+            the matching release inside the pane, which is <code>position: sticky</code> <em>within this section</em> (not
+            fixed to the viewport), so it only stays in view while you're scrolling this table, same as it would for any
+            other sticky sidebar. Below ~900px the pane drops beneath the table instead of sitting beside it.
           </p>
-          <table class="mc-table">
-            <tbody>
-              {mcArchive.map((group) => (
-                <tr>
-                  <td class="mc-col">MC {group.mcRange}</td>
-                  <td class="release-col">
-                    <div class="release-chips">
-                      {group.releases.map((entry) => (
-                        <ReleaseChipSidePanel entry={entry} />
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div class="archive-grid">
+            <table class="mc-table">
+              <tbody>
+                {mcArchive.map((group) => (
+                  <tr>
+                    <td class="mc-col">MC {group.mcRange}</td>
+                    <td class="release-col">
+                      <div class="release-chips">
+                        {group.releases.map((entry) => (
+                          <ReleaseChipLink entry={entry} />
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <ReleaseChangelogDetail releases={allReleases} />
+          </div>
         </section>
 
         {variants.map(({ label, title, note, Chip }) => (
