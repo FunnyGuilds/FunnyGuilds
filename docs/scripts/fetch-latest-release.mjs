@@ -35,6 +35,7 @@ async function fetchReleaseHistory() {
       publishedAt: r.published_at,
       htmlUrl: r.html_url,
       major: r.tag_name.trim().match(/^(\d+)\./)?.[1] ?? '?',
+      body: r.body ?? '',
     }));
 
   await writeFile(HISTORY_PATH, JSON.stringify(history, null, 2) + '\n');
@@ -129,6 +130,7 @@ async function main() {
         jarSize: asset.size,
         downloadPath: `/downloads/${asset.name}`,
         htmlUrl: release.html_url,
+        body: release.body ?? '',
       },
       null,
       2,

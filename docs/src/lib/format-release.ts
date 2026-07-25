@@ -1,4 +1,5 @@
 import releaseMeta from './latest-release.json';
+import { renderChangelog } from './format-changelog';
 
 export interface ReleaseInfo {
   version: string;
@@ -6,6 +7,7 @@ export interface ReleaseInfo {
   sizeLabel: string;
   dateLabel: string;
   mcRange: string | null;
+  changelogHtml: string;
 }
 
 export function getReleaseInfo(lang: 'pl' | 'en'): ReleaseInfo {
@@ -21,5 +23,6 @@ export function getReleaseInfo(lang: 'pl' | 'en'): ReleaseInfo {
     sizeLabel: `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(sizeMb)} MB`,
     dateLabel: new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(releaseMeta.publishedAt)),
     mcRange: mcMatch ? mcMatch[1].replace('-', ' – ') : null,
+    changelogHtml: renderChangelog(releaseMeta.body ?? ''),
   };
 }

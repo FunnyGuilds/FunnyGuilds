@@ -119,14 +119,34 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .mc-table tr:last-child { border-bottom: none; }
     .mc-table td { padding: 10px 6px; vertical-align: top; }
     .mc-table .mc-col { font-family: var(--mono); font-weight: 700; color: var(--ink); white-space: nowrap; width: 1%; padding-top: 12px; }
-    .release-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .release-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+    .release-details { display: inline-flex; }
+    .release-details[open] { flex-basis: 100%; }
+    .release-details summary { list-style: none; cursor: pointer; }
+    .release-details summary::-webkit-details-marker { display: none; }
     .release-chip {
       display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 11.5px;
       color: var(--slate); background: #f5f6f8; padding: 4px 8px; border-radius: 4px; border: 1px solid transparent;
     }
-    .release-chip:hover { border-color: var(--blue); color: var(--blue); background: #fff; }
+    .release-details summary:hover .release-chip, .release-details[open] > .release-chip { border-color: var(--blue); color: var(--blue); background: #fff; }
     .current-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: var(--green); padding: 1px 4px; border-radius: 2px; }
     .inferred-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--slate-soft); border: 1px solid var(--hairline); border-radius: 2px; padding: 1px 4px; }
+
+    .changelog-panel {
+      margin-top: 8px; padding: 12px 14px; background: #f5f6f8; border-radius: 6px;
+      font-size: 0.82rem; line-height: 1.55; color: var(--slate); max-width: 70ch;
+    }
+    .changelog-panel :global(p) { margin: 6px 0; }
+    .changelog-panel :global(:first-child) { margin-top: 0; }
+    .changelog-panel :global(h3), .changelog-panel :global(h4), .changelog-panel :global(h5), .changelog-panel :global(h6) { font-size: 0.86rem; font-weight: 700; color: var(--ink); margin: 12px 0 4px; }
+    .changelog-panel :global(ul) { margin: 4px 0 8px 18px; padding: 0; }
+    .changelog-panel :global(li) { margin: 2px 0; }
+    .changelog-panel :global(a) { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+    .changelog-panel :global(code) { font-family: var(--mono); font-size: 0.85em; background: #eceef1; padding: 1px 4px; border-radius: 3px; }
+    .changelog-panel :global(strong) { color: var(--ink); }
+    .changelog-panel :global(blockquote) { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
+    .changelog-github-link { display: inline-block; margin-top: 8px; font-size: 0.78rem; color: var(--slate-soft); }
+    .changelog-github-link:hover { color: var(--blue); }
 
     /* Discord's own dark theme colors (avatar presence dot + blurple button), a deliberate
        contained accent — same move as Landing.astro's dark .hud-panel inside an otherwise
@@ -243,11 +263,19 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
                   <td class="release-col">
                     <div class="release-chips">
                       {group.releases.map((entry) => (
-                        <a class="release-chip" href={entry.htmlUrl} target="_blank" rel="noopener">
-                          {entry.tag}
-                          {entry.current && <span class="current-tag">{t.mcVersionTable.currentLabel}</span>}
-                          {entry.confidence === 'inferred' && <span class="inferred-tag">{t.mcVersionTable.inferredLabel}</span>}
-                        </a>
+                        <details class="release-details">
+                          <summary class="release-chip">
+                            {entry.tag}
+                            {entry.current && <span class="current-tag">{t.mcVersionTable.currentLabel}</span>}
+                            {entry.confidence === 'inferred' && <span class="inferred-tag">{t.mcVersionTable.inferredLabel}</span>}
+                          </summary>
+                          <div class="changelog-panel">
+                            <Fragment set:html={entry.changelogHtml} />
+                            <a class="changelog-github-link" href={entry.htmlUrl} target="_blank" rel="noopener">
+                              {t.mcVersionTable.changelogLinkLabel}
+                            </a>
+                          </div>
+                        </details>
                       ))}
                     </div>
                   </td>

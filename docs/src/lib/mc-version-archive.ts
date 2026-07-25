@@ -1,5 +1,6 @@
 import history from './release-history.json';
 import { getReleaseInfo } from './format-release';
+import { renderChangelog } from './format-changelog';
 
 export interface McArchiveRelease {
   tag: string;
@@ -7,6 +8,7 @@ export interface McArchiveRelease {
   htmlUrl: string;
   confidence: 'confirmed' | 'inferred';
   current: boolean;
+  changelogHtml: string;
 }
 
 export interface McArchiveGroup {
@@ -285,6 +287,7 @@ export function getMcVersionArchive(lang: 'pl' | 'en'): McArchiveGroup[] {
     htmlUrl: `https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/${release.version}`,
     confidence: 'confirmed',
     current: true,
+    changelogHtml: release.changelogHtml,
   };
 
   const groups: McArchiveGroup[] = MC_ARCHIVE.map((group) => {
@@ -296,6 +299,7 @@ export function getMcVersionArchive(lang: 'pl' | 'en'): McArchiveGroup[] {
         htmlUrl: entry ? entry.htmlUrl : `https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/${r.tag}`,
         confidence: r.confidence,
         current: false,
+        changelogHtml: entry ? renderChangelog(entry.body ?? '') : '',
       };
     });
     return {

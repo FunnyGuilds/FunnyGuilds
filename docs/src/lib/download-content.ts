@@ -42,6 +42,7 @@ export interface DownloadContent extends NavContent {
     intro: string;
     currentLabel: string;
     inferredLabel: string;
+    changelogLinkLabel: string;
   };
   community: {
     fallbackName: string;
@@ -104,6 +105,7 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       intro: 'Każda wersja Minecrafta i wszystkie wydania FunnyGuilds, które ją obsługiwały — zrekonstruowane z rzeczywistych plików .jar, plików budowania (pom.xml/.classpath) i changelogów, nie z dat wydania. Starsze wydania (1.x–3.x) nie miały szerokiego wsparcia wielu wersji na raz, dlatego widnieją pod dokładną wersją, którą kompilowały.',
       currentLabel: 'aktualne',
       inferredLabel: 'szacunkowo',
+      changelogLinkLabel: 'Zobacz na GitHubie ↗',
     },
     community: {
       fallbackName: 'Discord',
@@ -164,6 +166,7 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       intro: "Every Minecraft version and every FunnyGuilds release that supported it — reconstructed from the real .jar files, build files (pom.xml/.classpath), and changelogs, not release dates. Older releases (1.x-3.x) didn't support many versions at once, so they're listed under the exact version they compiled against.",
       currentLabel: 'current',
       inferredLabel: 'estimated',
+      changelogLinkLabel: 'View on GitHub ↗',
     },
     community: {
       fallbackName: 'Discord',
