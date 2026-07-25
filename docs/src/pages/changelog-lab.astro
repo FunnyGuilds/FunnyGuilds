@@ -60,7 +60,12 @@ const variants = [
 
     .featured-badge { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #fff; background: var(--blue); padding: 2px 6px; border-radius: 3px; margin-left: 8px; }
 
-    .archive-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+    /* break this one section out past the 980px wrap so the two columns both get real room */
+    .wide-section {
+      width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
+    }
+    .wide-section-inner { max-width: 1360px; margin: 0 auto; padding: 0 24px; }
+    .archive-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(360px, 460px); gap: 40px; align-items: start; }
     @media (width <= 900px) { .archive-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -76,36 +81,66 @@ const variants = [
           a cherry-picked example.
         </p>
 
-        <section class="variant-block">
-          <div class="variant-label">Version 6<span class="featured-badge">requested</span></div>
-          <h2>Detail pane as a real column of the table</h2>
-          <p class="variant-note">
-            The changelog pane is now a genuine part of this table's own layout - a second grid column sitting right next
-            to the list, not something floating over the page. Chips are plain #fragment links; <code>:target</code> shows
-            the matching release inside the pane, which is <code>position: sticky</code> <em>within this section</em> (not
-            fixed to the viewport), so it only stays in view while you're scrolling this table, same as it would for any
-            other sticky sidebar. Below ~900px the pane drops beneath the table instead of sitting beside it.
-          </p>
-          <div class="archive-grid">
-            <table class="mc-table">
-              <tbody>
-                {mcArchive.map((group) => (
-                  <tr>
-                    <td class="mc-col">MC {group.mcRange}</td>
-                    <td class="release-col">
-                      <div class="release-chips">
-                        {group.releases.map((entry) => (
-                          <ReleaseChipLink entry={entry} />
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <ReleaseChangelogDetail releases={allReleases} />
+        <section class="variant-block wide-section">
+          <div class="wide-section-inner">
+            <div class="variant-label">Version 6<span class="featured-badge">requested</span></div>
+            <h2>Detail pane as a real column of the table</h2>
+            <p class="variant-note">
+              Wider now (breaks out of the page's normal column to give both sides real room), the pane reads as a
+              continuation of the table (a border-left divider instead of a boxed card) rather than a separate widget next
+              to it, the latest release opens by default instead of showing an empty placeholder, and the open chip gets a
+              solid highlight so it's obvious which one you're reading.
+            </p>
+            <div class="archive-grid">
+              <table class="mc-table">
+                <tbody>
+                  {mcArchive.map((group) => (
+                    <tr>
+                      <td class="mc-col">MC {group.mcRange}</td>
+                      <td class="release-col">
+                        <div class="release-chips">
+                          {group.releases.map((entry) => (
+                            <ReleaseChipLink entry={entry} />
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <ReleaseChangelogDetail releases={allReleases} />
+            </div>
           </div>
         </section>
+
+        <script>
+          function initArchiveGrid(grid: Element) {
+            const chips = Array.from(grid.querySelectorAll<HTMLButtonElement>('.release-chip[data-target]'));
+            const panels = Array.from(grid.querySelectorAll<HTMLElement>('.changelog-target'));
+
+            function clear() {
+              chips.forEach((c) => c.classList.remove('active'));
+              panels.forEach((p) => p.classList.remove('active'));
+            }
+            function select(id: string) {
+              chips.forEach((c) => c.classList.toggle('active', c.dataset.target === id));
+              panels.forEach((p) => p.classList.toggle('active', p.id === id));
+            }
+
+            chips.forEach((chip) => {
+              chip.addEventListener('click', () => {
+                if (chip.classList.contains('active')) clear();
+                else select(chip.dataset.target!);
+              });
+            });
+            grid.querySelectorAll('[data-close]').forEach((btn) => btn.addEventListener('click', clear));
+
+            const current = chips.find((c) => c.dataset.current === 'true');
+            if (current) select(current.dataset.target!);
+          }
+
+          document.querySelectorAll('.archive-grid').forEach(initArchiveGrid);
+        </script>
 
         {variants.map(({ label, title, note, Chip }) => (
           <section class="variant-block">

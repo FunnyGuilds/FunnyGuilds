@@ -1,9 +1,9 @@
 ---
 // The other half of ReleaseChipLink.astro - one shared pane holding every
-// release's changelog, `display:none` except whichever matches the URL's
-// #fragment. Lives as a real grid column next to the table (position: sticky
-// within that grid, not `fixed` to the viewport), so it reads as one part of
-// the archive table itself instead of something that pops up over the page.
+// release's changelog, shown/hidden via JS toggling `.active` (see
+// changelog-lab.astro's script). Styled as a continuation of the table
+// itself (a border-left divider, no card background) rather than a boxed-off
+// widget, and sticky within the grid it's a column of.
 import type { McArchiveRelease } from '../lib/mc-version-archive';
 
 interface Props {
@@ -21,8 +21,12 @@ const { releases } = Astro.props;
     return (
       <div id={id} class="changelog-target">
         <div class="target-header">
+          <span class="target-eyebrow">Changelog</span>
+          <button class="target-close" data-close aria-label="Close">✕</button>
+        </div>
+        <div class="target-title">
           <strong>{entry.tag}</strong>
-          <a class="target-close" href="#" aria-label="Close">✕</a>
+          {entry.current && <span class="current-tag">current</span>}
         </div>
         <div class="target-sub">Released {entry.dateLabel}</div>
         <div class="cl-body" set:html={entry.changelogHtml} />
@@ -35,37 +39,40 @@ const { releases } = Astro.props;
 <style>
   .detail-pane {
     position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto;
-    border: 1px solid var(--hairline); border-radius: 10px; background: #fbfbfc;
+    border-left: 1px solid var(--hairline); padding-left: 24px;
   }
-  .detail-placeholder { padding: 18px 20px; color: var(--slate-soft); font-size: 0.82rem; line-height: 1.5; }
-  .detail-pane:has(.changelog-target:target) .detail-placeholder { display: none; }
+  .detail-placeholder { color: var(--slate-soft); font-size: 0.82rem; line-height: 1.5; }
+  .detail-pane:has(.changelog-target.active) .detail-placeholder { display: none; }
 
-  .changelog-target { display: none; padding: 18px 20px; }
-  .changelog-target:target { display: block; }
+  .changelog-target { display: none; }
+  .changelog-target.active { display: block; }
 
-  .target-header { display: flex; justify-content: space-between; align-items: center; }
-  .target-header strong { font-family: var(--mono); font-size: 0.95rem; }
-  .target-close { font-size: 13px; color: var(--slate-soft); }
+  .target-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .target-eyebrow { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--slate-soft); }
+  .target-close { font-size: 13px; color: var(--slate-soft); background: none; border: none; cursor: pointer; padding: 2px 4px; }
   .target-close:hover { color: var(--blue); }
-  .target-sub { font-size: 0.76rem; color: var(--slate-soft); margin: 2px 0 12px; }
+  .target-title { display: flex; align-items: center; gap: 8px; }
+  .target-title strong { font-family: var(--mono); font-size: 1.05rem; }
+  .current-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: var(--green); padding: 1px 4px; border-radius: 2px; }
+  .target-sub { font-size: 0.76rem; color: var(--slate-soft); margin: 2px 0 14px; }
 
-  .gh-link { display: inline-block; margin-top: 10px; font-size: 0.78rem; color: var(--slate-soft); }
+  .gh-link { display: inline-block; margin-top: 12px; font-size: 0.78rem; color: var(--slate-soft); }
   .gh-link:hover { color: var(--blue); }
 
-  .cl-body { font-size: 0.84rem; line-height: 1.55; color: var(--slate); }
-  .cl-body :global(p) { margin: 6px 0; }
+  .cl-body { font-size: 0.88rem; line-height: 1.6; color: var(--slate); }
+  .cl-body :global(p) { margin: 8px 0; }
   .cl-body :global(:first-child) { margin-top: 0; }
-  .cl-body :global(h3), .cl-body :global(h4), .cl-body :global(h5), .cl-body :global(h6) { font-size: 0.88rem; font-weight: 700; color: var(--ink); margin: 12px 0 4px; }
-  .cl-body :global(ul) { margin: 4px 0 8px 18px; padding: 0; }
-  .cl-body :global(li) { margin: 2px 0; }
+  .cl-body :global(h3), .cl-body :global(h4), .cl-body :global(h5), .cl-body :global(h6) { font-size: 0.92rem; font-weight: 700; color: var(--ink); margin: 16px 0 6px; }
+  .cl-body :global(ul) { margin: 6px 0 10px 18px; padding: 0; }
+  .cl-body :global(li) { margin: 3px 0; }
   .cl-body :global(a) { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
-  .cl-body :global(code) { font-family: var(--mono); font-size: 0.85em; background: #eceef1; padding: 1px 4px; border-radius: 3px; }
-  .cl-body :global(pre) { background: #14171a; color: #e2e5ea; padding: 10px 12px; border-radius: 6px; overflow-x: auto; font-size: 0.78rem; }
+  .cl-body :global(code) { font-family: var(--mono); font-size: 0.85em; background: #f5f6f8; padding: 1px 4px; border-radius: 3px; }
+  .cl-body :global(pre) { background: #14171a; color: #e2e5ea; padding: 12px 14px; border-radius: 6px; overflow-x: auto; font-size: 0.8rem; }
   .cl-body :global(pre code) { background: none; padding: 0; color: inherit; }
   .cl-body :global(strong) { color: var(--ink); }
-  .cl-body :global(blockquote) { margin: 6px 0; padding-left: 10px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
+  .cl-body :global(blockquote) { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
 
   @media (width <= 900px) {
-    .detail-pane { position: static; max-height: none; margin-top: 20px; }
+    .detail-pane { position: static; max-height: none; margin-top: 24px; border-left: none; border-top: 1px solid var(--hairline); padding-left: 0; padding-top: 20px; }
   }
 </style>
