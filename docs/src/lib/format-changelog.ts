@@ -5,10 +5,44 @@
 
 function renderInline(text: string): string {
   return text
+    // Issue/PR references (GH-1234) - link before anything else so the generated <a> tags
+    // below can't accidentally swallow or re-wrap them.
+    .replace(/\bGH-(\d+)\b/g, '<a href="https://github.com/FunnyGuilds/FunnyGuilds/issues/$1" target="_blank" rel="noopener">GH-$1</a>')
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+
+// Every changelog carries its own "Pobierz"/"Download" section (jar mirrors, Maven
+// coordinates, CI links) - redundant on this page since the site's own download UI is right
+// there, so it's dropped rather than rendered. Modern releases write it as a bold pseudo-heading
+// paragraph (**Pobierz:**) followed by a list; old ones (pre-2017) just inline a single
+// "<b>Download</b>: <a>...</a>" line with no section structure at all.
+function stripDownloadSection(markdown: string): string {
+  const lines = markdown.split('\n');
+  const out: string[] = [];
+  let skipping = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const pseudoHeading = trimmed.match(/^\*\*([^*]+?)\*\*:?\s*$/);
+    const realHeading = trimmed.match(/^#{1,6}\s+(.+?):?\s*$/);
+    const headingText = pseudoHeading?.[1] ?? realHeading?.[1];
+
+    if (headingText !== undefined) {
+      // The colon usually sits inside the bold markers (**Pobierz:**), not after them.
+      skipping = /^(pobierz|download):?$/i.test(headingText.trim());
+      if (skipping) continue;
+    }
+    if (skipping) continue;
+    if (/<b>[^<]*\b(download|pobierz)\b[^<]*<\/b>/i.test(trimmed)) continue;
+    if (/^(download|pobierz)\b/i.test(trimmed)) continue;
+
+    out.push(line);
+  }
+
+  return out.join('\n');
 }
 
 function listIndent(line: string): number {
@@ -21,7 +55,7 @@ function escapeHtml(text: string): string {
 }
 
 export function renderChangelog(markdown: string): string {
-  const lines = markdown.replace(/\r\n/g, '\n').split('\n');
+  const lines = stripDownloadSection(markdown.replace(/\r\n/g, '\n')).split('\n');
   const out: string[] = [];
   let listDepth = -1;
   let inQuote = false;

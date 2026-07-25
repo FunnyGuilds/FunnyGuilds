@@ -43,6 +43,8 @@ export interface DownloadContent extends NavContent {
     currentLabel: string;
     inferredLabel: string;
     changelogLinkLabel: string;
+    changelogEyebrow: string;
+    releasedLabel: string;
   };
   community: {
     fallbackName: string;
@@ -106,6 +108,8 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       currentLabel: 'aktualne',
       inferredLabel: 'szacunkowo',
       changelogLinkLabel: 'Zobacz na GitHubie ↗',
+      changelogEyebrow: 'Changelog',
+      releasedLabel: 'Wydano',
     },
     community: {
       fallbackName: 'Discord',
@@ -167,6 +171,8 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       currentLabel: 'current',
       inferredLabel: 'estimated',
       changelogLinkLabel: 'View on GitHub ↗',
+      changelogEyebrow: 'Changelog',
+      releasedLabel: 'Released',
     },
     community: {
       fallbackName: 'Discord',

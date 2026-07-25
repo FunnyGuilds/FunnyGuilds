@@ -1,21 +1,25 @@
 ---
 // Just the chip - the changelog it opens lives in the shared detail pane
-// (ReleaseChangelogDetail.astro). JS-driven (see changelog-lab.astro's script)
-// rather than :target, so the active chip can be highlighted and the latest
-// release can be pre-selected on load - neither is expressible with :target alone.
+// (ReleaseChangelogDetail.astro), rendered as a real second column of the
+// same table rather than a popup, so the pane can be one persistent part of
+// the archive's own layout. JS-driven (see Download.astro's script) rather
+// than :target, so the active chip can be highlighted and the latest
+// release can be pre-selected on load.
 import type { McArchiveRelease } from '../lib/mc-version-archive';
 
 interface Props {
   entry: McArchiveRelease;
+  currentLabel: string;
+  inferredLabel: string;
 }
-const { entry } = Astro.props;
+const { entry, currentLabel, inferredLabel } = Astro.props;
 const id = `cl-${entry.tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
 ---
 
 <button class="release-chip" data-target={id} data-current={entry.current ? 'true' : 'false'}>
   {entry.tag}
-  {entry.current && <span class="current-tag">current</span>}
-  {entry.confidence === 'inferred' && <span class="inferred-tag">estimated</span>}
+  {entry.current && <span class="current-tag">{currentLabel}</span>}
+  {entry.confidence === 'inferred' && <span class="inferred-tag">{inferredLabel}</span>}
 </button>
 
 <style>
