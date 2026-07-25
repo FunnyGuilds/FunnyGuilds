@@ -1,6 +1,6 @@
 # FunnyGuilds Sweetness (#1.4.2)
 
-- **Tag:** #1.4.2
+- **Tag:** 1.4.2 (git tag is mistyped as `#1.4.2`)
 - **Published:** 2014-10-16T20:08:08Z
 - **GitHub release:** https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/%231.4.2
 
