@@ -4,7 +4,7 @@
 // static content that never needs to handle arbitrary user input.
 
 function renderInline(text: string): string {
-  return text
+  const html = text
     // Issue/PR references (GH-1234) - link before anything else so the generated <a> tags
     // below can't accidentally swallow or re-wrap them.
     .replace(/\bGH-(\d+)\b/g, '<a href="https://github.com/FunnyGuilds/FunnyGuilds/issues/$1" target="_blank" rel="noopener">GH-$1</a>')
@@ -12,6 +12,10 @@ function renderInline(text: string): string {
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  // Old releases sometimes embed raw <b>/<i> HTML with a typo'd unclosed or stray tag - balance
+  // per line/list-item so a typo can only ever affect the one line it's on, not bleed into
+  // every list item after it (or, unbalanced enough times over, off the end of the page).
+  return balanceInlineTags(html);
 }
 
 // Every changelog carries its own "Pobierz"/"Download" section (jar mirrors, Maven
@@ -53,6 +57,34 @@ function listIndent(line: string): number {
 
 function escapeHtml(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Old releases (pre-2017) sometimes embed raw <b>/<i> HTML directly in their changelog text,
+// and a few of those have a typo'd unclosed or stray tag (e.g. 1.4.8's "<i>UUID gildii" never
+// gets a closing tag; 3.9 has a stray "</i>" with no opener at all). Since we don't escape that
+// raw HTML (it's trusted content from our own GitHub releases, not arbitrary input), an unclosed
+// tag would otherwise stay "open" for the rest of the document as far as the browser's parser is
+// concerned - italicizing everything after it on the page, including sections that have nothing
+// to do with this changelog. This closes anything still open (and drops orphan closing tags) so
+// no single entry's typo can ever escape its own place on the page.
+function balanceInlineTags(html: string): string {
+  const stack: string[] = [];
+  const voidTags = new Set(['br', 'hr', 'img']);
+
+  return (
+    html.replace(/<(\/?)(\w+)[^>]*>/g, (fullMatch, closing: string, name: string) => {
+      const tag = name.toLowerCase();
+      if (voidTags.has(tag)) return fullMatch;
+      if (closing) {
+        const idx = stack.lastIndexOf(tag);
+        if (idx === -1) return ''; // orphan closing tag - drop it rather than emit stray markup
+        stack.splice(idx, 1);
+        return fullMatch;
+      }
+      stack.push(tag);
+      return fullMatch;
+    }) + stack.reverse().map((tag) => `</${tag}>`).join('')
+  );
 }
 
 export function renderChangelog(markdown: string): string {
@@ -139,5 +171,5 @@ export function renderChangelog(markdown: string): string {
   closeLists();
   closeQuote();
 
-  return out.join('\n');
+  return balanceInlineTags(out.join('\n'));
 }
