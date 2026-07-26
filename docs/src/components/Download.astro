@@ -132,7 +132,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
        contained accent — same move as Landing.astro's dark .hud-panel inside an otherwise
        light page, not a site-wide dark mode. Flat row, no banner/hero image. */
     .discord-card {
-      max-width: 900px; margin-top: 32px; padding: 20px 22px; border-radius: 10px; background: #313338; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+      max-width: 810px; margin: 32px auto 0; padding: 20px 22px; border-radius: 10px; background: #313338; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
       text-align: left; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
     }
     .discord-avatar-wrap { position: relative; flex-shrink: 0; }
@@ -305,34 +305,46 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
         </section>
 
         <script define:vars={{ inviteCode: DISCORD_INVITE_CODE, fallbackName: t.community.fallbackName }}>
-          // Everything here (name, avatar, counts) is fetched fresh on every load — there's no
-          // build-time snapshot to fall back to, so a failed fetch just gets a generic name and
-          // no counts, rather than a stale number silently pretending to be current.
+          // Everything here (name, avatar, counts) is fetched fresh on every load, then
+          // refreshed every 60s so the online count stays live without needing a page reload —
+          // there's no build-time snapshot to fall back to, so a failed *first* fetch just gets
+          // a generic name and no counts. A failed *refresh* after that just keeps showing the
+          // last good numbers instead - a transient blip shouldn't erase data that was already
+          // displaying correctly.
           const online = document.getElementById('discord-online-count');
           const members = document.getElementById('discord-member-count');
           const name = document.getElementById('discord-name');
           const avatar = document.getElementById('discord-avatar');
 
-          fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`)
-            .then((res) => (res.ok ? res.json() : null))
-            .then((invite) => {
-              if (!invite) throw new Error('invite fetch failed');
-              if (online) online.textContent = invite.approximate_presence_count;
-              if (members) members.textContent = invite.approximate_member_count;
-              if (name) name.textContent = invite.guild.name;
-              if (avatar && invite.guild.icon) avatar.src = `https://cdn.discordapp.com/icons/${invite.guild.id}/${invite.guild.icon}.png?size=128`;
-              online?.classList.remove('discord-count-loading');
-              members?.classList.remove('discord-count-loading');
-              name?.classList.remove('discord-count-loading');
-            })
-            .catch(() => {
-              if (name) {
-                name.textContent = fallbackName;
-                name.classList.remove('discord-count-loading');
-              }
-              online?.closest('.discord-stat')?.remove();
-              members?.closest('.discord-stat')?.remove();
-            });
+          let hasLoadedOnce = false;
+
+          function refreshDiscordInfo() {
+            fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`)
+              .then((res) => (res.ok ? res.json() : null))
+              .then((invite) => {
+                if (!invite) throw new Error('invite fetch failed');
+                if (online) online.textContent = invite.approximate_presence_count;
+                if (members) members.textContent = invite.approximate_member_count;
+                if (name) name.textContent = invite.guild.name;
+                if (avatar && invite.guild.icon) avatar.src = `https://cdn.discordapp.com/icons/${invite.guild.id}/${invite.guild.icon}.png?size=128`;
+                online?.classList.remove('discord-count-loading');
+                members?.classList.remove('discord-count-loading');
+                name?.classList.remove('discord-count-loading');
+                hasLoadedOnce = true;
+              })
+              .catch(() => {
+                if (hasLoadedOnce) return;
+                if (name) {
+                  name.textContent = fallbackName;
+                  name.classList.remove('discord-count-loading');
+                }
+                online?.closest('.discord-stat')?.remove();
+                members?.closest('.discord-stat')?.remove();
+              });
+          }
+
+          refreshDiscordInfo();
+          setInterval(refreshDiscordInfo, 60000);
         </script>
 
         <div class="next-links">
