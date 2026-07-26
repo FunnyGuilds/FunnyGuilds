@@ -171,5 +171,5 @@ export function renderChangelog(markdown: string): string {
   closeLists();
   closeQuote();
 
-  return balanceInlineTags(out.join('\n'));
+  return out.join('\n');
 }
