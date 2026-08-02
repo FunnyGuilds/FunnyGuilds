@@ -1,0 +1,161 @@
+---
+title: API for Developers
+description: A guide to the FunnyGuilds API for developers.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+:::note
+FunnyGuilds API 5.x (nightly)
+:::
+
+## FunnyGuilds API
+
+<Tabs syncKey="package-manager">
+<TabItem label="Maven">
+```xml
+<repository>
+    <id>reposilite-snapshots-repository</id>
+    <url>https://maven.reposilite.com/snapshots</url>
+</repository>
+```
+```xml
+<dependency>
+    <groupId>net.dzikoysk.funnyguilds</groupId>
+    <artifactId>plugin</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+    <classifier>all</classifier>
+    <scope>provided</scope>
+</dependency>
+```
+</TabItem>
+<TabItem label="Gradle Groovy">
+```groovy
+repositories {
+    mavenCentral()
+    maven {
+        name 'reposilite-snapshots-repository'
+        url 'https://maven.reposilite.com/snapshots'
+    }
+}
+```
+```groovy
+dependencies {
+    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all'
+}
+```
+</TabItem>
+<TabItem label="Gradle Kotlin">
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        name = "reposilite-snapshots-repository"
+        url = uri("https://maven.reposilite.com/snapshots")
+    }
+}
+```
+```kotlin
+dependencies {
+    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all")
+}
+```
+</TabItem>
+</Tabs>
+
+### FunnyGuilds
+
+The plugin's main instance. It should be fetched only once, e.g.:
+
+```java
+public class MyPlugin extends JavaPlugin {
+
+    private FunnyGuilds funnyGuilds;
+    
+    @Override
+    public void onEnable() {
+        funnyGuilds = FunnyGuilds.getInstance();
+    }
+    
+}
+```
+
+### User
+
+Available methods for fetching a user:
+
+- `UserManager#findByName(String)`
+- `UserManager#findByPlayer(Player)`
+- `UserManager#findByUuid(UUID)`
+
+Example usage:
+
+```java
+UserManager userManager = funnyGuilds.getUserManager();
+Option<User> userOption = userManager.findByName("PlayerName");
+
+if (userOption.isPresent()) {
+    User user = userOption.get();
+}
+```
+
+### Guild
+
+Available methods for fetching a guild:
+
+- `GuildManager#findByName(String)`
+- `GuildManager#findByTag(String)`
+- `GuildManager#findByUuid(UUID)`
+- `User#getGuild()`
+
+Example usage:
+
+```java
+GuildManager guildManager = funnyGuilds.getGuildManager();
+Option<Guild> guildOption = guildManager.findByTag("TAG");
+
+if (guildOption.isPresent()) {
+    Guild guild = guildOption.get();
+}
+```
+
+```java
+Option<Guild> guildOption = user.getGuild();
+
+if (guildOption.isPresent()) {
+    Guild guild = guildOption.get();
+}
+```
+
+### Listening for events
+
+Events related to:
+- Ranking changes: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
+- Guilds: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
+- Guild members: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
+- Alliances: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
+
+An example using `GuildDeleteEvent`:
+
+```java
+public class GuildDeleteListener implements Listener {
+
+    @EventHandler
+    public void onGuildDelete(GuildDeleteEvent event) {
+        Guild guild = event.getGuild();
+        User doer = event.getDoer();
+        FunnyEvent.EventCause eventCause = event.getEventCause();
+
+    }
+    
+}
+```
+
+Registration in the `onEnable()` method:
+
+```java
+@Override
+public void onEnable() {
+    this.getServer().getPluginManager().registerEvents(new GuildDeleteListener(), this);
+}
+```

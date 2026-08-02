@@ -1,0 +1,82 @@
+---
+title: Rankings & combat
+description: Point systems, kills/assists, anti-farming protections and top lists.
+---
+
+The starting ranking is set by `rank-start` (**1000** by default).
+
+## Point system
+
+`rank-system` picks one of three models for how points change after a fight:
+
+| System | Description |
+|---|---|
+| `ELO` (default) | Chess-style ranking — the change depends on the rating gap between the two players; the best-balanced of the three |
+| `PERCENT` | Both players' ranking changes by a percentage (`percent-rank-change`) of the victim's ranking |
+| `STATIC` | Always a fixed amount: `static-attacker-change` for the winner, `static-victim-change` for the victim |
+
+For `ELO` you can also tune `elo-constants` (the maximum point swing per
+ranking bracket — the smaller the constant, the smaller the swings),
+`elo-divider` (400 by default) and `elo-exponent` (10 by default).
+
+Players can see the predicted point change before a fight if you enable
+`display-combat-prediction-attacker`/`display-combat-prediction-victim`
+(off by default); `combat-prediction-interval` throttles how often that
+notification repeats for the same pair of players.
+
+## Kills, deaths and assists
+
+Alongside ranking points, kills, deaths and assists are tracked (KDR/KDA).
+The assist system (`rank-assist-enable`) splits kill points between the
+attacker and any assisting players, proportional to damage dealt —
+`rank-assist-killer-share` (**0.5** by default) sets the portion that always
+goes to the killer. `assists-limit` caps how many assists count per kill
+(`-1` = unlimited).
+
+Who sees a death message, and how, is set by `death-message-receivers`
+(`PARTICIPANTS`/`GUILD`/`WORLD`/`ALL`). To avoid duplicate messages, it is
+worth turning off the server's own default message at the same time, with
+`disable-default-death-message`.
+
+### Anti-farming protections
+
+Several independent switches guard against artificially inflating your
+ranking:
+
+- `rank-farming-protect` — blocks repeatedly scoring points for killing the
+  same person in a short window (`rank-farming-cooldown`, 2h by default),
+  optionally also by IP address (`rank-farming-cooldown-ip`).
+- `rank-ip-protect` / `rank-ip-protect-players-from-guild` — block ranking
+  changes between players sharing an IP address.
+- `rank-member-protect` / `rank-ally-protect` — block ranking changes in
+  fights within a guild or between allies.
+- `skip-privileged-players-in-rank-positions` — skips players with the
+  `funnyguilds.ranking.exempt` permission when computing ranking positions.
+
+## Top lists
+
+The `top` section drives player and guild top lists, available as the
+`{PTOP-type-x}`/`{GTOP-type-x}` placeholders (see
+[Placeholders](/en/placeholders/)). Only enable the types you actually use —
+every extra type in `enabled-user-tops`/`enabled-guild-tops` costs a bit of
+performance:
+
+- Player types: `points`, `kills`, `deaths`, `assists`, `logouts`.
+- Guild types: the same, plus `avg_*` average variants (e.g. `avg_points`).
+
+`use-relationship-colors` colors top-list entries by guild relationship
+(same guild/allies/enemies), just like chat tags. The appearance of the
+values themselves can additionally be graded by threshold in
+`format.ptop-value-formatting`/`format.gtop-value-formatting` (e.g. a
+different color for players below and above 1500 points).
+
+:::note[Other options]
+`ranking-update-interval` (how often the ranking is recalculated),
+`kill-points-change-format` (the color of the point-change message),
+`damage-tracking.expire-time`/`max-tracks` (how long damage is remembered
+for assist purposes), `info-player-*` (viewing a player's stats on
+right-click), `rank-reset-needed-items`/`stats-reset-needed-items` (the cost
+of `/rankreset` and `/statsreset`) and `scoreboard.dummy` (points shown under
+a player's nickname — see [Chat](/en/chat/) for the tag shown above their
+head).
+:::

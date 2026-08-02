@@ -1,0 +1,70 @@
+---
+title: Czat
+description: Kanały czatu gildyjnego, znaczniki w formacie czatu i tagi nad głową gracza.
+---
+
+## Kanały czatu gildyjnego
+
+FunnyGuilds dodaje trzy prywatne kanały czatu, aktywowane prefiksem na
+początku wiadomości:
+
+| Prefiks | Domyślnie | Odbiorcy |
+|---|---|---|
+| `chat-priv` | `!` | Członkowie własnej gildii |
+| `chat-ally` | `!!` | Własna gildia i sojusznicy |
+| `chat-global` | `!!!` | Wszystkie gildie |
+
+Wygląd każdej wiadomości ustawiają osobne szablony (`chat-priv-design`,
+`chat-ally-design`, `chat-global-design`) ze zmiennymi `{PLAYER}`, `{TAG}`,
+`{MESSAGE}` i `{POS}`. Administrator z włączonym trybem `/ga spy` widzi
+wszystkie trzy kanały w formacie `chat-spy-design` — `log-guild-chat`
+dodatkowo zapisuje je w logach serwera.
+
+## Znaczniki w głównym czacie
+
+Niezależnie od kanałów gildyjnych, FunnyGuilds udostępnia znaczniki do
+wstawienia w formacie głównego czatu serwera (obsługiwanym przez
+zainstalowany plugin czatowy):
+
+| Znacznik | Opis |
+|---|---|
+| `{POS}` | Rola nadawcy w gildii — puste, `chat-position-deputy` lub `chat-position-leader` |
+| `{TAG}` | Tag gildii nadawcy (`chat-guild`), puste dla graczy bez gildii |
+| `{RANK}` | Pozycja gracza w rankingu punktów (`chat-rank`) |
+| `{POINTS}` / `{POINTS-FORMAT}` | Punkty rankingowe gracza (`chat-points`) |
+
+:::caution[Niekompatybilność z LPC]
+Znaczniki te nie są obsługiwane przez plugin [LPC](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-19.68965/) —
+używa on niewłaściwego priorytetu dla eventu czatu, przez co FunnyGuilds nie zdąży
+podstawić swoich wartości. Alternatywą jest [PlaceholderAPI](/placeholderapi/).
+:::
+
+## Tagi nad głową gracza (nametag)
+
+Sekcja `scoreboard.nametag` pozwala doczepić prefiks/sufiks do nicku gracza
+widocznego nad jego głową (i na tabliście) — kolorowany w zależności od
+relacji patrzącego z gildią danego gracza, tak jak tagi na czacie:
+
+```yaml
+nametag:
+  prefix:
+    no-guild: ''
+    our-guild: '&a{TAG}&f '
+    allies-guild: '&6{TAG}&f '
+    enemies-guild: '&c{TAG}&f '
+    other-guild: '&7{TAG}&f '
+```
+
+Dostępne zmienne to `{TAG}`, `{REL_TAG}`, `{NAME}` i `{POS}` — obsługiwane jest
+też PlaceholderAPI, łącznie z placeholderami relacyjnymi. `update-rate`
+ustala, jak często nametagi są odświeżane niezależnie od innych wyzwalaczy
+(np. zmiany gildii).
+
+:::note[Inne opcje]
+- `scoreboard.enabled` / `use-shared-scoreboard` — współdzielenie scoreboardu z innymi pluginami.
+- `scoreboard.queue-configuration` — throttling aktualizacji przy dużym ruchu.
+- `online-color` / `offline-color` — kolor nicków/gildii online i offline.
+- `users-list-respect-vanish` / `ptop-respect-vanish` / `gtop-respect-vanish` / `g-member-respect-vanish` — czy gracze na vanishu liczą się jako online w placeholderach.
+
+Punkty pod nickiem gracza to osobna opcja `scoreboard.dummy` — patrz [Rankingi i walka](/rankings-combat/).
+:::

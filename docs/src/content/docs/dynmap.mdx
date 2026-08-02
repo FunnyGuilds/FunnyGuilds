@@ -1,0 +1,49 @@
+---
+title: dynmap
+description: Znaczniki terenów gildii na mapie dynmap.
+---
+
+Po wykryciu [dynmap](https://github.com/webbukkit/dynmap) FunnyGuilds
+dodaje na mapę serwera dwa rodzaje znaczników dla każdej gildii — punkt w
+miejscu serca oraz obszar całego terenu. Wszystko konfiguruje się w sekcji
+`dynmap-hook`.
+
+## Znacznik centrum
+
+```yaml
+dynmap-hook:
+  center:
+    enabled: true
+    hide-center-y: false
+    label: '{NAME} ({TAG})'
+    icon: shield
+```
+
+`hide-center-y` ukrywa rzeczywistą wysokość serca (przydatne przy mapach 3D).
+`icon` to nazwa jednej z [domyślnych ikon dynmap](https://github.com/FunnyGuilds/FunnyGuilds/blob/5.x/assets/dynmap-markers.png).
+
+## Znacznik obszaru
+
+```yaml
+  area:
+    enabled: true
+    label: '<b>{NAME} ({TAG})</b>'
+    fill:
+      opacity: 0.6
+      color: '#191919'
+    line:
+      opacity: 1
+      weight: 3
+      color: '#0a0a0a'
+```
+
+Etykieta obszaru obsługuje formatowanie HTML. Oba typy etykiet (centrum i
+obszaru) przyjmują ten sam bogaty zestaw zmiennych co hologram serca —
+`{OWNER}`, `{MEMBERS-ONLINE}`/`{MEMBERS-ALL}`, `{AVG-POINTS}`, `{LIVES}`,
+`{VALIDITY}` i inne; pełną listę znajdziesz w
+[DecentHolograms](/decentholograms/).
+
+:::note[Inne opcje]
+`guild-set-label` to nazwa zestawu znaczników widoczna w warstwach dynmap, a
+`update-interval` — częstotliwość odświeżania etykiet, w tickach.
+:::

@@ -1,0 +1,43 @@
+---
+title: FAQ
+description: Najczęściej zadawane pytania dotyczące pluginu FunnyGuilds.
+---
+
+Lista najczęściej zadawanych pytań dotyczących pluginu FunnyGuilds.
+
+## Mgła przy wchodzeniu na teren gildii/opuszczaniu terenu gildii
+
+W pliku `config.yml` zmień
+
+```yaml
+notification-boss-bar-flags:
+- CREATE_FOG
+```
+
+na
+
+```yaml
+notification-boss-bar-flags: []
+```
+
+## Co to jest wersja nightly i gdzie ją mogę pobrać?
+
+Wersje nightly to najświeższe kompilacje pluginu, zawierające wszystkie najnowsze zmiany w kodzie źródłowym. Oficjalne wydanie powstaje co kilka wersji nightly, więc jeżeli nie chcesz czekać, możesz je pobierać na bieżąco tutaj: [FunnyGuilds Nightly](https://ci.insertt.dev/job/FunnyGuilds/).
+
+Po zainstalowaniu takiej wersji będzie się pojawiał komunikat o dostępności nowej wersji. Dzieje się tak, ponieważ updater uwzględnia wyłącznie oficjalne wydania — bez nightly. Taki komunikat można po prostu zignorować.
+
+## Gdzie znajdę listę uprawnień do FunnyGuilds?
+
+Listę uprawnień można znaleźć [tutaj](/permissions/).
+
+## Nie działają mi tagi, scoreboardy i punkty pod nickiem
+
+Najczęstszą przyczyną tego typu błędów jest inny plugin korzystający ze scoreboardów i powiązanych z nimi elementów, takich jak tagi teamów nad głową czy punkty pod nickiem. Z uwagi na brak sensownego API po stronie Bukkita każdy plugin rejestruje własne scoreboardy, co bywa źródłem konfliktów. Przykładem jest Scoreboard Stats, który udostępnia opcję `compatibility mode` pozwalającą na poprawne współdziałanie. Jeżeli plugin nie ma podobnej opcji w konfiguracji, to jest niekompatybilny z FunnyGuilds.
+
+## Jak ustawić hologramy z najlepszymi gildiami?
+
+[Przykładowa konfiguracja hologramów przy użyciu PlaceholderAPI, HolographicExtension oraz HolographicDisplays](https://github.com/FunnyGuilds/FunnyGuilds/issues/1400#issuecomment-759867633)
+
+## Jak zintegrować plugin z CombatLogX?
+
+Przede wszystkim pamiętaj, aby nie testować tego na koncie z uprawnieniami administratora/`op` — CombatLogX nie zabija takich graczy. Zwróć również uwagę na ustawienia wiadomości wyświetlanych po śmierci, ponieważ CombatLogX może nadpisywać wiadomość ustawioną w FunnyGuilds.

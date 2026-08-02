@@ -1,0 +1,119 @@
+---
+title: Commands
+description: The full list of FunnyGuilds commands, grouped by feature.
+---
+
+:::note
+Admin commands (the tables headed **Admin**) require the appropriate
+permissions — the full list is in [Permissions](/en/permissions/). Command
+names are fully configurable (the `commands` section in `config.yml`) — the
+defaults are shown below.
+:::
+
+## General
+
+| Command | Description |
+|---|---|
+| `/funnyguilds` `/fg` | Checks the FunnyGuilds version. |
+| `/funnyguilds reload` `/funnyguilds rl` | Reloads the FunnyGuilds configuration. |
+| `/funnyguilds save-all` | Saves all data. |
+| `/funnyguilds funnybin` | Uploads the configuration online (makes it easier to get help on [GitHub Issues](https://github.com/FunnyGuilds/FunnyGuilds/issues)). |
+| `/funnyguilds check` `/funnyguilds update` | Checks whether a new version is available. |
+| `/gildia` `/gildie` `/g` | Shows the list of guild commands. |
+
+## Guilds
+
+See [Guilds](/en/guilds/) — creation, membership, validity and disbanding.
+
+| Command | Description |
+|---|---|
+| `/zaloz <tag> <name>` | Creates a guild. |
+| `/usun` `/potwierdz` | Disbands the guild (two-step confirmation). |
+| `/zapros <player>` `/zapros *` | Invites a player (or everyone within a radius). |
+| `/dolacz <tag>` | Accepts a guild invitation. |
+| `/opusc` | Leaves the guild. |
+| `/wyrzuc <player>` | Kicks a player from the guild. |
+| `/lider` `/zalozyciel` `<player>` | Transfers guild leadership. |
+| `/zastepca <player>` | Grants/revokes deputy status. |
+| `/przedluz` | Extends the guild's validity. |
+| `/przedmioty` | Shows the items needed to create a guild. |
+| `/info <tag>` | Information about a guild. |
+| `/gracz <player>` | Information about a player. |
+
+| Admin | Description |
+|---|---|
+| `/ga dodaj <tag> <player>` | Adds a player to a guild. |
+| `/ga usun <tag>` | Deletes a guild. |
+| `/ga wyrzuc <player>` | Kicks a player from their guild. |
+| `/ga nazwa <tag> <name>` | Renames a guild. |
+| `/ga tag <tag> <new-tag>` | Changes a guild's tag. |
+| `/ga lider <tag> <player>` | Changes a guild's leader. |
+| `/ga zastepca <tag> <player>` | Grants/revokes a player's deputy status. |
+| `/ga przedluz <tag> <time>` | Extends a guild's validity by the given time. |
+| `/ga enabled` | Toggles whether guild creation is enabled. |
+| `/ga ban <tag> <time> <reason>` | Bans a guild for a specified duration. |
+| `/ga unban <tag>` | Unbans a guild. |
+| `/ga items <player> <type>` | Gives a player the item set of the given type (`guild`, `base`, `join`, `enlarge`, `validity`, `rankReset`, `statsReset`, `firstGuildReward`). |
+
+## Territories
+
+See [Territories & protection](/en/territories/) — heart, enlarging,
+protection, TNT.
+
+| Command | Description |
+|---|---|
+| `/baza` | Teleports to the guild's base. |
+| `/ustawbaze` `/ustawdom` | Sets the guild's home. |
+| `/powieksz` | Enlarges the guild's territory. |
+| `/ucieczka` `/escape` | Starts an escape from another guild's territory. |
+| `/tnt` | Checks whether TNT is active on guild territories. |
+
+| Admin | Description |
+|---|---|
+| `/ga tp <tag>` | Teleports to a guild's base. |
+| `/ga baza <player>` | Teleports a player to their guild's base. |
+| `/ga przenies <tag>` | Moves a guild's territory. |
+| `/ga ochrona <tag> <time>` | Grants protection to a guild. |
+
+## Alliances & wars
+
+See [Alliances & wars](/en/alliances-wars/).
+
+| Command | Description |
+|---|---|
+| `/sojusz <tag>` | Proposes/accepts an alliance. |
+| `/rozwiaz <tag>` | Breaks an alliance. |
+| `/wojna <tag>` | Declares war on a guild. |
+| `/pvp` `/ustawpvp` `[tag]` | Toggles PvP within the guild or between allies. |
+
+| Admin | Description |
+|---|---|
+| `/ga zycia <tag> <lives>` | Sets a guild's number of lives. |
+
+## Rankings & combat
+
+See [Rankings & combat](/en/rankings-combat/). Player and guild top lists have
+no commands of their own — they are displayed with the `{PTOP-…}` and
+`{GTOP-…}` placeholders (see [Placeholders](/en/placeholders/)), for example
+on the tablist.
+
+| Command | Description |
+|---|---|
+| `/rankreset` `/resetrank` | Resets a player's ranking. |
+| `/statsreset` `/resetstats` | Resets a player's statistics. |
+
+| Admin | Description |
+|---|---|
+| `/ga points <player> <points>` | Sets a player's point count. |
+| `/ga kills <player> <kills>` | Sets a player's kill count. |
+| `/ga deaths <player> <deaths>` | Sets a player's death count. |
+| `/ga logouts <player> <logouts>` | Sets a player's combat-logout count. |
+| `/ga assists <player> <assists>` | Sets a player's assist count. |
+
+## Chat
+
+See [Chat](/en/chat/).
+
+| Admin | Description |
+|---|---|
+| `/ga spy` | Toggles spying on guild chat. |

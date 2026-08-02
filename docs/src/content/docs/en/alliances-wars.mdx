@@ -1,0 +1,56 @@
+---
+title: Alliances & wars
+description: Alliances between guilds, declaring wars and guild lives.
+---
+
+Your relationship with another guild (neutral/ally/enemy) determines the
+color of its tag in chat and the tablist (see [Chat](/en/chat/)) and whether
+you can enter its territory (see
+[Territories & protection](/en/territories/)).
+
+## Alliances
+
+`/sojusz <tag>` proposes an alliance to another guild — the other leader
+accepts it with the same command. An existing alliance can be broken at any
+time with `/rozwiaz <tag>`. A guild can have at most `max-allies` allies
+(**15** by default).
+
+By default allies can't damage each other — controlled by `damage-ally`. This
+can also be overridden per-region with WorldGuard's `fg-friendly-fire` flag,
+see [WorldGuard & WorldEdit](/en/worldguard-worldedit/).
+
+## Wars
+
+Attacking another guild (when `war-enabled` is on) requires declaring war on
+it first with `/wojna <tag>` — unless `war-require-declaration` is disabled,
+in which case any non-allied guild can be attacked without a declaration. A
+guild can be at war with at most `max-enemies` guilds at once (**15** by
+default).
+
+| Option | Default | Description |
+|---|---|---|
+| `war-protection` | 24h | Time after a guild is created during which it can't be attacked |
+| `war-wait` | 24h | Cooldown between attacks on the same guild |
+| `war-lives` | 3 | Number of guild lives |
+| `war-heart-lives` | 1 | Heart hits needed to remove 1 life |
+| `war-tnt-protection` | `true` | Whether the protection period also grants TNT immunity |
+
+Destroying a guild's heart costs it one life; once all its lives are gone,
+the guild loses the war. Setting `war-heart-lives` to `1` effectively
+disables the heart's HP mechanic — every hit removes a life immediately.
+
+Members of the same guild can't damage each other by default either — that is
+controlled by `damage-guild`.
+
+:::note[Other options]
+`lives-repeating-symbol` sets the appearance of the `{G-LIVES-SYMBOL}`
+placeholder — separate symbols for full and empty lives, and for any surplus
+above `war-lives`.
+:::
+
+## Banning a guild
+
+An admin can ban a guild with `/ga ban <tag> <time> <reason>` — for example
+to temporarily exclude it from wars while moderating a dispute. The ban can
+be lifted with `/ga unban <tag>`, but it also expires on its own after the
+given time.

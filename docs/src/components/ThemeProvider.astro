@@ -1,0 +1,10 @@
+---
+// The site is light-only, like the landing page. With no ThemeSelect left in the header, this
+// is all that stands between a visitor's OS dark preference and Starlight's unbranded dark
+// theme, so it forces light and ignores both `prefers-color-scheme` and any stored preference.
+---
+
+{/* Inlined to avoid a flash of the wrong theme. */}
+<script is:inline>
+	document.documentElement.dataset.theme = 'light';
+</script>

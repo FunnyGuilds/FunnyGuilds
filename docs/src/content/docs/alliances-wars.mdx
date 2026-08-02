@@ -1,0 +1,53 @@
+---
+title: Sojusze i wojny
+description: Sojusze między gildiami, wypowiadanie wojen i życia gildii.
+---
+
+Relacja z inną gildią (neutralna/sojusz/wojna) decyduje o kolorze jej tagu na
+czacie i tabliście (patrz [Czat](/chat/)) oraz o wejściu na jej teren (patrz
+[Tereny i ochrona](/territories/)).
+
+## Sojusze
+
+`/sojusz <tag>` proponuje sojusz drugiej gildii — jej lider akceptuje go tą
+samą komendą. Zerwać sojusz można w każdej chwili komendą `/rozwiaz <tag>`.
+Gildia może mieć maksymalnie `max-allies` sojuszników (domyślnie **15**).
+
+Domyślnie sojusznicy nie mogą się nawzajem ranić — steruje tym `damage-ally`.
+To zachowanie można też nadpisać dla konkretnego regionu flagą WorldGuarda
+`fg-friendly-fire`, patrz [WorldGuard i WorldEdit](/worldguard-worldedit/).
+
+## Wojny
+
+Zaatakowanie innej gildii (gdy włączone jest `war-enabled`) wymaga
+wcześniejszego wypowiedzenia jej wojny komendą `/wojna <tag>`. Wyjątkiem jest
+wyłączona opcja `war-require-declaration` — wtedy można atakować dowolną
+gildię spoza sojuszy bez wypowiadania wojny. Jedna gildia może prowadzić maksymalnie
+`max-enemies` wojen naraz (domyślnie **15**).
+
+| Opcja | Domyślnie | Opis |
+|---|---|---|
+| `war-protection` | 24h | Czas od założenia gildii, przez który nie można jej zaatakować |
+| `war-wait` | 24h | Odstęp między kolejnymi atakami na tę samą gildię |
+| `war-lives` | 3 | Liczba żyć gildii |
+| `war-heart-lives` | 1 | Liczba trafień w serce potrzebna do odebrania 1 życia |
+| `war-tnt-protection` | `true` | Czy okres ochronny daje też odporność na TNT |
+
+Zniszczenie serca gildii odbiera jej jedno życie. Gdy skończą się wszystkie
+życia, gildia przegrywa wojnę. Ustawienie `war-heart-lives` na `1` efektywnie
+wyłącza mechanikę HP serca — każde trafienie od razu odbiera życie.
+
+Członkowie tej samej gildii również domyślnie nie mogą się nawzajem ranić —
+steruje tym `damage-guild`.
+
+:::note[Inne opcje]
+`lives-repeating-symbol` ustawia wygląd placeholdera `{G-LIVES-SYMBOL}` —
+osobne symbole dla pełnych i pustych żyć oraz nadwyżki ponad `war-lives`.
+:::
+
+## Ban gildii
+
+Administrator może zbanować gildię komendą `/ga ban <tag> <czas> <powód>` —
+na przykład po to, by wykluczyć ją z wojen na czas moderacji sporu. Bana
+zdejmuje komenda `/ga unban <tag>`, choć wygasa on też sam po upływie
+podanego czasu.

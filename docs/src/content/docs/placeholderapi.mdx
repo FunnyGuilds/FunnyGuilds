@@ -1,0 +1,41 @@
+---
+title: PlaceholderAPI
+description: Udostępnianie placeholderów FunnyGuilds innym pluginom przez PlaceholderAPI.
+---
+
+Po wykryciu [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+FunnyGuilds rejestruje własną ekspansję `funnyguilds` — bez pobierania czegokolwiek
+przez `/papi ecloud`. Dzięki niej dane FunnyGuilds trafiają do innych pluginów:
+czatów, GUI czy scoreboardów.
+
+## Jak to działa
+
+Ekspansja przyjmuje **dowolny** placeholder z listy
+[wbudowanych placeholderów](/placeholders/) — wystarczy wpisać jego nazwę małymi
+literami po `funnyguilds_`:
+
+```
+%funnyguilds_<nazwa>%   →   {NAZWA}
+```
+
+Nie ma więc osobnej listy do zapamiętania: wszystko, co działa jako `{X}` na
+tabliście czy czacie FunnyGuilds, działa też jako `%funnyguilds_x%` w innych
+pluginach.
+
+| Przykład                          | Odpowiednik           | Zwraca                                   |
+|:----------------------------------|:----------------------|:-----------------------------------------|
+| `%funnyguilds_player%`            | `{PLAYER}`            | Nick gracza                              |
+| `%funnyguilds_points%`            | `{POINTS}`            | Punkty rankingowe gracza                 |
+| `%funnyguilds_g-tag%`             | `{G-TAG}`             | Tag gildii gracza                        |
+| `%funnyguilds_g-members-online%`  | `{G-MEMBERS-ONLINE}`  | Liczba członków gildii online            |
+| `%funnyguilds_position-kills%`    | `{POSITION-KILLS}`    | Pozycja gracza w topce zabójstw          |
+| `%funnyguilds_gtop-avg_points-1%` | `{GTOP-AVG_POINTS-1}` | Pierwsza gildia w topce średnich punktów |
+
+## Placeholder relacyjny
+
+Ekspansja udostępnia też jeden placeholder relacyjny — zależny od tego, kto na
+kogo patrzy:
+
+| Placeholder             | Zwraca                                                                                                            |
+|:------------------------|:------------------------------------------------------------------------------------------------------------------|
+| `%rel_funnyguilds_tag%` | Tag gildii obserwowanego gracza, pokolorowany według jego relacji z obserwatorem (sojusznik, wróg, ta sama gildia) |

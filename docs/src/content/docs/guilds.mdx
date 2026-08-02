@@ -1,0 +1,97 @@
+---
+title: Gildie
+description: Zakładanie, struktura, ważność i rozwiązywanie gildii w FunnyGuilds.
+---
+
+import RoleTiers from '../../components/RoleTiers.astro';
+import GuildCreationDemo from '../../components/GuildCreationDemo.astro';
+
+## Zakładanie gildii
+
+Gildię zakłada się komendą `/zaloz <tag> <nazwa>`. Do tego momentu ten
+fragment mapy to zwykła dzicz — dopiero ta komenda wytycza teren i stawia na
+nim serce:
+
+<GuildCreationDemo
+  label="DZK"
+  command="/zaloz DZK dzikoysk"
+  phaseLabels={['Niezajęty teren', 'Wykonanie komendy', 'Teren przejęty']}
+/>
+
+Wymagania do jej założenia konfiguruje się osobno, w pliku `items.yml` —
+domyślnie należy zebrać komplet przedmiotów, osiągnąć odpowiedni poziom
+doświadczenia i ranking, a opcjonalnie posiadać wskazane saldo w Vault:
+
+| Wymaganie | Domyślnie |
+|---|---|
+| Przedmioty | 64 diamenty, 64 szmaragdy, 64 sztabki żelaza |
+| Poziom doświadczenia | 30 |
+| Ranking | 1000 |
+| Saldo (Vault) | 10 000 |
+
+Zestawów wymagań może być kilka — każdy przypisany do innego uprawnienia i
+uszeregowany według priorytetu, tak że stosowany jest pierwszy zestaw, do
+którego gracz ma uprawnienie. Domyślna konfiguracja zawiera też zestaw `vip`
+(uprawnienie `funnyguilds.items.vip`) z połową kosztu, niższym poziomem i
+rankingiem oraz bez wymogu salda. Gracz z uprawnieniem
+`funnyguilds.items.admin.bypass` pomija wszystkie wymagania, a komenda
+`/przedmioty` pokazuje w GUI, czego graczowi jeszcze brakuje.
+
+Nazwa i tag gildii podlegają dodatkowej walidacji:
+
+| Opcja | Domyślnie | Opis |
+|---|---|---|
+| `name-length` / `name-min-length` | 22 / 4 | Długość nazwy gildii |
+| `tag-length` / `tag-min-length` | 4 / 2 | Długość tagu gildii |
+| `name-regex` / `tag-regex` | `LETTERS` | Dozwolone znaki (patrz [typ Regex](/configuration/#regex)) |
+| `guild-tag-keep-case` | `true` | Tag zachowuje wielkość liter wpisaną przy tworzeniu |
+| `guild-tag-uppercase` | `false` | Wymusza wielkie litery w tagu (gdy `keep-case` wyłączone) |
+| `check-for-restricted-guild-names` | `false` | Włącza listę `restricted-guild-names`/`restricted-guild-tags` |
+| `whitelist` | `false` | Odwraca sens listy powyżej — z blacklisty robi whitelistę |
+
+Teren nowej gildii musi też leżeć z dala od spawnu i innych graczy —
+kontrolują to opcje `create-distance`, `create-guild-min-distance` i
+`blocked-worlds`, opisane szerzej w [Tereny i ochrona](/territories/).
+
+## Struktura gildii
+
+Gildia ma trzy poziomy uprawnień:
+
+<RoleTiers tiers={[
+  { role: 'Lider', description: 'Założyciel gildii. <code>/lider &lt;gracz&gt;</code> przekazuje przywództwo komuś innemu.' },
+  { role: 'Zastępcy', description: 'Zarządzają gildią w zastępstwie lidera. Rangę nadaje i odbiera lider komendą <code>/zastepca &lt;gracz&gt;</code>.' },
+  { role: 'Członkowie', description: 'Dołączają po zaproszeniu (<code>/zapros &lt;gracz&gt;</code>) i przyjęciu go komendą <code>/dolacz &lt;tag&gt;</code> — kosztuje to <code>join-items</code>, domyślnie 1 diament. Z gildii można wyjść samemu (<code>/opusc</code>) albo zostać z niej wyrzuconym (<code>/wyrzuc &lt;gracz&gt;</code>).' },
+]} />
+
+Liczbę członków ogranicza `max-members` (domyślnie **15** graczy).
+
+:::tip[Zapraszanie w promieniu]
+`/zapros *` zaprasza od razu wszystkich w promieniu (`invite-command-all-default-range`,
+domyślnie 10 bloków, maksymalnie `invite-command-all-max-range` — 50 bloków).
+:::
+
+## Ważność gildii
+
+Nowo założona gildia otrzymuje `validity-start` ważności (domyślnie **14
+dni**) — po jej upływie zostaje automatycznie usunięta.
+
+Ważność przedłuża komenda `/przedluz`: dodaje `validity-time` (domyślnie 14
+dni) i kosztuje `validity-items` (domyślnie 10 diamentów). Można jej użyć
+dopiero, gdy do wygaśnięcia zostało mniej niż `validity-when` (domyślnie 14
+dni, czyli praktycznie zawsze) — ustawienie `0` całkowicie wyłącza
+możliwość przedłużania.
+
+## Rozwiązanie gildii
+
+Rozwiązanie gildii przebiega dwuetapowo: `/usun` je inicjuje, a `/potwierdz`
+zatwierdza — dzięki temu nie można przypadkowo skasować gildii.
+`guild-delete-cancel-if-someone-is-on-region` pozwala zablokować rozwiązanie,
+dopóki na terenie gildii przebywa ktoś spoza niej.
+
+:::note[Inne opcje]
+- `should-give-rewards-for-first-guild` / `rewards-for-first-guild` — nagroda za
+  pierwszą gildię na serwerze.
+- `rank-reset-needed-items` / `stats-reset-needed-items` — koszt `/rankreset` i
+  `/statsreset`, patrz [Rankingi i walka](/rankings-combat/).
+- `player-lookup-ignorecase` — czy wyszukiwanie graczy po nicku ignoruje wielkość liter.
+:::

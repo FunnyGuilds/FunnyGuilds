@@ -1,0 +1,136 @@
+---
+title: Placeholdery
+description: Lista wbudowanych placeholderów FunnyGuilds i ich znaczenie.
+---
+
+FunnyGuilds ma wiele wbudowanych placeholderów. Poniżej znajduje się ich pełna lista wraz z informacją, co zwraca każdy z nich.
+
+Dopisek `@Deprecated` przy placeholderze oznacza, że może on zostać w przyszłości usunięty i nie zalecamy jego używania. Zwykle podajemy przy nim zalecany zamiennik.
+
+## Placeholdery gracza
+### - Podstawowe -
+
+|   Placeholder    | Opis                                                                                                                      |
+|:----------------:|:--------------------------------------------------------------------------------------------------------------------------|
+| `PLAYER`/`NAME`  | Zwraca nick gracza                                                                                                        |
+|      `PING`      | Zwraca aktualny ping gracza                                                                                               |
+|     `WORLD`      | Zwraca nazwę świata, w którym aktualnie znajduje się gracz                                                                |
+|     `ONLINE`     | Zwraca liczbę graczy online widoczną dla tego gracza (bez graczy, których on sam nie widzi — przykładowo tych na vanishu) |
+|   `HAS-GUILD`    | Zwraca informację, czy gracz należy do jakiejś gildii                                                                     |
+
+### - Rankingowe -
+
+|        Placeholder        | Opis                                                                                                                                                        |
+|:-------------------------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|         `POINTS`          | Zwraca aktualną liczbę punktów rankingowych gracza                                                                                                          |
+|          `KILLS`          | Zwraca aktualną liczbę zabójstw gracza                                                                                                                      |
+|         `DEATHS`          | Zwraca aktualną liczbę śmierci gracza                                                                                                                       |
+|         `ASSISTS`         | Zwraca aktualną liczbę asyst gracza                                                                                                                         |
+|         `LOGOUTS`         | Zwraca aktualną liczbę wylogowań gracza podczas walki                                                                                                       |
+|           `KDR`           | Zwraca KDR gracza (zabójstwa / śmierci)                                                                                                                     |
+|           `KDA`           | Zwraca KDA gracza ((zabójstwa + asysty) / śmierci)                                                                                                          |
+| **Deprecated** `POSITION` | Zwraca pozycję gracza w topce punktów rankingowych. Zalecamy użycie opisanego niżej placeholdera `POSITION-<typ>`                                            |
+|     `POSITION-<typ>`      | Pozycja gracza w topce o podanym typie (np. `DEATHS`). Listę dostępnych (i aktualnie włączonych) typów zawiera opcja `top.enabled-user-tops` w `config.yml`. |
+|     `GUILD-POSITION`      | Pozycja gildii gracza w topce gildii                                                                                                                        |
+
+## Placeholdery gildyjne
+
+### - Podstawowe -
+
+|     Placeholder      | Opis                                                                                                                                                                                                  |
+|:--------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  `G-NAME`/`G-GUILD`  | Nazwa gildii, do której należy gracz                                                                                                                                                                  |
+|       `G-TAG`        | Tag gildii gracza                                                                                                                                                                                     |
+|      `G-OWNER`       | Lider gildii                                                                                                                                                                                          |
+|     `G-DEPUTIES`     | Zastępcy gildii                                                                                                                                                                                       |
+|      `G-DEPUTY`      | Losowo wybrany zastępca gildii                                                                                                                                                                        |
+|     `G-MEMBERS`      | Nicki członków gildii online, oddzielone przecinkami                                                                                                                                                  |
+|   `G-MEMBER-<nr>`    | Członek gildii na podanej pozycji listy (od `1` do wartości `max-members`), pokolorowany zależnie od tego, czy jest online                                                                             |
+|  `G-MEMBERS-ONLINE`  | Liczba członków gildii online                                                                                                                                                                         |
+|   `G-MEMBERS-ALL`    | Liczba wszystkich członków gildii                                                                                                                                                                     |
+|      `G-LIVES`       | Liczba żyć gildii                                                                                                                                                                                     |
+|   `G-LIVES-SYMBOL`   | Liczba żyć gildii w postaci powtarzającego się symbolu (do ustawienia w `lives-repeating-symbol.full` w `config.yml`), z pustymi serduszkami w miejsce brakujących żyć (`lives-repeating-symbol.empty`) |
+| `G-LIVES-SYMBOL-ALL` | Liczba wszystkich żyć gildii w postaci powtarzającego się symbolu (do ustawienia w `lives-repeating-symbol.full` w `config.yml`)                                                                       |
+|   `G-HEART-LIVES`    | Liczba żyć serca gildii pozostałych w trwającej wojnie                                                                                                                                                |
+| `G-HEART-LIVES-MAX`  | Maksymalna liczba żyć serca gildii (`war.heart-lives`)                                                                                                                                                |
+|      `G-ALLIES`      | Nazwy sojuszników gildii, oddzielone przecinkami                                                                                                                                                      |
+|   `G-ALLIES-TAGS`    | Tagi sojuszników gildii, oddzielone przecinkami                                                                                                                                                       |
+|    `G-ALLIES-ALL`    | Liczba sojuszników gildii                                                                                                                                                                             |
+|     `G-ENEMIES`      | Nazwy wrogów gildii, oddzielone przecinkami                                                                                                                                                           |
+|   `G-ENEMIES-TAGS`   | Tagi wrogów gildii, oddzielone przecinkami                                                                                                                                                            |
+|   `G-ENEMIES-ALL`    | Liczba wrogów gildii                                                                                                                                                                                  |
+|       `G-PVP`        | Status PvP w gildii (teksty `pvp-status-on`/`pvp-status-off` z `messages.yml`)                                                                                                                        |
+|     `G-VALIDITY`     | Data wygaśnięcia gildii                                                                                                                                                                               |
+|  `G-VALIDITY-TIME`   | Czas do wygaśnięcia gildii (np. 5 dni 2 godziny 1 minuta)                                                                                                                                             |
+|    `G-PROTECTION`    | Data wygaśnięcia ochrony gildii                                                                                                                                                                       |
+| `G-PROTECTION-TIME`  | Czas do wygaśnięcia ochrony gildii (np. 5 dni 2 godziny 1 minuta)                                                                                                                                     |
+|   `G-REGION-SIZE`    | Rozmiar terenu gildii                                                                                                                                                                                 |
+
+### - Rankingowe -
+
+|      Placeholder       | Opis                                                                        |
+|:----------------------:|:-----------------------------------------------------------------------------|
+|       `G-POINTS`       | Suma punktów członków gildii                                                |
+|     `G-AVG-POINTS`     | Średnia liczba punktów członków gildii                                      |
+| `G-POSITION`/`G-RANK`  | Pozycja gildii gracza w topce średnich punktów                              |
+|   `G-POSITION-<typ>`   | Pozycja gildii gracza w topce o podanym typie                               |
+|       `G-KILLS`        | Suma zabójstw członków gildii                                               |
+|     `G-AVG-KILLS`      | Średnia liczba zabójstw członków gildii                                     |
+|       `G-DEATHS`       | Suma śmierci członków gildii                                                |
+|     `G-AVG-DEATHS`     | Średnia liczba śmierci członków gildii                                      |
+|      `G-ASSISTS`       | Suma asyst członków gildii                                                  |
+|    `G-AVG-ASSISTS`     | Średnia liczba asyst członków gildii                                        |
+|      `G-LOGOUTS`       | Suma wylogowań członków gildii                                              |
+|    `G-AVG-LOGOUTS`     | Średnia liczba wylogowań członków gildii                                    |
+|        `G-KDR`         | Stosunek zabójstw do śmierci gildii                                         |
+|        `G-KDA`         | Stosunek zabójstw i asyst do śmierci gildii                                 |
+|      `G-AVG-KDR`       | Średni stosunek zabójstw do śmierci członków gildii                         |
+|      `G-AVG-KDA`       | Średni stosunek zabójstw i asyst do śmierci członków gildii                 |
+
+### - Topki -
+
+Topki graczy (`PTOP`) i gildii (`GTOP`) zawsze wymagają **typu** i **pozycji**:
+
+|          Placeholder           | Opis                                                                                     |
+|:------------------------------:|:-------------------------------------------------------------------------------------------|
+|   `PTOP-<typ>-<pozycja>`       | Gracz na podanej pozycji w topce danego typu (np. `{PTOP-KILLS-1}`, `{PTOP-POINTS-10}`)  |
+|   `GTOP-<typ>-<pozycja>`       | Gildia na podanej pozycji w topce danego typu (np. `{GTOP-AVG_POINTS-1}`)                |
+
+Domyślnie zwracany jest nick gracza (lub nazwa gildii) wraz z wartością. Można to zawęzić, dopisując na końcu jeden z członów:
+
+| Człon    | `PTOP`             | `GTOP`              |
+|:---------|:-------------------|:--------------------|
+| `-NAME`  | Nick gracza        | Nazwa gildii        |
+| `-TAG`   | —                  | Tag gildii          |
+| `-UUID`  | UUID gracza        | —                   |
+| `-VALUE` | Sama wartość       | Sama wartość        |
+
+Na przykład `{PTOP-POINTS-1-NAME}` zwróci sam nick lidera topki punktów, a `{GTOP-KILLS-1-TAG}` — sam tag najlepszej gildii.
+
+:::note[Typy topek]
+Listę dostępnych (i aktualnie włączonych) typów zawierają opcje `top.enabled-user-tops`
+i `top.enabled-guild-tops` w `config.yml` — patrz [Rankingi i walka](/rankings-combat/).
+:::
+
+## Inne
+
+|      Placeholder       | Opis                                                          |
+|:----------------------:|:----------------------------------------------------------------|
+|        `GUILDS`        | Liczba gildii na serwerze                                     |
+|        `USERS`         | Liczba użytkowników serwera                                   |
+|         `TPS`          | TPS serwera                                                   |
+|        `SECOND`        | Sekunda                                                       |
+|        `MINUTE`        | Minuta                                                        |
+|         `HOUR`         | Godzina                                                       |
+|     `DAY_OF_WEEK`      | Dzień tygodnia, wyrażony w postaci nazwy dnia                 |
+|     `DAY_OF_MONTH`     | Dzień miesiąca, wyrażony w postaci liczby                     |
+|        `MONTH`         | Miesiąc, wyrażony w postaci nazwy miesiąca                    |
+|     `MONTH_NUMBER`     | Miesiąc, wyrażony w postaci liczby                            |
+|         `YEAR`         | Rok                                                           |
+
+## - Dodatkowe zewnętrzne integracje -
+|  Placeholder  | Opis                                                                                       |
+|:-------------:|:---------------------------------------------------------------------------------------------|
+|  `WG-REGION`  | Region WorldGuarda, w którym aktualnie znajduje się gracz                                   |
+| `WG-REGIONS`  | Lista regionów WorldGuarda, w których aktualnie znajduje się gracz — oddzielona przecinkami |
+| `VAULT-MONEY` | Aktualny stan konta gracza, pobrany z pluginu [Vault](https://github.com/MilkBowl/Vault)    |

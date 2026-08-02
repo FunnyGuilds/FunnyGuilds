@@ -1,0 +1,68 @@
+---
+// The other half of ReleaseChipLink.astro: one pane holding every release's changelog, with
+// `.active` toggled by Download.astro's script. Styled as a continuation of the table rather
+// than a boxed widget, and always showing exactly one release — there's no "closed" state.
+import { changelogId, type McArchiveRelease } from '../lib/mc-version-archive';
+
+interface Props {
+  releases: McArchiveRelease[];
+  currentLabel: string;
+  releasedLabel: string;
+  changelogEyebrow: string;
+  changelogLinkLabel: string;
+}
+const { releases, currentLabel, releasedLabel, changelogEyebrow, changelogLinkLabel } = Astro.props;
+---
+
+<div class="detail-pane">
+  {releases.map((entry) => {
+    const id = changelogId(entry.tag);
+    return (
+      <div id={id} class="changelog-target">
+        <div class="target-header">
+          <span class="target-eyebrow">{changelogEyebrow}</span>
+          <strong>{entry.tag}</strong>
+          {entry.current && <span class="current-tag">{currentLabel}</span>}
+        </div>
+        <div class="target-sub">{releasedLabel} {entry.dateLabel}</div>
+        <div class="cl-body" set:html={entry.changelogHtml} />
+        <a class="gh-link" href={entry.htmlUrl} target="_blank" rel="noopener">{changelogLinkLabel}</a>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  .detail-pane {
+    border-left: 1px solid var(--hairline); padding-left: 28px; min-width: 0; overflow-x: hidden;
+  }
+
+  .changelog-target { display: none; min-width: 0; }
+  .changelog-target.active { display: block; }
+
+  .target-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .target-eyebrow { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--slate-soft); width: 100%; }
+  .target-header strong { font-family: var(--mono); font-size: 1.05rem; }
+  .current-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: var(--green); padding: 1px 4px; border-radius: 2px; }
+  .target-sub { font-size: 0.76rem; color: var(--slate-soft); margin: 2px 0 14px; }
+
+  .gh-link { display: inline-block; margin-top: 12px; font-size: 0.78rem; color: var(--slate-soft); }
+  .gh-link:hover { color: var(--blue); }
+
+  .cl-body { font-size: 0.88rem; line-height: 1.6; color: var(--slate); min-width: 0; overflow-wrap: break-word; word-break: break-word; }
+  .cl-body :global(p) { margin: 8px 0; }
+  .cl-body :global(:first-child) { margin-top: 0; }
+  .cl-body :global(h3), .cl-body :global(h4), .cl-body :global(h5), .cl-body :global(h6) { font-size: 0.92rem; font-weight: 700; color: var(--ink); margin: 16px 0 6px; }
+  .cl-body :global(ul) { margin: 6px 0 10px 18px; padding: 0; }
+  .cl-body :global(li) { margin: 3px 0; }
+  .cl-body :global(a) { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: break-word; }
+  .cl-body :global(code) { font-family: var(--mono); font-size: 0.85em; background: #f5f6f8; padding: 1px 4px; border-radius: 3px; overflow-wrap: break-word; }
+  .cl-body :global(pre) { background: #14171a; color: #e2e5ea; padding: 12px 14px; border-radius: 6px; overflow-x: auto; max-width: 100%; font-size: 0.8rem; }
+  .cl-body :global(pre code) { background: none; padding: 0; color: inherit; white-space: pre; overflow-wrap: normal; }
+  .cl-body :global(strong) { color: var(--ink); }
+  .cl-body :global(blockquote) { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--hairline-strong); color: var(--slate-soft); }
+
+  @media (max-width: 900px) {
+    .detail-pane { margin-top: 24px; border-left: none; border-top: 1px solid var(--hairline); padding-left: 0; padding-top: 20px; }
+  }
+</style>

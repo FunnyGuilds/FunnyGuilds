@@ -1,0 +1,14 @@
+# Cloudflare Pages configuration for the FunnyGuilds documentation site.
+# The site is a fully static Astro build; Cloudflare serves the `dist/` output.
+#
+# Deploy is handled by Cloudflare's GitHub integration (connect this repo in the
+# Cloudflare Pages dashboard). Build settings to configure there:
+#   Root directory:     docs
+#   Build command:      npm run build
+#   Build output dir:   dist
+#
+# For a manual one-off deploy from your machine: `npm run deploy`
+name = "funnyguilds"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "dist"
+/

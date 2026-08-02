@@ -1,0 +1,40 @@
+---
+title: PlaceholderAPI
+description: Exposing FunnyGuilds placeholders to other plugins through PlaceholderAPI.
+---
+
+Once [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) is
+detected, FunnyGuilds registers its own `funnyguilds` expansion — nothing needs to be
+downloaded via `/papi ecloud`. It makes FunnyGuilds data available to other plugins:
+chat formatters, GUIs and scoreboards.
+
+## How it works
+
+The expansion accepts **any** placeholder from the
+[built-in placeholder list](/en/placeholders/) — just write its name in lowercase
+after `funnyguilds_`:
+
+```
+%funnyguilds_<name>%   →   {NAME}
+```
+
+So there is no second list to remember: anything that works as `{X}` in the
+FunnyGuilds tablist or chat also works as `%funnyguilds_x%` in other plugins.
+
+| Example                           | Equivalent            | Returns                                        |
+|:----------------------------------|:----------------------|:-----------------------------------------------|
+| `%funnyguilds_player%`            | `{PLAYER}`            | The player's nickname                          |
+| `%funnyguilds_points%`            | `{POINTS}`            | The player's ranking points                    |
+| `%funnyguilds_g-tag%`             | `{G-TAG}`             | The player's guild tag                         |
+| `%funnyguilds_g-members-online%`  | `{G-MEMBERS-ONLINE}`  | The number of guild members online             |
+| `%funnyguilds_position-kills%`    | `{POSITION-KILLS}`    | The player's position in the kills top list    |
+| `%funnyguilds_gtop-avg_points-1%` | `{GTOP-AVG_POINTS-1}` | The first guild in the average-points top list |
+
+## Relational placeholder
+
+The expansion also provides one relational placeholder, which depends on who is
+looking at whom:
+
+| Placeholder             | Returns                                                                                               |
+|:------------------------|:--------------------------------------------------------------------------------------------------------|
+| `%rel_funnyguilds_tag%` | The observed player's guild tag, coloured by their relation to the observer (ally, enemy, same guild) |

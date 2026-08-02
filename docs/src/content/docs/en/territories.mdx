@@ -1,0 +1,139 @@
+---
+title: Territories & protection
+description: Guild heart, territory, enlarging, protection from players and TNT.
+---
+
+import HeartSurroundingsDemo from '../../../components/HeartSurroundingsDemo.astro';
+import EnlargeDemo from '../../../components/EnlargeDemo.astro';
+
+## Guild heart
+
+The heart is a block or entity (`ender_crystal` by default) placed when the
+guild is created — `heart-configuration.create-type`. Destroying it during a
+war costs the guild a life (see [Alliances & wars](/en/alliances-wars/)).
+
+Key options in the `heart-configuration` section:
+
+| Option | Default | Description |
+|---|---|---|
+| `center.height` | `FIXED` | Heart height: `FIXED` (a fixed value), `PLAYER` (the player's height) or `GRAVITY` (ground level) |
+| `center.fixed-height` | `60` | Height when `height: FIXED` |
+| `create-center-sphere` | `true` | Whether to surround the heart with an obsidian sphere |
+| `paste-schematic-on-creation` | `false` | Paste a custom base schematic (requires [WorldEdit](/en/worldguard-worldedit/)) |
+
+:::note[Other heart options]
+- `center.offset` — the heart's offset from the point resolved above.
+- `home-offset` / `home-head-position` — the spawn position at the base.
+- `interaction-protection` — blocks interaction right next to the heart (disabled by default).
+- `hologram` — hologram over the heart, requires [DecentHolograms](/en/decentholograms/).
+:::
+
+`create-center-sphere` and `paste-schematic-on-creation` can be combined with
+any custom build you like.
+
+<HeartSurroundingsDemo
+  label="Your guild"
+  stateLabels={['Bare heart', 'Obsidian sphere', 'Schematic cube', 'Schematic tower']}
+/>
+
+## Guild territory
+
+Territory size is set with `region-size` (**50** by default — the radius
+around the heart). A new territory must keep its distance from other
+territories (`region-min-distance`, 10 by default), from spawn
+(`create-distance`, 100 by default) and from the world border
+(`create-guild-min-distance`, 50 by default). An admin can relocate an
+existing territory with `/ga przenies <tag>`. Creating guilds (and thus
+territories) can be blocked on selected worlds — `blocked-worlds`.
+
+## Enlarging territory
+
+Players enlarge their territory with `/powieksz` — each level adds
+`enlarge-size` blocks (**5** by default) to the territory's radius. The cost
+grows with each level and is defined as a list in `enlarge-items`:
+
+<EnlargeDemo
+  levelLabel="Level"
+  radiusLabel="Radius"
+  costLabel="Cost of this level"
+  baseLevelText="base level"
+  blocksUnit="blocks"
+  diamondsUnit="diamonds"
+/>
+
+```yaml
+enlarge-items:
+- 8 diamond   # level 1
+- 16 diamond  # level 2
+- 24 diamond  # level 3
+# ... up to level 10 (80 diamonds)
+```
+
+An empty list (`enlarge-items: []`) disables enlarging entirely.
+
+## Territory protection
+
+By default, only guild members can build and break blocks on their own
+territory. On top of that:
+
+- **Blocked interactions** — `blocked-interact` (chests and trapped chests by
+  default) stops outsiders from interacting with the listed blocks on someone
+  else's territory.
+- **Teleporting onto another territory** — `block-teleport-on-region`
+  controls, separately for neutral, enemy and allied territory, whether
+  teleports (e.g. `/tp`) onto it are blocked.
+- **Respawn at base** — `respawn-in-base` respawns a player at their guild's
+  base after death.
+- **Escape** — `/ucieczka` (`/escape`) lets a player escape another guild's
+  territory after waiting `escape-delay` (2 minutes by default);
+  `escape-enable` turns the feature on, and `escape-spawn` lets guildless
+  players escape to spawn as well.
+
+:::note[Other protection options]
+`placing-blocks-bypass-on-region` (block types anyone may place regardless of
+territory), `block-flow`/`block-flow-on-region` (block liquids from flowing
+off or onto a territory), `region-commands` (commands blocked on someone
+else's territory),
+`region-notification-cooldown`/`notification-guild-member-display`
+(territory-entry notifications), `animals-protection` and the built-in
+"bugged blocks" mechanic (`bugged-blocks*` — an effect that only works on
+enemy territory).
+:::
+
+## TNT
+
+TNT can be restricted to a time window — the `tnt-protection` section:
+
+| Option | Description |
+|---|---|
+| `time.enabled` | TNT protection on guild territories during the given hours |
+| `time.enabled-global` | Same, but server-wide |
+| `time.start-time` / `time.end-time` | Hours the protection applies (`HH:mm` format) |
+| `time.exempt-entities` | Entities the protection doesn't apply to |
+| `build.min-height` / `build.max-height` | Heights TNT can be placed at |
+| `explode.min-height` / `explode.max-height` | Heights TNT explodes at |
+
+The `/tnt` command tells players whether TNT is currently active.
+
+Explosion damage is controlled separately by `explosion-control` (two
+sections: `guild` — explosions on guild territory, `global` — everywhere
+else). Each section sets a radius for recovering dropped items (`radius`)
+and the behavior for materials not explicitly listed (`default`): `-1` keeps
+the vanilla explosion, `0` destroys only the listed materials (full
+territory protection), and a positive value destroys blocks at random with
+the given probability.
+
+:::note[Other explosion options]
+`region-explode` (build lock duration after an explosion on guild
+territory), `region-explode-block-protected`/`region-explode-block-tnt-disabled`
+(conditions for that lock), `region-explode-exclude-entities`,
+`region-explode-block-breaking`/`region-explode-block-interactions`.
+:::
+
+## Heart security
+
+The `security-system` section is a simple anti-cheat that watches hits on the
+guild heart — it detects suspicious reach (`reach.survival-reach`/`creative-reach`,
+with a `reach.compensation` margin) and freecam. Once a player exceeds
+`max-violations` violations within 10 minutes, they lose the ability to
+interact with the guild heart.

@@ -1,0 +1,77 @@
+---
+// The same nav as the landing page (Landing.astro), not just a similar-looking one: logo,
+// four text links, a plain PL/EN switcher, nothing else. Search stays mounted because the docs
+// need it, but has no visual footprint — Ctrl+K still opens it, see `.fg-search` in custom.css.
+import config from 'virtual:starlight/user-config';
+import Search from 'virtual:starlight/components/Search';
+import SiteTitle from 'virtual:starlight/components/SiteTitle';
+import { LANDING_CONTENT } from '../lib/landing-content';
+import { getLocalePaths, getNavItems, isEnglish } from '../lib/nav-content';
+
+const shouldRenderSearch =
+  config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
+
+const path = Astro.url.pathname;
+const isEn = isEnglish(path);
+const t = LANDING_CONTENT[isEn ? 'en' : 'pl'];
+
+const { plHref, enHref } = getLocalePaths(path);
+const NAV = getNavItems(t, 'docs');
+---
+
+<div class="fg-header">
+  <div class="title-wrapper sl-flex">
+    <SiteTitle />
+  </div>
+  <div class="fg-right-cluster">
+    <nav class="sl-hidden md:sl-flex fg-nav-links print:hidden">
+      {NAV.map((item) => (
+        <a href={item.href} class={item.active ? 'active' : ''} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener' : undefined}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="fg-search print:hidden">{shouldRenderSearch && <Search />}</div>
+    <div class="sl-hidden md:sl-flex">
+      <div class="fg-lang-switch">
+        <a href={plHref} class={!isEn ? 'active' : ''}>PL</a>
+        <span class="sep">/</span>
+        <a href={enHref} class={isEn ? 'active' : ''}>EN</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    /* Named .fg-header, not .header — Starlight's own outer <header> (the
+       real, semantic one, from PageFrame.astro) also carries class="header",
+       and custom.css's unscoped `.header { border-bottom: ... }` rule (meant
+       for that outer element, to match Landing's nav border) doesn't know
+       the difference between two elements sharing the same class name. Reusing
+       it here gave this inner div its own border-bottom too, rendered at this
+       row's own (shorter, centered) height instead of the true header edge —
+       the stray horizontal line through the middle of the header. */
+    .fg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    .title-wrapper {
+      overflow: clip;
+      padding: 0.25rem;
+      margin: -0.25rem;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+
+    .fg-right-cluster {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      min-width: 0;
+    }
+  }
+</style>

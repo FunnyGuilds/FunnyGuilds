@@ -1,0 +1,43 @@
+---
+title: FAQ
+description: Frequently asked questions about the FunnyGuilds plugin.
+---
+
+A list of the most frequently asked questions about the FunnyGuilds plugin.
+
+## Fog when entering or leaving a guild's territory
+
+In `config.yml`, change
+
+```yaml
+notification-boss-bar-flags:
+- CREATE_FOG
+```
+
+to
+
+```yaml
+notification-boss-bar-flags: []
+```
+
+## What is a nightly build and where can I download one?
+
+Nightly builds are the freshest builds of the plugin, containing all the latest changes to the source code. An official release is put together every few nightly builds, so if you don't want to wait, you can keep up to date by grabbing them here: [FunnyGuilds Nightly](https://ci.insertt.dev/job/FunnyGuilds/).
+
+After installing such a version, you'll keep seeing a message about a newer version being available. This happens because the updater only takes official releases into account — nightlies aren't included. You can simply ignore that message.
+
+## Where do I find the list of FunnyGuilds permissions?
+
+You can find the list of permissions [here](/en/permissions/).
+
+## Tags, scoreboards and points under the nickname aren't working
+
+The most common cause of this kind of issue is another plugin using scoreboards and the elements tied to them, such as team tags above players' heads or points under the nickname. Since Bukkit provides no sensible API for this, every plugin registers its own scoreboards, which is often a source of conflicts. One example is Scoreboard Stats, which offers a `compatibility mode` option that lets the two work together correctly. If a plugin has no similar option in its configuration, it's incompatible with FunnyGuilds.
+
+## How do I set up holograms with the top guilds?
+
+[Example hologram configuration using PlaceholderAPI, HolographicExtension and HolographicDisplays](https://github.com/FunnyGuilds/FunnyGuilds/issues/1400#issuecomment-759867633)
+
+## How do I integrate the plugin with CombatLogX?
+
+First of all, remember not to test this on an account with administrator/`op` permissions — CombatLogX doesn't kill such players. Also pay attention to the settings for messages shown after death, as CombatLogX can override the message set in FunnyGuilds.

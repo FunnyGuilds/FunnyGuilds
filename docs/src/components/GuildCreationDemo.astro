@@ -1,0 +1,100 @@
+---
+// The founding moment end to end: raw wilderness, the creation command, then the claimed
+// territory popping in. Swaps the same footprint between the two states via terrain.ts's
+// `claimed` flag and a dispose+remount, the same idiom EnlargeDemo uses to grow a territory.
+interface Props {
+  /** Territory name shown once claimed. */
+  label: string;
+  /** Example command shown in the chat-style bubble, e.g. "/zaloz DZK dzikoysk". */
+  command: string;
+  /** Screen-reader names for the 3 phases, in order: wilderness, command, claimed. */
+  phaseLabels: [string, string, string];
+}
+const { label, command, phaseLabels } = Astro.props;
+---
+
+<div class="demo-card not-content">
+  <div class="demo-scene" id="gcd-root" data-label={label}>
+    <div class="gcd-command" id="gcd-command"><code>{command}</code></div>
+  </div>
+  <div class="demo-bar">
+    {phaseLabels.map((text, i) => (
+      <div class="demo-segment" data-index={i} aria-label={text}>
+        <div class="demo-track"><div class="demo-fill"></div></div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .gcd-command {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%) translateY(6px);
+    background: rgba(20, 23, 26, 0.88);
+    color: #fff;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-family: var(--sl-font-mono);
+    font-size: 12.5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 220ms ease, transform 220ms ease;
+    pointer-events: none;
+  }
+  .gcd-command.gcd-command--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+
+<script>
+  import { mountIsomapScene } from '../lib/isomap/scene';
+  import { setActiveSegment } from '../lib/demo-progress-bar';
+
+  const PHASE_DURATIONS = [2500, 2200, 3200] as const; // wilderness, command shown, claimed
+  const TERRITORY_SIZE = 7;
+  const HALF = Math.floor(TERRITORY_SIZE / 2);
+
+  const root = document.getElementById('gcd-root');
+  const commandEl = document.getElementById('gcd-command');
+  // Scoped to this demo's own card: .demo-segment is shared markup, so a second demo on the
+  // same page would otherwise have its bar driven by both scripts at once.
+  const segments = Array.from(root?.closest('.demo-card')?.querySelectorAll<HTMLElement>('.demo-segment') ?? []);
+
+  if (root) {
+    let dispose: (() => void) | null = null;
+    let phase = 0; // 0 = wilderness, 1 = command shown, 2 = claimed
+
+    function render() {
+      const claimed = phase === 2;
+      // Phases 0/1 share the same unclaimed scene — only remount when the claim state itself
+      // flips, so the command bubble fading in/out never causes a visible terrain flash.
+      if (phase !== 1) {
+        dispose?.();
+        dispose = mountIsomapScene(
+          root,
+          {
+            territories: [{ name: root.dataset.label ?? 'Gildia', c0: -HALF, r0: -HALF, size: TERRITORY_SIZE }],
+            margin: 14,
+            river: false,
+            claimed,
+          },
+          { frustumHalfHeight: 20 },
+        );
+      }
+      commandEl?.classList.toggle('gcd-command--visible', phase === 1);
+      setActiveSegment(segments, phase, PHASE_DURATIONS[phase]);
+    }
+
+    function step() {
+      phase = phase === 2 ? 0 : phase + 1;
+      render();
+      setTimeout(step, PHASE_DURATIONS[phase]);
+    }
+
+    render();
+    setTimeout(step, PHASE_DURATIONS[phase]);
+  }
+</script>

@@ -1,0 +1,16 @@
+:root {
+  --ink: #14171a; --paper: #ffffff; --slate: #5b6472; --slate-soft: #8a8f97;
+  --hairline: #e2e5ea; --hairline-strong: #ccd1d8;
+  --blue: #2f74f7; --gold: #f5a623; --coral: #ff5a5f; --green: #57b894;
+  --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; color-scheme: light;
+}
+a { text-decoration: none; color: var(--blue); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+h1 { margin: 0; text-wrap: balance; }
+p { margin: 0; }

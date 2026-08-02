@@ -1,0 +1,86 @@
+---
+title: Configuration
+description: Value types used in the FunnyGuilds configuration.
+---
+
+FunnyGuilds has a handful of its own configuration value types besides the
+built-in ones (String, Int, boolean...). This page collects all of them,
+along with their possible values and examples — for what a specific option
+does, see the feature page it belongs to (e.g. [Guilds](/en/guilds/) or
+[Territories & protection](/en/territories/)).
+
+## Regex
+
+A type used to validate strings — names, tags, etc.
+
+Predefined values:
+
+| Value                        | Description                                                     |
+| :----------------------------- | :----------------------------------------------------------------- |
+| `LOWERCASE`                  | Lowercase letters only                                           |
+| `UPPERCASE`                  | Uppercase letters only                                           |
+| `DIGITS`                     | Digits only                                                      |
+| `LOWERCASE_DIGITS`           | Lowercase letters and digits                                     |
+| `UPPERCASE_DIGITS`           | Uppercase letters and digits                                     |
+| `LETTERS`                    | Lowercase and uppercase letters                                  |
+| `LETTERS_DIGITS`             | Lowercase and uppercase letters plus digits                      |
+| `LETTERS_DIGITS_UNDERSCORE`  | Lowercase and uppercase letters, digits and underscores          |
+
+You can also define your own regular expression for this type —
+[this site](https://regex101.com/) comes in handy for that.
+
+## Duration
+
+Format: `<value><unit><value><unit><...>`
+
+Units:
+- `s` — seconds
+- `m` — minutes
+- `h` — hours
+- `d` — days
+
+Example: `1m30s` — 1.5 minutes.
+
+## Material
+
+A Bukkit material name (block or item), e.g. `DIAMOND` or `ender_crystal` —
+case doesn't matter. The full list of names is in the
+[`org.bukkit.Material` documentation](https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html).
+
+## ItemStack
+
+Format: `<amount> <MATERIAL>[:<data>] [attribute:value] [attribute:value] ...`
+
+Attributes (all optional, in any order):
+
+| Attribute | Value | Description |
+|---|---|---|
+| `name` / `displayname` | text | Item name (`&` colors; `_` becomes a space) |
+| `lore` | `line1#line2#...` | Item lore, lines separated by `#` |
+| `enchant` / `enchantment` | `ENCHANTMENT:level` | A single enchantment |
+| `enchants` / `enchantments` | `E1:l1,E2:l2` | Several enchantments at once |
+| `skullowner` | nickname | The owner of the player head |
+| `flags` / `itemflags` | `FLAG1,FLAG2` | Item flags (`ItemFlag`) |
+| `armorcolor` | `r_g_b` | Leather armor color |
+
+Example: `1 diamond name:&bReward_for_the_first_guild_on_the_server` — creates
+a diamond named "Reward for the first guild on the server".
+
+## Requirements
+
+```yaml
+# priority: <value> (0 to 127) # 1*
+items: (/en/configuration/#itemstack)
+- <item 1>
+- <item 2>
+- ...
+exp: <value>
+money: <value> (requires the Vault plugin)
+# ranking: <value> # 2*
+```
+
+1\* — the priority only needs to be given for requirements that depend on
+held permissions.
+
+2\* — the ranking value only needs to be given in contexts such as creating a
+guild or joining one.
