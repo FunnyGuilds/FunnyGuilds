@@ -10,6 +10,8 @@ export interface NavContent {
 export type NavActive = 'home' | 'docs' | 'download';
 
 export interface NavItem {
+  /** Identifies the entry so the nav can style it per breakpoint — see Nav.astro's mobile rules. */
+  key: NavActive | 'discord';
   href: string;
   label: string;
   active: boolean;
@@ -23,10 +25,10 @@ const DISCORD_URL = 'https://discord.gg/CYvyq3u';
 // actual bug that shipped once already, when Header.astro hardcoded its own copy.
 export function getNavItems(t: NavContent, active: NavActive): NavItem[] {
   return [
-    { href: t.lang === 'pl' ? '/' : '/en/', label: t.nav.home, active: active === 'home' },
-    { href: t.docsHref, label: t.nav.docs, active: active === 'docs' },
-    { href: t.downloadHref, label: t.nav.download, active: active === 'download' },
-    { href: DISCORD_URL, label: t.nav.discord, active: false, external: true },
+    { key: 'home', href: t.lang === 'pl' ? '/' : '/en/', label: t.nav.home, active: active === 'home' },
+    { key: 'docs', href: t.docsHref, label: t.nav.docs, active: active === 'docs' },
+    { key: 'download', href: t.downloadHref, label: t.nav.download, active: active === 'download' },
+    { key: 'discord', href: DISCORD_URL, label: t.nav.discord, active: false, external: true },
   ];
 }
 
