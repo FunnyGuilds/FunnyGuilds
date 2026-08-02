@@ -40,9 +40,20 @@ const terrainData = generateTerrain(LANDING_TERRAIN_CONFIG);
     .app { height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
 
     .split { flex: 1 1 auto; display: flex; flex-direction: row; min-height: 0; }
-    @media (max-width: 860px) { .split { flex-direction: column; } .pane-right { display: none; } }
 
     .pane-left { flex: 0 0 32%; display: flex; align-items: center; padding: clamp(22px, 3.4vw, 44px); z-index: 1; min-height: 0; }
+
+    /* The map is desktop-only, so below this the page is just the hero. It has to stop being a
+       locked-height flex row at that point: `flex: 0 0 32%` becomes 32% of *height* once the
+       split stacks, which cropped the hero and pushed it up under the nav, and the fixed
+       100dvh with overflow:hidden left no way to scroll to what was cut off. */
+    @media (max-width: 860px) {
+      html, body { height: auto; overflow: visible; }
+      .app { height: auto; min-height: 100dvh; }
+      .split { flex-direction: column; }
+      .pane-right { display: none; }
+      .pane-left { flex: 1 1 auto; padding-top: 30px; padding-bottom: 40px; }
+    }
     .content { max-width: 380px; }
     .eyebrow { display: block; font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate); margin-bottom: 14px; }
     h1 { font-weight: 700; font-size: clamp(1.4rem, 2.3vw, 1.9rem); line-height: 1.15; letter-spacing: -0.02em; }

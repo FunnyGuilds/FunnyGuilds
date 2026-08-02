@@ -49,9 +49,16 @@ const items = getNavItems(t, active);
   .lang-switch a.active { color: var(--blue); }
   .lang-switch .sep { color: var(--hairline-strong); }
 
-  /* Below this, brand+tabs+lang-switch no longer fit in one row without wrapping/overflow — same
-     breakpoint Header.astro uses to hide its own tabs (sl-hidden md:sl-flex, 768px). */
+  /* Below this the three groups stop fitting on one line, so the links wrap onto their own row
+     rather than being hidden: unlike the docs pages, these pages have no drawer to fall back on,
+     and hiding them left the landing page with no way to reach the documentation at all. */
   @media (max-width: 640px) {
-    .tabs { display: none; }
+    nav { height: auto; flex-wrap: wrap; padding: 10px 16px 11px; row-gap: 9px; }
+    /* Ungroup .nav-right so brand and language sit on the first row and the links get the
+       second one to themselves — keeping all three together overflowed at 320px. */
+    .nav-right { display: contents; }
+    .brand { order: 1; }
+    .lang-switch { order: 2; margin-left: auto; padding-left: 0; border-left: none; }
+    .tabs { order: 3; width: 100%; gap: 18px; font-size: 13px; }
   }
 </style>
