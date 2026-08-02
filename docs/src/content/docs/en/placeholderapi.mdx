@@ -3,57 +3,38 @@ title: PlaceholderAPI
 description: Exposing FunnyGuilds placeholders to other plugins through PlaceholderAPI.
 ---
 
-Once [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-is detected, FunnyGuilds registers its own `%funnyguilds_x%` expansion — no
-extra download via `/papi ecloud` needed. The expansion exposes the same
-data as the [built-in placeholders](/en/placeholders/) (`{X}`), just in a
-format other plugins (chat, GUI, scoreboards outside FunnyGuilds, etc.) can
-read — the variable name after `funnyguilds_` corresponds directly to the
-name from the built-in placeholder list.
+Once [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) is
+detected, FunnyGuilds registers its own `funnyguilds` expansion — nothing needs to be
+downloaded via `/papi ecloud`. It makes FunnyGuilds data available to other plugins:
+chat formatters, GUIs and scoreboards.
 
-## Player
+## How it works
 
-- `%funnyguilds_player%`
-- `%funnyguilds_ping%`
-- `%funnyguilds_ping-format%`
-- `%funnyguilds_points%`
-- `%funnyguilds_points-format%`
-- `%funnyguilds_kills%`
-- `%funnyguilds_deaths%`
-- `%funnyguilds_assists%`
-- `%funnyguilds_logouts%`
-- `%funnyguilds_kdr%`
-- `%funnyguilds_position-<type>%`
-- `%funnyguilds_guild-position%`
+The expansion accepts **any** placeholder from the
+[built-in placeholder list](/en/placeholders/) — just write its name in lowercase
+after `funnyguilds_`:
 
-## Relational Player
+```
+%funnyguilds_<name>%   →   {NAME}
+```
 
-- `%rel_funnyguilds_tag%`
+So there is no second list to remember: anything that works as `{X}` in the
+FunnyGuilds tablist or chat also works as `%funnyguilds_x%` in other plugins.
 
-## Guild
+| Example                           | Equivalent            | Returns                                        |
+|:----------------------------------|:----------------------|:-----------------------------------------------|
+| `%funnyguilds_player%`            | `{PLAYER}`            | The player's nickname                          |
+| `%funnyguilds_points%`            | `{POINTS}`            | The player's ranking points                    |
+| `%funnyguilds_g-tag%`             | `{G-TAG}`             | The player's guild tag                         |
+| `%funnyguilds_g-members-online%`  | `{G-MEMBERS-ONLINE}`  | The number of guild members online             |
+| `%funnyguilds_position-kills%`    | `{POSITION-KILLS}`    | The player's position in the kills top list    |
+| `%funnyguilds_gtop-avg_points-1%` | `{GTOP-AVG_POINTS-1}` | The first guild in the average-points top list |
 
-- `%funnyguilds_g-allies%`
-- `%funnyguilds_g-deaths%`
-- `%funnyguilds_g-deputies%`
-- `%funnyguilds_g-deputy%`
-- `%funnyguilds_g-kdr%`
-- `%funnyguilds_g-kills%`
-- `%funnyguilds_g-lives%`
-- `%funnyguilds_g-members-all%`
-- `%funnyguilds_g-members-online%`
-- `%funnyguilds_g-name%`
-- `%funnyguilds_g-owner%`
-- `%funnyguilds_g-points-format%`
-- `%funnyguilds_g-points%`
-- `%funnyguilds_g-position%`
-- `%funnyguilds_g-position-<type>%`
-- `%funnyguilds_g-region-size%`
-- `%funnyguilds_g-tag%`
-- `%funnyguilds_g-validity%`
+## Relational placeholder
 
-## Global
+The expansion also provides one relational placeholder, which depends on who is
+looking at whom:
 
-- `%funnyguilds_gtop-<type>-<position>%`
-- `%funnyguilds_ptop-<type>-<position>%`
-- `%funnyguilds_guilds%`
-- `%funnyguilds_users%`
+| Placeholder             | Returns                                                                                               |
+|:------------------------|:--------------------------------------------------------------------------------------------------------|
+| `%rel_funnyguilds_tag%` | The observed player's guild tag, coloured by their relation to the observer (ally, enemy, same guild) |

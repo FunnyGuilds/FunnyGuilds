@@ -4,56 +4,38 @@ description: Udostępnianie placeholderów FunnyGuilds innym pluginom przez Plac
 ---
 
 Po wykryciu [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
-FunnyGuilds rejestruje własną ekspansję `%funnyguilds_x%` — bez dodatkowego
-pobierania przez `/papi ecloud`. Ekspansja udostępnia te same dane co
-[wbudowane placeholdery](/placeholders/) (`{X}`), tylko w formacie zrozumiałym
-dla innych pluginów — czatów, GUI czy scoreboardów spoza FunnyGuilds. Nazwa
-zmiennej po `funnyguilds_` odpowiada wprost nazwie z listy wbudowanych
-placeholderów.
+FunnyGuilds rejestruje własną ekspansję `funnyguilds` — bez pobierania czegokolwiek
+przez `/papi ecloud`. Dzięki niej dane FunnyGuilds trafiają do innych pluginów:
+czatów, GUI czy scoreboardów.
 
-## Zmienne gracza
+## Jak to działa
 
-- `%funnyguilds_player%`
-- `%funnyguilds_ping%`
-- `%funnyguilds_ping-format%`
-- `%funnyguilds_points%`
-- `%funnyguilds_points-format%`
-- `%funnyguilds_kills%`
-- `%funnyguilds_deaths%`
-- `%funnyguilds_assists%`
-- `%funnyguilds_logouts%`
-- `%funnyguilds_kdr%`
-- `%funnyguilds_position-<typ>%`
-- `%funnyguilds_guild-position%`
+Ekspansja przyjmuje **dowolny** placeholder z listy
+[wbudowanych placeholderów](/placeholders/) — wystarczy wpisać jego nazwę małymi
+literami po `funnyguilds_`:
 
-## Zmienne relacyjne gracza
+```
+%funnyguilds_<nazwa>%   →   {NAZWA}
+```
 
-- `%rel_funnyguilds_tag%`
+Nie ma więc osobnej listy do zapamiętania: wszystko, co działa jako `{X}` na
+tabliście czy czacie FunnyGuilds, działa też jako `%funnyguilds_x%` w innych
+pluginach.
 
-## Zmienne gildii
+| Przykład                          | Odpowiednik           | Zwraca                                   |
+|:----------------------------------|:----------------------|:-----------------------------------------|
+| `%funnyguilds_player%`            | `{PLAYER}`            | Nick gracza                              |
+| `%funnyguilds_points%`            | `{POINTS}`            | Punkty rankingowe gracza                 |
+| `%funnyguilds_g-tag%`             | `{G-TAG}`             | Tag gildii gracza                        |
+| `%funnyguilds_g-members-online%`  | `{G-MEMBERS-ONLINE}`  | Liczba członków gildii online            |
+| `%funnyguilds_position-kills%`    | `{POSITION-KILLS}`    | Pozycja gracza w topce zabójstw          |
+| `%funnyguilds_gtop-avg_points-1%` | `{GTOP-AVG_POINTS-1}` | Pierwsza gildia w topce średnich punktów |
 
-- `%funnyguilds_g-allies%`
-- `%funnyguilds_g-deaths%`
-- `%funnyguilds_g-deputies%`
-- `%funnyguilds_g-deputy%`
-- `%funnyguilds_g-kdr%`
-- `%funnyguilds_g-kills%`
-- `%funnyguilds_g-lives%`
-- `%funnyguilds_g-members-all%`
-- `%funnyguilds_g-members-online%`
-- `%funnyguilds_g-name%`
-- `%funnyguilds_g-owner%`
-- `%funnyguilds_g-points-format%`
-- `%funnyguilds_g-points%`
-- `%funnyguilds_g-position%`
-- `%funnyguilds_g-position-<typ>%`
-- `%funnyguilds_g-region-size%`
-- `%funnyguilds_g-tag%`
-- `%funnyguilds_g-validity%`
+## Placeholder relacyjny
 
-## Zmienne globalne
+Ekspansja udostępnia też jeden placeholder relacyjny — zależny od tego, kto na
+kogo patrzy:
 
-- `%funnyguilds_gtop-<typ>-<pozycja>%`
-- `%funnyguilds_ptop-<typ>-<pozycja>%`
-- `%funnyguilds_guilds%`
-- `%funnyguilds_users%`
+| Placeholder             | Zwraca                                                                                                            |
+|:------------------------|:------------------------------------------------------------------------------------------------------------------|
+| `%rel_funnyguilds_tag%` | Tag gildii obserwowanego gracza, pokolorowany według jego relacji z obserwatorem (sojusznik, wróg, ta sama gildia) |
