@@ -1,0 +1,73 @@
+name: Docs
+
+# Builds the Astro site in docs/ and publishes it to GitHub Pages.
+#
+# The checkout deliberately does not fetch Git LFS. Nothing in the build reads jar bytes: the
+# release table is built from the archived changelogs, and download links point at GitHub release
+# assets. Fetching LFS here would bill ~143 MB against the organisation's LFS bandwidth on every
+# run for no benefit.
+#
+# Set the custom domain under Settings -> Pages, and the source to "GitHub Actions".
+
+on:
+  push:
+    branches: [ 5.x ]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [ 5.x ]
+    paths:
+      - 'docs/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+      # Only on 5.x: pull requests build to verify the site still compiles, but publish nothing.
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+  deploy:
+    name: Deploy
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

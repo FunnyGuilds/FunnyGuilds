@@ -60,7 +60,7 @@ npm run preview  # preview the production build locally
 | The isometric map (layout / terrain data) | `src/lib/isomap/terrain.ts` |
 | The isometric map (3D scene / rendering) | `src/lib/isomap/scene.ts`, `geometry.ts` |
 | Download page copy | `src/lib/download-content.ts` |
-| Release list / archive table | `public/archive/<tag>/`, indexed by `src/lib/release-archive.ts` |
+| Release list / archive table | `docs/archive/<tag>/`, indexed by `src/lib/release-archive.ts` |
 | Docs theme / colors / fonts | `src/styles/custom.css` (Starlight pages only — the homepage has its own styles) |
 
 All content pages now exist in both Polish and English (translated from the
