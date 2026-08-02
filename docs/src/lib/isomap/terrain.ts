@@ -1,4 +1,3 @@
-// Must match isomap.legacy-svg.ts's layout exactly (same seeded PRNG) — this is a new renderer for the same map, not a new map.
 import { MathUtils } from 'three';
 import { seededRandom } from './mersenne-twister';
 import { valueNoise } from './noise';
@@ -32,14 +31,21 @@ export interface TerrainConfig {
   river?: boolean;
   /** Tiles of wilderness generated beyond the outermost territory. Default 40. */
   margin?: number;
+  /**
+   * When false, territories still reserve their footprint (so bounds and camera framing stay
+   * identical) but get no wall ring, moat or flattened interior — the area generates as plain
+   * wilderness, as if nothing had been founded there yet. Default true.
+   */
+  claimed?: boolean;
 }
 
+// Labels are guild tags for FunnyGuilds' top contributors, matching the HUD tags in Landing.astro.
 export const LANDING_TERRAIN_CONFIG: TerrainConfig = {
   territories: [
-    { name: 'Nordheim', c0: -19, r0: -2 },
-    { name: 'Ashfall', c0: 14, r0: 8 },
-    { name: 'Wren', c0: -15, r0: 26 },
-    { name: 'Ember', c0: 17, r0: 30 },
+    { name: 'DZK', c0: -15, r0: 26 },
+    { name: 'INS', c0: 17, r0: 30 },
+    { name: 'P3R', c0: -19, r0: -2 },
+    { name: 'KIM', c0: 14, r0: 8 },
   ],
 };
 
@@ -83,6 +89,8 @@ export interface WaterWall {
 }
 
 export interface TerrainData {
+  /** Mirrors TerrainConfig.claimed — gates the heart/brackets/label in scene.ts. */
+  claimed: boolean;
   territories: Territory[];
   flatTiles: FlatTile[];
   waterTiles: WaterTile[];
@@ -117,6 +125,7 @@ export function generateTerrain(config: TerrainConfig): TerrainData {
   const territoryInputs = config.territories;
   const riverEnabled = config.river ?? true;
   const margin = config.margin ?? 40;
+  const claimed = config.claimed ?? true;
 
   function riverColumn(r: number): number {
     return Math.round(RIVER_COL + RIVER_AMPLITUDE * Math.sin(r * RIVER_FREQUENCY));
@@ -141,15 +150,15 @@ export function generateTerrain(config: TerrainConfig): TerrainData {
     const dr = r - MathUtils.clamp(r, t.r0, t.r0 + size - 1);
     return Math.max(Math.abs(dc), Math.abs(dr));
   }
-  // Per-territory, not a min-distance-across-all-territories check — those disagree when rings overlap.
+  // Per-territory, not a min-distance across all of them — those disagree when rings overlap.
   function isTerritory(c: number, r: number): boolean {
-    return territoryInputs.some((t) => ringDistance(c, r, t) <= 2);
+    return claimed && territoryInputs.some((t) => ringDistance(c, r, t) <= 2);
   }
   function isWallRing(c: number, r: number): boolean {
-    return territoryInputs.some((t) => ringDistance(c, r, t) === 1);
+    return claimed && territoryInputs.some((t) => ringDistance(c, r, t) === 1);
   }
   function isMoatRing(c: number, r: number): boolean {
-    return territoryInputs.some((t) => ringDistance(c, r, t) === 2);
+    return claimed && territoryInputs.some((t) => ringDistance(c, r, t) === 2);
   }
   // Moat only becomes water a few tiles clear of the river, so the two features don't collide.
   function isWater(c: number, r: number): boolean {
@@ -213,7 +222,7 @@ export function generateTerrain(config: TerrainConfig): TerrainData {
       if (isWater(c, r)) {
         const deep = seededRandom(c, r, 5)() < 0.18;
         waterTiles.push({ x, z, deep });
-        // Only -x/-z needs a wall patch; the +x/+z neighbor is taller and closer to the camera, so it already occludes that side.
+        // Only -x/-z needs a wall patch; the +x/+z neighbour is closer to the camera and occludes its own side.
         if (!isWater(c - 1, r)) waterWalls.push({ x: c * TILE, z, axis: 'x' });
         if (!isWater(c, r - 1)) waterWalls.push({ x, z: r * TILE, axis: 'z' });
         continue;
@@ -260,6 +269,7 @@ export function generateTerrain(config: TerrainConfig): TerrainData {
 
   const groundMargin = TILE * 6;
   return {
+    claimed,
     territories,
     flatTiles,
     waterTiles,

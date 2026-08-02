@@ -3,61 +3,61 @@ title: Placeholdery
 description: Lista wbudowanych placeholderów FunnyGuilds i ich znaczenie.
 ---
 
-FunnyGuilds posiada wiele wbudowanych placeholderów. W tym miejscu znajdziesz listę oraz informację co dany placeholder zwraca jako swoją wartość.
+FunnyGuilds ma wiele wbudowanych placeholderów. Poniżej znajduje się ich pełna lista wraz z informacją, co zwraca każdy z nich.
 
-Jeśli placeholder będzie miał nad sobą napisane `@Deprecated` oznacza to, że dany placeholder może zostać usunięty w przyszłości i nie zalecamy jego użycia. Najczęściej będzie podany zamiennik jaki zalecamy użyć.
+Dopisek `@Deprecated` przy placeholderze oznacza, że może on zostać w przyszłości usunięty i nie zalecamy jego używania. Zwykle podajemy przy nim zalecany zamiennik.
 
-## Placeholdery Gracza
+## Placeholdery gracza
 #### - Podstawowe -
 
 |   Placeholder    | Opis                                                                                                                              |
 |:----------------:|:----------------------------------------------------------------------------------------------------------------------------------|
-| ` PLAYER`/`NAME` | Zwraca nick gracza                                                                                                                |
+| `PLAYER`/`NAME`  | Zwraca nick gracza                                                                                                                |
 |      `PING`      | Zwraca aktualny ping gracza                                                                                                       |
 |  `PING-FORMAT`   | Zwraca aktualny ping gracza, sformatowany z użyciem opcji `ping-format` w `config.yml`                                            |
-|     `WORLD`      | Zwraca nazwę świata w którym gracz się aktualnie znajduje                                                                         |
-|     `ONLINE`     | Zwraca aktualną liczbę graczy online dla tego graczy (nie licząc graczy, których dany gracz nie widzi - przykładowo na `Vanishu`) |
+|     `WORLD`      | Zwraca nazwę świata, w którym aktualnie znajduje się gracz                                                                        |
+|     `ONLINE`     | Zwraca liczbę graczy online widoczną dla tego gracza (bez graczy, których on sam nie widzi — przykładowo tych na vanishu)         |
 
 #### - Rankingowe -
 
 |        Placeholder        | Opis                                                                                                                                                                             |
 |:-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |         `POINTS`          | Zwraca aktualną liczbę punktów rankingowych gracza                                                                                                                               |
-|      `POINTS-FORMAT`      | Zwraca aktualną liczbę punktów rankingowych gracza, sformatowanych z użyciem opcji `points-format` w `config.yml`                                                            |
+|      `POINTS-FORMAT`      | Zwraca aktualną liczbę punktów rankingowych gracza, sformatowaną z użyciem opcji `points-format` w `config.yml`                                                              |
 |          `KILLS`          | Zwraca aktualną liczbę zabójstw gracza                                                                                                                                           |
 |         `DEATHS`          | Zwraca aktualną liczbę śmierci gracza                                                                                                                                            |
 |         `ASSISTS`         | Zwraca aktualną liczbę asyst gracza                                                                                                                                              |
 |         `LOGOUTS`         | Zwraca aktualną liczbę wylogowań gracza podczas walki                                                                                                                            |
 |           `KDR`           | Zwraca KDR gracza (zabójstwa / śmierci)                                                                                                                                          |
-|           `KDA`           | Zwraca KDA gracza ((zabójstwa + assysty) / śmierci)                                                                                                                              |
-| **Deprecated** `POSITION` | Zalecamy użycie placeholdera `position-{typ}` opisanego niżej. Zwraca pozycję gracza w topce punktów rankingowych                                                           |
-|     `POSITION-{typ}`      | Pozycja gracza w topce o podanym typie (np. `DEATHS`). Listę dostępnych (i aktualnie włączonych) typów można znaleźć w configu pod opcją `top.enabled-user-tops` w `config.yml`. |
+|           `KDA`           | Zwraca KDA gracza ((zabójstwa + asysty) / śmierci)                                                                                                                               |
+| **Deprecated** `POSITION` | Zwraca pozycję gracza w topce punktów rankingowych. Zalecamy użycie opisanego niżej placeholdera `position-{typ}`                                                                 |
+|     `POSITION-{typ}`      | Pozycja gracza w topce o podanym typie (np. `DEATHS`). Listę dostępnych (i aktualnie włączonych) typów zawiera opcja `top.enabled-user-tops` w `config.yml`.                      |
 |     `PTOP-<pozycja>`      | Gracz na podanej pozycji w rankingu (np. `{PTOP-1}`, `{PTOP-60}`)                                                                                                                    |
 |  `PTOP-<typ>-<pozycja>`   | Gracz na podanej pozycji w rankingu (np. `{PTOP-KILLS-1}`, `{PTOP-DEATHS-60}`), dla danego typu rankingu                                                                             |
 
-## Placeholdery Gildyjne
+## Placeholdery gildyjne
 
 #### - Podstawowe -
 
 |     Placeholder      | Opis                                                                                                                                                                                                                      |
 |:--------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|       `G-NAME`       | Nazwa gildii do której należy gracz                                                                                                                                                                                       | 
+|       `G-NAME`       | Nazwa gildii, do której należy gracz                                                                                                                                                                                      | 
 |       `G-TAG`        | Tag gildii gracza                                                                                                                                                                                                         | 
-|      `G-OWNER`       | Właściciel gildii                                                                                                                                                                                                         | 
+|      `G-OWNER`       | Lider gildii                                                                                                                                                                                                              | 
 |     `G-DEPUTIES`     | Zastępcy gildii                                                                                                                                                                                                           | 
-|      `G-DEPUTY`      | Losowy z zastępców gildii                                                                                                                                                                                                 | 
+|      `G-DEPUTY`      | Losowo wybrany zastępca gildii                                                                                                                                                                                            | 
 |      `G-LIVES`       | Liczba żyć gildii                                                                                                                                                                                                         | 
-|   `G-LIVES-SYMBOL`   | Liczba żyć gildii, w postaci powtarzającego się symbolu (do ustawienia w lives-repeating-symbol.full, w config.yml), z pustymi serduszkami jeśli żyć brakuje (do ustawienia w lives-repeating-symbol.empty, w config.yml) | 
-| `G-LIVES-SYMBOL-ALL` | Liczba wszystkich żyć gildii, w postaci powtarzającego się symbolu (do ustawienia w lives-repeating-symbol.full, w config.yml)                                                                                            | 
+|   `G-LIVES-SYMBOL`   | Liczba żyć gildii w postaci powtarzającego się symbolu (do ustawienia w `lives-repeating-symbol.full` w `config.yml`), z pustymi serduszkami w miejsce brakujących żyć (`lives-repeating-symbol.empty`)                     | 
+| `G-LIVES-SYMBOL-ALL` | Liczba wszystkich żyć gildii w postaci powtarzającego się symbolu (do ustawienia w `lives-repeating-symbol.full` w `config.yml`)                                                                                           | 
 |    `G-ALLIES-ALL`    | Liczba sojuszników gildii                                                                                                                                                                                                 | 
-|   `G-ENEMIES-ALL`    | Liczba przeciwników gildii                                                                                                                                                                                                | 
+|   `G-ENEMIES-ALL`    | Liczba wrogów gildii                                                                                                                                                                                                      | 
 |  `G-MEMBERS-ONLINE`  | Liczba członków gildii online                                                                                                                                                                                             | 
 |   `G-MEMBERS-ALL`    | Liczba wszystkich członków gildii                                                                                                                                                                                         | 
 |     `G-VALIDITY`     | Data wygaśnięcia gildii                                                                                                                                                                                                   | 
 |  `G-VALIDITY-TIME`   | Czas do wygaśnięcia gildii (np. 5 dni 2 godziny 1 minuta)                                                                                                                                                                 | 
 |    `G-PROTECTION`    | Data wygaśnięcia ochrony gildii                                                                                                                                                                                           | 
 | `G-PROTECTION-TIME`  | Czas do wygaśnięcia ochrony gildii (np. 5 dni 2 godziny 1 minuta)                                                                                                                                                         | 
-|   `G-REGION-SIZE`    | Rozmiar gildii                                                                                                                                                                                                            | 
+|   `G-REGION-SIZE`    | Rozmiar terenu gildii                                                                                                                                                                                                     | 
 
 #### - Rankingowe -
 
@@ -103,6 +103,6 @@ Jeśli placeholder będzie miał nad sobą napisane `@Deprecated` oznacza to, ż
 ## - Dodatkowe zewnętrzne integracje -
 |  Placeholder  | Opis                                                                                         |
 |:-------------:|:---------------------------------------------------------------------------------------------|
-|  `WG-REGION`  | Aktualny region z WorldGuarda w którym znajduję się gracz                                    |
-| `WG-REGIONS`  | Aktualna lista regionów z WorldGuarda w których znajduje się gracz - oddzielone po przecinku |
-| `VAULT-MONEY` | Aktualny stan konta gracza pobranego przez plugin [Vault](https://github.com/MilkBowl/Vault) |
+|  `WG-REGION`  | Region WorldGuarda, w którym aktualnie znajduje się gracz                                     |
+| `WG-REGIONS`  | Lista regionów WorldGuarda, w których aktualnie znajduje się gracz — oddzielona przecinkami   |
+| `VAULT-MONEY` | Aktualny stan konta gracza, pobrany z pluginu [Vault](https://github.com/MilkBowl/Vault)      |

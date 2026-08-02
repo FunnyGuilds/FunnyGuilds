@@ -1,4 +1,4 @@
-import releaseMeta from './latest-release.json';
+import { LATEST_RELEASE as releaseMeta } from './release-archive';
 import { renderChangelog } from './format-changelog';
 
 export interface ReleaseInfo {
@@ -13,16 +13,13 @@ export interface ReleaseInfo {
 export function getReleaseInfo(lang: 'pl' | 'en'): ReleaseInfo {
   const locale = lang === 'pl' ? 'pl-PL' : 'en-US';
   const sizeMb = releaseMeta.jarSize / (1024 * 1024);
-  // Match against the extension-stripped name — MC.<range> is always the trailing segment, and
-  // the range itself contains dots (e.g. "1.8-1.21"), so anchoring on ".jar" avoids swallowing it.
-  const mcMatch = releaseMeta.jarName.replace(/\.jar$/, '').match(/MC\.(.+-.+)$/);
 
   return {
-    version: releaseMeta.tagName,
+    version: releaseMeta.tag,
     downloadPath: releaseMeta.downloadPath,
     sizeLabel: `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(sizeMb)} MB`,
     dateLabel: new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(releaseMeta.publishedAt)),
-    mcRange: mcMatch ? mcMatch[1].replace('-', ' – ') : null,
-    changelogHtml: renderChangelog(releaseMeta.body ?? ''),
+    mcRange: releaseMeta.mcRange,
+    changelogHtml: renderChangelog(releaseMeta.body),
   };
 }

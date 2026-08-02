@@ -1,0 +1,225 @@
+---
+// Shows that the heart needn't sit out in the open — create-center-sphere and
+// paste-schematic-on-creation let admins bury it inside their own structure. Cycles through four
+// example surroundings via mountIsomapScene's `decorate` hook, swapping a mesh in and out of the
+// one scene rather than building a second renderer.
+interface Props {
+  /** Territory name shown as the in-scene label. */
+  label: string;
+  /** Screen-reader names for the 4 states, in order: bare heart, sphere, cube, tower. */
+  stateLabels: [string, string, string, string];
+}
+const { label, stateLabels } = Astro.props;
+---
+
+<div class="demo-card not-content">
+  <div class="demo-scene" id="hsd-root" data-label={label}></div>
+  <div class="demo-bar">
+    {stateLabels.map((text, i) => (
+      <div class="demo-segment" data-index={i} aria-label={text}>
+        <div class="demo-track"><div class="demo-fill"></div></div>
+      </div>
+    ))}
+  </div>
+</div>
+
+
+<script>
+  import * as THREE from 'three';
+  import { mountIsomapScene } from '../lib/isomap/scene';
+  import { disposeObject3D, makeGridTexture } from '../lib/isomap/geometry';
+  import { STONE_TOP } from '../lib/isomap/colors';
+  import { TILE } from '../lib/isomap/terrain';
+  import type { Territory } from '../lib/isomap/terrain';
+  import { setActiveSegment } from '../lib/demo-progress-bar';
+
+  const DWELL_MS = 2500;
+  type ShapeId = 'none' | 'sphere' | 'cube' | 'tower';
+  const SEQUENCE: ShapeId[] = ['none', 'sphere', 'cube', 'tower'];
+
+  function shadeColor(hex: number, factor: number): number {
+    return new THREE.Color(hex).multiplyScalar(factor).getHex();
+  }
+
+  // Same two-tone trick the terrain uses (see HILL_TOP in colors.ts): shading every other block
+  // keeps the structure readable as individual blocks rather than one blob.
+  function parityOf(cell: THREE.Vector3): number {
+    const sum = Math.round(cell.x) + Math.round(cell.y) + Math.round(cell.z);
+    return Math.abs(sum % 2);
+  }
+
+  // Cubes with the terrain's own grid texture, so structures read as built from blocks rather
+  // than smooth primitives dropped into a voxel scene. Cells are in block units; y=0 is the heart.
+  function voxelGroup(cells: THREE.Vector3[], color: number, gridTexture: THREE.Texture, blockSize: number = TILE): THREE.Group {
+    const group = new THREE.Group();
+    if (cells.length === 0) return group;
+    const gap = blockSize * 0.16; // visible reveal between blocks — the seam has to read at a glance, not just in the texture's grid lines
+    const geometry = new THREE.BoxGeometry(blockSize - gap, blockSize - gap, blockSize - gap);
+    const materials = [
+      new THREE.MeshBasicMaterial({ color, map: gridTexture }),
+      new THREE.MeshBasicMaterial({ color: shadeColor(color, 0.76), map: gridTexture }),
+    ];
+    const byParity: THREE.Vector3[][] = [[], []];
+    cells.forEach((cell) => byParity[parityOf(cell)].push(cell));
+
+    byParity.forEach((subset, parity) => {
+      if (subset.length === 0) return;
+      const mesh = new THREE.InstancedMesh(geometry, materials[parity], subset.length);
+      const matrix = new THREE.Matrix4();
+      subset.forEach((cell, i) => {
+        matrix.makeTranslation(cell.x * blockSize, cell.y * blockSize, cell.z * blockSize);
+        mesh.setMatrixAt(i, matrix);
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+      group.add(mesh);
+    });
+    return group;
+  }
+
+  // Built from half-size sub-blocks: at full TILE size there aren't enough steps from centre to
+  // surface to read as a curve, and the "sphere" just looks like a lumpy cube.
+  function sphereCells(radiusInSubBlocks: number): THREE.Vector3[] {
+    const cells: THREE.Vector3[] = [];
+    const r = Math.ceil(radiusInSubBlocks);
+    for (let x = -r; x <= r; x++) {
+      for (let y = -r; y <= r; y++) {
+        for (let z = -r; z <= r; z++) {
+          if (Math.sqrt(x * x + y * y + z * z) <= radiusInSubBlocks) cells.push(new THREE.Vector3(x, y, z));
+        }
+      }
+    }
+    return cells;
+  }
+
+  function cubeCells(sizeInBlocks: number): THREE.Vector3[] {
+    const cells: THREE.Vector3[] = [];
+    const half = (sizeInBlocks - 1) / 2;
+    for (let x = -half; x <= half; x++) {
+      for (let y = -half; y <= half; y++) {
+        for (let z = -half; z <= half; z++) {
+          cells.push(new THREE.Vector3(x, y, z));
+        }
+      }
+    }
+    return cells;
+  }
+
+  const TOWER_HALF = 2; // 5x5 footprint, bolder than a bare 3x3 shaft
+
+  // Hollow shaft topped with a parapet: only each layer's outer ring is filled, with corner
+  // merlons and the edge midpoints left open as crenels.
+  function towerWallCells(): THREE.Vector3[] {
+    const cells: THREE.Vector3[] = [];
+    for (let x = -TOWER_HALF; x <= TOWER_HALF; x++) {
+      for (let z = -TOWER_HALF; z <= TOWER_HALF; z++) {
+        if (Math.abs(x) !== TOWER_HALF && Math.abs(z) !== TOWER_HALF) continue; // hollow core
+        for (let y = 0; y <= 6; y++) {
+          cells.push(new THREE.Vector3(x, y, z));
+        }
+      }
+    }
+    const merlonY = 7;
+    [[-TOWER_HALF, -TOWER_HALF], [TOWER_HALF, -TOWER_HALF], [TOWER_HALF, TOWER_HALF], [-TOWER_HALF, TOWER_HALF]].forEach(([x, z]) =>
+      cells.push(new THREE.Vector3(x, merlonY, z)),
+    );
+    return cells;
+  }
+
+  // Wood floors inside the hollow core: unlit shading gives no gradient to suggest depth, so the
+  // interior needs a contrasting surface. Only the top floor is actually visible, through the
+  // crenels — at this camera angle the walls hide the ground-level one entirely.
+  function towerFloorCells(y: number): THREE.Vector3[] {
+    const cells: THREE.Vector3[] = [];
+    for (let x = -TOWER_HALF + 1; x <= TOWER_HALF - 1; x++) {
+      for (let z = -TOWER_HALF + 1; z <= TOWER_HALF - 1; z++) {
+        cells.push(new THREE.Vector3(x, y, z));
+      }
+    }
+    return cells;
+  }
+
+  // Sphere and cube float at the heart's height; the tower stands on the ground.
+  const HEART_Y = 1.6;
+  const GROUND_Y = 0.03;
+  const SHAPE_Y: Record<ShapeId, number> = { none: 0, sphere: HEART_Y, cube: HEART_Y, tower: GROUND_Y };
+
+  function buildShape(id: ShapeId, gridTexture: THREE.Texture): THREE.Group | null {
+    switch (id) {
+      case 'sphere':
+        return voxelGroup(sphereCells(4.5), 0x362c4a, gridTexture, TILE / 2);
+      case 'cube':
+        return voxelGroup(cubeCells(3), 0x8a6642, gridTexture);
+      case 'tower': {
+        // Region-wall stone for the shaft, tree-trunk wood for the floors, so they contrast.
+        const group = new THREE.Group();
+        group.add(voxelGroup(towerWallCells(), STONE_TOP[0], gridTexture));
+        group.add(voxelGroup(towerFloorCells(0), 0x6b4a2b, gridTexture));
+        group.add(voxelGroup(towerFloorCells(6), 0x6b4a2b, gridTexture));
+        return group;
+      }
+      default:
+        return null;
+    }
+  }
+
+  const root = document.getElementById('hsd-root');
+  // Scoped to this demo's own card: .demo-segment is shared markup, so a second demo on the
+  // same page would otherwise have its bar driven by both scripts at once.
+  const segments = Array.from(root?.closest('.demo-card')?.querySelectorAll<HTMLElement>('.demo-segment') ?? []);
+
+  if (root) {
+    let index = 0;
+
+    mountIsomapScene(
+      root,
+      { territories: [{ name: root.dataset.label ?? 'Gildia', c0: -6, r0: -6, size: 12 }], margin: 14, river: false },
+      {
+        frustumHalfHeight: 22,
+        hideLabels: true,
+        centerYOffset: TILE * 2,
+        decorate: (scene, territories: Territory[]) => {
+          const territory = territories[0];
+          const gridTexture = makeGridTexture();
+          // Shapes are deterministic, so build each once and toggle visibility: the four states
+          // cycle for as long as the page is open, and rebuilding them every 2.5s is pure waste.
+          const shapeCache = new Map<ShapeId, THREE.Group>();
+          let currentShape: THREE.Group | null = null;
+
+          function getShape(id: ShapeId): THREE.Group | null {
+            let shape = shapeCache.get(id) ?? null;
+            if (!shape) {
+              shape = buildShape(id, gridTexture);
+              if (shape && territory) {
+                shape.position.set(territory.cx, SHAPE_Y[id], territory.cz);
+                shape.visible = false;
+                scene.add(shape);
+                shapeCache.set(id, shape);
+              }
+            }
+            return shape;
+          }
+
+          function applyShape(id: ShapeId) {
+            if (currentShape) currentShape.visible = false;
+            currentShape = getShape(id);
+            if (currentShape) currentShape.visible = true;
+          }
+
+          applyShape(SEQUENCE[0]);
+          setActiveSegment(segments, 0, DWELL_MS);
+          const interval = setInterval(() => {
+            index = (index + 1) % SEQUENCE.length;
+            applyShape(SEQUENCE[index]);
+            setActiveSegment(segments, index, DWELL_MS);
+          }, DWELL_MS);
+
+          return () => {
+            clearInterval(interval);
+            shapeCache.forEach((shape) => disposeObject3D(shape));
+            gridTexture.dispose();
+          };
+        },
+      },
+    );
+  }
+</script>

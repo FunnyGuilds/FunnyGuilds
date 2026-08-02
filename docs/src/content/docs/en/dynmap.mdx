@@ -1,0 +1,48 @@
+---
+title: dynmap
+description: Guild territory markers on the dynmap web map.
+---
+
+Once [dynmap](https://github.com/webbukkit/dynmap) is detected, FunnyGuilds
+adds two kinds of markers to the server map for every guild — a point at the
+heart's location and an area covering the whole territory. It is all
+configured in the `dynmap-hook` section.
+
+## Center marker
+
+```yaml
+dynmap-hook:
+  center:
+    enabled: true
+    hide-center-y: false
+    label: '{NAME} ({TAG})'
+    icon: shield
+```
+
+`hide-center-y` hides the heart's real height (useful on 3D maps). `icon` is
+the name of one of [dynmap's default icons](https://github.com/FunnyGuilds/FunnyGuilds/blob/5.x/assets/dynmap-markers.png).
+
+## Area marker
+
+```yaml
+  area:
+    enabled: true
+    label: '<b>{NAME} ({TAG})</b>'
+    fill:
+      opacity: 0.6
+      color: '#191919'
+    line:
+      opacity: 1
+      weight: 3
+      color: '#0a0a0a'
+```
+
+The area label supports HTML tags. Both label types (center and area) accept
+the same rich set of variables as the heart's hologram — `{OWNER}`,
+`{MEMBERS-ONLINE}`/`{MEMBERS-ALL}`, `{AVG-POINTS}`, `{LIVES}`, `{VALIDITY}`
+and more — see [DecentHolograms](/en/decentholograms/) for the full list.
+
+:::note[Other options]
+`guild-set-label` (the marker set's name shown in dynmap's layer list) and
+`update-interval` (how often labels refresh, in ticks).
+:::

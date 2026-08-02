@@ -9,10 +9,10 @@ Przedstawiona konfiguracja korzysta ze składni wprowadzonej w FunnyGuilds v4.11
 
 ### Lista graczy na serwerze
 
-Lista graczy, inaczej „TabList", służy do pokazywania informacji o gildii, graczu, serwerze, topce itd. Możesz zmienić jej wygląd za pomocą konfiguracji (pliki `tablist.yml` oraz `messages.yml`). Tutaj opisano dokładnie wszystkie dotyczące jej ustawienia.
+Lista graczy, inaczej „tablista", pokazuje informacje o gildii, graczu, serwerze, topkach itd. Jej wygląd zmienisz w konfiguracji (pliki `tablist.yml` oraz `messages.yml`) — poniżej opisano wszystkie dotyczące jej ustawienia.
 
-Zanim rozpoczniesz, trzy rady:
-- Dobrym edytorem tekstu do zmieniania konfiguracji jest [Notepad++](https://notepad-plus-plus.org/downloads/) — posiada podświetlanie składni, co bardzo ułatwia pracę.
+Zanim zaczniesz, trzy rady:
+- Dobrym edytorem tekstu do pracy z konfiguracją jest [Notepad++](https://notepad-plus-plus.org/downloads/) — ma podświetlanie składni, co bardzo ułatwia pracę.
 - Aby szybko poruszać się po konfiguracji i znaleźć odpowiednie linijki, użyj skrótu `CTRL + F`.
 - Po przesłaniu nowej konfiguracji nie przeładowuj serwera przez `/reload`! **Użyj komendy `/funnyguilds reload` lub zrestartuj serwer.**
 
@@ -20,7 +20,7 @@ Zanim rozpoczniesz, trzy rady:
 
 ### Podstawowe ustawienia (`tablist.yml`)
 
-W sekcji `cells:` możesz ustawić wygląd wierszy tablisty. Można je numerować **od 1 do 80**. [Schemat numeracji tablisty](#schemat-numeracji-tablisty) pokazuje, w jaki sposób są numerowane.
+W sekcji `cells:` ustawia się wygląd wierszy tablisty. Numeruje się je **od 1 do 80** — kolejność pokazuje [Schemat numeracji tablisty](#schemat-numeracji-tablisty).
 
 ```yml
 cells:
@@ -51,7 +51,7 @@ cells:
 
 ### Nagłówek i stopka (`tablist.yml`)
 
-Nagłówek i stopka tablisty zostały zaprezentowane w [Schemacie numeracji tablisty](#schemat-numeracji-tablisty) (nagłówek `header`, stopka `footer`); możesz zmienić ich wygląd w pliku `tablist.yml`.
+Nagłówek i stopka tablisty zostały zaznaczone na [Schemacie numeracji tablisty](#schemat-numeracji-tablisty) (nagłówek `header`, stopka `footer`) — ich wygląd zmienisz w pliku `tablist.yml`.
 
 ```yml
 # Wyglad naglowka w liscie graczy.
@@ -60,7 +60,7 @@ header: '&7FunnyGuilds &b4.9.3 Tribute'
 footer: '&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!'
 ```
 
-Aby dodać kilka linijek do nagłówka lub stopki, użyj znaku `|`, a następnie wprowadź kolejne linijki poprzedzając je dwiema spacjami:
+Aby dodać kilka linijek do nagłówka lub stopki, użyj znaku `|`, a następnie wprowadź kolejne linijki, poprzedzając każdą dwiema spacjami:
 
 ```yml
 # Wyglad stopki w liscie graczy.
@@ -73,7 +73,7 @@ footer: |
 
 ### Stronicowanie (`tablist.yml`)
 
-Od wersji 4.10.0 dostępne jest stronicowanie tablisty. Konfiguracja wygląda bardzo podobnie jak w przypadku zwykłej tablisty — każda strona jedynie nadpisuje główną, a w przypadku braku wartości na stronie zostanie wyświetlona wartość ze zwykłej sekcji *cells/header/footer*. Liczba cykli (`cycles`) określa, jak długo dana strona będzie widoczna (1 cykl = 1 odświeżenie tablisty; częstotliwość odświeżania można zmienić, ustawiając wartość `update-interval` w `tablist.yml`). Można dodać nieskończenie wiele stron (ale lepiej zachować umiar 😉).
+Od wersji 4.10.0 dostępne jest stronicowanie tablisty. Konfiguruje się je bardzo podobnie jak zwykłą tablistę — każda strona jedynie nadpisuje główną, a tam, gdzie strona nie podaje własnej wartości, zostanie użyta wartość ze zwykłej sekcji *cells/header/footer*. Liczba cykli (`cycles`) określa, jak długo dana strona będzie widoczna (1 cykl = 1 odświeżenie tablisty; częstotliwość odświeżania zmienia opcja `update-interval` w `tablist.yml`). Stron można dodać dowolnie wiele (ale lepiej zachować umiar 😉).
 
 ```yml
 pages:
@@ -96,9 +96,9 @@ pages:
 
 ---
 
-### Informacja o "braku" (`messages.yml`)
+### Informacja o „braku" (`messages.yml`)
 
-Wszystkie informacje o braku gildii, topki, sojuszników, zastępców itd. możesz zmienić tutaj.
+Tutaj zmienisz wszystkie komunikaty o braku gildii, topki, sojuszników, zastępców itd.
 
 ```yml
 # <------- No Value Messages -------> #
@@ -121,7 +121,7 @@ minMembersToIncludeNoValue: Brak (guild-min-members w config.yml)
 
 ### Ping wierszy (`tablist.yml`)
 
-`player-list-ping:` dotyczy pingu wyświetlanego przy każdym wierszu tablisty.
+`cells-ping:` określa ping wyświetlany przy każdym wierszu tablisty.
 
 ```yml
 # Liczba pingu pokazana przy każdej komorce.
@@ -132,7 +132,7 @@ cells-ping: 0
 
 ### Zapełnienie wierszy (`tablist.yml`)
 
-`fill-cells:` — jeśli ustawione na `true`, wszystkie komórki graczy zostaną zapełnione, niezależnie od liczby graczy online.
+`fill-cells:` — jeśli ustawione na `true`, wszystkie wiersze graczy zostaną zapełnione niezależnie od liczby graczy online.
 
 ```yml
 # Czy wszystkie możliwe komórki maja zostać zapełnione, nie zważywszy na liczbę graczy online
@@ -143,8 +143,8 @@ fill-cells: true
 
 ### Aktywność tablisty (`tablist.yml`)
 
-`enabled` — jeśli ustawione na `true`, tablista będzie działała; ustaw na `false`, jeśli nie chcesz, aby się wyświetlała.
-`update-interval:` — czas, w jakim tablista ma aktualizować informacje.
+- `enabled` — jeśli ustawione na `true`, tablista będzie działała; ustaw na `false`, jeśli nie chcesz, aby się wyświetlała.
+- `update-interval` — co ile czasu tablista ma odświeżać wyświetlane informacje.
 
 :::note
 Czas jest podawany w tickach! (20 ticków to 1 sekunda)
@@ -161,7 +161,7 @@ update-interval: 20
 
 ### Kolor zmiennych (`tablist.yml`)
 
-`use-relationship-colors:` — jeśli ustawione na `true`, kolory znaczników `{PTOP-%}` oraz `{GTOP-%}` będą zależne od relacji gildyjnych (neutralność, sojusz, wojna). Ustaw na `false`, jeśli nie chcesz takiej zależności.
+`use-relationship-colors:` — jeśli ustawione na `true`, kolory znaczników `{PTOP-%}` oraz `{GTOP-%}` będą zależne od relacji gildyjnych (neutralność, sojusz, wojna). Ustaw na `false`, jeśli nie chcesz takiego kolorowania.
 
 ```yml
 # Czy zmienne typu {PTOP-%} oraz {GTOP-%} powinny byc pokolorowane w zaleznosci od relacji gildyjnych
@@ -178,22 +178,22 @@ Podstawowe zmienne zostały opisane w [Tablist — zmienne](/tablist-variables/)
 
 ### PlaceholderAPI
 
-FunnyGuilds wspiera dodatkowe znaczniki od [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/). Po zainstalowaniu wtyczki PlaceholderAPI możesz pobrać nowe znaczniki.
+FunnyGuilds obsługuje dodatkowe znaczniki z [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/). Po zainstalowaniu tego pluginu możesz pobrać kolejne zestawy znaczników.
 
 :::tip
 Przykładowo, aby uzyskać znaczniki dotyczące gracza, wystarczy wpisać `/papi ecloud download Player`, a następnie `/papi reload`.
 
-Po wykonaniu tej komendy wszystkie znaczniki, takie jak ilość HP `%player_health%`, będą już obsługiwane w tablist FunnyGuilds.
+Po wykonaniu tych komend wszystkie znaczniki, takie jak poziom zdrowia `%player_health%`, będą już obsługiwane w tabliście FunnyGuilds.
 :::
 
-Pełną listę możliwych znaczników i komend do nich znajdziesz w [PAPI-placeholders](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#papi-placeholders-1).
+Pełną listę dostępnych znaczników i odpowiadających im komend znajdziesz na stronie [PAPI-placeholders](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#papi-placeholders-1).
 
 ---
 
 ### Schemat numeracji tablisty
 
-- `player-list-header` — nagłówek
-- `player-list-footer` — stopka
+- `header` — nagłówek
+- `footer` — stopka
 - `Slot X` — wiersz nr X
 
 <img src="https://imgur.com/eJ1sgRg.png" width="80%" alt="Schemat wyglądu listy" />

@@ -1,24 +1,18 @@
 ---
-// Docs header, rebuilt to be the *same* nav as the landing page
-// (src/components/Landing.astro), not just a similarly-colored one: same
-// elements, same sizes, nothing Landing doesn't have.
-//
-// Landing's nav is exactly: logo+wordmark, 4 plain text links, a plain PL/EN
-// switcher. Nothing else — no search box, no social icons, no theme toggle.
-// So this header renders exactly that. Search stays mounted (real content
-// needs it) but with zero visual footprint — Ctrl+K still opens it, see
-// `.fg-search` in custom.css.
+// The same nav as the landing page (Landing.astro), not just a similar-looking one: logo,
+// four text links, a plain PL/EN switcher, nothing else. Search stays mounted because the docs
+// need it, but has no visual footprint — Ctrl+K still opens it, see `.fg-search` in custom.css.
 import config from 'virtual:starlight/user-config';
 import Search from 'virtual:starlight/components/Search';
 import SiteTitle from 'virtual:starlight/components/SiteTitle';
 import { LANDING_CONTENT } from '../lib/landing-content';
-import { getLocalePaths, getNavItems } from '../lib/nav-content';
+import { getLocalePaths, getNavItems, isEnglish } from '../lib/nav-content';
 
 const shouldRenderSearch =
   config.pagefind || config.components.Search !== '@astrojs/starlight/components/Search.astro';
 
 const path = Astro.url.pathname;
-const isEn = path === '/en' || path.startsWith('/en/');
+const isEn = isEnglish(path);
 const t = LANDING_CONTENT[isEn ? 'en' : 'pl'];
 
 const { plHref, enHref } = getLocalePaths(path);
@@ -31,7 +25,11 @@ const NAV = getNavItems(t, 'docs');
   </div>
   <div class="fg-right-cluster">
     <nav class="sl-hidden md:sl-flex fg-nav-links print:hidden">
-      {NAV.map((item) => <a href={item.href} class={item.active ? 'active' : ''}>{item.label}</a>)}
+      {NAV.map((item) => (
+        <a href={item.href} class={item.active ? 'active' : ''} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener' : undefined}>
+          {item.label}
+        </a>
+      ))}
     </nav>
     <div class="fg-search print:hidden">{shouldRenderSearch && <Search />}</div>
     <div class="sl-hidden md:sl-flex">

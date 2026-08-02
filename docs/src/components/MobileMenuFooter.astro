@@ -1,14 +1,12 @@
 ---
-// Override of Starlight's MobileMenuFooter: drops ThemeSelect (no dark mode
-// exists anymore, see ThemeProvider.astro — its script calls
-// StarlightThemeProvider.updatePickers(), which no longer exists) and swaps
-// the <select>-based LanguageSelect for the same plain PL/EN switcher as
-// Header.astro. Only 2 locales, so a dropdown is unnecessary.
+// Starlight's MobileMenuFooter without ThemeSelect (the site is light-only, see
+// ThemeProvider.astro) and with Header.astro's plain PL/EN switcher instead of the
+// <select>-based LanguageSelect — a dropdown is overkill for two locales.
 import SocialIcons from 'virtual:starlight/components/SocialIcons';
-import { getLocalePaths } from '../lib/nav-content';
+import { getLocalePaths, isEnglish } from '../lib/nav-content';
 
 const path = Astro.url.pathname;
-const isEn = path === '/en' || path.startsWith('/en/');
+const isEn = isEnglish(path);
 const { plHref, enHref } = getLocalePaths(path);
 ---
 

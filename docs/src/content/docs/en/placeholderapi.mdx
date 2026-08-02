@@ -1,13 +1,15 @@
 ---
 title: PlaceholderAPI
-description: FunnyGuilds placeholders available through PlaceholderAPI.
+description: Exposing FunnyGuilds placeholders to other plugins through PlaceholderAPI.
 ---
 
-:::tip[Adding your own placeholders]
-If you want to use placeholders in your own plugin using PlaceholderAPI, check out this guide: [Adding placeholders to PlaceholderAPI](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Hook-into-PlaceholderAPI#adding-placeholders-to-placeholderapi).
-:::
-
-FunnyGuilds' placeholders can be used in any other plugin that supports [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/).
+Once [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+is detected, FunnyGuilds registers its own `%funnyguilds_x%` expansion — no
+extra download via `/papi ecloud` needed. The expansion exposes the same
+data as the [built-in placeholders](/en/placeholders/) (`{X}`), just in a
+format other plugins (chat, GUI, scoreboards outside FunnyGuilds, etc.) can
+read — the variable name after `funnyguilds_` corresponds directly to the
+name from the built-in placeholder list.
 
 ### Player
 
@@ -21,7 +23,7 @@ FunnyGuilds' placeholders can be used in any other plugin that supports [Placeho
 - `%funnyguilds_assists%`
 - `%funnyguilds_logouts%`
 - `%funnyguilds_kdr%`
-- `%funnyguilds_position-typ%`
+- `%funnyguilds_position-type%`
 - `%funnyguilds_guild-position%`
 
 ### Relational Player
@@ -44,14 +46,14 @@ FunnyGuilds' placeholders can be used in any other plugin that supports [Placeho
 - `%funnyguilds_g-points-format%`
 - `%funnyguilds_g-points%`
 - `%funnyguilds_g-position%`
-- `%funnyguilds_g-position-typ%`
+- `%funnyguilds_g-position-type%`
 - `%funnyguilds_g-region-size%`
 - `%funnyguilds_g-tag%`
 - `%funnyguilds_g-validity%`
 
 ### Global
 
-- `%funnyguilds_gtop-typ-x%`
-- `%funnyguilds_ptop-typ-x%`
+- `%funnyguilds_gtop-type-x%`
+- `%funnyguilds_ptop-type-x%`
 - `%funnyguilds_guilds%`
 - `%funnyguilds_users%`

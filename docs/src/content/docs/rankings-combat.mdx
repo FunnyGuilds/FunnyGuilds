@@ -1,0 +1,80 @@
+---
+title: Rankingi i walka
+description: Systemy punktowe, zabójstwa/asysty, ochrona przed farmieniem i topki.
+---
+
+Ranking startowy ustawia `rank-start` (domyślnie **1000**).
+
+## System punktowy
+
+`rank-system` wybiera jeden z trzech modeli liczenia zmiany punktów po walce:
+
+| System | Opis |
+|---|---|
+| `ELO` (domyślny) | Ranking szachowy — zmiana zależy od różnicy rankingów obu graczy; najlepiej zbalansowany |
+| `PERCENT` | Obu graczom zmienia się ranking o procent (`percent-rank-change`) rankingu ofiary |
+| `STATIC` | Zawsze stała liczba punktów: `static-attacker-change` dla zwycięzcy, `static-victim-change` dla ofiary |
+
+Dla systemu `ELO` dodatkowo dostraja się `elo-constants` (maksymalna zmiana
+punktów w zależności od przedziału rankingu — im mniejsza stała, tym
+mniejsze wahania), `elo-divider` (domyślnie 400) i `elo-exponent` (domyślnie
+10).
+
+Gracze mogą widzieć przewidywaną zmianę punktów przed walką — włączają to
+opcje `display-combat-prediction-attacker`/`display-combat-prediction-victim`
+(domyślnie wyłączone). Częstotliwość takich powiadomień dla tej samej pary
+graczy ogranicza `combat-prediction-interval`.
+
+## Zabójstwa, śmierci i asysty
+
+Oprócz punktów rankingowych liczone są zabójstwa, śmierci i asysty (KDR/KDA).
+System asyst (`rank-assist-enable`) dzieli punkty za zabójstwo między
+atakującego a graczy asystujących, proporcjonalnie do zadanych obrażeń —
+`rank-assist-killer-share` (domyślnie **0.5**) określa, jaka część zawsze
+trafia do zabójcy. `assists-limit` ogranicza liczbę zliczanych asystentów na
+jedno zabójstwo (`-1` = bez limitu).
+
+Komu i jak wyświetla się wiadomość o śmierci gracza, ustala
+`death-message-receivers` (`PARTICIPANTS`/`GUILD`/`WORLD`/`ALL`). Żeby uniknąć
+duplikatu, warto przy tym wyłączyć domyślny komunikat serwera opcją
+`disable-default-death-message`.
+
+### Ochrona przed farmieniem rankingu
+
+Kilka niezależnych przełączników chroni przed sztucznym nabijaniem punktów:
+
+- `rank-farming-protect` — blokuje wielokrotne punktowanie za zabicie tej
+  samej osoby w krótkim czasie (`rank-farming-cooldown`, domyślnie 2h),
+  opcjonalnie także po adresie IP (`rank-farming-cooldown-ip`).
+- `rank-ip-protect` / `rank-ip-protect-players-from-guild` — blokują zmianę
+  rankingu między graczami o tym samym adresie IP.
+- `rank-member-protect` / `rank-ally-protect` — blokują zmianę rankingu w
+  walkach wewnątrz gildii lub między sojusznikami.
+- `skip-privileged-players-in-rank-positions` — pomija graczy z uprawnieniem
+  `funnyguilds.ranking.exempt` przy wyznaczaniu pozycji w rankingu.
+
+## Topki
+
+Sekcja `top` steruje rankingami (topkami) graczy i gildii, dostępnymi m.in.
+jako placeholdery `{PTOP-typ-x}`/`{GTOP-typ-x}` (patrz
+[Placeholdery](/placeholders/)). Warto włączać tylko faktycznie używane
+typy — każdy dodatkowy w `enabled-user-tops`/`enabled-guild-tops` kosztuje
+trochę wydajności:
+
+- Typy graczy: `points`, `kills`, `deaths`, `assists`, `logouts`.
+- Typy gildii: jak wyżej oraz warianty średnie `avg_*` (np. `avg_points`).
+
+`use-relationship-colors` koloruje wpisy topek według relacji gildyjnych
+(swoi/sojusznicy/wrogowie), tak jak tagi na czacie. Wygląd wartości można
+dodatkowo stopniować progami w `format.ptop-value-formatting`/
+`format.gtop-value-formatting` (np. inny kolor dla graczy poniżej i powyżej
+1500 punktów).
+
+:::note[Inne opcje]
+- `ranking-update-interval` — częstotliwość przeliczania rankingu.
+- `kill-points-change-format` — kolor komunikatu o zmianie punktów.
+- `damage-tracking.expire-time` / `max-tracks` — jak długo pamiętane są obrażenia na potrzeby asyst.
+- `info-player-*` — podgląd statystyk gracza po PPM.
+- `rank-reset-needed-items` / `stats-reset-needed-items` — koszt `/rankreset` i `/statsreset`.
+- `scoreboard.dummy` — punkty pod nickiem gracza (patrz też [Czat](/chat/) w sprawie tagów nad głową gracza).
+:::

@@ -1,0 +1,24 @@
+---
+title: Vault
+description: Ekonomia i sprawdzanie uprawnień graczy offline przez Vault.
+---
+
+Vault jest opcjonalny i wykrywany automatycznie (sama ekonomia wymaga
+dodatkowo pluginu ekonomicznego, np. EssentialsX). Bez niego wszystkie
+wymagania oparte na saldzie są po prostu pomijane.
+
+## Ekonomia
+
+Saldo gracza (`money`) może być jednym z wymagań w `items.yml`, przy zestawach
+przedmiotów potrzebnych do założenia gildii (patrz
+[Gildie](/guilds/#zakładanie-gildii)), a także w ogólnym typie `Requirements`,
+używanym w innych miejscach konfiguracji (patrz
+[Konfiguracja — Requirements](/configuration/#requirements)). Aktualne saldo
+gracza jest też dostępne jako placeholder `{VAULT-MONEY}`.
+
+## Uprawnienia graczy offline
+
+FunnyGuilds korzysta z mostka uprawnień Vaulta, aby sprawdzić uprawnienia
+gracza, który jest akurat offline (np. przy wyznaczaniu, który zestaw
+przedmiotów z `items.yml` go dotyczy) — sam Bukkit nie potrafi tego zrobić
+dla graczy niepodłączonych do serwera.

@@ -1,90 +1,117 @@
 ---
 title: Komendy
-description: Pełna lista komend administracyjnych i gracza w FunnyGuilds.
+description: Pełna lista komend FunnyGuilds, pogrupowana według funkcji.
 ---
 
 :::note
-Tylko gracze z odpowiednimi permisjami mogą używać komend z sekcji **Komendy dla Administratora**. Listę permisji znajdziesz w [Permisjach](/permissions/).
+Komendy administratora (tabele oznaczone **Administrator**) wymagają
+odpowiednich uprawnień — ich pełną listę znajdziesz w
+[Uprawnieniach](/permissions/). Nazwy komend są w pełni konfigurowalne (sekcja
+`commands` w `config.yml`) — poniżej podano wartości domyślne.
 :::
 
-## Komendy dla Administratora
-
-### Ogólne
+## Ogólne
 
 | Komenda | Opis |
-| --- | --- |
-| `/funnyguilds` | Sprawdza wersję FunnyGuilds. |
-| `/funnyguilds reload` | Przeładowanie konfiguracji FunnyGuilds. |
-| `/funnyguilds save-all` | Zapisz wszystko. |
-| `/funnyguilds funnybin` | Zapisz konfigurację online (usprawnia pomoc na [GitHub Issues](https://github.com/FunnyGuilds/FunnyGuilds/issues)). |
-| `/funnyguilds check` | Sprawdza czy jest dostępna nowa wersja FunnyGuilds. |
+|---|---|
+| `/funnyguilds` `/fg` | Sprawdza wersję FunnyGuilds. |
+| `/funnyguilds reload` `/funnyguilds rl` | Przeładowuje konfigurację FunnyGuilds. |
+| `/funnyguilds save-all` | Zapisuje wszystkie dane. |
+| `/funnyguilds funnybin` | Wysyła konfigurację online (ułatwia uzyskanie pomocy na [GitHub Issues](https://github.com/FunnyGuilds/FunnyGuilds/issues)). |
+| `/funnyguilds check` `/funnyguilds update` | Sprawdza dostępność nowej wersji. |
+| `/gildia` `/gildie` `/g` | Wyświetla listę komend gildyjnych. |
 
-### Gildyjne
+## Gildie
 
-| Komenda | Opis |
-| --- | --- |
-| `/ga` | Wyświetla komendy gildyjne dla administratora. |
-| `/ga dodaj <tag> <nick>` | Dodaje gracza do gildii. |
-| `/ga usun <tag>` | Usuwa gildię. |
-| `/ga wyrzuc <nick>` | Wyrzuca gracza z gildii. |
-| `/ga tp <tag>` | Teleportuje do bazy gildii. |
-| `/ga points <nick> <points>` | Ustawia liczbę punktów gracza. |
-| `/ga kills <nick> <kills>` | Ustawia liczbę zabójstw gracza. |
-| `/ga deaths <nick> <deaths>` | Ustawia liczbę śmierci gracza. |
-| `/ga ban <tag> <czas> <powod>` | Banuje gildię na określony czas. |
-| `/ga unban <tag>` | Odbanowuje gildię. |
-| `/ga zycia <tag> <zycia>` | Ustawia liczbę żyć gildii. |
-| `/ga ochrona <tag> <czas>` | Nadaje ochronę gildii. |
-| `/ga przedluz <tag> <czas>` | Przedłuża ważność gildii o podany czas. |
-| `/ga przenies <tag>` | Przenosi teren gildii. |
-| `/ga nazwa <tag> <nazwa>` | Zmienia nazwę gildii. |
-| `/ga tag <tag> <nowy tag>` | Zmienia tag gildii. |
-| `/ga spy` | Szpieguje czat gildii. |
-| `/ga enabled` | Zarządzanie statusem zakładania gildii. |
-| `/ga lider <tag> <gracz>` | Zmienia lidera gildii. |
-| `/ga zastepca <tag> <gracz>` | Nadaje zastępcę gildii. |
-| `/ga baza <gracz>` | Teleportuje gracza do bazy jego gildii. |
-
-## Komendy dla Gracza
-
-### Informacyjne
+Patrz [Gildie](/guilds/) — zakładanie, członkostwo, ważność i rozwiązywanie.
 
 | Komenda | Opis |
-| --- | --- |
-| `/gildia` `/gildie` `/g` | Wyświetla komendy gildyjne. |
-| `/przedmioty` | Pokazuje przedmioty potrzebne do założenia gildii. |
-| `/tnt` | Sprawdza czy TNT jest aktywne na terenach gildii. |
-| `/info <tag>` | Informacje o danej gildii. |
-| `/gracz <player>` | Informacje o danym graczu. |
-| `/top` `/top10` | Wyświetla top 10 gildii. |
-| `/ranking` | Wyświetla top 10 graczy. |
-
-### Gildyjne
-
-| Komenda | Opis |
-| --- | --- |
-| `/zaloz <tag> <name>` | Tworzy gildię. |
-| `/usun` | Usuwa gildię. |
-| `/potwierdz` | Potwierdza usunięcie gildii. |
-| `/zapros <player>` | Zaprasza gracza do gildii. |
+|---|---|
+| `/zaloz <tag> <nazwa>` | Zakłada gildię. |
+| `/usun` `/potwierdz` | Rozwiązuje gildię (dwuetapowo). |
+| `/zapros <gracz>` `/zapros *` | Zaprasza gracza (lub wszystkich w promieniu). |
 | `/dolacz <tag>` | Przyjmuje zaproszenie do gildii. |
 | `/opusc` | Opuszcza gildię. |
-| `/wyrzuc <player>` | Wyrzuca gracza z gildii. |
-| `/baza` | Teleportuje do bazy gildii. |
-| `/powieksz` | Powiększa teren gildii. |
-| `/sojusz <tag>` | Pozwala nawiązać sojusz. |
-| `/rozwiaz <tag>` | Rozwiązuje sojusz. |
-| `/wojna <tag>` | Wyświetla komendy gildyjne. |
+| `/wyrzuc <gracz>` | Wyrzuca gracza z gildii. |
+| `/lider` `/zalozyciel` `<gracz>` | Przekazuje przywództwo gildii. |
+| `/zastepca <gracz>` | Nadaje/odbiera rangę zastępcy. |
 | `/przedluz` | Przedłuża ważność gildii. |
-| `/lider <player>` | Oddaje założyciela gildii. |
-| `/zastepca <player>` | Nadaje zastępcę gildii. |
-| `/ustawbaze` `/ustawdom` | Ustawia dom gildii. |
-| `/pvp [tag]` | Włącza i wyłącza pvp w gildii lub między sojusznikami. |
-| `/ucieczka` `/escape` | Rozpoczyna ucieczkę z terenu innej gildii. |
+| `/przedmioty` | Pokazuje przedmioty potrzebne do założenia gildii. |
+| `/info <tag>` | Wyświetla informacje o gildii. |
+| `/gracz <gracz>` | Wyświetla informacje o graczu. |
 
-### Inne
+| Administrator | Opis |
+|---|---|
+| `/ga dodaj <tag> <gracz>` | Dodaje gracza do gildii. |
+| `/ga usun <tag>` | Usuwa gildię. |
+| `/ga wyrzuc <gracz>` | Wyrzuca gracza z gildii. |
+| `/ga nazwa <tag> <nazwa>` | Zmienia nazwę gildii. |
+| `/ga tag <tag> <nowy tag>` | Zmienia tag gildii. |
+| `/ga lider <tag> <gracz>` | Zmienia lidera gildii. |
+| `/ga zastepca <tag> <gracz>` | Nadaje/odbiera graczowi rangę zastępcy. |
+| `/ga przedluz <tag> <czas>` | Przedłuża ważność gildii o podany czas. |
+| `/ga enabled` | Włącza/wyłącza możliwość zakładania gildii. |
+| `/ga ban <tag> <czas> <powod>` | Banuje gildię na określony czas. |
+| `/ga unban <tag>` | Odbanowuje gildię. |
+| `/ga items <gracz> <typ>` | Wydaje graczowi zestaw przedmiotów danego typu (`guild`, `base`, `join`, `enlarge`, `validity`, `rankReset`, `statsReset`, `firstGuildReward`). |
+
+## Tereny
+
+Patrz [Tereny i ochrona](/territories/) — serce, powiększanie, ochrona, TNT.
 
 | Komenda | Opis |
-| --- | --- |
-| `/rankreset` `/resetrank` | Resetuje rank. |
-| `/statsreset` | Resetuje statystyki. |
+|---|---|
+| `/baza` | Teleportuje do bazy gildii. |
+| `/ustawbaze` `/ustawdom` | Ustawia bazę (home) gildii. |
+| `/powieksz` | Powiększa teren gildii. |
+| `/ucieczka` `/escape` | Rozpoczyna ucieczkę z cudzego terenu. |
+| `/tnt` | Sprawdza, czy TNT jest aktywne na terenach gildii. |
+
+| Administrator | Opis |
+|---|---|
+| `/ga tp <tag>` | Teleportuje do bazy gildii. |
+| `/ga baza <gracz>` | Teleportuje gracza do bazy jego gildii. |
+| `/ga przenies <tag>` | Przenosi teren gildii. |
+| `/ga ochrona <tag> <czas>` | Nadaje gildii ochronę na podany czas. |
+
+## Sojusze i wojny
+
+Patrz [Sojusze i wojny](/alliances-wars/).
+
+| Komenda | Opis |
+|---|---|
+| `/sojusz <tag>` | Proponuje/akceptuje sojusz. |
+| `/rozwiaz <tag>` | Rozwiązuje sojusz. |
+| `/wojna <tag>` | Wypowiada wojnę gildii. |
+| `/pvp` `/ustawpvp` `[tag]` | Włącza/wyłącza PvP w gildii lub między sojusznikami. |
+
+| Administrator | Opis |
+|---|---|
+| `/ga zycia <tag> <zycia>` | Ustawia liczbę żyć gildii. |
+
+## Rankingi i walka
+
+Patrz [Rankingi i walka](/rankings-combat/). Topki graczy i gildii nie mają
+własnych komend — wyświetla się je za pomocą placeholderów `{PTOP-…}` i
+`{GTOP-…}` (patrz [Placeholdery](/placeholders/)), na przykład na tabliście.
+
+| Komenda | Opis |
+|---|---|
+| `/rankreset` `/resetrank` | Resetuje ranking gracza. |
+| `/statsreset` `/resetstats` | Resetuje statystyki gracza. |
+
+| Administrator | Opis |
+|---|---|
+| `/ga points <gracz> <points>` | Ustawia liczbę punktów gracza. |
+| `/ga kills <gracz> <kills>` | Ustawia liczbę zabójstw gracza. |
+| `/ga deaths <gracz> <deaths>` | Ustawia liczbę śmierci gracza. |
+| `/ga logouts <gracz> <logouts>` | Ustawia liczbę wylogowań gracza podczas walki. |
+| `/ga assists <gracz> <assists>` | Ustawia liczbę asyst gracza. |
+
+## Czat
+
+Patrz [Czat](/chat/).
+
+| Administrator | Opis |
+|---|---|
+| `/ga spy` | Włącza/wyłącza podgląd czatów gildyjnych. |

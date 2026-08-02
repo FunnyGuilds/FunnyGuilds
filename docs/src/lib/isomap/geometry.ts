@@ -3,8 +3,20 @@ import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { TILE, WALL_HEIGHT, type Territory } from './terrain';
 import { BRAND, CANOPY, HEART_RED, WATER_SIDE, type FaceColors } from './colors';
 
-// Shared column bottom: a height difference between neighbors exposes the right wall face for free.
+// Shared column bottom: a height difference between neighbours exposes the side face for free.
 export const BEDROCK = -6;
+
+// renderer.dispose() doesn't free a scene's geometries/materials — without walking the tree by
+// hand, every mount/unmount cycle leaks GPU memory.
+export function disposeObject3D(object: THREE.Object3D) {
+  object.traverse((child) => {
+    if (!(child instanceof THREE.Mesh)) return;
+    child.geometry.dispose();
+    for (const material of Array.isArray(child.material) ? child.material : [child.material]) {
+      material.dispose();
+    }
+  });
+}
 
 export function columnFromTop(topFace: number) {
   return { height: topFace - BEDROCK, centerY: (topFace + BEDROCK) / 2 };
@@ -56,7 +68,7 @@ export function addInstancedBoxes(
   scene.add(mesh);
 }
 
-// Thin quad at the water/land boundary — without it the dry neighbor's face wins the shared edge and no blue shows.
+// Thin quad at the water/land boundary — without it the dry tile's face wins the shared edge.
 export function addWaterWalls(scene: THREE.Scene, walls: { x: number; z: number; axis: 'x' | 'z' }[], topY: number, bottomY: number) {
   const height = topY - bottomY;
   const y = (topY + bottomY) / 2;
@@ -64,13 +76,13 @@ export function addWaterWalls(scene: THREE.Scene, walls: { x: number; z: number;
 
   function build(color: number, rotationY: number, tiles: { x: number; z: number }[]) {
     if (tiles.length === 0) return;
-    // polygonOffset (not nudged vertices) avoids z-fighting — vertex nudging broke corners where two axes must meet exactly.
+    // polygonOffset rather than nudged vertices: nudging broke corners where two axes must meet.
     const material = new THREE.MeshBasicMaterial({ color, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 });
     const mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(TILE, height), material, tiles.length);
     const rotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), rotationY);
     const matrix = new THREE.Matrix4();
     tiles.forEach((tile, i) => {
-      // Rotation baked per-instance, not on the mesh — a mesh-level rotation would spin every instance's position around the origin too.
+      // Baked per instance: a mesh-level rotation would swing every instance around the origin too.
       matrix.compose(new THREE.Vector3(tile.x, y, tile.z), rotation, scale);
       mesh.setMatrixAt(i, matrix);
     });
@@ -171,20 +183,21 @@ export function addBrackets(scene: THREE.Scene, territory: Territory) {
   });
 }
 
+const TAG_COLOR = '#fac849'; // between the terrain's sand and the brand gold
+
 export function addLabel(scene: THREE.Scene, territory: Territory) {
   const el = document.createElement('div');
-  el.textContent = territory.name;
+  // Only the tag inside the brackets is coloured, the way guild tags read in chat
+  // ("&7[&bTAG&7]&r Name"). Monospace so the brackets are solid glyphs, not hairlines.
+  el.innerHTML = `[<span style="color: ${TAG_COLOR}">${territory.name}</span>]`;
   Object.assign(el.style, {
-    fontFamily: "'IBM Plex Sans', sans-serif",
-    fontWeight: '700',
+    fontFamily: "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+    fontWeight: '800',
     fontSize: '16px',
-    letterSpacing: '-0.01em',
+    letterSpacing: '0.01em',
     color: '#14171a',
     whiteSpace: 'nowrap',
   });
-  // white outline behind the text so it reads over both light and dark terrain
-  el.style.setProperty('-webkit-text-stroke', '3px #fff');
-  el.style.setProperty('paint-order', 'stroke');
   const label = new CSS2DObject(el);
   label.position.set(territory.cx, WALL_HEIGHT + 2.4, territory.cz);
   scene.add(label);

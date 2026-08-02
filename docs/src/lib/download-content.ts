@@ -41,7 +41,7 @@ export interface DownloadContent extends NavContent {
     title: string;
     intro: string;
     currentLabel: string;
-    inferredLabel: string;
+    nightlyLabel: string;
     changelogLinkLabel: string;
     changelogEyebrow: string;
     releasedLabel: string;
@@ -54,8 +54,8 @@ export interface DownloadContent extends NavContent {
     membersLabel: string;
   };
   nextSteps: {
-    installationHref: string;
-    installationLabel: string;
+    introductionHref: string;
+    introductionLabel: string;
     faqHref: string;
     faqLabel: string;
   };
@@ -67,29 +67,29 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
     plHref: '/download/',
     enHref: '/en/download/',
     pageTitle: 'Pobierz — FunnyGuilds',
-    pageDescription: 'Pobierz FunnyGuilds — dopasowane do wersji Minecrafta na Twoim serwerze.',
+    pageDescription: 'Pobierz FunnyGuilds w wersji dopasowanej do Minecrafta na Twoim serwerze.',
     eyebrow: 'Pobierz',
     headline: 'Pobierz FunnyGuilds',
     lede: 'Wybierz wersję zgodną z Minecraftem na Twoim serwerze.',
-    whatYouGet: 'Każda z opcji poniżej to ten sam plugin FunnyGuilds jako pojedynczy plik .jar — wrzuć go do folderu plugins/ na serwerze.',
+    whatYouGet: 'Każda z opcji poniżej to ten sam plugin FunnyGuilds — pojedynczy plik .jar, który wrzucasz do folderu plugins/ na serwerze.',
     snapshot: {
       badge: 'Zalecane',
       title: 'Snapshot 5.x',
-      description: 'Najnowszy build z aktywnie rozwijanej gałęzi 5.x — zmienia się z każdą zmianą w kodzie, może zawierać błędy.',
+      description: 'Najnowszy build aktywnie rozwijanej serii 5.x — powstaje po każdej zmianie w kodzie, więc może zawierać błędy.',
       buttonLabel: 'Pobierz najnowszy build ↗',
       ciLabel: 'Lista buildów na CI ↗',
-      note: 'Nowa instalacja — niekompatybilna z wersją 4.x.',
+      note: 'Tylko nowa instalacja — niezgodna z wersją 4.x.',
     },
     intermediate: {
       badge: 'Wkrótce',
       mcRange: 'MC 1.21',
       title: 'FunnyGuilds 5.0.0-RC.1',
-      description: 'Jedno oficjalne wydanie 5.x dla MC 1.21, zanim gałąź 5.x przejdzie na nowe wersje Minecrafta.',
-      note: 'Jeszcze niewydane — wróć tu wkrótce.',
+      description: 'Jedno oficjalne wydanie serii 5.x dla MC 1.21, zanim przejdzie ona na nowsze wersje Minecrafta.',
+      note: 'Jeszcze niewydane — zajrzyj tu wkrótce.',
     },
     stable: {
       title: 'Wersja stabilna',
-      description: 'Ostatnie oficjalne wydanie gałęzi 4.x.',
+      description: 'Ostatnie oficjalne wydanie serii 4.x.',
       buttonLabel: 'Pobierz',
       historyLabel: 'Starsze wersje ↓',
     },
@@ -104,9 +104,9 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
     },
     mcVersionTable: {
       title: 'Pełne archiwum wydań',
-      intro: 'Każde wydanie FunnyGuilds i zakres wersji Minecrafta, które obsługiwało — zrekonstruowane z rzeczywistych plików .jar, plików budowania (pom.xml/.classpath) i changelogów, nie z dat wydania. Starsze wydania (1.x–3.x) nie miały szerokiego wsparcia wielu wersji na raz, dlatego widnieją pod dokładną wersją, którą kompilowały, zamiast zakresu.',
+      intro: 'Każde wydanie FunnyGuilds wraz z zakresem obsługiwanych przez nie wersji Minecrafta. Starsze wydania (1.x–3.x) nie obsługiwały wielu wersji jednocześnie, dlatego widnieją przy dokładnej wersji, dla której je zbudowano.',
       currentLabel: 'aktualne',
-      inferredLabel: 'szacunkowo',
+      nightlyLabel: 'NIGHTLY',
       changelogLinkLabel: 'Zobacz na GitHubie ↗',
       changelogEyebrow: 'Changelog',
       releasedLabel: 'Wydano',
@@ -119,8 +119,8 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       membersLabel: 'członków',
     },
     nextSteps: {
-      installationHref: '/installation/',
-      installationLabel: 'Jak zainstalować',
+      introductionHref: '/introduction/',
+      introductionLabel: 'Wprowadzenie',
       faqHref: '/faq/',
       faqLabel: 'FAQ',
     },
@@ -138,7 +138,7 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
     snapshot: {
       badge: 'Recommended',
       title: 'Snapshot 5.x',
-      description: 'The latest build from the actively developed 5.x branch — changes with every commit, may contain bugs.',
+      description: 'The latest build of the actively developed 5.x series — changes with every commit, may contain bugs.',
       buttonLabel: 'Download latest build ↗',
       ciLabel: 'Build list on CI ↗',
       note: 'Fresh install only — not compatible with 4.x.',
@@ -147,12 +147,12 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       badge: 'Coming soon',
       mcRange: 'MC 1.21',
       title: 'FunnyGuilds 5.0.0-RC.1',
-      description: 'One official 5.x release for MC 1.21, before the 5.x branch moves on to newer Minecraft versions.',
+      description: 'One official 5.x release for MC 1.21, before the 5.x series moves on to newer Minecraft versions.',
       note: "Not released yet — check back soon.",
     },
     stable: {
       title: 'Stable version',
-      description: 'The latest official release of the 4.x branch.',
+      description: 'The latest official release of the 4.x series.',
       buttonLabel: 'Download',
       historyLabel: 'Older versions ↓',
     },
@@ -167,9 +167,9 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
     },
     mcVersionTable: {
       title: 'Full release archive',
-      intro: "Every FunnyGuilds release and the range of Minecraft versions it supported — reconstructed from the real .jar files, build files (pom.xml/.classpath), and changelogs, not release dates. Older releases (1.x-3.x) didn't support many versions at once, so they're listed under the exact version they compiled against instead of a range.",
+      intro: "Every FunnyGuilds release and the range of Minecraft versions it supported. Older releases (1.x–3.x) didn't support many versions at once, so they're listed under the exact version they were built against.",
       currentLabel: 'current',
-      inferredLabel: 'estimated',
+      nightlyLabel: 'NIGHTLY',
       changelogLinkLabel: 'View on GitHub ↗',
       changelogEyebrow: 'Changelog',
       releasedLabel: 'Released',
@@ -182,8 +182,8 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
       membersLabel: 'members',
     },
     nextSteps: {
-      installationHref: '/en/installation/',
-      installationLabel: 'How to install',
+      introductionHref: '/en/introduction/',
+      introductionLabel: 'Introduction',
       faqHref: '/en/faq/',
       faqLabel: 'FAQ',
     },

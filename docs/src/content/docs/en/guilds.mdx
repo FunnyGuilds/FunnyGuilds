@@ -1,0 +1,97 @@
+---
+title: Guilds
+description: Creating, structuring, renewing and disbanding guilds in FunnyGuilds.
+---
+
+import RoleTiers from '../../../components/RoleTiers.astro';
+import GuildCreationDemo from '../../../components/GuildCreationDemo.astro';
+
+## Creating a guild
+
+A guild is created with the `/zaloz <tag> <name>` command. Until then, that
+patch of the map is just wilderness — running the command is what stakes out
+the territory and places a heart on it:
+
+<GuildCreationDemo
+  label="DZK"
+  command="/zaloz DZK dzikoysk"
+  phaseLabels={['Unclaimed land', 'Running the command', 'Territory claimed']}
+/>
+
+The requirements for creating one are configured separately, in `items.yml` —
+by default a set of items, an XP level, a ranking score and (optionally) a
+Vault balance:
+
+| Requirement | Default |
+|---|---|
+| Items | 64 diamonds, 64 emeralds, 64 iron ingots |
+| XP level | 30 |
+| Ranking | 1000 |
+| Balance (Vault) | 10,000 |
+
+You can define several such sets at once — each tied to a different
+permission and sorted by priority, so the first set the player has permission
+for is the one that applies. The default configuration also includes a `vip`
+set (permission `funnyguilds.items.vip`) with half the cost, lower level and
+ranking requirements and no balance requirement. A player with the
+`funnyguilds.items.admin.bypass` permission skips every requirement, and
+`/przedmioty` opens a GUI showing them what they are still missing.
+
+The guild's name and tag are validated separately:
+
+| Option | Default | Description |
+|---|---|---|
+| `name-length` / `name-min-length` | 22 / 4 | Guild name length |
+| `tag-length` / `tag-min-length` | 4 / 2 | Guild tag length |
+| `name-regex` / `tag-regex` | `LETTERS` | Allowed characters (see the [Regex type](/en/configuration/#regex)) |
+| `guild-tag-keep-case` | `true` | Keeps the tag's case as typed at creation |
+| `guild-tag-uppercase` | `false` | Forces uppercase tags (when `keep-case` is off) |
+| `check-for-restricted-guild-names` | `false` | Enables the `restricted-guild-names`/`restricted-guild-tags` list |
+| `whitelist` | `false` | Flips the list above from a blacklist into a whitelist |
+
+A new guild's territory also has to sit far enough from spawn and other
+players — this is controlled by `create-distance`,
+`create-guild-min-distance` and `blocked-worlds`, described in more detail in
+[Territories & protection](/en/territories/).
+
+## Guild structure
+
+<RoleTiers tiers={[
+  { role: 'Leader', description: 'The guild\'s founder. <code>/lider &lt;player&gt;</code> transfers leadership to someone else.' },
+  { role: 'Deputies', description: 'Manage the guild on the leader\'s behalf. The leader grants and revokes the rank with <code>/zastepca &lt;player&gt;</code>.' },
+  { role: 'Members', description: 'Join after being invited (<code>/zapros &lt;player&gt;</code>) and accepting the invite with <code>/dolacz &lt;tag&gt;</code>, which costs <code>join-items</code> — 1 diamond by default. A member can leave on their own (<code>/opusc</code>) or be kicked out (<code>/wyrzuc &lt;player&gt;</code>).' },
+]} />
+
+A guild can have at most `max-members` players (**15** by default).
+
+:::tip[Inviting by radius]
+`/zapros *` instantly invites everyone within a radius
+(`invite-command-all-default-range`, 10 blocks by default, up to
+`invite-command-all-max-range` — 50 blocks).
+:::
+
+## Guild validity
+
+A newly created guild starts with `validity-start` worth of validity
+(**14 days** by default) — once it runs out, the guild is deleted
+automatically.
+
+`/przedluz` extends it by `validity-time` (14 days by default) at a cost of
+`validity-items` (10 diamonds by default). It can only be used once less than
+`validity-when` remains before expiry (14 days by default, so in practice
+always); setting it to `0` disables renewal entirely.
+
+## Disbanding a guild
+
+Disbanding takes two steps — `/usun` starts it and `/potwierdz` confirms it —
+so a guild can't be deleted by accident.
+`guild-delete-cancel-if-someone-is-on-region` blocks disbanding while
+someone from outside the guild is standing on its territory.
+
+:::note[Other options]
+- `should-give-rewards-for-first-guild` / `rewards-for-first-guild` — a reward
+  for the first guild ever created on the server.
+- `rank-reset-needed-items` / `stats-reset-needed-items` — the cost of
+  `/rankreset` and `/statsreset`, see [Rankings & combat](/en/rankings-combat/).
+- `player-lookup-ignorecase` — whether looking up players by name ignores case.
+:::

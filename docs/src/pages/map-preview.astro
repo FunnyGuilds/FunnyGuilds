@@ -1,5 +1,6 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { DEMO_TERRAIN_CONFIG } from '../lib/isomap/terrain';
 ---
 
 <StarlightPage
@@ -21,13 +22,7 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 
   <p>Wejście użyte powyżej (<code>DEMO_TERRAIN_CONFIG</code>, eksportowane z <code>isomap/terrain.ts</code>):</p>
 
-  <pre><code>{`{
-  territories: [
-    { name: 'Northgate', c0: -6, r0: -6 },
-    { name: 'Southgate', c0: -6, r0: 5 },
-  ],
-  margin: 14,
-}`}</code></pre>
+  <pre><code>{JSON.stringify(DEMO_TERRAIN_CONFIG, null, 2)}</code></pre>
 
   <p>
     To samo wejście może pochodzić z dowolnego źródła — np. z prawdziwej listy gildii pobranej

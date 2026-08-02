@@ -13,8 +13,7 @@ export default defineConfig({
       description:
         'Rozbudowany, w pełni konfigurowalny plugin RPG do gildii dla serwerów Minecraft (Paper 1.8–1.21.x).',
       logo: {
-        // Same mark as the landing nav (src/components/Landing.astro's inline SVG) —
-        // logo.png was a different, older asset (dark rounded box, muted colors).
+        // Same mark as the landing nav's inline SVG in Landing.astro.
         src: './src/assets/logo.svg',
         alt: 'FunnyGuilds',
       },
@@ -41,9 +40,7 @@ export default defineConfig({
           href: 'https://discord.gg/CYvyq3u',
         },
       ],
-      // Light-only, no dark mode (see src/components/ThemeProvider.astro).
-      // Header/MobileMenuFooter = same nav elements as the landing page (see
-      // src/components/Header.astro for why).
+      // Light-only (ThemeProvider), and the landing page's own nav (Header/MobileMenuFooter).
       components: {
         ThemeProvider: './src/components/ThemeProvider.astro',
         Header: './src/components/Header.astro',
@@ -62,31 +59,42 @@ export default defineConfig({
         {
           label: 'Wprowadzenie',
           translations: { en: 'Introduction' },
-          items: [
-            { slug: 'introduction' },
-            { slug: 'installation' },
-            { slug: 'faq' },
-          ],
+          items: [{ slug: 'introduction' }],
         },
         {
-          label: 'Konfiguracja',
-          translations: { en: 'Configuration' },
+          label: 'Funkcje podstawowe',
+          translations: { en: 'Core features' },
           items: [
-            { slug: 'configuration' },
-            { slug: 'chat-formats' },
+            { slug: 'guilds' },
+            { slug: 'territories' },
+            { slug: 'alliances-wars' },
+            { slug: 'rankings-combat' },
+            { slug: 'chat' },
             { slug: 'tablist' },
             { slug: 'tablist-variables' },
           ],
         },
         {
-          label: 'Komendy i uprawnienia',
-          translations: { en: 'Commands & Permissions' },
-          items: [{ slug: 'commands' }, { slug: 'permissions' }],
+          label: 'Integracje',
+          translations: { en: 'Integrations' },
+          items: [
+            { slug: 'worldguard-worldedit' },
+            { slug: 'vault' },
+            { slug: 'placeholderapi' },
+            { slug: 'dynmap' },
+            { slug: 'decentholograms' },
+          ],
         },
         {
-          label: 'Placeholdery',
-          translations: { en: 'Placeholders' },
-          items: [{ slug: 'placeholders' }, { slug: 'placeholderapi' }],
+          label: 'Materiały referencyjne',
+          translations: { en: 'Reference' },
+          items: [
+            { slug: 'placeholders' },
+            { slug: 'commands' },
+            { slug: 'permissions' },
+            { slug: 'configuration' },
+            { slug: 'faq' },
+          ],
         },
         {
           label: 'Dla programistów',

@@ -225,3 +225,97 @@
 .sidebar a {
   border-radius: 2px;
 }
+
+/* ==========================================================================
+   Layout width — Starlight's defaults read as unbalanced on a real monitor:
+   the 45rem content column is narrow enough that every 3-4 column table in
+   the new feature pages wraps its cells onto multiple lines, while the right
+   "on this page" ToC grows to fill whatever's left over (TwoColumnContent.astro
+   splits leftover viewport width 50/50 between content and the ToC column,
+   then PageSidebar.astro only fills ~25% of that with actual text) — so on a
+   wide screen the ToC visually claims a huge, mostly-empty column next to a
+   squeezed-in content area. Widening the content column and pinning the ToC
+   to a fixed width mirroring the left nav fixes both: text/tables get real
+   room, and the page reads as a symmetrical nav | content | ToC frame instead
+   of a random leftover-space split.
+   ========================================================================== */
+:root {
+  --sl-content-width: 60rem; /* was 45rem */
+}
+
+@media (min-width: 72rem) {
+  .right-sidebar-container {
+    width: var(--sl-sidebar-width);
+  }
+  [data-has-sidebar][data-has-toc] .main-pane {
+    width: calc(100% - var(--sl-sidebar-width));
+    /* Starlight's own value here is "auto 0" — zero on the inline-end side,
+       so content hugs the ToC with the leftover pushed entirely to its left.
+       That reads fine when main-pane is barely wider than the content itself
+       (Starlight's default fluid width), but now that main-pane fills all
+       remaining space, "auto 0" shoves the text hard right instead of
+       centering it. Plain "auto" centers it in the space actually left over
+       after the fixed nav/ToC columns above. */
+    --sl-content-margin-inline: auto;
+  }
+  .right-sidebar-panel .sl-container {
+    max-width: calc(var(--sl-sidebar-width) - 2 * var(--sl-sidebar-pad-x));
+  }
+}
+
+/* Shared shell for the embedded isomap demos (EnlargeDemo, GuildCreationDemo,
+   HeartSurroundingsDemo) — one definition instead of a copy per component. */
+.demo-card {
+  margin: 1.5rem 0;
+  border: 1px solid var(--fg-hairline);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.demo-scene {
+  position: relative;
+  height: var(--demo-scene-height, 300px);
+  background: #4f8a41;
+}
+.demo-scene canvas {
+  display: block;
+}
+
+/* Segmented progress bar, for the demos that auto-cycle through discrete states. */
+.demo-bar {
+  display: flex;
+  gap: 2px;
+  padding: 0.85rem 1rem 0.75rem;
+  background: #fff;
+  border-top: 1px solid var(--fg-hairline);
+}
+.demo-segment {
+  flex: 1;
+  min-width: 0;
+}
+.demo-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--fg-hairline);
+  overflow: hidden;
+}
+.demo-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 2px;
+  background: var(--segment-color, var(--fg-blue));
+}
+.demo-fill.demo-fill--active {
+  animation: demo-fill-anim linear forwards;
+}
+.demo-fill.demo-fill--done {
+  width: 100%;
+}
+.demo-segment[data-index='0'] { --segment-color: var(--fg-blue); }
+.demo-segment[data-index='1'] { --segment-color: var(--fg-gold); }
+.demo-segment[data-index='2'] { --segment-color: var(--fg-green); }
+.demo-segment[data-index='3'] { --segment-color: var(--fg-coral); }
+
+@keyframes demo-fill-anim {
+  from { width: 0%; }
+  to { width: 100%; }
+}

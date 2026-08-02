@@ -1,0 +1,149 @@
+---
+// Companion to the "enlarge-items" cost table: steps through the 10 enlarge levels (then back
+// to 0) so the footprint visibly grows instead of reading as a list of diamond counts. Each
+// step remounts the shared renderer with a bigger Territory.size.
+interface Props {
+  levelLabel: string;
+  radiusLabel: string;
+  costLabel: string;
+  baseLevelText: string;
+  blocksUnit: string;
+  diamondsUnit: string;
+}
+const { levelLabel, radiusLabel, costLabel, baseLevelText, blocksUnit, diamondsUnit } = Astro.props;
+---
+
+<div class="demo-card not-content" style="--demo-scene-height: 280px">
+  <div class="demo-scene" id="enlarge-demo-root"></div>
+
+  <div class="enlarge-demo-panel">
+    <div class="enlarge-demo-track"><div class="enlarge-demo-fill" id="enlarge-demo-progress"></div></div>
+    <div class="enlarge-demo-stats">
+      <span class="enlarge-demo-level">{levelLabel} <strong id="enlarge-demo-level-value">0</strong>/10</span>
+      <dl>
+        <div>
+          <dt>{radiusLabel}</dt>
+          <dd id="enlarge-demo-radius">—</dd>
+        </div>
+        <div>
+          <dt>{costLabel}</dt>
+          <dd id="enlarge-demo-cost">—</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<script type="application/json" id="enlarge-demo-config" set:html={JSON.stringify({ baseLevelText, blocksUnit, diamondsUnit })} />
+
+<style>
+  .enlarge-demo-panel {
+    padding: 0.85rem 1rem 0.75rem;
+    border-top: 1px solid var(--fg-hairline);
+    background: #fff;
+  }
+  .enlarge-demo-track {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--fg-hairline);
+    overflow: hidden;
+    margin-bottom: 0.7rem;
+  }
+  .enlarge-demo-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    background: var(--fg-blue);
+  }
+  .enlarge-demo-fill.enlarge-demo-fill--active {
+    animation: enlarge-demo-fill-anim 2.5s linear forwards;
+  }
+  .enlarge-demo-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--fg-slate);
+  }
+  .enlarge-demo-level strong {
+    color: var(--fg-ink);
+    font-family: var(--sl-font-mono);
+  }
+  .enlarge-demo-stats dl {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+  }
+  .enlarge-demo-stats dt {
+    color: var(--fg-slate-soft);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .enlarge-demo-stats dd {
+    margin: 0;
+    color: var(--fg-ink);
+    font-weight: 600;
+    font-family: var(--sl-font-mono);
+  }
+
+  @keyframes enlarge-demo-fill-anim {
+    from { width: 0%; }
+    to { width: 100%; }
+  }
+</style>
+
+<script>
+  import { mountIsomapScene } from '../lib/isomap/scene';
+
+  const DWELL_MS = 2500;
+  const REGION_SIZE = 50;
+  const ENLARGE_SIZE = 5;
+  const BASE_TERRITORY_SIZE = 5;
+  const COSTS = [8, 16, 24, 32, 40, 48, 56, 64, 72, 80];
+  const MAX_LEVEL = COSTS.length;
+
+  const root = document.getElementById('enlarge-demo-root');
+  const levelValueEl = document.getElementById('enlarge-demo-level-value');
+  const radiusEl = document.getElementById('enlarge-demo-radius');
+  const costEl = document.getElementById('enlarge-demo-cost');
+  const progressEl = document.getElementById('enlarge-demo-progress');
+  const configEl = document.getElementById('enlarge-demo-config');
+  const config = configEl?.textContent ? JSON.parse(configEl.textContent) : {};
+
+  let level = 0;
+  let dispose: (() => void) | null = null;
+
+  function render() {
+    if (!root) return;
+    dispose?.();
+    const size = BASE_TERRITORY_SIZE + level;
+    const half = Math.floor(size / 2);
+    dispose = mountIsomapScene(
+      root,
+      { territories: [{ name: 'Gildia', c0: -half, r0: -half, size }], margin: 14, river: false },
+      { frustumHalfHeight: 20, hideLabels: true },
+    );
+
+    if (levelValueEl) levelValueEl.textContent = String(level);
+    if (radiusEl) radiusEl.textContent = `${REGION_SIZE + level * ENLARGE_SIZE} ${config.blocksUnit ?? ''}`;
+    if (costEl) {
+      costEl.textContent = level === 0 ? (config.baseLevelText ?? '') : `${COSTS[level - 1]} ${config.diamondsUnit ?? ''}`;
+    }
+    if (progressEl) {
+      progressEl.classList.remove('enlarge-demo-fill--active');
+      void progressEl.offsetWidth;
+      progressEl.classList.add('enlarge-demo-fill--active');
+    }
+  }
+
+  function step() {
+    level = level === MAX_LEVEL ? 0 : level + 1;
+    render();
+  }
+
+  render();
+  setInterval(step, DWELL_MS);
+</script>

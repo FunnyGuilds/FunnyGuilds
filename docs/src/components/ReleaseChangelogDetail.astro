@@ -1,11 +1,8 @@
 ---
-// The other half of ReleaseChipLink.astro - one shared pane holding every
-// release's changelog, shown/hidden via JS toggling `.active` (see
-// Download.astro's script). Styled as a continuation of the table itself (a
-// border-left divider, no card background) rather than a boxed-off widget,
-// and sticky within the grid it's a column of. Always shows exactly one
-// release (the latest, by default) - there's no "closed" state.
-import type { McArchiveRelease } from '../lib/mc-version-archive';
+// The other half of ReleaseChipLink.astro: one pane holding every release's changelog, with
+// `.active` toggled by Download.astro's script. Styled as a continuation of the table rather
+// than a boxed widget, and always showing exactly one release — there's no "closed" state.
+import { changelogId, type McArchiveRelease } from '../lib/mc-version-archive';
 
 interface Props {
   releases: McArchiveRelease[];
@@ -19,7 +16,7 @@ const { releases, currentLabel, releasedLabel, changelogEyebrow, changelogLinkLa
 
 <div class="detail-pane">
   {releases.map((entry) => {
-    const id = `cl-${entry.tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
+    const id = changelogId(entry.tag);
     return (
       <div id={id} class="changelog-target">
         <div class="target-header">

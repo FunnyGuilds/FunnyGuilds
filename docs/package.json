@@ -4,10 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "predev": "node scripts/fetch-latest-release.mjs",
     "dev": "astro dev",
     "start": "astro dev",
-    "prebuild": "node scripts/fetch-latest-release.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler pages deploy ./dist",

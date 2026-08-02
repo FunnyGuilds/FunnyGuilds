@@ -1,0 +1,88 @@
+---
+// A vertical rank hierarchy (leader > deputies > members), so "who outranks whom" is visible
+// rather than parsed out of prose. Not Starlight's <Steps>: that numbers a sequence of actions,
+// the wrong metaphor for ranks that coexist.
+interface Tier {
+  role: string;
+  description: string;
+}
+interface Props {
+  tiers: Tier[];
+}
+const { tiers } = Astro.props;
+---
+
+<ol class="role-tiers not-content">
+  {tiers.map((tier) => (
+    <li class="role-tier">
+      <span class="role-dot" aria-hidden="true"></span>
+      <div class="role-body">
+        <p class="role-name">{tier.role}</p>
+        <p class="role-desc" set:html={tier.description} />
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .role-tiers {
+    list-style: none;
+    margin: 1.75rem 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .role-tier {
+    position: relative;
+    display: flex;
+    gap: 0.85rem;
+    padding: 0 0 1.4rem 0.1rem;
+  }
+  .role-tier:last-child {
+    padding-bottom: 0;
+  }
+  .role-tier:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1.15rem;
+    bottom: -0.3rem;
+    width: 1px;
+    background: var(--fg-hairline-strong);
+  }
+  .role-dot {
+    flex: none;
+    width: 11px;
+    height: 11px;
+    margin-top: 0.3rem;
+    border-radius: 50%;
+    background: var(--fg-slate-soft);
+    box-shadow: 0 0 0 3px var(--sl-color-bg, #fff);
+    z-index: 1;
+  }
+  .role-tier:nth-child(1) .role-dot {
+    background: var(--fg-gold);
+  }
+  .role-tier:nth-child(2) .role-dot {
+    background: var(--fg-blue);
+  }
+  .role-body {
+    padding-top: 0.05rem;
+  }
+  .role-name {
+    margin: 0 0 0.2rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--fg-ink);
+  }
+  .role-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--fg-slate);
+  }
+  .role-desc :global(code) {
+    font-family: var(--sl-font-mono);
+    font-size: 0.85em;
+  }
+</style>

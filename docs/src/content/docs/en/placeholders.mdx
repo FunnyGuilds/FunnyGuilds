@@ -3,20 +3,20 @@ title: Placeholders
 description: List of built-in FunnyGuilds placeholders and what they mean.
 ---
 
-FunnyGuilds has many built-in placeholders. Here you'll find a list along with information about what value each placeholder returns.
+FunnyGuilds has many built-in placeholders. Below is the full list, together with what each one returns.
 
-If a placeholder is marked `@Deprecated`, it means that placeholder may be removed in the future and we don't recommend using it. In most cases, a recommended replacement will be given.
+A `@Deprecated` note next to a placeholder means it may be removed in the future and we don't recommend using it. We usually suggest a replacement alongside it.
 
 ## Player Placeholders
 #### - Basic -
 
 |   Placeholder    | Description                                                                                                                |
 |:----------------:|:----------------------------------------------------------------------------------------------------------------------------------|
-| ` PLAYER`/`NAME` | Returns the player's nickname                                                                                                |
+| `PLAYER`/`NAME`  | Returns the player's nickname                                                                                                |
 |      `PING`      | Returns the player's current ping                                                                                       |
 |  `PING-FORMAT`   | Returns the player's current ping, formatted using the `ping-format` option in `config.yml`                            |
 |     `WORLD`      | Returns the name of the world the player is currently in                                                                         |
-|     `ONLINE`     | Returns the current number of online players visible to this player (not counting players the player can't see - e.g. while `Vanish`ed) |
+|     `ONLINE`     | Returns the number of online players visible to this player (not counting players they can't see themselves — for example those in vanish) |
 
 #### - Ranking -
 
@@ -30,8 +30,8 @@ If a placeholder is marked `@Deprecated`, it means that placeholder may be remov
 |         `LOGOUTS`         | Returns the player's current count of logouts during combat                                                                                                                            |
 |           `KDR`           | Returns the player's KDR (kills / deaths)                                                                                                                                          |
 |           `KDA`           | Returns the player's KDA ((kills + assists) / deaths)                                                                                                                              |
-| **Deprecated** `POSITION` | We recommend using the `position-{type}` placeholder described below. Returns the player's position in the ranking-points top |
-|     `POSITION-{type}`      | The player's position in the top for the given type (e.g. `DEATHS`). The list of available (and currently enabled) types can be found in the config under `top.enabled-user-tops` in `config.yml`. |
+| **Deprecated** `POSITION` | Returns the player's position in the ranking-points top list. We recommend using the `position-{type}` placeholder described below instead |
+|     `POSITION-{type}`      | The player's position in the top list for the given type (e.g. `DEATHS`). The list of available (and currently enabled) types can be found in the config under `top.enabled-user-tops` in `config.yml`. |
 |     `PTOP-<position>`      | The player at the given ranking position (e.g. `{PTOP-1}`, `{PTOP-60}`)                                                                                                                    |
 |  `PTOP-<type>-<position>`   | The player at the given ranking position (e.g. `{PTOP-KILLS-1}`, `{PTOP-DEATHS-60}`), for the given ranking type                                                                             |
 
@@ -43,9 +43,9 @@ If a placeholder is marked `@Deprecated`, it means that placeholder may be remov
 |:--------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |       `G-NAME`       | The name of the guild the player belongs to                                                                                                                                                                                       |
 |       `G-TAG`        | The player's guild tag                                                                                                                                                                                                         |
-|      `G-OWNER`       | The guild's owner                                                                                                                                                                                                         |
+|      `G-OWNER`       | The guild's leader                                                                                                                                                                                                         |
 |     `G-DEPUTIES`     | The guild's deputies                                                                                                                                                                                                           |
-|      `G-DEPUTY`      | A random one of the guild's deputies                                                                                                                                                                                                 |
+|      `G-DEPUTY`      | A randomly chosen deputy of the guild                                                                                                                                                                                                 |
 |      `G-LIVES`       | The guild's number of lives                                                                                                                                                                                                         |
 |   `G-LIVES-SYMBOL`   | The guild's number of lives, as a repeating symbol (set via `lives-repeating-symbol.full` in `config.yml`), with empty hearts for missing lives (set via `lives-repeating-symbol.empty` in `config.yml`) |
 | `G-LIVES-SYMBOL-ALL` | The guild's total number of lives, as a repeating symbol (set via `lives-repeating-symbol.full` in `config.yml`)                                                                                            |
@@ -57,7 +57,7 @@ If a placeholder is marked `@Deprecated`, it means that placeholder may be remov
 |  `G-VALIDITY-TIME`   | Time remaining until the guild expires (e.g. 5 days 2 hours 1 minute)                                                                                                                                                                 |
 |    `G-PROTECTION`    | The guild's protection expiration date                                                                                                                                                                                           |
 | `G-PROTECTION-TIME`  | Time remaining until the guild's protection expires (e.g. 5 days 2 hours 1 minute)                                                                                                                                                         |
-|   `G-REGION-SIZE`    | The guild's size                                                                                                                                                                                                            |
+|   `G-REGION-SIZE`    | The size of the guild's territory                                                                                                                                                                                                            |
 
 #### - Ranking -
 
@@ -68,13 +68,13 @@ If a placeholder is marked `@Deprecated`, it means that placeholder may be remov
 |   `G-POINTS-FORMAT`    | The average number of points among guild members, formatted                                               |
 |      `G-POSITION`      | The player's guild's position in the ranking                                                                      |
 |   `G-POSITION-<type>`   | The player's guild's position in the ranking, for the given ranking type                                            |
-|       `G-KILLS`        | The sum of kills of the guild's members                                                                         |
+|       `G-KILLS`        | The sum of the guild members' kills                                                                         |
 |     `G-AVG-KILLS`      | The average number of kills among guild members                                                               |
-|       `G-DEATHS`       | The sum of deaths of the guild's members                                                                          |
+|       `G-DEATHS`       | The sum of the guild members' deaths                                                                          |
 |     `G-AVG-DEATHS`     | The average number of deaths among guild members                                                                |
-|      `G-ASSISTS`       | The sum of assists of the guild's members                                                                            |
+|      `G-ASSISTS`       | The sum of the guild members' assists                                                                            |
 |    `G-AVG-ASSISTS`     | The average number of assists among guild members                                                                  |
-|      `G-LOGOUTS`       | The sum of logouts of the guild's members                                                                        |
+|      `G-LOGOUTS`       | The sum of the guild members' logouts                                                                        |
 |    `G-AVG-LOGOUTS`     | The average number of logouts among guild members                                                              |
 |        `G-KDR`         | The guild's kill/death ratio                                                                   |
 |        `G-KDA`         | The guild's (kills + assists)/death ratio                                                           |

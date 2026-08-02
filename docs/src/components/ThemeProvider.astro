@@ -1,10 +1,7 @@
 ---
-// Override of Starlight's ThemeProvider: FunnyGuilds is light-only, matching
-// the landing page (which has no dark variant and no toggle at all). There is
-// no ThemeSelect in Header.astro anymore, so this is the only thing standing
-// between a visitor's OS dark preference and Starlight's default (unbranded)
-// dark theme — always force light, ignoring any stored preference from
-// before this change and ignoring `prefers-color-scheme` entirely.
+// The site is light-only, like the landing page. With no ThemeSelect left in the header, this
+// is all that stands between a visitor's OS dark preference and Starlight's unbranded dark
+// theme, so it forces light and ignores both `prefers-color-scheme` and any stored preference.
 ---
 
 {/* Inlined to avoid a flash of the wrong theme. */}

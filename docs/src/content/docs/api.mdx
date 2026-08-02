@@ -6,7 +6,7 @@ description: Przewodnik po API FunnyGuilds dla programistów.
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 :::note
-FunnyGuilds API Nightly 4.13.0
+FunnyGuilds API 5.x (nightly)
 :::
 
 ## FunnyGuilds API
@@ -23,7 +23,7 @@ FunnyGuilds API Nightly 4.13.0
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.13.1-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <classifier>all</classifier>
     <scope>provided</scope>
 </dependency>
@@ -41,7 +41,7 @@ repositories {
 ```
 ```groovy
 dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:4.13.1-SNAPSHOT:all'
+    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all'
 }
 ```
 </TabItem>
@@ -57,15 +57,15 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:4.13.1-SNAPSHOT:all")
+    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all")
 }
 ```
 </TabItem>
 </Tabs>
 
-#### FunnyGuilds
+### FunnyGuilds
 
-Główna instancja pluginu. Powinna zostać pobrana tylko raz np.:
+Główna instancja pluginu. Powinna zostać pobrana tylko raz, np.:
 
 ```java
 public class MyPlugin extends JavaPlugin {
@@ -129,13 +129,13 @@ if (guildOption.isPresent()) {
 
 ### Nasłuchiwanie wydarzeń
 
-Wydarzenia związane ze:
-- Zmianami rankingu: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
-- Gildiami: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
-- Członkami gildii: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
-- Sojuszami: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
+Wydarzenia dotyczące:
+- zmian rankingu: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
+- gildii: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
+- członków gildii: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
+- sojuszy: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
 
-Przykład z `GuildDeleteEvent`
+Przykład z użyciem `GuildDeleteEvent`:
 
 ```java
 public class GuildDeleteListener implements Listener {

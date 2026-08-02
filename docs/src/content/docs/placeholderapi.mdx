@@ -1,13 +1,15 @@
 ---
 title: PlaceholderAPI
-description: Placeholdery FunnyGuilds dostępne przez PlaceholderAPI.
+description: Udostępnianie placeholderów FunnyGuilds innym pluginom przez PlaceholderAPI.
 ---
 
-:::tip[Dodawanie własnych placeholderów]
-Jeśli chcesz użyć placeholder'ów we własnym pluginie wykorzystując PlaceholderAPI, zapoznaj się z tym poradnikiem: [Adding placeholders to PlaceholderAPI](https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Hook-into-PlaceholderAPI#adding-placeholders-to-placeholderapi).
-:::
-
-FunnyGuilds daje możliwość użycia placeholder'ów w innych pluginach, które obsługują wtyczkę [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/).
+Po wykryciu [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/)
+FunnyGuilds rejestruje własną ekspansję `%funnyguilds_x%` — bez dodatkowego
+pobierania przez `/papi ecloud`. Ekspansja udostępnia te same dane co
+[wbudowane placeholdery](/placeholders/) (`{X}`), tylko w formacie zrozumiałym
+dla innych pluginów — czatów, GUI czy scoreboardów spoza FunnyGuilds. Nazwa
+zmiennej po `funnyguilds_` odpowiada wprost nazwie z listy wbudowanych
+placeholderów.
 
 ### Zmienne gracza
 
@@ -24,7 +26,7 @@ FunnyGuilds daje możliwość użycia placeholder'ów w innych pluginach, które
 - `%funnyguilds_position-typ%`
 - `%funnyguilds_guild-position%`
 
-### Relacyjne zmienne gracza
+### Zmienne relacyjne gracza
 
 - `%rel_funnyguilds_tag%`
 

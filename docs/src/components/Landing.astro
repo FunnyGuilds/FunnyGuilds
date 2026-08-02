@@ -100,7 +100,7 @@ const terrainData = generateTerrain(LANDING_TERRAIN_CONFIG);
     }
     .tl-row { display: flex; align-items: center; gap: 7px; font-size: 12.5px; white-space: nowrap; }
     .tl-row .pos { color: var(--accent); font-weight: 700; width: 1.1em; flex-shrink: 0; text-align: right; }
-    .tl-row .tag { color: rgba(255, 255, 255, 0.45); font-family: var(--mono); font-size: 10.5px; }
+    .tl-row .tag { color: var(--gold); font-family: var(--mono); font-size: 10.5px; }
     .tl-row .nm { color: #fff; font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; }
     .tl-row .val { color: rgba(255, 255, 255, 0.65); font-variant-numeric: tabular-nums; }
 
@@ -112,7 +112,7 @@ const terrainData = generateTerrain(LANDING_TERRAIN_CONFIG);
       display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 12.5px;
       padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); white-space: nowrap;
     }
-    .sb-head .tag { color: var(--blue); font-family: var(--mono); }
+    .sb-head .tag { color: var(--gold); font-family: var(--mono); }
     .sb-row { display: flex; justify-content: space-between; gap: 14px; font-size: 12.5px; line-height: 1.7; white-space: nowrap; }
     .sb-row .k { color: rgba(255, 255, 255, 0.55); }
     .sb-row .v { color: #6bdc7c; font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -154,24 +154,24 @@ const terrainData = generateTerrain(LANDING_TERRAIN_CONFIG);
           <div class="tl-cols">
             <div class="tl-col" style="--accent: var(--blue)">
               <div class="tl-col-head">{t.hud.topPoints}</div>
-              <div class="tl-row"><span class="pos">1</span><span class="tag">[NRD]</span><span class="nm">Xylo</span><span class="val">452</span></div>
-              <div class="tl-row"><span class="pos">2</span><span class="tag">[ASH]</span><span class="nm">Rex</span><span class="val">301</span></div>
+              <div class="tl-row"><span class="pos">1</span><span class="tag">[DZK]</span><span class="nm">dzikoysk</span><span class="val">452</span></div>
+              <div class="tl-row"><span class="pos">2</span><span class="tag">[INS]</span><span class="nm">insertt</span><span class="val">301</span></div>
             </div>
             <div class="tl-col" style="--accent: var(--gold)">
               <div class="tl-col-head">{t.hud.topKdr}</div>
-              <div class="tl-row"><span class="pos">1</span><span class="tag">[WRN]</span><span class="nm">Luna</span><span class="val">2.6</span></div>
-              <div class="tl-row"><span class="pos">2</span><span class="tag">[ASH]</span><span class="nm">Rex</span><span class="val">2.4</span></div>
+              <div class="tl-row"><span class="pos">1</span><span class="tag">[P3R]</span><span class="nm">P3ridot</span><span class="val">2.6</span></div>
+              <div class="tl-row"><span class="pos">2</span><span class="tag">[KIM]</span><span class="nm">Kamilkime</span><span class="val">2.4</span></div>
             </div>
             <div class="tl-col" style="--accent: var(--coral)">
               <div class="tl-col-head">{t.hud.topKills}</div>
-              <div class="tl-row"><span class="pos">1</span><span class="tag">[ASH]</span><span class="nm">Rex</span><span class="val">89</span></div>
-              <div class="tl-row"><span class="pos">2</span><span class="tag">[NRD]</span><span class="nm">Nova</span><span class="val">71</span></div>
+              <div class="tl-row"><span class="pos">1</span><span class="tag">[INS]</span><span class="nm">insertt</span><span class="val">89</span></div>
+              <div class="tl-row"><span class="pos">2</span><span class="tag">[DZK]</span><span class="nm">Rollczi</span><span class="val">71</span></div>
             </div>
           </div>
         </div>
 
         <div class="scoreboard hud-panel">
-          <div class="sb-head"><span class="tag">[NRD]</span><span class="nm">Nordheim</span></div>
+          <div class="sb-head"><span class="tag">[DZK]</span><span class="nm">dzikoysk</span></div>
           <div class="sb-row"><span class="k">{t.hud.scoreRank}</span><span class="v">#1</span></div>
           <div class="sb-row"><span class="k">{t.hud.scorePoints}</span><span class="v">452</span></div>
           <div class="sb-row"><span class="k">{t.hud.scoreKdr}</span><span class="v">1.9</span></div>

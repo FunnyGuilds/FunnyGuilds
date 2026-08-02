@@ -1,0 +1,31 @@
+---
+title: DecentHolograms
+description: Hologram nad sercem gildii przez DecentHolograms.
+---
+
+FunnyGuilds nie renderuje hologramu samodzielnie — wymaga zainstalowanego
+[DecentHolograms](https://www.spigotmc.org/resources/96927/). Bez tego pluginu
+opcja jest po prostu nieaktywna. Konfiguracja hologramu znajduje się w
+`heart-configuration.hologram` (patrz też [Tereny i ochrona](/territories/#serce-gildii)):
+
+```yaml
+heart-configuration:
+  hologram:
+    enabled: true
+    update-interval: 400
+    item: AIR
+    location-correction: {x: 0.5, y: 2.5, z: 0.5}
+    displayed-lines:
+    - '&7&m-------------------'
+    - '&7- &bFunnyGuilds &7-'
+    - '&7- &bGildia {TAG} &7-'
+    - '&7- &bZycia {LIVES} &7-'
+    - '&7&m-------------------'
+```
+
+`item` to opcjonalna ikona ozdobna wyświetlana nad tekstem (zostaw `AIR`, aby
+ją wyłączyć). `update-interval` to częstotliwość odświeżania w tickach.
+`displayed-lines` obsługuje bogaty zestaw zmiennych gildyjnych — `{TAG}`,
+`{OWNER}`, `{MEMBERS-ONLINE}`/`{MEMBERS-ALL}`, `{LIVES}`/`{LIVES-SYMBOL}`,
+`{AVG-POINTS}`, `{VALIDITY}`/`{VALIDITY-TIME}`, `{ALLIES}`/`{ENEMIES}` i wiele
+innych — ten sam zestaw co w etykietach [dynmap](/dynmap/).

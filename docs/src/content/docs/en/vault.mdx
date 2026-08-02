@@ -1,0 +1,24 @@
+---
+title: Vault
+description: Economy and offline-player permission checks through Vault.
+---
+
+Vault is optional and auto-detected (it also requires an economy plugin to be
+installed, e.g. EssentialsX). Without it, every balance-based requirement is
+simply skipped.
+
+## Economy
+
+A player's balance (`money`) can be one of the requirements in `items.yml`
+for the item sets needed to create a guild — see
+[Guilds](/en/guilds/#creating-a-guild) — as well as in the generic
+`Requirements` type used elsewhere in the configuration, see
+[Configuration — Requirements](/en/configuration/#requirements). A player's
+current balance is also available as the `{VAULT-MONEY}` placeholder.
+
+## Offline player permissions
+
+FunnyGuilds uses Vault's permission bridge to check a player's permissions
+while they're offline (e.g. to determine which `items.yml` item set applies
+to them) — Bukkit on its own can't do this for players who aren't connected
+to the server.

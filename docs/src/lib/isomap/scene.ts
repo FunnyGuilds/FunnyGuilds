@@ -1,13 +1,24 @@
-// Terrain is real-height boxes; depth buffer + back-face culling handle visibility, no lights (unlit materials = flat-shaded SVG look).
+// Terrain is real-height boxes; the depth buffer and back-face culling handle visibility, and
+// there are no lights — unlit materials give the flat-shaded look of the original SVG.
 import * as THREE from 'three';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import { generateTerrain, GRASS_TOP, HEIGHT_UNIT, LANDING_TERRAIN_CONFIG, TILE, WALL_HEIGHT, WATER_DEPTH, type TerrainConfig, type TerrainData } from './terrain';
 import { GRASS, GRASS_DARK, HILL_SIDE, HILL_TOP, SAND, STONE_SIDE, STONE_TOP, WATER_DEEP, WATER_SIDE, WATER_TOP, type FaceColors } from './colors';
-import { addBrackets, addCacti, addHeart, addInstancedBoxes, addLabel, addTrees, addWaterWalls, columnFromTop, makeGridTexture } from './geometry';
+import { addBrackets, addCacti, addHeart, addInstancedBoxes, addLabel, addTrees, addWaterWalls, columnFromTop, disposeObject3D, makeGridTexture } from './geometry';
 
 export interface MountOptions {
-  /** Half-height of the orthographic view, in world units. Default 46 is tuned for Landing's large layout; smaller configs should pass less. */
+  /** Half-height of the orthographic view, in world units. Default 46 suits Landing's large layout. */
   frustumHalfHeight?: number;
+  /**
+   * Lets callers add their own objects to the scene without this module exposing the scene,
+   * renderer or camera. Runs once after terrain and hearts are built; anything it returns is
+   * called on unmount alongside this module's own cleanup.
+   */
+  decorate?: (scene: THREE.Scene, territories: TerrainData['territories']) => void | (() => void);
+  /** Hide the floating territory labels — for close-ups where they'd just be clutter. Default false. */
+  hideLabels?: boolean;
+  /** Raise the camera's look-at point, so tall scenes aren't pushed against the top of the frame. */
+  centerYOffset?: number;
 }
 
 export function mountIsomapScene(container: HTMLElement, config: TerrainConfig = LANDING_TERRAIN_CONFIG, options: MountOptions = {}): () => void {
@@ -20,13 +31,16 @@ export function mountIsomapSceneFromData(container: HTMLElement, data: TerrainDa
 
   const frustumHalfHeight = options.frustumHalfHeight ?? 46;
   const camera = new THREE.OrthographicCamera(-1, 1, 1, 1, 0.1, 500);
-  const center = new THREE.Vector3((data.ground.minX + data.ground.maxX) / 2, 0, (data.ground.minZ + data.ground.maxZ) / 2);
+  const center = new THREE.Vector3((data.ground.minX + data.ground.maxX) / 2, options.centerYOffset ?? 0, (data.ground.minZ + data.ground.maxZ) / 2);
   // ~15% shallower than a 45° top-down view, closer to the original SVG's flatter angle.
   const cameraDirection = new THREE.Vector3(1, 0.85, 1).normalize();
   camera.position.copy(center).addScaledVector(cameraDirection, 140);
   camera.lookAt(center);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  // preserveDrawingBuffer: without it Chromium may clear the backbuffer right after presenting a
+  // frame, so anything reading the canvas outside the render loop (screenshots, toDataURL, video
+  // capture) can grab a blank or stale frame.
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
@@ -37,12 +51,15 @@ export function mountIsomapSceneFromData(container: HTMLElement, data: TerrainDa
   container.appendChild(labelRenderer.domElement);
 
   const gridTexture = buildTerrain(scene, data);
-  const hearts = data.territories.map((t) => {
-    const heart = addHeart(scene, t);
-    addBrackets(scene, t);
-    addLabel(scene, t);
-    return heart;
-  });
+  const hearts = data.claimed
+    ? data.territories.map((t) => {
+        const heart = addHeart(scene, t);
+        addBrackets(scene, t);
+        if (!options.hideLabels) addLabel(scene, t);
+        return heart;
+      })
+    : [];
+  const undecorate = options.decorate?.(scene, data.territories);
 
   function resize() {
     const width = container.clientWidth || 1;
@@ -64,24 +81,14 @@ export function mountIsomapSceneFromData(container: HTMLElement, data: TerrainDa
 
   return () => {
     stopAnimating();
+    undecorate?.();
     resizeObserver.disconnect();
-    disposeMeshes(scene);
+    disposeObject3D(scene);
     gridTexture.dispose();
     renderer.dispose();
     container.removeChild(renderer.domElement);
     container.removeChild(labelRenderer.domElement);
   };
-}
-
-// renderer.dispose() doesn't free scene geometries/materials/textures — must be done explicitly or a mount/unmount cycle leaks GPU memory.
-function disposeMeshes(scene: THREE.Scene) {
-  scene.traverse((object) => {
-    if (!(object instanceof THREE.Mesh)) return;
-    object.geometry.dispose();
-    for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
-      material.dispose();
-    }
-  });
 }
 
 function buildTerrain(scene: THREE.Scene, data: TerrainData): THREE.Texture {
@@ -98,7 +105,7 @@ function buildTerrain(scene: THREE.Scene, data: TerrainData): THREE.Texture {
   addInstancedBoxes(scene, deepWater, TILE, waterColumn.height, TILE, waterColumn.centerY, { top: WATER_DEEP, ...WATER_SIDE }, gridTexture);
   addWaterWalls(scene, data.waterWalls, GRASS_TOP, waterTop);
 
-  // Grouped by height + checkerboard parity so each combination is one instanced mesh, not one box per tile.
+  // Grouped by height + checkerboard parity: one instanced mesh per combination, not per tile.
   const heightGroups = groupBy(data.heightTiles, (t) => `${t.height}:${t.parity}`);
   for (const tiles of heightGroups.values()) {
     const { height, parity } = tiles[0];
@@ -123,8 +130,9 @@ function groupBy<T, K>(items: T[], key: (item: T) => K): Map<K, T[]> {
   const groups = new Map<K, T[]>();
   for (const item of items) {
     const k = key(item);
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k)!.push(item);
+    const bucket = groups.get(k);
+    if (bucket) bucket.push(item);
+    else groups.set(k, [item]);
   }
   return groups;
 }
@@ -136,7 +144,7 @@ function animateHearts(
   scene: THREE.Scene,
   camera: THREE.Camera,
 ): () => void {
-  // Capped well below display refresh rate — only the heart spin animates, nothing to gain from matching it.
+  // Capped well below display refresh rate — only the heart spin animates.
   const fps = 16;
   const frameInterval = 1000 / fps;
   const spinRadiansPerSecond = 1.188; // matches the original spin speed at 60fps

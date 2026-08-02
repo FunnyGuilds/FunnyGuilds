@@ -1,0 +1,136 @@
+---
+title: Tereny i ochrona
+description: Serce gildii, teren, powiększanie, ochrona przed graczami i TNT.
+---
+
+import HeartSurroundingsDemo from '../../components/HeartSurroundingsDemo.astro';
+import EnlargeDemo from '../../components/EnlargeDemo.astro';
+
+## Serce gildii
+
+Serce to blok lub encja (domyślnie `ender_crystal`) stawiane w momencie
+założenia gildii — `heart-configuration.create-type`. Jego zniszczenie podczas
+wojny odbiera gildii życie (patrz [Sojusze i wojny](/alliances-wars/)).
+
+Kluczowe opcje sekcji `heart-configuration`:
+
+| Opcja | Domyślnie | Opis |
+|---|---|---|
+| `center.height` | `FIXED` | Wysokość serca: `FIXED` (stała), `PLAYER` (wysokość gracza) lub `GRAVITY` (powierzchnia terenu) |
+| `center.fixed-height` | `60` | Wysokość, gdy `height: FIXED` |
+| `create-center-sphere` | `true` | Czy otoczyć serce kulą z obsydianu |
+| `paste-schematic-on-creation` | `false` | Wklejanie własnego schematu bazy (wymaga [WorldEdit](/worldguard-worldedit/)) |
+
+:::note[Inne opcje serca]
+- `center.offset` — przesunięcie serca względem wyznaczonego punktu.
+- `home-offset` / `home-head-position` — pozycja spawnu w bazie.
+- `interaction-protection` — blokada interakcji tuż przy sercu (domyślnie wyłączona).
+- `hologram` — hologram nad sercem, wymaga [DecentHolograms](/decentholograms/).
+:::
+
+`create-center-sphere` i `paste-schematic-on-creation` można łączyć z dowolną
+własną budowlą.
+
+<HeartSurroundingsDemo
+  label="Twoja gildia"
+  stateLabels={['Gołe serce', 'Kula z obsydianu', 'Kostka schematu', 'Wieża schematu']}
+/>
+
+## Teren gildii
+
+Rozmiar terenu ustawia `region-size` (domyślnie **50** — promień wokół serca).
+Nowy teren musi zachować odstęp od innych terenów (`region-min-distance`, domyślnie
+10), od spawnu (`create-distance`, domyślnie 100) i od granicy mapy
+(`create-guild-min-distance`, domyślnie 50). Komendą `/ga przenies <tag>`
+administrator może przenieść istniejący teren gildii. Zakładanie gildii (a więc
+i terenu) można zablokować na wybranych światach — `blocked-worlds`.
+
+## Powiększanie terenu
+
+Gracze powiększają teren komendą `/powieksz` — każdy poziom dodaje
+`enlarge-size` bloków (domyślnie **5**) do promienia terenu. Koszt rośnie z
+każdym poziomem i jest zdefiniowany jako lista w `enlarge-items`:
+
+<EnlargeDemo
+  levelLabel="Poziom"
+  radiusLabel="Promień"
+  costLabel="Koszt tego poziomu"
+  baseLevelText="poziom bazowy"
+  blocksUnit="bloków"
+  diamondsUnit="diamentów"
+/>
+
+```yaml
+enlarge-items:
+- 8 diamond   # poziom 1
+- 16 diamond  # poziom 2
+- 24 diamond  # poziom 3
+# ... aż do 10 poziomu (80 diamentów)
+```
+
+Wpisanie pustej listy (`enlarge-items: []`) całkowicie wyłącza możliwość
+powiększania.
+
+## Ochrona terenu
+
+Domyślnie tylko członkowie gildii mogą budować i niszczyć na jej terenie.
+Dodatkowo:
+
+- **Zablokowane interakcje** — `blocked-interact` (domyślnie skrzynki i
+  skrzynki z pułapką) uniemożliwia osobom z zewnątrz otwieranie wybranych
+  bloków na cudzym terenie.
+- **Teleportacja na cudzy teren** — `block-teleport-on-region` osobno
+  kontroluje blokadę teleportacji (np. `/tp`) na teren neutralny, wrogi i
+  sojuszniczy.
+- **Respawn w bazie** — `respawn-in-base` odradza gracza w bazie jego gildii
+  po śmierci.
+- **Ucieczka** — `/ucieczka` (`/escape`) pozwala uciec z cudzego terenu po
+  odczekaniu `escape-delay` (domyślnie 2 minuty). Włącza ją `escape-enable`,
+  a `escape-spawn` pozwala uciekać na spawn także graczom bez gildii.
+
+:::note[Inne opcje ochrony]
+- `placing-blocks-bypass-on-region` — bloki stawiane przez każdego, niezależnie od terenu.
+- `block-flow` / `block-flow-on-region` — blokada rozlewania cieczy poza/na teren.
+- `region-commands` — komendy zablokowane na cudzym terenie.
+- `region-notification-cooldown` / `notification-guild-member-display` — powiadomienia o wejściu na teren.
+- `animals-protection` — ochrona zwierząt.
+- wbudowany mechanizm „zbugowanych klocków" (`bugged-blocks*`) — efekt działający wyłącznie na terenie wrogiej gildii.
+:::
+
+## TNT
+
+TNT można ograniczyć czasowo — sekcja `tnt-protection`:
+
+| Opcja | Opis |
+|---|---|
+| `time.enabled` | Ochrona przed TNT na terenach gildii w podanych godzinach |
+| `time.enabled-global` | Jak wyżej, ale na całym serwerze |
+| `time.start-time` / `time.end-time` | Godziny obowiązywania (format `HH:mm`) |
+| `time.exempt-entities` | Encje, których ochrona nie dotyczy |
+| `build.min-height` / `build.max-height` | Wysokości, na których wolno stawiać TNT |
+| `explode.min-height` / `explode.max-height` | Wysokości, na których TNT wybucha |
+
+Komenda `/tnt` pozwala graczowi sprawdzić, czy ochrona przed TNT jest akurat aktywna.
+
+Zniszczenia po wybuchu kontroluje osobno `explosion-control` (dwie sekcje:
+`guild` — wybuchy na terenie gildii, `global` — poza nim). Dla każdej sekcji
+można ustawić promień odzyskiwania przedmiotów (`radius`) oraz zachowanie
+wobec materiałów spoza jawnie wypisanej listy (`default`): `-1` zachowuje
+vanillowy wybuch, `0` niszczy wyłącznie materiały z listy (pełna ochrona
+terenu), a wartość dodatnia losuje zniszczenia z podanym prawdopodobieństwem.
+
+:::note[Inne opcje wybuchów]
+`region-explode` ustawia czas blokady budowy po wybuchu na terenie gildii, a
+warunki tej blokady kontrolują `region-explode-block-protected` i
+`region-explode-block-tnt-disabled`. Dodatkowo dostępne są
+`region-explode-exclude-entities`, `region-explode-block-breaking` i
+`region-explode-block-interactions`.
+:::
+
+## Bezpieczeństwo serca
+
+Sekcja `security-system` to prosty anti-cheat pilnujący uderzeń w serce
+gildii — wykrywa podejrzany zasięg (`reach.survival-reach`/`creative-reach`,
+z marginesem `reach.compensation`) oraz freecam. Po przekroczeniu
+`max-violations` naruszeń w ciągu 10 minut gracz traci możliwość interakcji z
+sercem gildii.

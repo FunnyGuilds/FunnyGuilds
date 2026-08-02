@@ -6,7 +6,7 @@ description: A guide to the FunnyGuilds API for developers.
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 :::note
-FunnyGuilds API Nightly 4.13.0
+FunnyGuilds API 5.x (nightly)
 :::
 
 ## FunnyGuilds API
@@ -23,7 +23,7 @@ FunnyGuilds API Nightly 4.13.0
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>4.13.1-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <classifier>all</classifier>
     <scope>provided</scope>
 </dependency>
@@ -41,7 +41,7 @@ repositories {
 ```
 ```groovy
 dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:4.13.1-SNAPSHOT:all'
+    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all'
 }
 ```
 </TabItem>
@@ -57,15 +57,15 @@ repositories {
 ```
 ```kotlin
 dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:4.13.1-SNAPSHOT:all")
+    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all")
 }
 ```
 </TabItem>
 </Tabs>
 
-#### FunnyGuilds
+### FunnyGuilds
 
-The plugin's main instance. It should only be fetched once, e.g.:
+The plugin's main instance. It should be fetched only once, e.g.:
 
 ```java
 public class MyPlugin extends JavaPlugin {
@@ -135,7 +135,7 @@ Events related to:
 - Guild members: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
 - Alliances: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
 
-Example with `GuildDeleteEvent`
+An example using `GuildDeleteEvent`:
 
 ```java
 public class GuildDeleteListener implements Listener {

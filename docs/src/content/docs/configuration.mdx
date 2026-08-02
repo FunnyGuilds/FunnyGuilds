@@ -1,52 +1,70 @@
 ---
 title: Konfiguracja
-description: Typy obiektów i wartości używane w konfiguracji FunnyGuilds.
+description: Typy wartości używane w konfiguracji FunnyGuilds.
 ---
 
-FunnyGuilds posiada wiele różnych własnych typów konfiguracji oprócz tych już wbudowanych jak String, Int itd. Sekcja ta zbiera wszystkie możliwe typy obiektów używane w FunnyGuilds, podając możliwe wartości, przykład itd.
-
-:::caution[Sekcja w budowie]
-Ta strona jest jeszcze w trakcie tworzenia — część typów (Material, ItemStack) nie ma jeszcze opisu.
-:::
+Oprócz typów wbudowanych (String, Int, boolean...) FunnyGuilds ma kilka
+własnych typów wartości konfiguracyjnych. Ta strona zbiera je wszystkie razem
+z możliwymi wartościami i przykładami. Opis konkretnej opcji znajduje się na
+stronie funkcji, której dotyczy (np. [Gildie](/guilds/) czy
+[Tereny i ochrona](/territories/)).
 
 ### Regex
 
-Typ używany do walidacji różnych Stringów - nazw, tagów itd.
+Typ używany do walidacji Stringów — nazw, tagów itd.
 
 Predefiniowane wartości:
 
 | Wartość                      | Opis                                                              |
 | :---------------------------- | :----------------------------------------------------------------- |
-| `LOWERCASE`                  | umożliwia użycie tylko małych liter                               |
-| `UPPERCASE`                  | umożliwia użycie tylko wielkich liter                              |
-| `DIGITS`                     | umożliwia użycie tylko cyfr                                        |
-| `LOWERCASE_DIGITS`           | umożliwia użycie małych liter i cyfr                               |
-| `UPPERCASE_DIGITS`           | umożliwia użycie wielkich liter i cyfr                             |
-| `LETTERS`                    | umożliwia użycie małych i wielkich liter                           |
-| `LETTERS_DIGITS`             | umożliwia użycie małych i wielkich liter oraz cyfr                 |
-| `LETTERS_DIGITS_UNDERSCORE`  | umożliwia użycie małych i wielkich liter, cyfr oraz podkreślnika   |
+| `LOWERCASE`                  | tylko małe litery                                                  |
+| `UPPERCASE`                  | tylko wielkie litery                                               |
+| `DIGITS`                     | tylko cyfry                                                        |
+| `LOWERCASE_DIGITS`           | małe litery i cyfry                                                |
+| `UPPERCASE_DIGITS`           | wielkie litery i cyfry                                             |
+| `LETTERS`                    | małe i wielkie litery                                              |
+| `LETTERS_DIGITS`             | małe i wielkie litery oraz cyfry                                   |
+| `LETTERS_DIGITS_UNDERSCORE`  | małe i wielkie litery, cyfry oraz podkreślnik                      |
 
-**Dodatkowo:** Można dla tego typu zdefiniować własne wartości. Przydatne do tego może okazać się [ta strona](https://regex101.com/).
+Można też zdefiniować dla tego typu własne wyrażenie regularne — przyda się
+do tego [ta strona](https://regex101.com/).
 
 ### Duration
 
 Format: `<wartość><jednostka><wartość><jednostka><...>`
 
 Jednostki:
-- s - sekundy
-- m - minuty
-- h - godziny
-- d - dni
+- `s` — sekundy
+- `m` — minuty
+- `h` — godziny
+- `d` — dni
 
-Przykład: `1m30s` - 1.5 minuty
+Przykład: `1m30s` — 1,5 minuty.
 
 ### Material
 
-Jeszcze nieudokumentowane.
+Nazwa materiału Bukkita (bloku lub przedmiotu), np. `DIAMOND` lub
+`ender_crystal` — wielkość liter nie ma znaczenia. Pełna lista nazw
+znajduje się w [dokumentacji `org.bukkit.Material`](https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html).
 
 ### ItemStack
 
-Jeszcze nieudokumentowane.
+Format: `<ilość> <MATERIAL>[:<data>] [atrybut:wartość] [atrybut:wartość] ...`
+
+Atrybuty (wszystkie opcjonalne, w dowolnej kolejności):
+
+| Atrybut | Wartość | Opis |
+|---|---|---|
+| `name` / `displayname` | tekst | Nazwa przedmiotu (kolory `&`, `_` zamienia się na spację) |
+| `lore` | `linia1#linia2#...` | Opis przedmiotu, linie oddzielone `#` |
+| `enchant` / `enchantment` | `ZAKLĘCIE:poziom` | Pojedyncze zaklęcie |
+| `enchants` / `enchantments` | `E1:l1,E2:l2` | Kilka zaklęć naraz |
+| `skullowner` | nick | Właściciel czaszki gracza |
+| `flags` / `itemflags` | `FLAGA1,FLAGA2` | Flagi przedmiotu (`ItemFlag`) |
+| `armorcolor` | `r_g_b` | Kolor skórzanej zbroi |
+
+Przykład: `1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze` — utworzy
+diament o nazwie „Nagroda za pierwsza gildie na serwerze”.
 
 ### Requirements
 
@@ -61,6 +79,8 @@ money: <wartość> (wymagany plugin Vault)
 # ranking: <wartość> # 2*
 ```
 
-1* - priorytet trzeba podać jedynie w przypadku wymagań zależnych od posiadanych uprawnień
+1\* — priorytet należy podać tylko wtedy, gdy wymagania zależą od
+posiadanych uprawnień.
 
-2* - wartość rankingu trzeba podać jedynie przy np. zakładaniu gildii lub dołączaniu do niej
+2\* — wartość rankingu należy podać tylko tam, gdzie ma ona zastosowanie —
+np. przy zakładaniu gildii lub dołączaniu do niej.

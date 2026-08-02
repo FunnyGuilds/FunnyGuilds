@@ -1,10 +1,5 @@
 # build output
 dist/
-# mirrored release jar, fetched at build/dev time (see scripts/fetch-latest-release.mjs)
-public/downloads/
-src/lib/latest-release.json
-src/lib/latest-snapshot.json
-src/lib/release-history.json
 # generated types
 .astro/
 # dependencies

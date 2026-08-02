@@ -1,0 +1,32 @@
+---
+title: WorldGuard & WorldEdit
+description: FunnyGuilds' custom WorldGuard flags and WorldEdit schematic pasting.
+---
+
+Both plugins are optional and auto-detected — FunnyGuilds works without them,
+but loses the capabilities described below. They can be turned off explicitly
+with an entry in `disabled-hooks`.
+
+## WorldGuard
+
+Once WorldGuard is detected, FunnyGuilds registers four custom region flags
+that can be set on any WorldGuard region (`/rg flag <region> <flag>
+<value>`), independent of guild territories:
+
+| Flag | Values | Meaning when set to `allow` |
+|---|---|---|
+| `fg-no-points` | allow / deny | Fights in this region don't change the ranking |
+| `fg-no-assists` | allow / deny | Assists in this region don't count |
+| `fg-no-guilds` | allow / deny | A guild can't be created if its heart would land in this region |
+| `fg-friendly-fire` | allow / deny / inherit | Overrides the global `damage-guild`/`damage-ally` in this region (see [Alliances & wars](/en/alliances-wars/)) |
+
+The WorldGuard regions a player is standing in are also exposed as the
+`{WG-REGION}`/`{WG-REGIONS}` placeholders — see [Placeholders](/en/placeholders/).
+
+## WorldEdit
+
+WorldEdit is used solely to paste a base schematic when a guild is created —
+the `heart-configuration.paste-schematic-on-creation`,
+`guild-schematic-file-name` and `paste-schematic-with-air` options; see
+[Territories & protection](/en/territories/#guild-heart). Without WorldEdit,
+a guild is still created normally, just without a pasted schematic.

@@ -1,25 +1,20 @@
 ---
-// Just the chip - the changelog it opens lives in the shared detail pane
-// (ReleaseChangelogDetail.astro), rendered as a real second column of the
-// same table rather than a popup, so the pane can be one persistent part of
-// the archive's own layout. JS-driven (see Download.astro's script) rather
-// than :target, so the active chip can be highlighted and the latest
-// release can be pre-selected on load.
-import type { McArchiveRelease } from '../lib/mc-version-archive';
+// Just the chip — the changelog it opens lives in the shared detail pane
+// (ReleaseChangelogDetail.astro), rendered as a real second column of the same table rather
+// than a popup. JS-driven (see Download.astro's script) rather than :target, so the active
+// chip can be highlighted and the latest release pre-selected on load.
+import { changelogId, type McArchiveRelease } from '../lib/mc-version-archive';
 
 interface Props {
   entry: McArchiveRelease;
   currentLabel: string;
-  inferredLabel: string;
 }
-const { entry, currentLabel, inferredLabel } = Astro.props;
-const id = `cl-${entry.tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
+const { entry, currentLabel } = Astro.props;
 ---
 
-<button class="release-chip" data-target={id} data-current={entry.current ? 'true' : 'false'}>
+<button class="release-chip" data-target={changelogId(entry.tag)} data-current={String(entry.current)}>
   {entry.tag}
   {entry.current && <span class="current-tag">{currentLabel}</span>}
-  {entry.confidence === 'inferred' && <span class="inferred-tag">{inferredLabel}</span>}
 </button>
 
 <style>
@@ -31,6 +26,4 @@ const id = `cl-${entry.tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
   .release-chip:hover { border-color: var(--blue); color: var(--blue); background: #fff; }
   .release-chip.active { background: var(--blue); border-color: var(--blue); color: #fff; }
   .current-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: var(--green); padding: 1px 4px; border-radius: 2px; }
-  .inferred-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--slate-soft); border: 1px solid var(--hairline); border-radius: 2px; padding: 1px 4px; }
-  .release-chip.active .inferred-tag { border-color: rgba(255, 255, 255, 0.5); color: rgba(255, 255, 255, 0.9); }
 </style>

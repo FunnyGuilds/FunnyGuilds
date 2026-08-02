@@ -1,1 +1,1 @@
-archive/**/*.jar filter=lfs diff=lfs merge=lfs -text
+docs/public/archive/**/*.jar filter=lfs diff=lfs merge=lfs -text

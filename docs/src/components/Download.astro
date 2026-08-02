@@ -8,24 +8,24 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import type { DownloadContent } from '../lib/download-content';
 import { getReleaseInfo } from '../lib/format-release';
-import { getSnapshotInfo } from '../lib/format-snapshot';
 import { getMcVersionArchive } from '../lib/mc-version-archive';
 import Nav from './Nav.astro';
 import ReleaseChipLink from './ReleaseChipLink.astro';
 import ReleaseChangelogDetail from './ReleaseChangelogDetail.astro';
+
+const JENKINS_JOB_URL = 'https://ci.insertt.dev/job/FunnyGuilds/job/5.x/';
+const NIGHTLY_RELEASE_URL = 'https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/nightly-release-publish';
 
 interface Props {
   content: DownloadContent;
 }
 const { content: t } = Astro.props;
 const release = getReleaseInfo(t.lang);
-const snapshot = getSnapshotInfo(t.lang);
 const mcArchive = getMcVersionArchive(t.lang);
 const allReleases = mcArchive.flatMap((group) => group.releases);
 
-// Purely client-fetched (see the script below) — the code itself is a fixed, human-chosen
-// constant, not something that needs an API call to know; nothing else about this widget
-// (name, avatar, counts) is build-time data, so there's no fallback to keep in sync here.
+// The widget's name, avatar and counts are all fetched client-side (see the script below);
+// only the invite code itself is fixed.
 const DISCORD_INVITE_CODE = 'CYvyq3u';
 ---
 
@@ -48,9 +48,8 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .lede { margin: 12px 0 0; font-size: 1rem; color: var(--slate); }
     .what-you-get { margin: 6px 0 0; font-size: 0.85rem; color: var(--slate-soft); }
 
-    /* Fixed 2-per-row, not auto-fit — the 4 cards' single-color borders (below) are meant to
-       land in the same TL/TR/BL/BR quadrants as the logo's own 4 colors, which only works if
-       the grid is reliably 2 columns. */
+    /* Fixed 2-per-row, not auto-fit: the corner brackets below only line up with the logo's
+       four quadrants if the grid is reliably 2 columns. */
     .choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 40px; text-align: left; }
     @media (max-width: 560px) { .choices { grid-template-columns: 1fr; } }
 
@@ -62,9 +61,8 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     }
     .choice.pending { background: #fafbfc; }
 
-    /* One bracket per card, at its own OUTER corner within the 2x2 grid — snapshot(TL)=blue,
-       pending(TR)=gold, stable(BL)=green, legacy(BR)=coral. Step back from any single card and
-       the 4 corners recreate the logo's own 4-bracket arrangement at the scale of the whole grid. */
+    /* One bracket per card at its outer corner of the 2x2 grid, so the four together recreate
+       the logo's own bracket arrangement at the scale of the whole grid. */
     .corner { position: absolute; width: 40px; height: 40px; pointer-events: none; }
     .corner::before, .corner::after { content: ''; position: absolute; background: currentColor; }
     .corner::before { width: 100%; height: 3px; }
@@ -78,8 +76,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .choice.legacy .corner { bottom: -1px; right: -1px; color: var(--coral); }
     .choice.legacy .corner::before, .choice.legacy .corner::after { bottom: 0; right: 0; }
 
-    /* Everything above the button grows to fill the row's full (grid-stretched) height, so the
-       buttons across a row land at the same Y regardless of how much each card's copy wraps. */
+    /* Grows to fill the stretched row height, so buttons line up however much the copy wraps. */
     .choice-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
 
     .tag-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -90,8 +87,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .choice h2 { font-size: 1.2rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
     .choice .desc { color: var(--slate); font-size: 0.87rem; line-height: 1.5; margin: 0; }
 
-    /* Always the last child of .choice (nothing after it) — with .choice-body flex-growing
-       above it, its top edge lands at the same Y in every card in the row. */
+    /* Always the last child of .choice, so .choice-body above can push it to a shared baseline. */
     .btn { margin-top: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 13px; padding: 11px 16px; border-radius: 4px; min-width: 0; text-align: center; transition: opacity 90ms ease, transform 90ms ease; }
     .btn:hover { opacity: 0.88; }
     .btn:active { transform: translateY(1px); }
@@ -127,6 +123,13 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .mc-table td { padding: 10px 6px; vertical-align: top; }
     .mc-table .mc-col { font-family: var(--mono); font-weight: 700; color: var(--ink); white-space: nowrap; width: 1%; padding-top: 12px; }
     .release-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+    .release-chip-dev {
+      display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 11.5px;
+      color: #fff; background: var(--blue); padding: 4px 8px; border-radius: 4px; border: 1px solid transparent;
+      text-decoration: none;
+    }
+    .release-chip-dev:hover { opacity: 0.88; }
+    .dev-tag { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: #d946ef; padding: 1px 4px; border-radius: 2px; }
 
     /* Discord's own dark theme colors (avatar presence dot + blurple button), a deliberate
        contained accent — same move as Landing.astro's dark .hud-panel inside an otherwise
@@ -175,14 +178,13 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
             <div class="choice-body">
               <div class="tag-row">
                 <span class="badge">{t.snapshot.badge}</span>
-                {snapshot.mcRange && <span class="mc-tag">MC {snapshot.mcRange}</span>}
               </div>
               <h2>{t.snapshot.title}</h2>
               <p class="desc">{t.snapshot.description}</p>
               <span class="fine-print">{t.snapshot.note}</span>
-              <span class="ci-link"><a href={snapshot.jobUrl} target="_blank" rel="noopener">{t.snapshot.ciLabel}</a></span>
+              <span class="ci-link"><a href={JENKINS_JOB_URL} target="_blank" rel="noopener">{t.snapshot.ciLabel}</a></span>
             </div>
-            <a class="btn" href={snapshot.artifactUrl} target="_blank" rel="noopener">{t.snapshot.buttonLabel}</a>
+            <a class="btn" href={JENKINS_JOB_URL} target="_blank" rel="noopener">{t.snapshot.buttonLabel}</a>
           </div>
 
           <div class="choice pending">
@@ -228,7 +230,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
               <span class="fine-print">{t.legacy.sizeLabel}</span>
               <span class="ci-link"><a href="https://github.com/FunnyGuilds/FunnySite/tree/main/download" target="_blank" rel="noopener">{t.legacy.archiveLabel}</a></span>
             </div>
-            <a class="btn" href="/downloads/legacy/funnyguilds-3.9.9.15.jar" download>{t.legacy.buttonLabel}</a>
+            <a class="btn" href="/archive/3.9.9.15/FunnyGuilds-3.9.9.15.jar" download>{t.legacy.buttonLabel}</a>
           </div>
         </div>
 
@@ -238,13 +240,24 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
           <div class="archive-grid">
             <table class="mc-table">
               <tbody>
+                <tr>
+                  <td class="mc-col">MC 1.21.x</td>
+                  <td class="release-col">
+                    <div class="release-chips">
+                      <a class="release-chip release-chip-dev" href={NIGHTLY_RELEASE_URL} target="_blank" rel="noopener">
+                        {t.snapshot.title}
+                        <span class="dev-tag">{t.mcVersionTable.nightlyLabel}</span>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
                 {mcArchive.map((group) => (
                   <tr>
                     <td class="mc-col">MC {group.mcRange}</td>
                     <td class="release-col">
                       <div class="release-chips">
                         {group.releases.map((entry) => (
-                          <ReleaseChipLink entry={entry} currentLabel={t.mcVersionTable.currentLabel} inferredLabel={t.mcVersionTable.inferredLabel} />
+                          <ReleaseChipLink entry={entry} currentLabel={t.mcVersionTable.currentLabel} />
                         ))}
                       </div>
                     </td>
@@ -305,12 +318,9 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
         </section>
 
         <script define:vars={{ inviteCode: DISCORD_INVITE_CODE, fallbackName: t.community.fallbackName }}>
-          // Everything here (name, avatar, counts) is fetched fresh on every load, then
-          // refreshed every 60s so the online count stays live without needing a page reload —
-          // there's no build-time snapshot to fall back to, so a failed *first* fetch just gets
-          // a generic name and no counts. A failed *refresh* after that just keeps showing the
-          // last good numbers instead - a transient blip shouldn't erase data that was already
-          // displaying correctly.
+          // Refreshed every 60s so the online count stays live. A failed first fetch falls back
+          // to a generic name with no counts; a failed refresh keeps the last good numbers, since
+          // a transient blip shouldn't wipe data that was already on screen.
           const online = document.getElementById('discord-online-count');
           const members = document.getElementById('discord-member-count');
           const name = document.getElementById('discord-name');
@@ -348,7 +358,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
         </script>
 
         <div class="next-links">
-          <a href={t.nextSteps.installationHref}>{t.nextSteps.installationLabel}</a>
+          <a href={t.nextSteps.introductionHref}>{t.nextSteps.introductionLabel}</a>
           <span class="sep">·</span>
           <a href={t.nextSteps.faqHref}>{t.nextSteps.faqLabel}</a>
         </div>
