@@ -9,7 +9,7 @@ along with their possible values and examples — for what a specific option
 does, see the feature page it belongs to (e.g. [Guilds](/en/guilds/) or
 [Territories & protection](/en/territories/)).
 
-### Regex
+## Regex
 
 A type used to validate strings — names, tags, etc.
 
@@ -29,7 +29,7 @@ Predefined values:
 You can also define your own regular expression for this type —
 [this site](https://regex101.com/) comes in handy for that.
 
-### Duration
+## Duration
 
 Format: `<value><unit><value><unit><...>`
 
@@ -41,13 +41,13 @@ Units:
 
 Example: `1m30s` — 1.5 minutes.
 
-### Material
+## Material
 
 A Bukkit material name (block or item), e.g. `DIAMOND` or `ender_crystal` —
 case doesn't matter. The full list of names is in the
 [`org.bukkit.Material` documentation](https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html).
 
-### ItemStack
+## ItemStack
 
 Format: `<amount> <MATERIAL>[:<data>] [attribute:value] [attribute:value] ...`
 
@@ -66,7 +66,7 @@ Attributes (all optional, in any order):
 Example: `1 diamond name:&bReward_for_the_first_guild_on_the_server` — creates
 a diamond named "Reward for the first guild on the server".
 
-### Requirements
+## Requirements
 
 ```yaml
 # priority: <value> (0 to 127) # 1*

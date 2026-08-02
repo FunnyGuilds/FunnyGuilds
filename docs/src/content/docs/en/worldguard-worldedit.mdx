@@ -13,12 +13,12 @@ Once WorldGuard is detected, FunnyGuilds registers four custom region flags
 that can be set on any WorldGuard region (`/rg flag <region> <flag>
 <value>`), independent of guild territories:
 
-| Flag | Values | Meaning when set to `allow` |
+| Flag | Values | Effect |
 |---|---|---|
-| `fg-no-points` | allow / deny | Fights in this region don't change the ranking |
-| `fg-no-assists` | allow / deny | Assists in this region don't count |
-| `fg-no-guilds` | allow / deny | A guild can't be created if its heart would land in this region |
-| `fg-friendly-fire` | allow / deny / inherit | Overrides the global `damage-guild`/`damage-ally` in this region (see [Alliances & wars](/en/alliances-wars/)) |
+| `fg-no-points` | `allow` / `deny` | With `allow`, fights in this region don't change the ranking |
+| `fg-no-assists` | `allow` / `deny` | With `allow`, assists in this region don't count |
+| `fg-no-guilds` | `allow` / `deny` | With `allow`, a guild can't be created if its heart would land in this region |
+| `fg-friendly-fire` | `allow` / `deny` / `inherit` | Overrides the global `damage-guild`/`damage-ally` in this region (see [Alliances & wars](/en/alliances-wars/)) |
 
 The WorldGuard regions a player is standing in are also exposed as the
 `{WG-REGION}`/`{WG-REGIONS}` placeholders — see [Placeholders](/en/placeholders/).

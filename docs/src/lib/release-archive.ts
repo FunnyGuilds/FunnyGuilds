@@ -14,6 +14,8 @@ export interface ArchivedRelease {
   tag: string;
   publishedAt: string;
   htmlUrl: string;
+  /** Supported Minecraft versions, from the changelog's own requirements line; null if it has none. */
+  mcRange: string | null;
   body: string;
 }
 
@@ -24,7 +26,7 @@ function parseChangelog(raw: string, tag: string): ArchivedRelease {
   // First "---" only — bodies contain their own horizontal rules further down.
   const sep = raw.indexOf('\n---\n');
   const body = (sep === -1 ? raw : raw.slice(sep + 5)).trim();
-  return { tag, publishedAt, htmlUrl, body };
+  return { tag, publishedAt, htmlUrl, mcRange: parseMcRange(body), body };
 }
 
 function loadAllReleases(): ArchivedRelease[] {
@@ -40,11 +42,14 @@ function loadAllReleases(): ArchivedRelease[] {
   return releases;
 }
 
-// The body's "* Spigot ..." line carries exact tested versions, unlike the jar filename's rounded
-// major.minor. Changelogs write it as a slash-separated list, a dash range or a single open-ended
-// version, so scan the line for version-shaped tokens instead of assuming a separator.
+// Every 4.x changelog ends with a requirements bullet naming the tested server versions
+// ("* Spigot 1.8.8 - 1.16.5", "* Spigot 1.8.8/1.9.4/...", "* Craftbukkit 1.8+"), which is more
+// precise than the jar filename's rounded major.minor. Anchored to the bullet so a passing
+// mention of Spigot in the prose above can't be picked up instead. Pre-4.x changelogs mostly
+// have no such line — see PRE_4X_RANGE in mc-version-archive.ts.
 function parseMcRange(body: string): string | null {
-  const versions = body.match(/Spigot\s+([^\n]+)/)?.[1]?.match(/\d+(?:\.\d+)+/g);
+  const line = body.match(/^\s*[*-]\s*(?:Spigot|CraftBukkit|Bukkit)\s*(.+)$/im)?.[1];
+  const versions = line?.match(/\d+(?:\.\d+)+/g);
   if (!versions?.length) return null;
   const [low, high] = [versions[0], versions[versions.length - 1]];
   return low === high ? low : `${low} – ${high}`;
@@ -55,7 +60,6 @@ const ALL_RELEASES = loadAllReleases();
 export interface LatestRelease extends ArchivedRelease {
   jarSize: number;
   downloadPath: string;
-  mcRange: string | null;
 }
 
 function loadLatestRelease(): LatestRelease {
@@ -68,7 +72,6 @@ function loadLatestRelease(): LatestRelease {
     ...latest,
     jarSize: statSync(path.join(dir, jarName)).size,
     downloadPath: `/archive/${latest.tag}/${jarName}`,
-    mcRange: parseMcRange(latest.body),
   };
 }
 

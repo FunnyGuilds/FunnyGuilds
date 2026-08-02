@@ -1,4 +1,4 @@
-import { RELEASE_HISTORY as history } from './release-archive';
+import { LATEST_RELEASE, RELEASE_HISTORY, type ArchivedRelease } from './release-archive';
 import { getReleaseInfo } from './format-release';
 import { renderChangelog } from './format-changelog';
 
@@ -17,34 +17,15 @@ export interface McArchiveGroup {
   releases: McArchiveRelease[];
 }
 
-// One row per supported MC range, newest first. Ranges come from each release's own build files
-// (.classpath/pom.xml), not from its release date: 1.x–3.x compiled against a single exact
-// version rather than a span, so they're listed under that version instead of a range.
-const RELEASES: { mcRange: string; tags: string[] }[] = [
-  { mcRange: '1.8 – 1.20', tags: ['4.13.0'] },
-  { mcRange: '1.8 – 1.19', tags: ['4.12.0-hotfix', '4.11.0', '4.10.2'] },
-  { mcRange: '1.8 – 1.18', tags: ['4.10.1', '4.10.0'] },
-  {
-    mcRange: '1.8',
-    tags: [
-      '4.9.7', '4.9.6', '4.9.3', '4.8.1', '4.8.0', '4.7.0', '4.5.2', '4.5.1', '4.5.0', '4.4.1',
-      '4.4.0', '4.3.0', '4.2.0', '4.1.1', '4.1.0', '4.0.2', '4.0.1.1', '4.0.1',
-    ],
-  },
-  { mcRange: '1.7.x', tags: ['3.9.9.15'] },
-  {
-    mcRange: '1.7.2',
-    tags: [
-      '3.9.9.14', '3.9.9.12-fix1', '3.9.9.11-fix1', '3.9.9.9', '3.9.9.8', '3.9.9.7', '3.9.9.6',
-      '3.9.9.5', '3.9.9.4', '3.9.9.3', '3.9.9.2', '3.9.9.1', '3.9.9', '3.9.6.5', '3.9.6.4',
-      '3.9.6.3', '3.9.6.2', '3.9.6.1', '3.9.6', '3.9.5', '3.9.4', '3.9.3', '3.9.2', '3.9.1',
-      '3.9', '3.5.1', '3.5', '3.0.2', '3.0.1', '3.0', '2.7.1', '2.5.2', '2.5.1', '2.5', '2.2.2',
-      '2.2.1', '2.2', '2.1.1', '2.1', '2.0.4', '2.0.3', '2.0.2', '2.0.1', '2.0', '1.5.7', '1.5.6',
-      '1.5.5', '1.5.3', '1.5.1', '1.5.0', '1.4.8', '1.4.7', '1.4.4', '1.4.1', '1.3.7', '1.3.5',
-      '1.3.4', '1.2.4',
-    ],
-  },
-];
+// Pre-4.x changelogs rarely state a server version, so these come from the build files instead:
+// every .classpath/pom.xml from the first 2014 commit through 3.9.9.14 pins the same
+// craftbukkit 1.7.2-R0.1-SNAPSHOT. 3.9.9.15 is listed under the broader "1.7.x" it advertised.
+// 4.x onwards is read from each release's own requirements line — see parseMcRange.
+const PRE_4X_RANGE = (tag: string) => (tag === '3.9.9.15' ? '1.7.x' : '1.7.2');
+
+function rangeOf(release: ArchivedRelease): string {
+  return (release.tag.startsWith('4.') ? release.mcRange : null) ?? PRE_4X_RANGE(release.tag);
+}
 
 export function changelogId(tag: string): string {
   return `cl-${tag.replace(/[^a-zA-Z0-9]/g, '-')}`;
@@ -53,36 +34,39 @@ export function changelogId(tag: string): string {
 export function getMcVersionArchive(lang: 'pl' | 'en'): McArchiveGroup[] {
   const locale = lang === 'pl' ? 'pl-PL' : 'en-US';
   const formatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' });
-  const byTag = new Map(history.map((r) => [r.tag, r]));
   const release = getReleaseInfo(lang);
 
-  const current: McArchiveGroup = {
-    mcRange: release.mcRange ?? '?',
-    releases: [
-      {
-        tag: release.version,
-        dateLabel: release.dateLabel,
-        htmlUrl: RELEASE_URL + release.version,
-        current: true,
-        changelogHtml: release.changelogHtml,
-      },
-    ],
-  };
-
-  return [
-    current,
-    ...RELEASES.map(({ mcRange, tags }) => ({
-      mcRange,
-      releases: tags.map((tag) => {
-        const entry = byTag.get(tag);
-        return {
-          tag,
-          dateLabel: entry ? formatter.format(new Date(entry.publishedAt)) : '',
-          htmlUrl: entry?.htmlUrl ?? RELEASE_URL + tag,
-          current: false,
-          changelogHtml: entry ? renderChangelog(entry.body) : '',
-        };
-      }),
-    })),
+  const groups: McArchiveGroup[] = [
+    {
+      mcRange: release.mcRange ?? rangeOf(LATEST_RELEASE),
+      releases: [
+        {
+          tag: release.version,
+          dateLabel: release.dateLabel,
+          htmlUrl: RELEASE_URL + release.version,
+          current: true,
+          changelogHtml: release.changelogHtml,
+        },
+      ],
+    },
   ];
+
+  // RELEASE_HISTORY is newest-first, so releases sharing a range are already adjacent and each
+  // run collapses into one row.
+  for (const entry of RELEASE_HISTORY) {
+    const mcRange = rangeOf(entry);
+    const row: McArchiveRelease = {
+      tag: entry.tag,
+      dateLabel: formatter.format(new Date(entry.publishedAt)),
+      htmlUrl: entry.htmlUrl,
+      current: false,
+      changelogHtml: renderChangelog(entry.body),
+    };
+
+    const last = groups[groups.length - 1];
+    if (last.mcRange === mcRange && !last.releases[0].current) last.releases.push(row);
+    else groups.push({ mcRange, releases: [row] });
+  }
+
+  return groups;
 }

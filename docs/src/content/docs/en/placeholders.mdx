@@ -8,7 +8,7 @@ FunnyGuilds has many built-in placeholders. Below is the full list, together wit
 A `@Deprecated` note next to a placeholder means it may be removed in the future and we don't recommend using it. We usually suggest a replacement alongside it.
 
 ## Player Placeholders
-#### - Basic -
+### - Basic -
 
 |   Placeholder    | Description                                                                                                                |
 |:----------------:|:----------------------------------------------------------------------------------------------------------------------------------|
@@ -18,7 +18,7 @@ A `@Deprecated` note next to a placeholder means it may be removed in the future
 |     `WORLD`      | Returns the name of the world the player is currently in                                                                         |
 |     `ONLINE`     | Returns the number of online players visible to this player (not counting players they can't see themselves — for example those in vanish) |
 
-#### - Ranking -
+### - Ranking -
 
 |        Placeholder        | Description                                                                                                                                                                       |
 |:-------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -31,13 +31,13 @@ A `@Deprecated` note next to a placeholder means it may be removed in the future
 |           `KDR`           | Returns the player's KDR (kills / deaths)                                                                                                                                          |
 |           `KDA`           | Returns the player's KDA ((kills + assists) / deaths)                                                                                                                              |
 | **Deprecated** `POSITION` | Returns the player's position in the ranking-points top list. We recommend using the `position-{type}` placeholder described below instead |
-|     `POSITION-{type}`      | The player's position in the top list for the given type (e.g. `DEATHS`). The list of available (and currently enabled) types can be found in the config under `top.enabled-user-tops` in `config.yml`. |
+|     `POSITION-<type>`      | The player's position in the top list for the given type (e.g. `DEATHS`). The list of available (and currently enabled) types can be found in the config under `top.enabled-user-tops` in `config.yml`. |
 |     `PTOP-<position>`      | The player at the given ranking position (e.g. `{PTOP-1}`, `{PTOP-60}`)                                                                                                                    |
 |  `PTOP-<type>-<position>`   | The player at the given ranking position (e.g. `{PTOP-KILLS-1}`, `{PTOP-DEATHS-60}`), for the given ranking type                                                                             |
 
 ## Guild Placeholders
 
-#### - Basic -
+### - Basic -
 
 |     Placeholder      | Description                                                                                                                                                                                                                      |
 |:--------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -59,7 +59,7 @@ A `@Deprecated` note next to a placeholder means it may be removed in the future
 | `G-PROTECTION-TIME`  | Time remaining until the guild's protection expires (e.g. 5 days 2 hours 1 minute)                                                                                                                                                         |
 |   `G-REGION-SIZE`    | The size of the guild's territory                                                                                                                                                                                                            |
 
-#### - Ranking -
+### - Ranking -
 
 |      Placeholder       | Description                                                                                                  |
 |:----------------------:|:------------------------------------------------------------------------------------------------------|

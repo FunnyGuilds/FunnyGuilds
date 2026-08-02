@@ -9,7 +9,7 @@ z możliwymi wartościami i przykładami. Opis konkretnej opcji znajduje się na
 stronie funkcji, której dotyczy (np. [Gildie](/guilds/) czy
 [Tereny i ochrona](/territories/)).
 
-### Regex
+## Regex
 
 Typ używany do walidacji Stringów — nazw, tagów itd.
 
@@ -29,7 +29,7 @@ Predefiniowane wartości:
 Można też zdefiniować dla tego typu własne wyrażenie regularne — przyda się
 do tego [ta strona](https://regex101.com/).
 
-### Duration
+## Duration
 
 Format: `<wartość><jednostka><wartość><jednostka><...>`
 
@@ -41,13 +41,13 @@ Jednostki:
 
 Przykład: `1m30s` — 1,5 minuty.
 
-### Material
+## Material
 
 Nazwa materiału Bukkita (bloku lub przedmiotu), np. `DIAMOND` lub
 `ender_crystal` — wielkość liter nie ma znaczenia. Pełna lista nazw
 znajduje się w [dokumentacji `org.bukkit.Material`](https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html).
 
-### ItemStack
+## ItemStack
 
 Format: `<ilość> <MATERIAL>[:<data>] [atrybut:wartość] [atrybut:wartość] ...`
 
@@ -66,7 +66,7 @@ Atrybuty (wszystkie opcjonalne, w dowolnej kolejności):
 Przykład: `1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze` — utworzy
 diament o nazwie „Nagroda za pierwsza gildie na serwerze”.
 
-### Requirements
+## Requirements
 
 ```yaml
 # priority: <wartość> (od 0 do 127) # 1*
