@@ -29,7 +29,14 @@ export interface TerrainConfig {
   territories: TerritoryInput[];
   /** Draws the river through the generated area. Default true. */
   river?: boolean;
-  /** Tiles of wilderness generated beyond the outermost territory. Default 40. */
+  /**
+   * Tiles of wilderness generated beyond the outermost territory. Default 40.
+   *
+   * Keep this generous. The isometric camera sees a diamond on the ground roughly 3.5x wider
+   * than `frustumHalfHeight` in tiles — around ±32 tiles from centre for a typical doc demo —
+   * so anything much smaller leaves the terrain floating on the background colour instead of
+   * filling the canvas.
+   */
   margin?: number;
   /**
    * When false, territories still reserve their footprint (so bounds and camera framing stay
@@ -49,13 +56,6 @@ export const LANDING_TERRAIN_CONFIG: TerrainConfig = {
   ],
 };
 
-export const DEMO_TERRAIN_CONFIG: TerrainConfig = {
-  territories: [
-    { name: 'Northgate', c0: -6, r0: -6 },
-    { name: 'Southgate', c0: -6, r0: 5 },
-  ],
-  margin: 14,
-};
 
 export interface HeightTile {
   x: number;

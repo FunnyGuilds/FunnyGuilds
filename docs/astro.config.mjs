@@ -99,14 +99,7 @@ export default defineConfig({
         {
           label: 'Dla programistów',
           translations: { en: 'Developers' },
-          items: [
-            { slug: 'api' },
-            {
-              link: '/map-preview/',
-              label: 'Podgląd renderera mapy',
-              translations: { en: 'Map renderer preview' },
-            },
-          ],
+          items: [{ slug: 'api' }],
         },
       ],
     }),

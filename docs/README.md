@@ -28,7 +28,7 @@ all copy and the in-map tablist/scoreboard HUD mockup strings live in
 `src/lib/landing-content.ts`, keyed by locale. Being seeded, the map is stable across
 builds; tweak the constants at the top of `terrain.ts` (territory layout, river shape,
 elevation noise) to iterate on it. The same renderer is reused by the doc-page demos
-(`GuildCreationDemo`, `HeartSurroundingsDemo`, `EnlargeDemo`) and by `/map-preview/`.
+(`GuildCreationDemo`, `HeartSurroundingsDemo`, `EnlargeDemo`).
 
 The nav includes a small "PL / EN" language switcher (top right) that links between `/`
 and `/en/`.
