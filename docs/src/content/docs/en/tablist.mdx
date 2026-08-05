@@ -9,14 +9,11 @@ The configuration shown here uses the syntax introduced in FunnyGuilds v4.11.0+.
 
 ## The server's player list
 
-The player list — or "tablist" — shows information about the guild, the player, the server, the top lists and so on. You can change its appearance in the configuration (the `tablist.yml` and `messages.yml` files) — every setting related to it is described below.
+The player list — or "tablist" — shows information about the guild, the player, the server and the top lists. Its appearance is configured in the `tablist.yml` and `messages.yml` files; every setting related to it is described below.
 
-Before you start, three tips:
-- A good text editor for working with the configuration is [Notepad++](https://notepad-plus-plus.org/downloads/) — it has syntax highlighting, which makes the job much easier.
-- To move around the configuration quickly and find the right lines, use the `CTRL + F` shortcut.
-- After uploading a new configuration, don't reload the server with `/reload`! **Use the `/funnyguilds reload` command, or restart the server.**
-
----
+:::caution[Reloading the configuration]
+After changing the configuration, do not use `/reload` — reload the plugin with `/funnyguilds reload`, or restart the server.
+:::
 
 ## Basic settings (`tablist.yml`)
 
@@ -73,7 +70,7 @@ footer: |
 
 ## Pagination (`tablist.yml`)
 
-Tablist pagination has been available since version 4.10.0. Pages are configured much like the regular tablist — each page only overrides the main one, and wherever a page doesn't supply its own value, the value from the regular *cells/header/footer* section is used instead. The number of cycles (`cycles`) determines how long a given page stays visible (1 cycle = 1 tablist refresh; the refresh rate is set by `update-interval` in `tablist.yml`). You can add as many pages as you like (but it's best to keep it reasonable 😉).
+Tablist pagination has been available since version 4.10.0. Pages are configured much like the regular tablist — each page only overrides the main one, and wherever a page doesn't supply its own value, the value from the regular *cells/header/footer* section is used instead. The number of cycles (`cycles`) determines how long a given page stays visible (1 cycle = 1 tablist refresh; the refresh rate is set by `update-interval` in `tablist.yml`). The number of pages is not limited.
 
 ```yml
 pages:
@@ -98,7 +95,7 @@ pages:
 
 ## "No value" messages (`messages.yml`)
 
-Here you can change all the messages shown when there is no guild, top list entry, allies, deputies and so on.
+This section sets the messages shown in place of missing values — when a player has no guild, a top list entry is empty, a guild has no allies or deputies, and so on.
 
 ```yml
 # <------- No Value Messages -------> #
@@ -147,7 +144,7 @@ fill-cells: true
 - `update-interval` — how often the tablist should refresh the information it shows.
 
 :::note
-The time is given in ticks! (20 ticks = 1 second)
+The time is given in ticks (20 ticks = 1 second).
 :::
 
 ```yml
@@ -181,7 +178,7 @@ The basic variables are described in [Tablist — Variables](/en/tablist-variabl
 FunnyGuilds supports additional placeholders from [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/). Once you've installed that plugin, you can download further sets of placeholders.
 
 :::tip
-For example, to get player-related placeholders, just run `/papi ecloud download Player`, then `/papi reload`.
+For example, player-related placeholders are downloaded with `/papi ecloud download Player`, followed by `/papi reload`.
 
 After running these commands, all placeholders such as the health level `%player_health%` will already be supported in the FunnyGuilds tablist.
 :::

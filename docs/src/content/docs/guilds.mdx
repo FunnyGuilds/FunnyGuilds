@@ -8,9 +8,8 @@ import GuildCreationDemo from '../../components/GuildCreationDemo.astro';
 
 ## Zakładanie gildii
 
-Gildię zakłada się komendą `/zaloz <tag> <nazwa>`. Do tego momentu ten
-fragment mapy to zwykła dzicz — dopiero ta komenda wytycza teren i stawia na
-nim serce:
+Gildię zakłada się komendą `/zaloz <tag> <nazwa>`. Komenda wyznacza teren
+gildii i stawia na nim serce:
 
 <GuildCreationDemo
   label="DZK"
@@ -78,13 +77,13 @@ dni**) — po jej upływie zostaje automatycznie usunięta.
 Ważność przedłuża komenda `/przedluz`: dodaje `validity-time` (domyślnie 14
 dni) i kosztuje `validity-items` (domyślnie 10 diamentów). Można jej użyć
 dopiero, gdy do wygaśnięcia zostało mniej niż `validity-when` (domyślnie 14
-dni, czyli praktycznie zawsze) — ustawienie `0` całkowicie wyłącza
+dni — tyle samo, co ważność nowej gildii) — ustawienie `0` całkowicie wyłącza
 możliwość przedłużania.
 
 ## Rozwiązanie gildii
 
 Rozwiązanie gildii przebiega dwuetapowo: `/usun` je inicjuje, a `/potwierdz`
-zatwierdza — dzięki temu nie można przypadkowo skasować gildii.
+zatwierdza.
 `guild-delete-cancel-if-someone-is-on-region` pozwala zablokować rozwiązanie,
 dopóki na terenie gildii przebywa ktoś spoza niej.
 

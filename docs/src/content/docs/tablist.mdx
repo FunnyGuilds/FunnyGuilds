@@ -9,14 +9,11 @@ Przedstawiona konfiguracja korzysta ze składni wprowadzonej w FunnyGuilds v4.11
 
 ## Lista graczy na serwerze
 
-Lista graczy, inaczej „tablista", pokazuje informacje o gildii, graczu, serwerze, topkach itd. Jej wygląd zmienisz w konfiguracji (pliki `tablist.yml` oraz `messages.yml`) — poniżej opisano wszystkie dotyczące jej ustawienia.
+Lista graczy, inaczej „tablista", pokazuje informacje o gildii, graczu, serwerze i topkach. Jej wygląd konfiguruje się w plikach `tablist.yml` oraz `messages.yml`; poniżej opisano wszystkie dotyczące jej ustawienia.
 
-Zanim zaczniesz, trzy rady:
-- Dobrym edytorem tekstu do pracy z konfiguracją jest [Notepad++](https://notepad-plus-plus.org/downloads/) — ma podświetlanie składni, co bardzo ułatwia pracę.
-- Aby szybko poruszać się po konfiguracji i znaleźć odpowiednie linijki, użyj skrótu `CTRL + F`.
-- Po przesłaniu nowej konfiguracji nie przeładowuj serwera przez `/reload`! **Użyj komendy `/funnyguilds reload` lub zrestartuj serwer.**
-
----
+:::caution[Przeładowanie konfiguracji]
+Po zmianie konfiguracji nie używaj `/reload` — przeładuj plugin komendą `/funnyguilds reload` albo zrestartuj serwer.
+:::
 
 ## Podstawowe ustawienia (`tablist.yml`)
 
@@ -73,7 +70,7 @@ footer: |
 
 ## Stronicowanie (`tablist.yml`)
 
-Od wersji 4.10.0 dostępne jest stronicowanie tablisty. Konfiguruje się je bardzo podobnie jak zwykłą tablistę — każda strona jedynie nadpisuje główną, a tam, gdzie strona nie podaje własnej wartości, zostanie użyta wartość ze zwykłej sekcji *cells/header/footer*. Liczba cykli (`cycles`) określa, jak długo dana strona będzie widoczna (1 cykl = 1 odświeżenie tablisty; częstotliwość odświeżania zmienia opcja `update-interval` w `tablist.yml`). Stron można dodać dowolnie wiele (ale lepiej zachować umiar 😉).
+Od wersji 4.10.0 dostępne jest stronicowanie tablisty. Konfiguruje się je bardzo podobnie jak zwykłą tablistę — każda strona jedynie nadpisuje główną, a tam, gdzie strona nie podaje własnej wartości, zostanie użyta wartość ze zwykłej sekcji *cells/header/footer*. Liczba cykli (`cycles`) określa, jak długo dana strona będzie widoczna (1 cykl = 1 odświeżenie tablisty; częstotliwość odświeżania zmienia opcja `update-interval` w `tablist.yml`). Liczba stron nie jest ograniczona.
 
 ```yml
 pages:
@@ -98,7 +95,7 @@ pages:
 
 ## Informacja o „braku" (`messages.yml`)
 
-Tutaj zmienisz wszystkie komunikaty o braku gildii, topki, sojuszników, zastępców itd.
+Sekcja ustala komunikaty wyświetlane w miejsce brakujących wartości — gdy gracz nie ma gildii, topka jest pusta, gildia nie ma sojuszników czy zastępców itd.
 
 ```yml
 # <------- No Value Messages -------> #
@@ -147,7 +144,7 @@ fill-cells: true
 - `update-interval` — co ile czasu tablista ma odświeżać wyświetlane informacje.
 
 :::note
-Czas jest podawany w tickach! (20 ticków to 1 sekunda)
+Czas podaje się w tickach (20 ticków to 1 sekunda).
 :::
 
 ```yml
@@ -181,7 +178,7 @@ Podstawowe zmienne zostały opisane w [Tablist — zmienne](/tablist-variables/)
 FunnyGuilds obsługuje dodatkowe znaczniki z [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/). Po zainstalowaniu tego pluginu możesz pobrać kolejne zestawy znaczników.
 
 :::tip
-Przykładowo, aby uzyskać znaczniki dotyczące gracza, wystarczy wpisać `/papi ecloud download Player`, a następnie `/papi reload`.
+Przykładowo znaczniki dotyczące gracza pobiera `/papi ecloud download Player`, a następnie `/papi reload`.
 
 Po wykonaniu tych komend wszystkie znaczniki, takie jak poziom zdrowia `%player_health%`, będą już obsługiwane w tabliście FunnyGuilds.
 :::

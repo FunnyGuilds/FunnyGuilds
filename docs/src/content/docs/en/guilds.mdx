@@ -8,9 +8,8 @@ import GuildCreationDemo from '../../../components/GuildCreationDemo.astro';
 
 ## Creating a guild
 
-A guild is created with the `/zaloz <tag> <name>` command. Until then, that
-patch of the map is just wilderness — running the command is what stakes out
-the territory and places a heart on it:
+A guild is created with the `/zaloz <tag> <name>` command. The command marks
+out the guild's territory and places a heart on it:
 
 <GuildCreationDemo
   label="DZK"
@@ -78,13 +77,12 @@ automatically.
 
 `/przedluz` extends it by `validity-time` (14 days by default) at a cost of
 `validity-items` (10 diamonds by default). It can only be used once less than
-`validity-when` remains before expiry (14 days by default, so in practice
-always); setting it to `0` disables renewal entirely.
+`validity-when` remains before expiry (14 days by default — the same as a new
+guild's validity); setting it to `0` disables renewal entirely.
 
 ## Disbanding a guild
 
-Disbanding takes two steps — `/usun` starts it and `/potwierdz` confirms it —
-so a guild can't be deleted by accident.
+Disbanding takes two steps: `/usun` starts it and `/potwierdz` confirms it.
 `guild-delete-cancel-if-someone-is-on-region` blocks disbanding while
 someone from outside the guild is standing on its territory.
 

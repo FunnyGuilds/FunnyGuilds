@@ -11,7 +11,7 @@ The starting ranking is set by `rank-start` (**1000** by default).
 
 | System | Description |
 |---|---|
-| `ELO` (default) | Chess-style ranking — the change depends on the rating gap between the two players; the best-balanced of the three |
+| `ELO` (default) | Chess-style ranking — the change depends on the rating gap between the two players |
 | `PERCENT` | Both players' ranking changes by a percentage (`percent-rank-change`) of the victim's ranking |
 | `STATIC` | Always a fixed amount: `static-attacker-change` for the winner, `static-victim-change` for the victim |
 
@@ -34,14 +34,14 @@ goes to the killer. `assists-limit` caps how many assists count per kill
 (`-1` = unlimited).
 
 Who sees a death message, and how, is set by `death-message-receivers`
-(`PARTICIPANTS`/`GUILD`/`WORLD`/`ALL`). To avoid duplicate messages, it is
-worth turning off the server's own default message at the same time, with
-`disable-default-death-message`.
+(`PARTICIPANTS`/`GUILD`/`WORLD`/`ALL`). `disable-default-death-message` turns
+off the server's own message, which would otherwise appear alongside the
+FunnyGuilds one.
 
 ### Anti-farming protections
 
-Several independent switches guard against artificially inflating your
-ranking:
+Several independent switches guard against artificially inflating ranking
+points:
 
 - `rank-farming-protect` — blocks repeatedly scoring points for killing the
   same person in a short window (`rank-farming-cooldown`, 2h by default),
@@ -57,9 +57,8 @@ ranking:
 
 The `top` section drives player and guild top lists, available as the
 `{PTOP-type-x}`/`{GTOP-type-x}` placeholders (see
-[Placeholders](/en/placeholders/)). Only enable the types you actually use —
-every extra type in `enabled-user-tops`/`enabled-guild-tops` costs a bit of
-performance:
+[Placeholders](/en/placeholders/)). Every type enabled in
+`enabled-user-tops`/`enabled-guild-tops` is calculated separately:
 
 - Player types: `points`, `kills`, `deaths`, `assists`, `logouts`.
 - Guild types: the same, plus `avg_*` average variants (e.g. `avg_points`).

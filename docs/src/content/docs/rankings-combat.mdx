@@ -11,7 +11,7 @@ Ranking startowy ustawia `rank-start` (domyślnie **1000**).
 
 | System | Opis |
 |---|---|
-| `ELO` (domyślny) | Ranking szachowy — zmiana zależy od różnicy rankingów obu graczy; najlepiej zbalansowany |
+| `ELO` (domyślny) | Ranking szachowy — zmiana zależy od różnicy rankingów obu graczy |
 | `PERCENT` | Obu graczom zmienia się ranking o procent (`percent-rank-change`) rankingu ofiary |
 | `STATIC` | Zawsze stała liczba punktów: `static-attacker-change` dla zwycięzcy, `static-victim-change` dla ofiary |
 
@@ -35,9 +35,9 @@ trafia do zabójcy. `assists-limit` ogranicza liczbę zliczanych asystentów na
 jedno zabójstwo (`-1` = bez limitu).
 
 Komu i jak wyświetla się wiadomość o śmierci gracza, ustala
-`death-message-receivers` (`PARTICIPANTS`/`GUILD`/`WORLD`/`ALL`). Żeby uniknąć
-duplikatu, warto przy tym wyłączyć domyślny komunikat serwera opcją
-`disable-default-death-message`.
+`death-message-receivers` (`PARTICIPANTS`/`GUILD`/`WORLD`/`ALL`).
+`disable-default-death-message` wyłącza domyślny komunikat serwera, który w
+przeciwnym razie pojawi się obok komunikatu FunnyGuilds.
 
 ### Ochrona przed farmieniem rankingu
 
@@ -57,9 +57,8 @@ Kilka niezależnych przełączników chroni przed sztucznym nabijaniem punktów:
 
 Sekcja `top` steruje rankingami (topkami) graczy i gildii, dostępnymi m.in.
 jako placeholdery `{PTOP-typ-x}`/`{GTOP-typ-x}` (patrz
-[Placeholdery](/placeholders/)). Warto włączać tylko faktycznie używane
-typy — każdy dodatkowy w `enabled-user-tops`/`enabled-guild-tops` kosztuje
-trochę wydajności:
+[Placeholdery](/placeholders/)). Każdy typ włączony w
+`enabled-user-tops`/`enabled-guild-tops` jest przeliczany osobno:
 
 - Typy graczy: `points`, `kills`, `deaths`, `assists`, `logouts`.
 - Typy gildii: jak wyżej oraz warianty średnie `avg_*` (np. `avg_points`).
