@@ -14,10 +14,7 @@ pluginManagement {
 include(
     ":plugin",
     ":nms:api",
-    ":nms:v1_21",
-    ":nms:v1_21_2",
-    ":nms:v1_21_4",
-    ":nms:v1_21_9",
+    ":nms:v26_1_2",
 )
 
 val isCiServer = System.getenv().containsKey("CI")

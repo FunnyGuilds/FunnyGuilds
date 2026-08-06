@@ -37,12 +37,16 @@ publishing {
     }
 }
 
+configurations.configureEach {
+    exclude(group = "org.spigotmc", module = "spigot-api")
+}
+
+val nmsImplementationModules = project.project(":nms").subprojects.filter { it.name != "api" }
+
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     /* funnyguilds */
-    project.project(":nms").subprojects.forEach {
-        implementation(it)
-    }
+    implementation(project(":nms:api"))
     implementation("net.dzikoysk:funnycommands:0.8.0")
 
     /* std */
@@ -79,7 +83,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.20.0")
 
     // bukkit stuff
-    shadow("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    shadow("io.papermc.paper:paper-api:26.1.2.build.72-stable")
     shadow("org.apache.logging.log4j:log4j-core:2.20.0")
 
     /* hooks */
@@ -90,7 +94,7 @@ dependencies {
     shadow("us.dynmap:DynmapCoreAPI:3.7-beta-6")
 
     /* tests */
-    testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    testImplementation("io.papermc.paper:paper-api:26.1.2.build.72-stable")
     testImplementation("com.mojang:authlib:6.0.57")
 
     val testcontainers = "1.20.4"
@@ -115,7 +119,13 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     val commitCount = grgitService.service.get().grgit.log().size
-    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.21.x).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 26.x).jar"
+
+    nmsImplementationModules.forEach {
+        val nmsShadowJar = it.tasks.named("shadowJar", ShadowJar::class)
+        dependsOn(nmsShadowJar)
+        from(nmsShadowJar.map { task -> zipTree(task.archiveFile) })
+    }
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
@@ -142,15 +152,13 @@ tasks.withType<ShadowJar> {
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
         exclude(dependency("com.github.stefvanschie.inventoryframework:IF:.*"))
 
-        // nms implementation modules are not referenced in the project but are required at runtime
-        parent!!.project(":nms").subprojects.forEach {
-            exclude(project(it.path))
-        }
+        // nms:api classes are referenced reflectively and required at runtime
+        exclude(project(":nms:api"))
     }
 }
 
 tasks {
     runServer {
-        minecraftVersion("1.21.4")
+        minecraftVersion("26.1.2")
     }
 }

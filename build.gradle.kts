@@ -1,5 +1,5 @@
-import io.papermc.paperweight.tasks.RemapJar
-import io.papermc.paperweight.util.constants.OBF_NAMESPACE
+import io.papermc.paperweight.userdev.PaperweightUserExtension
+import io.papermc.paperweight.userdev.ReobfArtifactConfiguration
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -10,16 +10,16 @@ plugins {
     application
     `maven-publish`
 
-    kotlin("jvm") version "2.2.21" apply false
+    kotlin("jvm") version "2.4.0" apply false
     id("idea")
     id("org.ajoberstar.grgit.service") version "5.3.0" apply false
     id("com.gradleup.shadow") version "9.2.2"
     id("xyz.jpenilla.run-paper") version "3.0.2" apply false
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21" apply false
 }
 
 idea {
-    project.jdkName = "21"
+    project.jdkName = "25"
 }
 
 allprojects {
@@ -86,7 +86,7 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit")
 
-        val mockito = "5.15.2"
+        val mockito = "5.23.0"
         testImplementation("org.mockito:mockito-core:$mockito")
         testImplementation("org.mockito:mockito-junit-jupiter:$mockito")
 
@@ -95,8 +95,11 @@ subprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
 
         withSourcesJar()
         withJavadocJar()
@@ -114,7 +117,7 @@ subprojects {
 
     tasks.withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_25)
             freeCompilerArgs = listOf("-Xjvm-default=all") // Generate default methods in interfaces by default
         }
     }
@@ -138,16 +141,15 @@ subprojects {
 
 
 project(":nms").subprojects {
-    tasks.withType<Javadoc>().configureEach { 
+    tasks.withType<Javadoc>().configureEach {
         enabled = false
     }
+}
 
-    dependencies {
-        implementation("xyz.jpenilla:reflection-remapper:0.1.1")
-    }
-
+configure(listOf(project(":nms:v26_1_2"))) {
     apply(plugin = "io.papermc.paperweight.userdev")
-    tasks.withType<RemapJar> {
-        toNamespace = OBF_NAMESPACE
+
+    configure<PaperweightUserExtension> {
+        reobfArtifactConfiguration.set(ReobfArtifactConfiguration.MOJANG_PRODUCTION)
     }
 }
