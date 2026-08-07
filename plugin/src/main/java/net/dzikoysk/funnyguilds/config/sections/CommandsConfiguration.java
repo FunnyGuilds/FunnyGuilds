@@ -122,6 +122,7 @@ public class CommandsConfiguration extends OkaeriConfig {
         public String logouts = "ga logouts";
         public String assists = "ga assists";
         public String items = "ga items";
+        public String tnt = "ga tnt";
 
     }
 

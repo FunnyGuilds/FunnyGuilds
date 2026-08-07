@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.util.Set;
 import java.util.UUID;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import org.bukkit.entity.Player;
@@ -22,6 +23,10 @@ public class TntProtection extends AbstractFunnyListener {
         }
 
         if (this.tntCanExplode()) {
+            return;
+        }
+
+        if (this.hasGuildTntBypass(event)) {
             return;
         }
 
@@ -46,6 +51,7 @@ public class TntProtection extends AbstractFunnyListener {
                 .map(Region::getGuild)
                 .filterNot(guild -> this.config.warTntProtection && !this.config.regionExplodeBlockProtected && !guild.canBeAttacked())
                 .filterNot(guild -> !this.config.regionExplodeBlockTntDisabled && !this.tntCanExplode())
+                .filterNot(Guild::hasTntProtectionBypass)
                 .filterNot(guild -> this.config.regionExplodeExcludeEntities.contains(event.getEntityType()))
                 .peek(guild -> guild.setBuild(Instant.now().plus(this.config.regionExplode)))
                 .toStream(guild -> guild.getMembers().stream())
@@ -57,6 +63,13 @@ public class TntProtection extends AbstractFunnyListener {
                 .with("{TIME}", this.config.regionExplode.getSeconds())
                 .receivers(players)
                 .send();
+    }
+
+    private boolean hasGuildTntBypass(EntityExplodeEvent event) {
+        return this.regionManager.findRegionAtLocation(event.getLocation())
+                .map(Region::getGuild)
+                .filter(Guild::hasTntProtectionBypass)
+                .isPresent();
     }
 
     private boolean tntCanExplode() {
