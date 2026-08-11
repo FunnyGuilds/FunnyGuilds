@@ -54,12 +54,12 @@ allprojects {
                 releasesOnly()
             }
         }
-        maven("https://repo.titanvale.net/releases") {
+        maven("https://maven.kawusia.cloud/releases") {
             mavenContent {
                 releasesOnly()
             }
         }
-        maven("https://repo.titanvale.net/snapshots") {
+        maven("https://maven.kawusia.cloud/snapshots") {
             mavenContent {
                 snapshotsOnly()
             }
