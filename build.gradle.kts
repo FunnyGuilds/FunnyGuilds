@@ -38,6 +38,7 @@ allprojects {
 
     repositories {
         /* Panda libs & Maven Central */
+        mavenCentral()
         maven("https://maven.reposilite.com/maven-central")
         maven("https://maven.reposilite.com/releases")
         maven("https://maven.reposilite.com/snapshots")
