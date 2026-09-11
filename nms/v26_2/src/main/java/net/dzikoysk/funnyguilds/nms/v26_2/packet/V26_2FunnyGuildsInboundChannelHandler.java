@@ -14,8 +14,8 @@ public class V26_2FunnyGuildsInboundChannelHandler extends ChannelInboundHandler
 
     @Override
     public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
-        if (msg instanceof ServerboundAttackPacket attackPacket) {
-            this.packetCallbacksRegistry.handleAttackEntity(attackPacket.entityId(), true);
+        if (msg instanceof ServerboundAttackPacket(int entityId)) {
+            this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
         } else if (msg instanceof ServerboundInteractPacket interactPacket) {
             boolean isMainHand = interactPacket.hand() == InteractionHand.MAIN_HAND;
 
