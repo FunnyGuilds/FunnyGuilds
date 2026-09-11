@@ -40,8 +40,13 @@ publishing {
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     /* funnyguilds */
+    implementation(project(":nms:api"))
     project.project(":nms").subprojects.forEach {
-        implementation(it)
+        if (it.path == ":nms:v26_2") {
+            api(files(it.tasks.named("jar")))
+        } else if (it.path != ":nms:api") {
+            runtimeOnly(it)
+        }
     }
     implementation("net.dzikoysk:funnycommands:0.8.0")
 
