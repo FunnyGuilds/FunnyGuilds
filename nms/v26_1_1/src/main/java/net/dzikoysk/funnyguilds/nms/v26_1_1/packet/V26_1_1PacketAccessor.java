@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v26_2.packet;
+package net.dzikoysk.funnyguilds.nms.v26_1_1.packet;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
@@ -11,12 +11,12 @@ import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class V26_2PacketAccessor implements PacketAccessor {
+public class V26_1_1PacketAccessor implements PacketAccessor {
 
     private final GenericInboundChannelHandlerInstaller<?> inboundChannelHandlerInstaller =
-            new GenericInboundChannelHandlerInstaller<>(V26_2FunnyGuildsInboundChannelHandler::new);
+            new GenericInboundChannelHandlerInstaller<>(V26_1_1FunnyGuildsInboundChannelHandler::new);
     private final GenericOutboundChannelHandlerInstaller<?> outboundChannelHandlerInstaller =
-            new GenericOutboundChannelHandlerInstaller<>(V26_2FunnyGuildsOutboundChannelHandler::new);
+            new GenericOutboundChannelHandlerInstaller<>(V26_1_1FunnyGuildsOutboundChannelHandler::new);
 
     @Override
     public FunnyGuildsInboundChannelHandler getOrInstallInboundChannelHandler(Player player) {
