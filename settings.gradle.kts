@@ -18,6 +18,7 @@ include(
     ":nms:v1_21_2",
     ":nms:v1_21_4",
     ":nms:v1_21_9",
+    ":nms:v26_2"
 )
 
 val isCiServer = System.getenv().containsKey("CI")

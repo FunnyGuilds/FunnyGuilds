@@ -69,8 +69,8 @@ import panda.std.Option;
 public class PluginConfiguration extends OkaeriConfig {
     
     @Exclude
-    private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.legacyAmpersand()
-            .toBuilder()
+    private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.builder()
+            .character('&')
             .hexColors()
             .build();
 
