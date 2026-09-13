@@ -4,9 +4,12 @@ import com.google.common.collect.Sets;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
@@ -72,6 +75,14 @@ public final class DatabaseGuildSerializer {
                 heartLives = config.warHeartLives;
             }
 
+            Map<String, Integer> upgradeLevels;
+            try {
+                upgradeLevels = parseUpgradeLevels(resultSet.getString("upgrades"));
+            }
+            catch (SQLException ignored) {
+                upgradeLevels = new HashMap<>();
+            }
+
             if (name == null) {
                 logger.deserialize("Cannot deserialize guild, caused by: name is null");
                 return Option.none();
@@ -127,7 +138,7 @@ public final class DatabaseGuildSerializer {
                 lives = config.warLives;
             }
 
-            Object[] values = new Object[17];
+            Object[] values = new Object[18];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -145,6 +156,7 @@ public final class DatabaseGuildSerializer {
             values[14] = deputies;
             values[15] = pvp;
             values[16] = heartLives;
+            values[17] = upgradeLevels;
 
             return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
@@ -184,9 +196,42 @@ public final class DatabaseGuildSerializer {
         statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
+        statement.set("upgrades", serializeUpgradeLevels(guild.getUpgradeLevels()));
 
         statement.executeUpdate();
         guild.markUnchanged();
+    }
+
+    private static String serializeUpgradeLevels(Map<String, Integer> upgradeLevels) {
+        if (upgradeLevels == null || upgradeLevels.isEmpty()) {
+            return "";
+        }
+
+        return upgradeLevels.entrySet().stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(","));
+    }
+
+    private static Map<String, Integer> parseUpgradeLevels(String raw) {
+        Map<String, Integer> result = new HashMap<>();
+        if (raw == null || raw.isEmpty()) {
+            return result;
+        }
+
+        for (String entry : raw.split(",")) {
+            String[] split = entry.split(":", 2);
+            if (split.length != 2) {
+                continue;
+            }
+
+            try {
+                result.put(split[0], Integer.parseInt(split[1]));
+            }
+            catch (NumberFormatException ignored) {
+            }
+        }
+
+        return result;
     }
 
     public static void delete(Guild guild) {

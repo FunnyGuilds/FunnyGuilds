@@ -24,6 +24,7 @@ import net.dzikoysk.funnyguilds.config.serdes.TextColorSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
+import net.dzikoysk.funnyguilds.config.upgrades.UpgradesMenuConfiguration;
 
 public final class ConfigurationFactory {
 
@@ -103,6 +104,23 @@ public final class ConfigurationFactory {
                     new YAMLSerdes()
                 );
                 opt.bindFile(tablistConfigurationFile);
+                opt.logger(FunnyGuilds.getInstance().getLogger());
+                opt.errorComments(true);
+            });
+            it.saveDefaults();
+            it.load(true);
+        });
+    }
+
+    public static UpgradesMenuConfiguration createUpgradesMenuConfiguration(File upgradesConfigurationFile) {
+        return ConfigManager.create(UpgradesMenuConfiguration.class, (it) -> {
+            it.configure(opt -> {
+                opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
+                opt.validator(new OkaeriValidator(true));
+                opt.serdes(
+                    new YAMLSerdes()
+                );
+                opt.bindFile(upgradesConfigurationFile);
                 opt.logger(FunnyGuilds.getInstance().getLogger());
                 opt.errorComments(true);
             });

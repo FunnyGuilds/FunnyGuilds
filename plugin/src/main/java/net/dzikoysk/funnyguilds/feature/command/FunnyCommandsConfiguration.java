@@ -58,6 +58,7 @@ import net.dzikoysk.funnyguilds.feature.command.user.RankResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.SetBaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.StatsResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
+import net.dzikoysk.funnyguilds.feature.command.user.UpgradesCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -106,6 +107,7 @@ public final class FunnyCommandsConfiguration {
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
                 .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
+                .command("upgrades", commands.upgrades, UpgradesCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class);

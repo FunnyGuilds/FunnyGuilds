@@ -1,17 +1,23 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.sections.upgrades.UpgradeDefinition;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.telemetry.FunnybinAsyncTask;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -41,6 +47,9 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 break;
             case "save-all":
                 this.saveAll(sender);
+                break;
+            case "additem":
+                this.additem(sender, args);
                 break;
             case "funnybin":
                 this.post(sender, args);
@@ -83,6 +92,53 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 .receiver(sender)
                 .with("{TIME}", time)
                 .send();
+    }
+
+    private void additem(CommandSender sender, String[] args) {
+        when(!sender.hasPermission("funnyguilds.admin"), config -> config.permission);
+        when(!(sender instanceof Player), config -> config.upgradesAdditemPlayerOnly);
+
+        when(args.length < 4 || !"upgrade".equalsIgnoreCase(args[1]), config -> config.upgradesAdditemUsage);
+
+        String key = args[2];
+        UpgradeDefinition definition = this.config.guildUpgrades.findUpgrade(key).orElse(null);
+        if (definition == null) {
+            throw new InternalValidationException(
+                    config -> config.upgradesAdditemUnknownUpgrade,
+                    Replacement.string("{UPGRADE}", key),
+                    Replacement.string("{UPGRADES}", String.join(", ", this.config.guildUpgrades.getUpgrades().keySet()))
+            );
+        }
+
+        int level = parseLevel(args[3]);
+        if (level < 1 || level > definition.getMaxLevel()) {
+            throw new InternalValidationException(
+                    config -> config.upgradesAdditemInvalidLevel,
+                    Replacement.string("{LEVEL}", args[3]),
+                    Replacement.string("{MAX_LEVEL}", String.valueOf(definition.getMaxLevel()))
+            );
+        }
+
+        Player player = (Player) sender;
+        ItemStack handItem = player.getInventory().getItemInMainHand();
+        when(handItem.getType() == Material.AIR, config -> config.upgradesAdditemNoItemInHand);
+
+        this.upgradeItemStore.setRequiredItem(key, level, handItem.clone());
+
+        this.messageService.getMessage(config -> config.upgradesAdditemSaved)
+                .receiver(sender)
+                .with("{UPGRADE}", key)
+                .with("{LEVEL}", level)
+                .send();
+    }
+
+    private static int parseLevel(String raw) {
+        try {
+            return Integer.parseInt(raw);
+        }
+        catch (NumberFormatException exception) {
+            return -1;
+        }
     }
 
     private void post(CommandSender sender, String[] args) {

@@ -41,14 +41,16 @@ public final class InviteCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@HasGuildPermission(GuildCommandPermission.INVITE) User deputy, Player sender, Guild guild, String[] args) {
+        int maxMembers = this.guildUpgradeService.getMaxMembers(guild);
+
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{AMOUNT}", this.config.maxMembersInGuild)
+                .register("{AMOUNT}", maxMembers)
                 .register("{OWNER}", deputy.getName())
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
         when(args.length < 1, config -> config.generalNoNickGiven);
-        when(guild.getMembers().size() >= this.config.maxMembersInGuild, config -> config.inviteAmount, formatter);
+        when(guild.getMembers().size() >= maxMembers, config -> config.inviteAmount, formatter);
 
         boolean checkArgument = this.config.inviteCommandAllArgumentIgnoreCase
                 ? args[0].equalsIgnoreCase(this.config.inviteCommandAllArgument)
@@ -67,7 +69,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
                     .filterNot(player -> player.equals(sender))
                     .collect(Collectors.toList());
 
-            when(guild.getMembers().size() + nearbyPlayers.size() > this.config.maxMembersInGuild, config -> config.inviteAmount, formatter);
+            when(guild.getMembers().size() + nearbyPlayers.size() > maxMembers, config -> config.inviteAmount, formatter);
             when(nearbyPlayers.isEmpty(), config -> config.inviteNoOneIsNearby);
 
             this.messageService.getMessage(config -> config.inviteAllCommand)

@@ -38,6 +38,7 @@ import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.upgrades.GuildUpgradesConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
@@ -258,6 +259,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Maksymalna liczba wojen między gildiami")
     @CustomKey("max-enemies")
     public int maxEnemiesBetweenGuilds = 15;
+
+    @Comment("")
+    @Comment("System ulepszeń gildii — pozwala gildii ulepszać poziomy za pieniądze lub przedmioty")
+    @Comment("Wygląd menu ulepszeń konfiguruje się w osobnym pliku upgrades.yml")
+    @CustomKey("guild-upgrades")
+    public GuildUpgradesConfiguration guildUpgrades = new GuildUpgradesConfiguration();
 
     @Comment("")
     @Comment("Lista nazw światów, na których możliwość utworzenia gildii ma być zablokowana")

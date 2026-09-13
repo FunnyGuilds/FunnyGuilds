@@ -808,6 +808,30 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public String itemsGuiStatusReady = "<green>✔ Możesz założyć gildię!";
     public String itemsGuiStatusNotReady = "<red>✘ Brakuje Ci wymagań";
 
+    @Comment("")
+    @Comment("Wiadomości systemu ulepszeń gildii (/ulepszenia)")
+    public SendableMessage upgradesDisabled = ChatHolder.message("<red>System ulepszeń gildii jest wyłączony.");
+    @Comment("Dostępne zmienne: {UPGRADE}")
+    public SendableMessage upgradesUnknownUpgrade = ChatHolder.message("<red>Nieznane ulepszenie: <gray>{UPGRADE}");
+    public SendableMessage upgradesMaxLevel = ChatHolder.message("<red>To ulepszenie osiągnęło już maksymalny poziom.");
+    public SendableMessage upgradesCannotAfford = ChatHolder.message("<red>Nie stać cię na ten poziom ulepszenia.");
+    @Comment("Dostępne zmienne: {PLAYER}, {UPGRADE}, {LEVEL}")
+    public SendableMessage upgradesPurchased = ChatHolder.message("<green>Gracz <gray>{PLAYER} <green>zakupił poziom <gray>{LEVEL} <green>ulepszenia <gray>{UPGRADE}<green>!");
+    @Comment("Nagłówek listy tekstowej /ulepszenia (gdy menu jest wyłączone)")
+    public SendableMessage upgradesListHeader = ChatHolder.message("<gray--- Ulepszenia gildii ---");
+    @Comment("Dostępne zmienne: {UPGRADE}, {LEVEL}, {MAX_LEVEL}, {VALUE}, {NEXT_VALUE}, {COST}")
+    public SendableMessage upgradesListLine = ChatHolder.message("<white>{UPGRADE} <gray>- poziom <white>{LEVEL}<gray>/<white>{MAX_LEVEL} <gray>(bonus: <green>{VALUE}<gray>, następny poziom: <green>{NEXT_VALUE} <gray>za <yellow>{COST}<gray>)");
+    @Comment("Użycie: /funnyguilds additem upgrade <klucz> <poziom>")
+    public SendableMessage upgradesAdditemUsage = ChatHolder.message("<red>Użycie: /funnyguilds additem upgrade <klucz> <poziom>");
+    public SendableMessage upgradesAdditemPlayerOnly = ChatHolder.message("<red>Tej komendy może użyć tylko gracz.");
+    public SendableMessage upgradesAdditemNoItemInHand = ChatHolder.message("<red>Musisz trzymać przedmiot w ręce.");
+    @Comment("Dostępne zmienne: {UPGRADE}, {UPGRADES}")
+    public SendableMessage upgradesAdditemUnknownUpgrade = ChatHolder.message("<red>Nieznane ulepszenie: <gray>{UPGRADE}<red>. Dostępne: <white>{UPGRADES}");
+    @Comment("Dostępne zmienne: {LEVEL}, {MAX_LEVEL}")
+    public SendableMessage upgradesAdditemInvalidLevel = ChatHolder.message("<red>Nieprawidłowy poziom: <gray>{LEVEL}<red>. To ulepszenie ma <white>{MAX_LEVEL} <red>poziomów.");
+    @Comment("Dostępne zmienne: {UPGRADE}, {LEVEL}")
+    public SendableMessage upgradesAdditemSaved = ChatHolder.message("<green>Zapisano trzymany przedmiot jako wymagany do poziomu <gray>{LEVEL} <green>ulepszenia <gray>{UPGRADE}<green>.");
+
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();

@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.config.upgrades.UpgradesMenuConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
@@ -21,6 +22,8 @@ import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemSetService;
+import net.dzikoysk.funnyguilds.feature.upgrades.GuildUpgradeService;
+import net.dzikoysk.funnyguilds.feature.upgrades.UpgradeItemStore;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
@@ -108,8 +111,10 @@ public class FunnyGuilds extends JavaPlugin {
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File itemsConfigurationFile = new File(this.getDataFolder(), "items.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
+    private final File upgradesMenuConfigurationFile = new File(this.getDataFolder(), "upgrades.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
+    private final File upgradeItemsFile = new File(this.pluginDataFolderFile, "upgrade-items.yml");
 
     private FunnyGuildsVersion version;
     private FunnyCommands funnyCommands;
@@ -117,11 +122,14 @@ public class FunnyGuilds extends JavaPlugin {
     private PluginConfiguration pluginConfiguration;
     private ItemsConfiguration itemsConfiguration;
     private TablistConfiguration tablistConfiguration;
+    private UpgradesMenuConfiguration upgradesMenuConfiguration;
 
     private MessageService messageService;
 
     private GuildItemSetService guildItemSetService;
     private GuildItemRequirementChecker guildItemRequirementChecker;
+    private UpgradeItemStore upgradeItemStore;
+    private GuildUpgradeService guildUpgradeService;
 
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
@@ -202,6 +210,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.itemsConfiguration = ConfigurationFactory.createItemsConfiguration(this.itemsConfigurationFile);
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
+            this.upgradesMenuConfiguration = ConfigurationFactory.createUpgradesMenuConfiguration(this.upgradesMenuConfigurationFile);
         }
         catch (Exception exception) {
             OkaeriConfigException configException = ExceptionUtils.findCause(exception, OkaeriConfigException.class, 5);
@@ -268,6 +277,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildItemSetService = new GuildItemSetService(this.itemsConfiguration);
         this.guildItemRequirementChecker = new GuildItemRequirementChecker();
+        this.upgradeItemStore = new UpgradeItemStore(this.upgradeItemsFile);
+        this.guildUpgradeService = new GuildUpgradeService(this.pluginConfiguration, this.upgradeItemStore);
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
         this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
@@ -368,6 +379,9 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
             resources.on(GuildItemSetService.class).assignInstance(this.guildItemSetService);
             resources.on(GuildItemRequirementChecker.class).assignInstance(this.guildItemRequirementChecker);
+            resources.on(UpgradesMenuConfiguration.class).assignInstance(this.upgradesMenuConfiguration);
+            resources.on(UpgradeItemStore.class).assignInstance(this.upgradeItemStore);
+            resources.on(GuildUpgradeService.class).assignInstance(this.guildUpgradeService);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
@@ -624,6 +638,22 @@ public class FunnyGuilds extends JavaPlugin {
         return this.guildItemRequirementChecker;
     }
 
+    public UpgradesMenuConfiguration getUpgradesMenuConfiguration() {
+        return this.upgradesMenuConfiguration;
+    }
+
+    public File getUpgradesMenuConfigurationFile() {
+        return this.upgradesMenuConfigurationFile;
+    }
+
+    public UpgradeItemStore getUpgradeItemStore() {
+        return this.upgradeItemStore;
+    }
+
+    public GuildUpgradeService getGuildUpgradeService() {
+        return this.guildUpgradeService;
+    }
+
     public MessageService getMessageService() {
         return this.messageService;
     }
@@ -723,6 +753,7 @@ public class FunnyGuilds extends JavaPlugin {
     public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
+        this.upgradesMenuConfiguration.load();
         this.messageService.reload();
         this.hookManager.callConfigUpdated();
         this.prepareScoreboardServices();

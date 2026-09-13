@@ -64,8 +64,8 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         when(
-                guild.getMembers().size() >= this.config.maxMembersInGuild,
-                config -> config.inviteAmountJoin, Replacement.string("{AMOUNT}", this.config.maxMembersInGuild)
+                guild.getMembers().size() >= this.guildUpgradeService.getMaxMembers(guild),
+                config -> config.inviteAmountJoin, Replacement.string("{AMOUNT}", this.guildUpgradeService.getMaxMembers(guild))
         );
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.util;
 
 import java.time.Instant;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -89,6 +90,11 @@ public final class DeserializationUtils {
         guild.setDeputies((Set<User>) values[14]);
         guild.setPvP((boolean) values[15]);
         guild.setHeartLives((int) values[16]);
+
+        if (values.length > 17 && values[17] != null) {
+            guild.setUpgradeLevels((Map<String, Integer>) values[17]);
+        }
+
         guild.deserializationUpdate();
 
         guild.markUnchanged();

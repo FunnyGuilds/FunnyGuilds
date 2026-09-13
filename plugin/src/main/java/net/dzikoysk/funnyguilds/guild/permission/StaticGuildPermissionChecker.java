@@ -32,7 +32,8 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
             GuildCommandPermission.EXTEND_VALIDITY,
             GuildCommandPermission.INVITE,
             GuildCommandPermission.KICK,
-            GuildCommandPermission.PVP
+            GuildCommandPermission.PVP,
+            GuildCommandPermission.UPGRADES
     );
     private static final Collection<? extends GuildPermission<?>> OWNER_PERMISSIONS = EnumSet.of(
             GuildCommandPermission.DEPUTY,

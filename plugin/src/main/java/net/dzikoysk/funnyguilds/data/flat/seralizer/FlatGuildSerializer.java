@@ -4,11 +4,14 @@ import java.io.File;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
@@ -63,6 +66,7 @@ public final class FlatGuildSerializer {
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
         int heartLives = wrapper.contains("heart-lives") ? wrapper.getInt("heart-lives") : config.warHeartLives;
+        Map<String, Integer> upgradeLevels = parseUpgradeLevels(wrapper.getString("upgrades"));
 
         if (name == null) {
             logger.deserialize("Cannot deserialize guild, caused by: name is null");
@@ -149,7 +153,7 @@ public final class FlatGuildSerializer {
             lives = config.warLives;
         }
 
-        Object[] values = new Object[17];
+        Object[] values = new Object[18];
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -167,6 +171,7 @@ public final class FlatGuildSerializer {
         values[14] = deputies;
         values[15] = pvp;
         values[16] = heartLives;
+        values[17] = upgradeLevels;
 
         return DeserializationUtils.deserializeGuild(config, guildManager, values);
     }
@@ -213,11 +218,44 @@ public final class FlatGuildSerializer {
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
+        wrapper.set("upgrades", serializeUpgradeLevels(guild.getUpgradeLevels()));
 
         wrapper.save();
         guild.markUnchanged();
 
         return true;
+    }
+
+    private static String serializeUpgradeLevels(Map<String, Integer> upgradeLevels) {
+        if (upgradeLevels == null || upgradeLevels.isEmpty()) {
+            return "";
+        }
+
+        return upgradeLevels.entrySet().stream()
+                .map(entry -> entry.getKey() + ":" + entry.getValue())
+                .collect(Collectors.joining(","));
+    }
+
+    private static Map<String, Integer> parseUpgradeLevels(String raw) {
+        Map<String, Integer> result = new HashMap<>();
+        if (raw == null || raw.isEmpty()) {
+            return result;
+        }
+
+        for (String entry : raw.split(",")) {
+            String[] split = entry.split(":", 2);
+            if (split.length != 2) {
+                continue;
+            }
+
+            try {
+                result.put(split[0], Integer.parseInt(split[1]));
+            }
+            catch (NumberFormatException ignored) {
+            }
+        }
+
+        return result;
     }
 
     @SuppressWarnings("unchecked")

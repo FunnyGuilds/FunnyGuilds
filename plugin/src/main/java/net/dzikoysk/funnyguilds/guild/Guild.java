@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +37,8 @@ public class Guild extends AbstractMutableEntity {
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
     private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
     private Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
+
+    private Map<String, Integer> upgradeLevels = new ConcurrentHashMap<>();
 
     private Instant born;
     private Instant validity;
@@ -118,6 +121,29 @@ public class Guild extends AbstractMutableEntity {
 
     public void updateHeartLives(IntFunction<Integer> update) {
         this.setHeartLives(update.apply(this.heartLives));
+    }
+
+    public Map<String, Integer> getUpgradeLevels() {
+        return this.upgradeLevels;
+    }
+
+    public int getUpgradeLevel(String key) {
+        return this.upgradeLevels.getOrDefault(key, 0);
+    }
+
+    public void setUpgradeLevels(Map<String, Integer> upgradeLevels) {
+        this.upgradeLevels = upgradeLevels != null ? new ConcurrentHashMap<>(upgradeLevels) : new ConcurrentHashMap<>();
+        this.markChanged();
+    }
+
+    public void setUpgradeLevel(String key, int level) {
+        if (level <= 0) {
+            this.upgradeLevels.remove(key);
+        }
+        else {
+            this.upgradeLevels.put(key, level);
+        }
+        this.markChanged();
     }
 
     /**

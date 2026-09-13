@@ -211,8 +211,10 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                                 .flatMap(user -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.MEMBER_LIST_PRIORITY)))
                         .orElseGet(DEFAULT_MEMBER_PRIORITY));
 
+        int maxPossibleMembers = config.maxMembersInGuild + plugin.getGuildUpgradeService().getMaxPossibleMemberBonus();
+
         GuildPlaceholders placeholders = new GuildPlaceholders();
-        for (int i = 1; i <= config.maxMembersInGuild; i++) {
+        for (int i = 1; i <= maxPossibleMembers; i++) {
             int index = i;
             placeholders = placeholders.property("member-" + index,
                     (entity, guild) -> {

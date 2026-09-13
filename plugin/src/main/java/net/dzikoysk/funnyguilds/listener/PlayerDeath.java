@@ -32,6 +32,7 @@ import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
+import net.dzikoysk.funnyguilds.feature.upgrades.GuildUpgradeService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
@@ -55,6 +56,8 @@ public class PlayerDeath extends AbstractFunnyListener {
     private final RankSystem rankSystem;
     @Inject
     private DamageManager damageManager;
+    @Inject
+    private GuildUpgradeService guildUpgradeService;
 
     public PlayerDeath(PluginConfiguration config) {
         this.rankSystem = RankSystem.create(config);
@@ -171,6 +174,11 @@ public class PlayerDeath extends AbstractFunnyListener {
         int addedAttackerPoints = (!this.config.assistKillerAlwaysShare && calculatedAssists.isEmpty())
                 ? result.getAttackerPoints()
                 : (int) Math.round(result.getAttackerPoints() * this.config.assistKillerShare);
+
+        double pointsBoostMultiplier = attacker.getGuild()
+                .map(this.guildUpgradeService::getPointsBoostMultiplier)
+                .orElseGet(1.0);
+        addedAttackerPoints = (int) Math.round(addedAttackerPoints * pointsBoostMultiplier);
 
         PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.COMBAT, victim, attacker, addedAttackerPoints);
         if (!SimpleEventHandler.handle(attackerPointsChangeEvent)) {
