@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.user.User
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.bukkit.Location
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.UUID
 import kotlin.test.assertEquals
 
 class GuildTest : FunnyGuildsSpec() {
@@ -30,7 +30,7 @@ class GuildTest : FunnyGuildsSpec() {
                 .withPrefabValues(Location::class.java, Location(null, 0.0, 0.0, 0.0), Location(null, 1.0, 2.0, 3.0))
                 .withIgnoredFields("name", "tag", "rank", "lives", "heartLives", "region", "home", "owner")
                 .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds")
-                .withIgnoredFields("born", "validity", "protection", "build", "ban", "pvp", "wasChanged")
+                .withIgnoredFields("born", "validity", "protection", "build", "ban", "tntProtectionBypass", "pvp", "wasChanged")
                 .verify()
     }
 

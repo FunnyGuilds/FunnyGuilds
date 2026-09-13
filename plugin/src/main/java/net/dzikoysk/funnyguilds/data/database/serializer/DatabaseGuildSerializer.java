@@ -58,6 +58,7 @@ public final class DatabaseGuildSerializer {
             Instant validity = TimeUtils.positiveOrNullInstant(resultSet.getLong("validity"));
             Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("protection"));
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
+            Instant tntProtectionBypass = TimeUtils.positiveOrNullInstant(resultSet.getLong("tnt_protection_bypass"));
             int lives = resultSet.getInt("lives");
             int heartLives = config.warHeartLives;
 
@@ -127,7 +128,7 @@ public final class DatabaseGuildSerializer {
                 lives = config.warLives;
             }
 
-            Object[] values = new Object[17];
+            Object[] values = new Object[18];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -143,8 +144,9 @@ public final class DatabaseGuildSerializer {
             values[12] = lives;
             values[13] = ban;
             values[14] = deputies;
-            values[15] = pvp;
-            values[16] = heartLives;
+            values[15] = tntProtectionBypass;
+            values[16] = pvp;
+            values[17] = heartLives;
 
             return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
@@ -182,6 +184,7 @@ public final class DatabaseGuildSerializer {
         statement.set("validity", guild.getValidity().toEpochMilli());
         statement.set("protection", guild.getProtection().toEpochMilli());
         statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
+        statement.set("tnt_protection_bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
 

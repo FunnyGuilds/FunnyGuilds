@@ -35,13 +35,14 @@ public class Guild extends AbstractMutableEntity {
     private Set<User> deputies = ConcurrentHashMap.newKeySet();
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
     private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
-    private Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
+    private final Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
 
     private Instant born;
     private Instant validity;
     private Instant protection;
     private Option<Instant> build = Option.none();
     private Option<Instant> ban = Option.none();
+    private Option<Instant> tntProtectionBypass = Option.none();
 
     private boolean pvp;
 
@@ -395,6 +396,23 @@ public class Guild extends AbstractMutableEntity {
         }
 
         this.ban = Option.of(time);
+        this.markChanged();
+    }
+
+    public Option<Instant> getTntProtectionBypass() {
+        return this.tntProtectionBypass;
+    }
+
+    public boolean hasTntProtectionBypass() {
+        return this.tntProtectionBypass.is(bypass -> bypass.isAfter(Instant.now()));
+    }
+
+    public void setTntProtectionBypass(@Nullable Instant time) {
+        if (time != null && time.isBefore(Instant.now())) {
+            time = null;
+        }
+
+        this.tntProtectionBypass = Option.of(time);
         this.markChanged();
     }
 
