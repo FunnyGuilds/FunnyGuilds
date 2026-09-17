@@ -97,6 +97,18 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
                 .orElse(0.0D);
     }
 
+    public int getWarsWon() {
+        return this.entity.getWarsWon();
+    }
+
+    public int getWarsLost() {
+        return this.entity.getWarsLost();
+    }
+
+    public int getWarStreak() {
+        return this.entity.getWarStreak();
+    }
+
     @Override
     public int compareTo(@NotNull GuildRank rank) {
         return GuildComparator.AVG_POINTS_COMPARATOR.compare(this, rank);

@@ -19,23 +19,48 @@ To zachowanie można też nadpisać dla konkretnego regionu flagą WorldGuarda
 
 ## Wojny
 
-Zaatakowanie innej gildii (gdy włączone jest `war-enabled`) wymaga
+Zaatakowanie innej gildii (gdy włączone jest `war.enabled`) wymaga
 wcześniejszego wypowiedzenia jej wojny komendą `/wojna <tag>`. Wyjątkiem jest
-wyłączona opcja `war-require-declaration` — wtedy można atakować dowolną
+wyłączona opcja `war.require-declaration` — wtedy można atakować dowolną
 gildię spoza sojuszy bez wypowiadania wojny. Jedna gildia może prowadzić maksymalnie
 `max-enemies` wojen naraz (domyślnie **15**).
 
+### Tryby wojen (War Mode)
+
+FunnyGuilds oferuje dwa tryby wojen (`war.mode`):
+- **`MODERN`** (domyślny) — dynamiczny system, w którym atakujący mogą zdobywać życia za podbicie serca (`conquer-gain-life`) oraz za wygraną wojnę (`win-gain-life`), obowiązują serie zwycięstw (*win-streak*) z powiadomieniami oraz ochrona anty-farmingowa.
+- **`LEGACY`** — klasyczny tryb bez regeneracji i zdobywania żyć w walce.
+
 | Opcja | Domyślnie | Opis |
 |---|---|---|
-| `war-protection` | 24h | Czas od założenia gildii, przez który nie można jej zaatakować |
-| `war-wait` | 24h | Odstęp między kolejnymi atakami na tę samą gildię |
-| `war-lives` | 3 | Liczba żyć gildii |
-| `war-heart-lives` | 1 | Liczba trafień w serce potrzebna do odebrania 1 życia |
-| `war-tnt-protection` | `true` | Czy okres ochronny daje też odporność na TNT |
+| `war.mode` | `MODERN` | Tryb systemu wojen (`MODERN` lub `LEGACY`) |
+| `war.lives` | 3 | Bazowa liczba żyć gildii |
+| `war.max-lives` | 5 | Maksymalny limit żyć możliwy do zdobycia lub wykupienia |
+| `war.heart-lives` | 1 | Liczba trafień w serce potrzebna do odebrania 1 życia |
+| `war.conquer-gain-life` | `true` | Czy agresor zyskuje +1 życie po zbiciu serca (tryb MODERN) |
+| `war.win-gain-life` | `true` | Czy wygranie wojny przyznaje +1 życie zwycięzcy (tryb MODERN) |
+| `war.protection` | 24h | Czas od założenia gildii, przez który nie można jej zaatakować |
+| `war.wait` | 24h | Odstęp między kolejnymi atakami na tę samą gildię |
+| `war.tnt-protection` | `true` | Czy okres ochronny daje też odporność na TNT |
 
 Zniszczenie serca gildii odbiera jej jedno życie. Gdy skończą się wszystkie
-życia, gildia przegrywa wojnę. Ustawienie `war-heart-lives` na `1` efektywnie
+życia, gildia przegrywa wojnę i zostaje usunięta. Ustawienie `war.heart-lives` na `1` efektywnie
 wyłącza mechanikę HP serca — każde trafienie od razu odbiera życie.
+
+### Wykup żyć (`/g kupzycie`)
+
+Gildie mogą odzyskiwać utracone życia za pomocą komendy `/kupzycie` (aliasy `/wykup`, `/buylife`), o ile opcja `buy-life.enabled` jest włączona:
+- **Typ płatności (`buy-life.payment-type`):** `ITEMS` (przedmioty), `MONEY` (Vault) lub `BOTH` (oba naraz).
+- **Skalowanie kosztów (`buy-life.scaling-cost`):** możliwość progresywnego zwiększania ceny za każde kolejne życie powyżej bazowej wartości `war.lives`.
+- **Ograniczenia:** cooldown między zakupami (`buy-life.cooldown`) oraz limit maksymalnych żyć (`buy-life.allow-buy-up-to-max-lives`).
+
+### Ochrona Anty-Farming
+
+Aby zapobiec tworzeniu fikcyjnych gildii do łatwego nabijania żyć i punktów, sekcja `war.anti-farming` wprowadza:
+- Wymóg minimalnej liczby członków ofiary (`min-victim-members`).
+- Wymóg minimalnego wieku gildii ofiary (`min-victim-age`).
+- Cooldown na zdobywanie żyć na tej samej gildii (`victim-cooldown`).
+- Blokadę zdobywania nagród przy jednakowym adresie IP (`protect-same-ip`).
 
 Członkowie tej samej gildii również domyślnie nie mogą się nawzajem ranić —
 steruje tym `damage-guild`.

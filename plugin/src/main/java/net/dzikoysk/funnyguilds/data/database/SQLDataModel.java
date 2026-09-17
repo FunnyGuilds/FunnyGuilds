@@ -80,6 +80,11 @@ public class SQLDataModel implements DataModel {
         this.guildsTable.add("enemies", SQLType.TEXT);
         this.guildsTable.add("info", SQLType.TEXT);
         this.guildsTable.add("deputy", SQLType.TEXT);
+        this.guildsTable.add("wars_won", SQLType.INT);
+        this.guildsTable.add("wars_lost", SQLType.INT);
+        this.guildsTable.add("last_war", SQLType.TEXT);
+        this.guildsTable.add("war_streak", SQLType.INT);
+        this.guildsTable.add("last_life_buy", SQLType.BIGINT);
         this.guildsTable.setPrimaryKey("uuid");
 
         this.regionsTable.add("name", SQLType.VARCHAR, 100, true);

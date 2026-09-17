@@ -21,23 +21,48 @@ see [WorldGuard & WorldEdit](/en/worldguard-worldedit/).
 
 ## Wars
 
-Attacking another guild (when `war-enabled` is on) requires declaring war on
-it first with `/wojna <tag>` — unless `war-require-declaration` is disabled,
+Attacking another guild (when `war.enabled` is on) requires declaring war on
+it first with `/wojna <tag>` — unless `war.require-declaration` is disabled,
 in which case any non-allied guild can be attacked without a declaration. A
 guild can be at war with at most `max-enemies` guilds at once (**15** by
 default).
 
+### War modes (War Mode)
+
+FunnyGuilds provides two war modes (`war.mode`):
+- **`MODERN`** (default) — a dynamic war system where attackers can gain lives by conquering hearts (`conquer-gain-life`) and winning wars (`win-gain-life`), win streaks are tracked and announced, and anti-farming protection is enforced.
+- **`LEGACY`** — classic war mode with no life regeneration or combat rewards.
+
 | Option | Default | Description |
 |---|---|---|
-| `war-protection` | 24h | Time after a guild is created during which it can't be attacked |
-| `war-wait` | 24h | Cooldown between attacks on the same guild |
-| `war-lives` | 3 | Number of guild lives |
-| `war-heart-lives` | 1 | Heart hits needed to remove 1 life |
-| `war-tnt-protection` | `true` | Whether the protection period also grants TNT immunity |
+| `war.mode` | `MODERN` | War system mode (`MODERN` or `LEGACY`) |
+| `war.lives` | 3 | Base number of guild lives |
+| `war.max-lives` | 5 | Maximum number of lives achievable via conquest or purchase |
+| `war.heart-lives` | 1 | Heart hits needed to remove 1 life |
+| `war.conquer-gain-life` | `true` | Whether the attacker gains +1 life on conquering a heart (MODERN mode) |
+| `war.win-gain-life` | `true` | Whether winning a war grants +1 life to the winner (MODERN mode) |
+| `war.protection` | 24h | Time after a guild is created during which it can't be attacked |
+| `war.wait` | 24h | Cooldown between attacks on the same guild |
+| `war.tnt-protection` | `true` | Whether the protection period also grants TNT immunity |
 
 Destroying a guild's heart costs it one life; once all its lives are gone,
-the guild loses the war. Setting `war-heart-lives` to `1` effectively
+the guild loses the war and is deleted. Setting `war.heart-lives` to `1` effectively
 disables the heart's HP mechanic — every hit removes a life immediately.
+
+### Buying lives (`/g kupzycie` / `/g buylife`)
+
+Guilds can recover lost lives using `/kupzycie` (aliases `/wykup`, `/buylife`), provided `buy-life.enabled` is active:
+- **Payment type (`buy-life.payment-type`):** `ITEMS` (items), `MONEY` (Vault), or `BOTH` (items + Vault).
+- **Cost scaling (`buy-life.scaling-cost`):** progressively increases the purchase cost for each life above `war.lives`.
+- **Limits:** purchase cooldown (`buy-life.cooldown`) and maximum life limit (`buy-life.allow-buy-up-to-max-lives`).
+
+### Anti-Farming Protection
+
+To prevent abusing dummy guilds to farm lives and stats, the `war.anti-farming` section provides:
+- Minimum member count for victim guilds (`min-victim-members`).
+- Minimum age requirement for victim guilds (`min-victim-age`).
+- Cooldown on gaining lives from the same guild (`victim-cooldown`).
+- IP protection preventing farming against the same IP address (`protect-same-ip`).
 
 Members of the same guild can't damage each other by default either — that is
 controlled by `damage-guild`.

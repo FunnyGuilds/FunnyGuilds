@@ -31,6 +31,7 @@ class GuildTest : FunnyGuildsSpec() {
                 .withIgnoredFields("name", "tag", "rank", "lives", "heartLives", "region", "home", "owner")
                 .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds")
                 .withIgnoredFields("born", "validity", "protection", "build", "ban", "pvp", "wasChanged")
+                .withIgnoredFields("warsWon", "warsLost", "lastWarGuildTag", "lastLifeBuy", "warStreak", "victimGainCooldowns")
                 .verify()
     }
 
@@ -51,6 +52,42 @@ class GuildTest : FunnyGuildsSpec() {
         guild.updateHeartLives { it - 1 }
 
         assertEquals(2, guild.heartLives)
+    }
+
+    @Test
+    fun `guild war stats should update and maintain state`() {
+        val guild = Guild("guild1", "TEST1")
+        val enemyGuild = Guild("guild2", "TEST2")
+
+        assertEquals(0, guild.warsWon)
+        assertEquals(0, guild.warsLost)
+        assertEquals(0, guild.warStreak)
+
+        guild.updateWarsWon { it + 1 }
+        guild.updateWarStreak { it + 1 }
+        guild.setLastWarGuildTag(enemyGuild.tag)
+
+        assertEquals(1, guild.warsWon)
+        assertEquals(1, guild.warStreak)
+        assertEquals("TEST2", guild.lastWarGuildTag.get())
+
+        guild.updateWarsLost { it + 1 }
+        guild.setWarStreak(0)
+
+        assertEquals(1, guild.warsLost)
+        assertEquals(0, guild.warStreak)
+    }
+
+    @Test
+    fun `guild victim cooldown should work correctly`() {
+        val guild = Guild("guild1", "TEST1")
+        val victim = Guild("victim", "VIC")
+
+        val cooldown = java.time.Duration.ofHours(1)
+        assertEquals(true, guild.canGainLifeOn(victim, cooldown))
+
+        guild.setGainLifeCooldownOn(victim, cooldown)
+        assertEquals(false, guild.canGainLifeOn(victim, cooldown))
     }
 
 }

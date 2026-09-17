@@ -44,7 +44,7 @@ public class TntProtection extends AbstractFunnyListener {
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
         Set<Player> players = this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)
-                .filterNot(guild -> this.config.warTntProtection && !this.config.regionExplodeBlockProtected && !guild.canBeAttacked())
+                .filterNot(guild -> this.config.war.tntProtection && !this.config.regionExplodeBlockProtected && !guild.canBeAttacked())
                 .filterNot(guild -> !this.config.regionExplodeBlockTntDisabled && !this.tntCanExplode())
                 .filterNot(guild -> this.config.regionExplodeExcludeEntities.contains(event.getEntityType()))
                 .peek(guild -> guild.setBuild(Instant.now().plus(this.config.regionExplode)))

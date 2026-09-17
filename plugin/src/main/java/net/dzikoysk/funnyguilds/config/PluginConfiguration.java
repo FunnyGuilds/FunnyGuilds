@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.sections.BuyLifeConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
@@ -38,6 +39,7 @@ import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.WarConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
@@ -395,42 +397,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public ExplosionControlConfiguration explosionControl = new ExplosionControlConfiguration();
 
     @Comment("")
-    @Comment("Możliwość podbijania gildii")
-    public boolean warEnabled = true;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Ile żyć ma gildia")
-    public int warLives = 3;
-
-    @Min(1)
-    @Comment("Ile HP ma pojedyncze serce gildii")
-    @Comment("Po zbiciu HP serca gildia traci 1 życie, a serce odnawia HP")
-    @Comment("Wartość 1 efektywnie wyłącza mechanikę HP serca - każde uderzenie od razu odbiera życie, a wiadomości o uderzeniach w serce nie są wysyłane")
-    public int warHeartLives = 1;
+    @Comment("Sekcja konfiguracji wojen i podbijania gildii")
+    public WarConfiguration war = new WarConfiguration();
 
     @Comment("")
-    @Comment("Czy do zaatakowania gildii wymagana jest aktywna wojna (komenda /g war)")
-    @Comment("Przy ustawieniu na false zachowanie jest zgodne z poprzednim - można atakować każdą nie-sojuszniczą gildię bez wypowiadania wojny")
-    public boolean warRequireDeclaration = true;
-
-    @PositiveOrZero
-    @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
-    @Comment("")
-    @Comment("Po jakim czasie od założenia można zaatakować gildię")
-    @CustomKey("war-protection")
-    public Duration warProtection = Duration.ofHours(24);
-
-    @PositiveOrZero
-    @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
-    @Comment("")
-    @Comment("Ile czasu trzeba czekać do następnego ataku na gildię")
-    @CustomKey("war-wait")
-    public Duration warWait = Duration.ofHours(24);
-
-    @Comment("")
-    @Comment("Czy gildia podczas okresu ochronnego ma posiadać ochronę przeciw TNT")
-    public boolean warTntProtection = true;
+    @Comment("Sekcja konfiguracji wykupu zyc dla gildii (/g kupzycie)")
+    @CustomKey("buy-life")
+    public BuyLifeConfiguration buyLife = new BuyLifeConfiguration();
 
     @Comment("")
     @Comment("Czy zwierzęta na terenie gildii mają być chronione przed osobami spoza gildii")

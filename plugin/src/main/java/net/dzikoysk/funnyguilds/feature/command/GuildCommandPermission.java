@@ -16,6 +16,7 @@ public enum GuildCommandPermission implements GuildPermission<Boolean> {
     ALLY("command.ally"),
     WAR("command.war"),
     PVP("command.pvp"),
+    BUY_LIFE("command.buy-life"),
     DELETE("command.delete");
     
     private final Key key;

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.io.File
 import java.nio.file.Path
@@ -38,7 +39,7 @@ class ExplosionControlRoundTripTest {
         }
 
     @Test
-    fun `default configuration round-trips through okaeri`(@TempDir tempDir: Path) {
+    fun `default configuration round-trips through okaeri`(@TempDir(cleanup = CleanupMode.NEVER) tempDir: Path) {
         val file = tempDir.resolve("config.yml").toFile()
 
         create(file)
@@ -53,7 +54,7 @@ class ExplosionControlRoundTripTest {
     }
 
     @Test
-    fun `custom configuration round-trips through okaeri`(@TempDir tempDir: Path) {
+    fun `custom configuration round-trips through okaeri`(@TempDir(cleanup = CleanupMode.NEVER) tempDir: Path) {
         val file = tempDir.resolve("config.yml").toFile()
 
         create(file).also { cfg ->
