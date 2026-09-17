@@ -62,7 +62,12 @@ public final class FlatGuildSerializer {
         Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("protection"));
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
         int lives = wrapper.getInt("lives");
-        int heartLives = wrapper.contains("heart-lives") ? wrapper.getInt("heart-lives") : config.warHeartLives;
+        int heartLives = wrapper.contains("heart-lives") ? wrapper.getInt("heart-lives") : config.war.heartLives;
+        int warsWon = wrapper.getInt("wars-won");
+        int warsLost = wrapper.getInt("wars-lost");
+        String lastWar = wrapper.getString("last-war");
+        int warStreak = wrapper.getInt("war-streak");
+        Instant lastLifeBuy = TimeUtils.positiveOrNullInstant(wrapper.getLong("last-life-buy"));
 
         if (name == null) {
             logger.deserialize("Cannot deserialize guild, caused by: name is null");
@@ -146,10 +151,10 @@ public final class FlatGuildSerializer {
         }
 
         if (lives == 0) {
-            lives = config.warLives;
+            lives = config.war.lives;
         }
 
-        Object[] values = new Object[17];
+        Object[] values = new Object[22];
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -167,6 +172,11 @@ public final class FlatGuildSerializer {
         values[14] = deputies;
         values[15] = pvp;
         values[16] = heartLives;
+        values[17] = warsWon;
+        values[18] = warsLost;
+        values[19] = lastWar;
+        values[20] = warStreak;
+        values[21] = lastLifeBuy;
 
         return DeserializationUtils.deserializeGuild(config, guildManager, values);
     }
@@ -210,6 +220,11 @@ public final class FlatGuildSerializer {
         wrapper.set("protection", guild.getProtection().toEpochMilli());
         wrapper.set("lives", guild.getLives());
         wrapper.set("heart-lives", guild.getHeartLives());
+        wrapper.set("wars-won", guild.getWarsWon());
+        wrapper.set("wars-lost", guild.getWarsLost());
+        wrapper.set("last-war", guild.getLastWarGuildTag().orNull());
+        wrapper.set("war-streak", guild.getWarStreak());
+        wrapper.set("last-life-buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));

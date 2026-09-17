@@ -23,6 +23,9 @@ public final class GuildComparator implements TopComparator<GuildRank> {
     public static final TopComparator<GuildRank> AVG_ASSISTS_COMPARATOR = new GuildComparator(GuildRank::getAverageAssists).reversed();
     public static final TopComparator<GuildRank> AVG_LOGOUTS_COMPARATOR = new GuildComparator(GuildRank::getAverageLogouts).reversed();
 
+    public static final TopComparator<GuildRank> WARS_WON_COMPARATOR = new GuildComparator(GuildRank::getWarsWon).reversed();
+    public static final TopComparator<GuildRank> WAR_STREAK_COMPARATOR = new GuildComparator(GuildRank::getWarStreak).reversed();
+
     private final Function<GuildRank, Number> valueFunction;
 
     private GuildComparator(Function<GuildRank, Number> valueFunction) {

@@ -37,6 +37,7 @@ import net.dzikoysk.funnyguilds.feature.command.admin.stats.PointsCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.AllyCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BreakCommand;
+import net.dzikoysk.funnyguilds.feature.command.user.BuyLifeCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ConfirmCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.CreateCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.DeleteCommand;
@@ -86,6 +87,7 @@ public final class FunnyCommandsConfiguration {
                 .command("ally", commands.ally, AllyCommand.class)
                 .command("base", commands.base, BaseCommand.class)
                 .command("break", commands.break_, BreakCommand.class)
+                .command("buyLife", commands.buyLife, BuyLifeCommand.class)
                 .command("confirm", commands.confirm, ConfirmCommand.class)
                 .command("create", commands.create, CreateCommand.class)
                 .command("delete", commands.delete, DeleteCommand.class)

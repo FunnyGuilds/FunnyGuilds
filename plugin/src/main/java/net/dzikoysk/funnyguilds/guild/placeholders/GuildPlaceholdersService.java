@@ -144,12 +144,19 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                         entity -> messages.get(entity, config -> config.gProtectionNoValue)
                 )
                 .property("lives", Guild::getLives, entity -> 0)
+                .property("war-max-lives", guild -> pluginConfiguration.war.maxLives, entity -> 0)
+                .property("wars-won", Guild::getWarsWon, entity -> 0)
+                .property("wars-lost", Guild::getWarsLost, entity -> 0)
+                .property("wars-last",
+                        (entity, guild) -> guild.getLastWarGuildTag().orNull(),
+                        entity -> messages.get(entity, config -> config.enemiesNoValue))
+                .property("war-streak", Guild::getWarStreak, entity -> 0)
                 .property("heart-lives", Guild::getHeartLives, entity -> 0)
-                .property("heart-lives-max", guild -> pluginConfiguration.warHeartLives, entity -> 0)
+                .property("heart-lives-max", guild -> pluginConfiguration.war.heartLives, entity -> 0)
                 .property("lives-symbol",
                         guild -> {
                             int lives = guild.getLives();
-                            if (lives <= pluginConfiguration.warLives) {
+                            if (lives <= pluginConfiguration.war.lives) {
                                 return Component.text()
                                         .append(ComponentUtil.repeat(
                                                 pluginConfiguration.livesRepeatingSymbol.full,
@@ -157,13 +164,13 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                                         ))
                                         .append(ComponentUtil.repeat(
                                                 pluginConfiguration.livesRepeatingSymbol.empty, 
-                                                pluginConfiguration.warLives - lives
+                                                pluginConfiguration.war.lives - lives
                                         ));
                             } else {
                                 return Component.text()
                                         .append(ComponentUtil.repeat(
                                                 pluginConfiguration.livesRepeatingSymbol.full,
-                                                pluginConfiguration.warLives
+                                                pluginConfiguration.war.lives
                                         ))
                                         .append(pluginConfiguration.livesRepeatingSymbol.more);
                             }

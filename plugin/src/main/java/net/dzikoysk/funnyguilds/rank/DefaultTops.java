@@ -38,6 +38,9 @@ public final class DefaultTops {
     public static final String GUILD_AVG_ASSISTS_TOP = "avg_assists";
     public static final String GUILD_AVG_LOGOUTS_TOP = "avg_logouts";
 
+    public static final String GUILD_WARS_WON_TOP = "wars_won";
+    public static final String GUILD_WAR_STREAK_TOP = "war_streak";
+
     private DefaultTops() {
     }
 
@@ -71,6 +74,8 @@ public final class DefaultTops {
                 .put(GUILD_AVG_KDA_TOP, new GuildTop(GuildComparator.AVG_KDA_COMPARATOR, recalculation))
                 .put(GUILD_AVG_ASSISTS_TOP, new GuildTop(GuildComparator.AVG_ASSISTS_COMPARATOR, recalculation))
                 .put(GUILD_AVG_LOGOUTS_TOP, new GuildTop(GuildComparator.AVG_LOGOUTS_COMPARATOR, recalculation))
+                .put(GUILD_WARS_WON_TOP, new GuildTop(GuildComparator.WARS_WON_COMPARATOR, recalculation))
+                .put(GUILD_WAR_STREAK_TOP, new GuildTop(GuildComparator.WAR_STREAK_COMPARATOR, recalculation))
                 .build();
     }
 

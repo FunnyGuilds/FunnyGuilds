@@ -45,6 +45,13 @@ public class Guild extends AbstractMutableEntity {
 
     private boolean pvp;
 
+    private int warsWon;
+    private int warsLost;
+    private Option<String> lastWarGuildTag = Option.none();
+    private Option<Instant> lastLifeBuy = Option.none();
+    private int warStreak;
+    private final java.util.Map<UUID, Instant> victimGainCooldowns = new ConcurrentHashMap<>();
+
     public Guild(UUID uuid, String name, String tag) {
         this.uuid = uuid != null ? uuid : UUID.randomUUID();
         this.name = name;
@@ -411,6 +418,77 @@ public class Guild extends AbstractMutableEntity {
         this.pvp = !this.pvp;
         this.markChanged();
         return this.pvp;
+    }
+
+    public int getWarsWon() {
+        return this.warsWon;
+    }
+
+    public void setWarsWon(int warsWon) {
+        this.warsWon = Math.max(0, warsWon);
+        this.markChanged();
+    }
+
+    public void updateWarsWon(IntFunction<Integer> update) {
+        this.setWarsWon(update.apply(this.warsWon));
+    }
+
+    public int getWarsLost() {
+        return this.warsLost;
+    }
+
+    public void setWarsLost(int warsLost) {
+        this.warsLost = Math.max(0, warsLost);
+        this.markChanged();
+    }
+
+    public void updateWarsLost(IntFunction<Integer> update) {
+        this.setWarsLost(update.apply(this.warsLost));
+    }
+
+    public Option<String> getLastWarGuildTag() {
+        return this.lastWarGuildTag;
+    }
+
+    public void setLastWarGuildTag(@Nullable String lastWarGuildTag) {
+        this.lastWarGuildTag = Option.of(lastWarGuildTag);
+        this.markChanged();
+    }
+
+    public int getWarStreak() {
+        return this.warStreak;
+    }
+
+    public void setWarStreak(int warStreak) {
+        this.warStreak = Math.max(0, warStreak);
+        this.markChanged();
+    }
+
+    public void updateWarStreak(IntFunction<Integer> update) {
+        this.setWarStreak(update.apply(this.warStreak));
+    }
+
+    public Option<Instant> getLastLifeBuy() {
+        return this.lastLifeBuy;
+    }
+
+    public void setLastLifeBuy(@Nullable Instant lastLifeBuy) {
+        this.lastLifeBuy = Option.of(lastLifeBuy);
+        this.markChanged();
+    }
+
+    public boolean canGainLifeOn(Guild victimGuild, java.time.Duration cooldown) {
+        if (cooldown == null || cooldown.isZero() || cooldown.isNegative()) {
+            return true;
+        }
+        Instant until = this.victimGainCooldowns.get(victimGuild.getUUID());
+        return until == null || Instant.now().isAfter(until);
+    }
+
+    public void setGainLifeCooldownOn(Guild victimGuild, java.time.Duration cooldown) {
+        if (cooldown != null && !cooldown.isZero() && !cooldown.isNegative()) {
+            this.victimGainCooldowns.put(victimGuild.getUUID(), Instant.now().plus(cooldown));
+        }
     }
 
     public boolean hasAllyPvPEnabled(Guild alliedGuild) {

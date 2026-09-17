@@ -208,6 +208,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/opusc &8- &7Opuszcza gildie",
             "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
             "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
+            "&a/wojna [tag] &8- &7Wypowiada wojne gildii",
+            "&a/kupzycie &8- &7Wykupuje dodatkowe zycie dla gildii",
             "&a/usun &8- &7Usuwa gildie",
             "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
             "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii"
@@ -264,7 +266,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage infoTag = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage infoExists = ChatHolder.message("&cGildia o takim tagu nie istnieje!");
 
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {WAR-MAX-LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}, {WARS-WON}, {WARS-LOST}, {WARS-LAST}, {WAR-STREAK}")
     public SendableMessage infoList = ChatHolder.message(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
@@ -272,11 +274,13 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&7Zastepcy: &c{DEPUTIES}",
             "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
             "&7Ochrona: &c{PROTECTION}",
-            "&7Zycia: &4{LIVES}",
+            "&7Zycia: &4{LIVES}&8/&4{WAR-MAX-LIVES}",
+            "&7Wojny: &a{WARS-WON} &7wygranych &8/ &c{WARS-LOST} &7przegranych &8(Seria: &e{WAR-STREAK}&8)",
+            "&7Ostatnia wojna: &c{WARS-LAST}",
             "&7Waznosc: &c{VALIDITY}",
             "&7Czlonkowie: &7{MEMBERS}",
             "&7Sojusze: &c{ALLIES}",
-            "&7Wojny: &c{ENEMIES}",
+            "&7Wrogowie: &c{ENEMIES}",
             "&8-------------------------------"
     );
 
@@ -561,6 +565,11 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage warAttacker = ChatHolder.message("&7Twoja gildia pozbawila gildie &4{ATTACKED} &7z &41 zycia&7!");
     @Comment("Dostępne zmienne: {ATTACKER}")
     public SendableMessage warAttacked = ChatHolder.message("&7Twoja gildia stracila &41 zycie &7przez &4{ATTACKER}&7!");
+    @Comment("Dostępne zmienne: {ATTACKED}, {LIVES}, {MAX-LIVES}")
+    public SendableMessage warAttackerGainedLife = ChatHolder.message("&aTwoja gildia zdobyla &2+1 zycie &aza zbicie serca &a{ATTACKED}&a! (&2{LIVES}&a/&2{MAX-LIVES})");
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {STREAK}")
+    public SendableMessage warStreakBroadcast = ChatHolder.message("&6[WOJNA] &eGildia &6{GUILD} &8[&6{TAG}&8] &eosiagnela serie &c{STREAK} &ewygranych wojen z rzedu!");
+    public SendableMessage warAntiFarmingBlocked = ChatHolder.message("&cTa akcja nie przyznaje zycia z powodu ochrony anty-farmingowej.");
     @Comment("Wiadomosc wysylana, gdy atak zbije HP serca, ale gildia nie traci jeszcze zycia")
     @Comment("Dostępne zmienne: {ATTACKED}, {HEART-LIVES}, {HEART-LIVES-MAX}")
     public SendableMessage warAttackerHeart = ChatHolder.message("&7Twoja gildia zbila serce gildii &4{ATTACKED} &7do &4{HEART-LIVES}&7/&4{HEART-LIVES-MAX} &7HP!");
@@ -570,6 +579,22 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage warWin = ChatHolder.message("&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!");
     @Comment("Dostępne zmienne: {WINNER}")
     public SendableMessage warLose = ChatHolder.message("&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!");
+
+    @Comment("")
+    @Comment("<------- Buy Life Messages -------> #")
+    public SendableMessage buyLifeDisabled = ChatHolder.message("&cWykupywanie zyc dla gildii jest wylaczone.");
+    @Comment("Dostępne zmienne: {LIVES}, {MAX-LIVES}")
+    public SendableMessage buyLifeMaxLives = ChatHolder.message("&cTwoja gildia posiada juz maksymalna liczbe zyc ({LIVES}/{MAX-LIVES})!");
+    @Comment("Dostępne zmienne: {TIME}")
+    public SendableMessage buyLifeCooldown = ChatHolder.message("&cKolejne zycie mozesz wykupic dopiero za &7{TIME}&c!");
+    @Comment("Dostępne zmienne: {ITEM}")
+    public SendableMessage buyLifeNoItems = ChatHolder.message("&cNie posiadasz wymaganych przedmiotow do wykupienia zycia! Brakuje: &7{ITEM}");
+    @Comment("Dostępne zmienne: {MONEY}")
+    public SendableMessage buyLifeNoMoney = ChatHolder.message("&cNie posiadasz wystarczajacych srodkow! Potrzebujesz: &7{MONEY}");
+    @Comment("Dostępne zmienne: {LIVES}, {MAX-LIVES}")
+    public SendableMessage buyLifeSuccess = ChatHolder.message("&aPomyslnie wykupiono &21 zycie &adla gildii! Aktualny stan: &2{LIVES}&a/&2{MAX-LIVES}");
+    @Comment("Dostępne zmienne: {PLAYER}, {LIVES}, {MAX-LIVES}")
+    public SendableMessage buyLifeBroadcast = ChatHolder.message("&aGracz &2{PLAYER} &awykupil dodatkowe zycie dla gildii! Aktualny stan: &2{LIVES}&a/&2{MAX-LIVES}");
 
     @Comment("")
     @Comment("<------- Leader Messages -------> #")

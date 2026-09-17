@@ -59,18 +59,43 @@ public final class DatabaseGuildSerializer {
             Instant protection = TimeUtils.positiveOrNullInstant(resultSet.getLong("protection"));
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             int lives = resultSet.getInt("lives");
-            int heartLives = config.warHeartLives;
+            int heartLives = config.war.heartLives;
 
             try {
                 heartLives = resultSet.getInt("heart_lives");
 
                 if (resultSet.wasNull()) {
-                    heartLives = config.warHeartLives;
+                    heartLives = config.war.heartLives;
                 }
             }
             catch (SQLException ignored) {
-                heartLives = config.warHeartLives;
+                heartLives = config.war.heartLives;
             }
+
+            int warsWon = 0;
+            try {
+                warsWon = resultSet.getInt("wars_won");
+            } catch (SQLException ignored) {}
+
+            int warsLost = 0;
+            try {
+                warsLost = resultSet.getInt("wars_lost");
+            } catch (SQLException ignored) {}
+
+            String lastWar = null;
+            try {
+                lastWar = resultSet.getString("last_war");
+            } catch (SQLException ignored) {}
+
+            int warStreak = 0;
+            try {
+                warStreak = resultSet.getInt("war_streak");
+            } catch (SQLException ignored) {}
+
+            Instant lastLifeBuy = null;
+            try {
+                lastLifeBuy = TimeUtils.positiveOrNullInstant(resultSet.getLong("last_life_buy"));
+            } catch (SQLException ignored) {}
 
             if (name == null) {
                 logger.deserialize("Cannot deserialize guild, caused by: name is null");
@@ -124,10 +149,10 @@ public final class DatabaseGuildSerializer {
             }
 
             if (lives == 0) {
-                lives = config.warLives;
+                lives = config.war.lives;
             }
 
-            Object[] values = new Object[17];
+            Object[] values = new Object[22];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -145,6 +170,11 @@ public final class DatabaseGuildSerializer {
             values[14] = deputies;
             values[15] = pvp;
             values[16] = heartLives;
+            values[17] = warsWon;
+            values[18] = warsLost;
+            values[19] = lastWar;
+            values[20] = warStreak;
+            values[21] = lastLifeBuy;
 
             return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
@@ -178,6 +208,11 @@ public final class DatabaseGuildSerializer {
         statement.set("points", guild.getRank().getAveragePoints());
         statement.set("lives", guild.getLives());
         statement.set("heart_lives", guild.getHeartLives());
+        statement.set("wars_won", guild.getWarsWon());
+        statement.set("wars_lost", guild.getWarsLost());
+        statement.set("last_war", guild.getLastWarGuildTag().orNull());
+        statement.set("war_streak", guild.getWarStreak());
+        statement.set("last_life_buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("born", guild.getBorn().toEpochMilli());
         statement.set("validity", guild.getValidity().toEpochMilli());
         statement.set("protection", guild.getProtection().toEpochMilli());
