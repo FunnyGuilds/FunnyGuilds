@@ -13,7 +13,7 @@ plugins {
     kotlin("jvm") version "2.2.21" apply false
     id("idea")
     id("org.ajoberstar.grgit.service") version "5.3.0" apply false
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.6.1"
     id("xyz.jpenilla.run-paper") version "3.0.2" apply false
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.23" apply false
 }
@@ -38,6 +38,7 @@ allprojects {
 
     repositories {
         /* Panda libs & Maven Central */
+        mavenCentral()
         maven("https://maven.reposilite.com/maven-central")
         maven("https://maven.reposilite.com/releases")
         maven("https://maven.reposilite.com/snapshots")
@@ -54,12 +55,12 @@ allprojects {
                 releasesOnly()
             }
         }
-        maven("https://repo.titanvale.net/releases") {
+        maven("https://maven.kawusia.cloud/releases") {
             mavenContent {
                 releasesOnly()
             }
         }
-        maven("https://repo.titanvale.net/snapshots") {
+        maven("https://maven.kawusia.cloud/snapshots") {
             mavenContent {
                 snapshotsOnly()
             }
