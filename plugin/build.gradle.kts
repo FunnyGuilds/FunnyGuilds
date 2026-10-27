@@ -122,7 +122,7 @@ tasks.processResources {
 
 tasks.withType<ShadowJar> {
     val commitCount = grgitService.service.get().grgit.log().size
-    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.21.x).jar"
+    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.21.5 - 26.x).jar"
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
