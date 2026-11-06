@@ -14,7 +14,11 @@ import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -28,7 +32,12 @@ import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 public final class ItemUtils {
