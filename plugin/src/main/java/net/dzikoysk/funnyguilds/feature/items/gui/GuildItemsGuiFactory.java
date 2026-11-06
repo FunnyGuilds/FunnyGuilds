@@ -23,6 +23,7 @@ import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
 import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
+import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -218,7 +219,7 @@ public final class GuildItemsGuiFactory {
                                         .replace("{STATUS_COLOR}", statusColor)
                                         .replace("{CURRENT}", formatMoney(current))
                                         .replace("{REQUIRED}", formatMoney(set.requiredMoney));
-                                lore.add(mm(template));
+                                lore.add(ItemUtils.coloredWithoutItalics(template));
                             }
                         }
                         case "{LEVEL_LINE}" -> {
@@ -229,7 +230,7 @@ public final class GuildItemsGuiFactory {
                                         .replace("{STATUS_COLOR}", statusColor)
                                         .replace("{CURRENT}", String.valueOf(current))
                                         .replace("{REQUIRED}", String.valueOf(set.requiredLevel));
-                                lore.add(mm(template));
+                                lore.add(ItemUtils.coloredWithoutItalics(template));
                             }
                         }
                         case "{RANK_LINE}" -> {
@@ -240,7 +241,7 @@ public final class GuildItemsGuiFactory {
                                         .replace("{STATUS_COLOR}", statusColor)
                                         .replace("{CURRENT}", String.valueOf(current))
                                         .replace("{REQUIRED}", String.valueOf(set.requiredRank));
-                                lore.add(mm(template));
+                                lore.add(ItemUtils.coloredWithoutItalics(template));
                             }
                         }
                         case "{STATUS}" -> {
@@ -248,9 +249,9 @@ public final class GuildItemsGuiFactory {
                             String template = ready
                                     ? messageService.get(player, cfg -> cfg.itemsGuiStatusReady)
                                     : messageService.get(player, cfg -> cfg.itemsGuiStatusNotReady);
-                            lore.add(mm(template));
+                            lore.add(ItemUtils.coloredWithoutItalics(template));
                         }
-                        default -> lore.add(mm(line));
+                        default -> lore.add(ItemUtils.coloredWithoutItalics(line));
                     }
                 }
             }
@@ -275,10 +276,6 @@ public final class GuildItemsGuiFactory {
         GuildItemDefinition def = new GuildItemDefinition("BLACK_STAINED_GLASS_PANE");
         def.name = " ";
         return def;
-    }
-
-    private static Component mm(String text) {
-        return MiniLegacyHelper.miniMessage().deserialize(text);
     }
 
     private static String formatMoney(double value) {

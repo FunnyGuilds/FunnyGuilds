@@ -3,13 +3,6 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 import dev.peri.yetanothermessageslibrary.message.Sendable;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
@@ -38,6 +31,14 @@ import panda.std.Option;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 
 public final class ItemUtils {
 
@@ -295,16 +296,15 @@ public final class ItemUtils {
         if (meta == null) return item;
 
         if (def.name != null && !def.name.isEmpty()) {
-            meta.displayName(MiniLegacyHelper.miniMessage().deserialize(def.name));
+            meta.displayName(coloredWithoutItalics(def.name));
         }
 
         if (def.lore != null && !def.lore.isEmpty()) {
             List<Component> lore = new ArrayList<>();
             for (String line : def.lore) {
-                lore.add(line == null || line.isEmpty()
-                        ? Component.empty()
-                        : MiniLegacyHelper.miniMessage().deserialize(line));
+                lore.add(line == null || line.isEmpty() ? Component.empty() : coloredWithoutItalics(line));
             }
+
             meta.lore(lore);
         }
 
@@ -374,7 +374,8 @@ public final class ItemUtils {
         }
     }
 
-    private static Component coloredWithoutItalics(String text) {
+    /** Parses item text with italics disabled unless explicitly configured. */
+    public static Component coloredWithoutItalics(String text) {
         return ComponentUtil.colored(text).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 

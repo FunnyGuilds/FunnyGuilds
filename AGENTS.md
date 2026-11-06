@@ -1,5 +1,10 @@
 # AGENTS.md
 
+## Java imports
+
+Never use wildcard imports in Java, including static imports. Always import
+each class or member individually and preserve existing explicit imports.
+
 ## Docs must stay in sync with the plugin
 
 This repo ships the plugin (`plugin/`, `funnyguilds-core/`, `funnyguilds-server-api/`,
