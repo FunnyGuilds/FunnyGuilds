@@ -2,12 +2,9 @@ package net.dzikoysk.funnyguilds.feature.items.gui;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import java.util.ArrayList;
-import java.util.List;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemDisplayConfig;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
-import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -17,6 +14,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class GuiItemBuilder {
 
@@ -74,8 +74,11 @@ public final class GuiItemBuilder {
     }
 
     private static Component miniMessage(String text) {
-        if (text == null || text.isEmpty()) return Component.empty();
-        return MiniLegacyHelper.miniMessage().deserialize(text);
+        if (text == null || text.isEmpty()) {
+            return Component.empty();
+        }
+
+        return ItemUtils.coloredWithoutItalics(text);
     }
 
 }
