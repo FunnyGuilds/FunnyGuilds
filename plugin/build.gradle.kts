@@ -41,13 +41,18 @@ publishing {
 dependencies {
     /* funnyguilds */
     implementation(project(":nms:api"))
+
+    val java25NmsModules = setOf(
+        ":nms:v26_1_1",
+        ":nms:v26_3"
+    )
     project.project(":nms").subprojects.forEach {
         // java 25 module - jar file avoids JVM mismatch with Java 21, and 'api' prevents Shadow minimize from stripping it.
         // minimizer can't see reflection calls from NmsAccessorHolder, and 'exclude(project(...))' doesn't match raw file dependencies.
-        if (it.path == ":nms:v26_1_1") {
-            api(files(it.tasks.named("jar")))
-        } else if (it.path != ":nms:api") {
-            runtimeOnly(it)
+        when (it.path) {
+            ":nms:api" -> Unit
+            in java25NmsModules -> api(files(it.tasks.named("jar")))
+            else -> runtimeOnly(it)
         }
     }
     implementation("net.dzikoysk:funnycommands:0.8.0")
