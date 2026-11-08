@@ -19,6 +19,7 @@ public final class NmsAccessorHolder {
             .put(4189, "v1_21_4")
             .put(4554, "v1_21_9")
             .put(4788, "v26_1_1")
+            .put(5023, "v26_3")
             .build());
 
     static final NmsAccessor INSTANCE = newAccessorInstance();
