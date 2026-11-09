@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class UserManager {
         this.pluginConfiguration = pluginConfiguration;
     }
 
-    public int countUsers() {
+    public synchronized int countUsers() {
         return this.usersByUuid.size();
     }
 
@@ -36,14 +37,14 @@ public class UserManager {
      *
      * @return set of users
      */
-    public Set<User> getUsers() {
+    public synchronized Set<User> getUsers() {
         return new HashSet<>(this.usersByUuid.values());
     }
 
     /**
      * Deletes all loaded users data
      */
-    public void clearUsers() {
+    public synchronized void clearUsers() {
         this.usersByUuid.clear();
         this.usersByName.clear();
     }
@@ -54,7 +55,7 @@ public class UserManager {
      * @param names collection of names
      * @return set of users
      */
-    public Set<User> findByNames(Collection<String> names) {
+    public synchronized Set<User> findByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::findByName)
                 .collect(Collectors.toSet());
@@ -66,7 +67,7 @@ public class UserManager {
      * @param uuid the universally unique identifier of user
      * @return the user
      */
-    public Option<User> findByUuid(UUID uuid) {
+    public synchronized Option<User> findByUuid(UUID uuid) {
         return Option.of(this.usersByUuid.get(uuid));
     }
 
@@ -87,17 +88,9 @@ public class UserManager {
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
-    public Option<User> findByName(String nickname, boolean ignoreCase) {
-        User foundUser = this.usersByName.get(nickname);
-
-        if (foundUser == null && ignoreCase) {
-            foundUser = PandaStream.of(this.usersByName.entrySet())
-                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
-                    .map(Map.Entry::getValue)
-                    .orNull();
-        }
-
-        return Option.of(foundUser);
+    public synchronized Option<User> findByName(String nickname, boolean ignoreCase) {
+        return Option.of(this.usersByName.get(nickname.toLowerCase(Locale.ROOT)))
+                .filter(user -> ignoreCase || user.getName().equals(nickname));
     }
 
     /**
@@ -138,12 +131,21 @@ public class UserManager {
      * @param userProfile the user profile which will be assigned to User
      * @return the user
      */
-    public User create(UUID uuid, String name, UserProfile userProfile) {
+    public synchronized User create(UUID uuid, String name, UserProfile userProfile) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
         Validate.notNull(userProfile, "userProfile can't be null!");
         Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, name) == NameResult.VALID, "name is not valid!");
+
+        User existing = this.usersByUuid.get(uuid);
+        if (existing != null) {
+            if (!existing.getName().equals(name)) {
+                throw new IllegalStateException("UUID " + uuid + " is already registered as '" + existing.getName()
+                        + "'; use updateUsername to change its name");
+            }
+            return existing;
+        }
 
         User user = new User(uuid, name, userProfile);
         this.addUser(user);
@@ -156,11 +158,17 @@ public class UserManager {
      *
      * @param user user to add
      */
-    public void addUser(User user) {
+    public synchronized void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
+        User existing = this.usersByUuid.get(user.getUUID());
+        if (existing != null && existing != user) {
+            throw new IllegalStateException("UUID " + user.getUUID() + " is already registered");
+        }
+        this.checkNameAvailable(user.getUUID(), user.getName());
+
         this.usersByUuid.put(user.getUUID(), user);
-        this.usersByName.put(user.getName(), user);
+        this.usersByName.put(user.getName().toLowerCase(Locale.ROOT), user);
     }
 
     /**
@@ -168,11 +176,15 @@ public class UserManager {
      *
      * @param user user to remove
      */
-    public void removeUser(User user) {
+    public synchronized void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
+        if (this.usersByUuid.get(user.getUUID()) != user) {
+            return;
+        }
+
         this.usersByUuid.remove(user.getUUID());
-        this.usersByName.remove(user.getName());
+        this.usersByName.remove(user.getName().toLowerCase(Locale.ROOT), user);
     }
 
     /**
@@ -181,13 +193,28 @@ public class UserManager {
      * @param user        the user for which the nickname will be changed
      * @param newUsername the new nickname for user
      */
-    public void updateUsername(User user, String newUsername) {
+    public synchronized void updateUsername(User user, String newUsername) {
         Validate.notNull(user, "user can't be null!");
+        Validate.notBlank(newUsername, "name can't be blank!");
+        Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, newUsername) == NameResult.VALID, "name is not valid!");
+        if (this.usersByUuid.get(user.getUUID()) != user) {
+            throw new IllegalStateException("Cannot rename an unregistered user");
+        }
+        this.checkNameAvailable(user.getUUID(), newUsername);
 
-        this.usersByName.remove(user.getName());
-        this.usersByName.put(newUsername, user);
+        this.usersByName.remove(user.getName().toLowerCase(Locale.ROOT), user);
+        this.usersByName.put(newUsername.toLowerCase(Locale.ROOT), user);
 
         user.setName(newUsername);
+        user.markChanged();
+    }
+
+    private void checkNameAvailable(UUID uuid, String name) {
+        User existing = this.usersByName.get(name.toLowerCase(Locale.ROOT));
+        if (existing != null && !existing.getUUID().equals(uuid)) {
+            throw new IllegalStateException("Username '" + name + "' is already assigned to UUID "
+                    + existing.getUUID() + "; refusing UUID " + uuid);
+        }
     }
 
     /**

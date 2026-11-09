@@ -327,6 +327,16 @@ public class FunnyGuilds extends JavaPlugin {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
         }
+        catch (IllegalStateException ex) {
+            if (ex.getCause() != null) {
+                logger.error("Could not load data", ex);
+                this.shutdown("Critical error has been encountered!");
+            }
+            else {
+                this.shutdown(ex.getMessage());
+            }
+            return;
+        }
         catch (Exception ex) {
             logger.error("Could not load data from database", ex);
             this.shutdown("Critical error has been encountered!");

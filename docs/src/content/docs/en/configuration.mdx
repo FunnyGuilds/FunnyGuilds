@@ -9,6 +9,28 @@ along with their possible values and examples — for what a specific option
 does, see the feature page it belongs to (e.g. [Guilds](/en/guilds/) or
 [Territories & protection](/en/territories/)).
 
+## Player identity protection
+
+On startup, FunnyGuilds checks usernames and UUIDs in YAML files or SQL before
+loading players and guilds. One username, including case variants such as
+`Steve` and `steve`, cannot belong to two different UUIDs. A conflict aborts
+FunnyGuilds startup; the Minecraft server keeps running. The plugin does not
+automatically merge or delete conflicting accounts or save partially loaded
+data. Missing usernames, invalid UUIDs and unreadable user files also stop
+loading with a separate error message.
+
+While the plugin is running, it rejects a login if the username already belongs
+to another UUID. A player can change their username while keeping the same UUID
+if the new name is available. Customize the rejection message with
+`loginUuidConflict` in `plugins/FunnyGuilds/lang/<language>.yml`.
+The default value is:
+
+```yaml
+loginUuidConflict: '&cTwoj nick jest przypisany do innego UUID. Skontaktuj sie z administratorem serwera.'
+```
+
+For safe recovery instructions, see the [FAQ](/en/faq/#username-and-uuid-conflicts).
+
 ## Regex
 
 A type used to validate strings — names, tags, etc.

@@ -9,6 +9,28 @@ z możliwymi wartościami i przykładami. Opis konkretnej opcji znajduje się na
 stronie funkcji, której dotyczy (np. [Gildie](/guilds/) czy
 [Tereny i ochrona](/territories/)).
 
+## Ochrona tożsamości graczy
+
+Przy uruchamianiu FunnyGuilds sprawdza nicki i UUID użytkowników w plikach YAML
+lub bazie SQL, zanim wczyta graczy i gildie. Ten sam nick (także przy różnej
+wielkości liter, np. `Steve` i `steve`) nie może należeć do dwóch różnych UUID.
+Konflikt przerywa uruchamianie FunnyGuilds; sam serwer pozostaje uruchomiony.
+Plugin nie scala ani nie usuwa automatycznie konfliktowych kont i nie zapisuje
+częściowo wczytanych danych. Brak nicku, niepoprawny UUID lub nieczytelny plik
+użytkownika również zatrzymują ładowanie z osobnym komunikatem błędu.
+
+Podczas działania plugin odmawia logowania graczowi, którego nick jest już
+przypisany do innego UUID. Zmiana nicku przy zachowaniu tego samego UUID jest
+dozwolona, jeśli nowy nick jest wolny. Treść odmowy można zmienić kluczem
+`loginUuidConflict` w pliku językowym `plugins/FunnyGuilds/lang/<język>.yml`.
+Domyślna wartość:
+
+```yaml
+loginUuidConflict: '&cTwoj nick jest przypisany do innego UUID. Skontaktuj sie z administratorem serwera.'
+```
+
+Sposób bezpiecznego rozstrzygnięcia konfliktu opisuje [FAQ](/faq/#konflikt-nicku-i-uuid).
+
 ## Regex
 
 Typ używany do walidacji Stringów — nazw, tagów itd.

@@ -5,6 +5,35 @@ description: Najczęściej zadawane pytania dotyczące pluginu FunnyGuilds.
 
 Lista najczęściej zadawanych pytań dotyczących pluginu FunnyGuilds.
 
+## Konflikt nicku i UUID
+
+Raport `CRITICAL USER IDENTITY CONFLICT` oznacza, że w danych są dwa różne UUID
+dla tego samego nicku. Wielkość liter nie ma znaczenia. Konsola pokazuje oba UUID
+i źródła rekordów (ścieżki plików lub tabelę SQL). FunnyGuilds zatrzymuje start
+na pierwszym konflikcie, przed wczytaniem użytkowników i gildii oraz uruchomieniem
+automatycznego zapisu. Dane kont nie są automatycznie kasowane ani scalane.
+
+1. Zatrzymaj serwer i wykonaj kopię danych FunnyGuilds, w tym bazy SQL, jeśli jej używasz.
+2. Sprawdź ustawienia uwierzytelniania oraz przekazywania UUID przez Velocity/Bungee.
+   Backend za proxy może poprawnie używać `online-mode=false`; nie zmieniaj tego
+   ustawienia bez sprawdzenia całej konfiguracji sieci.
+3. Ustal, do których kont należą UUID z raportu. Przyczyną może być zmiana
+   uwierzytelniania, import danych albo przejęcie wolnego nicku przez inne konto.
+4. Rozstrzygnij konflikt ręcznie, uwzględniając dane graczy oraz powiązania gildii,
+   i uruchom serwer ponownie. Nie usuwaj wszystkich danych użytkowników.
+
+Jeśli konflikt powstanie podczas logowania, odrzucony zostanie tylko ten gracz.
+Komunikat dla niego konfiguruje się przez `loginUuidConflict`
+w [pliku językowym](/configuration/#ochrona-tożsamości-graczy).
+Nowy właściciel dawnego nicku może wymagać ręcznego rozstrzygnięcia, dopóki stare
+konto jest zapisane pod tym nickiem. Zwykła zmiana nicku tego samego UUID na wolny
+nick działa nadal.
+
+Osobne błędy `Invalid or missing UUID`, `Missing or blank username`,
+`Could not read user file` oraz `Multiple usernames for UUID` dotyczą odpowiednio
+niepoprawnego UUID, brakującego nicku, nieczytelnego pliku i różnych zapisanych
+nicków dla jednego UUID. Również wymagają sprawdzenia danych przed ponownym startem.
+
 ## Mgła przy wchodzeniu na teren gildii/opuszczaniu terenu gildii
 
 W pliku `config.yml` zmień

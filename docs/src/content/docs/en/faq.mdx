@@ -5,6 +5,35 @@ description: Frequently asked questions about the FunnyGuilds plugin.
 
 A list of the most frequently asked questions about the FunnyGuilds plugin.
 
+## Username and UUID conflicts
+
+`CRITICAL USER IDENTITY CONFLICT` means the stored data contains two different
+UUIDs for one username. Comparison is case insensitive. The console lists both
+UUIDs and their sources (file paths or the SQL table). FunnyGuilds aborts on the
+first conflict, before loading users and guilds or starting automatic saves.
+Account records are not automatically deleted or merged.
+
+1. Stop the server and back up FunnyGuilds data, including the SQL database if used.
+2. Check authentication and UUID forwarding settings in Velocity/Bungee.
+   A proxy backend can legitimately use `online-mode=false`; check the whole
+   network configuration before changing that setting.
+3. Identify the accounts belonging to the reported UUIDs. Possible causes include
+   authentication changes, imported data and another account reusing a username.
+4. Resolve the conflict manually, accounting for player data and guild references,
+   then restart the server. Do not delete all user data.
+
+If a conflict occurs during login, only that player is rejected. Customize their
+message with `loginUuidConflict` in the
+[language file](/en/configuration/#player-identity-protection).
+A new owner of an old username may need manual resolution while the previous
+account is still stored under that name. Normal username changes for the same
+UUID to an available name continue to work.
+
+Separate errors `Invalid or missing UUID`, `Missing or blank username`,
+`Could not read user file` and `Multiple usernames for UUID` indicate an invalid
+UUID, missing username, unreadable file or different stored usernames for one
+UUID, respectively. These also require checking the data before restarting.
+
 ## Fog when entering or leaving a guild's territory
 
 In `config.yml`, change

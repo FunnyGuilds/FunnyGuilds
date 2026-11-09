@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import javax.sql.rowset.CachedRowSet;
+import javax.sql.rowset.RowSetProvider;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -17,6 +19,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
+import net.dzikoysk.funnyguilds.data.util.UserIdentityValidator;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -114,7 +117,19 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadUsers() {
-        SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(result -> {
+        // Validate and deserialize the same snapshot, without the best-effort query/serializer catch blocks.
+        try (Connection connection = this.plugin.getDatabase()
+                .orThrow(() -> new IllegalStateException("Database is not initialized")).getConnection();
+                CachedRowSet result = RowSetProvider.newFactory().createCachedRowSet()) {
+            SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(connection, result::populate);
+
+            UserIdentityValidator validator = new UserIdentityValidator();
+            while (result.next()) {
+                String uuid = result.getString("uuid");
+                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]");
+            }
+
+            result.beforeFirst();
             while (result.next()) {
                 String userName = result.getString("name");
 
@@ -125,7 +140,10 @@ public class SQLDataModel implements DataModel {
 
                 DatabaseUserSerializer.deserialize(result);
             }
-        });
+        }
+        catch (SQLException exception) {
+            throw new IllegalStateException("Could not read user identities from " + this.usersTable.getName(), exception);
+        }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
     }

@@ -73,6 +73,14 @@ public class SQLNamedStatement {
         this.executeQuery(consumer, false);
     }
 
+    /** Strict read for startup validation: failures must reach the caller. The caller owns the connection. */
+    public void executeQuery(Connection connection, ThrowingConsumer<ResultSet, SQLException> consumer) throws SQLException {
+        try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql));
+                ResultSet resultSet = statement.executeQuery()) {
+            consumer.accept(resultSet);
+        }
+    }
+
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer, boolean ignoreFails) {
         Option<Database> database = FunnyGuilds.getInstance().getDatabase();
         if (database.isEmpty()) {
