@@ -1,6 +1,9 @@
 package net.dzikoysk.funnyguilds.data.database
 
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.FunnyGuilds
+import net.dzikoysk.funnyguilds.TestLogger
+import net.dzikoysk.funnyguilds.data.DataModelLoader
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer
 import org.junit.jupiter.api.Test
@@ -26,6 +29,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class SQLUserIdentityTest : FunnyGuildsSpec() {
 
@@ -38,9 +42,12 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
 
         // Schema migration has separate integration tests; here exercise the startup read path.
         mockStatic(SQLDataModel::class.java).use {
-            val error = assertFailsWith<IllegalStateException> { model.load() }
-            for (detail in listOf(first, second, config.mysql.usersTableName, "STARTUP ABORTED")) {
-                assertContains(error.message!!, detail)
+            val result = DataModelLoader(FunnyGuilds.getPluginLogger()).load { model }
+            assertTrue(result.isErr())
+            assertContains(result.getError(), "User data validation failed")
+            val message = (FunnyGuilds.getPluginLogger() as TestLogger).errors.single()
+            for (detail in listOf(first, second, config.mysql.usersTableName, "UUID conflict")) {
+                assertContains(message, detail)
             }
         }
 

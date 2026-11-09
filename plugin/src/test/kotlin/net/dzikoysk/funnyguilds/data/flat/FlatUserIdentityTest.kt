@@ -1,6 +1,9 @@
 package net.dzikoysk.funnyguilds.data.flat
 
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.FunnyGuilds
+import net.dzikoysk.funnyguilds.TestLogger
+import net.dzikoysk.funnyguilds.data.DataModelLoader
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,6 +22,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import kotlin.test.assertNull
 
 class FlatUserIdentityTest : FunnyGuildsSpec() {
 
@@ -38,10 +42,13 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
         val second = writeUser("users", "another-legacy-filename.yml", "steve")
         val before = snapshot()
 
-        val error = assertFailsWith<IllegalStateException> { FlatDataModel(funnyGuilds).load() }
+        val result = DataModelLoader(FunnyGuilds.getPluginLogger()).load { FlatDataModel(funnyGuilds) }
 
-        assertContains(error.message!!, first.toString())
-        assertContains(error.message!!, second.toString())
+        assertTrue(result.isErr())
+        assertContains(result.getError(), "User data validation failed")
+        val message = (FunnyGuilds.getPluginLogger() as TestLogger).errors.single()
+        assertContains(message, first.toString())
+        assertContains(message, second.toString())
         assertEquals(before, snapshot())
         assertEquals(1, userManager.countUsers())
         assertSame(existing, userManager.findByName("Existing").get())
@@ -87,11 +94,36 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
                 "uuid: ${UUID.randomUUID()}\n")) {
             Files.writeString(file, content)
             val before = snapshot()
+            val logger = FunnyGuilds.getPluginLogger() as TestLogger
+            logger.errors.clear()
             val error = assertFailsWith<IllegalStateException> { FlatDataModel(funnyGuilds).load() }
-            assertContains(error.message!!, file.toString())
+            assertNull(error.cause)
+            assertContains(logger.errors.single(), file.toString())
             assertEquals(before, snapshot())
             assertEquals(0, userManager.countUsers())
         }
+    }
+
+    @Test
+    fun `many unreadable YAML files produce one summary without stacktraces or partial loading`() {
+        val users = Files.createDirectories(folder.resolve("data/users"))
+        repeat(30) {
+            Files.writeString(users.resolve("${UUID.randomUUID()}.yml"), "name: [unclosed")
+        }
+        writeUser("data/users", "${UUID.randomUUID()}.yml", "ValidPlayer")
+        val before = snapshot()
+
+        val error = assertFailsWith<IllegalStateException> { FlatDataModel(funnyGuilds).load() }
+
+        assertNull(error.cause)
+        val summary = (FunnyGuilds.getPluginLogger() as TestLogger).errors.single()
+        assertContains(summary, "Could not read 30 user file(s)")
+        assertContains(summary, users.toString())
+        assertTrue(!summary.contains('\n'))
+        assertEquals(0, userManager.countUsers())
+        assertEquals(before, snapshot())
+        verify(funnyGuilds, never()).guildManager
+        verify(funnyGuilds, never()).regionManager
     }
 
     private fun prepareProfiles() {

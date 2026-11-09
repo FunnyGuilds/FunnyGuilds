@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.DataModelLoader;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
@@ -323,23 +324,13 @@ public class FunnyGuilds extends JavaPlugin {
             }
         }
 
-        try {
+        Result<DataModel, String> dataLoadResult = new DataModelLoader(logger).load(() -> {
+            // Serializers can access the model through the plugin while it is loading.
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
-            this.dataModel.load();
-        }
-        catch (IllegalStateException ex) {
-            if (ex.getCause() != null) {
-                logger.error("Could not load data", ex);
-                this.shutdown("Critical error has been encountered!");
-            }
-            else {
-                this.shutdown(ex.getMessage());
-            }
-            return;
-        }
-        catch (Exception ex) {
-            logger.error("Could not load data from database", ex);
-            this.shutdown("Critical error has been encountered!");
+            return this.dataModel;
+        });
+        if (dataLoadResult.isErr()) {
+            this.shutdown(dataLoadResult.getError());
             return;
         }
 

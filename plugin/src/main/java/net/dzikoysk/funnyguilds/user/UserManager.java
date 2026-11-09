@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
@@ -21,8 +21,9 @@ import panda.std.stream.PandaStream;
 public class UserManager {
 
     private final PluginConfiguration pluginConfiguration;
-    private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
-    private final Map<String, User> usersByName = new ConcurrentHashMap<>();
+    // Access both indexes under this instance's monitor so collision checks and updates stay atomic.
+    private final Map<UUID, User> usersByUuid = new HashMap<>();
+    private final Map<String, User> usersByName = new HashMap<>();
 
     public UserManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
@@ -155,8 +156,10 @@ public class UserManager {
 
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.
+     * A different user instance with an already registered UUID is rejected.
      *
      * @param user user to add
+     * @throws IllegalStateException if the UUID or username is already assigned to a different user
      */
     public synchronized void addUser(User user) {
         Validate.notNull(user, "user can't be null!");

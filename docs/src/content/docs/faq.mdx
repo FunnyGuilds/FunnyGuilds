@@ -7,7 +7,7 @@ Lista najczęściej zadawanych pytań dotyczących pluginu FunnyGuilds.
 
 ## Konflikt nicku i UUID
 
-Raport `CRITICAL USER IDENTITY CONFLICT` oznacza, że w danych są dwa różne UUID
+Komunikat `UUID conflict for username` oznacza, że w danych są dwa różne UUID
 dla tego samego nicku. Wielkość liter nie ma znaczenia. Konsola pokazuje oba UUID
 i źródła rekordów (ścieżki plików lub tabelę SQL). FunnyGuilds zatrzymuje start
 na pierwszym konflikcie, przed wczytaniem użytkowników i gildii oraz uruchomieniem
@@ -30,9 +30,12 @@ konto jest zapisane pod tym nickiem. Zwykła zmiana nicku tego samego UUID na wo
 nick działa nadal.
 
 Osobne błędy `Invalid or missing UUID`, `Missing or blank username`,
-`Could not read user file` oraz `Multiple usernames for UUID` dotyczą odpowiednio
+`Could not read … user file(s)` oraz `Multiple usernames for UUID` dotyczą odpowiednio
 niepoprawnego UUID, brakującego nicku, nieczytelnego pliku i różnych zapisanych
 nicków dla jednego UUID. Również wymagają sprawdzenia danych przed ponownym startem.
+Nieczytelne pliki YAML są zliczane w jednym podsumowaniu dla katalogu, ze ścieżką
+pierwszego pliku wymagającego sprawdzenia. Te błędy i konflikty tożsamości są
+logowane bez stacktrace'ów; plugin przerywa start, aby nie zapisać niepełnych danych.
 
 ## Mgła przy wchodzeniu na teren gildii/opuszczaniu terenu gildii
 

@@ -126,7 +126,10 @@ public class SQLDataModel implements DataModel {
             UserIdentityValidator validator = new UserIdentityValidator();
             while (result.next()) {
                 String uuid = result.getString("uuid");
-                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]");
+                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]")
+                        .onError(FunnyGuilds.getPluginLogger()::error)
+                        .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                                + "Back up data and check authentication/proxy settings before resolving it manually."));
             }
 
             result.beforeFirst();
@@ -140,8 +143,7 @@ public class SQLDataModel implements DataModel {
 
                 DatabaseUserSerializer.deserialize(result);
             }
-        }
-        catch (SQLException exception) {
+        } catch (SQLException exception) {
             throw new IllegalStateException("Could not read user identities from " + this.usersTable.getName(), exception);
         }
 

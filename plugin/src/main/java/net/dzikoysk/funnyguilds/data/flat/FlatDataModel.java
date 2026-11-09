@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -112,8 +113,14 @@ public class FlatDataModel implements DataModel {
 
         // Validate before either folder or filename migration can move files or hide duplicates.
         UserIdentityValidator validator = new UserIdentityValidator();
-        Map<File, YamlConfiguration> users = readUserFiles(this.usersFolderFile, validator);
-        Map<File, YamlConfiguration> legacyUsers = readUserFiles(new File(this.plugin.getDataFolder(), "users"), validator);
+        Map<File, YamlConfiguration> users = readUserFiles(this.usersFolderFile, validator)
+                .onError(FunnyGuilds.getPluginLogger()::error)
+                .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                        + "Back up data and check authentication/proxy settings before resolving it manually."));
+        Map<File, YamlConfiguration> legacyUsers = readUserFiles(new File(this.plugin.getDataFolder(), "users"), validator)
+                .onError(FunnyGuilds.getPluginLogger()::error)
+                .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                        + "Back up data and check authentication/proxy settings before resolving it manually."));
         FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
         legacyUsers.forEach((file, yaml) -> {
             if (file.exists()) {
@@ -139,17 +146,19 @@ public class FlatDataModel implements DataModel {
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
     }
 
-    private static Map<File, YamlConfiguration> readUserFiles(File folder, UserIdentityValidator validator) {
+    private static Result<Map<File, YamlConfiguration>, String> readUserFiles(File folder, UserIdentityValidator validator) {
         Map<File, YamlConfiguration> users = new LinkedHashMap<>();
         if (!folder.exists()) {
-            return users;
+            return Result.ok(users);
         }
 
         File[] userFiles = folder.listFiles();
         if (userFiles == null) {
-            throw new IllegalStateException("Could not list user files in " + folder);
+            return Result.error("Could not list user files in " + folder);
         }
 
+        int readErrors = 0;
+        File firstUnreadableFile = null;
         for (File file : userFiles) {
             if (!file.isFile() || file.length() == 0) {
                 continue;
@@ -158,16 +167,26 @@ public class FlatDataModel implements DataModel {
             YamlConfiguration yaml = new YamlConfiguration();
             try {
                 yaml.load(file);
-            }
-            catch (IOException | InvalidConfigurationException exception) {
-                throw new IllegalStateException("Could not read user file " + file, exception);
+            } catch (IOException | InvalidConfigurationException exception) {
+                readErrors++;
+                if (firstUnreadableFile == null) {
+                    firstUnreadableFile = file;
+                }
+                continue;
             }
 
-            validator.accept(yaml.getString("uuid"), yaml.getString("name"), file.getAbsolutePath());
+            Result<UUID, String> identity = validator.accept(yaml.getString("uuid"), yaml.getString("name"), file.getAbsolutePath());
+            if (identity.isErr()) {
+                return Result.error(identity.getError());
+            }
             users.put(file, yaml);
         }
 
-        return users;
+        if (readErrors > 0) {
+            return Result.error("Could not read " + readErrors + " user file(s) in " + folder
+                    + "; first unreadable file: " + firstUnreadableFile);
+        }
+        return Result.ok(users);
     }
 
     private void saveUsers(boolean ignoreNotChanged) {

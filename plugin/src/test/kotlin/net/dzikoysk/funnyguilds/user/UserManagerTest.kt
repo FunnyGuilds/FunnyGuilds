@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.user
 
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.guild.Guild
 import org.bukkit.entity.Player
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -9,6 +10,7 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -80,10 +82,20 @@ class UserManagerTest : FunnyGuildsSpec() {
     fun `duplicate UUID cannot replace a referenced user and stale remove cannot delete the replacement`() {
         val user = userManager.createFake(UUID.randomUUID(), "Steve")
         val duplicate = User(user.uuid, "Alex", FakeUserProfile.offline())
+        val guild = guildManager.addGuild(Guild("Test", "TST"))
+        guild.setOwner(user)
 
         assertSame(user, userManager.createFake(user.uuid, "Steve"))
+        userManager.addUser(user)
         assertFailsWith<IllegalStateException> { userManager.createFake(user.uuid, "Alex") }
-        assertFailsWith<IllegalStateException> { userManager.addUser(duplicate) }
+        val failure = assertFailsWith<IllegalStateException> {
+            userManager.addUser(duplicate)
+            guild.setOwner(duplicate)
+        }
+        assertContains(failure.message!!, user.uuid.toString())
+        assertSame(user, guild.owner)
+        assertEquals(1, userManager.countUsers())
+        assertSame(user, userManager.findByUuid(user.uuid).get())
         assertSame(user, userManager.findByName("Steve").get())
         assertTrue(userManager.findByName("Alex").isEmpty)
 

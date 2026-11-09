@@ -4,8 +4,8 @@ import org.junit.jupiter.api.Test
 import java.util.Locale
 import java.util.UUID
 import kotlin.test.assertContains
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class UserIdentityValidatorTest {
 
@@ -17,10 +17,12 @@ class UserIdentityValidatorTest {
             val second = UUID.randomUUID().toString()
             validator.accept(first, "Steve", "first.yml")
 
-            val error = assertFailsWith<IllegalStateException> { validator.accept(second, name, "second.yml") }
-            for (detail in listOf(first, second, "first.yml", "second.yml", "STARTUP ABORTED", "back up")) {
-                assertContains(error.message!!, detail)
+            val result = validator.accept(second, name, "second.yml")
+            assertTrue(result.isErr())
+            for (detail in listOf(first, second, "first.yml", "second.yml", "UUID conflict")) {
+                assertContains(result.getError(), detail)
             }
+            assertFalse(result.getError().contains('\n'))
         }
     }
 
@@ -28,9 +30,9 @@ class UserIdentityValidatorTest {
     fun `accepts identical records and unrelated identities`() {
         val validator = UserIdentityValidator()
         val uuid = UUID.randomUUID().toString()
-        validator.accept(uuid, "Steve", "first")
-        validator.accept(uuid, "Steve", "duplicate")
-        validator.accept(UUID.randomUUID().toString(), "Alex", "other")
+        assertTrue(validator.accept(uuid, "Steve", "first").isOk())
+        assertTrue(validator.accept(uuid, "Steve", "duplicate").isOk())
+        assertTrue(validator.accept(UUID.randomUUID().toString(), "Alex", "other").isOk())
     }
 
     @Test
@@ -40,9 +42,7 @@ class UserIdentityValidatorTest {
             Locale.setDefault(Locale.forLanguageTag("tr"))
             val validator = UserIdentityValidator()
             validator.accept(UUID.randomUUID().toString(), "IPlayer", "first")
-            assertFailsWith<IllegalStateException> {
-                validator.accept(UUID.randomUUID().toString(), "iplayer", "second")
-            }
+            assertTrue(validator.accept(UUID.randomUUID().toString(), "iplayer", "second").isErr())
         } finally {
             Locale.setDefault(original)
         }
@@ -52,9 +52,10 @@ class UserIdentityValidatorTest {
     fun `invalid UUID and missing names are data errors rather than UUID conflicts`() {
         for ((uuid, name) in listOf(null to "Steve", "not-a-uuid" to "Steve", "1-1-1-1-1" to "Steve",
                 UUID.randomUUID().toString() to null, UUID.randomUUID().toString() to " ")) {
-            val error = assertFailsWith<IllegalStateException> { UserIdentityValidator().accept(uuid, name, "source.yml") }
-            assertContains(error.message!!, "source.yml")
-            assertFalse(error.message!!.contains("IDENTITY CONFLICT"))
+            val result = UserIdentityValidator().accept(uuid, name, "source.yml")
+            assertTrue(result.isErr())
+            assertContains(result.getError(), "source.yml")
+            assertFalse(result.getError().contains("UUID conflict"))
         }
     }
 
@@ -63,7 +64,10 @@ class UserIdentityValidatorTest {
         val validator = UserIdentityValidator()
         val uuid = UUID.randomUUID().toString()
         validator.accept(uuid, "Steve", "first")
-        val error = assertFailsWith<IllegalStateException> { validator.accept(uuid, "Alex", "second") }
-        assertContains(error.message!!, "Multiple usernames for UUID")
+        val result = validator.accept(uuid, "Alex", "second")
+        assertTrue(result.isErr())
+        assertContains(result.getError(), "Multiple usernames for UUID")
+        // A failed validation must not reserve the rejected name in the validator.
+        assertTrue(validator.accept(UUID.randomUUID().toString(), "Alex", "third").isOk())
     }
 }
