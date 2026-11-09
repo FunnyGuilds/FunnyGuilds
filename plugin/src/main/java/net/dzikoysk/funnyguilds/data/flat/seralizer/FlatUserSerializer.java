@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.configuration.ConfigurationSection;
 import panda.std.Option;
 
 public final class FlatUserSerializer {
@@ -20,8 +21,10 @@ public final class FlatUserSerializer {
             return Option.none();
         }
 
-        YamlWrapper wrapper = new YamlWrapper(file);
+        return deserialize(new YamlWrapper(file));
+    }
 
+    public static Option<User> deserialize(ConfigurationSection wrapper) {
         String id = wrapper.getString("uuid");
         String name = wrapper.getString("name");
         int points = wrapper.getInt("points");

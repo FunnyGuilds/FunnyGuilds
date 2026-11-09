@@ -43,7 +43,7 @@ public class UserManager {
     /**
      * Deletes all loaded users data
      */
-    public void clearUsers() {
+    public synchronized void clearUsers() {
         this.usersByUuid.clear();
         this.usersByName.clear();
     }
@@ -89,14 +89,12 @@ public class UserManager {
      */
     public Option<User> findByName(String nickname, boolean ignoreCase) {
         User foundUser = this.usersByName.get(nickname);
-
         if (foundUser == null && ignoreCase) {
             foundUser = PandaStream.of(this.usersByName.entrySet())
                     .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
                     .map(Map.Entry::getValue)
                     .orNull();
         }
-
         return Option.of(foundUser);
     }
 
@@ -138,12 +136,21 @@ public class UserManager {
      * @param userProfile the user profile which will be assigned to User
      * @return the user
      */
-    public User create(UUID uuid, String name, UserProfile userProfile) {
+    public synchronized User create(UUID uuid, String name, UserProfile userProfile) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
         Validate.notNull(userProfile, "userProfile can't be null!");
         Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, name) == NameResult.VALID, "name is not valid!");
+
+        User existing = this.usersByUuid.get(uuid);
+        if (existing != null) {
+            if (!existing.getName().equals(name)) {
+                throw new IllegalStateException("UUID " + uuid + " is already registered as '" + existing.getName()
+                        + "'; use updateUsername to change its name");
+            }
+            return existing;
+        }
 
         User user = new User(uuid, name, userProfile);
         this.addUser(user);
@@ -153,12 +160,18 @@ public class UserManager {
 
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.
+     * A different user instance with an already registered UUID is rejected.
      *
      * @param user user to add
+     * @throws IllegalStateException if the UUID is already assigned to a different user instance
      */
-    public void addUser(User user) {
+    public synchronized void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
+        User existing = this.usersByUuid.get(user.getUUID());
+        if (existing != null && existing != user) {
+            throw new IllegalStateException("UUID " + user.getUUID() + " is already registered");
+        }
         this.usersByUuid.put(user.getUUID(), user);
         this.usersByName.put(user.getName(), user);
     }
@@ -168,11 +181,15 @@ public class UserManager {
      *
      * @param user user to remove
      */
-    public void removeUser(User user) {
+    public synchronized void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
+        if (this.usersByUuid.get(user.getUUID()) != user) {
+            return;
+        }
+
         this.usersByUuid.remove(user.getUUID());
-        this.usersByName.remove(user.getName());
+        this.usersByName.remove(user.getName(), user);
     }
 
     /**
@@ -181,13 +198,17 @@ public class UserManager {
      * @param user        the user for which the nickname will be changed
      * @param newUsername the new nickname for user
      */
-    public void updateUsername(User user, String newUsername) {
+    public synchronized void updateUsername(User user, String newUsername) {
         Validate.notNull(user, "user can't be null!");
-
-        this.usersByName.remove(user.getName());
-        this.usersByName.put(newUsername, user);
-
+        Validate.notBlank(newUsername, "name can't be blank!");
+        Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, newUsername) == NameResult.VALID, "name is not valid!");
+        if (this.usersByUuid.get(user.getUUID()) != user) {
+            throw new IllegalStateException("Cannot rename an unregistered user");
+        }
+        this.usersByName.remove(user.getName(), user);
         user.setName(newUsername);
+        this.usersByName.put(newUsername, user);
+        user.markChanged();
     }
 
     /**

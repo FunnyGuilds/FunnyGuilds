@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
+import net.dzikoysk.funnyguilds.data.util.UserIdentityValidator;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -114,20 +115,45 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadUsers() {
-        SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(result -> {
-            while (result.next()) {
-                String userName = result.getString("name");
-
-                if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
-                    continue;
-                }
-
-                DatabaseUserSerializer.deserialize(result);
+        try (Connection connection = this.plugin.getDatabase()
+                .orThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                this.validateUserIdentities(connection);
             }
-        });
+
+            SQLBasicUtils.getSelectAll(this.usersTable).executeQueryOrThrow(connection, result -> {
+                while (result.next()) {
+                    String userName = result.getString("name");
+
+                    if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
+                        FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
+                        continue;
+                    }
+
+                    DatabaseUserSerializer.deserialize(result);
+                }
+            });
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Could not read user identities from " + this.usersTable.getName(), exception);
+        }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
+    }
+
+    private void validateUserIdentities(Connection connection) throws SQLException {
+        SQLBasicUtils.getSelectUuidConflict(this.usersTable).executeQueryOrThrow(connection, result -> {
+            if (!result.next()) {
+                return;
+            }
+            UserIdentityValidator validator = new UserIdentityValidator();
+            for (String column : new String[] { "first_uuid", "second_uuid" }) {
+                String uuid = result.getString(column);
+                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]")
+                        .onError(FunnyGuilds.getPluginLogger()::error)
+                        .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                                + "Back up data and check authentication/proxy settings before resolving it manually."));
+            }
+        });
     }
 
     public void loadGuilds() {

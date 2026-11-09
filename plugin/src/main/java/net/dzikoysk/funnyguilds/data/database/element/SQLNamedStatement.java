@@ -73,6 +73,13 @@ public class SQLNamedStatement {
         this.executeQuery(consumer, false);
     }
 
+    public void executeQueryOrThrow(Connection connection, ThrowingConsumer<ResultSet, SQLException> consumer) throws SQLException {
+        try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql));
+                ResultSet resultSet = statement.executeQuery()) {
+            consumer.accept(resultSet);
+        }
+    }
+
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer, boolean ignoreFails) {
         Option<Database> database = FunnyGuilds.getInstance().getDatabase();
         if (database.isEmpty()) {

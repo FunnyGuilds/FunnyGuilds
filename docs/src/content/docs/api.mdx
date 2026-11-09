@@ -99,6 +99,11 @@ if (userOption.isPresent()) {
 }
 ```
 
+`UserManager#addUser(User)` odrzuca inny obiekt z już zarejestrowanym UUID,
+rzucając `IllegalStateException`. Istniejący obiekt użytkownika oraz oba indeksy
+pozostają bez zmian. Po odrzuceniu nie używaj przekazanego obiektu jako
+zarejestrowanego użytkownika; istniejące konto pobierz przez `findByUuid(UUID)`.
+
 ### Guild
 
 Dostępne metody pobierania gildii:
