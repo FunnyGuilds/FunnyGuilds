@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
@@ -21,15 +20,14 @@ import panda.std.stream.PandaStream;
 public class UserManager {
 
     private final PluginConfiguration pluginConfiguration;
-    // Access both indexes under this instance's monitor so collision checks and updates stay atomic.
-    private final Map<UUID, User> usersByUuid = new HashMap<>();
-    private final Map<String, User> usersByName = new HashMap<>();
+    private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
+    private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     public UserManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
     }
 
-    public synchronized int countUsers() {
+    public int countUsers() {
         return this.usersByUuid.size();
     }
 
@@ -38,7 +36,7 @@ public class UserManager {
      *
      * @return set of users
      */
-    public synchronized Set<User> getUsers() {
+    public Set<User> getUsers() {
         return new HashSet<>(this.usersByUuid.values());
     }
 
@@ -56,7 +54,7 @@ public class UserManager {
      * @param names collection of names
      * @return set of users
      */
-    public synchronized Set<User> findByNames(Collection<String> names) {
+    public Set<User> findByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::findByName)
                 .collect(Collectors.toSet());
@@ -68,7 +66,7 @@ public class UserManager {
      * @param uuid the universally unique identifier of user
      * @return the user
      */
-    public synchronized Option<User> findByUuid(UUID uuid) {
+    public Option<User> findByUuid(UUID uuid) {
         return Option.of(this.usersByUuid.get(uuid));
     }
 
@@ -89,9 +87,15 @@ public class UserManager {
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
-    public synchronized Option<User> findByName(String nickname, boolean ignoreCase) {
-        return Option.of(this.usersByName.get(nickname.toLowerCase(Locale.ROOT)))
-                .filter(user -> ignoreCase || user.getName().equals(nickname));
+    public Option<User> findByName(String nickname, boolean ignoreCase) {
+        User foundUser = this.usersByName.get(nickname);
+        if (foundUser == null && ignoreCase) {
+            foundUser = PandaStream.of(this.usersByName.entrySet())
+                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
+                    .map(Map.Entry::getValue)
+                    .orNull();
+        }
+        return Option.of(foundUser);
     }
 
     /**
@@ -159,7 +163,7 @@ public class UserManager {
      * A different user instance with an already registered UUID is rejected.
      *
      * @param user user to add
-     * @throws IllegalStateException if the UUID or username is already assigned to a different user
+     * @throws IllegalStateException if the UUID is already assigned to a different user instance
      */
     public synchronized void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
@@ -168,10 +172,8 @@ public class UserManager {
         if (existing != null && existing != user) {
             throw new IllegalStateException("UUID " + user.getUUID() + " is already registered");
         }
-        this.checkNameAvailable(user.getUUID(), user.getName());
-
         this.usersByUuid.put(user.getUUID(), user);
-        this.usersByName.put(user.getName().toLowerCase(Locale.ROOT), user);
+        this.usersByName.put(user.getName(), user);
     }
 
     /**
@@ -187,7 +189,7 @@ public class UserManager {
         }
 
         this.usersByUuid.remove(user.getUUID());
-        this.usersByName.remove(user.getName().toLowerCase(Locale.ROOT), user);
+        this.usersByName.remove(user.getName(), user);
     }
 
     /**
@@ -203,21 +205,10 @@ public class UserManager {
         if (this.usersByUuid.get(user.getUUID()) != user) {
             throw new IllegalStateException("Cannot rename an unregistered user");
         }
-        this.checkNameAvailable(user.getUUID(), newUsername);
-
-        this.usersByName.remove(user.getName().toLowerCase(Locale.ROOT), user);
-        this.usersByName.put(newUsername.toLowerCase(Locale.ROOT), user);
-
+        this.usersByName.remove(user.getName(), user);
         user.setName(newUsername);
+        this.usersByName.put(newUsername, user);
         user.markChanged();
-    }
-
-    private void checkNameAvailable(UUID uuid, String name) {
-        User existing = this.usersByName.get(name.toLowerCase(Locale.ROOT));
-        if (existing != null && !existing.getUUID().equals(uuid)) {
-            throw new IllegalStateException("Username '" + name + "' is already assigned to UUID "
-                    + existing.getUUID() + "; refusing UUID " + uuid);
-        }
     }
 
     /**

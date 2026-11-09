@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database
 
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable
 import net.dzikoysk.funnyguilds.data.database.element.SQLType
+import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -96,6 +97,35 @@ internal abstract class SQLDataModelMigrationTest {
         add("name", SQLType.TEXT, true)
         add("points", SQLType.INT, true)
         setPrimaryKey("uuid")
+    }
+
+    @Test
+    fun `UUID preflight distinguishes case variants and detects an exact duplicate username`() {
+        val table = usersTable(uniqueTableName())
+        SQLDataModel.migrateSchema(connection, table)
+        val first = UUID.randomUUID().toString()
+        val second = UUID.randomUUID().toString()
+        val third = UUID.randomUUID().toString()
+        connection.prepareStatement("INSERT INTO ${table.nameGraveAccent} (`uuid`, `name`, `points`) VALUES (?, ?, 0)").use { insert ->
+            for ((uuid, name) in listOf(first to "Steve", second to "steve")) {
+                insert.setString(1, uuid)
+                insert.setString(2, name)
+                insert.executeUpdate()
+            }
+        }
+        SQLBasicUtils.getSelectUuidConflict(table).executeQueryOrThrow(connection) {
+            assertTrue(!it.next(), "Case variants must be accepted even with a case-insensitive database collation")
+        }
+        connection.prepareStatement("INSERT INTO ${table.nameGraveAccent} (`uuid`, `name`, `points`) VALUES (?, 'Steve', 0)").use {
+            it.setString(1, third)
+            it.executeUpdate()
+        }
+        SQLBasicUtils.getSelectUuidConflict(table).executeQueryOrThrow(connection) {
+            assertTrue(it.next())
+            assertEquals("Steve", it.getString("name"))
+            assertEquals(setOf(first, third), setOf(it.getString("first_uuid"), it.getString("second_uuid")))
+            assertTrue(!it.next())
+        }
     }
 
     private fun readColumns(tableName: String): Set<String> =

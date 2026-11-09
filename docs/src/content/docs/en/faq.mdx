@@ -7,8 +7,9 @@ A list of the most frequently asked questions about the FunnyGuilds plugin.
 
 ## Username and UUID conflicts
 
-`UUID conflict for username` means the stored data contains two different
-UUIDs for one username. Comparison is case insensitive. The console lists both
+With `prevent-uuid-conflicts` enabled, `UUID conflict for username` means the
+stored data contains two different UUIDs for an identical username. Comparison
+is case sensitive: `Steve` and `steve` are distinct names. The console lists both
 UUIDs and their sources (file paths or the SQL table). FunnyGuilds aborts on the
 first conflict, before loading users and guilds or starting automatic saves.
 Account records are not automatically deleted or merged.
@@ -22,20 +23,19 @@ Account records are not automatically deleted or merged.
 4. Resolve the conflict manually, accounting for player data and guild references,
    then restart the server. Do not delete all user data.
 
-If a conflict occurs during login, only that player is rejected. Customize their
-message with `loginUuidConflict` in the
-[language file](/en/configuration/#player-identity-protection).
-A new owner of an old username may need manual resolution while the previous
-account is still stored under that name. Normal username changes for the same
-UUID to an available name continue to work.
+The check is disabled by default and runs only at startup. It does not reject
+logins by a new owner of an old username or restrict username changes.
+If username reuse is valid on your server, leave `prevent-uuid-conflicts: false`:
+enabling it can stop the next startup while two accounts remain stored under
+the same name. See the [configuration](/en/configuration/#player-identity-protection).
 
 Separate errors `Invalid or missing UUID`, `Missing or blank username`,
-`Could not read … user file(s)` and `Multiple usernames for UUID` indicate an invalid
-UUID, missing username, unreadable file or different stored usernames for one
-UUID, respectively. These also require checking the data before restarting.
+`Could not read … user file(s)` indicate an invalid UUID, missing username or
+unreadable YAML file, respectively.
 Unreadable YAML files are counted in one summary per directory, including the
 first affected file's path. These errors and identity conflicts are logged
-without stack traces; the plugin aborts startup to avoid saving incomplete data.
+without stack traces. With checking enabled, the plugin aborts startup to avoid
+saving incomplete data; with checking disabled, it skips unreadable YAML files.
 
 ## Fog when entering or leaving a guild's territory
 

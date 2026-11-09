@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.api.io.CleanupMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
@@ -26,7 +27,7 @@ import kotlin.test.assertNull
 
 class FlatUserIdentityTest : FunnyGuildsSpec() {
 
-    @TempDir
+    @TempDir(cleanup = CleanupMode.ALWAYS)
     lateinit var folder: Path
 
     @BeforeEach
@@ -37,9 +38,10 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
 
     @Test
     fun `conflict aborts before clearing users loading guilds or moving legacy files`() {
+        config.preventUuidConflicts = true
         val existing = userManager.createFake(UUID.randomUUID(), "Existing")
         val first = writeUser("data/users", "odd-legacy-filename.yml", "Steve")
-        val second = writeUser("users", "another-legacy-filename.yml", "steve")
+        val second = writeUser("users", "another-legacy-filename.yml", "Steve")
         val before = snapshot()
 
         val result = DataModelLoader(FunnyGuilds.getPluginLogger()).load { FlatDataModel(funnyGuilds) }
@@ -58,6 +60,7 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
 
     @Test
     fun `conflicting modern files are detected before any user is created`() {
+        config.preventUuidConflicts = true
         writeUser("data/users", "${UUID.randomUUID()}.yml", "Steve")
         writeUser("data/users", "${UUID.randomUUID()}.yml", "Steve")
         val before = snapshot()
@@ -88,6 +91,7 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
 
     @Test
     fun `malformed YAML and invalid identities fail without changing files`() {
+        config.preventUuidConflicts = true
         val file = folder.resolve("data/users/${UUID.randomUUID()}.yml")
         Files.createDirectories(file.parent)
         for (content in listOf("name: [unclosed", "uuid: not-a-uuid\nname: Steve\n",
@@ -106,6 +110,7 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
 
     @Test
     fun `many unreadable YAML files produce one summary without stacktraces or partial loading`() {
+        config.preventUuidConflicts = true
         val users = Files.createDirectories(folder.resolve("data/users"))
         repeat(30) {
             Files.writeString(users.resolve("${UUID.randomUUID()}.yml"), "name: [unclosed")
@@ -124,6 +129,45 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
         assertEquals(before, snapshot())
         verify(funnyGuilds, never()).guildManager
         verify(funnyGuilds, never()).regionManager
+    }
+
+    @Test
+    fun `disabled validation permits exact duplicate names without merging UUID accounts`() {
+        assertTrue(!config.preventUuidConflicts)
+        prepareProfiles()
+        val first = UUID.randomUUID()
+        val second = UUID.randomUUID()
+        writeUser("data/users", "$first.yml", "Steve", first)
+        writeUser("data/users", "$second.yml", "Steve", second)
+        val before = snapshot()
+        FlatDataModel(funnyGuilds).load()
+        assertEquals(2, userManager.countUsers())
+        assertTrue(userManager.findByUuid(first).isPresent)
+        assertTrue(userManager.findByUuid(second).isPresent)
+        assertEquals(before, snapshot())
+    }
+
+    @Test
+    fun `enabled validation permits offline mode case variants`() {
+        config.preventUuidConflicts = true
+        prepareProfiles()
+        writeUser("data/users", "${UUID.randomUUID()}.yml", "Steve")
+        writeUser("data/users", "${UUID.randomUUID()}.yml", "steve")
+        FlatDataModel(funnyGuilds).load()
+        assertEquals(2, userManager.countUsers())
+        assertEquals("Steve", userManager.findByName("Steve").get().name)
+        assertEquals("steve", userManager.findByName("steve").get().name)
+    }
+
+    @Test
+    fun `disabled validation skips unreadable YAML with a single summary`() {
+        prepareProfiles()
+        val users = Files.createDirectories(folder.resolve("data/users"))
+        Files.writeString(users.resolve("broken.yml"), "name: [unclosed")
+        writeUser("data/users", "${UUID.randomUUID()}.yml", "Steve")
+        FlatDataModel(funnyGuilds).load()
+        assertEquals(1, userManager.countUsers())
+        assertContains((FunnyGuilds.getPluginLogger() as TestLogger).errors.single(), "Could not read 1 user file(s)")
     }
 
     private fun prepareProfiles() {

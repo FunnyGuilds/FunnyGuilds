@@ -10,20 +10,18 @@ import kotlin.test.assertTrue
 class UserIdentityValidatorTest {
 
     @Test
-    fun `rejects exact and case insensitive collisions with both sources`() {
-        for (name in listOf("Steve", "steve")) {
-            val validator = UserIdentityValidator()
-            val first = UUID.randomUUID().toString()
-            val second = UUID.randomUUID().toString()
-            validator.accept(first, "Steve", "first.yml")
+    fun `rejects exact name collisions with both sources`() {
+        val validator = UserIdentityValidator()
+        val first = UUID.randomUUID().toString()
+        val second = UUID.randomUUID().toString()
+        validator.accept(first, "Steve", "first.yml")
 
-            val result = validator.accept(second, name, "second.yml")
-            assertTrue(result.isErr())
-            for (detail in listOf(first, second, "first.yml", "second.yml", "UUID conflict")) {
-                assertContains(result.getError(), detail)
-            }
-            assertFalse(result.getError().contains('\n'))
+        val result = validator.accept(second, "Steve", "second.yml")
+        assertTrue(result.isErr())
+        for (detail in listOf(first, second, "first.yml", "second.yml", "UUID conflict")) {
+            assertContains(result.getError(), detail)
         }
+        assertFalse(result.getError().contains('\n'))
     }
 
     @Test
@@ -36,13 +34,13 @@ class UserIdentityValidatorTest {
     }
 
     @Test
-    fun `normalization does not depend on server locale`() {
+    fun `case variants remain distinct regardless of server locale`() {
         val original = Locale.getDefault()
         try {
             Locale.setDefault(Locale.forLanguageTag("tr"))
             val validator = UserIdentityValidator()
             validator.accept(UUID.randomUUID().toString(), "IPlayer", "first")
-            assertTrue(validator.accept(UUID.randomUUID().toString(), "iplayer", "second").isErr())
+            assertTrue(validator.accept(UUID.randomUUID().toString(), "iplayer", "second").isOk())
         } finally {
             Locale.setDefault(original)
         }
@@ -60,14 +58,11 @@ class UserIdentityValidatorTest {
     }
 
     @Test
-    fun `rejects conflicting stored names for one UUID separately`() {
+    fun `different stored names for one UUID are not a multiple UUID conflict`() {
         val validator = UserIdentityValidator()
         val uuid = UUID.randomUUID().toString()
         validator.accept(uuid, "Steve", "first")
         val result = validator.accept(uuid, "Alex", "second")
-        assertTrue(result.isErr())
-        assertContains(result.getError(), "Multiple usernames for UUID")
-        // A failed validation must not reserve the rejected name in the validator.
-        assertTrue(validator.accept(UUID.randomUUID().toString(), "Alex", "third").isOk())
+        assertTrue(result.isOk())
     }
 }

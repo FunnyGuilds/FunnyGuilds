@@ -18,29 +18,33 @@ import kotlin.test.assertTrue
 class UserManagerTest : FunnyGuildsSpec() {
 
     @Test
-    fun `creating a user with another UUID and the same name must preserve both indexes`() {
+    fun `case variants with different UUIDs remain distinct even with startup validation enabled`() {
+        config.preventUuidConflicts = true
         val original = userManager.createFake(UUID.randomUUID(), "Steve")
         val otherUuid = UUID.randomUUID()
 
-        assertFailsWith<IllegalStateException> { userManager.createFake(otherUuid, "steve") }
+        val other = userManager.createFake(otherUuid, "steve")
 
-        assertEquals(1, userManager.countUsers())
+        assertEquals(2, userManager.countUsers())
         assertSame(original, userManager.findByName("Steve").get())
-        assertTrue(userManager.findByUuid(otherUuid).isEmpty)
+        assertSame(other, userManager.findByName("steve").get())
+        assertSame(other, userManager.findByName("steve", true).get())
+        assertSame(other, userManager.findByUuid(otherUuid).get())
     }
 
     @Test
-    fun `rename to an occupied name leaves names indexes and guild references unchanged`() {
+    fun `rename to a previously used name preserves both UUID accounts`() {
         val steve = userManager.createFake(UUID.randomUUID(), "Steve")
         val alex = userManager.createFake(UUID.randomUUID(), "Alex")
         alex.markUnchanged()
 
-        assertFailsWith<IllegalStateException> { userManager.updateUsername(alex, "STEVE") }
+        userManager.updateUsername(alex, "STEVE")
 
-        assertEquals("Alex", alex.name)
-        assertTrue(!alex.wasChanged())
+        assertEquals("STEVE", alex.name)
+        assertTrue(alex.wasChanged())
         assertSame(steve, userManager.findByName("Steve").get())
-        assertSame(alex, userManager.findByName("Alex").get())
+        assertSame(alex, userManager.findByName("STEVE").get())
+        assertTrue(userManager.findByName("Alex").isEmpty)
         assertSame(alex, userManager.findByUuid(alex.uuid).get())
     }
 
@@ -108,7 +112,7 @@ class UserManagerTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun `concurrent registration of one name admits exactly one owner`() {
+    fun `concurrent registration permits distinct offline mode names`() {
         // Construct on the test thread because FunnyGuildsSpec's static Mockito mocks are thread local.
         val first = User(UUID.randomUUID(), "Steve", FakeUserProfile.offline())
         val second = User(UUID.randomUUID(), "steve", FakeUserProfile.offline())
@@ -127,10 +131,10 @@ class UserManagerTest : FunnyGuildsSpec() {
                 }
             }
             start.countDown()
-            assertEquals(1, attempts.count { it.get(5, TimeUnit.SECONDS) })
-            assertEquals(1, userManager.countUsers())
-            val owner = userManager.findByName("Steve", true).get()
-            assertSame(owner, userManager.findByUuid(owner.uuid).get())
+            assertEquals(2, attempts.count { it.get(5, TimeUnit.SECONDS) })
+            assertEquals(2, userManager.countUsers())
+            assertSame(first, userManager.findByName("Steve").get())
+            assertSame(second, userManager.findByName("steve").get())
         } finally {
             executor.shutdownNow()
         }
@@ -145,6 +149,27 @@ class UserManagerTest : FunnyGuildsSpec() {
         Mockito.`when`(npc.uniqueId).thenReturn(npcUuid)
 
         assertTrue(userManager.findByPlayer(npc).isEmpty, "NPC entities must not resolve to a user")
+    }
+
+    @Test
+    fun `a new account may use an old name before its previous owner rejoins with a new name`() {
+        val previousOwner = userManager.createFake(UUID.randomUUID(), "Steve")
+        val newOwner = userManager.createFake(UUID.randomUUID(), "Steve")
+        assertSame(previousOwner, userManager.findByUuid(previousOwner.uuid).get())
+        assertSame(newOwner, userManager.findByName("Steve").get())
+        userManager.updateUsername(previousOwner, "Steven")
+        assertSame(newOwner, userManager.findByName("Steve").get())
+        assertSame(previousOwner, userManager.findByName("Steven").get())
+        assertEquals(2, userManager.countUsers())
+    }
+
+    @Test
+    fun `removing a previous owner does not remove a reused name from its new owner`() {
+        val previousOwner = userManager.createFake(UUID.randomUUID(), "Steve")
+        val newOwner = userManager.createFake(UUID.randomUUID(), "Steve")
+        userManager.removeUser(previousOwner)
+        assertSame(newOwner, userManager.findByName("Steve").get())
+        assertSame(newOwner, userManager.findByUuid(newOwner.uuid).get())
     }
 
     @Test

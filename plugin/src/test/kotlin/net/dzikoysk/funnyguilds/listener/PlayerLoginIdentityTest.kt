@@ -15,13 +15,13 @@ import kotlin.test.assertTrue
 class PlayerLoginIdentityTest : FunnyGuildsSpec() {
 
     @Test
-    fun `login rejects an exact or case insensitive name collision without creating a user`() {
+    fun `login allows reused names and offline mode case variants`() {
+        config.preventUuidConflicts = true
         userManager.createFake(UUID.randomUUID(), "Steve")
         for (name in listOf("Steve", "steve")) {
             val event = login(UUID.randomUUID(), name)
             listener().onLogin(event)
-            assertEquals(PlayerLoginEvent.Result.KICK_OTHER, event.result)
-            assertTrue(event.kickMessage.contains("UUID"))
+            assertEquals(PlayerLoginEvent.Result.ALLOWED, event.result)
             assertTrue(userManager.findByUuid(event.player.uniqueId).isEmpty)
             assertEquals(1, userManager.countUsers())
         }

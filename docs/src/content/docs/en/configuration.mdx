@@ -11,23 +11,28 @@ does, see the feature page it belongs to (e.g. [Guilds](/en/guilds/) or
 
 ## Player identity protection
 
-On startup, FunnyGuilds checks usernames and UUIDs in YAML files or SQL before
-loading players and guilds. One username, including case variants such as
-`Steve` and `steve`, cannot belong to two different UUIDs. A conflict aborts
-FunnyGuilds startup; the Minecraft server keeps running. The plugin does not
-automatically merge or delete conflicting accounts or save partially loaded
-data. Missing usernames, invalid UUIDs and unreadable user files also stop
-loading with a separate error message.
-
-While the plugin is running, it rejects a login if the username already belongs
-to another UUID. A player can change their username while keeping the same UUID
-if the new name is available. Customize the rejection message with
-`loginUuidConflict` in `plugins/FunnyGuilds/lang/<language>.yml`.
-The default value is:
+Startup conflict checking is optional and disabled by default. Enable it in
+`config.yml` with:
 
 ```yaml
-loginUuidConflict: '&cTwoj nick jest przypisany do innego UUID. Skontaktuj sie z administratorem serwera.'
+prevent-uuid-conflicts: true # default: false
 ```
+
+When enabled, it checks for an identical username stored with different UUIDs
+in YAML or SQL before loading users and guilds. Comparison is case sensitive:
+`Steve` and `steve` can be separate, valid offline-mode accounts. A conflict aborts
+FunnyGuilds startup, not stopping the server from running. The plugin does not
+automatically merge or delete accounts or save partially loaded data. With the
+check enabled, unreadable YAML files or missing identity data in YAML also stop
+loading with a short summary. With the check disabled, unreadable YAML files are
+skipped with an error summary.
+
+This option does not reject logins, account creation or username changes.
+Another account may use a player's old username after that player renames their
+account outside the server. Both accounts may remain stored under the same name
+until the previous owner rejoins, so enabling the check can stop the next startup.
+Leave `prevent-uuid-conflicts: false` on servers where this is valid behaviour.
+FunnyGuilds does not replace authentication plugins or their username policies.
 
 For safe recovery instructions, see the [FAQ](/en/faq/#username-and-uuid-conflicts).
 

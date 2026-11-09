@@ -778,7 +778,6 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public String loginNickTooShort = "&cNick jest za krotki!";
     public String loginNickTooLong = "&cNick jest za dlugi!";
     public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
-    public String loginUuidConflict = "&cTwoj nick jest przypisany do innego UUID. Skontaktuj sie z administratorem serwera.";
 
     @Comment("")
     @Comment("<------- Items System Messages -------> #")

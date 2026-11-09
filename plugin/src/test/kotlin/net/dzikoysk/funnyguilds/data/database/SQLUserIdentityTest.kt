@@ -35,9 +35,10 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
 
     @Test
     fun `SQL conflict propagates through load before regions guilds or user deserialization`() {
+        config.preventUuidConflicts = true
         val first = UUID.randomUUID().toString()
         val second = UUID.randomUUID().toString()
-        val (connection, statement) = prepareDatabase(rows(first to "Steve", second to "steve"))
+        val (connection, statement, preflight) = prepareDatabase(rows(), conflicts("Steve", first, second))
         val model = spy(SQLDataModel(funnyGuilds))
 
         // Schema migration has separate integration tests; here exercise the startup read path.
@@ -55,16 +56,18 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         verify(model, never()).loadRegions()
         verify(model, never()).loadGuilds()
         verify(statement, never()).executeUpdate()
-        verify(statement).close()
+        verify(statement, never()).executeQuery()
+        verify(preflight).close()
         verify(connection, times(2)).close()
         verify(funnyGuilds, never()).funnyServer
     }
 
     @Test
-    fun `valid SQL snapshot loads all users and stats with one select`() {
+    fun `disabled validation loads users with one select and allows reused names`() {
+        assertTrue(!config.preventUuidConflicts)
         val first = UUID.randomUUID()
         val second = UUID.randomUUID()
-        val (connection, statement) = prepareDatabase(rows(first.toString() to "Steve", second.toString() to "Alex"))
+        val (connection, statement) = prepareDatabase(rows(first.toString() to "Steve", second.toString() to "Steve"))
         val server = mock(FunnyServer::class.java)
         `when`(server.getPlayer(any(UUID::class.java))).thenReturn(Option.none())
         `when`(funnyGuilds.funnyServer).thenReturn(server)
@@ -73,7 +76,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
 
         assertEquals(2, userManager.countUsers())
         assertEquals("Steve", userManager.findByUuid(first).get().name)
-        assertEquals("Alex", userManager.findByUuid(second).get().name)
+        assertEquals("Steve", userManager.findByUuid(second).get().name)
         assertEquals(1234, userManager.findByUuid(first).get().rank.points)
         verify(connection).prepareStatement(anyString())
         verify(statement).executeQuery()
@@ -102,7 +105,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         val failure = IllegalStateException("Validation failed")
 
         val error = assertFailsWith<IllegalStateException> {
-            SQLNamedStatement("SELECT * FROM users", emptyMap()).executeQuery(connection) { throw failure }
+            SQLNamedStatement("SELECT * FROM users", emptyMap()).executeQueryOrThrow(connection) { throw failure }
         }
 
         assertSame(failure, error)
@@ -111,16 +114,63 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         verify(connection, never()).close()
     }
 
-    private fun prepareDatabase(result: CachedRowSet): Pair<Connection, PreparedStatement> {
+    @Test
+    fun `enabled preflight uses exact name grouping before loading valid offline mode case variants`() {
+        config.preventUuidConflicts = true
+        val (connection, statement, preflight) = prepareDatabase(rows(
+            UUID.randomUUID().toString() to "Steve", UUID.randomUUID().toString() to "steve"))
+        val server = mock(FunnyServer::class.java)
+        `when`(server.getPlayer(any(UUID::class.java))).thenReturn(Option.none())
+        `when`(funnyGuilds.funnyServer).thenReturn(server)
+
+        SQLDataModel(funnyGuilds).loadUsers()
+
+        assertEquals(2, userManager.countUsers())
+        assertEquals("Steve", userManager.findByName("Steve").get().name)
+        assertEquals("steve", userManager.findByName("steve").get().name)
+        val order = org.mockito.Mockito.inOrder(preflight, statement)
+        order.verify(preflight).executeQuery()
+        order.verify(statement).executeQuery()
+        verify(connection).prepareStatement(org.mockito.ArgumentMatchers.contains("GROUP BY BINARY `name`"))
+        verify(connection, times(2)).prepareStatement(anyString())
+    }
+
+    private fun prepareDatabase(result: CachedRowSet, conflict: CachedRowSet = conflicts()): Triple<Connection, PreparedStatement, PreparedStatement> {
         val connection = mock(Connection::class.java)
         val statement = mock(PreparedStatement::class.java)
+        val preflight = mock(PreparedStatement::class.java)
         val database = mock(Database::class.java)
         // Also used by the strict-query test, which intentionally supplies the connection directly.
         org.mockito.Mockito.lenient().`when`(funnyGuilds.database).thenReturn(Option.of(database))
         org.mockito.Mockito.lenient().`when`(database.connection).thenReturn(connection)
-        `when`(connection.prepareStatement(anyString())).thenReturn(statement)
-        `when`(statement.executeQuery()).thenReturn(result)
-        return connection to statement
+        `when`(connection.prepareStatement(anyString())).thenAnswer {
+            if (it.getArgument<String>(0).contains("GROUP BY BINARY")) preflight else statement
+        }
+        org.mockito.Mockito.lenient().`when`(statement.executeQuery()).thenReturn(result)
+        org.mockito.Mockito.lenient().`when`(preflight.executeQuery()).thenReturn(conflict)
+        return Triple(connection, statement, preflight)
+    }
+
+    private fun conflicts(name: String? = null, first: String = "", second: String = ""): CachedRowSet {
+        val metadata = RowSetMetaDataImpl().apply {
+            columnCount = 3
+            listOf("name", "first_uuid", "second_uuid").forEachIndexed { index, column ->
+                setColumnName(index + 1, column)
+                setColumnType(index + 1, Types.VARCHAR)
+            }
+        }
+        return RowSetProvider.newFactory().createCachedRowSet().apply {
+            setMetaData(metadata)
+            if (name != null) {
+                moveToInsertRow()
+                updateString("name", name)
+                updateString("first_uuid", first)
+                updateString("second_uuid", second)
+                insertRow()
+                moveToCurrentRow()
+            }
+            beforeFirst()
+        }
     }
 
     private fun rows(vararg identities: Pair<String, String>): CachedRowSet {

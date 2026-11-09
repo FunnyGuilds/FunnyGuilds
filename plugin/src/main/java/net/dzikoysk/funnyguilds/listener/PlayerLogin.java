@@ -36,15 +36,6 @@ public class PlayerLogin extends AbstractFunnyListener {
             return;
         }
 
-        User nameOwner = this.userManager.findByName(name, true).orNull();
-        if (nameOwner != null && !nameOwner.getUUID().equals(player.getUniqueId())) {
-            event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginUuidConflict));
-            this.logger.warning("Rejected login for '" + name + "': incoming UUID " + player.getUniqueId()
-                    + " conflicts with stored UUID " + nameOwner.getUUID()
-                    + ". Verify authentication/proxy settings and user data; no accounts were merged or deleted.");
-            return;
-        }
-
         this.userManager.findByPlayer(player)
                 .peek(BanUtils::checkIfBanShouldExpire)
                 .filter(User::isBanned)

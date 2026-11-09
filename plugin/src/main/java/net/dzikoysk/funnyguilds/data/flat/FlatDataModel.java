@@ -111,23 +111,27 @@ public class FlatDataModel implements DataModel {
     private void loadUsers() {
         UserManager userManager = this.plugin.getUserManager();
 
-        // Validate before either folder or filename migration can move files or hide duplicates.
         UserIdentityValidator validator = new UserIdentityValidator();
-        Map<File, YamlConfiguration> users = readUserFiles(this.usersFolderFile, validator)
+        if (!this.pluginConfiguration.preventUuidConflicts) {
+            FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
+        }
+        Map<File, YamlConfiguration> users = readAndValidateUserFiles(this.usersFolderFile, validator)
                 .onError(FunnyGuilds.getPluginLogger()::error)
                 .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
                         + "Back up data and check authentication/proxy settings before resolving it manually."));
-        Map<File, YamlConfiguration> legacyUsers = readUserFiles(new File(this.plugin.getDataFolder(), "users"), validator)
-                .onError(FunnyGuilds.getPluginLogger()::error)
-                .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
-                        + "Back up data and check authentication/proxy settings before resolving it manually."));
-        FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
-        legacyUsers.forEach((file, yaml) -> {
-            if (file.exists()) {
-                throw new IllegalStateException("Could not migrate legacy user file " + file + "; resolve the data folders manually");
-            }
-            users.put(new File(this.usersFolderFile, file.getName()), yaml);
-        });
+        if (this.pluginConfiguration.preventUuidConflicts) {
+            Map<File, YamlConfiguration> legacyUsers = readAndValidateUserFiles(new File(this.plugin.getDataFolder(), "users"), validator)
+                    .onError(FunnyGuilds.getPluginLogger()::error)
+                    .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                            + "Back up data and check authentication/proxy settings before resolving it manually."));
+            FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
+            legacyUsers.forEach((file, yaml) -> {
+                if (file.exists()) {
+                    throw new IllegalStateException("Could not migrate legacy user file " + file + "; resolve the data folders manually");
+                }
+                users.put(new File(this.usersFolderFile, file.getName()), yaml);
+            });
+        }
         if (users.isEmpty()) {
             userManager.clearUsers();
             FunnyGuilds.getPluginLogger().info("No users to load");
@@ -146,7 +150,7 @@ public class FlatDataModel implements DataModel {
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
     }
 
-    private static Result<Map<File, YamlConfiguration>, String> readUserFiles(File folder, UserIdentityValidator validator) {
+    private Result<Map<File, YamlConfiguration>, String> readAndValidateUserFiles(File folder, UserIdentityValidator validator) {
         Map<File, YamlConfiguration> users = new LinkedHashMap<>();
         if (!folder.exists()) {
             return Result.ok(users);
@@ -175,16 +179,22 @@ public class FlatDataModel implements DataModel {
                 continue;
             }
 
-            Result<UUID, String> identity = validator.accept(yaml.getString("uuid"), yaml.getString("name"), file.getAbsolutePath());
-            if (identity.isErr()) {
-                return Result.error(identity.getError());
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                Result<UUID, String> identity = validator.accept(yaml.getString("uuid"), yaml.getString("name"), file.getAbsolutePath());
+                if (identity.isErr()) {
+                    return Result.error(identity.getError());
+                }
             }
             users.put(file, yaml);
         }
 
         if (readErrors > 0) {
-            return Result.error("Could not read " + readErrors + " user file(s) in " + folder
-                    + "; first unreadable file: " + firstUnreadableFile);
+            String error = "Could not read " + readErrors + " user file(s) in " + folder
+                    + "; first unreadable file: " + firstUnreadableFile;
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                return Result.error(error);
+            }
+            FunnyGuilds.getPluginLogger().error(error);
         }
         return Result.ok(users);
     }

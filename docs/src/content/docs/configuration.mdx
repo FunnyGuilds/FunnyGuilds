@@ -11,23 +11,28 @@ stronie funkcji, której dotyczy (np. [Gildie](/guilds/) czy
 
 ## Ochrona tożsamości graczy
 
-Przy uruchamianiu FunnyGuilds sprawdza nicki i UUID użytkowników w plikach YAML
-lub bazie SQL, zanim wczyta graczy i gildie. Ten sam nick (także przy różnej
-wielkości liter, np. `Steve` i `steve`) nie może należeć do dwóch różnych UUID.
-Konflikt przerywa uruchamianie FunnyGuilds; sam serwer pozostaje uruchomiony.
-Plugin nie scala ani nie usuwa automatycznie konfliktowych kont i nie zapisuje
-częściowo wczytanych danych. Brak nicku, niepoprawny UUID lub nieczytelny plik
-użytkownika również zatrzymują ładowanie z osobnym komunikatem błędu.
-
-Podczas działania plugin odmawia logowania graczowi, którego nick jest już
-przypisany do innego UUID. Zmiana nicku przy zachowaniu tego samego UUID jest
-dozwolona, jeśli nowy nick jest wolny. Treść odmowy można zmienić kluczem
-`loginUuidConflict` w pliku językowym `plugins/FunnyGuilds/lang/<język>.yml`.
-Domyślna wartość:
+Kontrola konfliktów przy starcie jest opcjonalna i domyślnie wyłączona.
+W `config.yml` można ją włączyć przez:
 
 ```yaml
-loginUuidConflict: '&cTwoj nick jest przypisany do innego UUID. Skontaktuj sie z administratorem serwera.'
+prevent-uuid-conflicts: true # domyślnie: false
 ```
+
+Włączona kontrola szuka identycznego nicku zapisanego z różnymi UUID w plikach
+YAML lub bazie SQL, zanim wczyta graczy i gildie. Wielkość liter ma znaczenie:
+`Steve` i `steve` mogą być osobnymi kontami na serwerze offline-mode.
+Konflikt przerywa uruchamianie FunnyGuilds bez wpływu na start reszty serwera.
+Plugin nie scala ani nie usuwa automatycznie kont i nie zapisuje częściowo
+wczytanych danych. Przy włączonej kontroli nieczytelne pliki YAML lub brakujące
+dane tożsamości w YAML również zatrzymują ładowanie z krótkim podsumowaniem.
+Przy wyłączonej kontroli nieczytelne pliki YAML są pomijane z podsumowaniem błędów.
+
+Ta opcja nie blokuje logowania, tworzenia kont ani zmian nicku. Inne konto może
+użyć dawnego nicku gracza, który zmienił nazwę poza serwerem. Ponieważ oba konta
+mogą pozostać zapisane pod identyczną nazwą aż do ponownego wejścia poprzedniego
+właściciela, włączona kontrola może zatrzymać kolejny start. Na serwerach, gdzie
+taki stan jest prawidłowy, pozostaw `prevent-uuid-conflicts: false`.
+FunnyGuilds nie zastępuje pluginu uwierzytelniającego ani jego zasad dotyczących nicków.
 
 Sposób bezpiecznego rozstrzygnięcia konfliktu opisuje [FAQ](/faq/#konflikt-nicku-i-uuid).
 

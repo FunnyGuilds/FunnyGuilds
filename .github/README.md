@@ -14,7 +14,7 @@ Community: <a href="https://discord.gg/CYvyq3u">Discord</a>
 Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/ENG)</a>
 
 #### Supported Paper versions
-1.21 - 1.21.11
+1.21.5 - 1.21.11,
 26.1 - 26.3
 
 #### Download

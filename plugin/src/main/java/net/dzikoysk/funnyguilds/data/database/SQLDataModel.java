@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import javax.sql.rowset.CachedRowSet;
-import javax.sql.rowset.RowSetProvider;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -117,37 +115,45 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadUsers() {
-        // Validate and deserialize the same snapshot, without the best-effort query/serializer catch blocks.
         try (Connection connection = this.plugin.getDatabase()
-                .orThrow(() -> new IllegalStateException("Database is not initialized")).getConnection();
-                CachedRowSet result = RowSetProvider.newFactory().createCachedRowSet()) {
-            SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(connection, result::populate);
-
-            UserIdentityValidator validator = new UserIdentityValidator();
-            while (result.next()) {
-                String uuid = result.getString("uuid");
-                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]")
-                        .onError(FunnyGuilds.getPluginLogger()::error)
-                        .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
-                                + "Back up data and check authentication/proxy settings before resolving it manually."));
+                .orThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                this.validateUserIdentities(connection);
             }
 
-            result.beforeFirst();
-            while (result.next()) {
-                String userName = result.getString("name");
+            SQLBasicUtils.getSelectAll(this.usersTable).executeQueryOrThrow(connection, result -> {
+                while (result.next()) {
+                    String userName = result.getString("name");
 
-                if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
-                    continue;
+                    if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
+                        FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
+                        continue;
+                    }
+
+                    DatabaseUserSerializer.deserialize(result);
                 }
-
-                DatabaseUserSerializer.deserialize(result);
-            }
+            });
         } catch (SQLException exception) {
             throw new IllegalStateException("Could not read user identities from " + this.usersTable.getName(), exception);
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
+    }
+
+    private void validateUserIdentities(Connection connection) throws SQLException {
+        SQLBasicUtils.getSelectUuidConflict(this.usersTable).executeQueryOrThrow(connection, result -> {
+            if (!result.next()) {
+                return;
+            }
+            UserIdentityValidator validator = new UserIdentityValidator();
+            for (String column : new String[] { "first_uuid", "second_uuid" }) {
+                String uuid = result.getString(column);
+                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]")
+                        .onError(FunnyGuilds.getPluginLogger()::error)
+                        .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                                + "Back up data and check authentication/proxy settings before resolving it manually."));
+            }
+        });
     }
 
     public void loadGuilds() {
