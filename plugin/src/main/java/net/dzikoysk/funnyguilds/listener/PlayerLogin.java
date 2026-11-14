@@ -32,6 +32,10 @@ public class PlayerLogin extends AbstractFunnyListener {
                 break;
         }
 
+        if (event.getResult() != Result.ALLOWED) {
+            return;
+        }
+
         this.userManager.findByPlayer(player)
                 .peek(BanUtils::checkIfBanShouldExpire)
                 .filter(User::isBanned)

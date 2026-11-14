@@ -1,7 +1,11 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -11,6 +15,7 @@ import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseFixAlliesAsyncTask;
+import net.dzikoysk.funnyguilds.data.util.UserIdentityValidator;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -20,6 +25,8 @@ import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import panda.std.Option;
 import panda.std.Result;
 import panda.std.stream.PandaStream;
@@ -41,8 +48,6 @@ public class FlatDataModel implements DataModel {
         this.usersFolderFile = new File(dataFolder, "users");
         this.guildsFolderFile = new File(dataFolder, "guilds");
         this.regionsFolderFile = new File(dataFolder, "regions");
-
-        FlatPatcher.patch(plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
     }
 
     private Option<File> loadCustomFile(EntityType type, String name) {
@@ -105,27 +110,93 @@ public class FlatDataModel implements DataModel {
 
     private void loadUsers() {
         UserManager userManager = this.plugin.getUserManager();
-        userManager.clearUsers();
 
-        File[] userFiles = this.usersFolderFile.listFiles();
-        if (userFiles == null || userFiles.length == 0) {
+        UserIdentityValidator validator = new UserIdentityValidator();
+        if (!this.pluginConfiguration.preventUuidConflicts) {
+            FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
+        }
+        Map<File, YamlConfiguration> users = readAndValidateUserFiles(this.usersFolderFile, validator)
+                .onError(FunnyGuilds.getPluginLogger()::error)
+                .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                        + "Back up data and check authentication/proxy settings before resolving it manually."));
+        if (this.pluginConfiguration.preventUuidConflicts) {
+            Map<File, YamlConfiguration> legacyUsers = readAndValidateUserFiles(new File(this.plugin.getDataFolder(), "users"), validator)
+                    .onError(FunnyGuilds.getPluginLogger()::error)
+                    .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                            + "Back up data and check authentication/proxy settings before resolving it manually."));
+            FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
+            legacyUsers.forEach((file, yaml) -> {
+                if (file.exists()) {
+                    throw new IllegalStateException("Could not migrate legacy user file " + file + "; resolve the data folders manually");
+                }
+                users.put(new File(this.usersFolderFile, file.getName()), yaml);
+            });
+        }
+        if (users.isEmpty()) {
+            userManager.clearUsers();
             FunnyGuilds.getPluginLogger().info("No users to load");
             return;
         }
 
+        userManager.clearUsers();
         AtomicInteger deserializationErrors = new AtomicInteger();
-        PandaStream.of(userFiles)
-                .filter(file -> file.length() != 0)
-                .mapOpt(file -> UserUtils.checkUserFile(this.pluginConfiguration, file))
-                .forEach(file -> FlatUserSerializer.deserialize(file)
-                        .onEmpty(deserializationErrors::incrementAndGet)
-                );
+        users.forEach((file, yaml) -> UserUtils.checkUserFile(this.pluginConfiguration, file)
+                .peek(checkedFile -> FlatUserSerializer.deserialize(yaml).onEmpty(deserializationErrors::incrementAndGet)));
 
         if (deserializationErrors.get() > 0) {
             FunnyGuilds.getPluginLogger().error("Users load errors " + deserializationErrors.get());
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
+    }
+
+    private Result<Map<File, YamlConfiguration>, String> readAndValidateUserFiles(File folder, UserIdentityValidator validator) {
+        Map<File, YamlConfiguration> users = new LinkedHashMap<>();
+        if (!folder.exists()) {
+            return Result.ok(users);
+        }
+
+        File[] userFiles = folder.listFiles();
+        if (userFiles == null) {
+            return Result.error("Could not list user files in " + folder);
+        }
+
+        int readErrors = 0;
+        File firstUnreadableFile = null;
+        for (File file : userFiles) {
+            if (!file.isFile() || file.length() == 0) {
+                continue;
+            }
+
+            YamlConfiguration yaml = new YamlConfiguration();
+            try {
+                yaml.load(file);
+            } catch (IOException | InvalidConfigurationException exception) {
+                readErrors++;
+                if (firstUnreadableFile == null) {
+                    firstUnreadableFile = file;
+                }
+                continue;
+            }
+
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                Result<UUID, String> identity = validator.accept(yaml.getString("uuid"), yaml.getString("name"), file.getAbsolutePath());
+                if (identity.isErr()) {
+                    return Result.error(identity.getError());
+                }
+            }
+            users.put(file, yaml);
+        }
+
+        if (readErrors > 0) {
+            String error = "Could not read " + readErrors + " user file(s) in " + folder
+                    + "; first unreadable file: " + firstUnreadableFile;
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                return Result.error(error);
+            }
+            FunnyGuilds.getPluginLogger().error(error);
+        }
+        return Result.ok(users);
     }
 
     private void saveUsers(boolean ignoreNotChanged) {

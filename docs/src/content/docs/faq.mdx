@@ -5,6 +5,39 @@ description: Najczęściej zadawane pytania dotyczące pluginu FunnyGuilds.
 
 Lista najczęściej zadawanych pytań dotyczących pluginu FunnyGuilds.
 
+## Konflikt nicku i UUID
+
+Przy włączonym `prevent-uuid-conflicts` komunikat `UUID conflict for username`
+oznacza, że w danych są dwa różne UUID dla identycznego nicku. Wielkość liter
+ma znaczenie: `Steve` i `steve` to odrębne nazwy. Konsola pokazuje oba UUID
+i źródła rekordów (ścieżki plików lub tabelę SQL). FunnyGuilds zatrzymuje start
+na pierwszym konflikcie, przed wczytaniem użytkowników i gildii oraz uruchomieniem
+automatycznego zapisu. Dane kont nie są automatycznie kasowane ani scalane.
+
+1. Zatrzymaj serwer i wykonaj kopię danych FunnyGuilds, w tym bazy SQL, jeśli jej używasz.
+2. Sprawdź ustawienia uwierzytelniania oraz przekazywania UUID przez Velocity/Bungee.
+   Backend za proxy może poprawnie używać `online-mode=false`; nie zmieniaj tego
+   ustawienia bez sprawdzenia całej konfiguracji sieci.
+3. Ustal, do których kont należą UUID z raportu. Przyczyną może być zmiana
+   uwierzytelniania, import danych albo przejęcie wolnego nicku przez inne konto.
+4. Rozstrzygnij konflikt ręcznie, uwzględniając dane graczy oraz powiązania gildii,
+   i uruchom serwer ponownie. Nie usuwaj wszystkich danych użytkowników.
+
+Kontrola jest domyślnie wyłączona i działa tylko podczas startu. Nie odrzuca
+logowania nowego właściciela dawnego nicku ani nie ogranicza zmian nazw.
+Jeśli ponowne użycie nazwy jest prawidłowe na Twoim serwerze, pozostaw
+`prevent-uuid-conflicts: false` — włączona kontrola może zatrzymać kolejny start,
+gdy dwa konta są jeszcze zapisane pod identyczną nazwą.
+Zobacz [konfigurację kontroli](/configuration/#ochrona-tożsamości-graczy).
+
+Osobne błędy `Invalid or missing UUID`, `Missing or blank username`,
+`Could not read … user file(s)` dotyczą odpowiednio niepoprawnego UUID,
+brakującego nicku i nieczytelnego pliku YAML.
+Nieczytelne pliki YAML są zliczane w jednym podsumowaniu dla katalogu, ze ścieżką
+pierwszego pliku wymagającego sprawdzenia. Te błędy i konflikty tożsamości są
+logowane bez stacktrace'ów. Przy włączonej kontroli plugin przerywa start,
+aby nie zapisać niepełnych danych; przy wyłączonej pomija nieczytelne pliki YAML.
+
 ## Mgła przy wchodzeniu na teren gildii/opuszczaniu terenu gildii
 
 W pliku `config.yml` zmień

@@ -61,6 +61,16 @@ public final class SQLBasicUtils {
         return new SQLNamedStatement(query, new HashMap<>());
     }
 
+    public static SQLNamedStatement getSelectUuidConflict(SQLTable table) {
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
+        String query = "SELECT BINARY `name` AS `name`, MIN(LOWER(`uuid`)) AS `first_uuid`, "
+                + "MAX(LOWER(`uuid`)) AS `second_uuid` FROM " + table.getNameGraveAccent()
+                + " GROUP BY BINARY `name` HAVING COUNT(DISTINCT LOWER(`uuid`)) > 1 LIMIT 1";
+        return new SQLNamedStatement(query, new HashMap<>());
+    }
+
     public static SQLNamedStatement getUpdate(SQLTable table, SQLElement element) {
         if (table == null) {
             throw new IllegalArgumentException("Given SQLTable is null");

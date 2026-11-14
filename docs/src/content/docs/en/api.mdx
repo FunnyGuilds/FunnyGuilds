@@ -99,6 +99,11 @@ if (userOption.isPresent()) {
 }
 ```
 
+`UserManager#addUser(User)` rejects a different user instance with an already
+registered UUID by throwing `IllegalStateException`. The existing user instance
+and both indexes remain unchanged. After rejection, do not use the supplied
+instance as a registered user; retrieve the existing account with `findByUuid(UUID)`.
+
 ### Guild
 
 Available methods for fetching a guild:

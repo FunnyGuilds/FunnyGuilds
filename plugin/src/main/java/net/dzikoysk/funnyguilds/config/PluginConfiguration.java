@@ -1089,6 +1089,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public DataModel dataModel = DataModel.FLAT;
 
     @Comment("")
+    @Comment("Opcjonalna kontrola konfliktów UUID podczas uruchamiania pluginu")
+    @Comment("Zatrzymuje start FunnyGuilds, jeśli identyczny nick jest zapisany z różnymi UUID")
+    @Comment("Wielkość liter ma znaczenie: Steve i steve są różnymi nickami")
+    @Comment("Nie blokuje logowania ani ponownego użycia nicku przez inne konto")
+    public boolean preventUuidConflicts = false;
+
+    @Comment("")
     @Comment("Dane wymagane do połączenia z bazą")
     @Comment("UWAGA: connectionTimeout jest w milisekundach!")
     @Comment(" ")
