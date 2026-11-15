@@ -12,12 +12,11 @@ export interface ReleaseInfo {
 
 export function getReleaseInfo(lang: 'pl' | 'en'): ReleaseInfo {
   const locale = lang === 'pl' ? 'pl-PL' : 'en-US';
-  const sizeMb = releaseMeta.jarSize / (1024 * 1024);
 
   return {
     version: releaseMeta.tag,
     downloadPath: releaseMeta.downloadPath,
-    sizeLabel: `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(sizeMb)} MB`,
+    sizeLabel: `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(releaseMeta.jarSize / (1024 * 1024))} MB`,
     dateLabel: new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(releaseMeta.publishedAt)),
     mcRange: releaseMeta.mcRange,
     changelogHtml: renderChangelog(releaseMeta.body),

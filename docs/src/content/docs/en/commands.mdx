@@ -53,7 +53,7 @@ See [Guilds](/en/guilds/) — creation, membership, validity and disbanding.
 | `/ga enabled` | Toggles whether guild creation is enabled. |
 | `/ga ban <tag> <time> <reason>` | Bans a guild for a specified duration. |
 | `/ga unban <tag>` | Unbans a guild. |
-| `/ga items <player> <type>` | Gives a player the item set of the given type (`guild`, `base`, `join`, `enlarge`, `validity`, `rankReset`, `statsReset`, `firstGuildReward`). |
+| `/ga items <player> <type> [set]` | Gives a player the item set of the given type (`guild`, `base`, `join`, `enlarge`, `validity`, `rankReset`, `statsReset`, `firstGuildReward`). For the `guild` type you can name a specific set from `items.yml`; without that argument the set the player qualifies for is used. |
 
 ## Territories
 
@@ -84,7 +84,7 @@ See [Alliances & wars](/en/alliances-wars/).
 | `/sojusz <tag>` | Proposes/accepts an alliance. |
 | `/rozwiaz <tag>` | Breaks an alliance. |
 | `/wojna <tag>` | Declares war on a guild. |
-| `/kupzycie` `/wykup` `/buylife` | Buys an additional life for the guild. |
+| `/kupzycie` `/wykup` `/buylife` `/wykupzycie` | Buys an additional life for the guild. |
 | `/pvp` `/ustawpvp` `[tag]` | Toggles PvP within the guild or between allies. |
 
 | Admin | Description |
@@ -105,11 +105,11 @@ on the tablist.
 
 | Admin | Description |
 |---|---|
-| `/ga points <player> <points>` | Sets a player's point count. |
-| `/ga kills <player> <kills>` | Sets a player's kill count. |
-| `/ga deaths <player> <deaths>` | Sets a player's death count. |
-| `/ga logouts <player> <logouts>` | Sets a player's combat-logout count. |
-| `/ga assists <player> <assists>` | Sets a player's assist count. |
+| `/ga points <set\|add\|remove> <player> <points>` | Sets, adds to or subtracts from a player's point count. |
+| `/ga kills <set\|add\|remove> <player> <kills>` | Sets, adds to or subtracts from a player's kill count. |
+| `/ga deaths <set\|add\|remove> <player> <deaths>` | Sets, adds to or subtracts from a player's death count. |
+| `/ga logouts <set\|add\|remove> <player> <logouts>` | Sets, adds to or subtracts from a player's combat-logout count. |
+| `/ga assists <set\|add\|remove> <player> <assists>` | Sets, adds to or subtracts from a player's assist count. |
 
 ## Chat
 

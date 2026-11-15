@@ -24,7 +24,8 @@ export interface McArchiveGroup {
 const PRE_4X_RANGE = (tag: string) => (tag === '3.9.9.15' ? '1.7.x' : '1.7.2');
 
 function rangeOf(release: ArchivedRelease): string {
-  return (release.tag.startsWith('4.') ? release.mcRange : null) ?? PRE_4X_RANGE(release.tag);
+  const major = Number.parseInt(release.tag, 10);
+  return (major >= 4 ? release.mcRange : null) ?? PRE_4X_RANGE(release.tag);
 }
 
 export function changelogId(tag: string): string {

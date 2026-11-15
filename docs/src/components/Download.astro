@@ -8,6 +8,7 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import type { DownloadContent } from '../lib/download-content';
 import { getReleaseInfo } from '../lib/format-release';
+import { releaseByTag } from '../lib/release-archive';
 import { getMcVersionArchive } from '../lib/mc-version-archive';
 import Nav from './Nav.astro';
 import ReleaseChipLink from './ReleaseChipLink.astro';
@@ -21,6 +22,8 @@ interface Props {
 }
 const { content: t } = Astro.props;
 const release = getReleaseInfo(t.lang);
+// The 4.x card names its release explicitly: 4.x is frozen, so it is not "the latest" of anything.
+const lastFourX = releaseByTag('4.14.0');
 const mcArchive = getMcVersionArchive(t.lang);
 const allReleases = mcArchive.flatMap((group) => group.releases);
 
@@ -59,7 +62,7 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
       background: var(--paper); box-shadow: 0 1px 2px rgba(20, 23, 26, 0.05), 0 8px 24px rgba(20, 23, 26, 0.06);
       border: 1px solid var(--hairline);
     }
-    .choice.pending { background: #fafbfc; }
+    .choice.nightly { background: #fafbfc; }
 
     /* One bracket per card at its outer corner of the 2x2 grid, so the four together recreate
        the logo's own bracket arrangement at the scale of the whole grid. */
@@ -69,10 +72,10 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .corner::after { width: 3px; height: 100%; }
     .choice.recommended .corner { top: -1px; left: -1px; color: var(--blue); }
     .choice.recommended .corner::before, .choice.recommended .corner::after { top: 0; left: 0; }
-    .choice.pending .corner { top: -1px; right: -1px; color: var(--gold); }
-    .choice.pending .corner::before, .choice.pending .corner::after { top: 0; right: 0; }
-    .choice.stable .corner { bottom: -1px; left: -1px; color: var(--green); }
-    .choice.stable .corner::before, .choice.stable .corner::after { bottom: 0; left: 0; }
+    .choice.nightly .corner { top: -1px; right: -1px; color: var(--gold); }
+    .choice.nightly .corner::before, .choice.nightly .corner::after { top: 0; right: 0; }
+    .choice.fourx .corner { bottom: -1px; left: -1px; color: var(--green); }
+    .choice.fourx .corner::before, .choice.fourx .corner::after { bottom: 0; left: 0; }
     .choice.legacy .corner { bottom: -1px; right: -1px; color: var(--coral); }
     .choice.legacy .corner::before, .choice.legacy .corner::after { bottom: 0; right: 0; }
 
@@ -81,7 +84,8 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
 
     .tag-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
     .badge { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; background: var(--blue); padding: 3px 8px; border-radius: 2px; }
-    .badge.badge-pending { color: var(--ink); background: #f0e4c8; }
+    .badge.badge-nightly { color: var(--ink); background: #f0e4c8; }
+    .badge.badge-fourx { color: var(--slate); background: #e6efe9; }
     .badge.badge-legacy { color: var(--slate); background: #eef1f5; }
     .mc-tag { font-family: var(--mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em; color: var(--slate); background: #eef1f5; padding: 3px 8px; border-radius: 2px; }
     .choice h2 { font-size: 1.2rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
@@ -92,9 +96,9 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
     .btn:hover { opacity: 0.88; }
     .btn:active { transform: translateY(1px); }
     .choice.recommended .btn { background: var(--blue); color: #fff; }
-    .choice.stable .btn { background: var(--ink); color: #fff; }
+    .choice.nightly .btn { background: var(--ink); color: #fff; }
+    .choice.fourx .btn { background: var(--ink); color: #fff; }
     .choice.legacy .btn { background: var(--ink); color: #fff; }
-    .btn-pending { background: #eef1f5; color: var(--slate-soft); cursor: default; }
 
     .ci-link { font-size: 0.8rem; }
     .ci-link a { color: var(--slate); text-decoration: underline; text-underline-offset: 2px; }
@@ -177,37 +181,9 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
             <span class="corner" aria-hidden="true"></span>
             <div class="choice-body">
               <div class="tag-row">
-                <span class="badge">{t.snapshot.badge}</span>
+                <span class="badge">{t.stable.badge}</span>
+                {release.mcRange && <span class="mc-tag">MC {release.mcRange}</span>}
               </div>
-              <h2>{t.snapshot.title}</h2>
-              <p class="desc">{t.snapshot.description}</p>
-              <span class="fine-print">{t.snapshot.note}</span>
-              <span class="ci-link"><a href={JENKINS_JOB_URL} target="_blank" rel="noopener">{t.snapshot.ciLabel}</a></span>
-            </div>
-            <a class="btn" href={JENKINS_JOB_URL} target="_blank" rel="noopener">{t.snapshot.buttonLabel}</a>
-          </div>
-
-          <div class="choice pending">
-            <span class="corner" aria-hidden="true"></span>
-            <div class="choice-body">
-              <div class="tag-row">
-                <span class="badge badge-pending">{t.intermediate.badge}</span>
-                <span class="mc-tag">{t.intermediate.mcRange}</span>
-              </div>
-              <h2>{t.intermediate.title}</h2>
-              <p class="desc">{t.intermediate.description}</p>
-            </div>
-            <span class="btn btn-pending" aria-disabled="true">{t.intermediate.note}</span>
-          </div>
-
-          <div class="choice stable">
-            <span class="corner" aria-hidden="true"></span>
-            <div class="choice-body">
-              {release.mcRange && (
-                <div class="tag-row">
-                  <span class="mc-tag">MC {release.mcRange}</span>
-                </div>
-              )}
               <h2>{t.stable.title}</h2>
               <p class="desc">{t.stable.description}</p>
               <span class="meta-chip">
@@ -216,6 +192,36 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
               </span>
             </div>
             <a class="btn" href={release.downloadPath} download>{t.stable.buttonLabel} {release.version}</a>
+          </div>
+
+          <div class="choice nightly">
+            <span class="corner" aria-hidden="true"></span>
+            <div class="choice-body">
+              <div class="tag-row">
+                <span class="badge badge-nightly">{t.nightly.badge}</span>
+              </div>
+              <h2>{t.nightly.title}</h2>
+              <p class="desc">{t.nightly.description}</p>
+              <span class="fine-print">{t.nightly.note}</span>
+              <span class="ci-link"><a href={JENKINS_JOB_URL} target="_blank" rel="noopener">{t.nightly.ciLabel}</a></span>
+            </div>
+            <a class="btn" href={JENKINS_JOB_URL} target="_blank" rel="noopener">{t.nightly.buttonLabel}</a>
+          </div>
+
+          <div class="choice fourx">
+            <span class="corner" aria-hidden="true"></span>
+            <div class="choice-body">
+              <div class="tag-row">
+                <span class="badge badge-fourx">{t.fourX.badge}</span>
+                {lastFourX.mcRange && <span class="mc-tag">MC {lastFourX.mcRange}</span>}
+              </div>
+              <h2>{t.fourX.title}</h2>
+              <p class="desc">{t.fourX.description}</p>
+              <span class="meta-chip">
+                <a href="#mc-versions">{t.fourX.historyLabel}</a>
+              </span>
+            </div>
+            <a class="btn" href={lastFourX.downloadPath} download>{t.fourX.buttonLabel} {lastFourX.tag}</a>
           </div>
 
           <div class="choice legacy">
@@ -240,22 +246,17 @@ const DISCORD_INVITE_CODE = 'CYvyq3u';
           <div class="archive-grid">
             <table class="mc-table">
               <tbody>
-                <tr>
-                  <td class="mc-col">MC 1.21.x</td>
-                  <td class="release-col">
-                    <div class="release-chips">
-                      <a class="release-chip release-chip-dev" href={NIGHTLY_RELEASE_URL} target="_blank" rel="noopener">
-                        {t.snapshot.title}
-                        <span class="dev-tag">{t.mcVersionTable.nightlyLabel}</span>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                {mcArchive.map((group) => (
+                {mcArchive.map((group, groupIndex) => (
                   <tr>
                     <td class="mc-col">MC {group.mcRange}</td>
                     <td class="release-col">
                       <div class="release-chips">
+                        {groupIndex === 0 && (
+                          <a class="release-chip release-chip-dev" href={NIGHTLY_RELEASE_URL} target="_blank" rel="noopener">
+                            {t.nightly.title}
+                            <span class="dev-tag">{t.mcVersionTable.nightlyLabel}</span>
+                          </a>
+                        )}
                         {group.releases.map((entry) => (
                           <ReleaseChipLink entry={entry} currentLabel={t.mcVersionTable.currentLabel} />
                         ))}

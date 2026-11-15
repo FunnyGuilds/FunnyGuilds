@@ -7,7 +7,7 @@ export interface DownloadContent extends NavContent {
   headline: string;
   lede: string;
   whatYouGet: string;
-  snapshot: {
+  nightly: {
     badge: string;
     title: string;
     description: string;
@@ -15,14 +15,15 @@ export interface DownloadContent extends NavContent {
     ciLabel: string;
     note: string;
   };
-  intermediate: {
+  stable: {
     badge: string;
-    mcRange: string;
     title: string;
     description: string;
-    note: string;
+    buttonLabel: string;
+    historyLabel: string;
   };
-  stable: {
+  fourX: {
+    badge: string;
     title: string;
     description: string;
     buttonLabel: string;
@@ -72,26 +73,27 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
     headline: 'Pobierz FunnyGuilds',
     lede: 'Wybierz wersję zgodną z Minecraftem na Twoim serwerze.',
     whatYouGet: 'Każda z opcji poniżej to ten sam plugin FunnyGuilds — pojedynczy plik .jar, który wrzucasz do folderu plugins/ na serwerze.',
-    snapshot: {
-      badge: 'Zalecane',
-      title: 'Snapshot 5.x',
-      description: 'Najnowszy build aktywnie rozwijanej serii 5.x — powstaje po każdej zmianie w kodzie, więc może zawierać błędy.',
-      buttonLabel: 'Pobierz najnowszy build ↗',
-      ciLabel: 'Lista buildów na CI ↗',
-      note: 'Tylko nowa instalacja — niezgodna z wersją 4.x.',
-    },
-    intermediate: {
-      badge: 'Wkrótce',
-      mcRange: 'MC 1.21',
-      title: 'FunnyGuilds 5.0.0-RC.1',
-      description: 'Jedno oficjalne wydanie serii 5.x dla MC 1.21, zanim przejdzie ona na nowsze wersje Minecrafta.',
-      note: 'Jeszcze niewydane — zajrzyj tu wkrótce.',
-    },
     stable: {
+      badge: 'Zalecane',
       title: 'Wersja stabilna',
-      description: 'Ostatnie oficjalne wydanie serii 4.x.',
+      description: 'Najnowsze oficjalne wydanie. Wymaga Papera i Javy 21; konfiguracja z 4.x nie zostanie wczytana.',
       buttonLabel: 'Pobierz',
       historyLabel: 'Starsze wersje ↓',
+    },
+    nightly: {
+      badge: 'Nightly',
+      title: 'Snapshot 5.x',
+      description: 'Build powstający po każdej zmianie w kodzie, z funkcjami, które trafią do kolejnego wydania. Może zawierać błędy.',
+      buttonLabel: 'Pobierz najnowszy build ↗',
+      ciLabel: 'Lista buildów na CI ↗',
+      note: 'Do testów, nie na serwer produkcyjny.',
+    },
+    fourX: {
+      badge: 'Seria 4.x',
+      title: 'FunnyGuilds 4.14.0',
+      description: 'Ostatnie wydanie serii 4.x i jedyna opcja dla serwerów starszych niż 1.21.5. Nie jest już rozwijane.',
+      buttonLabel: 'Pobierz',
+      historyLabel: 'Changelog ↓',
     },
     legacy: {
       badge: 'Historyczna',
@@ -135,26 +137,27 @@ export const DOWNLOAD_CONTENT: Record<'pl' | 'en', DownloadContent> = {
     headline: 'Download FunnyGuilds',
     lede: "Pick the version that matches your server's Minecraft.",
     whatYouGet: 'Every option below is the same FunnyGuilds plugin as a single .jar file — drop it into your server\'s plugins/ folder.',
-    snapshot: {
-      badge: 'Recommended',
-      title: 'Snapshot 5.x',
-      description: 'The latest build of the actively developed 5.x series — changes with every commit, may contain bugs.',
-      buttonLabel: 'Download latest build ↗',
-      ciLabel: 'Build list on CI ↗',
-      note: 'Fresh install only — not compatible with 4.x.',
-    },
-    intermediate: {
-      badge: 'Coming soon',
-      mcRange: 'MC 1.21',
-      title: 'FunnyGuilds 5.0.0-RC.1',
-      description: 'One official 5.x release for MC 1.21, before the 5.x series moves on to newer Minecraft versions.',
-      note: "Not released yet — check back soon.",
-    },
     stable: {
+      badge: 'Recommended',
       title: 'Stable version',
-      description: 'The latest official release of the 4.x series.',
+      description: 'The latest official release. Requires Paper and Java 21; a 4.x configuration will not load.',
       buttonLabel: 'Download',
       historyLabel: 'Older versions ↓',
+    },
+    nightly: {
+      badge: 'Nightly',
+      title: 'Snapshot 5.x',
+      description: 'A build produced on every commit, carrying the features headed for the next release. May contain bugs.',
+      buttonLabel: 'Download latest build ↗',
+      ciLabel: 'Build list on CI ↗',
+      note: 'For testing, not for a production server.',
+    },
+    fourX: {
+      badge: '4.x series',
+      title: 'FunnyGuilds 4.14.0',
+      description: 'The last 4.x release and the only option for servers older than 1.21.5. No longer developed.',
+      buttonLabel: 'Download',
+      historyLabel: 'Changelog ↓',
     },
     legacy: {
       badge: 'Legacy',

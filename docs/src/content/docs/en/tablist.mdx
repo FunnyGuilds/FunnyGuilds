@@ -9,7 +9,7 @@ The configuration shown here uses the syntax introduced in FunnyGuilds v4.11.0+.
 
 ## The server's player list
 
-The player list — or "tablist" — shows information about the guild, the player, the server and the top lists. Its appearance is configured in the `tablist.yml` and `messages.yml` files; every setting related to it is described below.
+The player list — or "tablist" — shows information about the guild, the player, the server and the top lists. Its appearance is configured in `tablist.yml`, and the placeholder texts in the language file (`lang/<locale>.yml`); every setting related to it is described below.
 
 :::caution[Reloading the configuration]
 After changing the configuration, do not use `/reload` — reload the plugin with `/funnyguilds reload`, or restart the server.
@@ -52,9 +52,9 @@ The tablist's header and footer are marked on the [Tablist numbering scheme](#ta
 
 ```yml
 # Header appearance in the player list.
-header: '&7FunnyGuilds &b4.9.3 Tribute'
+header: '&7FunnyGuilds &b5.0.0 Primrose'
 # Footer appearance in the player list.
-footer: '&c&lThe no-value messages (shown when a player has no guild) can be changed in messages.yml!'
+footer: '&c&lThe no-value messages (shown when a player has no guild) can be changed in the language files in plugins/FunnyGuilds/lang!'
 ```
 
 To add several lines to the header or footer, use the `|` character, then enter the following lines, each preceded by two spaces:
@@ -70,7 +70,7 @@ footer: |
 
 ## Pagination (`tablist.yml`)
 
-Tablist pagination has been available since version 4.10.0. Pages are configured much like the regular tablist — each page only overrides the main one, and wherever a page doesn't supply its own value, the value from the regular *cells/header/footer* section is used instead. The number of cycles (`cycles`) determines how long a given page stays visible (1 cycle = 1 tablist refresh; the refresh rate is set by `update-interval` in `tablist.yml`). The number of pages is not limited.
+Tablist pagination has been available since version 4.10.0. Pages are configured much like the regular tablist — each page only overrides the main one, and wherever a page doesn't supply its own value, the value from the regular *cells/header/footer* section is used instead. The number of cycles (`cycles`) determines how long a given page stays visible (1 cycle = 1 tablist refresh; the refresh rate is set by `update-interval` in `tablist.yml`). The number of pages is not limited. Pagination only runs with `animated: true`; setting it to `false` keeps the tablist on its main configuration.
 
 ```yml
 pages:
@@ -88,12 +88,12 @@ pages:
     48: ' &b3. &7{PTOP-KILLS-3}'
   header: '&7GitHub: &agithub.com/funnyguilds'
   footer: '&a&lThe no-value messages (shown when a player has no guild)
-   can be changed in messages.yml!'
+   can be changed in the language files in plugins/FunnyGuilds/lang!'
 ```
 
 ---
 
-## "No value" messages (`messages.yml`)
+## "No value" messages (`lang/<locale>.yml`)
 
 This section sets the messages shown in place of missing values — when a player has no guild, a top list entry is empty, a guild has no allies or deputies, and so on.
 
@@ -142,6 +142,7 @@ fill-cells: true
 
 - `enabled` — if set to `true`, the tablist will be active; set to `false` if you don't want it shown.
 - `update-interval` — how often the tablist should refresh the information it shows.
+- `animated` — whether the animated (paginated) tablist is enabled.
 
 :::note
 The time is given in ticks (20 ticks = 1 second).
@@ -152,6 +153,8 @@ The time is given in ticks (20 ticks = 1 second).
 enabled: true
 # How many ticks should pass before the player list is refreshed
 update-interval: 20
+# Whether the animated player list is enabled
+animated: true
 ```
 
 ---
@@ -164,6 +167,29 @@ update-interval: 20
 # Whether {PTOP-%} and {GTOP-%} type variables should be colored based on guild relationships
 use-relationship-colors: false
 ```
+
+---
+
+## Player-list heads (`tablist.yml`)
+
+The `heads` section sets custom head textures shown next to tablist rows. A texture is assigned to a range of row numbers, and `value` and `signature` come from a skin generator such as [mineskin.org](https://mineskin.org/).
+
+```yml
+heads:
+  # Whether custom heads in the player list are enabled
+  enabled: true
+  textures:
+    1-80:
+      value: ewogICJ0aW1lc3RhbXAiIDog...
+      signature: JK7IOCq36OLWWKmqp0NZ...
+    46-46:
+      value: ewogICJ0aW1lc3RhbXAiIDog...
+      signature: ukTVfQx0saoV8CjINbZU...
+```
+
+:::caution
+Only players with a premium account see custom heads. Players without one see no change.
+:::
 
 ---
 

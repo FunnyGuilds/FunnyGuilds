@@ -9,7 +9,7 @@ Przedstawiona konfiguracja korzysta ze składni wprowadzonej w FunnyGuilds v4.11
 
 ## Lista graczy na serwerze
 
-Lista graczy, inaczej „tablista", pokazuje informacje o gildii, graczu, serwerze i topkach. Jej wygląd konfiguruje się w plikach `tablist.yml` oraz `messages.yml`; poniżej opisano wszystkie dotyczące jej ustawienia.
+Lista graczy, inaczej „tablista", pokazuje informacje o gildii, graczu, serwerze i topkach. Jej wygląd konfiguruje się w pliku `tablist.yml`, a teksty zastępcze w pliku językowym (`lang/<język>.yml`); poniżej opisano wszystkie dotyczące jej ustawienia.
 
 :::caution[Przeładowanie konfiguracji]
 Po zmianie konfiguracji nie używaj `/reload` — przeładuj plugin komendą `/funnyguilds reload` albo zrestartuj serwer.
@@ -52,9 +52,9 @@ Nagłówek i stopka tablisty zostały zaznaczone na [Schemacie numeracji tablist
 
 ```yml
 # Wyglad naglowka w liscie graczy.
-header: '&7FunnyGuilds &b4.9.3 Tribute'
+header: '&7FunnyGuilds &b5.0.0 Primrose'
 # Wyglad stopki w liscie graczy.
-footer: '&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!'
+footer: '&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w plikach jezykowych w katalogu plugins/FunnyGuilds/lang!'
 ```
 
 Aby dodać kilka linijek do nagłówka lub stopki, użyj znaku `|`, a następnie wprowadź kolejne linijki, poprzedzając każdą dwiema spacjami:
@@ -70,7 +70,7 @@ footer: |
 
 ## Stronicowanie (`tablist.yml`)
 
-Od wersji 4.10.0 dostępne jest stronicowanie tablisty. Konfiguruje się je bardzo podobnie jak zwykłą tablistę — każda strona jedynie nadpisuje główną, a tam, gdzie strona nie podaje własnej wartości, zostanie użyta wartość ze zwykłej sekcji *cells/header/footer*. Liczba cykli (`cycles`) określa, jak długo dana strona będzie widoczna (1 cykl = 1 odświeżenie tablisty; częstotliwość odświeżania zmienia opcja `update-interval` w `tablist.yml`). Liczba stron nie jest ograniczona.
+Od wersji 4.10.0 dostępne jest stronicowanie tablisty. Konfiguruje się je bardzo podobnie jak zwykłą tablistę — każda strona jedynie nadpisuje główną, a tam, gdzie strona nie podaje własnej wartości, zostanie użyta wartość ze zwykłej sekcji *cells/header/footer*. Liczba cykli (`cycles`) określa, jak długo dana strona będzie widoczna (1 cykl = 1 odświeżenie tablisty; częstotliwość odświeżania zmienia opcja `update-interval` w `tablist.yml`). Liczba stron nie jest ograniczona. Stronicowanie działa tylko przy `animated: true` — ustawienie `false` zatrzymuje tablistę na konfiguracji głównej.
 
 ```yml
 pages:
@@ -88,12 +88,12 @@ pages:
     48: ' &b3. &7{PTOP-KILLS-3}'
   header: '&7GitHub: &agithub.com/funnyguilds'
   footer: '&a&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii)
-   mozna zmienic w pliku messages.yml!'
+   mozna zmienic w plikach jezykowych w katalogu plugins/FunnyGuilds/lang!'
 ```
 
 ---
 
-## Informacja o „braku" (`messages.yml`)
+## Informacja o „braku" (`lang/<język>.yml`)
 
 Sekcja ustala komunikaty wyświetlane w miejsce brakujących wartości — gdy gracz nie ma gildii, topka jest pusta, gildia nie ma sojuszników czy zastępców itd.
 
@@ -142,6 +142,7 @@ fill-cells: true
 
 - `enabled` — jeśli ustawione na `true`, tablista będzie działała; ustaw na `false`, jeśli nie chcesz, aby się wyświetlała.
 - `update-interval` — co ile czasu tablista ma odświeżać wyświetlane informacje.
+- `animated` — czy animowana (stronicowana) tablista ma być włączona.
 
 :::note
 Czas podaje się w tickach (20 ticków to 1 sekunda).
@@ -152,6 +153,8 @@ Czas podaje się w tickach (20 ticków to 1 sekunda).
 enabled: true
 # Co ile tickow lista graczy powinna zostac odswiezona
 update-interval: 20
+# Czy animowana lista graczy ma byc wlaczona
+animated: true
 ```
 
 ---
@@ -164,6 +167,29 @@ update-interval: 20
 # Czy zmienne typu {PTOP-%} oraz {GTOP-%} powinny byc pokolorowane w zaleznosci od relacji gildyjnych
 use-relationship-colors: false
 ```
+
+---
+
+## Głowki na liście graczy (`tablist.yml`)
+
+Sekcja `heads` ustawia własne tekstury głowek wyświetlanych przy wierszach tablisty. Teksturę przypisuje się do zakresu numerów wierszy, a `value` i `signature` pobiera się z generatora skinów, np. [mineskin.org](https://mineskin.org/).
+
+```yml
+heads:
+  # Czy wlasne glowki na liscie graczy maja byc wlaczone
+  enabled: true
+  textures:
+    1-80:
+      value: ewogICJ0aW1lc3RhbXAiIDog...
+      signature: JK7IOCq36OLWWKmqp0NZ...
+    46-46:
+      value: ewogICJ0aW1lc3RhbXAiIDog...
+      signature: ukTVfQx0saoV8CjINbZU...
+```
+
+:::caution
+Własne głowki widzą tylko gracze z kontem premium. Gracze bez niego nie zobaczą żadnej zmiany.
+:::
 
 ---
 
