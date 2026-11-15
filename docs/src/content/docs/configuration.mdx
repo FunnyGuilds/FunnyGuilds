@@ -115,3 +115,96 @@ posiadanych uprawnień.
 
 2\* — wartość rankingu należy podać tylko tam, gdzie ma ona zastosowanie —
 np. przy zakładaniu gildii lub dołączaniu do niej.
+
+## Formatowanie wartości liczbowych
+
+Sekcja `value-formatting` w `config.yml` ustawia wygląd placeholderów z końcówką
+`-FORMAT`. Mapy `user` i `guild` używają identyfikatorów statystyk, np. `points`,
+`kdr`, `avg_points`, `wars_won`. Lista `ping` dotyczy pingu gracza.
+
+```yaml
+value-formatting:
+  user:
+    points:
+      - '*-749 &4{VALUE}'
+      - '750-999 &c{VALUE}'
+      - '1000-1499 &a{VALUE}'
+      - '1500-* &6&l{VALUE}'
+    kills: []
+    deaths: []
+    assists: []
+    logouts: []
+    kdr:
+      - '0.0-1.0 &c{VALUE}'
+      - '1.0-2.0 &e{VALUE}'
+      - '2.0-* &a{VALUE}'
+    kda: []
+  guild:
+    points:
+      - '*-749 &4{VALUE}'
+      - '750-999 &c{VALUE}'
+      - '1000-1499 &a{VALUE}'
+      - '1500-* &6&l{VALUE}'
+    kills: []
+    deaths: []
+    assists: []
+    logouts: []
+    kdr: []
+    kda: []
+    avg_points:
+      - '*-999 &c{VALUE}'
+      - '1000-* &a{VALUE} punktów'
+    avg_kills: []
+    avg_deaths: []
+    avg_assists: []
+    avg_logouts: []
+    avg_kdr: []
+    avg_kda: []
+    wars_won: []
+    wars_lost: []
+    war_streak: []
+  ping:
+    - '0-75 &a{VALUE}'
+    - '76-150 &e{VALUE}'
+    - '151-* &c{VALUE}'
+```
+
+Wpis ma postać `min-max szablon`. Szablon może zawierać spacje, kolory legacy,
+hex i MiniMessage; podstawiane jest tylko lokalne `{VALUE}`. Inne placeholdery
+oraz PAPI nie są rozwijane wewnątrz reguły.
+
+Pierwszy pasujący wpis wygrywa, również przy nakładających się lub identycznych
+zakresach. Dwie granice całkowite są włączne (`0-1` obejmuje `1`). Jeżeli choć
+jedna granica jest dziesiętna, prawa granica jest wyłączna (`0.0-1.0` nie obejmuje
+`1`). Dla KDR/KDA używaj zapisu dziesiętnego. `*` oznacza granicę typu `int`
+(od −2147483648 do 2147483647); ujemny zakres zapisuje się np. `*--1`.
+
+Próg jest wybierany przed zaokrągleniem. Nowe warianty `-FORMAT` pokazują liczby
+ułamkowe z kropką i dwoma miejscami, także gdy żadna reguła nie pasuje.
+Brak klucza, `[]` lub luka w zakresach zwracają zwykłą wartość. Brak gildii daje
+neutralne `0` lub `0.00`, bez kolorowania jak rzeczywisty wynik zerowy.
+Ping jest przekazywany bez zmiany: profil Bukkit dla offline zwraca `0`, inne
+profile mogą zwrócić `-1`; zakres ujemny można opisać osobną regułą.
+
+Domyślnie kolorowane są punkty gracza, suma i średnia punktów gildii
+(do 749: ciemnoczerwony, 750–999: czerwony, 1000–1499: zielony, od 1500: złoty
+pogrubiony) oraz ping (0–75: zielony, 76–150: żółty, od 151: czerwony).
+Wygenerowana konfiguracja zawiera wpisy dla wszystkich wymienionych statystyk.
+Pozostałe statystyki mają domyślnie puste listy `[]` i są neutralne — zastąp je
+własnymi regułami, aby ustawić progi i kolory (jak dla KDR w przykładzie).
+Dotychczasowe placeholdery
+bez `-FORMAT` oraz domyślne komunikaty zachowują wygląd.
+
+Błędny zapis, brak szablonu, odwrócony lub pusty zakres ułamkowy przerywają
+wczytywanie z informacją o miejscu błędu. Dotyczy to również istniejących list
+formatowania topek, zmian punktów i stałych ELO. Poprawne starsze zakresy pozostają
+obsługiwane, w tym dolna granica `-*`; zalecany zapis to `*`.
+Po zmianie użyj `/funnyguilds reload`. Reguły są podmieniane razem po poprawnej
+walidacji; nieudane przeładowanie pozostawia poprzedni zestaw reguł formatowania.
+Nie oznacza to transakcyjnego przeładowania pozostałych ustawień pluginu.
+
+Przenosząc konfigurację 4.9.x, skopiuj `points-format` do odpowiednich map
+`value-formatting.user`/`guild`, a `ping-format` do `value-formatting.ping`.
+W szablonach zamień `{POINTS}` lub `{PING}` na `{VALUE}`. Nie ma automatycznej
+migracji całej konfiguracji 4.x. Zasady dziedziczenia topek opisują
+[Rankingi i walka](/rankings-combat/#formatowanie-wartości).

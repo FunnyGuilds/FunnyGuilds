@@ -20,25 +20,18 @@ Each message's appearance is set by its own template (`chat-priv-design`,
 all three channels in the `chat-spy-design` format — `log-guild-chat`
 additionally writes them to the server log.
 
-## Main chat tags
+## Statistics in main chat
 
-Independent of the guild channels, FunnyGuilds exposes tags meant to be
-inserted into the server's main chat format (handled by the installed chat
-plugin):
+In FG 5.x, an external chat plugin formats main chat. Use
+[PlaceholderAPI](/en/placeholderapi/) in its template, for example
+`%funnyguilds_points-format%`, `%funnyguilds_kdr-format%` or
+`%funnyguilds_g-avg-points-format%`. Thresholds and colors are configured in
+`value-formatting` in `config.yml`.
 
-| Tag | Description |
-|---|---|
-| `{POS}` | The sender's guild role — empty, `chat-position-deputy` or `chat-position-leader` |
-| `{TAG}` | The sender's guild tag (`chat-guild`), empty for guildless players |
-| `{RANK}` | The player's position in the points ranking (`chat-rank`) |
-| `{POINTS}` / `{POINTS-FORMAT}` | The player's ranking points (`chat-points`) |
-
-:::caution[Incompatible with LPC]
-These tags aren't supported by the [LPC](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-19.68965/)
-plugin — it uses the wrong priority for the chat event, so FunnyGuilds
-doesn't get a chance to substitute its values. [PlaceholderAPI](/en/placeholderapi/)
-is an alternative.
-:::
+The FG 5.x listener does not implement the old automatic substitution of
+`{POINTS}`, `{POINTS-FORMAT}`, `{RANK}`, `{TAG}` and `{POS}` in the general chat
+format. Fields such as `chat-points` do not enable that mechanism. The guild
+channels above retain their own templates and variables.
 
 ## Above-head player tags (nametag)
 

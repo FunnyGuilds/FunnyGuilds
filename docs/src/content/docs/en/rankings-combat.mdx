@@ -60,8 +60,8 @@ The `top` section drives player and guild top lists, available as the
 [Placeholders](/en/placeholders/)). Every type enabled in
 `enabled-user-tops`/`enabled-guild-tops` is calculated separately:
 
-- Player types: `points`, `kills`, `deaths`, `assists`, `logouts`.
-- Guild types: the same, plus `avg_*` average variants (e.g. `avg_points`).
+- Player types: `points`, `kills`, `deaths`, `assists`, `logouts`, `kdr`, `kda`.
+- Guild types: the same, plus `avg_*` average variants (e.g. `avg_points`, `avg_kdr`, `avg_kda`), as well as `wars_won` and `war_streak`.
 
 `use-relationship-colors` colors top-list entries by guild relationship
 (same guild/allies/enemies), just like chat tags. The appearance of the
@@ -79,3 +79,26 @@ of `/rankreset` and `/statsreset`) and `scoreboard.dummy` (points shown under
 a player's nickname — see [Chat](/en/chat/) for the tag shown above their
 head).
 :::
+
+## Value formatting
+
+`value-formatting.user`, `value-formatting.guild` and `value-formatting.ping`
+configure placeholders ending in `-FORMAT`, independently of enabled top lists.
+See [Configuration](/en/configuration/#numeric-value-formatting) for examples
+and range semantics.
+
+For top lists, local `{VALUE-FORMAT}` in `top.format.ptop`/`gtop` selects rules as follows:
+
+1. If the type key exists in `top.format.ptop-value-formatting` or
+   `top.format.gtop-value-formatting`, its list is used.
+2. An absent key inherits from `value-formatting.user` or `value-formatting.guild`.
+3. Missing rules or no matching range returns the plain value.
+
+An empty list `[]` explicitly disables formatting and does not inherit. A gap in
+the selected list does not trigger inheritance either. Existing top-list settings
+take precedence. `{VALUE}` and the top-list `-VALUE` suffix remain raw; there is
+no new top-list `-VALUE-FORMAT` suffix. Name and guild relationship colors are
+independent of numeric formatting.
+
+`kill-points-change-format` and `{CHANGE}` still describe the signed change
+in points after combat; current-statistic formatting does not replace them.

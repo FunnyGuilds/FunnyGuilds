@@ -4,9 +4,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.formatting.NumericValueFormatter;
+import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocalePairResolver;
@@ -56,6 +59,18 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                         (entity, guild) -> formatTime(entity, guild, timeSupplier, fallbackResolver),
                         fallbackResolver
                 );
+    }
+
+    public GuildPlaceholders numericRankProperty(String name, String metric, Function<GuildRank, Number> resolver, Number fallback, Supplier<ValueFormatting> formatting) {
+        return this.rankProperty(name, rank -> resolver.apply(rank), fallback)
+                .property(name + "-format", guild -> formatting.get().guild(metric, resolver.apply(guild.getRank())),
+                        entity -> NumericValueFormatter.plain(fallback));
+    }
+
+    public GuildPlaceholders numericProperty(String name, String metric, Function<Guild, Number> resolver, Supplier<ValueFormatting> formatting) {
+        return this.property(name, guild -> resolver.apply(guild), entity -> 0)
+                .property(name + "-format", guild -> formatting.get().guild(metric, resolver.apply(guild)),
+                        entity -> NumericValueFormatter.plain(0));
     }
 
     private static Object formatDate(Object entity, Guild guild, Function<Guild, Instant> timeSupplier, FunnyTimeFormatter formatter, LocaleSimpleResolver fallbackResolver) {

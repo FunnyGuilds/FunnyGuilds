@@ -115,3 +115,95 @@ held permissions.
 
 2\* — the ranking value only needs to be given in contexts such as creating a
 guild or joining one.
+
+## Numeric value formatting
+
+The `value-formatting` section in `config.yml` controls placeholders ending in
+`-FORMAT`. The `user` and `guild` maps use metric IDs such as `points`, `kdr`,
+`avg_points` and `wars_won`. The `ping` list controls player ping.
+
+```yaml
+value-formatting:
+  user:
+    points:
+      - '*-749 &4{VALUE}'
+      - '750-999 &c{VALUE}'
+      - '1000-1499 &a{VALUE}'
+      - '1500-* &6&l{VALUE}'
+    kills: []
+    deaths: []
+    assists: []
+    logouts: []
+    kdr:
+      - '0.0-1.0 &c{VALUE}'
+      - '1.0-2.0 &e{VALUE}'
+      - '2.0-* &a{VALUE}'
+    kda: []
+  guild:
+    points:
+      - '*-749 &4{VALUE}'
+      - '750-999 &c{VALUE}'
+      - '1000-1499 &a{VALUE}'
+      - '1500-* &6&l{VALUE}'
+    kills: []
+    deaths: []
+    assists: []
+    logouts: []
+    kdr: []
+    kda: []
+    avg_points:
+      - '*-999 &c{VALUE}'
+      - '1000-* &a{VALUE} points'
+    avg_kills: []
+    avg_deaths: []
+    avg_assists: []
+    avg_logouts: []
+    avg_kdr: []
+    avg_kda: []
+    wars_won: []
+    wars_lost: []
+    war_streak: []
+  ping:
+    - '0-75 &a{VALUE}'
+    - '76-150 &e{VALUE}'
+    - '151-* &c{VALUE}'
+```
+
+Entries use `min-max template`. Templates support spaces, legacy colors, hex
+and MiniMessage. Only the local `{VALUE}` is replaced; other placeholders and
+PAPI are not expanded inside a rule.
+
+The first matching entry wins, including overlapping and duplicate ranges.
+Both integer boundaries are inclusive (`0-1` includes `1`). If either boundary
+is decimal, the upper boundary is exclusive (`0.0-1.0` excludes `1`). Use decimal
+boundaries for KDR/KDA. `*` stands for an `int` boundary (−2147483648 to
+2147483647); a negative range can be written as `*--1`.
+
+Rules match the value before rounding. New `-FORMAT` variants display fractional
+numbers with a dot and two decimal places, including when no rule matches.
+A missing key, `[]` or a gap returns the plain value. A missing guild returns
+neutral `0` or `0.00` without applying the rule for a real zero result.
+Ping is passed through unchanged: Bukkit profiles return `0` for offline players,
+while other profiles may return `-1`; a separate negative range can describe it.
+
+Defaults color player points and both total and average guild points
+(up to 749: dark red, 750–999: red, 1000–1499: green, from 1500: bold gold),
+and ping (0–75: green, 76–150: yellow, from 151: red). Generated configuration
+includes an entry for every listed metric. Other metrics default to empty lists
+`[]` and remain neutral; replace these with rules to set thresholds and colors
+(as shown for KDR in the example). Existing placeholders without `-FORMAT` and default
+messages retain their appearance.
+
+Malformed entries, missing templates, reversed ranges and empty decimal ranges
+stop loading with the error location. This also applies to existing top-list,
+point-change and ELO-constant lists. Valid older ranges remain supported,
+including the lower boundary `-*`; use the canonical `*` in new configuration.
+Apply changes with `/funnyguilds reload`. A complete new set of formatting rules
+is published only after validation; a failed reload retains the previous set.
+This does not make the rest of the plugin configuration transactional.
+
+When moving from 4.9.x, copy `points-format` into the appropriate
+`value-formatting.user`/`guild` maps and `ping-format` into `value-formatting.ping`.
+Replace `{POINTS}` or `{PING}` with `{VALUE}` in templates. There is no automatic
+migration of the entire 4.x configuration. See
+[Rankings & combat](/en/rankings-combat/#value-formatting) for top-list inheritance.

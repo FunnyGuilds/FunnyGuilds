@@ -104,6 +104,7 @@ dependencies {
     /* tests */
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:6.0.57")
+    testImplementation("me.clip:placeholderapi:2.11.7")
 
     val testcontainers = "1.20.4"
     testImplementation("org.testcontainers:testcontainers:$testcontainers")

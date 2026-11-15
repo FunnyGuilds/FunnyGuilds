@@ -20,24 +20,17 @@ Wygląd każdej wiadomości ustawiają osobne szablony (`chat-priv-design`,
 wszystkie trzy kanały w formacie `chat-spy-design` — `log-guild-chat`
 dodatkowo zapisuje je w logach serwera.
 
-## Znaczniki w głównym czacie
+## Statystyki w głównym czacie
 
-Niezależnie od kanałów gildyjnych, FunnyGuilds udostępnia znaczniki do
-wstawienia w formacie głównego czatu serwera (obsługiwanym przez
-zainstalowany plugin czatowy):
+W FG 5.x główny czat formatuje zewnętrzny plugin czatowy. Użyj w jego szablonie
+[PlaceholderAPI](/placeholderapi/), np. `%funnyguilds_points-format%`,
+`%funnyguilds_kdr-format%` lub `%funnyguilds_g-avg-points-format%`.
+Progi i kolory ustawia `value-formatting` w `config.yml`.
 
-| Znacznik | Opis |
-|---|---|
-| `{POS}` | Rola nadawcy w gildii — puste, `chat-position-deputy` lub `chat-position-leader` |
-| `{TAG}` | Tag gildii nadawcy (`chat-guild`), puste dla graczy bez gildii |
-| `{RANK}` | Pozycja gracza w rankingu punktów (`chat-rank`) |
-| `{POINTS}` / `{POINTS-FORMAT}` | Punkty rankingowe gracza (`chat-points`) |
-
-:::caution[Niekompatybilność z LPC]
-Znaczniki te nie są obsługiwane przez plugin [LPC](https://www.spigotmc.org/resources/lpc-chat-formatter-1-7-10-1-19.68965/) —
-używa on niewłaściwego priorytetu dla eventu czatu, przez co FunnyGuilds nie zdąży
-podstawić swoich wartości. Alternatywą jest [PlaceholderAPI](/placeholderapi/).
-:::
+Dawne automatyczne przepisywanie znaczników `{POINTS}`, `{POINTS-FORMAT}`,
+`{RANK}`, `{TAG}` i `{POS}` w ogólnym formacie czatu nie jest obsługiwane przez
+obecny listener FG 5.x. Pola takie jak `chat-points` nie włączają tego mechanizmu.
+Kanały gildyjne opisane wyżej zachowują własne szablony i zmienne.
 
 ## Tagi nad głową gracza (nametag)
 

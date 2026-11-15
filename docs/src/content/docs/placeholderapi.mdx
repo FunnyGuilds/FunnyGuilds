@@ -39,3 +39,7 @@ kogo patrzy:
 | Placeholder             | Zwraca                                                                                                            |
 |:------------------------|:------------------------------------------------------------------------------------------------------------------|
 | `%rel_funnyguilds_tag%` | Tag gildii obserwowanego gracza, pokolorowany według jego relacji z obserwatorem (sojusznik, wróg, ta sama gildia) |
+
+## Formatowane statystyki
+
+Te same reguły `value-formatting` działają np. dla `%funnyguilds_points-format%`, `%funnyguilds_ping-format%` i `%funnyguilds_g-avg-points-format%`. Wynik zawiera kolory, gotowe do użycia w pluginie czatowym, GUI lub scoreboardzie. Ekspansja wymaga istniejącego użytkownika FG; dla brakującego gracza lub nieznanego użytkownika zwraca pusty tekst. Brak gildii daje neutralne `0`/`0.00`.

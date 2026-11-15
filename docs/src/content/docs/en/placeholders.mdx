@@ -139,3 +139,31 @@ The available (and currently enabled) types are listed under `top.enabled-user-t
 |  `WG-REGION`  | The WorldGuard region the player is currently standing in                                     |
 | `WG-REGIONS`  | The list of WorldGuard regions the player is currently standing in — separated by commas      |
 | `VAULT-MONEY` | The player's current balance, taken from the [Vault](https://github.com/MilkBowl/Vault) plugin |
+
+## Formatted values
+
+Each player metric `POINTS`, `KILLS`, `DEATHS`, `ASSISTS`, `LOGOUTS`, `KDR` and
+`KDA` has a variant ending in `-FORMAT`, such as `{KILLS-FORMAT}`. Ping provides
+`{PING-FORMAT}`. These work even if the corresponding top list is disabled.
+
+Guild variants are:
+
+- `G-POINTS-FORMAT`, `G-KILLS-FORMAT`, `G-DEATHS-FORMAT`, `G-ASSISTS-FORMAT`,
+  `G-LOGOUTS-FORMAT`, `G-KDR-FORMAT`, `G-KDA-FORMAT`;
+- their average variants `G-AVG-POINTS-FORMAT`, `G-AVG-KILLS-FORMAT`,
+  `G-AVG-DEATHS-FORMAT`, `G-AVG-ASSISTS-FORMAT`, `G-AVG-LOGOUTS-FORMAT`,
+  `G-AVG-KDR-FORMAT`, `G-AVG-KDA-FORMAT`;
+- `G-WARS-WON-FORMAT`, `G-WARS-LOST-FORMAT`, `G-WAR-STREAK-FORMAT`.
+
+`G-POINTS-FORMAT` formats the total; `G-AVG-POINTS-FORMAT` formats the average.
+The `/info` template uses the same names **without `G-`**, such as
+`{AVG-POINTS-FORMAT}`. `/gracz` and the right-click preview accept player and
+ping variants for the viewed player, rather than the message recipient.
+
+Rules live in `value-formatting` ? see [Configuration](/en/configuration/#numeric-value-formatting).
+Missing rules or no match returns the plain number; a missing guild returns
+neutral `0` or `0.00`. Existing placeholders remain unchanged. The suffix does
+not apply to positions (`POSITION`/`RANK`), dates or other non-numeric values.
+Not every message with a local `{POINTS}` uses the placeholder services: for
+example, guild creation costs and `/ga points` output do not gain these variants
+automatically.

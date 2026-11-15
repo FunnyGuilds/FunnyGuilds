@@ -1,14 +1,15 @@
 package net.dzikoysk.funnyguilds.shared.formatter;
 
+import com.google.common.base.Suppliers;
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
-import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
@@ -52,10 +53,14 @@ public final class FunnyFormatter implements Replaceable {
     }
         
     public <T> FunnyFormatter register(Placeholders<T, ?> placeholders, T data, String prefix, String suffix, UnaryOperator<String> nameModifier) {
-        placeholders.getPlaceholders().forEach((name, placeholder) -> this.register(Replacement.component(
-                prefix + nameModifier.apply(name) + suffix,
-                locale -> ComponentUtil.toComponent(placeholder.get(locale, data))
-        )));
+        placeholders.getPlaceholders().forEach((name, placeholder) -> {
+            String token = prefix + nameModifier.apply(name) + suffix;
+            this.register((locale, text) -> {
+                Supplier<Component> value = Suppliers.memoize(() -> placeholder.get(locale, data));
+                return text.replaceText(builder -> builder.matchLiteral(token)
+                        .replacement((match, replacement) -> value.get()));
+            });
+        });
         return this;
     }
 }

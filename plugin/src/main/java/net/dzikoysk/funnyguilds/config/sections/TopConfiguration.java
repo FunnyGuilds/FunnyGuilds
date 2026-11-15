@@ -23,14 +23,14 @@ public class TopConfiguration extends OkaeriConfig {
     @Comment("Lista topek graczy, które mają być obliczane i parsowane")
     @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
     @Comment("Topek tych można używać w formie placeholderów {PTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts")
+    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, kdr, kda")
     public Set<String> enabledUserTops = new TreeSet<>(Arrays.asList("points", "kills", "deaths"));
 
     @Comment("")
     @Comment("Lista topek gildii, które mają być obliczane i parsowane")
     @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
     @Comment("Topek tych można używać w formie placeholderów {GTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts")
+    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, kdr, kda, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts, avg_kdr, avg_kda, wars_won, war_streak")
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")
@@ -51,10 +51,10 @@ public class TopConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Wygląd znacznika {VALUE-FORMAT} w zależności od wartości topki graczy")
-        @Comment("Lista powinna być podana od najmniejszych do największych rankingów")
+        @Comment("Pierwszy pasujący wpis wygrywa; kolejność wpisów ma znaczenie")
         @Comment("Elementy listy powinny być postaci: \"minValue-maxValue wygląd\", np.: \"0-750 &4{VALUE}\"")
-        @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment("Brak dopasowania lub [] zwraca samą liczbę; brak klucza typu dziedziczy value-formatting")
+        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{VALUE}\"")
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma być używane dane formatowanie")
         public Map<String, List<RangeFormatting>> ptopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
                 .put("points", Arrays.asList(
@@ -79,10 +79,10 @@ public class TopConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Wygląd znacznika {VALUE-FORMAT} w zależności od wartości topki gildii")
-        @Comment("Lista powinna być podana od najmniejszych do największych rankingów")
+        @Comment("Pierwszy pasujący wpis wygrywa; kolejność wpisów ma znaczenie")
         @Comment("Elementy listy powinny być postaci: \"minValue-maxValue wygląd\", np.: \"0-750 &4{VALUE}\"")
-        @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment("Brak dopasowania lub [] zwraca samą liczbę; brak klucza typu dziedziczy value-formatting")
+        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{VALUE}\"")
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma być używane dane formatowanie")
         public Map<String, List<RangeFormatting>> gtopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
                 .put("kills", Arrays.asList(

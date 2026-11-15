@@ -22,8 +22,8 @@ W sekcji `cells:` ustawia się wygląd wierszy tablisty. Numeruje się je **od 1
 ```yml
 cells:
   1: '&7Nick: &b{PLAYER}'
-  2: '&7Ping: &b{PING}'
-  3: '&7Punkty: &b{POINTS}'
+  2: '&7Ping: {PING-FORMAT}'
+  3: '&7Punkty: {POINTS-FORMAT}'
   4: '&7Zabojstwa: &b{KILLS}'
   5: '&7Smierci: &b{DEATHS}'
   6: '&7KDR: &b{KDR}'
@@ -43,6 +43,8 @@ cells:
   63: '&72. &b{PTOP-POINTS-2}'
   64: '&73. &b{PTOP-POINTS-3}'
 ```
+
+Przykład świadomie używa `-FORMAT` dla pingu i punktów. Reguły w `value-formatting` w `config.yml` można przeładować przez `/funnyguilds reload`. `{G-POINTS-FORMAT}` oznacza sumę punktów; dla średniej użyj `{G-AVG-POINTS-FORMAT}`.
 
 ---
 
