@@ -17,7 +17,7 @@
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "@fontsource/ibm-plex-sans": "^5.2.8",
     "@fontsource/noto-sans": "^5.2.10",
-    "astro": "^7.0.6",
+    "astro": "^7.4.12",
     "mersenne-twister": "^1.1.0",
     "three": "^0.185.1"
   },
