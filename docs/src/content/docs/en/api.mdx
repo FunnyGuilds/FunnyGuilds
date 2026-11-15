@@ -6,7 +6,9 @@ description: A guide to the FunnyGuilds API for developers.
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 :::note
-FunnyGuilds API 5.x (nightly)
+FunnyGuilds API 5.0.0
+
+Nightly builds are published to the `snapshots` repository as `5.0.1-SNAPSHOT`.
 :::
 
 ## FunnyGuilds API
@@ -15,15 +17,15 @@ FunnyGuilds API 5.x (nightly)
 <TabItem label="Maven">
 ```xml
 <repository>
-    <id>reposilite-snapshots-repository</id>
-    <url>https://maven.reposilite.com/snapshots</url>
+    <id>reposilite-repository</id>
+    <url>https://maven.reposilite.com/releases</url>
 </repository>
 ```
 ```xml
 <dependency>
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.0</version>
     <classifier>all</classifier>
     <scope>provided</scope>
 </dependency>
@@ -34,14 +36,14 @@ FunnyGuilds API 5.x (nightly)
 repositories {
     mavenCentral()
     maven {
-        name 'reposilite-snapshots-repository'
-        url 'https://maven.reposilite.com/snapshots'
+        name 'reposilite-repository'
+        url 'https://maven.reposilite.com/releases'
     }
 }
 ```
 ```groovy
 dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all'
+    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0:all'
 }
 ```
 </TabItem>
@@ -50,14 +52,14 @@ dependencies {
 repositories {
     mavenCentral()
     maven {
-        name = "reposilite-snapshots-repository"
-        url = uri("https://maven.reposilite.com/snapshots")
+        name = "reposilite-repository"
+        url = uri("https://maven.reposilite.com/releases")
     }
 }
 ```
 ```kotlin
 dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all")
+    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0:all")
 }
 ```
 </TabItem>
@@ -132,13 +134,21 @@ if (guildOption.isPresent()) {
 }
 ```
 
+### Items and requirements
+
+The `items.yml` configuration is available straight from the plugin instance:
+
+- `FunnyGuilds#getItemsConfiguration()` — the item library and requirement sets.
+- `FunnyGuilds#getGuildItemSetService()` — the set a given player qualifies for.
+- `FunnyGuilds#getGuildItemRequirementChecker()` — whether a player meets the requirements.
+
 ### Listening for events
 
 Events related to:
-- Ranking changes: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
-- Guilds: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
-- Guild members: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
-- Alliances: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/master/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
+- Ranking changes: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
+- Guilds: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
+- Guild members: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
+- Alliances: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
 
 An example using `GuildDeleteEvent`:
 

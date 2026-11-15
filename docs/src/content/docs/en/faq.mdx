@@ -68,7 +68,18 @@ The most common cause of this kind of issue is another plugin using scoreboards 
 
 ## How do I set up holograms with the top guilds?
 
-[Example hologram configuration using PlaceholderAPI, HolographicExtension and HolographicDisplays](https://github.com/FunnyGuilds/FunnyGuilds/issues/1400#issuecomment-759867633)
+FunnyGuilds does not create these holograms itself. You need
+[DecentHolograms](/en/decentholograms/) and [PlaceholderAPI](/en/placeholderapi/) —
+put the top-list placeholders from the `funnyguilds` expansion in the hologram's
+lines:
+
+```
+%funnyguilds_gtop-points-1%
+%funnyguilds_gtop-points-2%
+%funnyguilds_gtop-points-3%
+```
+
+See [Placeholders](/en/placeholders/) for the full list of available top lists.
 
 ## How do I integrate the plugin with CombatLogX?
 

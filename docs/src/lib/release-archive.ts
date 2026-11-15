@@ -28,6 +28,8 @@ export interface ArchivedRelease {
   /** Published asset filename and its size in bytes; absent for versions with no archived jar. */
   jarName: string | null;
   jarSize: number | null;
+  /** Direct asset link where the jar is archived, otherwise the release page listing it. */
+  downloadPath: string;
   body: string;
 }
 
@@ -40,7 +42,16 @@ function parseChangelog(raw: string, tag: string): ArchivedRelease {
   const body = (sep === -1 ? raw : raw.slice(sep + 5)).trim();
   const jarName = raw.match(/\*\*Jar:\*\*\s*(\S+)/)?.[1] ?? null;
   const jarSize = Number(raw.match(/\*\*Size:\*\*\s*(\d+)/)?.[1]) || null;
-  return { tag, publishedAt, htmlUrl, mcRange: parseMcRange(body), jarName, jarSize, body };
+  return {
+    tag,
+    publishedAt,
+    htmlUrl,
+    mcRange: parseMcRange(body),
+    jarName,
+    jarSize,
+    downloadPath: jarName ? `${JAR_BASE_URL}/${tag}/${jarName}` : htmlUrl,
+    body,
+  };
 }
 
 function loadAllReleases(): ArchivedRelease[] {
@@ -58,11 +69,12 @@ function loadAllReleases(): ArchivedRelease[] {
 
 // Every 4.x changelog ends with a requirements bullet naming the tested server versions
 // ("* Spigot 1.8.8 - 1.16.5", "* Spigot 1.8.8/1.9.4/...", "* Craftbukkit 1.8+"), which is more
-// precise than the jar filename's rounded major.minor. Anchored to the bullet so a passing
-// mention of Spigot in the prose above can't be picked up instead. Pre-4.x changelogs mostly
-// have no such line — see PRE_4X_RANGE in mc-version-archive.ts.
+// precise than the jar filename's rounded major.minor. 5.x dropped Spigot and names Paper
+// instead ("* Paper 1.21.5 - 1.21.11, 26.1 - 26.3"). Anchored to the bullet so a passing
+// mention of a server brand in the prose above can't be picked up instead. Pre-4.x changelogs
+// mostly have no such line — see PRE_4X_RANGE in mc-version-archive.ts.
 function parseMcRange(body: string): string | null {
-  const line = body.match(/^\s*[*-]\s*(?:Spigot|CraftBukkit|Bukkit)\s*(.+)$/im)?.[1];
+  const line = body.match(/^\s*[*-]\s*(?:Paper|Spigot|CraftBukkit|Bukkit)\s*(.+)$/im)?.[1];
   const versions = line?.match(/\d+(?:\.\d+)+/g);
   if (!versions?.length) return null;
   const [low, high] = [versions[0], versions[versions.length - 1]];
@@ -74,7 +86,6 @@ const ALL_RELEASES = loadAllReleases();
 export interface LatestRelease extends ArchivedRelease {
   jarName: string;
   jarSize: number;
-  downloadPath: string;
 }
 
 function loadLatestRelease(): LatestRelease {
@@ -83,15 +94,19 @@ function loadLatestRelease(): LatestRelease {
     throw new Error(`${latest.tag} is the newest archived release but its changelog has no Jar/Size header`);
   }
 
-  return {
-    ...latest,
-    jarName: latest.jarName,
-    jarSize: latest.jarSize,
-    downloadPath: `${JAR_BASE_URL}/${latest.tag}/${latest.jarName}`,
-  };
+  return { ...latest, jarName: latest.jarName, jarSize: latest.jarSize };
 }
 
 export const LATEST_RELEASE: LatestRelease = loadLatestRelease();
 
 // Every archived release except the latest (shown separately).
 export const RELEASE_HISTORY: ArchivedRelease[] = ALL_RELEASES.slice(1);
+
+/** A specific archived release, for pages that point at one by name rather than "the latest". */
+export function releaseByTag(tag: string): ArchivedRelease {
+  const release = ALL_RELEASES.find((candidate) => candidate.tag === tag);
+  if (!release) {
+    throw new Error(`No archived release tagged ${tag} under docs/archive`);
+  }
+  return release;
+}
