@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.tablist;
 
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.Locale;
 import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
@@ -47,7 +48,7 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
                 .register(this.basicPlaceholdersService.asReplaceable(null, prefix, suffix, nameModifier))
                 .register(this.timePlaceholdersService.asReplaceable(OffsetDateTime.now(), prefix, suffix, nameModifier))
                 .register(this.userPlaceholdersService.asReplaceable(data, prefix, suffix, nameModifier))
-                .register(this.guildPlaceholdersService.asReplaceable(data.getGuild().orNull(), prefix + "G-", suffix, nameModifier));
+                .register(this.guildPlaceholdersService.asReplaceable(data.getGuild().orElse(null), prefix + "G-", suffix, nameModifier));
     }
 
     @Override

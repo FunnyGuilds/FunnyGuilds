@@ -5,6 +5,7 @@ import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -47,8 +48,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
+import java.util.Optional;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -65,23 +65,23 @@ public class PlayerDeath extends AbstractFunnyListener {
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
 
-        Option<User> victimOption = this.userManager.findByPlayer(playerVictim);
+        Optional<User> victimOption = this.userManager.findByPlayer(playerVictim);
         if (victimOption.isEmpty()) {
             return;
         }
 
-        User victim = victimOption.get();
+        User victim = victimOption.orElseThrow();
         DamageState victimDamageState = damageManager.getDamageState(victim.getUUID());
 
-        Option<User> attackerOption = Option.none();
+        Optional<User> attackerOption = Optional.empty();
         if (playerAttacker == null && this.config.considerLastAttackerAsKiller || playerVictim.equals(playerAttacker)) { // If player killed himself use last attacker as a killer
-            Option<Damage> lastDamageOption = victimDamageState.getLastDamage();
-            if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
+            Optional<Damage> lastDamageOption = victimDamageState.getLastDamage();
+            if (lastDamageOption.isEmpty() || !lastDamageOption.orElseThrow().getAttacker().isOnline()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
                 victimDamageState.clear();
                 return;
             }
-            Damage lastDamage = lastDamageOption.get();
+            Damage lastDamage = lastDamageOption.orElseThrow();
 
             if (lastDamage.isExpired(this.config.lastAttackerAsKillerConsiderationTimeout)) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
@@ -89,7 +89,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            attackerOption = Option.of(lastDamage.getAttacker());
+            attackerOption = Optional.of(lastDamage.getAttacker());
             playerAttacker = this.funnyServer.getPlayer(lastDamage.getAttacker().getUUID()).get();
         }
 
@@ -97,12 +97,12 @@ public class PlayerDeath extends AbstractFunnyListener {
             attackerOption = this.userManager.findByPlayer(playerAttacker);
         }
 
-        this.handleDeathEvent(victim, attackerOption.orElseGet(victim), attackerOption.isPresent() ? EventCause.COMBAT : EventCause.USER);
+        this.handleDeathEvent(victim, attackerOption.orElse(victim), attackerOption.isPresent() ? EventCause.COMBAT : EventCause.USER);
 
         if (attackerOption.isEmpty()) {
             return;
         }
-        User attacker = attackerOption.get();
+        User attacker = attackerOption.orElseThrow();
         DamageState attackerDamageState = this.damageManager.getDamageState(attacker.getUUID());
 
         if (victim.equals(attacker)) {
@@ -203,11 +203,11 @@ public class PlayerDeath extends AbstractFunnyListener {
         victimDamageState.clear();
 
         if (this.config.dataModel.isSQL()) {
-            victim.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
-            attacker.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
+            victim.getGuild().ifPresent(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
+            attacker.getGuild().ifPresent(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
 
-            PandaStream.of(calculatedAssists.keySet())
-                    .flatMap(User::getGuild)
+            calculatedAssists.keySet().stream()
+                    .flatMap(user -> user.getGuild().stream())
                     .forEach(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
 
             this.plugin.scheduleFunnyTasks(
@@ -220,7 +220,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             );
         }
 
-        this.plugin.getDummyManager().peek(manager -> {
+        this.plugin.getDummyManager().ifPresent(manager -> {
             this.plugin.scheduleFunnyTasks(
                     new ScoreboardGlobalUpdateUserSyncTask(manager, victim),
                     new ScoreboardGlobalUpdateUserSyncTask(manager, attacker)
@@ -232,8 +232,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         int victimPointsChange = combatPointsChangeEvent.getVictimPointsChange();
 
         Player finalPlayerAttacker = playerAttacker;
-        Guild attackerGuild = attacker.getGuild().orNull();
-        Guild victimGuild = victim.getGuild().orNull();
+        Guild attackerGuild = attacker.getGuild().orElse(null);
+        Guild victimGuild = victim.getGuild().orElse(null);
 
         String plusFormatted = RankFormatter.formatPointsChange(attackerPointsChange, this.config.killPointsChangeFormat);
         String minusFormatted = RankFormatter.formatPointsChange(victimPointsChange, this.config.killPointsChangeFormat);
@@ -255,7 +255,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                             Guild receiverGuild = this.userManager
                                     .findByUuid(messageReceiver.getUniqueId())
                                     .flatMap(User::getGuild)
-                                    .orNull();
+                                    .orElse(null);
                             return Replacement.component(
                                     "{ATTACKER-TAG}",
                                     this.config.relationalTag.chooseAndPrepareTag(
@@ -275,7 +275,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                             Guild receiverGuild = this.userManager
                                     .findByUuid(messageReceiver.getUniqueId())
                                     .flatMap(User::getGuild)
-                                    .orNull();
+                                    .orElse(null);
                             return Replacement.component(
                                     "{VICTIM-TAG}",
                                     this.config.relationalTag.chooseAndPrepareTag(
@@ -333,20 +333,20 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         switch (this.config.deathMessageReceivers) {
             case GUILD:
-                attacker.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers(true)));
-                victim.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers(true)));
+                attacker.getGuild().ifPresent(guild -> receivers.addAll(guild.getOnlineMembers(true)));
+                victim.getGuild().ifPresent(guild -> receivers.addAll(guild.getOnlineMembers(true)));
                 calculatedAssists.keySet()
-                        .forEach(user -> user.getGuild().peek(guild -> receivers.addAll(guild.getOnlineMembers(true))));
+                        .forEach(user -> user.getGuild().ifPresent(guild -> receivers.addAll(guild.getOnlineMembers(true))));
                 break;
             case WORLD:
                 event.getEntity()
                         .getWorld()
                         .getPlayers()
-                        .forEach(player -> this.userManager.findByPlayer(player).peek(receivers::add));
+                        .forEach(player -> this.userManager.findByPlayer(player).ifPresent(receivers::add));
                 break;
             case ALL:
                 Bukkit.getOnlinePlayers()
-                        .forEach(player -> this.userManager.findByPlayer(player).peek(receivers::add));
+                        .forEach(player -> this.userManager.findByPlayer(player).ifPresent(receivers::add));
                 break;
         }
 
@@ -370,22 +370,22 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Option<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
-        Option<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
+        Optional<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
+        Optional<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
 
         // Check IP-based kill history if enabled
-        Option<Instant> victimIPTimestamp = Option.none();
-        Option<Instant> attackerIPTimestamp = Option.none();
-        
+        Optional<Instant> victimIPTimestamp = Optional.empty();
+        Optional<Instant> attackerIPTimestamp = Optional.empty();
+
         if (this.config.rankFarmingCooldownIP) {
             InetAddress attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getAddress() : null;
             InetAddress victimIP = playerVictim.getAddress() != null ? playerVictim.getAddress().getAddress() : null;
-            
-            victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Option.none();
-            attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Option.none();
+
+            victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Optional.empty();
+            attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Optional.empty();
         }
 
-        if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        if (victimTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
                     .send();
@@ -394,7 +394,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.rankFarmingCooldownIP && victimIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && victimIPTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
                     .send();
@@ -403,7 +403,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();
@@ -412,7 +412,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.rankFarmingCooldownIP && this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();
@@ -456,7 +456,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Option<Guild> attackerGuildOption = attacker.getGuild();
+        Optional<Guild> attackerGuildOption = attacker.getGuild();
         if (attackerGuildOption.isEmpty()) {
             return false;
         }
@@ -465,7 +465,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Guild attackerGuild = attackerGuildOption.get();
+        Guild attackerGuild = attackerGuildOption.orElseThrow();
         String victimIP = playerVictim.getAddress().getHostString();
 
         if (!victimSharesIPWithGuildMember(victimIP, attackerGuild, attacker)) {
@@ -526,13 +526,13 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Option<Guild> victimGuildOption = victim.getGuild();
-        Option<Guild> attackerGuildOption = attacker.getGuild();
+        Optional<Guild> victimGuildOption = victim.getGuild();
+        Optional<Guild> attackerGuildOption = attacker.getGuild();
         if (victimGuildOption.isEmpty() || attackerGuildOption.isEmpty()) {
             return false;
         }
-        Guild victimGuild = victimGuildOption.get();
-        Guild attackerGuild = attackerGuildOption.get();
+        Guild victimGuild = victimGuildOption.orElseThrow();
+        Guild attackerGuild = attackerGuildOption.orElseThrow();
 
         if (victimGuild.isAlly(attackerGuild) || attackerGuild.isAlly(victimGuild)) {
             this.messageService.getMessage(config -> config.rankAllyVictim)

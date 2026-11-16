@@ -14,8 +14,8 @@ import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
-import panda.std.Option
 import java.nio.file.Files
+import java.util.Optional
 import java.nio.file.Path
 import java.util.UUID
 import kotlin.test.assertContains
@@ -172,7 +172,7 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
 
     private fun prepareProfiles() {
         val server = mock(FunnyServer::class.java)
-        lenient().`when`(server.getPlayer(any(UUID::class.java))).thenReturn(Option.none())
+        lenient().`when`(server.getPlayer(any(UUID::class.java))).thenReturn(Optional.empty())
         lenient().`when`(funnyGuilds.funnyServer).thenReturn(server)
     }
 

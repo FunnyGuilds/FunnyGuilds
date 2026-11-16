@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.rank.placeholders;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.ComponentReplacement;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -12,7 +13,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public class TopPositionPlaceholderReplacement extends ComponentReplacement {
 
@@ -63,12 +63,12 @@ public class TopPositionPlaceholderReplacement extends ComponentReplacement {
             return minMembersToIncludeNoValue;
         }
 
-        Option<Guild> guildOption = targetUser.getGuild();
+        Optional<Guild> guildOption = targetUser.getGuild();
         if (guildOption.isEmpty()) {
             return minMembersToIncludeNoValue;
         }
 
-        Guild guild = guildOption.get();
+        Guild guild = guildOption.orElseThrow();
         if (!this.guildRankManager.isRankedGuild(guild)) {
             return minMembersToIncludeNoValue;
         }

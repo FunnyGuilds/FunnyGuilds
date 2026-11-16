@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.config;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
+import java.util.stream.Stream;
 
 public enum DefaultRegex {
 
@@ -33,8 +33,10 @@ public enum DefaultRegex {
         return this.compiledPattern;
     }
 
-    public static Option<DefaultRegex> findRegex(String name) {
-        return PandaStream.of(values()).find(regex -> regex.name().equalsIgnoreCase(name));
+    public static Optional<DefaultRegex> findRegex(String name) {
+        return Stream.of(values())
+                .filter(regex -> regex.name().equalsIgnoreCase(name))
+                .findFirst();
     }
 
 }

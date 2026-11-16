@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import dev.peri.yetanothermessageslibrary.message.Sendable;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Function;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -64,7 +65,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 .with(CommandSender.class, receiver -> {
                     FunnyFormatter perReceiverFormatter = new FunnyFormatter();
                     if (infoUser.hasGuild()) {
-                        Guild guild = infoUser.getGuild().get();
+                        Guild guild = infoUser.getGuild().orElseThrow();
                         perReceiverFormatter.register("{GUILD}", guild.getName());
                         perReceiverFormatter.register("{TAG}", guild.getTag());
                     } else {
@@ -81,7 +82,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         int gain = 0;
         int loss = 0;
         if (receiver instanceof Player) {
-            User receiverUser = this.userManager.findByPlayer((Player) receiver).orNull();
+            User receiverUser = this.userManager.findByPlayer((Player) receiver).orElse(null);
             if (receiverUser != null && !receiverUser.equals(infoUser)) {
                 int receiverPoints = receiverUser.getRank().getPoints();
                 int infoUserPoints = infoUser.getRank().getPoints();

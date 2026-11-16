@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.war;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.time.Instant;
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -23,7 +24,6 @@ import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 
 public class WarSystem {
 
@@ -47,7 +47,7 @@ public class WarSystem {
         PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
         WarConfiguration warConfig = pluginConfiguration.war;
         MessageService messageService = plugin.getMessageService();
-        Option<User> userOp = userManager.findByPlayer(player);
+        Optional<User> userOp = userManager.findByPlayer(player);
 
         if (!warConfig.enabled) {
             messageService.getMessage(config -> config.warDisabled)
@@ -59,7 +59,7 @@ public class WarSystem {
         if (userOp.isEmpty()) {
             return;
         }
-        User user = userOp.get();
+        User user = userOp.orElseThrow();
 
         if (!user.hasGuild()) {
             messageService.getMessage(config -> config.warHasNotGuild)
@@ -68,7 +68,7 @@ public class WarSystem {
             return;
         }
 
-        Guild attacker = user.getGuild().get();
+        Guild attacker = user.getGuild().orElseThrow();
         if (attacker.equals(guild)) {
             return;
         }

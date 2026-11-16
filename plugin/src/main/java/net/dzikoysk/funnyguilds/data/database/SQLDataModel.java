@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -25,7 +26,6 @@ import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
-import panda.std.Option;
 
 public class SQLDataModel implements DataModel {
 
@@ -98,12 +98,12 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void load() throws SQLException {
-        Option<Database> database = this.plugin.getDatabase();
+        Optional<Database> database = this.plugin.getDatabase();
         if (database.isEmpty()) {
             throw new SQLException("Database is not initialized");
         }
 
-        try (Connection connection = database.get().getConnection()) {
+        try (Connection connection = database.orElseThrow().getConnection()) {
             migrateSchema(connection, this.usersTable);
             migrateSchema(connection, this.regionsTable);
             migrateSchema(connection, this.guildsTable);
@@ -113,12 +113,14 @@ public class SQLDataModel implements DataModel {
         this.loadRegions();
         this.loadGuilds();
 
-        this.plugin.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getIndividualNameTagManager()
+                .map(ScoreboardGlobalUpdateSyncTask::new)
+                .ifPresent(this.plugin::scheduleFunnyTasks);
     }
 
     public void loadUsers() {
         try (Connection connection = this.plugin.getDatabase()
-                .orThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
+                .orElseThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
             if (this.pluginConfiguration.preventUuidConflicts) {
                 this.validateUserIdentities(connection);
             }
@@ -169,12 +171,12 @@ public class SQLDataModel implements DataModel {
 
         SQLBasicUtils.getSelect(this.guildsTable, "tag", "allies", "enemies").executeQuery(result -> {
             while (result.next()) {
-                Option<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
+                Optional<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
                 if (guildOption.isEmpty()) {
                     continue;
                 }
 
-                Guild guild = guildOption.get();
+                Guild guild = guildOption.orElseThrow();
                 String alliesList = result.getString("allies");
                 String enemiesList = result.getString("enemies");
 
@@ -205,7 +207,7 @@ public class SQLDataModel implements DataModel {
 
         SQLBasicUtils.getSelectAll(this.regionsTable).executeQuery(result -> {
             while (result.next()) {
-                DatabaseRegionSerializer.deserialize(result).peek(regionManager::addRegion);
+                DatabaseRegionSerializer.deserialize(result).ifPresent(regionManager::addRegion);
             }
         });
 

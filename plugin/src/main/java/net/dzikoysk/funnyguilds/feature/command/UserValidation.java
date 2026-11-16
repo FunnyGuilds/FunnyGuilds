@@ -9,7 +9,7 @@ public final class UserValidation {
     }
 
     public static User requireUserByName(String name) {
-        return FunnyGuilds.getInstance().getUserManager().findByName(name, true).orThrow(() -> {
+        return FunnyGuilds.getInstance().getUserManager().findByName(name, true).orElseThrow(() -> {
             return new InternalValidationException(config -> config.generalNotPlayedBefore);
         });
     }

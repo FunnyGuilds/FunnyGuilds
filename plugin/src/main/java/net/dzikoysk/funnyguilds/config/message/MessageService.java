@@ -16,7 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import panda.std.stream.PandaStream;
 
 public class MessageService extends SimpleSendableMessageService<CommandSender, MessageConfiguration, FunnyMessageDispatcher> implements
                                                                                                                               EntityLocaleProvider {
@@ -51,7 +50,7 @@ public class MessageService extends SimpleSendableMessageService<CommandSender, 
         messageService.registerLocaleProvider(new CommandSenderLocaleProvider());
         messageService.registerLocaleProvider(new UserLocaleProvider(plugin.getFunnyServer()));
 
-        PandaStream.of(config.availableLocales).forEach(locale -> {
+        config.availableLocales.stream().forEach(locale -> {
             String localeName = locale.toString();
             File localeFile = new File(languageFolder, localeName + ".yml");
             if (!localeFile.exists()) {

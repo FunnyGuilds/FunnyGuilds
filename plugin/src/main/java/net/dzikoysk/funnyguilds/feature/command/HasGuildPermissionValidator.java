@@ -22,7 +22,7 @@ final class HasGuildPermissionValidator implements Validator<HasGuildPermission,
     public boolean validate(Context context, HasGuildPermission annotation, Property property, User user) throws ValidationException {
         Guild guild = user
                 .getGuild()
-                .orThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild));
+                .orElseThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild));
         return this.permissionChecker.handlePermission(guild, user, annotation.value());
     }
 

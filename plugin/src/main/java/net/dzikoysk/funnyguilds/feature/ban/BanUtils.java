@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.ban;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
@@ -10,7 +11,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
-import panda.std.stream.PandaStream;
 
 public final class BanUtils {
 
@@ -19,7 +19,7 @@ public final class BanUtils {
 
     public static void ban(Guild guild, Duration time, String reason) {
         guild.setBan(Instant.now().plus(time));
-        PandaStream.of(guild.getMembers())
+        guild.getMembers().stream()
                 .map(member -> ban(member, time, reason))
                 .forEach(member -> member.getProfile().kick(getBanMessage(member)));
     }
@@ -39,8 +39,8 @@ public final class BanUtils {
 
     public static void checkIfBanShouldExpire(User user) {
         user.getBan()
-                .filterNot(UserBan::isBanned)
-                .peek(time -> user.setBan(null));
+                .filter(ban -> !ban.isBanned())
+                .ifPresent(time -> user.setBan(null));
     }
 
     public static Component getBanMessage(User user) {

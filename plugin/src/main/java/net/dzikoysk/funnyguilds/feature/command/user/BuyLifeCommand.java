@@ -51,7 +51,7 @@ public final class BuyLifeCommand extends AbstractFunnyCommand {
                 Replacement.string("{MAX-LIVES}", maxAllowed));
 
         if (!buyLifeConfig.cooldown.isZero()) {
-            guild.getLastLifeBuy().peek(lastBuy -> {
+            guild.getLastLifeBuy().ifPresent(lastBuy -> {
                 Duration elapsed = Duration.between(lastBuy, Instant.now());
                 if (elapsed.compareTo(buyLifeConfig.cooldown) < 0) {
                     when(true, config -> config.buyLifeCooldown,

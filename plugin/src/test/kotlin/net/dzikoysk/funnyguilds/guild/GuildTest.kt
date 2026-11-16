@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.user.User
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.bukkit.Location
 import org.junit.jupiter.api.Test
-import panda.std.Option
+import java.util.Optional
 import java.time.Instant
 import java.util.UUID
 import kotlin.test.assertEquals
@@ -103,7 +103,7 @@ class GuildTest : FunnyGuildsSpec() {
 
         guild.setTntProtectionBypass(Instant.now().minusSeconds(60))
         assertFalse(guild.hasTntProtectionBypass())
-        assertEquals(Option.none<Instant>(), guild.tntProtectionBypass)
+        assertEquals(Optional.empty<Instant>(), guild.tntProtectionBypass)
     }
 
 }

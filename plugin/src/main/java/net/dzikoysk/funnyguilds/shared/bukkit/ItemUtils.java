@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
@@ -27,9 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import panda.std.Option;
 import panda.std.Pair;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 import java.util.ArrayList;
@@ -38,7 +37,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class ItemUtils {
 
@@ -67,15 +69,17 @@ public final class ItemUtils {
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
         Material material = Material.matchMaterial(typeSplit[0]);
-        Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
+        Optional<Integer> amount = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0]));
+        if (amount.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
-        });
+        }
 
-        Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
+        Optional<Integer> data = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype));
+        if (data.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
-        });
+        }
 
-        ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
+        ItemBuilder item = new ItemBuilder(material, amount.orElse(1), data.orElse(0));
         FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {
@@ -97,7 +101,7 @@ public final class ItemUtils {
                     item.setName(formattedName);
                     continue;
                 case "lore":
-                    List<Component> lore = PandaStream.of(attributeValue.split("#"))
+                    List<Component> lore = Arrays.stream(attributeValue.split("#"))
                             .map(ItemUtils::coloredWithoutItalics)
                             .map(formatter::replace)
                             .toList();
@@ -114,7 +118,7 @@ public final class ItemUtils {
                     continue;
                 case "enchants":
                 case "enchantments":
-                    PandaStream.of(attributeValue.split(","))
+                    Arrays.stream(attributeValue.split(","))
                             .map(ItemUtils::parseEnchant)
                             .filter(enchant -> enchant.getFirst() != null)
                             .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
@@ -130,9 +134,10 @@ public final class ItemUtils {
                     continue;
                 case "flags":
                 case "itemflags":
-                    PandaStream.of(attributeValue.split(","))
+                    Arrays.stream(attributeValue.split(","))
                             .map(String::trim)
-                            .mapOpt(ItemUtils::matchItemFlag)
+                            .map(ItemUtils::matchItemFlag)
+                            .flatMap(Optional::stream)
                             .forEach(item::setFlag);
 
                     continue;
@@ -159,7 +164,7 @@ public final class ItemUtils {
     }
 
     public static List<ItemStack> parseItems(List<String> itemStrings) {
-        return PandaStream.of(itemStrings).map(ItemUtils::parseItem).toList();
+        return itemStrings.stream().map(ItemUtils::parseItem).collect(Collectors.toList());
     }
 
     public static List<ItemStack> parseItems(String... itemStrings) {
@@ -186,7 +191,7 @@ public final class ItemUtils {
         }
 
         if (meta.hasLore()) {
-            List<String> lore = PandaStream.of(meta.lore())
+            List<String> lore = meta.lore().stream()
                     .map(line -> {
                         Component replacedLine = formatter.replace(line);
                         return MiniLegacyHelper.miniMessage().serialize(replacedLine);
@@ -197,7 +202,7 @@ public final class ItemUtils {
         }
 
         if (meta.hasEnchants()) {
-            List<String> enchants = PandaStream.of(meta.getEnchants().entrySet().stream())
+            List<String> enchants = meta.getEnchants().entrySet().stream()
                     .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
                     .toList();
 
@@ -205,7 +210,7 @@ public final class ItemUtils {
         }
 
         if (!meta.getItemFlags().isEmpty()) {
-            List<String> flags = PandaStream.of(meta.getItemFlags())
+            List<String> flags = meta.getItemFlags().stream()
                     .map(ItemFlag::name)
                     .map(name -> name.toLowerCase(Locale.ROOT))
                     .toList();
@@ -245,26 +250,29 @@ public final class ItemUtils {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant: " + split[0]);
         }
 
-        Option<Integer> level = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1]));
+        Optional<Integer> level = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1]));
         if (level.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant level: " + split[1]);
         }
 
-        return Pair.of(enchant, level.orElseGet(1));
+        return Pair.of(enchant, level.orElse(1));
     }
 
-    private static Option<ItemFlag> matchItemFlag(String flagName) {
-        return Option.attempt(IllegalArgumentException.class, () -> {
+    private static Optional<ItemFlag> matchItemFlag(String flagName) {
+        Optional<ItemFlag> itemFlag = Optionals.attempt(IllegalArgumentException.class, () -> {
             return ItemFlag.valueOf(flagName.toUpperCase(Locale.ROOT));
-        }).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flagName);
         });
+
+        if (itemFlag.isEmpty()) {
+            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flagName);
+        }
+
+        return itemFlag;
     }
 
     public static int getItemAmount(ItemStack item, Inventory inv) {
-        return PandaStream.of(inv.getContents())
+        return Arrays.stream(inv.getContents())
                 .filter(item::isSimilar)
-                .toStream()
                 .mapToInt(ItemStack::getAmount)
                 .sum();
     }
@@ -338,7 +346,7 @@ public final class ItemUtils {
 
     private static void applyDefinitionFlags(ItemMeta meta, List<String> flags) {
         for (String flagStr : flags) {
-            matchItemFlag(flagStr).peek(meta::addItemFlags);
+            matchItemFlag(flagStr).ifPresent(meta::addItemFlags);
         }
     }
 

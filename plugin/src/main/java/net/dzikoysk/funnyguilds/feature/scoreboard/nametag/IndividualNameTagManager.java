@@ -34,8 +34,8 @@ public class IndividualNameTagManager extends AbstractScoreboardHandler<Individu
 
     @Override
     protected void update(AbstractScoreboardHandler<IndividualNameTag>.UpdateData observerData, AbstractScoreboardHandler<IndividualNameTag>.UpdateData targetData) {
-        observerData.getData().peek(nameTag -> nameTag.updatePlayer(targetData.getPlayer(), targetData.getUser()));
-        targetData.getData().peek(nameTag -> nameTag.updatePlayer(observerData.getPlayer(), observerData.getUser()));
+        observerData.getData().ifPresent(nameTag -> nameTag.updatePlayer(targetData.getPlayer(), targetData.getUser()));
+        targetData.getData().ifPresent(nameTag -> nameTag.updatePlayer(observerData.getPlayer(), observerData.getUser()));
     }
 
 }

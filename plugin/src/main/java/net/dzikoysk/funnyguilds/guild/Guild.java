@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
@@ -14,7 +15,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -27,8 +27,8 @@ public class Guild extends AbstractMutableEntity {
     private int lives;
     private int heartLives;
 
-    private Option<Region> region = Option.none();
-    private Option<Location> home = Option.none();
+    private Optional<Region> region = Optional.empty();
+    private Optional<Location> home = Optional.empty();
 
     private User owner;
     private Set<User> members = ConcurrentHashMap.newKeySet();
@@ -40,16 +40,16 @@ public class Guild extends AbstractMutableEntity {
     private Instant born;
     private Instant validity;
     private Instant protection;
-    private Option<Instant> build = Option.none();
-    private Option<Instant> ban = Option.none();
-    private Option<Instant> tntProtectionBypass = Option.none();
+    private Optional<Instant> build = Optional.empty();
+    private Optional<Instant> ban = Optional.empty();
+    private Optional<Instant> tntProtectionBypass = Optional.empty();
 
     private boolean pvp;
 
     private int warsWon;
     private int warsLost;
-    private Option<String> lastWarGuildTag = Option.none();
-    private Option<Instant> lastLifeBuy = Option.none();
+    private Optional<String> lastWarGuildTag = Optional.empty();
+    private Optional<Instant> lastLifeBuy = Optional.empty();
     private int warStreak;
     private final java.util.Map<UUID, Instant> victimGainCooldowns = new ConcurrentHashMap<>();
 
@@ -131,7 +131,7 @@ public class Guild extends AbstractMutableEntity {
     /**
      * @return region of the guild.
      */
-    public Option<Region> getRegion() {
+    public Optional<Region> getRegion() {
         return this.region;
     }
 
@@ -140,25 +140,25 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setRegion(@Nullable Region region) {
-        this.region = Option.of(region);
-        this.region.peek(peekRegion -> peekRegion.setGuild(this));
+        this.region = Optional.ofNullable(region);
+        this.region.ifPresent(peekRegion -> peekRegion.setGuild(this));
         this.markChanged();
     }
 
-    public Option<Location> getCenter() {
+    public Optional<Location> getCenter() {
         return this.region
                 .map(Region::getCenter)
                 .map(Location::clone);
     }
 
-    public Option<Location> getEnderCrystal() {
+    public Optional<Location> getEnderCrystal() {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
     /**
      * @return home location of the guild
      */
-    public Option<Location> getHome() {
+    public Optional<Location> getHome() {
         return this.home;
     }
 
@@ -167,12 +167,12 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setHome(@Nullable Location home) {
-        this.home = Option.of(home);
+        this.home = Optional.ofNullable(home);
         this.markChanged();
     }
 
     public void teleportHome(Player player) {
-        this.home.peek(player::teleport);
+        this.home.ifPresent(player::teleport);
     }
 
     public User getOwner() {
@@ -360,16 +360,16 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public Option<Instant> getBuild() {
+    public Optional<Instant> getBuild() {
         return this.build;
     }
 
     public boolean canBuild() {
-        if (this.build.is(build -> build.isAfter(Instant.now()))) {
+        if (this.build.filter(build -> build.isAfter(Instant.now())).isPresent()) {
             return false;
         }
 
-        this.build = Option.none();
+        this.build = Optional.empty();
         this.markChanged();
         return true;
     }
@@ -379,20 +379,20 @@ public class Guild extends AbstractMutableEntity {
             time = null;
         }
 
-        this.build = Option.of(time);
+        this.build = Optional.ofNullable(time);
         this.markChanged();
     }
 
-    public Option<Instant> getBan() {
+    public Optional<Instant> getBan() {
         return this.ban;
     }
 
     public boolean isBanned() {
-        if (this.ban.is(ban -> ban.isAfter(Instant.now()))) {
+        if (this.ban.filter(ban -> ban.isAfter(Instant.now())).isPresent()) {
             return true;
         }
 
-        this.ban = Option.none();
+        this.ban = Optional.empty();
         this.markChanged();
         return false;
     }
@@ -402,16 +402,16 @@ public class Guild extends AbstractMutableEntity {
             time = null;
         }
 
-        this.ban = Option.of(time);
+        this.ban = Optional.ofNullable(time);
         this.markChanged();
     }
 
-    public Option<Instant> getTntProtectionBypass() {
+    public Optional<Instant> getTntProtectionBypass() {
         return this.tntProtectionBypass;
     }
 
     public boolean hasTntProtectionBypass() {
-        return this.tntProtectionBypass.is(bypass -> bypass.isAfter(Instant.now()));
+        return this.tntProtectionBypass.filter(bypass -> bypass.isAfter(Instant.now())).isPresent();
     }
 
     public void setTntProtectionBypass(@Nullable Instant time) {
@@ -419,7 +419,7 @@ public class Guild extends AbstractMutableEntity {
             time = null;
         }
 
-        this.tntProtectionBypass = Option.of(time);
+        this.tntProtectionBypass = Optional.ofNullable(time);
         this.markChanged();
     }
 
@@ -464,12 +464,12 @@ public class Guild extends AbstractMutableEntity {
         this.setWarsLost(update.apply(this.warsLost));
     }
 
-    public Option<String> getLastWarGuildTag() {
+    public Optional<String> getLastWarGuildTag() {
         return this.lastWarGuildTag;
     }
 
     public void setLastWarGuildTag(@Nullable String lastWarGuildTag) {
-        this.lastWarGuildTag = Option.of(lastWarGuildTag);
+        this.lastWarGuildTag = Optional.ofNullable(lastWarGuildTag);
         this.markChanged();
     }
 
@@ -486,12 +486,12 @@ public class Guild extends AbstractMutableEntity {
         this.setWarStreak(update.apply(this.warStreak));
     }
 
-    public Option<Instant> getLastLifeBuy() {
+    public Optional<Instant> getLastLifeBuy() {
         return this.lastLifeBuy;
     }
 
     public void setLastLifeBuy(@Nullable Instant lastLifeBuy) {
-        this.lastLifeBuy = Option.of(lastLifeBuy);
+        this.lastLifeBuy = Optional.ofNullable(lastLifeBuy);
         this.markChanged();
     }
 

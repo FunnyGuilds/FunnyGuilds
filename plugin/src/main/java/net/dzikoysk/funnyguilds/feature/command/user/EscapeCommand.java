@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -14,7 +15,6 @@ import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -34,10 +34,10 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(user.getCache().getTeleportation() != null, config -> config.escapeInProgress);
 
         Location playerLocation = player.getLocation();
-        Option<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
+        Optional<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
         when(regionOption.isEmpty(), config -> config.escapeNoNeedToRun);
 
-        Region region = regionOption.get();
+        Region region = regionOption.orElseThrow();
         Duration time = this.config.escapeDelay;
 
         if (!user.hasGuild()) {
@@ -46,7 +46,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild guild = user.getGuild().get();
+        Guild guild = user.getGuild().orElseThrow();
         when(guild.equals(region.getGuild()), config -> config.escapeOnYourRegion);
 
         FunnyFormatter formatter = new FunnyFormatter()
@@ -67,7 +67,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                     .send();
         }
 
-        guild.getHome().peek(home -> this.scheduleTeleportation(player, user, home, time, () -> {
+        guild.getHome().ifPresent(home -> this.scheduleTeleportation(player, user, home, time, () -> {
             this.messageService.getMessage(config -> config.escapeSuccessfulUser)
                     .receiver(region.getGuild())
                     .with(formatter)

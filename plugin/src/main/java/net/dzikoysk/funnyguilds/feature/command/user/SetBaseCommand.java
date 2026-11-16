@@ -31,7 +31,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
     public void execute(Player player, @HasGuildPermission(GuildCommandPermission.SET_BASE) User deputy, Guild guild) {
         when(!this.config.regionsEnabled, config -> config.regionsDisabled);
 
-        Region region = this.regionManager.findByName(guild.getName()).orNull();
+        Region region = this.regionManager.findByName(guild.getName()).orElse(null);
         Location location = player.getLocation();
         when(region == null || !region.isIn(location), config -> config.setbaseOutside);
 

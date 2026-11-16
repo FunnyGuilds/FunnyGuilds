@@ -8,10 +8,10 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import panda.std.Option;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class LivesCommand extends AbstractFunnyCommand {
@@ -27,7 +27,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
         when(args.length < 2, config -> config.adminNoLivesGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        int lives = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
+        int lives = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orElseThrow(() -> {
             return new InternalValidationException(config -> config.adminErrorInNumber, Replacement.string("{ERROR}", args[0]));
         });
 

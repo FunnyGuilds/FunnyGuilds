@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.regex.Pattern;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
@@ -10,8 +11,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class PlayerCommand extends AbstractFunnyListener {
 
@@ -30,18 +29,19 @@ public class PlayerCommand extends AbstractFunnyListener {
         }
 
         String command = commandElements[0].substring(1);
-        PandaStream.of(this.config.regionCommands)
-                .find(blockedCommand -> blockedCommand.equalsIgnoreCase(command))
-                .peek(blockedCommand -> this.handleCommandUsage(player, event));
+        this.config.regionCommands.stream()
+                .filter(blockedCommand -> blockedCommand.equalsIgnoreCase(command))
+                .findFirst()
+                .ifPresent(blockedCommand -> this.handleCommandUsage(player, event));
     }
 
     private void handleCommandUsage(Player player, Cancellable event) {
-        Option<Guild> guild = this.regionManager.findRegionAtLocation(player.getLocation()).map(Region::getGuild);
+        Optional<Guild> guild = this.regionManager.findRegionAtLocation(player.getLocation()).map(Region::getGuild);
         if (guild.isEmpty()) {
             return;
         }
 
-        Option<User> user = this.userManager.findByPlayer(player);
+        Optional<User> user = this.userManager.findByPlayer(player);
         if (user.isEmpty() || guild.get().isMember(user.get())) {
             return;
         }

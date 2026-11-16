@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
@@ -52,10 +53,10 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                 .playerOptionProperty("world", playerOption -> playerOption
                         .map(Player::getWorld)
                         .map(World::getName)
-                        .orElseGet(""))
+                        .orElse(""))
                 .playerOptionProperty("online", playerOption -> playerOption
                         .map(player -> new ArrayList<>(Bukkit.getOnlinePlayers()).stream().filter(player::canSee).count())
-                        .orElseGet(0L))
+                        .orElse(0L))
                 .playerProperty("wg-region", player -> {
                     List<String> regionNames = getWorldGuardRegionNames(player);
                     return !regionNames.isEmpty() ? regionNames.getFirst() : wgRegionNoValue;
@@ -68,7 +69,7 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                         .filter(player -> HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked())
                         .map(VaultHook::accountBalance)
                         .map(value -> String.format(Locale.US, "%.2f", value))
-                        .orElseGet(""));
+                        .orElse(""));
     }
 
     private static List<String> getWorldGuardRegionNames(Player player) {
@@ -77,7 +78,7 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
         }
 
         Location location = player.getLocation();
-        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location)).orNull();
+        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location)).orElse(null);
 
         if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;

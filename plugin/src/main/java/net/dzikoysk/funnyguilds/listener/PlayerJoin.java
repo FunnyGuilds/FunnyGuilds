@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
@@ -25,12 +26,12 @@ public class PlayerJoin extends AbstractFunnyListener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        User user = this.userManager.findByPlayer(player)
-                .peek(foundUser -> foundUser.getProfile().refresh())
-                .orElseGet(() -> {
-                    UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.funnyServer);
-                    return this.userManager.create(player.getUniqueId(), player.getName(), profile);
-                });
+        Optional<User> existingUser = this.userManager.findByPlayer(player);
+        existingUser.ifPresent(foundUser -> foundUser.getProfile().refresh());
+        User user = existingUser.orElseGet(() -> {
+            UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.funnyServer);
+            return this.userManager.create(player.getUniqueId(), player.getName(), profile);
+        });
 
         String playerName = player.getName();
         if (!user.getName().equals(playerName)) {
@@ -44,14 +45,14 @@ public class PlayerJoin extends AbstractFunnyListener {
             }
         }
 
-        this.plugin.getTablistRenderer().peek(renderer -> renderer.startSending(player, user));
+        this.plugin.getTablistRenderer().ifPresent(renderer -> renderer.startSending(player, user));
 
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
         this.plugin.getDummyManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
         inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(this.plugin, user));

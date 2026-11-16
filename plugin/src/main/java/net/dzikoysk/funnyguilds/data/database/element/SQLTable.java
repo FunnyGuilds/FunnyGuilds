@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.data.database.element;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import panda.std.Option;
+import java.util.Optional;
 
 public class SQLTable {
 
@@ -73,14 +73,14 @@ public class SQLTable {
         return -1;
     }
 
-    public Option<SQLElement> getSQLElement(String key) {
+    public Optional<SQLElement> getSQLElement(String key) {
         for (SQLElement element : this.sqlElements) {
             if (element.getKey().equalsIgnoreCase(key)) {
-                return Option.of(element);
+                return Optional.of(element);
             }
         }
 
-        return Option.none();
+        return Optional.empty();
     }
 
     public HashMap<String, Integer> getMapElementsKey() {

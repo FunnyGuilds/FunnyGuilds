@@ -8,7 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import panda.std.stream.PandaStream;
+import net.dzikoysk.funnyguilds.shared.FunnyStreams;
 
 public final class ItemBuilder {
 
@@ -54,7 +54,7 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder setLore(Iterable<String> lore, boolean color) {
-        this.itemMeta.setLore(PandaStream.of(lore).map(line -> color ? ChatUtils.colored(line) : line).toList());
+        this.itemMeta.setLore(FunnyStreams.of(lore).map(line -> color ? ChatUtils.colored(line) : line).toList());
         this.refreshMeta();
 
         return this;

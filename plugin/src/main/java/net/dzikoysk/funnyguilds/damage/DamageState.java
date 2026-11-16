@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DamageTracking;
 import net.dzikoysk.funnyguilds.shared.MapUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import panda.std.Option;
 
 public class DamageState {
 
@@ -53,15 +53,15 @@ public class DamageState {
         return this.getTotalDamageMap().getOrDefault(user, 0.0);
     }
 
-    public Option<Damage> getLastDamage() {
+    public Optional<Damage> getLastDamage() {
         if (this.damageHistory.isEmpty()) {
-            return Option.none();
+            return Optional.empty();
         }
-        return Option.of(this.damageHistory.getLast());
+        return Optional.of(this.damageHistory.getLast());
     }
 
     public boolean isInCombat() {
-        Option<Damage> lastDamageOption = this.getLastDamage();
+        Optional<Damage> lastDamageOption = this.getLastDamage();
         if (lastDamageOption.isEmpty()) {
             return false;
         }
@@ -75,12 +75,12 @@ public class DamageState {
         return !lastDamage.isExpired(lastAttackerAsKillerConsiderationTimeout);
     }
 
-    public Option<Instant> getLastKillTime(User user) {
-        return Option.of(this.killHistory.get(user.getUUID()));
+    public Optional<Instant> getLastKillTime(User user) {
+        return Optional.ofNullable(this.killHistory.get(user.getUUID()));
     }
 
-    public Option<Instant> getLastKillTimeByIP(InetAddress ip) {
-        return Option.of(this.killHistoryByIP.get(ip));
+    public Optional<Instant> getLastKillTimeByIP(InetAddress ip) {
+        return Optional.ofNullable(this.killHistoryByIP.get(ip));
     }
 
     public void addDamage(User damageDealer, double damage) {

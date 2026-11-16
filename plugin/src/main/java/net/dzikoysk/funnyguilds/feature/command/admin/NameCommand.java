@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.util.Optional;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -43,10 +44,10 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guild.getRegion().peek(region -> {
+        guild.getRegion().ifPresent(region -> {
             if (this.dataModel instanceof FlatDataModel) {
                 FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-                dataModel.getRegionFile(region).peek(FunnyIOUtils::deleteFile);
+                dataModel.getRegionFile(region).ifPresent(FunnyIOUtils::deleteFile);
             }
             else if (this.dataModel instanceof SQLDataModel) {
                 DatabaseRegionSerializer.delete(region);
@@ -57,7 +58,7 @@ public final class NameCommand extends AbstractFunnyCommand {
 
         if (this.dataModel instanceof FlatDataModel) {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-            dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
+            dataModel.getGuildFile(guild).ifPresent(FunnyIOUtils::deleteFile);
         }
         else if (this.dataModel instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete(guild);

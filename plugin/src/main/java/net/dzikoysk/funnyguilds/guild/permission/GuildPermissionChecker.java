@@ -4,8 +4,8 @@ import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import java.util.Optional;
 import org.bukkit.event.Event;
-import panda.std.Option;
 import panda.std.Result;
 
 public interface GuildPermissionChecker {
@@ -38,8 +38,9 @@ public interface GuildPermissionChecker {
      * @return the value of the permission, or an empty option if not set
      * @param <T> the type of the permission value
      */
-    default <T> Option<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission) {
-        return this.getPermissionResult(guild, user, permission).toOption();
+    default <T> Optional<T> getPermissionValue(Guild guild, User user, GuildPermission<T> permission) {
+        Result<T, Runnable> result = this.getPermissionResult(guild, user, permission);
+        return result.isOk() ? Optional.ofNullable(result.get()) : Optional.empty();
     }
     
     /**

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
@@ -14,8 +15,6 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class UserManager {
 
@@ -55,9 +54,9 @@ public class UserManager {
      * @return set of users
      */
     public Set<User> findByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::findByName)
-                .collect(Collectors.toSet());
+        return names.stream()
+                .flatMap(name -> this.findByName(name).stream())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     /**
@@ -66,8 +65,8 @@ public class UserManager {
      * @param uuid the universally unique identifier of user
      * @return the user
      */
-    public Option<User> findByUuid(UUID uuid) {
-        return Option.of(this.usersByUuid.get(uuid));
+    public Optional<User> findByUuid(UUID uuid) {
+        return Optional.ofNullable(this.usersByUuid.get(uuid));
     }
 
     /**
@@ -76,7 +75,7 @@ public class UserManager {
      * @param nickname the name of user
      * @return the user
      */
-    public Option<User> findByName(String nickname) {
+    public Optional<User> findByName(String nickname) {
         return this.findByName(nickname, false);
     }
 
@@ -87,15 +86,16 @@ public class UserManager {
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
-    public Option<User> findByName(String nickname, boolean ignoreCase) {
+    public Optional<User> findByName(String nickname, boolean ignoreCase) {
         User foundUser = this.usersByName.get(nickname);
         if (foundUser == null && ignoreCase) {
-            foundUser = PandaStream.of(this.usersByName.entrySet())
-                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
+            foundUser = this.usersByName.entrySet().stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(nickname))
                     .map(Map.Entry::getValue)
-                    .orNull();
+                    .findFirst()
+                    .orElse(null);
         }
-        return Option.of(foundUser);
+        return Optional.ofNullable(foundUser);
     }
 
     /**
@@ -103,9 +103,9 @@ public class UserManager {
      *
      * @return the user
      */
-    public Option<User> findByPlayer(@NotNull Player player) {
+    public Optional<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Option.none(); // Ignore NPCs (Citizens, Shopkeepers, [...])
+            return Optional.empty(); // Ignore NPCs (Citizens, Shopkeepers, [...])
         }
 
         return this.findByUuid(player.getUniqueId());
@@ -116,7 +116,7 @@ public class UserManager {
      *
      * @return the user
      */
-    public Option<User> findByPlayer(OfflinePlayer offlinePlayer) {
+    public Optional<User> findByPlayer(OfflinePlayer offlinePlayer) {
         return this.findByUuid(offlinePlayer.getUniqueId());
     }
 

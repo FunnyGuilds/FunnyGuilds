@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -10,6 +11,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberRevokeInviteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
@@ -21,8 +23,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -56,15 +56,15 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
         if (checkArgument) {
             double range = args.length >= 2
-                    ? Option.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1]))
-                        .orThrow(() -> new InternalValidationException(config -> config.inviteAllArgumentIsNotNumber))
+                    ? Optionals.attempt(NumberFormatException.class, () -> Double.parseDouble(args[1]))
+                        .orElseThrow(() -> new InternalValidationException(config -> config.inviteAllArgumentIsNotNumber))
                     : this.config.inviteCommandAllDefaultRange;
 
             when(range > this.config.inviteCommandAllMaxRange, config -> config.inviteRangeToBig, Replacement.string("{MAX_RANGE}", this.config.inviteCommandAllMaxRange));
 
-            List<Player> nearbyPlayers = PandaStream.of(Bukkit.getServer().getOnlinePlayers())
+            List<Player> nearbyPlayers = Bukkit.getServer().getOnlinePlayers().stream()
                     .filter(player -> range >= player.getLocation().distance(sender.getLocation()))
-                    .filterNot(player -> player.equals(sender))
+                    .filter(player -> !player.equals(sender))
                     .collect(Collectors.toList());
 
             when(guild.getMembers().size() + nearbyPlayers.size() > this.config.maxMembersInGuild, config -> config.inviteAmount, formatter);
@@ -75,9 +75,9 @@ public final class InviteCommand extends AbstractFunnyCommand {
                     .with("{RANGE}", range)
                     .send();
 
-            PandaStream.of(nearbyPlayers)
-                    .mapOpt(this.userManager::findByPlayer)
-                    .filterNot(User::isVanished)
+            nearbyPlayers.stream()
+                    .flatMap(player -> this.userManager.findByPlayer(player).stream())
+                    .filter(user -> !user.isVanished())
                     .forEach(it -> this.inviteUserToGuild(deputy, guild, it, formatter));
 
             return;

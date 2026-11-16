@@ -19,7 +19,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import panda.std.Pair;
-import panda.std.stream.PandaStream;
 
 public class WarInfoAsyncTask extends AsyncFunnyTask {
 
@@ -50,16 +49,17 @@ public class WarInfoAsyncTask extends AsyncFunnyTask {
 
     @Override
     public void execute() throws Exception {
-        PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
+        this.guildEntityHelper.getGuildEntities().entrySet().stream()
                 .filter(entry -> entry.getValue().getId() == this.entityId)
                 .map(Entry::getKey)
-                .mapOpt(guild -> this.funnyServer.getPlayer(this.user)
+                .flatMap(guild -> this.funnyServer.getPlayer(this.user)
                         .map(player -> Pair.of(player, guild))
-                )
+                        .stream())
                 .filter(playerToGuild -> playerToGuild.getSecond()
                         .getEnderCrystal()
                         .map(Location::getWorld)
-                        .is(guildWorld -> guildWorld.equals(playerToGuild.getFirst().getWorld())))
+                        .filter(guildWorld -> guildWorld.equals(playerToGuild.getFirst().getWorld()))
+                        .isPresent())
                 .forEach(playerToGuild -> this.displayGuildInfo(playerToGuild.getFirst(), playerToGuild.getSecond()));
     }
 

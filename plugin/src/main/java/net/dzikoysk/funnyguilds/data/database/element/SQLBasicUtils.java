@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 public final class SQLBasicUtils {
@@ -41,8 +41,8 @@ public final class SQLBasicUtils {
         StringBuilder query = new StringBuilder();
 
         query.append("SELECT ");
-        query.append(PandaStream.of(sqlElements)
-                .mapOpt(table::getSQLElement)
+        query.append(Arrays.stream(sqlElements)
+                .flatMap(element -> table.getSQLElement(element).stream())
                 .map(SQLElement::getKeyGraveAccent)
                 .collect(Collectors.joining(", "))
         );

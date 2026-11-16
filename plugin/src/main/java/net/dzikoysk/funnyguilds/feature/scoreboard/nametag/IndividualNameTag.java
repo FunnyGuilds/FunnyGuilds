@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.scoreboard.nametag;
 
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
@@ -17,7 +18,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import panda.std.Option;
 
 public class IndividualNameTag {
 
@@ -40,12 +40,12 @@ public class IndividualNameTag {
     }
 
     void initialize() {
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to initialize NameTag, but scoreboard hasn't been initialized.");
             return;
         }
-        Scoreboard scoreboard = scoreboardOption.get();
+        Scoreboard scoreboard = scoreboardOption.orElseThrow();
 
         Team team = this.prepareTeam(scoreboard, this.user.getName());
         team.setPrefix(this.user.getName());
@@ -61,21 +61,21 @@ public class IndividualNameTag {
     }
 
     // Update specific player for this user
-    public void updatePlayer(Option<Player> targetPlayerOption, User targetUser) {
+    public void updatePlayer(Optional<Player> targetPlayerOption, User targetUser) {
         if (targetPlayerOption.isEmpty() || !targetUser.isOnline()) {
             this.removePlayer(targetUser);
             return;
         }
-        Player targetPlayer = targetPlayerOption.get();
+        Player targetPlayer = targetPlayerOption.orElseThrow();
 
         FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + targetUser.getName() + " for " + this.user.getName());
 
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to update NameTag, but scoreboard hasn't been initialized.");
             return;
         }
-        Scoreboard scoreboard = scoreboardOption.get();
+        Scoreboard scoreboard = scoreboardOption.orElseThrow();
 
         Team targetTeam = this.prepareTeam(scoreboard, targetUser.getName());
 
@@ -87,12 +87,12 @@ public class IndividualNameTag {
     public void removePlayer(User target) {
         FunnyGuilds.getPluginLogger().debug("[NameTag] Removing " + target.getName() + " for " + this.user.getName());
 
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to remove NameTag, but scoreboard hasn't been initialized.");
             return;
         }
-        Scoreboard scoreboard = scoreboardOption.get();
+        Scoreboard scoreboard = scoreboardOption.orElseThrow();
 
         Team team = scoreboard.getEntryTeam(target.getName());
         if (team != null) {
@@ -125,21 +125,21 @@ public class IndividualNameTag {
             return value;
         }
 
-        Guild guild = this.user.getGuild().orNull();
-        Guild targetGuild = targetUser.getGuild().orNull();
+        Guild guild = this.user.getGuild().orElse(null);
+        Guild targetGuild = targetUser.getGuild().orElse(null);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{REL_TAG}", this.pluginConfiguration.relationalTag.chooseTag(guild, targetGuild))
                 .register("{POS}", UserUtils.getUserPosition(this.permissionChecker, targetUser));
-        GuildPlaceholdersService.getSimplePlaceholders().peek(placeholders -> formatter.register(placeholders, targetGuild));
+        GuildPlaceholdersService.getSimplePlaceholders().ifPresent(placeholders -> formatter.register(placeholders, targetGuild));
         formatter.register(HookUtils.placeholdersReplaceable(targetPlayer));
         formatter.register(HookUtils.placeholdersReplaceable(player, targetPlayer));
         return formatter.replace(null, value);
     }
 
     private String getNameTagFormat(ScoreboardConfiguration.NameTag.Value value, User target) {
-        Option<Guild> guildOption = this.user.getGuild();
-        Option<Guild> targetGuildOption = target.getGuild();
+        Optional<Guild> guildOption = this.user.getGuild();
+        Optional<Guild> targetGuildOption = target.getGuild();
 
         if (targetGuildOption.isEmpty()) {
             return value.getNoGuild();
@@ -149,8 +149,8 @@ public class IndividualNameTag {
             return value.getOtherGuild();
         }
 
-        Guild guild = guildOption.get();
-        Guild targetGuild = targetGuildOption.get();
+        Guild guild = guildOption.orElseThrow();
+        Guild targetGuild = targetGuildOption.orElseThrow();
         
         if (guild.equals(targetGuild)) {
             return value.getOurGuild();

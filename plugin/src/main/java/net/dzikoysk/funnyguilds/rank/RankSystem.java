@@ -22,8 +22,8 @@ public final class RankSystem {
     public static RankSystem create(PluginConfiguration config) {
         ImmutableMap<Type, RankingAlgorithm> build = new ImmutableMap.Builder<Type, RankingAlgorithm>()
                 .put(Type.ELO, (attackerPoints, victimPoints) -> {
-                    int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
-                    int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
+                    int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElse(0);
+                    int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElse(0);
 
                     double attackerE = 1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider));
                     double victimE = 1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider));

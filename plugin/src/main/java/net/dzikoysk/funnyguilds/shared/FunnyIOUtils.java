@@ -10,10 +10,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import panda.std.Result;
-import panda.std.stream.PandaStream;
-import panda.utilities.IOUtils;
 
 public final class FunnyIOUtils {
 
@@ -64,7 +63,7 @@ public final class FunnyIOUtils {
         if (file.isDirectory()) {
             File[] contents = file.listFiles();
             if (contents != null) {
-                PandaStream.of(contents).forEach(FunnyIOUtils::deleteFile);
+                Arrays.stream(contents).forEach(FunnyIOUtils::deleteFile);
             }
         }
 
@@ -82,8 +81,7 @@ public final class FunnyIOUtils {
             encoding = encoding == null ? "UTF-8" : encoding;
 
             try (InputStream input = connection.getInputStream()) {
-                return IOUtils.convertStreamToString(input, Charset.forName(encoding))
-                        .orThrow(exception -> exception);
+                return new String(input.readAllBytes(), Charset.forName(encoding));
             }
         }
         catch (Exception exception) {

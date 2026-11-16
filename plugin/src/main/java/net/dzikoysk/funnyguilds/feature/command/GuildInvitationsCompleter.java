@@ -33,7 +33,7 @@ final class GuildInvitationsCompleter implements Completer {
                         ArrayList::new,
                         (guildTag) -> guildTag)
                 )
-                .orElseGet(Collections.emptyList());
+                .orElse(Collections.emptyList());
     }
 
     @Override

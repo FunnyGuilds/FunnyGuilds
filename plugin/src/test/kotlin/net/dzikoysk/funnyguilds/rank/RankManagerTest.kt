@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.rank
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
-import panda.std.OptionAssertions.assertOptionEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.*
 
 class RankManagerTest : FunnyGuildsSpec() {
@@ -30,24 +30,24 @@ class RankManagerTest : FunnyGuildsSpec() {
 
         rankRecalculationTask.run()
 
-        assertOptionEquals(user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1))
-        assertOptionEquals(user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2))
-        assertOptionEquals(user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3))
-        assertOptionEquals(guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1))
-        assertOptionEquals(guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2))
-        assertOptionEquals(guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3))
+        assertEquals(user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1).orElse(null))
+        assertEquals(user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2).orElse(null))
+        assertEquals(user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3).orElse(null))
+        assertEquals(guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1).orElse(null))
+        assertEquals(guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2).orElse(null))
+        assertEquals(guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3).orElse(null))
 
         user1.rank.points = 100
         user2.rank.points = 150
         user3.rank.points = 200
         rankRecalculationTask.run()
 
-        assertOptionEquals(user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1))
-        assertOptionEquals(user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2))
-        assertOptionEquals(user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3))
-        assertOptionEquals(guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1))
-        assertOptionEquals(guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2))
-        assertOptionEquals(guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3))
+        assertEquals(user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1).orElse(null))
+        assertEquals(user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2).orElse(null))
+        assertEquals(user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3).orElse(null))
+        assertEquals(guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1).orElse(null))
+        assertEquals(guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2).orElse(null))
+        assertEquals(guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3).orElse(null))
     }
 
 }

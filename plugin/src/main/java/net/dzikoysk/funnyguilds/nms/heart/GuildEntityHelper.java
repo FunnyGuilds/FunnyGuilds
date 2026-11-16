@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.nms.heart;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -10,8 +11,6 @@ import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class GuildEntityHelper {
 
@@ -29,37 +28,37 @@ public class GuildEntityHelper {
         return this.entityMap;
     }
 
-    public Option<FakeEntity> getOrCreateGuildEntity(Guild guild) {
-        return Option.of(this.entityMap.computeIfAbsent(guild, key -> {
+    public Optional<FakeEntity> getOrCreateGuildEntity(Guild guild) {
+        return Optional.ofNullable(this.entityMap.computeIfAbsent(guild, key -> {
             if (this.pluginConfiguration.heart.createEntityType == null) {
                 return null;
             }
 
-            Option<Location> locationOption = guild.getEnderCrystal();
+            Optional<Location> locationOption = guild.getEnderCrystal();
             if (locationOption.isEmpty()) {
                 return null;
             }
 
-            return this.nmsAccessor.getEntityAccessor().createFakeEntity(this.pluginConfiguration.heart.createEntityType, locationOption.get());
+            return this.nmsAccessor.getEntityAccessor().createFakeEntity(this.pluginConfiguration.heart.createEntityType, locationOption.orElseThrow());
         }));
     }
 
     public void spawnGuildEntity(Guild guild) {
         this.getOrCreateGuildEntity(guild)
-                .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
+                .ifPresent(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
     }
 
     public void spawnGuildEntities(GuildManager guildManager) {
-        PandaStream.of(guildManager.getGuilds()).forEach(this::spawnGuildEntity);
+        guildManager.getGuilds().forEach(this::spawnGuildEntity);
     }
 
     public void spawnGuildEntity(Guild guild, Player player) {
-        if (guild.getEnderCrystal().map(Location::getWorld).isNot(guildWorld -> guildWorld.equals(player.getWorld()))) {
+        if (guild.getEnderCrystal().map(Location::getWorld).map(guildWorld -> !guildWorld.equals(player.getWorld())).orElse(true)) {
             return;
         }
 
         this.getOrCreateGuildEntity(guild)
-                .peek(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
+                .ifPresent(entity -> this.nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
     }
 
     public void despawnGuildEntity(Guild guild) {

@@ -8,8 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import java.util.Optional;
 import org.bukkit.util.Vector;
-import panda.std.Option;
 
 public class Region extends AbstractMutableEntity {
 
@@ -118,12 +118,12 @@ public class Region extends AbstractMutableEntity {
         return this.center;
     }
 
-    public Option<Location> getHeart() {
+    public Optional<Location> getHeart() {
         return this.getHeartBlock().map(Block::getLocation);
     }
 
-    public Option<Block> getHeartBlock() {
-        return Option.of(this.center)
+    public Optional<Block> getHeartBlock() {
+        return Optional.ofNullable(this.center)
                 .map(Location::getBlock)
                 .map(block -> block.getRelative(BlockFace.DOWN));
     }

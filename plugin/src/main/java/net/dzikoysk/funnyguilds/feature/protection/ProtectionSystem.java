@@ -2,9 +2,11 @@ package net.dzikoysk.funnyguilds.feature.protection;
 
 import dev.peri.yetanothermessageslibrary.message.Sendable;
 import java.time.Duration;
+import java.util.Optional;
 import java.time.Instant;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -17,7 +19,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import panda.std.Option;
 import panda.std.Triple;
 
 public final class ProtectionSystem {
@@ -25,34 +26,34 @@ public final class ProtectionSystem {
     private ProtectionSystem() {
     }
 
-    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, Event triggerEvent, GuildPermission<Boolean> permission, boolean includeBuildLock) {
+    public static Optional<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, Event triggerEvent, GuildPermission<Boolean> permission, boolean includeBuildLock) {
         if (player == null || location == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
+        Optional<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
         if (regionOption.isEmpty()) {
-            return Option.none();
+            return Optional.empty();
         }
-        Region region = regionOption.get();
+        Region region = regionOption.orElseThrow();
         Guild guild = region.getGuild();
 
         PluginConfiguration config = plugin.getPluginConfiguration();
         HeartConfiguration heartConfig = config.heart;
-        if (region.getHeart().contentEquals(location)) {
+        if (region.getHeart().filter(heart -> heart.equals(location)).isPresent()) {
             Material heartMaterial = heartConfig.createMaterial;
-            return Option.when(heartMaterial != null && heartMaterial != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
+            return Optionals.when(heartMaterial != null && heartMaterial != Material.AIR, () -> Triple.of(player, guild, ProtectionType.HEART));
         }
 
         if (player.hasPermission("funnyguilds.admin.build")) {
-            return Option.none();
+            return Optional.empty();
         }
         
         User user = plugin.getUserManager()
                 .findByUuid(player.getUniqueId())
-                .orThrow(() -> new IllegalStateException("User not found for player " + player.getName()));
+                .orElseThrow(() -> new IllegalStateException("User not found for player " + player.getName()));
         
         boolean canPerformAction = plugin.getGuildPermissionChecker().handleProtectionPermission(
                 guild,
@@ -61,18 +62,18 @@ public final class ProtectionSystem {
                 triggerEvent
         );
         if (!canPerformAction) {
-            return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
+            return Optional.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
 
         if (includeBuildLock && !guild.canBuild()) {
-            return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
+            return Optional.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
         if (isGuildHeartProtectedRegion(location)) {
-            return Option.of(Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
+            return Optional.of(Triple.of(player, guild, ProtectionType.HEART_INTERACTION));
         }
 
-        return Option.none();
+        return Optional.empty();
     }
 
     public static boolean isGuildHeartProtectedRegion(Location location) {
@@ -82,11 +83,11 @@ public final class ProtectionSystem {
             return false;
         }
 
-        Option<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
+        Optional<Region> regionOption = plugin.getRegionManager().findRegionAtLocation(location);
         if (regionOption.isEmpty()) {
             return false;
         }
-        Region region = regionOption.get();
+        Region region = regionOption.orElseThrow();
         Guild guild = region.getGuild();
 
         return guild.getEnderCrystal()
@@ -94,7 +95,7 @@ public final class ProtectionSystem {
                 .map(FunnyBox::of)
                 .map(box -> box.expandDirectional(heartConfig.interactionProtection.firstCorner, heartConfig.interactionProtection.secondCorner))
                 .map(box -> box.contains(location))
-                .orElseGet(false);
+                .orElse(false);
     }
 
     public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
@@ -125,7 +126,7 @@ public final class ProtectionSystem {
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        guild.getBuild().peek(build -> {
+        guild.getBuild().ifPresent(build -> {
             Duration time = Duration.between(Instant.now(), build);
             FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.regionExplodeInteract)
                     .with("{TIME}", time.getSeconds())

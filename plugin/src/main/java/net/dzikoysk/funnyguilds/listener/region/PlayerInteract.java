@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -20,7 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import panda.std.Option;
 
 public class PlayerInteract extends AbstractFunnyListener {
 
@@ -44,16 +44,19 @@ public class PlayerInteract extends AbstractFunnyListener {
             return;
         }
 
-        Option<Region> regionOption = this.regionManager.findRegionAtLocation(clicked.getLocation());
+        Optional<Region> regionOption = this.regionManager.findRegionAtLocation(clicked.getLocation());
         if (regionOption.isEmpty()) {
             return;
         }
 
-        Region region = regionOption.get();
+        Region region = regionOption.orElseThrow();
         boolean returnMethod = region.getHeartBlock()
                 .filter(heart -> heart.equals(clicked))
-                .peek(heart -> this.handleHeartClick(player, eventAction, region.getGuild(), event))
-                .isPresent();
+                .map(heart -> {
+                    this.handleHeartClick(player, eventAction, region.getGuild(), event);
+                    return true;
+                })
+                .orElse(false);
 
         if (returnMethod) {
             return;
@@ -62,7 +65,7 @@ public class PlayerInteract extends AbstractFunnyListener {
         if (eventAction == Action.RIGHT_CLICK_BLOCK) {
             Guild guild = region.getGuild();
 
-            this.userManager.findByPlayer(player).peek(user -> {
+            this.userManager.findByPlayer(player).ifPresent(user -> {
                 boolean blocked = this.config.blockedInteract.contains(clicked.getType());
 
                 if (guild.isMember(user)) {
@@ -78,11 +81,11 @@ public class PlayerInteract extends AbstractFunnyListener {
     private void handleHeartClick(Player player, Action eventAction, Guild guild, Cancellable event) {
         event.setCancelled(true);
 
-        Option<User> userOption = this.userManager.findByPlayer(player);
+        Optional<User> userOption = this.userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
             return;
         }
-        User user = userOption.get();
+        User user = userOption.orElseThrow();
 
         GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild,
                 eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));

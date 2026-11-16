@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.shared;
 
-import panda.std.Option;
+import java.util.Optional;
 
 public final class Position {
 
@@ -55,8 +55,8 @@ public final class Position {
         return this.pitch;
     }
 
-    public Option<String> getWorld() {
-        return Option.of(this.world);
+    public Optional<String> getWorld() {
+        return Optional.ofNullable(this.world);
     }
 
     public Position add(Position position) {

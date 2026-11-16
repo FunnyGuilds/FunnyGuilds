@@ -14,30 +14,30 @@ public class BucketAction extends AbstractFunnyListener {
     public void onFill(PlayerBucketFillEvent event) {
         Block block = event.getBlockClicked();
 
-        ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         event.getPlayer(),
                         block.getLocation(),
                         event,
                         GuildProtectionPermission.BUCKET_FILL,
                         true
-                )
-                .filterNot(predicate -> this.config.placingBlocksBypassOnRegion.contains(block.getType()))
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+        );
+        protection = protection.filter(predicate -> !this.config.placingBlocksBypassOnRegion.contains(block.getType()));
+        protection.ifPresent(result -> event.setCancelled(true));
+        protection.ifPresent(ProtectionSystem::defaultResponse);
     }
 
     @EventHandler
     public void onEmpty(PlayerBucketEmptyEvent event) {
-        ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         event.getPlayer(),
                         event.getBlockClicked().getLocation(),
                         event,
                         GuildProtectionPermission.BUCKET_EMPTY,
                         true
-                )
-                .filterNot(predicate -> this.config.placingBlocksBypassOnRegion.contains(event.getBucket()))
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+        );
+        protection = protection.filter(predicate -> !this.config.placingBlocksBypassOnRegion.contains(event.getBucket()));
+        protection.ifPresent(result -> event.setCancelled(true));
+        protection.ifPresent(ProtectionSystem::defaultResponse);
     }
 
 }

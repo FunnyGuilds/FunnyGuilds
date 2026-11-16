@@ -5,6 +5,7 @@ import eu.okaeri.configs.exception.OkaeriConfigException;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -97,8 +98,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
-import panda.std.Option;
 import panda.std.Result;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -136,8 +137,8 @@ public class FunnyGuilds extends JavaPlugin {
     private FunnyServer funnyServer;
     private GuildPermissionChecker guildPermissionChecker;
 
-    private Option<IndividualNameTagManager> individualNameTagManager = Option.none();
-    private Option<DummyManager> dummyManager = Option.none();
+    private Optional<IndividualNameTagManager> individualNameTagManager = Optional.empty();
+    private Optional<DummyManager> dummyManager = Optional.empty();
 
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
@@ -151,22 +152,22 @@ public class FunnyGuilds extends JavaPlugin {
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
-    private Option<TablistRenderer> tablistRenderer = Option.none();
+    private Optional<TablistRenderer> tablistRenderer = Optional.empty();
 
-    private Option<Database> database = Option.none();
+    private Optional<Database> database = Optional.empty();
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
 
     private Injector injector;
 
-    private volatile Option<BukkitTask> guildValidationTask = Option.none();
-    private volatile Option<BukkitTask> tablistBroadcastTask = Option.none();
-    private volatile Option<BukkitTask> rankRecalculationTask = Option.none();
+    private volatile Optional<BukkitTask> guildValidationTask = Optional.empty();
+    private volatile Optional<BukkitTask> tablistBroadcastTask = Optional.empty();
+    private volatile Optional<BukkitTask> rankRecalculationTask = Optional.empty();
 
-    private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
-    private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
-    private volatile Option<BukkitTask> scoreboardQueueUpdateTask = Option.none();
+    private volatile Optional<BukkitTask> nameTagUpdateTask = Optional.empty();
+    private volatile Optional<BukkitTask> dummyUpdateTask = Optional.empty();
+    private volatile Optional<BukkitTask> scoreboardQueueUpdateTask = Optional.empty();
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -316,7 +317,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         if (pluginConfiguration.dataModel.isSQL()) {
             try {
-                this.database = Option.of(new Database());
+                this.database = Optional.of(new Database());
             } catch (Exception ex) {
                 logger.error("Could not create data from database", ex);
                 this.shutdown("Critical error has been encountered!");
@@ -375,8 +376,8 @@ public class FunnyGuilds extends JavaPlugin {
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
-        this.guildValidationTask = Option.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L));
-        this.rankRecalculationTask = Option.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval));
+        this.guildValidationTask = Optional.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L));
+        this.rankRecalculationTask = Optional.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval));
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
@@ -467,11 +468,11 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public void reloadTablistRendering() {
-        this.tablistRenderer = Option.none();
-        this.tablistBroadcastTask.peek(task -> Bukkit.getScheduler().cancelTask(task.getTaskId()));
-        this.tablistBroadcastTask = Option.none();
-        
-        this.tablistRenderer = Option.when(
+        this.tablistRenderer = Optional.empty();
+        this.tablistBroadcastTask.ifPresent(task -> Bukkit.getScheduler().cancelTask(task.getTaskId()));
+        this.tablistBroadcastTask = Optional.empty();
+
+        this.tablistRenderer = Optionals.when(
                 this.tablistConfiguration.enabled,
                 () -> new TablistRenderer(
                         this.nmsAccessor.getPlayerListAccessor(),
@@ -485,8 +486,8 @@ public class FunnyGuilds extends JavaPlugin {
                         this.tablistConfiguration.cellsPing,
                         this.tablistConfiguration.fillCells
                 )
-        ).orElse(Option.none())
-                .peek(renderer -> this.tablistBroadcastTask = Option.of(Bukkit.getScheduler()
+        );
+        this.tablistRenderer.ifPresent(renderer -> this.tablistBroadcastTask = Optional.of(Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(
                         this,
                         new TablistBroadcastHandler(renderer),
@@ -507,9 +508,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager.unregisterAll();
         this.guildEntityHelper.despawnGuildEntities(this.guildManager);
 
-        this.guildValidationTask.peek(BukkitTask::cancel);
-        this.tablistBroadcastTask.peek(BukkitTask::cancel);
-        this.rankRecalculationTask.peek(BukkitTask::cancel);
+        this.guildValidationTask.ifPresent(BukkitTask::cancel);
+        this.tablistBroadcastTask.ifPresent(BukkitTask::cancel);
+        this.rankRecalculationTask.ifPresent(BukkitTask::cancel);
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -518,7 +519,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.stopHandler();
 
         this.getServer().getScheduler().cancelTasks(this);
-        this.database.peek(Database::shutdown);
+        this.database.ifPresent(Database::shutdown);
 
         plugin = null;
     }
@@ -535,11 +536,11 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            Option<User> userOption = this.userManager.findByPlayer(player);
+            Optional<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 continue;
             }
-            User user = userOption.get();
+            User user = userOption.orElseThrow();
 
             FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
             inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
@@ -550,8 +551,8 @@ public class FunnyGuilds extends JavaPlugin {
         }
         
         this.reloadTablistRendering();
-        this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
-        this.getDummyManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this::scheduleFunnyTasks);
+        this.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).ifPresent(this::scheduleFunnyTasks);
+        this.getDummyManager().map(ScoreboardGlobalUpdateSyncTask::new).ifPresent(this::scheduleFunnyTasks);
 
         this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
@@ -581,7 +582,7 @@ public class FunnyGuilds extends JavaPlugin {
         return this.pluginDataFolderFile;
     }
 
-    public Option<Database> getDatabase() {
+    public Optional<Database> getDatabase() {
         return this.database;
     }
 
@@ -665,15 +666,15 @@ public class FunnyGuilds extends JavaPlugin {
         return this.guildPermissionChecker;
     }
 
-    public Option<IndividualNameTagManager> getIndividualNameTagManager() {
+    public Optional<IndividualNameTagManager> getIndividualNameTagManager() {
         return this.individualNameTagManager;
     }
 
-    public Option<DummyManager> getDummyManager() {
+    public Optional<DummyManager> getDummyManager() {
         return this.dummyManager;
     }
 
-    public Option<TablistRenderer> getTablistRenderer() {
+    public Optional<TablistRenderer> getTablistRenderer() {
         return this.tablistRenderer;
     }
 
@@ -730,9 +731,9 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void prepareScoreboardServices() {
-        this.nameTagUpdateTask.peek(BukkitTask::cancel);
-        this.dummyUpdateTask.peek(BukkitTask::cancel);
-        this.scoreboardQueueUpdateTask.peek(BukkitTask::cancel);
+        this.nameTagUpdateTask.ifPresent(BukkitTask::cancel);
+        this.dummyUpdateTask.ifPresent(BukkitTask::cancel);
+        this.scoreboardQueueUpdateTask.ifPresent(BukkitTask::cancel);
 
         ScoreboardConfiguration scoreboardConfig = this.pluginConfiguration.scoreboard;
         if (!scoreboardConfig.enabled) {
@@ -740,7 +741,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
         ScoreboardService scoreboardService = new ScoreboardService(this.pluginConfiguration);
 
-        this.individualNameTagManager = Option.when(
+        this.individualNameTagManager = Optionals.when(
                 scoreboardConfig.nametag.enabled,
                 () -> new IndividualNameTagManager(this.pluginConfiguration, this.userManager, this.guildPermissionChecker, scoreboardService)
         );
@@ -751,7 +752,7 @@ public class FunnyGuilds extends JavaPlugin {
                 scoreboardConfig.nametag.updateRate.getSeconds() * 20L
         ));
 
-        this.dummyManager = Option.when(
+        this.dummyManager = Optionals.when(
                 scoreboardConfig.dummy.enabled,
                 () -> new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService)
         );
@@ -762,14 +763,14 @@ public class FunnyGuilds extends JavaPlugin {
                 scoreboardConfig.dummy.updateRate.getSeconds() * 20L
         ));
 
-        this.scoreboardQueueUpdateTask = Option.when(
+        this.scoreboardQueueUpdateTask = Optionals.when(
                 this.individualNameTagManager.isPresent() || this.dummyManager.isPresent(),
                 () -> Bukkit.getScheduler().runTaskTimer(
                         plugin,
                         () -> {
                             for (int i = 0; i < scoreboardConfig.queueConfiguration.maxUpdatesInTick; i++) {
-                                boolean nameTagUpdated = this.individualNameTagManager.is(IndividualNameTagManager::popAndUpdate);
-                                boolean dummyUpdated = this.dummyManager.is(DummyManager::popAndUpdate);
+                                boolean nameTagUpdated = this.individualNameTagManager.filter(IndividualNameTagManager::popAndUpdate).isPresent();
+                                boolean dummyUpdated = this.dummyManager.filter(DummyManager::popAndUpdate).isPresent();
                                 if (!nameTagUpdated && !dummyUpdated) {
                                     break;
                                 }

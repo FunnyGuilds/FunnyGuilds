@@ -2,28 +2,27 @@ package net.dzikoysk.funnyguilds.feature.invitation;
 
 import java.util.Set;
 import java.util.UUID;
-import panda.std.stream.PandaStream;
+import java.util.stream.Collectors;
 
 public interface InvitationList<T extends Invitation<?, ?>> {
 
     Set<T> getInvitations();
 
     default Set<T> getInvitationsFrom(UUID from) {
-        return PandaStream.of(this.getInvitations())
+        return this.getInvitations().stream()
                 .filter(invitation -> invitation.getFromUUID().equals(from))
-                .toSet();
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     default Set<T> getInvitationsFor(UUID to) {
-        return PandaStream.of(this.getInvitations())
+        return this.getInvitations().stream()
                 .filter(invitation -> invitation.getToUUID().equals(to))
-                .toSet();
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     default boolean hasInvitation(UUID from, UUID to) {
-        return PandaStream.of(this.getInvitationsFrom(from))
-                .find(invitation -> invitation.getToUUID().equals(to))
-                .isPresent();
+        return this.getInvitationsFrom(from).stream()
+                .anyMatch(invitation -> invitation.getToUUID().equals(to));
     }
 
     default boolean hasInvitationFor(UUID to) {

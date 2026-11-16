@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.user.User;
@@ -16,7 +17,7 @@ public final class AdminUtils {
     public static @Nullable User getAdminUser(CommandSender sender) {
         UserManager userManager = FunnyGuilds.getInstance().getUserManager();
         return (sender instanceof Player)
-                ? userManager.findByUuid(((Player) sender).getUniqueId()).orNull()
+                ? userManager.findByUuid(((Player) sender).getUniqueId()).orElse(null)
                 : null;
     }
 

@@ -47,16 +47,15 @@ public class EntityInteract extends AbstractFunnyListener {
                 }
             }
             else {
-                this.userManager.findByPlayer(clickedPlayer).peek(user -> {
-                    this.playerExecutor.sendInfoMessage(config -> config.playerRightClickInfo, user, eventCaller);
-                });
+                this.userManager.findByPlayer(clickedPlayer).ifPresent(user ->
+                        this.playerExecutor.sendInfoMessage(config -> config.playerRightClickInfo, user, eventCaller));
             }
         }
 
         if (this.config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
             this.userManager.findByPlayer(eventCaller)
                     .filter(user -> user.getGuild().map(Guild::canBuild).isEmpty())
-                    .peek(user -> event.setCancelled(true));
+                    .ifPresent(user -> event.setCancelled(true));
         }
     }
 

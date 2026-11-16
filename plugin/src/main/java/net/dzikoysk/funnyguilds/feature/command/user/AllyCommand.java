@@ -140,7 +140,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
                 .with(allyIFormatter)
                 .send();
 
-        this.plugin.getIndividualNameTagManager().peek(manager -> {
+        this.plugin.getIndividualNameTagManager().ifPresent(manager -> {
             guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
             invitedGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });

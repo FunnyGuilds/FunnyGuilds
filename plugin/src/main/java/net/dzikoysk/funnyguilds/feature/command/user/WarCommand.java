@@ -65,7 +65,7 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .with(enemyIFormatter)
                 .send();
 
-        this.plugin.getIndividualNameTagManager().peek(manager -> {
+        this.plugin.getIndividualNameTagManager().ifPresent(manager -> {
             guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
             enemyGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.placeholderapi;
 
 import java.util.Locale;
+import java.util.Optional;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
@@ -14,7 +15,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
+import java.util.Optional;
 
 public class PlaceholderAPIHook extends AbstractPluginHook {
     
@@ -33,13 +34,13 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public Option<String> replacePlaceholders(Player user, String base) {
-        return Option.of(PlaceholderAPI.setPlaceholders(user, base))
+    public Optional<String> replacePlaceholders(Player user, String base) {
+        return Optional.ofNullable(PlaceholderAPI.setPlaceholders(user, base))
                 .filter(replaced -> !replaced.equals(base));
     }
 
-    public Option<String> replacePlaceholders(Player userOne, Player userTwo, String base) {
-        return Option.of(PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base))
+    public Optional<String> replacePlaceholders(Player userOne, Player userTwo, String base) {
+        return Optional.ofNullable(PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base))
                 .filter(replaced -> !replaced.equals(base));
     }
 
@@ -61,12 +62,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return "";
             }
 
-            Option<User> userOption = this.plugin.getUserManager().findByPlayer(player);
+            Optional<User> userOption = this.plugin.getUserManager().findByPlayer(player);
             if (userOption.isEmpty()) {
                 return "";
             }
 
-            User user = userOption.get();
+            User user = userOption.orElseThrow();
             
             Component inputText = Component.text("{" + identifier.toUpperCase(Locale.ROOT) + "}");
             Component replacedText = this.plugin.getTablistPlaceholdersService().format(
@@ -85,16 +86,16 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             UserManager userManager = this.plugin.getUserManager();
-            Option<User> userObserverOption = userManager.findByPlayer(observer);
-            Option<User> userTargetOption = userManager.findByPlayer(target);
+            Optional<User> userObserverOption = userManager.findByPlayer(observer);
+            Optional<User> userTargetOption = userManager.findByPlayer(target);
 
             if (userObserverOption.isEmpty() || userTargetOption.isEmpty()) {
                 return "";
             }
 
             Component relationalTag = this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
-                    userObserverOption.get().getGuild().orNull(),
-                    userTargetOption.get().getGuild().orNull()
+                    userObserverOption.orElseThrow().getGuild().orElse(null),
+                    userTargetOption.orElseThrow().getGuild().orElse(null)
             );
             return LEGACY_SERIALIZER.serialize(relationalTag);
         }

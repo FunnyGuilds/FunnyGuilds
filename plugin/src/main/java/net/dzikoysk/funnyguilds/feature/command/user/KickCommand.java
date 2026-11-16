@@ -44,7 +44,7 @@ public final class KickCommand extends AbstractFunnyCommand {
         formerUser.removeGuild();
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, formerUser))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", formerUser.getName())

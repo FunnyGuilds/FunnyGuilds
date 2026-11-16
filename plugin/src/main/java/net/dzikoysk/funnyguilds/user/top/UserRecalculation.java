@@ -3,12 +3,12 @@ package net.dzikoysk.funnyguilds.user.top;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.rank.TopComparator;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRank;
-import panda.std.stream.PandaStream;
 
 public class UserRecalculation implements BiFunction<String, TopComparator<UserRank>, NavigableSet<UserRank>> {
 
@@ -24,8 +24,8 @@ public class UserRecalculation implements BiFunction<String, TopComparator<UserR
     public NavigableSet<UserRank> apply(String id, TopComparator<UserRank> topComparator) {
         NavigableSet<UserRank> usersRank = new TreeSet<>(topComparator);
 
-        PandaStream.of(this.userManager.getUsers())
-                .filterNot(user -> this.pluginConfiguration.skipPrivilegedPlayersInRankPositions && user.hasPermission("funnyguilds.ranking.exempt"))
+        this.userManager.getUsers().stream()
+                .filter(Predicate.not(user -> this.pluginConfiguration.skipPrivilegedPlayersInRankPositions && user.hasPermission("funnyguilds.ranking.exempt")))
                 .map(User::getRank)
                 .forEach(usersRank::add);
 

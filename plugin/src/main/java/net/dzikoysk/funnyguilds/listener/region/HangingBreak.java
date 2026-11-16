@@ -15,15 +15,15 @@ public class HangingBreak extends AbstractFunnyListener {
             return;
         }
 
-        ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         (Player) event.getRemover(),
                         event.getEntity().getLocation(),
                         event,
                         GuildProtectionPermission.HANGING_BREAK,
                         false
-                )
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+                );
+        protection.ifPresent(result -> event.setCancelled(true));
+        protection.ifPresent(ProtectionSystem::defaultResponse);
     }
 
 }
