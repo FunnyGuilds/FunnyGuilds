@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.flat.seralizer;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -9,22 +10,21 @@ import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.configuration.ConfigurationSection;
-import panda.std.Option;
 
 public final class FlatUserSerializer {
 
     private FlatUserSerializer() {
     }
 
-    public static Option<User> deserialize(File file) {
+    public static Optional<User> deserialize(File file) {
         if (file.isDirectory()) {
-            return Option.none();
+            return Optional.empty();
         }
 
         return deserialize(new YamlWrapper(file));
     }
 
-    public static Option<User> deserialize(ConfigurationSection wrapper) {
+    public static Optional<User> deserialize(ConfigurationSection wrapper) {
         String id = wrapper.getString("uuid");
         String name = wrapper.getString("name");
         int points = wrapper.getInt("points");
@@ -37,7 +37,7 @@ public final class FlatUserSerializer {
         String lastIP = wrapper.getString("last_ip");
 
         if (id == null || name == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         Object[] values = new Object[10];
@@ -58,12 +58,12 @@ public final class FlatUserSerializer {
     public static boolean serialize(User user) {
         FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
 
-        Option<File> fileOption = dataModel.getUserFile(user);
+        Optional<File> fileOption = dataModel.getUserFile(user);
         if (fileOption.isEmpty()) {
             return false;
         }
 
-        File userFile = fileOption.get();
+        File userFile = fileOption.orElseThrow();
         if (userFile.isDirectory()) {
             return false;
         }
@@ -78,7 +78,7 @@ public final class FlatUserSerializer {
         wrapper.set("logouts", user.getRank().getLogouts());
         wrapper.set("last_ip", user.getLastIP());
 
-        user.getBan().peek(ban -> {
+        user.getBan().toOptional().ifPresent(ban -> {
             wrapper.set("ban", ban.getTime().toEpochMilli());
             wrapper.set("reason", ban.getReason());
         });

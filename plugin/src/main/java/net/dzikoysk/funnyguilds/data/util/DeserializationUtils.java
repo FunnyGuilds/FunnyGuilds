@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.util;
 
 import java.time.Instant;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -16,14 +17,13 @@ import net.dzikoysk.funnyguilds.user.UserBan;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserProfile;
 import org.bukkit.Location;
-import panda.std.Option;
 
 public final class DeserializationUtils {
 
     private DeserializationUtils() {
     }
 
-    public static Option<User> deserializeUser(UserManager userManager, Object[] values) {
+    public static Optional<User> deserializeUser(UserManager userManager, Object[] values) {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
@@ -46,14 +46,14 @@ public final class DeserializationUtils {
         }
 
         user.markUnchanged();
-        return Option.of(user);
+        return Optional.of(user);
     }
 
     @SuppressWarnings("unchecked")
-    public static Option<Guild> deserializeGuild(PluginConfiguration pluginConfiguration, GuildManager guildManager, Object[] values) {
+    public static Optional<Guild> deserializeGuild(PluginConfiguration pluginConfiguration, GuildManager guildManager, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild, caused by: null");
-            return Option.none();
+            return Optional.empty();
         }
 
         UUID guildUuid = (UUID) values[0];
@@ -108,24 +108,24 @@ public final class DeserializationUtils {
         guild.deserializationUpdate();
 
         guild.markUnchanged();
-        return Option.of(guild);
+        return Optional.of(guild);
     }
 
-    public static Option<Region> deserializeRegion(RegionManager regionManager, Object[] values) {
+    public static Optional<Region> deserializeRegion(RegionManager regionManager, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize region, caused by: null");
-            return Option.none();
+            return Optional.empty();
         }
 
         String regionName = (String) values[0];
-        Region region = regionManager.findByName(regionName).orElseGet(new Region(regionName, (Location) values[1]));
+        Region region = regionManager.findByName(regionName).toOptional().orElse(new Region(regionName, (Location) values[1]));
 
         // region.setSize((int) values[2]); // We don't set size here like before, now region size is calculated from region enlargement level (method below)
         regionManager.changeRegionEnlargement(region, (int) values[3]);
         region.update();
 
         region.markUnchanged();
-        return Option.of(region);
+        return Optional.of(region);
     }
 
 }

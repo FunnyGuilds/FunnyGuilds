@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.flat.seralizer;
 
 import java.io.File;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -8,16 +9,15 @@ import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
-import panda.std.Option;
 
 public final class FlatRegionSerializer {
 
     private FlatRegionSerializer() {
     }
 
-    public static Option<Region> deserialize(File file) {
+    public static Optional<Region> deserialize(File file) {
         if (file.isDirectory()) {
-            return Option.none();
+            return Optional.empty();
         }
 
         YamlWrapper wrapper = new YamlWrapper(file);
@@ -29,13 +29,13 @@ public final class FlatRegionSerializer {
 
         if (name == null || centerString == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize region! Caused by: name/center is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         Location center = LocationUtils.parseLocation(centerString);
         if (center == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize region! Caused by: center is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         if (size < 1) {
@@ -54,12 +54,12 @@ public final class FlatRegionSerializer {
     public static boolean serialize(Region region) {
         FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
 
-        Option<File> fileOption = dataModel.getRegionFile(region);
+        Optional<File> fileOption = dataModel.getRegionFile(region);
         if (fileOption.isEmpty()) {
             return false;
         }
 
-        File regionFile = fileOption.get();
+        File regionFile = fileOption.orElseThrow();
         if (regionFile.isDirectory()) {
             return false;
         }

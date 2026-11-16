@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import java.sql.ResultSet;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -9,16 +10,15 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
-import panda.std.Option;
 
 public final class DatabaseRegionSerializer {
 
     private DatabaseRegionSerializer() {
     }
 
-    public static Option<Region> deserialize(ResultSet resultSet) {
+    public static Optional<Region> deserialize(ResultSet resultSet) {
         if (resultSet == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         try {
@@ -29,11 +29,11 @@ public final class DatabaseRegionSerializer {
 
             if (name == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize region, caused by: name == null");
-                return Option.none();
+                return Optional.empty();
             }
             else if (center == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize region (" + name + "), caused by: center == null");
-                return Option.none();
+                return Optional.empty();
             }
 
             Object[] values = new Object[4];
@@ -48,7 +48,7 @@ public final class DatabaseRegionSerializer {
             FunnyGuilds.getPluginLogger().error("Could not deserialize region", exception);
         }
 
-        return Option.none();
+        return Optional.empty();
     }
 
     public static void serialize(Region region) {

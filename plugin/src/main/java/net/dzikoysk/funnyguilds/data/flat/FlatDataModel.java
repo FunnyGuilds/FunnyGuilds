@@ -2,8 +2,10 @@ package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,9 +29,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import panda.std.Option;
 import panda.std.Result;
-import panda.std.stream.PandaStream;
 
 public class FlatDataModel implements DataModel {
 
@@ -50,7 +50,7 @@ public class FlatDataModel implements DataModel {
         this.regionsFolderFile = new File(dataFolder, "regions");
     }
 
-    private Option<File> loadCustomFile(EntityType type, String name) {
+    private Optional<File> loadCustomFile(EntityType type, String name) {
         File fileFolder;
 
         switch (type) {
@@ -68,27 +68,27 @@ public class FlatDataModel implements DataModel {
         }
 
         if (fileFolder == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         Result<File, String> createResult = FunnyIOUtils.createFile(new File(fileFolder, name + ".yml"), false);
         if (createResult.isErr()) {
             FunnyGuilds.getPluginLogger().error(createResult.getError());
-            return Option.none();
+            return Optional.empty();
         }
 
-        return Option.of(createResult.get());
+        return Optional.of(createResult.get());
     }
 
-    public Option<File> getUserFile(User user) {
+    public Optional<File> getUserFile(User user) {
         return this.loadCustomFile(EntityType.USER, user.getUUID().toString());
     }
 
-    public Option<File> getGuildFile(Guild guild) {
+    public Optional<File> getGuildFile(Guild guild) {
         return this.loadCustomFile(EntityType.GUILD, guild.getName());
     }
 
-    public Option<File> getRegionFile(Region region) {
+    public Optional<File> getRegionFile(Region region) {
         return this.loadCustomFile(EntityType.REGION, region.getName());
     }
 
@@ -141,7 +141,10 @@ public class FlatDataModel implements DataModel {
         userManager.clearUsers();
         AtomicInteger deserializationErrors = new AtomicInteger();
         users.forEach((file, yaml) -> UserUtils.checkUserFile(this.pluginConfiguration, file)
-                .peek(checkedFile -> FlatUserSerializer.deserialize(yaml).onEmpty(deserializationErrors::incrementAndGet)));
+                .toOptional()
+                .ifPresent(checkedFile -> FlatUserSerializer.deserialize(yaml)
+                        .ifPresentOrElse(checkedYaml -> {
+                        }, deserializationErrors::incrementAndGet)));
 
         if (deserializationErrors.get() > 0) {
             FunnyGuilds.getPluginLogger().error("Users load errors " + deserializationErrors.get());
@@ -206,10 +209,10 @@ public class FlatDataModel implements DataModel {
         }
 
         AtomicInteger incorrectUsersCount = new AtomicInteger();
-        long serializationErrors = PandaStream.of(users)
+        long serializationErrors = users.stream()
                 .filter(user -> checkUser(user, incorrectUsersCount))
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
-                .filterNot(FlatUserSerializer::serialize)
+                .filter(user -> !FlatUserSerializer.serialize(user))
                 .count();
 
         long errors = serializationErrors + incorrectUsersCount.get();
@@ -231,9 +234,14 @@ public class FlatDataModel implements DataModel {
         AtomicInteger incorrectGuildsCount = new AtomicInteger();
         AtomicInteger ownerlessGuilds = new AtomicInteger();
 
-        PandaStream.of(guildFiles)
-                .mapOpt(guildFile -> FlatGuildSerializer.deserialize(guildFile)
-                        .onEmpty(incorrectGuildsCount::incrementAndGet))
+        Arrays.stream(guildFiles)
+                .flatMap(guildFile -> {
+                    Optional<Guild> deserialized = FlatGuildSerializer.deserialize(guildFile);
+                    if (deserialized.isEmpty()) {
+                        incorrectGuildsCount.incrementAndGet();
+                    }
+                    return deserialized.stream();
+                })
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> {
                     FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!");
@@ -246,7 +254,9 @@ public class FlatDataModel implements DataModel {
         }
 
         this.plugin.scheduleFunnyTasks(new DatabaseFixAlliesAsyncTask(guildManager));
-        this.plugin.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getIndividualNameTagManager().toOptional()
+                .map(ScoreboardGlobalUpdateSyncTask::new)
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
@@ -257,9 +267,9 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        long errors = PandaStream.of(guilds)
+        long errors = guilds.stream()
                 .filter(guild -> !ignoreNotChanged || guild.wasChanged())
-                .filterNot(FlatGuildSerializer::serialize)
+                .filter(guild -> !FlatGuildSerializer.serialize(guild))
                 .count();
 
         if (errors > 0) {
@@ -283,8 +293,8 @@ public class FlatDataModel implements DataModel {
         }
 
         AtomicInteger correctlyLoaded = new AtomicInteger();
-        PandaStream.of(regionFiles)
-                .mapOpt(FlatRegionSerializer::deserialize)
+        Arrays.stream(regionFiles)
+                .flatMap(regionFile -> FlatRegionSerializer.deserialize(regionFile).stream())
                 .forEach(region -> {
                     regionManager.addRegion(region);
                     correctlyLoaded.incrementAndGet();
@@ -308,9 +318,9 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        long errors = PandaStream.of(regions)
+        long errors = regions.stream()
                 .filter(region -> !ignoreNotChanged || region.wasChanged())
-                .filterNot(FlatRegionSerializer::serialize)
+                .filter(region -> !FlatRegionSerializer.serialize(region))
                 .count();
 
         if (errors > 0) {

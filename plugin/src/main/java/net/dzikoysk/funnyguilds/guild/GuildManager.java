@@ -265,7 +265,7 @@ public class GuildManager {
 
         if (plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
-            dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
+            dataModel.getGuildFile(guild).ifPresent(FunnyIOUtils::deleteFile);
         }
         else if (plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete(guild);

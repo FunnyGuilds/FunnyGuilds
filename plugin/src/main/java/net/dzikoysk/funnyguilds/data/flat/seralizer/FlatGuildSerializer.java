@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.Entity;
@@ -28,16 +29,15 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import panda.std.Option;
 
 public final class FlatGuildSerializer {
 
     private FlatGuildSerializer() {
     }
 
-    public static Option<Guild> deserialize(File file) {
+    public static Optional<Guild> deserialize(File file) {
         if (file.isDirectory()) {
-            return Option.none();
+            return Optional.empty();
         }
 
         FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -72,33 +72,33 @@ public final class FlatGuildSerializer {
 
         if (name == null) {
             logger.deserialize("Cannot deserialize guild, caused by: name is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         if (tag == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: tag is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         if (ownerName == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         Region region = null;
         if (config.regionsEnabled) {
             if (regionName == null) {
                 logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region is null");
-                return Option.none();
+                return Optional.empty();
             }
 
-            Option<Region> regionOption = regionManager.findByName(regionName);
+            Optional<Region> regionOption = regionManager.findByName(regionName).toOptional();
             if (regionOption.isEmpty()) {
                 logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region (object) is null");
-                return Option.none();
+                return Optional.empty();
             }
 
-            region = regionOption.get();
+            region = regionOption.orElseThrow();
         }
 
         UUID uuid = UUID.randomUUID();
@@ -106,10 +106,10 @@ public final class FlatGuildSerializer {
             uuid = UUID.fromString(id);
         }
 
-        Option<User> ownerOption = userManager.findByName(ownerName);
+        Optional<User> ownerOption = userManager.findByName(ownerName).toOptional();
         if (ownerOption.isEmpty()) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
@@ -138,17 +138,17 @@ public final class FlatGuildSerializer {
 
         if (born == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: born is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         if (validity == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: validity is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         if (protection == null) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: protection is null");
-            return Option.none();
+            return Optional.empty();
         }
 
         if (lives == 0) {
@@ -159,7 +159,7 @@ public final class FlatGuildSerializer {
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
-        values[3] = ownerOption.get();
+        values[3] = ownerOption.orElseThrow();
         values[4] = home;
         values[5] = region;
         values[6] = members;
@@ -196,12 +196,12 @@ public final class FlatGuildSerializer {
             return false;
         }
 
-        Option<File> fileOption = dataModel.getGuildFile(guild);
+        Optional<File> fileOption = dataModel.getGuildFile(guild);
         if (fileOption.isEmpty()) {
             return false;
         }
 
-        File guildFile = fileOption.get();
+        File guildFile = fileOption.orElseThrow();
         if (guildFile.isDirectory()) {
             return false;
         }
@@ -224,11 +224,11 @@ public final class FlatGuildSerializer {
         wrapper.set("heart-lives", guild.getHeartLives());
         wrapper.set("wars-won", guild.getWarsWon());
         wrapper.set("wars-lost", guild.getWarsLost());
-        wrapper.set("last-war", guild.getLastWarGuildTag().orNull());
+        wrapper.set("last-war", guild.getLastWarGuildTag().toOptional().orElse(null));
         wrapper.set("war-streak", guild.getWarStreak());
-        wrapper.set("last-life-buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElseGet(0L));
-        wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
-        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElseGet(0L));
+        wrapper.set("last-life-buy", guild.getLastLifeBuy().toOptional().map(Instant::toEpochMilli).orElse(0L));
+        wrapper.set("ban", guild.getBan().toOptional().map(Instant::toEpochMilli).orElse(0L));
+        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().toOptional().map(Instant::toEpochMilli).orElse(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 

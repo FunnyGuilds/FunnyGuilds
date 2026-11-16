@@ -246,7 +246,7 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
 
         if (dataModel instanceof FlatDataModel) {
-            ((FlatDataModel) dataModel).getRegionFile(region).peek(FunnyIOUtils::deleteFile);
+            ((FlatDataModel) dataModel).getRegionFile(region).ifPresent(FunnyIOUtils::deleteFile);
         }
 
         if (dataModel instanceof SQLDataModel) {
