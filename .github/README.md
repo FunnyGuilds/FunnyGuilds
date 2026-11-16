@@ -1,17 +1,33 @@
-<p align="center">
-  <img src=".github/assets/logo.png" width="128" alt="FunnyGuilds">
-</p>
-
-# FunnyGuilds
-
-[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Version](https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v)](https://github.com/FunnyGuilds/FunnyGuilds/releases/latest) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u)
-
-FunnyGuilds is a configurable guild plugin for Paper servers. Players create guilds, claim territory, form alliances and compete in rankings. Almost every part of it can be tuned from the config files.
-
-## Download
-
-- [Releases](https://funnyguilds.dzikoysk.net/download) - stable versions
-- [Nightly](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/) - CI builds, for testing only
+<div align="center">
+ <img src=".github/assets/logo.png" width="128" alt="FunnyGuilds">
+ <br>
+ <h1>FunnyGuilds</h1>
+ <div>
+  <a href="https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml">
+   <img alt="Build Status" src="https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg" />
+  </a>
+  <a href="https://github.com/FunnyGuilds/FunnyGuilds/releases/latest">
+   <img alt="Version" src="https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v" />
+  </a>
+  <a href="https://discord.gg/CYvyq3u">
+   <img alt="Discord Online" src="https://img.shields.io/discord/254623242914889729.svg" />
+  </a>
+ </div>
+ <br>
+ <div>
+  FunnyGuilds is a configurable guild plugin for Paper servers. Players create guilds, claim territory, form alliances and compete in rankings. Almost every part of it can be tuned from the config files.
+ </div>
+ <br>
+ <div>
+  <a href="https://funnyguilds.dzikoysk.net/download">Download</a>
+  |
+  <a href="https://ci.insertt.dev/job/FunnyGuilds/job/5.x/">Nightly</a>
+  |
+  <a href="https://funnyguilds.dzikoysk.net">Documentation</a>
+  |
+  <a href="https://discord.gg/CYvyq3u">Discord</a>
+ </div>
+</div>
 
 <details>
 <summary>🇬🇧 English</summary>
