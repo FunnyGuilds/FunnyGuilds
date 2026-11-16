@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.guild.placeholders;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -39,7 +40,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                 (entity, guild) -> {
                     Object value = resolver.resolve(guild.getRank());
                     if (value instanceof Float || value instanceof Double) {
-                        return String.format("%.2f", ((Number) value).floatValue());
+                        return String.format(Locale.ROOT, "%.2f", ((Number) value).floatValue());
                     }
                     return Objects.toString(value);
                 },
