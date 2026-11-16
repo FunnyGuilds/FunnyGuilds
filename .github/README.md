@@ -15,7 +15,7 @@
  </div>
  <br>
  <div>
-  FunnyGuilds is a configurable guild plugin for Paper servers. Players create guilds, claim territory, form alliances and compete in rankings. Almost every part of it can be tuned from the config files.
+  FunnyGuilds is a highly customizable guild plugin for Paper servers, allowing players to create guilds, claim territory, forge alliances, and compete for dominance in server rankings.
  </div>
  <br>
  <div>
