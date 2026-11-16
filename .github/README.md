@@ -19,7 +19,7 @@ https://funnyguilds.dzikoysk.net/download/
 2. Restart the server
 3. Edit `config.yml` and `lang/<locale>.yml`
 
-Config from 4.x does not load on 5.x, so plan ahead when migrating.
+**Config from 4.x does not load on 5.x, so plan ahead when migrating.**
 
 ## Older Minecraft versions
 
