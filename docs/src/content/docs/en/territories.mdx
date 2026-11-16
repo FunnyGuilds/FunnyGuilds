@@ -115,6 +115,14 @@ TNT can be restricted to a time window — the `tnt-protection` section:
 
 The `/tnt` command tells players whether TNT is currently active.
 
+An administrator can allow a specific guild to use TNT regardless of protection — the
+`/ga tnt <tag> <time>` command (e.g. `/ga tnt AKA 30m`) grants that guild's territory a
+TNT-protection bypass for the given time: TNT explosions go through despite
+`time.enabled`/`time.enabled-global` and despite the guild's protection period
+(`war.tnt-protection`), and the guild does not get the `region-explode` build lock. The
+bypass is saved and stays active until the given time elapses, even across server
+restarts. The command requires the `funnyguilds.admin` permission.
+
 Explosion damage is controlled separately by `explosion-control` (two
 sections: `guild` — explosions on guild territory, `global` — everywhere
 else). Each section sets a radius for recovering dropped items (`radius`)

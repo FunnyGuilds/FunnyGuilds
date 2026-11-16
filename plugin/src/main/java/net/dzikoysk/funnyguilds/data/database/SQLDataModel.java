@@ -81,6 +81,7 @@ public class SQLDataModel implements DataModel {
         this.guildsTable.add("enemies", SQLType.TEXT);
         this.guildsTable.add("info", SQLType.TEXT);
         this.guildsTable.add("deputy", SQLType.TEXT);
+        this.guildsTable.add("tnt_protection_bypass", SQLType.BIGINT);
         this.guildsTable.add("wars_won", SQLType.INT);
         this.guildsTable.add("wars_lost", SQLType.INT);
         this.guildsTable.add("last_war", SQLType.TEXT);
@@ -95,6 +96,7 @@ public class SQLDataModel implements DataModel {
         this.regionsTable.setPrimaryKey("name");
     }
 
+    @Override
     public void load() throws SQLException {
         Option<Database> database = this.plugin.getDatabase();
         if (database.isEmpty()) {

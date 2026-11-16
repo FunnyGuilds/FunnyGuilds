@@ -61,6 +61,7 @@ public final class FlatGuildSerializer {
         Instant validity = TimeUtils.positiveOrNullInstant(wrapper.getLong("validity"));
         Instant protection = TimeUtils.positiveOrNullInstant(wrapper.getLong("protection"));
         Instant ban = TimeUtils.positiveOrNullInstant(wrapper.getLong("ban"));
+        Instant tntProtectionBypass = TimeUtils.positiveOrNullInstant(wrapper.getLong("tnt-protection-bypass"));
         int lives = wrapper.getInt("lives");
         int heartLives = wrapper.contains("heart-lives") ? wrapper.getInt("heart-lives") : config.war.heartLives;
         int warsWon = wrapper.getInt("wars-won");
@@ -154,7 +155,7 @@ public final class FlatGuildSerializer {
             lives = config.war.lives;
         }
 
-        Object[] values = new Object[22];
+        Object[] values = new Object[23];
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -170,13 +171,14 @@ public final class FlatGuildSerializer {
         values[12] = lives;
         values[13] = ban;
         values[14] = deputies;
-        values[15] = pvp;
-        values[16] = heartLives;
-        values[17] = warsWon;
-        values[18] = warsLost;
-        values[19] = lastWar;
-        values[20] = warStreak;
-        values[21] = lastLifeBuy;
+        values[15] = tntProtectionBypass;
+        values[16] = pvp;
+        values[17] = heartLives;
+        values[18] = warsWon;
+        values[19] = warsLost;
+        values[20] = lastWar;
+        values[21] = warStreak;
+        values[22] = lastLifeBuy;
 
         return DeserializationUtils.deserializeGuild(config, guildManager, values);
     }
@@ -226,6 +228,7 @@ public final class FlatGuildSerializer {
         wrapper.set("war-streak", guild.getWarStreak());
         wrapper.set("last-life-buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElseGet(0L));
+        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElseGet(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 

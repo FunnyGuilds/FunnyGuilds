@@ -60,7 +60,7 @@ public class EntityExplode extends AbstractFunnyListener {
         explodeRegion.peek(region -> {
             Guild guild = region.getGuild();
 
-            if (this.config.war.tntProtection && !guild.canBeAttacked()) {
+            if (this.config.war.tntProtection && !guild.canBeAttacked() && !guild.hasTntProtectionBypass()) {
                 event.setCancelled(true);
 
                 if (explosionEntity instanceof TNTPrimed) {
@@ -92,11 +92,13 @@ public class EntityExplode extends AbstractFunnyListener {
                     this.regionManager.findRegionAtLocation(block.getLocation())
                             .map(Region::getGuild)
                             .filterNot(Guild::canBeAttacked)
+                            .filterNot(Guild::hasTntProtectionBypass)
                             .isPresent());
             boolean anyBlockRemovedInExplosion = explodedBlocks.removeIf(block ->
                     this.regionManager.findRegionAtLocation(block.getLocation())
                             .map(Region::getGuild)
                             .filterNot(Guild::canBeAttacked)
+                            .filterNot(Guild::hasTntProtectionBypass)
                             .isPresent());
 
             if (anyBlockRemovedInSphere || anyBlockRemovedInExplosion) {

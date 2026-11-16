@@ -235,7 +235,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
             "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
-            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii"
+            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii",
+            "&a/ga tnt [tag] [czas] &8- &7Wlacza TNT na terenie gildii na okreslony czas"
     );
 
     @Comment("")
@@ -716,6 +717,10 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage adminNoProtectionDateGive = ChatHolder.message("&cPodaj date ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)");
     public SendableMessage adminInvalidProtectionDate = ChatHolder.message("&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss");
     public SendableMessage adminProtectionSetSuccessfully = ChatHolder.message("&aPomyslnie ustawiono ochrone dla gildii &7{TAG} &ado &7{DATE}");
+
+    public SendableMessage adminNoTntTimeGive = ChatHolder.message("&cPodaj czas na jaki ma dzialac bypass TNT!");
+    @Comment("Dostępne zmienne: {TAG}, {TIME}")
+    public SendableMessage adminTntSetSuccessfully = ChatHolder.message("&aPomyslnie wlaczono TNT na terenie gildii &7{TAG} &ana &7{TIME}");
 
     public SendableMessage adminGuildHasNoHome = ChatHolder.message("&cGildia gracza nie ma ustawionej bazy!");
     @Comment("Dostępne zmienne: {ADMIN}")

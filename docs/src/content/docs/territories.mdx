@@ -112,6 +112,14 @@ TNT można ograniczyć czasowo — sekcja `tnt-protection`:
 
 Komenda `/tnt` pozwala graczowi sprawdzić, czy ochrona przed TNT jest akurat aktywna.
 
+Administrator może zezwolić konkretnej gildii na TNT mimo ochrony — komenda
+`/ga tnt <tag> <czas>` (np. `/ga tnt AKA 30m`) włącza bypass ochrony przed TNT
+na terenie tej gildii na podany czas: wybuchy TNT przechodzą mimo
+`time.enabled`/`time.enabled-global` oraz mimo okresu ochronnego gildii
+(`war.tnt-protection`), a gildia nie dostaje blokady budowy z `region-explode`.
+Bypass jest zapisywany i działa do upłynięcia podanego czasu, także po
+restarcie serwera. Komenda wymaga uprawnienia `funnyguilds.admin`.
+
 Zniszczenia po wybuchu kontroluje osobno `explosion-control` (dwie sekcje:
 `guild` — wybuchy na terenie gildii, `global` — poza nim). Dla każdej sekcji
 można ustawić promień odzyskiwania przedmiotów (`radius`) oraz zachowanie

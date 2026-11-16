@@ -87,22 +87,23 @@ public final class DeserializationUtils {
         guild.setLives((int) values[12]);
         guild.setBan((Instant) values[13]);
         guild.setDeputies((Set<User>) values[14]);
-        guild.setPvP((boolean) values[15]);
-        guild.setHeartLives((int) values[16]);
-        if (values.length > 17 && values[17] != null) {
-            guild.setWarsWon((int) values[17]);
-        }
+        guild.setTntProtectionBypass((Instant) values[15]);
+        guild.setPvP((boolean) values[16]);
+        guild.setHeartLives((int) values[17]);
         if (values.length > 18 && values[18] != null) {
-            guild.setWarsLost((int) values[18]);
+            guild.setWarsWon((int) values[18]);
         }
         if (values.length > 19 && values[19] != null) {
-            guild.setLastWarGuildTag((String) values[19]);
+            guild.setWarsLost((int) values[19]);
         }
         if (values.length > 20 && values[20] != null) {
-            guild.setWarStreak((int) values[20]);
+            guild.setLastWarGuildTag((String) values[20]);
         }
         if (values.length > 21 && values[21] != null) {
-            guild.setLastLifeBuy((Instant) values[21]);
+            guild.setWarStreak((int) values[21]);
+        }
+        if (values.length > 22 && values[22] != null) {
+            guild.setLastLifeBuy((Instant) values[22]);
         }
         guild.deserializationUpdate();
 
