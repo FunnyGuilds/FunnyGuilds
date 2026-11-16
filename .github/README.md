@@ -1,5 +1,5 @@
 <div align="center">
- <img src="https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/5.x/.github/assets/logo.png" width="128" alt="FunnyGuilds">
+ <img src="https://github.com/user-attachments/assets/d73c4951-6843-4a4d-a9cc-f8b6d8260c41" width="128" alt="FunnyGuilds">
  <br>
  <h1>FunnyGuilds</h1>
  <div>
