@@ -1,3 +1,7 @@
+<p align="center">
+  <img src=".github/assets/logo.png" width="128" alt="FunnyGuilds">
+</p>
+
 # FunnyGuilds
 
 [![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Version](https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v)](https://github.com/FunnyGuilds/FunnyGuilds/releases/latest) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u)
@@ -6,10 +10,11 @@ FunnyGuilds is a configurable guild plugin for Paper servers. Players create gui
 
 ## Download
 
-https://funnyguilds.dzikoysk.net/download
+- [Releases](https://funnyguilds.dzikoysk.net/download) - stable versions
+- [Nightly](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/) - CI builds, for testing only
 
 <details>
-<summary>English</summary>
+<summary>🇬🇧 English</summary>
 
 ## Requirements
 
@@ -28,7 +33,7 @@ https://funnyguilds.dzikoysk.net/download
 ## Older Minecraft versions
 
 - Below 1.21.5: FunnyGuilds 4.14.0, the last release of the 4.x series
-- Full release archive: https://funnyguilds.dzikoysk.net/en/download
+- Full release archive: [download page](https://funnyguilds.dzikoysk.net/en/download)
 
 ## Features
 
@@ -61,7 +66,7 @@ Picked up automatically when installed:
 </details>
 
 <details>
-<summary>Polski</summary>
+<summary>🇵🇱 Polski</summary>
 
 ## Wymagania
 
@@ -80,7 +85,7 @@ Picked up automatically when installed:
 ## Starsze wersje Minecrafta
 
 - Poniżej 1.21.5: FunnyGuilds 4.14.0, ostatnie wydanie serii 4.x
-- Pełne archiwum wydań: https://funnyguilds.dzikoysk.net/download
+- Pełne archiwum wydań: [download](https://funnyguilds.dzikoysk.net/download)
 
 ## Funkcje
 
