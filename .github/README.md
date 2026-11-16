@@ -7,11 +7,9 @@ FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to crea
 
 ---
 
-Website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
+Documentation: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 <br>
-Community: <a href="https://discord.gg/CYvyq3u">Discord</a>
-<br>
-Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/ENG)</a>
+Community/Support: <a href="https://discord.gg/CYvyq3u">Discord</a>
 
 #### Supported Paper versions
 1.21.5 - 1.21.11,
