@@ -9,7 +9,7 @@
   <a href="https://github.com/FunnyGuilds/FunnyGuilds/releases/latest">
    <img alt="Version" src="https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v" />
   </a>
-  <a href="https://discord.gg/CYvyq3u">
+  <a href="https://discord.gg/bookkity">
    <img alt="Discord Online" src="https://img.shields.io/discord/254623242914889729.svg" />
   </a>
  </div>
@@ -23,7 +23,7 @@
   |
   <a href="https://funnyguilds.dzikoysk.net">Documentation</a>
   |
-  <a href="https://discord.gg/CYvyq3u">Discord</a>
+  <a href="https://discord.gg/bookkity">Discord</a>
  </div>
 </div>
 
@@ -74,7 +74,7 @@ Wykrywane automatycznie po instalacji:
 - Dokumentacja: https://funnyguilds.dzikoysk.net
 - API dla developerów (Maven/Gradle): https://funnyguilds.dzikoysk.net/api
 - Statystyki: https://bstats.org/plugin/bukkit/FunnyGuilds
-- Discord: https://discord.gg/CYvyq3u
+- Discord: https://discord.gg/bookkity
 
 </details>
 
@@ -125,6 +125,6 @@ Picked up automatically when installed:
 - Documentation: https://funnyguilds.dzikoysk.net
 - API for developers (Maven/Gradle): https://funnyguilds.dzikoysk.net/en/api
 - Statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
-- Discord: https://discord.gg/CYvyq3u
+- Discord: https://discord.gg/bookkity
 
 </details>
