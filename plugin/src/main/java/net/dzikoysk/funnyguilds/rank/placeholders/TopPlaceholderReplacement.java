@@ -1,18 +1,14 @@
 package net.dzikoysk.funnyguilds.rank.placeholders;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.ComponentReplacement;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.RangeFormatting;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
-import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
@@ -106,8 +102,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
             return this.formatUserTop(
                 user,
                 topValue,
-                this.config.top.format.ptop,
-                this.config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT))
+                comparatorType
             );
         }
 
@@ -144,8 +139,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
                 targetUser,
                 guild,
                 topValue,
-                this.config.top.format.gtop,
-                this.config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase(Locale.ROOT))
+                comparatorType
             );
         }
 
@@ -157,7 +151,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
         };
     }
 
-    private Component formatUserTop(User user, Number topValue, String topFormat, @Nullable List<RangeFormatting> formats) {
+    private Component formatUserTop(User user, Number topValue, String metric) {
         boolean online = user.isOnline();
         if (online && this.config.ptopRespectVanish) {
             online = !user.isVanished();
@@ -167,15 +161,14 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
             user.getName(),
             online ? this.config.onlineColor : this.config.offlineColor
         );
-        return userNameComponent.append(formatTopValue(topValue, topFormat, formats));
+        return userNameComponent.append(this.config.getValueFormatting().top(false, metric, topValue, rawValueString(topValue)));
     }
 
     private Component formatGuildTop(
         User targetUser,
         Guild guild,
         Number topValue,
-        String topFormat,
-        @Nullable List<RangeFormatting> formats
+        String metric
     ) {
         Component guildTagComponent = null;
         if (this.config.top.useRelationshipColors && targetUser != null) {
@@ -192,17 +185,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
             guildTagComponent = Component.text(guild.getTag(), tagColor);
         }
 
-        return guildTagComponent.append(formatTopValue(topValue, topFormat, formats));
-    }
-
-    private Component formatTopValue(Number topValue, String topFormat, @Nullable List<RangeFormatting> formats) {
-        String valueString = rawValueString(topValue);
-        String valueFormat = formats == null ? valueString : NumberRange.inRangeToString(topValue, formats);
-        String rawTopFormat = topFormat
-            .replace("{VALUE-FORMAT}", valueFormat)
-            .replace("{VALUE}", valueString);
-
-        return ComponentUtil.colored(rawTopFormat);
+        return guildTagComponent.append(this.config.getValueFormatting().top(true, metric, topValue, rawValueString(topValue)));
     }
 
     private String rawValueString(Number topValue) {

@@ -145,12 +145,12 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 )
                 .property("lives", Guild::getLives, entity -> 0)
                 .property("war-max-lives", guild -> pluginConfiguration.war.maxLives, entity -> 0)
-                .property("wars-won", Guild::getWarsWon, entity -> 0)
-                .property("wars-lost", Guild::getWarsLost, entity -> 0)
+                .numericProperty("wars-won", "wars_won", Guild::getWarsWon, pluginConfiguration::getValueFormatting)
+                .numericProperty("wars-lost", "wars_lost", Guild::getWarsLost, pluginConfiguration::getValueFormatting)
                 .property("wars-last",
                         (entity, guild) -> guild.getLastWarGuildTag().orNull(),
                         entity -> messages.get(entity, config -> config.enemiesNoValue))
-                .property("war-streak", Guild::getWarStreak, entity -> 0)
+                .numericProperty("war-streak", "war_streak", Guild::getWarStreak, pluginConfiguration::getValueFormatting)
                 .property("heart-lives", Guild::getHeartLives, entity -> 0)
                 .property("heart-lives-max", guild -> pluginConfiguration.war.heartLives, entity -> 0)
                 .property("lives-symbol",
@@ -188,20 +188,20 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                                 ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                                 : messages.get(entity, config -> config.minMembersToIncludeNoValue),
                         entity -> messages.get(entity, config -> config.minMembersToIncludeNoValue))
-                .rankProperty("points", GuildRank::getPoints, 0)
-                .rankProperty("avg-points", GuildRank::getAveragePoints,0)
-                .rankProperty("kills", GuildRank::getKills, 0)
-                .rankProperty("avg-kills", GuildRank::getAverageKills, 0)
-                .rankProperty("deaths", GuildRank::getDeaths, 0)
-                .rankProperty("avg-deaths", GuildRank::getAverageDeaths, 0)
-                .rankProperty("assists", GuildRank::getAssists, 0)
-                .rankProperty("avg-assists", GuildRank::getAverageAssists, 0)
-                .rankProperty("logouts", GuildRank::getLogouts, 0)
-                .rankProperty("avg-logouts", GuildRank::getAverageLogouts, 0)
-                .rankProperty("kdr", GuildRank::getKDR, 0.00)
-                .rankProperty("avg-kdr", GuildRank::getAverageKDR, 0.00)
-                .rankProperty("kda", GuildRank::getKDA, 0.00)
-                .rankProperty("avg-kda", GuildRank::getAverageKDA, 0.00);
+                .numericRankProperty("points", "points", GuildRank::getPoints, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-points", "avg_points", GuildRank::getAveragePoints, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("kills", "kills", GuildRank::getKills, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-kills", "avg_kills", GuildRank::getAverageKills, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("deaths", "deaths", GuildRank::getDeaths, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-deaths", "avg_deaths", GuildRank::getAverageDeaths, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("assists", "assists", GuildRank::getAssists, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-assists", "avg_assists", GuildRank::getAverageAssists, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("logouts", "logouts", GuildRank::getLogouts, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-logouts", "avg_logouts", GuildRank::getAverageLogouts, 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("kdr", "kdr", GuildRank::getKDR, 0.00, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-kdr", "avg_kdr", GuildRank::getAverageKDR, 0.00, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("kda", "kda", GuildRank::getKDA, 0.00, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-kda", "avg_kda", GuildRank::getAverageKDA, 0.00, pluginConfiguration::getValueFormatting);
     }
 
     public static GuildPlaceholders createMemberPlaceholders(FunnyGuilds plugin) {

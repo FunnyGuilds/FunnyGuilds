@@ -22,8 +22,8 @@ In the `cells:` section you set the appearance of the tablist's rows. They are n
 ```yml
 cells:
   1: '&7Player: &b{PLAYER}'
-  2: '&7Ping: &b{PING}'
-  3: '&7Points: &b{POINTS}'
+  2: '&7Ping: {PING-FORMAT}'
+  3: '&7Points: {POINTS-FORMAT}'
   4: '&7Kills: &b{KILLS}'
   5: '&7Deaths: &b{DEATHS}'
   6: '&7KDR: &b{KDR}'
@@ -43,6 +43,8 @@ cells:
   63: '&72. &b{PTOP-POINTS-2}'
   64: '&73. &b{PTOP-POINTS-3}'
 ```
+
+This example opts into `-FORMAT` for ping and points. Rules in `value-formatting` in `config.yml` can be applied with `/funnyguilds reload`. `{G-POINTS-FORMAT}` is the total; use `{G-AVG-POINTS-FORMAT}` for the average.
 
 ---
 

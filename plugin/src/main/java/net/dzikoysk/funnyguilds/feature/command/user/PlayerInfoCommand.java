@@ -60,6 +60,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         this.messageService.getMessage(baseMessage)
                 .receiver(messageTarget)
                 .with(formatter)
+                .with(this.userPlaceholdersService.asReplaceable(infoUser))
                 .with(CommandSender.class, receiver -> {
                     FunnyFormatter perReceiverFormatter = new FunnyFormatter();
                     if (infoUser.hasGuild()) {

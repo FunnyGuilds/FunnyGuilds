@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.config;
 
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import panda.std.stream.PandaStream;
 
 public class RangeFormatting {
 
@@ -11,6 +11,10 @@ public class RangeFormatting {
     private String value;
 
     public RangeFormatting(NumberRange range, String value) {
+        range.validate();
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("Range formatting requires a non-empty template");
+        }
         this.range = range;
         this.value = value;
     }
@@ -20,9 +24,11 @@ public class RangeFormatting {
     }
 
     public RangeFormatting(String string) {
-        String[] split = string.split(" ");
-
-        this.range = new NumberRange(split[0]);
+        String[] split = string.strip().split("\\s+", 2);
+        if (split.length != 2) {
+            throw new IllegalArgumentException("Expected '<min>-<max> <template>', got: " + string);
+        }
+        this.range = NumberRange.parseStrict(split[0]);
         this.value = split[1];
     }
 
@@ -63,7 +69,11 @@ public class RangeFormatting {
     }
 
     public static Map<NumberRange, String> toRangeMap(List<RangeFormatting> formattingList) {
-        return PandaStream.of(formattingList).toMap(RangeFormatting::getRange, RangeFormatting::getValue);
+        Map<NumberRange, String> ranges = new LinkedHashMap<>();
+        for (RangeFormatting formatting : formattingList) {
+            ranges.putIfAbsent(formatting.getRange(), formatting.getValue());
+        }
+        return ranges;
     }
 
 }

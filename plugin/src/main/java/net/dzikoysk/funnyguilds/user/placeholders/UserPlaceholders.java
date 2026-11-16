@@ -2,8 +2,11 @@ package net.dzikoysk.funnyguilds.user.placeholders;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
@@ -28,6 +31,11 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholders> {
             }
             return Objects.toString(value);
         });
+    }
+
+    public UserPlaceholders numericRankProperty(String name, String metric, Function<UserRank, Number> resolver, Supplier<ValueFormatting> formatting) {
+        return this.rankProperty(name, rank -> resolver.apply(rank))
+                .property(name + "-format", user -> formatting.get().user(metric, resolver.apply(user.getRank())));
     }
 
     @Override

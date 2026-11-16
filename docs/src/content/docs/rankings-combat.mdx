@@ -60,8 +60,8 @@ jako placeholdery `{PTOP-typ-x}`/`{GTOP-typ-x}` (patrz
 [Placeholdery](/placeholders/)). Każdy typ włączony w
 `enabled-user-tops`/`enabled-guild-tops` jest przeliczany osobno:
 
-- Typy graczy: `points`, `kills`, `deaths`, `assists`, `logouts`.
-- Typy gildii: jak wyżej oraz warianty średnie `avg_*` (np. `avg_points`).
+- Typy graczy: `points`, `kills`, `deaths`, `assists`, `logouts`, `kdr`, `kda`.
+- Typy gildii: jak wyżej oraz warianty średnie `avg_*` (np. `avg_points`, `avg_kdr`, `avg_kda`), a także `wars_won` i `war_streak`.
 
 `use-relationship-colors` koloruje wpisy topek według relacji gildyjnych
 (swoi/sojusznicy/wrogowie), tak jak tagi na czacie. Wygląd wartości można
@@ -77,3 +77,26 @@ dodatkowo stopniować progami w `format.ptop-value-formatting`/
 - `rank-reset-needed-items` / `stats-reset-needed-items` — koszt `/rankreset` i `/statsreset`.
 - `scoreboard.dummy` — punkty pod nickiem gracza (patrz też [Czat](/chat/) w sprawie tagów nad głową gracza).
 :::
+
+## Formatowanie wartości
+
+`value-formatting.user`, `value-formatting.guild` oraz `value-formatting.ping`
+konfigurują placeholdery z końcówką `-FORMAT`, niezależnie od włączenia topek.
+Przykłady i zasady zakresów opisuje [Konfiguracja](/configuration/#formatowanie-wartości-liczbowych).
+
+W topkach lokalne `{VALUE-FORMAT}` w `top.format.ptop`/`gtop` wybiera reguły tak:
+
+1. Jeżeli istnieje klucz typu w `top.format.ptop-value-formatting` lub
+   `top.format.gtop-value-formatting`, używana jest jego lista.
+2. Przy braku klucza topka dziedziczy odpowiednią listę z `value-formatting.user`
+   lub `value-formatting.guild`.
+3. Brak listy lub pasującego zakresu zwraca zwykłą wartość.
+
+Pusta lista `[]` celowo wyłącza formatowanie i nie dziedziczy. Luka w wybranej
+liście także nie uruchamia dziedziczenia. Dotychczasowe ustawienia topek mają
+pierwszeństwo. `{VALUE}` oraz sufiks `-VALUE` topki pozostają surowe; nie ma
+nowego sufiksu topki `-VALUE-FORMAT`. Kolory nazw i relacji gildyjnych pozostają
+niezależne od formatowania liczb.
+
+`kill-points-change-format` i token `{CHANGE}` nadal opisują podpisaną zmianę
+punktów po walce; nie zastępuje ich formatowanie bieżących statystyk.

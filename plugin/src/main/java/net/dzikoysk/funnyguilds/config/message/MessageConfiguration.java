@@ -241,6 +241,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("<------- Info Messages -------> #")
     @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
+    @Comment("Statystyki gracza i ping obsługują także końcówkę -FORMAT, np. {POINTS-FORMAT}, {KDR-FORMAT}, {PING-FORMAT}")
     public SendableMessage playerInfoList = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -255,6 +256,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     );
 
     @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
+    @Comment("Statystyki gracza i ping obsługują także końcówkę -FORMAT, np. {POINTS-FORMAT}, {KDR-FORMAT}, {PING-FORMAT}")
     public SendableMessage playerRightClickInfo = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -267,6 +269,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage infoExists = ChatHolder.message("&cGildia o takim tagu nie istnieje!");
 
     @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {WAR-MAX-LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}, {WARS-WON}, {WARS-LOST}, {WARS-LAST}, {WAR-STREAK}")
+    @Comment("Statystyki gildii obsługują także końcówkę -FORMAT bez prefiksu G-, np. {POINTS-FORMAT}, {AVG-KDR-FORMAT}, {WARS-WON-FORMAT}")
     public SendableMessage infoList = ChatHolder.message(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",

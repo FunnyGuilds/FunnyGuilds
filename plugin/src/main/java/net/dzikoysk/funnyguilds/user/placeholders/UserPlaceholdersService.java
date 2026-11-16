@@ -33,16 +33,17 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                 .property("name", User::getName)
                 .property("player", User::getName)
                 .property("ping", User::getPing)
+                .property("ping-format", user -> config.getValueFormatting().ping(user.getPing()))
                 .property("has-guild", User::hasGuild)
                 .property("guild-position", user -> UserUtils.getUserPosition(plugin.getGuildPermissionChecker(), user))
                 .rankProperty("position", (rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
-                .rankProperty("points", UserRank::getPoints)
-                .rankProperty("kills", UserRank::getKills)
-                .rankProperty("deaths", UserRank::getDeaths)
-                .rankProperty("kdr", UserRank::getKDR)
-                .rankProperty("kda", UserRank::getKDA)
-                .rankProperty("assists", UserRank::getAssists)
-                .rankProperty("logouts", UserRank::getLogouts);
+                .numericRankProperty("points", "points", UserRank::getPoints, config::getValueFormatting)
+                .numericRankProperty("kills", "kills", UserRank::getKills, config::getValueFormatting)
+                .numericRankProperty("deaths", "deaths", UserRank::getDeaths, config::getValueFormatting)
+                .numericRankProperty("kdr", "kdr", UserRank::getKDR, config::getValueFormatting)
+                .numericRankProperty("kda", "kda", UserRank::getKDA, config::getValueFormatting)
+                .numericRankProperty("assists", "assists", UserRank::getAssists, config::getValueFormatting)
+                .numericRankProperty("logouts", "logouts", UserRank::getLogouts, config::getValueFormatting);
     }
 
     public static UserPlaceholders createPlayerPlaceholders(FunnyGuilds plugin) {

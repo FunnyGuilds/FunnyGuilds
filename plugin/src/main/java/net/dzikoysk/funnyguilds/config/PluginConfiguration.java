@@ -39,8 +39,10 @@ import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.ValueFormattingConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.WarConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
@@ -700,6 +702,20 @@ public class PluginConfiguration extends OkaeriConfig {
     public TopConfiguration top = new TopConfiguration();
 
     @Comment("")
+    @Comment("Formatowanie wartości placeholderów z końcówką -FORMAT; niezależne od włączenia topek")
+    @Comment("Sekcja zawiera wszystkie statystyki gracza i gildii; puste listy [] można zastąpić własnymi progami")
+    @CustomKey("value-formatting")
+    public ValueFormattingConfiguration valueFormatting = new ValueFormattingConfiguration();
+
+    // Must be declared after valueFormatting and top - the initializer reads those fields directly.
+    @Exclude
+    private volatile ValueFormatting processedValueFormatting = new ValueFormatting(this.valueFormatting, this.top);
+
+    public ValueFormatting getValueFormatting() {
+        return this.processedValueFormatting;
+    }
+
+    @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
     @Comment("Używaj zmiennych {POINTS}")
     @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam nick - nie podawaj tu nic")
@@ -1121,6 +1137,7 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
+        ValueFormatting formatting = new ValueFormatting(this.valueFormatting, this.top);
         if (this.availableLocales.add(this.defaultLocale)) {
             FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' hasn't been added in available locales, adding it automatically");
         }
@@ -1157,6 +1174,7 @@ public class PluginConfiguration extends OkaeriConfig {
         this.explosionControl.loadProcessedProperties();
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
+        this.processedValueFormatting = formatting;
     }
 
     public Set<Material> defaultBuggedBlocksExclude() {

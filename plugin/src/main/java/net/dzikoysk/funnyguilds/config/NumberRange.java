@@ -13,6 +13,7 @@ import panda.std.stream.PandaStream;
 public final class NumberRange {
 
     private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[0-9.*]+)-(-?[0-9.*]+)");
+    private static final Pattern STRICT_RANGE_PATTERN = Pattern.compile("(-?(?:\\*|[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+))-(-?(?:\\*|[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+))");
 
     private final Number minRange;
     private final Number maxRange;
@@ -44,23 +45,49 @@ public final class NumberRange {
         return this.maxRange;
     }
 
+    public static NumberRange parseStrict(String text) {
+        Matcher matcher = STRICT_RANGE_PATTERN.matcher(text);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid number range: " + text);
+        }
+        NumberRange range = new NumberRange(
+                parseBoundary(matcher.group(1), Integer.MIN_VALUE),
+                parseBoundary(matcher.group(2), Integer.MAX_VALUE)
+        );
+        range.validate();
+        return range;
+    }
+
+    private static Number parseBoundary(String text, int wildcard) {
+        if (text.equals("*") || text.equals("-*")) {
+            return wildcard;
+        }
+        if (text.contains(".")) {
+            return Double.parseDouble(text);
+        }
+        return Integer.parseInt(text);
+    }
+
+    public void validate() {
+        double min = this.minRange.doubleValue();
+        double max = this.maxRange.doubleValue();
+        if (!Double.isFinite(min) || !Double.isFinite(max) || min > max
+                || (min == max && !(this.minRange instanceof Integer && this.maxRange instanceof Integer))) {
+            throw new IllegalArgumentException("Invalid or empty number range: " + this.minRange + "-" + this.maxRange);
+        }
+    }
+
+    public boolean contains(Number value) {
+        double number = value.doubleValue();
+        return number >= this.minRange.doubleValue()
+                && (this.minRange instanceof Integer && this.maxRange instanceof Integer
+                    ? number <= this.maxRange.doubleValue()
+                    : number < this.maxRange.doubleValue());
+    }
+
     public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
         return PandaStream.of(rangeMap.entrySet())
-                .find((entry) -> {
-                    NumberRange range = entry.getKey();
-
-                    Number minRange = range.minRange;
-                    Number maxRange = range.maxRange;
-                    float floatValue = value.floatValue();
-
-                    // If range boundaries are both integers - we treat both inclusively
-                    if (minRange instanceof Integer && maxRange instanceof Integer) {
-                        return floatValue >= minRange.intValue() && floatValue <= maxRange.intValue();
-                    }
-
-                    // If any of the boundaries is not an integer - we treat right boundary as exclusive
-                    return floatValue >= minRange.floatValue() && floatValue < maxRange.floatValue();
-                })
+                .find(entry -> entry.getKey().contains(value))
                 .map(Map.Entry::getValue);
     }
 
