@@ -1,88 +1,130 @@
-FunnyGuilds  
-[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Version](https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v)](https://ci.insertt.dev/job/FunnyGuilds/job/master/) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u) [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u) [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open")
-===========
+<div align="center">
+ <img src="https://github.com/user-attachments/assets/d73c4951-6843-4a4d-a9cc-f8b6d8260c41" width="128" alt="FunnyGuilds">
+ <br>
+ <h1>FunnyGuilds</h1>
+ <div>
+  <a href="https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml">
+   <img alt="Build Status" src="https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg" />
+  </a>
+  <a href="https://github.com/FunnyGuilds/FunnyGuilds/releases/latest">
+   <img alt="Version" src="https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v" />
+  </a>
+  <a href="https://discord.gg/bookkity">
+   <img alt="Discord Online" src="https://img.shields.io/discord/254623242914889729.svg" />
+  </a>
+ </div>
+ <br>
+ <div>
+  FunnyGuilds is a highly customizable guild plugin for Paper servers, allowing players to create guilds, claim territory, forge alliances, and compete for dominance in server rankings.
+ </div>
+ <br>
+ <div>
+  <a href="https://funnyguilds.dzikoysk.net/download">Download</a>
+  |
+  <a href="https://funnyguilds.dzikoysk.net">Documentation</a>
+  |
+  <a href="https://discord.gg/bookkity">Discord</a>
+ </div>
+</div>
 
-#### About
-FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to create guilds.
+<details>
+<summary>🇵🇱 Polski</summary>
 
----
+## Wymagania
 
-Website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
-<br>
-Community: <a href="https://discord.gg/CYvyq3u">Discord</a>
-<br>
-Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/ENG)</a>
+- Paper 1.21.5 - 1.21.11 lub 26.1 - 26.3
+- Java 21
 
-#### Supported Paper versions
-1.21.5 - 1.21.11,
-26.1 - 26.3
+## Instalacja
 
-#### Download
-Get the latest version: [FunnyGuilds 5.0.0+ Nightly](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/) <br>
+1. Wrzuć jar do `plugins/`
+2. Zrestartuj serwer
+3. Edytuj `config.yml` i `lang/<locale>.yml`
 
-#### Hooks
-FunnyGuilds hooks into those plugins:
-- [WorldEdit](https://dev.bukkit.org/projects/worldedit)
-- [WorldGuard](https://dev.bukkit.org/projects/worldguard)
-- [Vault](https://dev.bukkit.org/projects/vault)
-- [PlaceholderAPI](https://www.spigotmc.org/resources/6245/)
-- [dynmap](https://github.com/webbukkit/dynmap)
-- [DecentHolograms](https://www.spigotmc.org/resources/96927/)
+> ⚠️ **Konfiguracja z 4.x nie wczyta się na 5.x, więc zaplanuj migrację z wyprzedzeniem.**
 
-#### Maven
-```xml
-<repository>
-    <id>reposilite-snapshots-repository</id>
-    <url>https://maven.reposilite.com/snapshots</url>
-</repository>
-```
-```xml
-<dependency>
-    <groupId>net.dzikoysk.funnyguilds</groupId>
-    <artifactId>plugin</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
-    <classifier>all</classifier>
-    <scope>provided</scope>
-</dependency>
-```
+## Starsze wersje Minecrafta
 
-#### Gradle Groovy
-```groovy
-repositories {
-    mavenCentral()
-    maven {
-        name 'reposilite-snapshots-repository'
-        url 'https://maven.reposilite.com/snapshots'
-    }
-}
-```
-```groovy
-dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all'
-}
-```
+- Poniżej 1.21.5 - FunnyGuilds 4.14.0, ostatnie wydanie 4.x
+- Pełne archiwum wydań - [download](https://funnyguilds.dzikoysk.net/download)
 
-#### Gradle Kotlin
-```kotlin
-repositories {
-    mavenCentral()
-    maven {
-        name = "reposilite-snapshots-repository"
-        url = uri("https://maven.reposilite.com/snapshots")
-    }
-}
-```
-```kotlin
-dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all")
-}
-```
+## Funkcje
 
-#### Stats
-Current statistics (since 3.9.x) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
-<br>
-The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
+- 🏰 **Gildie** - tworzenie i dołączanie, struktura członków, ważność gildii, rozwiązywanie
+- 🚩 **Tereny** - kupowanie i powiększanie, ochrona obszaru, konfigurowalne zachowanie TNT
+- ❤️ **Serce gildii** - fizyczny środek gildii, z opcjami ochrony i hologramem (DecentHolograms)
+- ⚔️ **Sojusze i wojny** - tryby wojen, dodatkowe życia do kupienia, ochrona przed farmieniem
+- 🏆 **Walka i rankingi** - punkty, zabójstwa/śmierci/asysty, topki, ochrona przed farmieniem rankingu
+- 💬 **Czat** - kanały gildyjne, tagi na czacie głównym, tagi nad głowami
+- 📋 **Tablist** - nagłówek i stopka, stronicowanie, wyświetlanie pingu, głowy graczy, zmienne
+- 🏷️ **Placeholdery** - wbudowany zestaw, wystawiony też innym pluginom przez PlaceholderAPI
 
-| Servers | Players | Users     | Guilds |
-|---------|---------|-----------|--------|
-| 1158    | 12 336  | 1 034 312 | 16 973 |
+## Integracje
+
+Wykrywane automatycznie po instalacji:
+
+- **PlaceholderAPI** - placeholdery FunnyGuilds dostępne dla każdego innego pluginu
+- **Vault** - ekonomia i sprawdzanie uprawnień graczy offline
+- **WorldGuard i WorldEdit** - własne flagi WorldGuard i wklejanie schematów
+- **dynmap** - markery terenów gildii na mapie
+- **DecentHolograms** - hologram nad sercem gildii
+
+## Linki
+
+- Dokumentacja: https://funnyguilds.dzikoysk.net
+- API dla developerów (Maven/Gradle): https://funnyguilds.dzikoysk.net/api
+- Statystyki: https://bstats.org/plugin/bukkit/FunnyGuilds
+- Discord: https://discord.gg/bookkity
+
+</details>
+
+<details>
+<summary>🇬🇧 English</summary>
+
+## Requirements
+
+- Paper 1.21.5 - 1.21.11 or 26.1 - 26.3
+- Java 21
+
+## Installation
+
+1. Drop the jar into `plugins/`
+2. Restart the server
+3. Edit `config.yml` and `lang/<locale>.yml`
+
+> ⚠️ **Config from 4.x does not load on 5.x, so plan ahead when migrating.**
+
+## Older Minecraft versions
+
+- Below 1.21.5 - FunnyGuilds 4.14.0, the last 4.x release
+- Full release archive - [download page](https://funnyguilds.dzikoysk.net/en/download)
+
+## Features
+
+- 🏰 **Guilds** - creating and joining, member structure, guild validity, disbanding
+- 🚩 **Territory** - buying and expanding land, area protection, configurable TNT behavior
+- ❤️ **Guild heart** - the physical center of the guild, with protection options and a hologram (DecentHolograms)
+- ⚔️ **Alliances & wars** - war modes, buyable extra lives, anti-farming protection
+- 🏆 **Combat & rankings** - points, kills/deaths/assists, top lists, rank farming protection
+- 💬 **Chat** - guild chat channels, tags in the main chat, nametags above heads
+- 📋 **Tablist** - header and footer, pagination, ping display, player heads, variables
+- 🏷️ **Placeholders** - built-in set, also exposed to other plugins via PlaceholderAPI
+
+## Integrations
+
+Picked up automatically when installed:
+
+- **PlaceholderAPI** - FunnyGuilds placeholders available to every other plugin
+- **Vault** - economy and offline-player permission checks
+- **WorldGuard & WorldEdit** - custom WorldGuard flags and schematic pasting
+- **dynmap** - guild territory markers on the web map
+- **DecentHolograms** - hologram above the guild heart
+
+## Links
+
+- Documentation: https://funnyguilds.dzikoysk.net
+- API for developers (Maven/Gradle): https://funnyguilds.dzikoysk.net/en/api
+- Statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
+- Discord: https://discord.gg/bookkity
+
+</details>
