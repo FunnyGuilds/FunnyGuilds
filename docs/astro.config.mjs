@@ -1,13 +1,34 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { writeFileSync } from 'node:fs';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
+import { LATEST_VERSION } from './src/lib/release-archive';
+
+// Writes /latest.info into the build output, so the deployed site serves it at
+// https://funnyguilds.dzikoysk.net/latest.info - the endpoint the plugin's stable version check
+// (FunnyGuildsVersion) fetches and compares against its own version byte-exactly. Derived from
+// the release archive at build time, so it always matches the release the download page calls
+// the latest, and carries no trailing newline (a newline would nag every up-to-date user).
+function latestVersionInfo() {
+  return {
+    name: 'latest-version-info',
+    hooks: {
+      'astro:build:done': ({ dir, logger }) => {
+        const outDir = dir.href.endsWith('/') ? dir : new URL(dir.href + '/');
+        writeFileSync(new URL('latest.info', outDir), LATEST_VERSION);
+        logger.info(`Served latest.info: ${LATEST_VERSION}`);
+      },
+    },
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://funnyguilds.dzikoysk.net',
   integrations: [
+    latestVersionInfo(),
     starlight({
       title: 'FunnyGuilds',
       description:

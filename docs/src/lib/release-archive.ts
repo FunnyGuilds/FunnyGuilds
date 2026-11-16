@@ -21,6 +21,8 @@ const JAR_BASE_URL = 'https://github.com/FunnyGuilds/FunnyGuilds/releases/downlo
 
 export interface ArchivedRelease {
   tag: string;
+  /** Release codename ("Primrose"), parsed from the changelog's title line. */
+  codename: string;
   publishedAt: string;
   htmlUrl: string;
   /** Supported Minecraft versions, from the changelog's own requirements line; null if it has none. */
@@ -31,6 +33,22 @@ export interface ArchivedRelease {
   /** Direct asset link where the jar is archived, otherwise the release page listing it. */
   downloadPath: string;
   body: string;
+}
+
+// Each changelog opens with a release title line - "# FunnyGuilds Primrose (#5.0.0)", with the
+// emoji decorations recent releases add around it. The codename sits between "FunnyGuilds" and
+// the "(#tag)" suffix. Returns an empty string when absent instead of throwing: loadAllReleases
+// deliberately swallows per-file errors, and a release without a codename should drop out of the
+// archive rather than take the whole site build down.
+function parseCodename(raw: string, tag: string): string {
+  const title = raw.slice(0, raw.indexOf('\n'));
+  const codename = (title.match(/FunnyGuilds\s+(.+?)\s*\(\S+\)\s*$/)?.[1] ?? '')
+    .replace(/[\p{Extended_Pictographic}\uFE0E\uFE0F\u200D]/gu, '')
+    .trim();
+  if (!codename) {
+    console.warn(`No codename in the title of the archived release ${tag} - expected "# FunnyGuilds <codename> (#${tag})"`);
+  }
+  return codename;
 }
 
 function parseChangelog(raw: string, tag: string): ArchivedRelease {
@@ -44,6 +62,7 @@ function parseChangelog(raw: string, tag: string): ArchivedRelease {
   const jarSize = Number(raw.match(/\*\*Size:\*\*\s*(\d+)/)?.[1]) || null;
   return {
     tag,
+    codename: parseCodename(raw, tag),
     publishedAt,
     htmlUrl,
     mcRange: parseMcRange(body),
@@ -98,6 +117,21 @@ function loadLatestRelease(): LatestRelease {
 }
 
 export const LATEST_RELEASE: LatestRelease = loadLatestRelease();
+
+// The string the plugin's stable version check compares itself against: "<tag> <codename>". It
+// mirrors how plugin.yml composes the version ("<version> <codename>-<commit>"), so an
+// up-to-date install compares equal and does not get a bogus update notice. Served by the
+// site as /latest.info (see latestVersionInfo() in astro.config.mjs) with no trailing newline -
+// the comparison is byte-exact, so a newline would nag every up-to-date user.
+function loadLatestVersion(): string {
+  if (!LATEST_RELEASE.codename) {
+    throw new Error(`${LATEST_RELEASE.tag} is the newest archived release but its changelog title has no codename`);
+  }
+
+  return `${LATEST_RELEASE.tag} ${LATEST_RELEASE.codename}`;
+}
+
+export const LATEST_VERSION: string = loadLatestVersion();
 
 // Every archived release except the latest (shown separately).
 export const RELEASE_HISTORY: ArchivedRelease[] = ALL_RELEASES.slice(1);
