@@ -9,7 +9,7 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import org.bukkit.Location;
 import org.bukkit.World;
-import panda.std.Option;
+import java.util.Optional;
 
 public class WorldGuard7Hook extends WorldGuardHook {
 
@@ -35,21 +35,21 @@ public class WorldGuard7Hook extends WorldGuardHook {
     }
 
     @Override
-    public Option<ApplicableRegionSet> getRegionSet(Location location) {
+    public Optional<ApplicableRegionSet> getRegionSet(Location location) {
         if (location == null || this.worldGuard == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         World world = location.getWorld();
         if (world == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         RegionManager regionManager = this.worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) {
-            return Option.none();
+            return Optional.empty();
         }
-        return Option.of(regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ())));
+        return Optional.of(regionManager.getApplicableRegions(BlockVector3.at(location.getX(), location.getY(), location.getZ())));
     }
 
 }

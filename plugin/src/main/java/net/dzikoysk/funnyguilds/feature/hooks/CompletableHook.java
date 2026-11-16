@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.hooks;
 
-import panda.std.Option;
 import panda.std.reactive.Completable;
+import java.util.Optional;
 
 public class CompletableHook<T extends PluginHook> {
 
     private final T hook;
-    private final Completable<Option<T>> completableHook;
+    private final Completable<Optional<T>> completableHook;
 
-    public CompletableHook(T hook, Completable<Option<T>> completableHook) {
+    public CompletableHook(T hook, Completable<Optional<T>> completableHook) {
         this.hook = hook;
         this.completableHook = completableHook;
     }
@@ -26,11 +26,11 @@ public class CompletableHook<T extends PluginHook> {
     }
 
     public void markAsCompleted() {
-        this.completableHook.complete(Option.of(this.hook));
+        this.completableHook.complete(Optional.of(this.hook));
     }
 
     public void markAsNotCompleted() {
-        this.completableHook.complete(Option.none());
+        this.completableHook.complete(Optional.empty());
     }
 
     public boolean isCompleted() {

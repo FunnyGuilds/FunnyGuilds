@@ -98,7 +98,7 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void load() throws SQLException {
-        Optional<Database> database = this.plugin.getDatabase().toOptional();
+        Optional<Database> database = this.plugin.getDatabase();
         if (database.isEmpty()) {
             throw new SQLException("Database is not initialized");
         }
@@ -113,14 +113,14 @@ public class SQLDataModel implements DataModel {
         this.loadRegions();
         this.loadGuilds();
 
-        this.plugin.getIndividualNameTagManager().toOptional()
+        this.plugin.getIndividualNameTagManager()
                 .map(ScoreboardGlobalUpdateSyncTask::new)
                 .ifPresent(this.plugin::scheduleFunnyTasks);
     }
 
     public void loadUsers() {
         try (Connection connection = this.plugin.getDatabase()
-                .toOptional().orElseThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
+                .orElseThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
             if (this.pluginConfiguration.preventUuidConflicts) {
                 this.validateUserIdentities(connection);
             }

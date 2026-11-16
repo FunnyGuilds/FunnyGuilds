@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.hooks;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
@@ -15,18 +16,16 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import panda.std.Option;
 import panda.std.reactive.Completable;
-import panda.std.stream.PandaStream;
 
 public class HookManager {
 
-    public static Option<WorldGuardHook> WORLD_GUARD = Option.none();
-    public static Option<WorldEditHook> WORLD_EDIT = Option.none();
-    public static Option<VaultHook> VAULT = Option.none();
-    public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
-    public static Option<HologramsHook> HOLOGRAMS = Option.none();
-    public static Option<DynmapHook> DYNMAP = Option.none();
+    public static Optional<WorldGuardHook> WORLD_GUARD = Optional.empty();
+    public static Optional<WorldEditHook> WORLD_EDIT = Optional.empty();
+    public static Optional<VaultHook> VAULT = Optional.empty();
+    public static Optional<PlaceholderAPIHook> PLACEHOLDER_API = Optional.empty();
+    public static Optional<HologramsHook> HOLOGRAMS = Optional.empty();
+    public static Optional<DynmapHook> DYNMAP = Optional.empty();
 
     private final FunnyGuilds plugin;
     private final Map<String, CompletableHook<?>> pluginHooks = new HashMap<>();
@@ -59,16 +58,16 @@ public class HookManager {
                 .subscribe(hook -> PLACEHOLDER_API = hook);
 
         this.<HologramsHook>setupHook("DecentHolograms", true, pluginName -> new DecentHologramsHook(pluginName, this.plugin), true)
-                .subscribe(hook -> hook.peek(dhHook -> HOLOGRAMS = Option.of(dhHook)));
+                .subscribe(hook -> hook.ifPresent(dhHook -> HOLOGRAMS = Optional.of(dhHook)));
 
         this.setupHook("dynmap", true, pluginName -> new DynmapHook(pluginName, this.plugin), true)
                 .subscribe(hook -> DYNMAP = hook);
     }
 
-    public <T extends PluginHook> Completable<Option<T>> setupHook(String pluginName, boolean requireEnabled,
-                                                                   Function<String, T> hookSupplier, boolean notifyIfMissing) {
+    public <T extends PluginHook> Completable<Optional<T>> setupHook(String pluginName, boolean requireEnabled,
+                                                                     Function<String, T> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
-            return Completable.completed(Option.none());
+            return Completable.completed(Optional.empty());
         }
 
         Plugin hookPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
@@ -77,25 +76,25 @@ public class HookManager {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
             }
 
-            return Completable.completed(Option.none());
+            return Completable.completed(Optional.empty());
         }
 
         T hook = hookSupplier.apply(pluginName);
         if (hook == null) {
-            return Completable.completed(Option.none());
+            return Completable.completed(Optional.empty());
         }
 
-        PandaStream<String> disabledHooks = PandaStream.of(this.plugin.getPluginConfiguration().disabledHooks);
-        if (disabledHooks.find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName)).isPresent()) {
+        if (this.plugin.getPluginConfiguration().disabledHooks.stream()
+                .anyMatch(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))) {
             if (!pluginName.equalsIgnoreCase("FunnyTab")) {
                 FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
-                return Completable.completed(Option.none());
+                return Completable.completed(Optional.empty());
             }
 
             FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
         }
 
-        Completable<Option<T>> hookCompletable = new Completable<>();
+        Completable<Optional<T>> hookCompletable = new Completable<>();
         this.pluginHooks.put(pluginName, new CompletableHook<>(hook, hookCompletable));
 
         return hookCompletable;

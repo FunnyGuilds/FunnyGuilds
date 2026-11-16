@@ -15,7 +15,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
+import java.util.Optional;
 
 public class PlaceholderAPIHook extends AbstractPluginHook {
     
@@ -34,13 +34,13 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public Option<String> replacePlaceholders(Player user, String base) {
-        return Option.of(PlaceholderAPI.setPlaceholders(user, base))
+    public Optional<String> replacePlaceholders(Player user, String base) {
+        return Optional.ofNullable(PlaceholderAPI.setPlaceholders(user, base))
                 .filter(replaced -> !replaced.equals(base));
     }
 
-    public Option<String> replacePlaceholders(Player userOne, Player userTwo, String base) {
-        return Option.of(PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base))
+    public Optional<String> replacePlaceholders(Player userOne, Player userTwo, String base) {
+        return Optional.ofNullable(PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base))
                 .filter(replaced -> !replaced.equals(base));
     }
 
@@ -94,8 +94,8 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             Component relationalTag = this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
-                    userObserverOption.get().getGuild().orElse(null),
-                    userTargetOption.get().getGuild().orElse(null)
+                    userObserverOption.orElseThrow().getGuild().orElse(null),
+                    userTargetOption.orElseThrow().getGuild().orElse(null)
             );
             return LEGACY_SERIALIZER.serialize(relationalTag);
         }

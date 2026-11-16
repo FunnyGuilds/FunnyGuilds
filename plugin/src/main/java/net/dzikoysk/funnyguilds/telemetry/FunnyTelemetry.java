@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.telemetry;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,8 +10,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
-import panda.std.Option;
-import panda.utilities.IOUtils;
+import java.util.Optional;
 
 /**
  * TODO: Move this to a separate library.
@@ -29,9 +29,9 @@ public final class FunnyTelemetry {
         return sendPost(FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag), paste, FunnybinResponse.class);
     }
 
-    public static Option<FunnybinResponse> createBundle(List<String> pastes) throws IOException {
+    public static Optional<FunnybinResponse> createBundle(List<String> pastes) throws IOException {
         if (pastes.isEmpty()) {
-            return Option.none();
+            return Optional.empty();
         }
 
         Iterator<String> iterator = pastes.iterator();
@@ -42,7 +42,7 @@ public final class FunnyTelemetry {
             addQueryElement("paste", iterator.next(), url);
         }
 
-        return Option.of(sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class));
+        return Optional.ofNullable(sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class));
     }
 
     private static <T> T sendPost(String url, String body, Class<T> response) throws IOException {
@@ -60,9 +60,17 @@ public final class FunnyTelemetry {
         connection.setRequestProperty("Content-Length", String.valueOf(bodyBytes.length));
         connection.getOutputStream().write(bodyBytes);
 
-        return IOUtils.convertStreamToString(connection.getInputStream(), StandardCharsets.UTF_8)
-                .map(input -> gson.fromJson(input, response))
-                .orThrow(exception -> exception);
+        String input;
+        try (InputStream inputStream = connection.getInputStream()) {
+            input = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+
+        T parsedResponse = gson.fromJson(input, response);
+        if (parsedResponse == null) {
+            throw new IOException("Response for FunnyTelemetry is null");
+        }
+
+        return parsedResponse;
     }
 
     private static String encodeUTF8(String str) throws UnsupportedEncodingException {

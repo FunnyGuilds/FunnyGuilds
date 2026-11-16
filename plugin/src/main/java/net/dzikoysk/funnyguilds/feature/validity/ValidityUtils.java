@@ -10,7 +10,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public final class ValidityUtils {
 

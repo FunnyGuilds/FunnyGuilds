@@ -246,7 +246,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         if (this.config.regionsEnabled) {
             if (heartConfig.pasteSchematicOnCreation) {
-                HookManager.WORLD_EDIT.peek(worldEdit -> {
+                HookManager.WORLD_EDIT.ifPresent(worldEdit -> {
                     if (!worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
                         this.messageService.getMessage(config -> config.createGuildCouldNotPasteSchematic)
                                 .receiver(player)
@@ -284,7 +284,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));
 

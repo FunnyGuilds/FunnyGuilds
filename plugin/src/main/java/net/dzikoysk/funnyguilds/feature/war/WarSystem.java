@@ -24,7 +24,6 @@ import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 
 public class WarSystem {
 
@@ -60,7 +59,7 @@ public class WarSystem {
         if (userOp.isEmpty()) {
             return;
         }
-        User user = userOp.get();
+        User user = userOp.orElseThrow();
 
         if (!user.hasGuild()) {
             messageService.getMessage(config -> config.warHasNotGuild)
@@ -69,7 +68,7 @@ public class WarSystem {
             return;
         }
 
-        Guild attacker = user.getGuild().get();
+        Guild attacker = user.getGuild().orElseThrow();
         if (attacker.equals(guild)) {
             return;
         }

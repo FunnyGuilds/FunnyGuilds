@@ -22,7 +22,6 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
 
 public class EntityDamage extends AbstractFunnyListener {
 
@@ -103,7 +102,7 @@ public class EntityDamage extends AbstractFunnyListener {
 
                             return FriendlyFireStatus.INHERIT;
                         })
-                        .orElse(FriendlyFireStatus.INHERIT)
+                        .or(() -> Optional.of(FriendlyFireStatus.INHERIT))
                         .map(friendlyFire -> {
                             if (friendlyFire == FriendlyFireStatus.ALLOW) {
                                 return false;
@@ -133,7 +132,7 @@ public class EntityDamage extends AbstractFunnyListener {
 
                             return false;
                         })
-                        .get();
+                        .orElseThrow();
 
                 if (shouldReturn) {
                     return;
@@ -153,7 +152,7 @@ public class EntityDamage extends AbstractFunnyListener {
             }
 
             if (HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.isInNonAssistsRegion(victim.getLocation()))
-                    .orElseGet(false)) {
+                    .orElse(false)) {
                 return;
             }
 

@@ -258,7 +258,7 @@ public class GuildManager {
         guild.getMembers().forEach(User::removeGuild);
         guild.getAllies().forEach(ally -> ally.removeAlly(guild));
         this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
-        plugin.getIndividualNameTagManager().peek(manager -> {
+        plugin.getIndividualNameTagManager().ifPresent(manager -> {
             guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });
 

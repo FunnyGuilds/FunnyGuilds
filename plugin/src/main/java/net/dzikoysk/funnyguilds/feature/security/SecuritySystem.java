@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import panda.std.Option;
 
 public final class SecuritySystem {
 

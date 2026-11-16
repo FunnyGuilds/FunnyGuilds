@@ -253,7 +253,7 @@ public class FlatDataModel implements DataModel {
         }
 
         this.plugin.scheduleFunnyTasks(new DatabaseFixAlliesAsyncTask(guildManager));
-        this.plugin.getIndividualNameTagManager().toOptional()
+        this.plugin.getIndividualNameTagManager()
                 .map(ScoreboardGlobalUpdateSyncTask::new)
                 .ifPresent(this.plugin::scheduleFunnyTasks);
 

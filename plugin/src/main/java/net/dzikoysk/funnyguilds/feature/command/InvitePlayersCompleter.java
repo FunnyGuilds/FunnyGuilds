@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
-import panda.std.stream.PandaStream;
 
 public class InvitePlayersCompleter implements Completer {
 

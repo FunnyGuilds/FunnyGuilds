@@ -18,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
 
 public class PlayerMove extends AbstractFunnyListener {
 

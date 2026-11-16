@@ -10,9 +10,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import org.bukkit.command.CommandSender;
-import panda.std.Option;
 import panda.utilities.text.Joiner;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -33,9 +33,9 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         String protectionDateAsString = Joiner.on(" ").join(Arrays.copyOfRange(args, 1, 3)).toString();
 
-        LocalDateTime protectionDate = Option.attempt(ParseException.class, () -> {
+        LocalDateTime protectionDate = Optionals.attempt(ParseException.class, () -> {
             return LocalDateTime.parse(protectionDateAsString, PROTECTION_DATE_FORMATTER);
-        }).orThrow(() -> {
+        }).orElseThrow(() -> {
             return new InternalValidationException(config -> config.adminInvalidProtectionDate);
         });
 

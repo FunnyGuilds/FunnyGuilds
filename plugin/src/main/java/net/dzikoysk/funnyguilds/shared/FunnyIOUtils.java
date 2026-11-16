@@ -13,7 +13,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import panda.std.Result;
-import panda.utilities.IOUtils;
 
 public final class FunnyIOUtils {
 
@@ -82,8 +81,7 @@ public final class FunnyIOUtils {
             encoding = encoding == null ? "UTF-8" : encoding;
 
             try (InputStream input = connection.getInputStream()) {
-                return IOUtils.convertStreamToString(input, Charset.forName(encoding))
-                        .orThrow(exception -> exception);
+                return new String(input.readAllBytes(), Charset.forName(encoding));
             }
         }
         catch (Exception exception) {

@@ -73,10 +73,9 @@ public final class UserUtils {
         }
 
         if (FunnyValidator.validateUsername(config, filenameWithoutExtension) != NameResult.VALID) {
-            return migrateUserFile(file)
-                    .onError(error -> FunnyGuilds.getPluginLogger().error(error))
-                    .toOption()
-                    .toOptional();
+            Result<File, String> migrationResult = migrateUserFile(file);
+            migrationResult.onError(error -> FunnyGuilds.getPluginLogger().error(error));
+            return migrationResult.isOk() ? Optional.of(migrationResult.get()) : Optional.empty();
         }
 
         return Optional.empty();

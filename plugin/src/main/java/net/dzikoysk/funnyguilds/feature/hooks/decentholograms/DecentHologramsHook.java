@@ -24,8 +24,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class DecentHologramsHook extends HologramsHook implements Listener {
 
@@ -82,7 +80,7 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             // A little hacky, but prevents from hologram blinking
             lines.add("#ICON:" + HologramItem.fromItemStack(new ItemStack(holoConfig.item)).getContent());
         }
-        lines.addAll(PandaStream.of(holoConfig.displayedLines)
+        lines.addAll(holoConfig.displayedLines.stream()
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
                 .map(ComponentUtil::toLegacy)
                 .toList());

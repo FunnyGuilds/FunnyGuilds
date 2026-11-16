@@ -21,7 +21,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import panda.std.Option;
 
 public class EntityExplode extends AbstractFunnyListener {
 

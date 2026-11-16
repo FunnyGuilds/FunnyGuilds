@@ -45,14 +45,14 @@ public class PlayerJoin extends AbstractFunnyListener {
             }
         }
 
-        this.plugin.getTablistRenderer().peek(renderer -> renderer.startSending(player, user));
+        this.plugin.getTablistRenderer().ifPresent(renderer -> renderer.startSending(player, user));
 
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
         this.plugin.getDummyManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user, true))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
         inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(this.plugin, user));

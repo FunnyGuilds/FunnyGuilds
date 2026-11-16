@@ -89,10 +89,12 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         when(!sender.hasPermission("funnyguilds.admin"), config -> config.permission);
 
         FunnybinAsyncTask.of(sender, args)
-                .onEmpty(() -> this.messageService.getMessage(config -> config.funnybinHelp)
-                        .receiver(sender)
-                        .send())
-                .peek(task -> this.plugin.scheduleFunnyTasks(task));
+                .ifPresentOrElse(
+                        task -> this.plugin.scheduleFunnyTasks(task),
+                        () -> this.messageService.getMessage(config -> config.funnybinHelp)
+                                .receiver(sender)
+                                .send()
+                );
     }
 
     private void reload(CommandSender sender) {

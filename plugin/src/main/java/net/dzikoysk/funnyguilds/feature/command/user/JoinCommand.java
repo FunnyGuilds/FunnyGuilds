@@ -84,7 +84,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
 
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())

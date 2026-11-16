@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.scoreboard;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -13,9 +14,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 import panda.std.Pair;
-import panda.std.stream.PandaStream;
 
 public abstract class AbstractScoreboardHandler<T> {
 
@@ -86,7 +85,7 @@ public abstract class AbstractScoreboardHandler<T> {
         return Bukkit.getOnlinePlayers().stream()
                 .map(player -> this.userManager.findByUuid(player.getUniqueId())
                         .map(user -> new UpdateData(user, player, this.getOrCreateData(player, user))))
-                .flatMap(java.util.Optional::stream)
+                .flatMap(Optional::stream)
                 .toList();
     }
 
@@ -107,12 +106,12 @@ public abstract class AbstractScoreboardHandler<T> {
             return this.user;
         }
 
-        public Option<Player> getPlayer() {
-            return Option.of(this.playerRef.get());
+        public Optional<Player> getPlayer() {
+            return Optional.ofNullable(this.playerRef.get());
         }
 
-        public Option<T> getData() {
-            return Option.of(this.dataRef.get());
+        public Optional<T> getData() {
+            return Optional.ofNullable(this.dataRef.get());
         }
 
         @Override

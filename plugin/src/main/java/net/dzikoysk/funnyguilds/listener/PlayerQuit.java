@@ -30,7 +30,7 @@ public class PlayerQuit extends AbstractFunnyListener {
     }
 
     private void handleQuit(Player player) {
-        this.plugin.getTablistRenderer().peek(renderer -> renderer.stopSending(player));
+        this.plugin.getTablistRenderer().ifPresent(renderer -> renderer.stopSending(player));
         this.userManager.findByUuid(player.getUniqueId()).ifPresent(user -> {
             UserCache cache = user.getCache();
             DamageState damageState = damageManager.getDamageState(user.getUUID());
@@ -45,10 +45,10 @@ public class PlayerQuit extends AbstractFunnyListener {
 
             this.plugin.getIndividualNameTagManager()
                     .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                    .peek(this.plugin::scheduleFunnyTasks);
+                    .ifPresent(this.plugin::scheduleFunnyTasks);
             this.plugin.getDummyManager()
                     .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                    .peek(this.plugin::scheduleFunnyTasks);
+                    .ifPresent(this.plugin::scheduleFunnyTasks);
 
             cache.setIndividualNameTag(null);
             cache.setScoreboard(null);

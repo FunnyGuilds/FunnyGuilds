@@ -78,7 +78,7 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
         }
 
         Location location = player.getLocation();
-        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location)).orNull();
+        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location)).orElse(null);
 
         if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;

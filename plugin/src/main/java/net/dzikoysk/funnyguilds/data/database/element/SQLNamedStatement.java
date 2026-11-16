@@ -45,7 +45,7 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate(boolean ignoreFails) {
-        Optional<Database> database = FunnyGuilds.getInstance().getDatabase().toOptional();
+        Optional<Database> database = FunnyGuilds.getInstance().getDatabase();
         if (database.isEmpty()) {
             FunnyGuilds.getPluginLogger().error("Could not execute update (database is null)");
             return;
@@ -81,7 +81,7 @@ public class SQLNamedStatement {
     }
 
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer, boolean ignoreFails) {
-        Optional<Database> database = FunnyGuilds.getInstance().getDatabase().toOptional();
+        Optional<Database> database = FunnyGuilds.getInstance().getDatabase();
         if (database.isEmpty()) {
             FunnyGuilds.getPluginLogger().error("Could not execute query (database is null)");
             return;

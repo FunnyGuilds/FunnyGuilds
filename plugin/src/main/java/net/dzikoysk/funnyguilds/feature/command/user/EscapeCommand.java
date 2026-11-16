@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent

@@ -38,7 +38,7 @@ public final class HookUtils {
                                     );
                                 })
                                 .<ComponentLike>map(LEGACY_SECTION::deserialize)
-                                .orElseGet(input))
+                                .orElse(input))
                         .build();
             }
         };
@@ -59,7 +59,7 @@ public final class HookUtils {
                                     );
                                 })
                                 .<ComponentLike>map(LEGACY_SECTION::deserialize)
-                                .orElseGet(input))
+                                .orElse(input))
                         .build();
             }
         };

@@ -22,7 +22,6 @@ import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.Types
 import java.util.UUID
-import panda.std.Option
 import javax.sql.rowset.CachedRowSet
 import javax.sql.rowset.RowSetMetaDataImpl
 import javax.sql.rowset.RowSetProvider
@@ -88,7 +87,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
     fun `SQL read failure retains its cause and creates no users`() {
         val connection = mock(Connection::class.java)
         val database = mock(Database::class.java)
-        `when`(funnyGuilds.database).thenReturn(Option.of(database))
+        `when`(funnyGuilds.database).thenReturn(Optional.of(database))
         `when`(database.connection).thenReturn(connection)
         val failure = SQLException("Connection lost")
         `when`(connection.prepareStatement(anyString())).thenThrow(failure)
@@ -142,7 +141,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         val preflight = mock(PreparedStatement::class.java)
         val database = mock(Database::class.java)
         // Also used by the strict-query test, which intentionally supplies the connection directly.
-        org.mockito.Mockito.lenient().`when`(funnyGuilds.database).thenReturn(Option.of(database))
+        org.mockito.Mockito.lenient().`when`(funnyGuilds.database).thenReturn(Optional.of(database))
         org.mockito.Mockito.lenient().`when`(database.connection).thenReturn(connection)
         `when`(connection.prepareStatement(anyString())).thenAnswer {
             if (it.getArgument<String>(0).contains("GROUP BY BINARY")) preflight else statement

@@ -18,7 +18,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import panda.std.Option;
 
 public class IndividualNameTag {
 
@@ -62,12 +61,12 @@ public class IndividualNameTag {
     }
 
     // Update specific player for this user
-    public void updatePlayer(Option<Player> targetPlayerOption, User targetUser) {
+    public void updatePlayer(Optional<Player> targetPlayerOption, User targetUser) {
         if (targetPlayerOption.isEmpty() || !targetUser.isOnline()) {
             this.removePlayer(targetUser);
             return;
         }
-        Player targetPlayer = targetPlayerOption.get();
+        Player targetPlayer = targetPlayerOption.orElseThrow();
 
         FunnyGuilds.getPluginLogger().debug("[NameTag] Updating " + targetUser.getName() + " for " + this.user.getName());
 

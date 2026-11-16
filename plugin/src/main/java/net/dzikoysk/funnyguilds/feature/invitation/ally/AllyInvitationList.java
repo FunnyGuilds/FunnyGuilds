@@ -5,11 +5,10 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class AllyInvitationList implements InvitationList<AllyInvitation> {
 
@@ -38,10 +37,10 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     public Set<String> getInvitationGuildNames(UUID to) {
-        return PandaStream.of(this.getInvitationsFor(to))
+        return this.getInvitationsFor(to).stream()
                 .map(AllyInvitation::getFrom)
                 .map(Guild::getName)
-                .toSet();
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public Set<String> getInvitationGuildNames(Guild to) {
@@ -49,10 +48,10 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     public Set<String> getInvitationGuildTags(UUID to) {
-        return PandaStream.of(this.getInvitationsFor(to))
+        return this.getInvitationsFor(to).stream()
                 .map(AllyInvitation::getFrom)
                 .map(Guild::getTag)
-                .toSet();
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public Set<String> getInvitationGuildTags(Guild to) {
@@ -77,7 +76,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
 
     @Override
     public void expireInvitation(UUID from, UUID to) {
-        PandaStream.of(this.getInvitationsFrom(from))
+        this.getInvitationsFrom(from).stream()
                 .filter(invitation -> invitation.getToUUID().equals(to))
                 .forEach(this.invitations::remove);
     }

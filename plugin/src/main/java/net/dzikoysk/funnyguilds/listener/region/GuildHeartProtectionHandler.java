@@ -23,7 +23,6 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import panda.std.stream.PandaStream;
 
 public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
@@ -33,16 +32,18 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
-        PandaStream.of(event.getBlocks())
-                .find(block -> this.regionManager.isGuildHeart(block))
-                .peek(block -> event.setCancelled(true));
+        event.getBlocks().stream()
+                .filter(block -> this.regionManager.isGuildHeart(block))
+                .findFirst()
+                .ifPresent(block -> event.setCancelled(true));
     }
 
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
-        PandaStream.of(event.getBlocks())
-                .find(block -> this.regionManager.isGuildHeart(block))
-                .peek(block -> event.setCancelled(true));
+        event.getBlocks().stream()
+                .filter(block -> this.regionManager.isGuildHeart(block))
+                .findFirst()
+                .ifPresent(block -> event.setCancelled(true));
     }
 
     @EventHandler
@@ -113,9 +114,10 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
     @EventHandler
     public void onPortalCreate(PortalCreateEvent event) {
-        boolean intersects = PandaStream.of(event.getBlocks())
-                .find(state -> ProtectionSystem.isGuildHeartProtectedRegion(state.getLocation()))
-                .isDefined();
+        boolean intersects = event.getBlocks().stream()
+                .filter(state -> ProtectionSystem.isGuildHeartProtectedRegion(state.getLocation()))
+                .findFirst()
+                .isPresent();
         if (intersects) {
             event.setCancelled(true);
         }
@@ -146,9 +148,10 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
             return;
         }
 
-        boolean absorbsCuboid = PandaStream.of(event.getBlocks())
-                .find(state -> ProtectionSystem.isGuildHeartProtectedRegion(state.getLocation()))
-                .isDefined();
+        boolean absorbsCuboid = event.getBlocks().stream()
+                .filter(state -> ProtectionSystem.isGuildHeartProtectedRegion(state.getLocation()))
+                .findFirst()
+                .isPresent();
         if (absorbsCuboid) {
             event.setCancelled(true);
         }

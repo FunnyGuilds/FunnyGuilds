@@ -62,7 +62,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);
 
-        this.plugin.getIndividualNameTagManager().peek(manager -> {
+        this.plugin.getIndividualNameTagManager().ifPresent(manager -> {
             guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
             oppositeGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });

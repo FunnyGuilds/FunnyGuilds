@@ -48,8 +48,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
+import java.util.Optional;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -76,13 +75,13 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         Optional<User> attackerOption = Optional.empty();
         if (playerAttacker == null && this.config.considerLastAttackerAsKiller || playerVictim.equals(playerAttacker)) { // If player killed himself use last attacker as a killer
-            Option<Damage> lastDamageOption = victimDamageState.getLastDamage();
-            if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
+            Optional<Damage> lastDamageOption = victimDamageState.getLastDamage();
+            if (lastDamageOption.isEmpty() || !lastDamageOption.orElseThrow().getAttacker().isOnline()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
                 victimDamageState.clear();
                 return;
             }
-            Damage lastDamage = lastDamageOption.get();
+            Damage lastDamage = lastDamageOption.orElseThrow();
 
             if (lastDamage.isExpired(this.config.lastAttackerAsKillerConsiderationTimeout)) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
@@ -103,7 +102,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         if (attackerOption.isEmpty()) {
             return;
         }
-        User attacker = attackerOption.get();
+        User attacker = attackerOption.orElseThrow();
         DamageState attackerDamageState = this.damageManager.getDamageState(attacker.getUUID());
 
         if (victim.equals(attacker)) {
@@ -221,7 +220,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             );
         }
 
-        this.plugin.getDummyManager().peek(manager -> {
+        this.plugin.getDummyManager().ifPresent(manager -> {
             this.plugin.scheduleFunnyTasks(
                     new ScoreboardGlobalUpdateUserSyncTask(manager, victim),
                     new ScoreboardGlobalUpdateUserSyncTask(manager, attacker)
@@ -371,22 +370,22 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Option<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
-        Option<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
+        Optional<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
+        Optional<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
 
         // Check IP-based kill history if enabled
-        Option<Instant> victimIPTimestamp = Option.none();
-        Option<Instant> attackerIPTimestamp = Option.none();
-        
+        Optional<Instant> victimIPTimestamp = Optional.empty();
+        Optional<Instant> attackerIPTimestamp = Optional.empty();
+
         if (this.config.rankFarmingCooldownIP) {
             InetAddress attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getAddress() : null;
             InetAddress victimIP = playerVictim.getAddress() != null ? playerVictim.getAddress().getAddress() : null;
-            
-            victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Option.none();
-            attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Option.none();
+
+            victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Optional.empty();
+            attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Optional.empty();
         }
 
-        if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        if (victimTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
                     .send();
@@ -395,7 +394,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.rankFarmingCooldownIP && victimIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && victimIPTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
                     .send();
@@ -404,7 +403,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();
@@ -413,7 +412,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.rankFarmingCooldownIP && this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();

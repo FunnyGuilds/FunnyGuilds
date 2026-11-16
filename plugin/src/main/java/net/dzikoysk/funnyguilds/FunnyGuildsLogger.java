@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import org.bukkit.Bukkit;
-import panda.std.stream.PandaStream;
 
 public class FunnyGuildsLogger {
 
@@ -53,7 +52,7 @@ public class FunnyGuildsLogger {
         StringWriter errorDump = new StringWriter();
         cause.printStackTrace(new PrintWriter(errorDump));
 
-        PandaStream.of(errorDump.toString().split("\n")).forEach(this::error);
+        Arrays.stream(errorDump.toString().split("\n")).forEach(this::error);
     }
 
     static class DefaultLogger extends FunnyGuildsLogger {
