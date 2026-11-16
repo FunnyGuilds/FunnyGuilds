@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 
@@ -40,7 +39,7 @@ class ValueFormattingConfigurationTest {
     }
 
     @Test
-    fun `defaults custom rules and empty overrides survive save load and reload`(@TempDir(cleanup = CleanupMode.NEVER) directory: Path) {
+    fun `defaults custom rules and empty overrides survive save load and reload`(@TempDir directory: Path) {
         val path = directory.resolve("config.yml")
         val config = create(path)
         val defaults = ValueFormatting(config.valueFormatting, config.top)
@@ -75,7 +74,7 @@ class ValueFormattingConfigurationTest {
     }
 
     @Test
-    fun `invalid YAML range reports its config location and list index`(@TempDir(cleanup = CleanupMode.NEVER) directory: Path) {
+    fun `invalid YAML range reports its config location and list index`(@TempDir directory: Path) {
         val path = directory.resolve("config.yml")
         val config = create(path)
         path.toFile().writeText("""
