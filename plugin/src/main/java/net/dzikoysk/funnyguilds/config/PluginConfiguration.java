@@ -707,6 +707,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("value-formatting")
     public ValueFormattingConfiguration valueFormatting = new ValueFormattingConfiguration();
 
+    // Must be declared after valueFormatting and top - the initializer reads those fields directly.
     @Exclude
     private volatile ValueFormatting processedValueFormatting = new ValueFormatting(this.valueFormatting, this.top);
 
