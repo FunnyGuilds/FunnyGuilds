@@ -6,7 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag to publish (defaults to the latest release)
+        description: Release tag to publish (defaults to the latest published release)
+        required: false
+        type: string
+      mc-versions:
+        description: Optional override for the supported MC version ranges (comma-separated min-max or single versions); required when publishing a tag that predates the mcVersions property
         required: false
         type: string
 
@@ -43,8 +47,12 @@ jobs:
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             TAG="$INPUT_TAG"
             if [ -z "$TAG" ]; then
-              TAG="$(gh release list --repo FunnyGuilds/FunnyGuilds --limit 1 --json tagName --jq '.[0].tagName')"
-              echo "No tag provided, falling back to the latest release: $TAG"
+              TAG="$(gh release list --repo FunnyGuilds/FunnyGuilds --limit 10 --json tagName,isDraft --jq '[.[] | select(.isDraft | not)][0].tagName // empty')"
+              if [ -z "$TAG" ]; then
+                echo "::error::No published release found to publish"
+                exit 1
+              fi
+              echo "No tag provided, falling back to the latest published release: $TAG"
             fi
           else
             TAG="$RELEASE_TAG"
@@ -78,12 +86,17 @@ jobs:
           fetch-depth: 1
       - name: Parse supported Minecraft versions
         id: versions
+        env:
+          INPUT_MC_VERSIONS: ${{ inputs.mc-versions }}
         run: |
           set -euo pipefail
-          MC_VERSIONS="$(sed -n 's/^mcVersions=//p' gradle.properties | tr -d ' \r')"
+          MC_VERSIONS="$(echo "$INPUT_MC_VERSIONS" | tr -d ' \r')"
           if [ -z "$MC_VERSIONS" ]; then
-            MC_VERSIONS="1.21.5-1.21.11,26.1-26.3"
-            echo "::warning::gradle.properties does not define mcVersions at this ref, falling back to $MC_VERSIONS"
+            MC_VERSIONS="$(sed -n 's/^mcVersions=//p' gradle.properties | tr -d ' \r')"
+          fi
+          if [ -z "$MC_VERSIONS" ]; then
+            echo "::error::Missing supported MC version metadata for this tag. Provide the mc-versions workflow input (as done for tags predating the mcVersions property, e.g. 5.0.0) or add mcVersions to gradle.properties."
+            exit 1
           fi
           IFS=',' read -ra RANGES <<<"$MC_VERSIONS"
           GAME_VERSIONS=""
