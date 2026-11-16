@@ -28,24 +28,24 @@ Config from 4.x does not load on 5.x, so plan ahead when migrating.
 
 ## Features
 
-- **Guilds** — creating and joining, member structure, guild validity, disbanding
-- **Territory** — buying and expanding land, area protection, configurable TNT behavior
-- **Guild heart** — the physical center of the guild, with protection options and a hologram (DecentHolograms)
-- **Alliances & wars** — war modes, buyable extra lives, anti-farming protection
-- **Combat & rankings** — points, kills/deaths/assists, top lists, rank farming protection
-- **Chat** — guild chat channels, tags in the main chat, nametags above heads
-- **Tablist** — header and footer, pagination, ping display, player heads, variables
-- **Placeholders** — a solid set built in, also exposed to other plugins via PlaceholderAPI
+- **Guilds** - creating and joining, member structure, guild validity, disbanding
+- **Territory** - buying and expanding land, area protection, configurable TNT behavior
+- **Guild heart** - the physical center of the guild, with protection options and a hologram (DecentHolograms)
+- **Alliances & wars** - war modes, buyable extra lives, anti-farming protection
+- **Combat & rankings** - points, kills/deaths/assists, top lists, rank farming protection
+- **Chat** - guild chat channels, tags in the main chat, nametags above heads
+- **Tablist** - header and footer, pagination, ping display, player heads, variables
+- **Placeholders** - built-in set, also exposed to other plugins via PlaceholderAPI
 
 ## Integrations
 
 Picked up automatically when installed:
 
-- **PlaceholderAPI** — FunnyGuilds placeholders available to every other plugin
-- **Vault** — economy and offline-player permission checks
-- **WorldGuard & WorldEdit** — custom WorldGuard flags and schematic pasting
-- **dynmap** — guild territory markers on the web map
-- **DecentHolograms** — hologram above the guild heart
+- **PlaceholderAPI** - FunnyGuilds placeholders available to every other plugin
+- **Vault** - economy and offline-player permission checks
+- **WorldGuard & WorldEdit** - custom WorldGuard flags and schematic pasting
+- **dynmap** - guild territory markers on the web map
+- **DecentHolograms** - hologram above the guild heart
 
 ## Links
 
