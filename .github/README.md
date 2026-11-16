@@ -6,7 +6,7 @@ FunnyGuilds is a configurable guild plugin for Paper servers. Players create gui
 
 ## Download
 
-https://funnyguilds.dzikoysk.net/download/
+https://funnyguilds.dzikoysk.net/download
 
 ## Requirements
 
@@ -24,7 +24,7 @@ https://funnyguilds.dzikoysk.net/download/
 ## Older Minecraft versions
 
 - Below 1.21.5: FunnyGuilds 4.14.0, the last release of the 4.x series
-- Full release archive: https://funnyguilds.dzikoysk.net/en/download/
+- Full release archive: https://funnyguilds.dzikoysk.net/en/download
 
 ## Features
 
@@ -49,8 +49,8 @@ Picked up automatically when installed:
 
 ## Links
 
-- Documentation: https://funnyguilds.dzikoysk.net/
+- Documentation: https://funnyguilds.dzikoysk.net
 - Source and issue tracker: https://github.com/FunnyGuilds/FunnyGuilds
-- API for developers (Maven/Gradle): https://funnyguilds.dzikoysk.net/en/api/
+- API for developers (Maven/Gradle): https://funnyguilds.dzikoysk.net/en/api
 - Statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
 - Discord: https://discord.gg/CYvyq3u
