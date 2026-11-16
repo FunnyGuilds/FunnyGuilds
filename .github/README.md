@@ -1,5 +1,5 @@
 <div align="center">
- <img src=".github/assets/logo.png" width="128" alt="FunnyGuilds">
+ <img src="https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/5.x/.github/assets/logo.png" width="128" alt="FunnyGuilds">
  <br>
  <h1>FunnyGuilds</h1>
  <div>
@@ -20,8 +20,6 @@
  <br>
  <div>
   <a href="https://funnyguilds.dzikoysk.net/download">Download</a>
-  |
-  <a href="https://ci.insertt.dev/job/FunnyGuilds/job/5.x/">Nightly</a>
   |
   <a href="https://funnyguilds.dzikoysk.net">Documentation</a>
   |
