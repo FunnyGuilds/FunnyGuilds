@@ -1,13 +1,40 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { readFileSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
+
+// Writes /latest.info into the build output, so the deployed site serves it at
+// https://funnyguilds.dzikoysk.net/latest.info - the endpoint the plugin's stable version check
+// (FunnyGuildsVersion) fetches and compares against its own version byte-exactly. The content is
+// the repo's updater.txt verbatim (it already carries "<version> <codename>" and gets bumped with
+// releases), with its trailing newline stripped: a newline would nag every up-to-date user.
+// Like release-archive.ts, this assumes the build runs from docs/.
+function latestVersionInfo() {
+  return {
+    name: 'latest-version-info',
+    hooks: {
+      'astro:build:done': ({ dir, logger }) => {
+        const latestVersion = readFileSync(path.join(process.cwd(), '..', 'updater.txt'), 'utf8').trim();
+        if (!latestVersion) {
+          throw new Error('updater.txt is empty - cannot generate latest.info');
+        }
+
+        const outDir = dir.href.endsWith('/') ? dir : new URL(dir.href + '/');
+        writeFileSync(new URL('latest.info', outDir), latestVersion);
+        logger.info(`Served latest.info: ${latestVersion}`);
+      },
+    },
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://funnyguilds.dzikoysk.net',
   integrations: [
+    latestVersionInfo(),
     starlight({
       title: 'FunnyGuilds',
       description:
