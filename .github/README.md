@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".github/assets/logo.png" width="128" alt="FunnyGuilds">
+  <img src="docs/src/assets/logo.svg" width="128" alt="FunnyGuilds">
 </p>
 
 # FunnyGuilds
