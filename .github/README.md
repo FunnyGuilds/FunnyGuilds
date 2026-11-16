@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/src/assets/logo.svg" width="128" alt="FunnyGuilds">
+  <img src=".github/assets/logo.png" width="128" alt="FunnyGuilds">
 </p>
 
 # FunnyGuilds
@@ -32,8 +32,8 @@ FunnyGuilds is a configurable guild plugin for Paper servers. Players create gui
 
 ## Older Minecraft versions
 
-- Below 1.21.5: FunnyGuilds 4.14.0, the last release of the 4.x series
-- Full release archive: [download page](https://funnyguilds.dzikoysk.net/en/download)
+- Below 1.21.5 - FunnyGuilds 4.14.0, the last release of the 4.x series
+- Full release archive - [download page](https://funnyguilds.dzikoysk.net/en/download)
 
 ## Features
 
@@ -84,8 +84,8 @@ Picked up automatically when installed:
 
 ## Starsze wersje Minecrafta
 
-- Poniżej 1.21.5: FunnyGuilds 4.14.0, ostatnie wydanie serii 4.x
-- Pełne archiwum wydań: [download](https://funnyguilds.dzikoysk.net/download)
+- Poniżej 1.21.5 - FunnyGuilds 4.14.0, ostatnie wydanie serii 4.x
+- Pełne archiwum wydań - [download](https://funnyguilds.dzikoysk.net/download)
 
 ## Funkcje
 
