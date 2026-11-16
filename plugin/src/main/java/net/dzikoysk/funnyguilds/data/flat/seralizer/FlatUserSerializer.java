@@ -78,7 +78,7 @@ public final class FlatUserSerializer {
         wrapper.set("logouts", user.getRank().getLogouts());
         wrapper.set("last_ip", user.getLastIP());
 
-        user.getBan().toOptional().ifPresent(ban -> {
+        user.getBan().ifPresent(ban -> {
             wrapper.set("ban", ban.getTime().toEpochMilli());
             wrapper.set("reason", ban.getReason());
         });

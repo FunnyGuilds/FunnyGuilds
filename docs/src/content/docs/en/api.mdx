@@ -94,10 +94,10 @@ Example usage:
 
 ```java
 UserManager userManager = funnyGuilds.getUserManager();
-Option<User> userOption = userManager.findByName("PlayerName");
+Optional<User> userOption = userManager.findByName("PlayerName");
 
 if (userOption.isPresent()) {
-    User user = userOption.get();
+    User user = userOption.orElseThrow();
 }
 ```
 
@@ -119,18 +119,18 @@ Example usage:
 
 ```java
 GuildManager guildManager = funnyGuilds.getGuildManager();
-Option<Guild> guildOption = guildManager.findByTag("TAG");
+Optional<Guild> guildOption = guildManager.findByTag("TAG");
 
 if (guildOption.isPresent()) {
-    Guild guild = guildOption.get();
+    Guild guild = guildOption.orElseThrow();
 }
 ```
 
 ```java
-Option<Guild> guildOption = user.getGuild();
+Optional<Guild> guildOption = user.getGuild();
 
 if (guildOption.isPresent()) {
-    Guild guild = guildOption.get();
+    Guild guild = guildOption.orElseThrow();
 }
 ```
 

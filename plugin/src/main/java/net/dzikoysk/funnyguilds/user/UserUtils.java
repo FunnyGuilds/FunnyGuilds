@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -18,7 +19,6 @@ import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.StringUtils;
-import panda.std.Option;
 import panda.std.Result;
 
 public final class UserUtils {
@@ -53,10 +53,10 @@ public final class UserUtils {
     }
 
     public static Component getUserPosition(GuildPermissionChecker permissionChecker, @Nullable User user) {
-        return Option.of(user)
+        return Optional.ofNullable(user)
                 .flatMap(User::getGuild)
                 .flatMap(guild -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.USER_POSITION))
-                .orElseGet(Component.empty());
+                .orElse(Component.empty());
     }
 
     /**
@@ -66,19 +66,20 @@ public final class UserUtils {
      * @param file user file
      * @return A final (source or migrated) user file
      */
-    public static Option<File> checkUserFile(PluginConfiguration config, File file) {
+    public static Optional<File> checkUserFile(PluginConfiguration config, File file) {
         String filenameWithoutExtension = StringUtils.removeEnd(file.getName(), ".yml");
         if (FunnyValidator.validateUUID(filenameWithoutExtension)) {
-            return Option.of(file);
+            return Optional.of(file);
         }
 
         if (FunnyValidator.validateUsername(config, filenameWithoutExtension) != NameResult.VALID) {
             return migrateUserFile(file)
                     .onError(error -> FunnyGuilds.getPluginLogger().error(error))
-                    .toOption();
+                    .toOption()
+                    .toOptional();
         }
 
-        return Option.none();
+        return Optional.empty();
     }
 
     /**

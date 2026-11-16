@@ -12,7 +12,7 @@ public final class GuildValidation {
     public static Guild requireGuildByTag(String tag) {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        return plugin.getGuildManager().findByTag(tag, true).orThrow(() -> {
+        return plugin.getGuildManager().findByTag(tag, true).orElseThrow(() -> {
             return new InternalValidationException(config -> config.generalGuildNotExists, Replacement.string("{TAG}", tag));
         });
     }

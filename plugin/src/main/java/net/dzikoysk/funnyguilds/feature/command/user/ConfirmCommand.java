@@ -26,7 +26,7 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(@HasGuildPermission(GuildCommandPermission.DELETE) User owner, Guild guild) {
-        when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(), guild.getMembers()), config -> config.deleteSomeoneIsNear);
+        when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orElse(null), guild.getMembers()), config -> config.deleteSomeoneIsNear);
         when(!ConfirmationList.contains(owner.getUUID()), config -> config.deleteToConfirm);
 
         ConfirmationList.remove(owner.getUUID());

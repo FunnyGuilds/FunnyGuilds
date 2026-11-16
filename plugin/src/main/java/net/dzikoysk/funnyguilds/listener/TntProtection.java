@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.listener;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -30,7 +32,7 @@ public class TntProtection extends AbstractFunnyListener {
         if (this.hasGuildTntBypass(event)) {
             event.blockList().removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
                     .map(Region::getGuild)
-                    .filterNot(Guild::hasTntProtectionBypass)
+                    .filter(guild -> !guild.hasTntProtectionBypass())
                     .isPresent());
             return;
         }
@@ -54,15 +56,18 @@ public class TntProtection extends AbstractFunnyListener {
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
         Set<Player> players = this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)
-                .filterNot(guild -> this.config.war.tntProtection && !this.config.regionExplodeBlockProtected && !guild.canBeAttacked())
-                .filterNot(guild -> !this.config.regionExplodeBlockTntDisabled && !this.tntCanExplode())
-                .filterNot(guild -> event.getEntity() instanceof TNTPrimed && guild.hasTntProtectionBypass())
-                .filterNot(guild -> this.config.regionExplodeExcludeEntities.contains(event.getEntityType()))
-                .peek(guild -> guild.setBuild(Instant.now().plus(this.config.regionExplode)))
-                .toStream(guild -> guild.getMembers().stream())
-                .filterNot(user -> this.informationMessageCooldowns.cooldown(user.getUUID(), this.config.infoPlayerCooldown))
-                .mapOpt(user -> panda.std.Option.ofOptional(this.funnyServer.getPlayer(user)))
-                .toSet();
+                .filter(guild -> !(this.config.war.tntProtection && !this.config.regionExplodeBlockProtected && !guild.canBeAttacked()))
+                .filter(guild -> this.config.regionExplodeBlockTntDisabled || this.tntCanExplode())
+                .filter(guild -> !(event.getEntity() instanceof TNTPrimed && guild.hasTntProtectionBypass()))
+                .filter(guild -> !this.config.regionExplodeExcludeEntities.contains(event.getEntityType()))
+                .map(guild -> {
+                    guild.setBuild(Instant.now().plus(this.config.regionExplode));
+                    return guild.getMembers().stream();
+                })
+                .orElse(Stream.empty())
+                .filter(user -> !this.informationMessageCooldowns.cooldown(user.getUUID(), this.config.infoPlayerCooldown))
+                .flatMap(user -> this.funnyServer.getPlayer(user).stream())
+                .collect(Collectors.toSet());
 
         this.messageService.getMessage( config -> config.regionExplode)
                 .with("{TIME}", this.config.regionExplode.getSeconds())

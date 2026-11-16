@@ -118,7 +118,7 @@ public final class DatabaseGuildSerializer {
                 uuid = UUID.fromString(id);
             }
 
-            Optional<User> ownerOption = userManager.findByName(os).toOptional();
+            Optional<User> ownerOption = userManager.findByName(os);
             if (ownerOption.isEmpty()) {
                 logger.deserialize("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
                 return Optional.empty();
@@ -159,7 +159,7 @@ public final class DatabaseGuildSerializer {
             values[2] = tag;
             values[3] = ownerOption.orElseThrow();
             values[4] = LocationUtils.parseLocation(home);
-            values[5] = plugin.getRegionManager().findByName(regionName).toOptional().orElse(null);
+            values[5] = plugin.getRegionManager().findByName(regionName).orElse(null);
             values[6] = members;
             values[7] = Sets.newHashSet();
             values[8] = Sets.newHashSet();
@@ -200,7 +200,7 @@ public final class DatabaseGuildSerializer {
         statement.set("name", guild.getName());
         statement.set("tag", guild.getTag());
         statement.set("owner", guild.getOwner().getName());
-        statement.set("home", LocationUtils.toString(guild.getHome().toOptional()));
+        statement.set("home", LocationUtils.toString(guild.getHome()));
         statement.set("region", RegionUtils.toString(guild.getRegion()));
         statement.set("regions", "#abandoned");
         statement.set("members", members);
@@ -212,14 +212,14 @@ public final class DatabaseGuildSerializer {
         statement.set("heart_lives", guild.getHeartLives());
         statement.set("wars_won", guild.getWarsWon());
         statement.set("wars_lost", guild.getWarsLost());
-        statement.set("last_war", guild.getLastWarGuildTag().toOptional().orElse(null));
+        statement.set("last_war", guild.getLastWarGuildTag().orElse(null));
         statement.set("war_streak", guild.getWarStreak());
-        statement.set("last_life_buy", guild.getLastLifeBuy().toOptional().map(Instant::toEpochMilli).orElse(0L));
+        statement.set("last_life_buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElse(0L));
         statement.set("born", guild.getBorn().toEpochMilli());
         statement.set("validity", guild.getValidity().toEpochMilli());
         statement.set("protection", guild.getProtection().toEpochMilli());
-        statement.set("ban", guild.getBan().toOptional().map(Instant::toEpochMilli).orElse(0L));
-        statement.set("tnt_protection_bypass", guild.getTntProtectionBypass().toOptional().map(Instant::toEpochMilli).orElse(0L));
+        statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElse(0L));
+        statement.set("tnt_protection_bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElse(0L));
         statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
 

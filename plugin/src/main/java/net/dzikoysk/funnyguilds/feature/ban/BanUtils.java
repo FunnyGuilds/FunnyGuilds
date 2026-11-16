@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.ban;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
@@ -39,8 +40,8 @@ public final class BanUtils {
 
     public static void checkIfBanShouldExpire(User user) {
         user.getBan()
-                .filterNot(UserBan::isBanned)
-                .peek(time -> user.setBan(null));
+                .filter(ban -> !ban.isBanned())
+                .ifPresent(time -> user.setBan(null));
     }
 
     public static Component getBanMessage(User user) {

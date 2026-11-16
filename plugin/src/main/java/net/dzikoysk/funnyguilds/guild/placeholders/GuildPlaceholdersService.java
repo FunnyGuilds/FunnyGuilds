@@ -6,6 +6,7 @@ import com.google.common.base.Joiner;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -30,19 +31,18 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import panda.std.Option;
 
 public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, GuildPlaceholders> {
 
     private static final int DEFAULT_MEMBER_PRIORITY = Integer.MAX_VALUE;
 
-    private static Option<GuildPlaceholders> SIMPLE = Option.none();
+    private static Optional<GuildPlaceholders> SIMPLE = Optional.empty();
 
     public GuildPlaceholdersService(EntityLocaleProvider entityLocaleProvider) {
         super(entityLocaleProvider);
     }
 
-    public static Option<GuildPlaceholders> getSimplePlaceholders() {
+    public static Optional<GuildPlaceholders> getSimplePlaceholders() {
         return SIMPLE;
     }
 
@@ -53,7 +53,7 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .property("name", Guild::getName, entity -> messages.getComponent(entity, config -> config.gNameNoValue))
                 .property("guild", Guild::getName, entity -> messages.getComponent(entity, config -> config.gNameNoValue))
                 .property("tag", Guild::getTag, entity -> messages.getComponent(entity, config -> config.gTagNoValue));
-        SIMPLE = Option.of(placeholders);
+        SIMPLE = Optional.of(placeholders);
 
         return placeholders;
     }
@@ -124,7 +124,7 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                         (entity, guild) -> guild.getRegion()
                                 .map(Region::getSize)
                                 .map(value -> Integer.toString(value))
-                                .orNull(),
+                                .orElse(null),
                        entity -> messages.get(entity, config -> config.gRegionSizeNoValue))
                 .property("pvp",
                         (entity, guild) -> guild.hasPvPEnabled()
@@ -148,7 +148,7 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .numericProperty("wars-won", "wars_won", Guild::getWarsWon, pluginConfiguration::getValueFormatting)
                 .numericProperty("wars-lost", "wars_lost", Guild::getWarsLost, pluginConfiguration::getValueFormatting)
                 .property("wars-last",
-                        (entity, guild) -> guild.getLastWarGuildTag().orNull(),
+                        (entity, guild) -> guild.getLastWarGuildTag().orElse(null),
                         entity -> messages.get(entity, config -> config.enemiesNoValue))
                 .numericProperty("war-streak", "war_streak", Guild::getWarStreak, pluginConfiguration::getValueFormatting)
                 .property("heart-lives", Guild::getHeartLives, entity -> 0)
@@ -216,7 +216,7 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .build(key -> guildManager.findByUuid(key.guildUuid())
                         .flatMap(guild -> userManager.findByUuid(key.userUuid())
                                 .flatMap(user -> permissionChecker.getPermissionValue(guild, user, GenericGuildPermissions.MEMBER_LIST_PRIORITY)))
-                        .orElseGet(DEFAULT_MEMBER_PRIORITY));
+                        .orElse(DEFAULT_MEMBER_PRIORITY));
 
         GuildPlaceholders placeholders = new GuildPlaceholders();
         for (int i = 1; i <= config.maxMembersInGuild; i++) {

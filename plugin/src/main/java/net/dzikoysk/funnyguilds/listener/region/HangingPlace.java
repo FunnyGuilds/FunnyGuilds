@@ -10,15 +10,15 @@ public class HangingPlace extends AbstractFunnyListener {
 
     @EventHandler
     public void onPlace(HangingPlaceEvent event) {
-        ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         event.getPlayer(),
                         event.getEntity().getLocation(),
                         event,
                         GuildProtectionPermission.HANGING_PLACE,
                         false
-                )
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+                );
+        protection.ifPresent(result -> event.setCancelled(true));
+        protection.ifPresent(ProtectionSystem::defaultResponse);
     }
 
 }

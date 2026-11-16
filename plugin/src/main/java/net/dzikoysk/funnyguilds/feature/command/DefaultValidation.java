@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
+import java.util.Optional;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
-import panda.std.Option;
 import dev.peri.yetanothermessageslibrary.message.Sendable;
 import dev.peri.yetanothermessageslibrary.replace.Replaceable;
 
@@ -23,8 +23,8 @@ public final class DefaultValidation {
         }
     }
 
-    public static <T> T when(Option<T> option, Function<MessageConfiguration, Sendable> messageSupplier, Replaceable... replacements) {
-        return option.orThrow(() -> new InternalValidationException(messageSupplier, replacements));
+    public static <T> T when(Optional<T> option, Function<MessageConfiguration, Sendable> messageSupplier, Replaceable... replacements) {
+        return option.orElseThrow(() -> new InternalValidationException(messageSupplier, replacements));
     }
 
 }

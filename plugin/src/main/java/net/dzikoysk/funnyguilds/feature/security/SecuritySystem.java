@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
+import java.util.Optional;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -30,7 +31,7 @@ public final class SecuritySystem {
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, guild);
-        return SecurityUtils.isBlocked(FunnyGuilds.getInstance().getUserManager().findByPlayer(player).orNull());
+        return SecurityUtils.isBlocked(FunnyGuilds.getInstance().getUserManager().findByPlayer(player).orElse(null));
     }
 
     private static void scan(Player player, Guild guild) {
@@ -43,11 +44,11 @@ public final class SecuritySystem {
             return;
         }
 
-        Option<Region> regionOption = guild.getRegion();
+        Optional<Region> regionOption = guild.getRegion();
         if (regionOption.isEmpty()) {
             return;
         }
-        Region region = regionOption.get();
+        Region region = regionOption.orElseThrow();
         Location center = region.getCenter();
 
         double x = center.getX() + 0.5;

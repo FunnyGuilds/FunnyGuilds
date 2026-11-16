@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import panda.std.Option;
 
 public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
 
@@ -29,8 +29,8 @@ public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
         return new HashSet<>(this.topMap.values());
     }
 
-    public Option<T> getTop(String id) {
-        return Option.of(this.topMap.get(id.toLowerCase(Locale.ROOT)));
+    public Optional<T> getTop(String id) {
+        return Optional.ofNullable(this.topMap.get(id.toLowerCase(Locale.ROOT)));
     }
 
     public void addTop(String id, T top) {

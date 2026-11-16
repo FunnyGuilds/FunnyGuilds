@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.dynmap;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -112,11 +113,11 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
     private @NotNull Option<DynmapGuild> getOrCreateDynmapGuild(@NotNull Guild guild) {
         return Option.of(this.guilds.computeIfAbsent(guild, key -> {
-            Option<Region> regionOption = guild.getRegion();
+            Optional<Region> regionOption = guild.getRegion();
             if (regionOption.isEmpty()) {
                 return null;
             }
-            Region region = regionOption.get();
+            Region region = regionOption.orElseThrow();
             World world = region.getWorld();
 
             Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> {

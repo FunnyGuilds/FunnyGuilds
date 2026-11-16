@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import java.util.Optional;
 import org.bukkit.scoreboard.Scoreboard;
 import panda.std.Option;
 
@@ -26,12 +27,12 @@ public class Dummy {
             return Option.none();
         }
 
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to initialize Dummy, but scoreboard hasn't been initialized.");
             return Option.none();
         }
-        Scoreboard scoreboard = scoreboardOption.get();
+        Scoreboard scoreboard = scoreboardOption.orElseThrow();
 
         Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
         if (objective != null) {
@@ -51,15 +52,17 @@ public class Dummy {
             return;
         }
 
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score, but scoreboard hasn't been initialized.");
             return;
         }
-        scoreboardOption
-                .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
-                .orElse(this::initialize)
-                .peek(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
+        Optional<Objective> objectiveOption = scoreboardOption
+                .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME));
+        Option<Objective> resultOption = objectiveOption.isPresent()
+                ? Option.of(objectiveOption.get())
+                : this.initialize();
+        resultOption.peek(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
     }
 
 }

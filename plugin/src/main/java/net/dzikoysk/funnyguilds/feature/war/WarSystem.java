@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.war;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.time.Instant;
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -47,7 +48,7 @@ public class WarSystem {
         PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
         WarConfiguration warConfig = pluginConfiguration.war;
         MessageService messageService = plugin.getMessageService();
-        Option<User> userOp = userManager.findByPlayer(player);
+        Optional<User> userOp = userManager.findByPlayer(player);
 
         if (!warConfig.enabled) {
             messageService.getMessage(config -> config.warDisabled)

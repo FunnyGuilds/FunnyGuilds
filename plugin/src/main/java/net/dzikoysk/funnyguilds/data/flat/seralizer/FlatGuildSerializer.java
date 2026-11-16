@@ -92,7 +92,7 @@ public final class FlatGuildSerializer {
                 return Optional.empty();
             }
 
-            Optional<Region> regionOption = regionManager.findByName(regionName).toOptional();
+            Optional<Region> regionOption = regionManager.findByName(regionName);
             if (regionOption.isEmpty()) {
                 logger.deserialize("Cannot deserialize guild: " + name + ", caused by: region (object) is null");
                 return Optional.empty();
@@ -106,7 +106,7 @@ public final class FlatGuildSerializer {
             uuid = UUID.fromString(id);
         }
 
-        Optional<User> ownerOption = userManager.findByName(ownerName).toOptional();
+        Optional<User> ownerOption = userManager.findByName(ownerName);
         if (ownerOption.isEmpty()) {
             logger.deserialize("Cannot deserialize guild: " + name + ", caused by: owner is null");
             return Optional.empty();
@@ -211,7 +211,7 @@ public final class FlatGuildSerializer {
         wrapper.set("name", guild.getName());
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
-        wrapper.set("home", LocationUtils.toString(guild.getHome().toOptional()));
+        wrapper.set("home", LocationUtils.toString(guild.getHome()));
         wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
@@ -224,11 +224,11 @@ public final class FlatGuildSerializer {
         wrapper.set("heart-lives", guild.getHeartLives());
         wrapper.set("wars-won", guild.getWarsWon());
         wrapper.set("wars-lost", guild.getWarsLost());
-        wrapper.set("last-war", guild.getLastWarGuildTag().toOptional().orElse(null));
+        wrapper.set("last-war", guild.getLastWarGuildTag().orElse(null));
         wrapper.set("war-streak", guild.getWarStreak());
-        wrapper.set("last-life-buy", guild.getLastLifeBuy().toOptional().map(Instant::toEpochMilli).orElse(0L));
-        wrapper.set("ban", guild.getBan().toOptional().map(Instant::toEpochMilli).orElse(0L));
-        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().toOptional().map(Instant::toEpochMilli).orElse(0L));
+        wrapper.set("last-life-buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElse(0L));
+        wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElse(0L));
+        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElse(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 

@@ -279,7 +279,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         this.guildManager.addGuild(guild);
         user.setGuild(guild);
 
-        guild.getRegion().peek(region -> this.regionManager.addRegion(region));
+        guild.getRegion().ifPresent(region -> this.regionManager.addRegion(region));
 
         this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
         this.plugin.getIndividualNameTagManager()

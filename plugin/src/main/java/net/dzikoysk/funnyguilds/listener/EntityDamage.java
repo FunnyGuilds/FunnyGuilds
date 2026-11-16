@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import java.util.UUID;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
 import net.dzikoysk.funnyguilds.damage.DamageState;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -52,41 +53,42 @@ public class EntityDamage extends AbstractFunnyListener {
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         EntityUtils.getAttacker(event.getDamager()).ifPresent(attacker -> {
-            Option<User> attackerUserOption = this.userManager.findByPlayer(attacker);
+            Optional<User> attackerUserOption = this.userManager.findByPlayer(attacker);
             if (attackerUserOption.isEmpty()) {
                 return;
             }
 
-            User attackerUser = attackerUserOption.get();
+            User attackerUser = attackerUserOption.orElseThrow();
             Entity victim = event.getEntity();
 
             if (this.config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
                 this.regionManager.findRegionAtLocation(victim.getLocation())
                         .map(Region::getGuild)
-                        .filterNot(guild -> attackerUser.getGuild()
+                        .filter(guild -> !attackerUser.getGuild()
                                 .map(it -> it.equals(guild))
-                                .orElseGet(false))
-                        .peek(guild -> event.setCancelled(true));
+                                .orElse(false))
+                        .ifPresent(guild -> event.setCancelled(true));
 
                 return;
             }
 
-            Option<User> victimOption = Option.of(victim)
-                    .is(Player.class)
+            Optional<User> victimOption = Optional.ofNullable(victim)
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast)
                     .flatMap(this.userManager::findByPlayer);
 
             if (victimOption.isEmpty()) {
                 return;
             }
 
-            User victimUser = victimOption.get();
+            User victimUser = victimOption.orElseThrow();
             if (victimUser.hasGuild() && attackerUser.hasGuild()) {
                 if (victimUser.getUUID().equals(attackerUser.getUUID())) {
                     return;
                 }
 
-                Guild victimGuild = victimUser.getGuild().get();
-                Guild attackerGuild = attackerUser.getGuild().get();
+                Guild victimGuild = victimUser.getGuild().orElseThrow();
+                Guild attackerGuild = attackerUser.getGuild().orElseThrow();
 
                 boolean shouldReturn = HookManager.WORLD_GUARD
                         .map(hook -> {

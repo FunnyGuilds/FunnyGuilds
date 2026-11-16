@@ -8,8 +8,8 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.ApiStatus;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
 
 /**
  * Called when a permission check is performed for protection-related actions (e.g., block breaking, placing).
@@ -52,8 +52,8 @@ public class GuildPermissionProtectionCheckEvent extends GuildPermissionEvent {
     /**
      * @return the internal event related to the protection action, if available
      */
-    public Option<Event> getInternalEvent() {
-        return Option.of(this.internalEventReference.get());
+    public Optional<Event> getInternalEvent() {
+        return Optional.ofNullable(this.internalEventReference.get());
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.HashSet;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -26,8 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class PlayerChat extends AbstractFunnyListener {
     
@@ -43,11 +42,11 @@ public class PlayerChat extends AbstractFunnyListener {
     public void onChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
 
-        Option<User> userOption = this.userManager.findByPlayer(player);
+        Optional<User> userOption = this.userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
             return;
         }
-        User user = userOption.get();
+        User user = userOption.orElseThrow();
 
         Component message = event.originalMessage();
         user.getGuild()
@@ -57,11 +56,13 @@ public class PlayerChat extends AbstractFunnyListener {
                         guild,
                         message
                 ))
-                .peekIf(sent -> sent, ignored -> {
-                    event.setCancelled(true);
-                    if (this.config.logGuildChat) {
-                        String plainMessage = PLAIN_TEXT_SERIALIZER.serialize(message);
-                        FunnyGuilds.getPluginLogger().info("[Guild Chat] " + player.getName() + ": " + plainMessage);
+                .ifPresent(sent -> {
+                    if (sent) {
+                        event.setCancelled(true);
+                        if (this.config.logGuildChat) {
+                            String plainMessage = PLAIN_TEXT_SERIALIZER.serialize(message);
+                            FunnyGuilds.getPluginLogger().info("[Guild Chat] " + player.getName() + ": " + plainMessage);
+                        }
                     }
                 });
     }
@@ -248,8 +249,8 @@ public class PlayerChat extends AbstractFunnyListener {
             Component message,
             Type type
     ) {
-        PandaStream.of(guild.getMembers())
-                .filterNot(member -> member.getCache().isSpy())
+        guild.getMembers().stream()
+                .filter(member -> !member.getCache().isSpy())
                 .filter(member -> this.checkSeePermission(
                         member,
                         guild,
@@ -269,12 +270,12 @@ public class PlayerChat extends AbstractFunnyListener {
                         user,
                         chatType.getSeePermission()
                 )
-                .orElse(() -> this.permissionChecker.getPermissionValue(
+                .or(() -> this.permissionChecker.getPermissionValue(
                         guild,
                         user,
                         chatType.getUsePermission()
                 ))
-                .orElseGet(false);
+                .orElse(false);
     }
 
     private void spy(
@@ -291,8 +292,8 @@ public class PlayerChat extends AbstractFunnyListener {
                 message
         );
 
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(onlinePlayer -> this.userManager.findByPlayer(onlinePlayer))
+        Bukkit.getOnlinePlayers().stream()
+                .flatMap(onlinePlayer -> this.userManager.findByPlayer(onlinePlayer).stream())
                 .filter(onlineUser -> onlineUser.getCache().isSpy())
                 .forEach(onlineUser -> onlineUser.sendMessage(spyMessage));
     }

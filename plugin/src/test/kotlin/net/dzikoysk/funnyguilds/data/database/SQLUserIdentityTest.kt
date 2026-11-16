@@ -16,12 +16,13 @@ import org.mockito.Mockito.spy
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import panda.std.Option
 import java.sql.Connection
+import java.util.Optional
 import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.Types
 import java.util.UUID
+import panda.std.Option
 import javax.sql.rowset.CachedRowSet
 import javax.sql.rowset.RowSetMetaDataImpl
 import javax.sql.rowset.RowSetProvider
@@ -69,7 +70,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         val second = UUID.randomUUID()
         val (connection, statement) = prepareDatabase(rows(first.toString() to "Steve", second.toString() to "Steve"))
         val server = mock(FunnyServer::class.java)
-        `when`(server.getPlayer(any(UUID::class.java))).thenReturn(Option.none())
+        `when`(server.getPlayer(any(UUID::class.java))).thenReturn(Optional.empty())
         `when`(funnyGuilds.funnyServer).thenReturn(server)
 
         SQLDataModel(funnyGuilds).loadUsers()
@@ -120,7 +121,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         val (connection, statement, preflight) = prepareDatabase(rows(
             UUID.randomUUID().toString() to "Steve", UUID.randomUUID().toString() to "steve"))
         val server = mock(FunnyServer::class.java)
-        `when`(server.getPlayer(any(UUID::class.java))).thenReturn(Option.none())
+        `when`(server.getPlayer(any(UUID::class.java))).thenReturn(Optional.empty())
         `when`(funnyGuilds.funnyServer).thenReturn(server)
 
         SQLDataModel(funnyGuilds).loadUsers()

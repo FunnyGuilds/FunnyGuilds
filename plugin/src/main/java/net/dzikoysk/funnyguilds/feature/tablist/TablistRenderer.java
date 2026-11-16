@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class TablistRenderer {
             // Don't remove this toArray - iterating over online players asynchronously without shallow copy could 
             // occur with ConcurrentModificationException (See GH-2031).
             for (Player player : Bukkit.getOnlinePlayers().toArray(new Player[0])) {
-                User user = this.userManager.findByUuid(player.getUniqueId()).orNull();
+                User user = this.userManager.findByUuid(player.getUniqueId()).orElse(null);
                 if (user == null) {
                     continue;
                 }

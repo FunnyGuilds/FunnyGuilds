@@ -5,6 +5,7 @@ import eu.okaeri.configs.exception.OkaeriConfigException;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -535,11 +536,11 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            Option<User> userOption = this.userManager.findByPlayer(player);
+            Optional<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 continue;
             }
-            User user = userOption.get();
+            User user = userOption.orElseThrow();
 
             FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
             inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));

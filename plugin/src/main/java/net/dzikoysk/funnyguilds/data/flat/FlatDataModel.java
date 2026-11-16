@@ -141,7 +141,6 @@ public class FlatDataModel implements DataModel {
         userManager.clearUsers();
         AtomicInteger deserializationErrors = new AtomicInteger();
         users.forEach((file, yaml) -> UserUtils.checkUserFile(this.pluginConfiguration, file)
-                .toOptional()
                 .ifPresent(checkedFile -> FlatUserSerializer.deserialize(yaml)
                         .ifPresentOrElse(checkedYaml -> {
                         }, deserializationErrors::incrementAndGet)));

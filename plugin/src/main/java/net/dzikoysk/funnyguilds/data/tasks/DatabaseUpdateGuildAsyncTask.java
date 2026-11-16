@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.tasks;
 
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -28,12 +29,12 @@ public class DatabaseUpdateGuildAsyncTask extends AsyncFunnyTask {
         try {
             if (this.dataModel instanceof SQLDataModel) {
                 DatabaseGuildSerializer.serialize(this.guild);
-                this.guild.getRegion().peek(DatabaseRegionSerializer::serialize);
+                this.guild.getRegion().ifPresent(DatabaseRegionSerializer::serialize);
                 this.guild.getMembers().forEach(DatabaseUserSerializer::serialize);
             }
             else if (this.dataModel instanceof FlatDataModel) {
                 FlatGuildSerializer.serialize(this.guild);
-                this.guild.getRegion().peek(FlatRegionSerializer::serialize);
+                this.guild.getRegion().ifPresent(FlatRegionSerializer::serialize);
                 this.guild.getMembers().forEach(FlatUserSerializer::serialize);
             }
         }

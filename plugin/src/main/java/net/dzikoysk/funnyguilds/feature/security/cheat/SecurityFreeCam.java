@@ -6,6 +6,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
@@ -39,7 +40,7 @@ public final class SecurityFreeCam {
                 .filter(block -> block.getType().isOccluding() || block.getType() == Material.GLASS)
                 .limit(8)
                 .collect(Collectors.toList());
-        guild.getEnderCrystal().map(Location::getBlock).peek(blocks::remove);
+        guild.getEnderCrystal().map(Location::getBlock).ifPresent(blocks::remove);
 
         int compensationSneaking = player.isSneaking() ? 1 : 0;
         if (blocks.size() <= config.compensation + compensationSneaking) {
@@ -48,7 +49,7 @@ public final class SecurityFreeCam {
 
         Component blocksString = ItemComponentHelper.blocksAsComponent(blocks);
 
-        SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
+        SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orElse(null));
         SecurityUtils.sendToOperator(player, CheatType.FREE_CAM, Replacement.component("{BLOCKS}", blocksString));
     }
 

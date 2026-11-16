@@ -17,15 +17,15 @@ public class EntityPlace extends AbstractFunnyListener {
             return;
         }
 
-        ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         event.getPlayer(),
                         entity.getLocation(),
                         event,
                         GuildProtectionPermission.ENTITY_PLACE,
                         true
-                )
-                .peek(result -> event.setCancelled(true))
-                .peek(ProtectionSystem::defaultResponse);
+                );
+        protection.ifPresent(result -> event.setCancelled(true));
+        protection.ifPresent(ProtectionSystem::defaultResponse);
     }
 
 }

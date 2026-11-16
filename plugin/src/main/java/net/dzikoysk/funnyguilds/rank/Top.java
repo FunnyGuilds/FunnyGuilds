@@ -3,8 +3,9 @@ package net.dzikoysk.funnyguilds.rank;
 import com.google.common.collect.Iterables;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+import java.util.Optional;
 import java.util.function.BiFunction;
-import panda.std.Option;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 
 public class Top<T> {
 
@@ -22,8 +23,8 @@ public class Top<T> {
         return this.comparator;
     }
 
-    public Option<T> get(int place) {
-        return Option.when(place > 0 && place <= this.values.size(), () -> Iterables.get(this.values, place - 1));
+    public Optional<T> get(int place) {
+        return Optionals.when(place > 0 && place <= this.values.size(), () -> Iterables.get(this.values, place - 1));
     }
 
     public int count() {

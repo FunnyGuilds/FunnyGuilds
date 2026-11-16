@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.List;
 import net.dzikoysk.funnyguilds.config.ExplosionControlConfiguration.Scope;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
@@ -30,7 +31,7 @@ public class EntityExplode extends AbstractFunnyListener {
 
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        Option<Region> explodeRegion = this.regionManager.findRegionAtLocation(explodeLocation);
+        Optional<Region> explodeRegion = this.regionManager.findRegionAtLocation(explodeLocation);
         int radius = this.scopeFor(explodeRegion).getRadius();
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
                 explodeLocation,
@@ -57,7 +58,7 @@ public class EntityExplode extends AbstractFunnyListener {
             explodedBlocks.removeIf(block -> this.scopeFor(this.regionManager.findRegionAtLocation(block.getLocation())).overridesVanilla());
         }
 
-        explodeRegion.peek(region -> {
+        explodeRegion.ifPresent(region -> {
             Guild guild = region.getGuild();
 
             if (this.config.war.tntProtection && !guild.canBeAttacked() && !guild.hasTntProtectionBypass()) {
@@ -77,7 +78,7 @@ public class EntityExplode extends AbstractFunnyListener {
                 return;
             }
 
-            region.getHeart().peek(heart -> {
+            region.getHeart().ifPresent(heart -> {
                 explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
                 blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
             });
@@ -91,14 +92,14 @@ public class EntityExplode extends AbstractFunnyListener {
             boolean anyBlockRemovedInSphere = blocksInSphere.removeIf(block ->
                     this.regionManager.findRegionAtLocation(block.getLocation())
                             .map(Region::getGuild)
-                            .filterNot(Guild::canBeAttacked)
-                            .filterNot(Guild::hasTntProtectionBypass)
+                            .filter(guild -> !guild.canBeAttacked())
+                            .filter(guild -> !guild.hasTntProtectionBypass())
                             .isPresent());
             boolean anyBlockRemovedInExplosion = explodedBlocks.removeIf(block ->
                     this.regionManager.findRegionAtLocation(block.getLocation())
                             .map(Region::getGuild)
-                            .filterNot(Guild::canBeAttacked)
-                            .filterNot(Guild::hasTntProtectionBypass)
+                            .filter(guild -> !guild.canBeAttacked())
+                            .filter(guild -> !guild.hasTntProtectionBypass())
                             .isPresent());
 
             if (anyBlockRemovedInSphere || anyBlockRemovedInExplosion) {
@@ -141,7 +142,7 @@ public class EntityExplode extends AbstractFunnyListener {
                 .forEach(explodedBlocks::add);
     }
 
-    private Scope scopeFor(Option<Region> region) {
+    private Scope scopeFor(Optional<Region> region) {
         boolean onGuildTerritory = region.filter(found -> found.getGuild() != null).isPresent();
         return onGuildTerritory ? this.config.explosionControl.guild : this.config.explosionControl.global;
     }

@@ -35,15 +35,15 @@ public class BlockPlace extends AbstractFunnyListener {
             }
         }
 
-        boolean isProtected = ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         player,
                         blockLocation,
                         event,
                         GuildProtectionPermission.BLOCK_PLACE,
                         true
-                )
-                .peek(ProtectionSystem::defaultResponse)
-                .isPresent();
+        );
+        protection.ifPresent(ProtectionSystem::defaultResponse);
+        boolean isProtected = protection.isPresent();
 
         if (!isProtected) {
             return;

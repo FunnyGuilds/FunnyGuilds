@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -22,8 +23,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class GuildManager {
 
@@ -61,9 +60,9 @@ public class GuildManager {
      * @return set of guild
      */
     public Set<Guild> findByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::findByName)
-                .collect(Collectors.toSet());
+        return names.stream()
+                .flatMap(name -> this.findByName(name).stream())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     /**
@@ -73,9 +72,9 @@ public class GuildManager {
      * @return set of guild
      */
     public Set<Guild> findByTags(Collection<String> tags) {
-        return PandaStream.of(tags)
-                .flatMap(this::findByTag)
-                .collect(Collectors.toSet());
+        return tags.stream()
+                .flatMap(tag -> this.findByTag(tag).stream())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     /**
@@ -84,8 +83,8 @@ public class GuildManager {
      * @param uuid the uuid of guild
      * @return the guild
      */
-    public Option<Guild> findByUuid(UUID uuid) {
-        return Option.of(this.guildsMap.get(uuid));
+    public Optional<Guild> findByUuid(UUID uuid) {
+        return Optional.ofNullable(this.guildsMap.get(uuid));
     }
 
     /**
@@ -95,12 +94,12 @@ public class GuildManager {
      * @param ignoreCase ignore the case of the name
      * @return the guild
      */
-    public Option<Guild> findByName(String name, boolean ignoreCase) {
+    public Optional<Guild> findByName(String name, boolean ignoreCase) {
         if (ignoreCase) {
-            return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getName().equalsIgnoreCase(name));
+            return this.guildsMap.values().stream().filter(guild -> guild.getName().equalsIgnoreCase(name)).findFirst();
         }
 
-        return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getName().equals(name));
+        return this.guildsMap.values().stream().filter(guild -> guild.getName().equals(name)).findFirst();
     }
 
     /**
@@ -109,7 +108,7 @@ public class GuildManager {
      * @param name the name of guild
      * @return the guild
      */
-    public Option<Guild> findByName(String name) {
+    public Optional<Guild> findByName(String name) {
         return this.findByName(name, false);
     }
 
@@ -120,12 +119,12 @@ public class GuildManager {
      * @param ignoreCase ignore the case of the tag
      * @return the guild
      */
-    public Option<Guild> findByTag(String tag, boolean ignoreCase) {
+    public Optional<Guild> findByTag(String tag, boolean ignoreCase) {
         if (ignoreCase) {
-            return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getTag().equalsIgnoreCase(tag));
+            return this.guildsMap.values().stream().filter(guild -> guild.getTag().equalsIgnoreCase(tag)).findFirst();
         }
 
-        return PandaStream.of(this.guildsMap.values()).find(guild -> guild.getTag().equals(tag));
+        return this.guildsMap.values().stream().filter(guild -> guild.getTag().equals(tag)).findFirst();
     }
 
     /**
@@ -134,7 +133,7 @@ public class GuildManager {
      * @param tag the tag of guild
      * @return the guild
      */
-    public Option<Guild> findByTag(String tag) {
+    public Optional<Guild> findByTag(String tag) {
         return this.findByTag(tag, false);
     }
 
@@ -235,7 +234,7 @@ public class GuildManager {
 
         if (this.pluginConfiguration.regionsEnabled) {
             guild.getRegion()
-                    .peek(region -> {
+                    .ifPresent(region -> {
                         if (this.pluginConfiguration.heart.createEntityType != null) {
                             plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                         }
@@ -303,7 +302,7 @@ public class GuildManager {
         if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial != Material.AIR) {
             guild.getRegion()
                     .flatMap(Region::getHeartBlock)
-                    .peek(heart -> heart.setType(this.pluginConfiguration.heart.createMaterial));
+                    .ifPresent(heart -> heart.setType(this.pluginConfiguration.heart.createMaterial));
             return;
         }
 

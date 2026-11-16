@@ -4,6 +4,7 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,11 +61,11 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             return;
         }
 
-        Option<Location> guildCenterOption = guild.getCenter();
+        Optional<Location> guildCenterOption = guild.getCenter();
         if (guildCenterOption.isEmpty()) {
             return;
         }
-        Location holoCenter = guildCenterOption.get()
+        Location holoCenter = guildCenterOption.orElseThrow()
                 .add(holoConfig.locationCorrection);
 
         Hologram holo = this.holograms.computeIfAbsent(

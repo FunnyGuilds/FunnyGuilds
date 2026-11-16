@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.rank.placeholders;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.ComponentReplacement;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -10,6 +11,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
 import net.kyori.adventure.text.Component;
@@ -17,7 +19,6 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public class TopPlaceholderReplacement extends ComponentReplacement {
 
@@ -58,13 +59,13 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
                     ? null
                     : matchResult.group(4).toUpperCase(Locale.ROOT);
 
-                Option<Integer> indexOption = Option.supplyThrowing(NumberFormatException.class, () -> Integer.parseInt(indexString));
+                Optional<Integer> indexOption = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(indexString));
                 if (indexOption.isEmpty()) {
                     FunnyGuilds.getPluginLogger().error(indexString + "is invalid " + topType + " index!");
                     return builder;
                 }
 
-                int index = indexOption.get();
+                int index = indexOption.orElseThrow();
                 if (index < 1) {
                     FunnyGuilds.getPluginLogger().error("Index in " + topType + " must be greater or equal to 1!");
                     return builder;
@@ -84,18 +85,18 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
             config -> config.ptopNoValue
         );
 
-        Option<UserTop> userTopOption = this.userRankManager.getTop(comparatorType);
+        Optional<UserTop> userTopOption = this.userRankManager.getTop(comparatorType);
         if (userTopOption.isEmpty()) {
             return noValue;
         }
 
-        UserTop userTop = userTopOption.get();
-        Option<User> userOption = userTop.getUser(index);
+        UserTop userTop = userTopOption.orElseThrow();
+        Optional<User> userOption = userTop.getUser(index);
         if (userOption.isEmpty()) {
             return noValue;
         }
 
-        User user = userOption.get();
+        User user = userOption.orElseThrow();
         Number topValue = userTop.getComparator().getValue(user.getRank());
 
         if (subType == null) {
@@ -120,18 +121,18 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
             config -> config.gtopNoValue
         );
 
-        Option<GuildTop> guildTopOption = this.guildRankManager.getTop(comparatorType);
+        Optional<GuildTop> guildTopOption = this.guildRankManager.getTop(comparatorType);
         if (guildTopOption.isEmpty()) {
             return noValue;
         }
 
-        GuildTop guildTop = guildTopOption.get();
-        Option<Guild> guildOption = guildTop.getGuild(index);
+        GuildTop guildTop = guildTopOption.orElseThrow();
+        Optional<Guild> guildOption = guildTop.getGuild(index);
         if (guildOption.isEmpty()) {
             return noValue;
         }
 
-        Guild guild = guildOption.get();
+        Guild guild = guildOption.orElseThrow();
         Number topValue = guildTop.getComparator().getValue(guild.getRank());
 
         if (subType == null) {
@@ -172,7 +173,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
     ) {
         Component guildTagComponent = null;
         if (this.config.top.useRelationshipColors && targetUser != null) {
-            Guild viewerGuild = targetUser.getGuild().orNull();
+            Guild viewerGuild = targetUser.getGuild().orElse(null);
             if (viewerGuild != null) {
                 guildTagComponent = this.config.relationalTag.chooseAndPrepareTag(viewerGuild, guild);
             }

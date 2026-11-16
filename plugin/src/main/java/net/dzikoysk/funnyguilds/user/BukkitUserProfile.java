@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
@@ -13,7 +14,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
-import panda.std.Option;
 
 public class BukkitUserProfile implements UserProfile {
 
@@ -31,7 +31,7 @@ public class BukkitUserProfile implements UserProfile {
         this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orElse(null));
     }
 
-    private Option<Player> getPlayer() {
+    private Optional<Player> getPlayer() {
         Player player = this.playerRef.get();
 
         if (player == null) {
@@ -39,7 +39,7 @@ public class BukkitUserProfile implements UserProfile {
             player = this.playerRef.get();
         }
 
-        return Option.of(player);
+        return Optional.ofNullable(player);
     }
 
     private void refreshOfflinePlayerRef() {
@@ -50,7 +50,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public boolean isOnline() {
-        return this.getPlayer().is(Player::isOnline);
+        return this.getPlayer().filter(Player::isOnline).isPresent();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class BukkitUserProfile implements UserProfile {
         return this.getPlayer()
                 .map(player -> player.getMetadata("vanished"))
                 .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
-                .orElseGet(false);
+                .orElse(false);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public int getPing() {
-        return this.getPlayer().map(NmsUtils::getPing).orElseGet(0);
+        return this.getPlayer().map(NmsUtils::getPing).orElse(0);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class BukkitUserProfile implements UserProfile {
             return;
         }
 
-        this.getPlayer().peek(player -> player.sendMessage(message));
+        this.getPlayer().ifPresent(player -> player.sendMessage(message));
     }
 
     @Override
@@ -94,17 +94,17 @@ public class BukkitUserProfile implements UserProfile {
         if (ComponentUtil.isEmpty(message)) {
             return;
         }
-        this.getPlayer().peek(player -> player.sendMessage(message));
+        this.getPlayer().ifPresent(player -> player.sendMessage(message));
     }
 
     @Override
     public void kick(Component reason) {
-        this.getPlayer().peek(player -> player.kick(reason));
+        this.getPlayer().ifPresent(player -> player.kick(reason));
     }
 
     @Override
     public void teleport(Position position) {
-        this.getPlayer().peek(player -> player.teleport(PositionConverter.adapt(position)));
+        this.getPlayer().ifPresent(player -> player.teleport(PositionConverter.adapt(position)));
     }
 
     @Override
@@ -122,7 +122,7 @@ public class BukkitUserProfile implements UserProfile {
         return this.getPlayer()
                 .map(Player::getLocation)
                 .map(PositionConverter::adapt)
-                .orElseGet(Position.ZERO);
+                .orElse(Position.ZERO);
     }
 
 }

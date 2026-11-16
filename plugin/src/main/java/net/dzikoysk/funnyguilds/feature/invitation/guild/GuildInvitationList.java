@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.invitation.guild;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
@@ -64,14 +65,14 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
 
     @Override
     public void createInvitation(UUID from, UUID to) {
-        Option<Guild> fromOption = this.guildManager.findByUuid(from);
-        Option<User> toOption = this.userManager.findByUuid(to);
+        Optional<Guild> fromOption = this.guildManager.findByUuid(from);
+        Optional<User> toOption = this.userManager.findByUuid(to);
 
         if (fromOption.isEmpty() || toOption.isEmpty()) {
             return;
         }
 
-        this.createInvitation(fromOption.get(), toOption.get());
+        this.createInvitation(fromOption.orElseThrow(), toOption.orElseThrow());
     }
 
     public void createInvitation(Guild from, User to) {

@@ -26,14 +26,15 @@ public class ScoreboardService {
         }
 
         UserCache cache = user.getCache();
-        cache.getScoreboard().peek(scoreboard -> {
+        cache.getScoreboard().ifPresent(scoreboard -> {
             try {
                 player.setScoreboard(scoreboard);
             }
             catch (IllegalStateException e) {
                 FunnyGuilds.getPluginLogger().error("[ScoreboardService] Cannot set scoreboard for " + user.getName(), e);
             }
-        }).onEmpty(() -> {
+        });
+        if (cache.getScoreboard().isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to update player scoreboard, but cached scoreboard is null.");
 
             Scoreboard scoreboard;
@@ -45,6 +46,6 @@ public class ScoreboardService {
                 player.setScoreboard(scoreboard);
             }
             cache.setScoreboard(scoreboard);
-        });
+        }
     }
 }

@@ -26,7 +26,7 @@ final class AlliesCompleter implements Completer {
                 .filter(User::hasGuild)
                 .flatMap(User::getGuild)
                 .map(guild -> CommandUtils.collectCompletions(guild.getAllies(), prefix, limit, ArrayList::new, Guild::getTag))
-                .orElseGet(Collections.emptyList());
+                .orElse(Collections.emptyList());
     }
 
     @Override

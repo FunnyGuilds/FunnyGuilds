@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.placeholderapi;
 
 import java.util.Locale;
+import java.util.Optional;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
@@ -61,12 +62,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 return "";
             }
 
-            Option<User> userOption = this.plugin.getUserManager().findByPlayer(player);
+            Optional<User> userOption = this.plugin.getUserManager().findByPlayer(player);
             if (userOption.isEmpty()) {
                 return "";
             }
 
-            User user = userOption.get();
+            User user = userOption.orElseThrow();
             
             Component inputText = Component.text("{" + identifier.toUpperCase(Locale.ROOT) + "}");
             Component replacedText = this.plugin.getTablistPlaceholdersService().format(
@@ -85,16 +86,16 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             UserManager userManager = this.plugin.getUserManager();
-            Option<User> userObserverOption = userManager.findByPlayer(observer);
-            Option<User> userTargetOption = userManager.findByPlayer(target);
+            Optional<User> userObserverOption = userManager.findByPlayer(observer);
+            Optional<User> userTargetOption = userManager.findByPlayer(target);
 
             if (userObserverOption.isEmpty() || userTargetOption.isEmpty()) {
                 return "";
             }
 
             Component relationalTag = this.plugin.getPluginConfiguration().relationalTag.chooseAndPrepareTag(
-                    userObserverOption.get().getGuild().orNull(),
-                    userTargetOption.get().getGuild().orNull()
+                    userObserverOption.get().getGuild().orElse(null),
+                    userTargetOption.get().getGuild().orElse(null)
             );
             return LEGACY_SERIALIZER.serialize(relationalTag);
         }

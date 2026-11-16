@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.nms.heart;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -35,12 +36,12 @@ public class GuildEntityHelper {
                 return null;
             }
 
-            Option<Location> locationOption = guild.getEnderCrystal();
+            Optional<Location> locationOption = guild.getEnderCrystal();
             if (locationOption.isEmpty()) {
                 return null;
             }
 
-            return this.nmsAccessor.getEntityAccessor().createFakeEntity(this.pluginConfiguration.heart.createEntityType, locationOption.get());
+            return this.nmsAccessor.getEntityAccessor().createFakeEntity(this.pluginConfiguration.heart.createEntityType, locationOption.orElseThrow());
         }));
     }
 
@@ -54,7 +55,7 @@ public class GuildEntityHelper {
     }
 
     public void spawnGuildEntity(Guild guild, Player player) {
-        if (guild.getEnderCrystal().map(Location::getWorld).isNot(guildWorld -> guildWorld.equals(player.getWorld()))) {
+        if (guild.getEnderCrystal().map(Location::getWorld).map(guildWorld -> !guildWorld.equals(player.getWorld())).orElse(true)) {
             return;
         }
 

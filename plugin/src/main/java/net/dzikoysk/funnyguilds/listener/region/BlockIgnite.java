@@ -10,15 +10,15 @@ public class BlockIgnite extends AbstractFunnyListener {
 
     @EventHandler
     public void onIgnite(BlockIgniteEvent event) {
-        ProtectionSystem.isProtected(
+        var protection = ProtectionSystem.isProtected(
                         event.getPlayer(),
                         event.getBlock().getLocation(),
                         event,
                         GuildProtectionPermission.BLOCK_IGNITE,
                         false
-                )
-                .peek(ProtectionSystem::defaultResponse)
-                .peek(result -> event.setCancelled(true));
+                );
+        protection.ifPresent(ProtectionSystem::defaultResponse);
+        protection.ifPresent(result -> event.setCancelled(true));
     }
 
 }

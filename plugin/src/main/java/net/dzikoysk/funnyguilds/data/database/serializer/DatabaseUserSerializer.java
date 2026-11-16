@@ -67,8 +67,8 @@ public final class DatabaseUserSerializer {
         statement.set("deaths", user.getRank().getDeaths());
         statement.set("assists", user.getRank().getAssists());
         statement.set("logouts", user.getRank().getLogouts());
-        statement.set("ban", user.getBan().toOptional().map(UserBan::getTime).map(Instant::toEpochMilli).orElse(0L));
-        statement.set("reason", user.getBan().toOptional().map(UserBan::getReason).orElse(null));
+        statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElse(0L));
+        statement.set("reason", user.getBan().map(UserBan::getReason).orElse(null));
         statement.set("last_ip", user.getLastIP());
 
         statement.executeUpdate();

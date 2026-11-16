@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionEnterEvent;
@@ -43,16 +44,16 @@ public class PlayerMove extends AbstractFunnyListener {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            Option<User> userOption = this.userManager.findByPlayer(player);
+            Optional<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 return;
             }
 
-            User user = userOption.get();
+            User user = userOption.orElseThrow();
             UserCache cache = user.getCache();
 
-            Option<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
-            Option<Region> regionOptionTo = this.regionManager.findRegionAtLocation(to);
+            Optional<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
+            Optional<Region> regionOptionTo = this.regionManager.findRegionAtLocation(to);
 
             if (regionOptionFrom.equals(regionOptionTo)) {
                 return;
@@ -60,7 +61,7 @@ public class PlayerMove extends AbstractFunnyListener {
 
             regionOptionFrom
                     .map(Region::getGuild)
-                    .peek(guild -> {
+                    .ifPresent(guild -> {
                         this.logger.debug(String.format("Player %s left region of guild %s", player.getName(), guild.getName()));
 
                         if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
@@ -80,7 +81,7 @@ public class PlayerMove extends AbstractFunnyListener {
 
             regionOptionTo
                     .map(Region::getGuild)
-                    .peek(guild -> {
+                    .ifPresent(guild -> {
                         this.logger.debug(String.format("Player %s entered region of guild %s", player.getName(), guild.getName()));
 
                         if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {

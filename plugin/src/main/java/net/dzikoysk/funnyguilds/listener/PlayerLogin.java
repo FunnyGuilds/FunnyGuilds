@@ -36,10 +36,12 @@ public class PlayerLogin extends AbstractFunnyListener {
             return;
         }
 
-        this.userManager.findByPlayer(player)
-                .peek(BanUtils::checkIfBanShouldExpire)
-                .filter(User::isBanned)
-                .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));
+        this.userManager.findByPlayer(player).ifPresent(user -> {
+            BanUtils.checkIfBanShouldExpire(user);
+            if (user.isBanned()) {
+                event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user));
+            }
+        });
     }
 
 }

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import java.util.Optional;
 import javax.annotation.Nullable;
-import panda.std.Option;
 
 public final class RegionUtils {
 
@@ -14,8 +14,8 @@ public final class RegionUtils {
                 : "null";
     }
 
-    public static String toString(Option<Region> region) {
-        return toString(region.orNull());
+    public static String toString(Optional<Region> region) {
+        return toString(region.orElse(null));
     }
 
 }

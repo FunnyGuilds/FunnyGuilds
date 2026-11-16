@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -83,7 +84,7 @@ public class InvitationPersistenceHandler {
         YamlWrapper yaml = new YamlWrapper(this.invitationsFile);
         FunnyStreams.of(yaml.getKeys(false))
                 .map(UUID::fromString)
-                .flatMap(uuid -> this.guildManager.findByUuid(uuid).toOptional().stream())
+                .flatMap(uuid -> this.guildManager.findByUuid(uuid).stream())
                 .forEach(guild -> {
                     this.loadGuildInvitations(yaml, guild);
                     this.loadAllyInvitations(yaml, guild);
@@ -99,7 +100,7 @@ public class InvitationPersistenceHandler {
     private void loadAllyInvitations(YamlWrapper yaml, Guild guild) {
         yaml.getStringList(guild.getUUID().toString() + ".guilds").stream()
                 .map(UUID::fromString)
-                .flatMap(uuid -> this.guildManager.findByUuid(uuid).toOptional().stream())
+                .flatMap(uuid -> this.guildManager.findByUuid(uuid).stream())
                 .forEach(allyGuild -> this.allyInvitationList.createInvitation(guild, allyGuild));
     }
 

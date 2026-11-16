@@ -83,9 +83,10 @@ public abstract class AbstractScoreboardHandler<T> {
     }
 
     private List<UpdateData> getOnlinePlayersToUpdate() {
-        return PandaStream.of(Bukkit.getOnlinePlayers())
-                .mapOpt(player -> this.userManager.findByUuid(player.getUniqueId())
+        return Bukkit.getOnlinePlayers().stream()
+                .map(player -> this.userManager.findByUuid(player.getUniqueId())
                         .map(user -> new UpdateData(user, player, this.getOrCreateData(player, user))))
+                .flatMap(java.util.Optional::stream)
                 .toList();
     }
 
