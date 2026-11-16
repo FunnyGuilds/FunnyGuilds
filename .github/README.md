@@ -8,6 +8,9 @@ FunnyGuilds is a configurable guild plugin for Paper servers. Players create gui
 
 https://funnyguilds.dzikoysk.net/download
 
+<details>
+<summary>English</summary>
+
 ## Requirements
 
 - Paper 1.21.5 - 1.21.11 or 26.1 - 26.3
@@ -50,21 +53,14 @@ Picked up automatically when installed:
 ## Links
 
 - Documentation: https://funnyguilds.dzikoysk.net
-- Source and issue tracker: https://github.com/FunnyGuilds/FunnyGuilds
 - API for developers (Maven/Gradle): https://funnyguilds.dzikoysk.net/en/api
 - Statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
 - Discord: https://discord.gg/CYvyq3u
 
----
+</details>
 
 <details>
-<summary>Polska wersja</summary>
-
-FunnyGuilds to konfigurowalny plugin gildyjny dla serwerów Paper. Gracze tworzą gildie, zajmują tereny, zawierają sojusze i rywalizują w rankingach. Prawie każdy element można dostosować w plikach konfiguracji.
-
-## Pobierz
-
-https://funnyguilds.dzikoysk.net/download
+<summary>Polski</summary>
 
 ## Wymagania
 
@@ -108,7 +104,6 @@ Wykrywane automatycznie po instalacji:
 ## Linki
 
 - Dokumentacja: https://funnyguilds.dzikoysk.net
-- Kod źródłowy i issue tracker: https://github.com/FunnyGuilds/FunnyGuilds
 - API dla developerów (Maven/Gradle): https://funnyguilds.dzikoysk.net/api
 - Statystyki: https://bstats.org/plugin/bukkit/FunnyGuilds
 - Discord: https://discord.gg/CYvyq3u
