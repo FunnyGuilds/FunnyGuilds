@@ -10,7 +10,7 @@ https://funnyguilds.dzikoysk.net/download/
 
 ## Requirements
 
-- Paper 1.21.5-1.21.11 or 26.1-26.3
+- Paper 1.21.5 - 1.21.11 or 26.1 - 26.3
 - Java 21
 
 ## Installation
