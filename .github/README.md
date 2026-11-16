@@ -43,8 +43,7 @@
 2. Restart the server
 3. Edit `config.yml` and `lang/<locale>.yml`
 
-> [!WARNING]
-> Config from 4.x does not load on 5.x, so plan ahead when migrating.
+> ⚠️ **Config from 4.x does not load on 5.x, so plan ahead when migrating.**
 
 ## Older Minecraft versions
 
@@ -95,8 +94,7 @@ Picked up automatically when installed:
 2. Zrestartuj serwer
 3. Edytuj `config.yml` i `lang/<locale>.yml`
 
-> [!WARNING]
-> Konfiguracja z 4.x nie wczyta się na 5.x, więc zaplanuj migrację z wyprzedzeniem.
+> ⚠️ **Konfiguracja z 4.x nie wczyta się na 5.x, więc zaplanuj migrację z wyprzedzeniem.**
 
 ## Starsze wersje Minecrafta
 
