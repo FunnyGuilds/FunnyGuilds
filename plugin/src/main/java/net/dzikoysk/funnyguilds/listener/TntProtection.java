@@ -61,7 +61,7 @@ public class TntProtection extends AbstractFunnyListener {
                 .peek(guild -> guild.setBuild(Instant.now().plus(this.config.regionExplode)))
                 .toStream(guild -> guild.getMembers().stream())
                 .filterNot(user -> this.informationMessageCooldowns.cooldown(user.getUUID(), this.config.infoPlayerCooldown))
-                .flatMap(user -> this.funnyServer.getPlayer(user))
+                .mapOpt(user -> panda.std.Option.ofOptional(this.funnyServer.getPlayer(user)))
                 .toSet();
 
         this.messageService.getMessage( config -> config.regionExplode)

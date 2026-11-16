@@ -211,7 +211,7 @@ public final class FlatGuildSerializer {
         wrapper.set("name", guild.getName());
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
-        wrapper.set("home", LocationUtils.toString(guild.getHome()));
+        wrapper.set("home", LocationUtils.toString(guild.getHome().toOptional()));
         wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);

@@ -11,7 +11,7 @@ public class FunnyPattern {
         this.compiledPattern = DefaultRegex.findRegex(pattern)
                 .map(DefaultRegex::getPattern)
                 .map(Pattern::compile)
-                .orElseGet(Pattern.compile(pattern));
+                .orElse(Pattern.compile(pattern));
         this.pattern = pattern;
     }
 

@@ -28,7 +28,7 @@ public class BukkitUserProfile implements UserProfile {
         this.funnyServer = funnyServer;
 
         this.offlinePlayerRef = new WeakReference<>(funnyServer.getOfflinePlayer(uuid));
-        this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orNull());
+        this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orElse(null));
     }
 
     private Option<Player> getPlayer() {
@@ -109,10 +109,10 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public void refresh() {
-        this.funnyServer.getPlayer(this.uuid).peek(player -> {
+        this.funnyServer.getPlayer(this.uuid).ifPresentOrElse(player -> {
             this.playerRef = new WeakReference<>(player);
             this.offlinePlayerRef = new WeakReference<>(player);
-        }).onEmpty(() -> {
+        }, () -> {
             this.playerRef = new WeakReference<>(null);
         });
     }

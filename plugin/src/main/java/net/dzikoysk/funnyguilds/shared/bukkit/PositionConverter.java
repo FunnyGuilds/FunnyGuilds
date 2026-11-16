@@ -20,7 +20,7 @@ public final class PositionConverter {
     public static Location adapt(Position position) {
         World world = position.getWorld()
                 .map(Bukkit::getWorld)
-                .orNull();
+                .orElse(null);
         return new Location(world, position.getX(), position.getY(), position.getZ(), position.getYaw(), position.getPitch());
     }
 

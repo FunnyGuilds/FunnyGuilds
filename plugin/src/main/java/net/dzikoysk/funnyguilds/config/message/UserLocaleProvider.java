@@ -27,7 +27,7 @@ public class UserLocaleProvider implements LocaleProvider<User> {
                 .map(LocaleHelper::getLocaleString)
                 .map(localeString -> localeString.replace('_', '-'))
                 .map(Locale::forLanguageTag)
-                .orNull();
+                .orElse(null);
     }
 
 }

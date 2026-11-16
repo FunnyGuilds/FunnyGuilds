@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.shared;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import panda.std.Option;
 
 public final class LegacyUtils {
 
@@ -44,7 +43,7 @@ public final class LegacyUtils {
             }
         }
 
-        return Option.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString()))
+        return Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(indexBuilder.toString()))
                 .orElseGet(() -> {
                     FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + indexBuilder);
                     return -1;

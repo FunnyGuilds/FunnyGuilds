@@ -3,12 +3,12 @@ package net.dzikoysk.funnyguilds.config;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public final class NumberRange {
 
@@ -85,17 +85,18 @@ public final class NumberRange {
                     : number < this.maxRange.doubleValue());
     }
 
-    public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
-        return PandaStream.of(rangeMap.entrySet())
-                .find(entry -> entry.getKey().contains(value))
-                .map(Map.Entry::getValue);
+    public static <V> Optional<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
+        return rangeMap.entrySet().stream()
+                .filter(entry -> entry.getKey().contains(value))
+                .map(Map.Entry::getValue)
+                .findFirst();
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap, boolean color) {
         return inRange(value, rangeMap)
                 .map(Objects::toString)
                 .map(string -> color ? ChatUtils.colored(string) : string)
-                .orElseGet(value.toString());
+                .orElse(value.toString());
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
@@ -111,12 +112,12 @@ public final class NumberRange {
     }
 
     public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
-        return PandaStream.of(rangeEntries)
+        return rangeEntries.stream()
                 .map(RangeFormatting::new)
-                .toMap(RangeFormatting::getRange, (formatting) -> color
+                .collect(Collectors.toUnmodifiableMap(RangeFormatting::getRange, (formatting) -> color
                         ? ChatUtils.colored(formatting.getValue())
                         : formatting.getValue()
-                );
+                ));
     }
 
     private static Number parseNumber(String numberString, Number borderValue) {

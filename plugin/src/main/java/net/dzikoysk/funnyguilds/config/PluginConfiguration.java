@@ -45,6 +45,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
@@ -57,7 +58,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
@@ -1158,7 +1158,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eloConstants = new HashMap<>();
 
             NumberRange.parseIntegerRange(this.eloConstants_, false).forEach((key, value) -> {
-                int constant = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(value)).orElseGet(() -> {
+                int constant = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(value)).orElseGet(() -> {
                     FunnyGuilds.getPluginLogger().parser("\"" + value + "\" is not a valid elo constant!");
                     return 0;
                 });

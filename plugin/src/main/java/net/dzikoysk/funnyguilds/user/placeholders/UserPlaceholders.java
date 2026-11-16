@@ -16,7 +16,7 @@ import panda.std.Option;
 public class UserPlaceholders extends Placeholders<User, UserPlaceholders> {
 
     public UserPlaceholders playerProperty(String name, MonoResolver<Player> resolver) {
-        return this.property(name, user -> resolver.resolve(user, FunnyGuilds.getInstance().getFunnyServer().getPlayer(user).orNull()));
+        return this.property(name, user -> resolver.resolve(user, FunnyGuilds.getInstance().getFunnyServer().getPlayer(user).orElse(null)));
     }
 
     public UserPlaceholders playerOptionProperty(String name, MonoResolver<Option<Player>> resolver) {

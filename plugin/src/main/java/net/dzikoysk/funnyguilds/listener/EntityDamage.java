@@ -51,7 +51,7 @@ public class EntityDamage extends AbstractFunnyListener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
+        EntityUtils.getAttacker(event.getDamager()).ifPresent(attacker -> {
             Option<User> attackerUserOption = this.userManager.findByPlayer(attacker);
             if (attackerUserOption.isEmpty()) {
                 return;
