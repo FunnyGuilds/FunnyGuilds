@@ -50,14 +50,14 @@
 
 ## Funkcje
 
-- **Gildie** - tworzenie i dołączanie, struktura członków, ważność gildii, rozwiązywanie
-- **Tereny** - kupowanie i powiększanie, ochrona obszaru, konfigurowalne zachowanie TNT
-- **Serce gildii** - fizyczny środek gildii, z opcjami ochrony i hologramem (DecentHolograms)
-- **Sojusze i wojny** - tryby wojen, dodatkowe życia do kupienia, ochrona przed farmieniem
-- **Walka i rankingi** - punkty, zabójstwa/śmierci/asysty, topki, ochrona przed farmieniem rankingu
-- **Czat** - kanały gildyjne, tagi na czacie głównym, tagi nad głowami
-- **Tablist** - nagłówek i stopka, stronicowanie, wyświetlanie pingu, głowy graczy, zmienne
-- **Placeholdery** - wbudowany zestaw, wystawiony też innym pluginom przez PlaceholderAPI
+- 🏰 **Gildie** - tworzenie i dołączanie, struktura członków, ważność gildii, rozwiązywanie
+- 🚩 **Tereny** - kupowanie i powiększanie, ochrona obszaru, konfigurowalne zachowanie TNT
+- ❤️ **Serce gildii** - fizyczny środek gildii, z opcjami ochrony i hologramem (DecentHolograms)
+- ⚔️ **Sojusze i wojny** - tryby wojen, dodatkowe życia do kupienia, ochrona przed farmieniem
+- 🏆 **Walka i rankingi** - punkty, zabójstwa/śmierci/asysty, topki, ochrona przed farmieniem rankingu
+- 💬 **Czat** - kanały gildyjne, tagi na czacie głównym, tagi nad głowami
+- 📋 **Tablist** - nagłówek i stopka, stronicowanie, wyświetlanie pingu, głowy graczy, zmienne
+- 🏷️ **Placeholdery** - wbudowany zestaw, wystawiony też innym pluginom przez PlaceholderAPI
 
 ## Integracje
 
@@ -101,14 +101,14 @@ Wykrywane automatycznie po instalacji:
 
 ## Features
 
-- **Guilds** - creating and joining, member structure, guild validity, disbanding
-- **Territory** - buying and expanding land, area protection, configurable TNT behavior
-- **Guild heart** - the physical center of the guild, with protection options and a hologram (DecentHolograms)
-- **Alliances & wars** - war modes, buyable extra lives, anti-farming protection
-- **Combat & rankings** - points, kills/deaths/assists, top lists, rank farming protection
-- **Chat** - guild chat channels, tags in the main chat, nametags above heads
-- **Tablist** - header and footer, pagination, ping display, player heads, variables
-- **Placeholders** - built-in set, also exposed to other plugins via PlaceholderAPI
+- 🏰 **Guilds** - creating and joining, member structure, guild validity, disbanding
+- 🚩 **Territory** - buying and expanding land, area protection, configurable TNT behavior
+- ❤️ **Guild heart** - the physical center of the guild, with protection options and a hologram (DecentHolograms)
+- ⚔️ **Alliances & wars** - war modes, buyable extra lives, anti-farming protection
+- 🏆 **Combat & rankings** - points, kills/deaths/assists, top lists, rank farming protection
+- 💬 **Chat** - guild chat channels, tags in the main chat, nametags above heads
+- 📋 **Tablist** - header and footer, pagination, ping display, player heads, variables
+- 🏷️ **Placeholders** - built-in set, also exposed to other plugins via PlaceholderAPI
 
 ## Integrations
 
