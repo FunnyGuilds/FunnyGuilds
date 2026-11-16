@@ -5,10 +5,23 @@
 Never use wildcard imports in Java, including static imports. Always import
 each class or member individually and preserve existing explicit imports.
 
+## Optional & Streams
+
+Use `java.util.Optional` and `java.util.stream.Stream` (Java 21) instead of expressible
+`Option`/`PandaStream`. Expressible remains a dependency for `Result`, `Pair`, `Triple`,
+`Completable` and its functional interfaces.
+
+- Use `Optional.ofNullable` for nullable sources; prefer `orElseThrow()` over `get()`;
+  use `orElse(value)` for eager defaults and `orElseGet(Supplier)` for lazy ones.
+  `Optional` is not `Iterable` - use `.stream()` to feed streams.
+- Prefer unmodifiable collections (`Stream.toList()`, `Collectors.toUnmodifiableSet/toMap`);
+  keep mutable collectors only where a caller or config genuinely mutates the result.
+- Do not add new wrappers around JDK APIs without a demonstrated need -
+  `shared/Optionals` and `shared/FunnyStreams` are the sanctioned helpers.
+
 ## Docs must stay in sync with the plugin
 
-This repo ships the plugin (`plugin/`, `funnyguilds-core/`, `funnyguilds-server-api/`,
-`funnyguilds-targets/`, `nms/`) alongside its documentation site (`docs/`, Astro/Starlight,
+This repo ships the plugin (`plugin/`, `nms/`) alongside its documentation site (`docs/`, Astro/Starlight,
 Polish default + English at `docs/src/content/docs/en/`).
 
 Any change to the plugin that affects user- or admin-facing behavior — a new command,
