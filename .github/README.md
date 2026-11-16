@@ -24,7 +24,6 @@ Config from 4.x does not load on 5.x, so plan ahead when migrating.
 ## Older Minecraft versions
 
 - Below 1.21.5: FunnyGuilds 4.14.0, the last release of the 4.x series
-- 1.7.x: FunnyGuilds 3.9.9.15
 - Full release archive: https://funnyguilds.dzikoysk.net/en/download/
 
 ## Features
