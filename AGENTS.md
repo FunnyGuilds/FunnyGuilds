@@ -27,3 +27,29 @@ has no doc-visible effect, say so explicitly rather than skipping the check sile
 
 Removing a command or config field counts: `/top` and `/ranking` were deleted from the plugin
 but stayed in the docs for months, because nothing forced the recheck.
+
+## README maintenance
+
+The front-page README is `.github/README.md` (there is no root `README.md`). Layout is
+compact, Reposilite-style: a centered header with the logo, title, badges, a one-sentence
+description and a `Download | Documentation | Discord` link row, followed by two
+collapsible sections — 🇵🇱 Polski first, 🇬🇧 English second.
+
+- Every content section exists in both languages. A change to one is not done until it is
+  mirrored in the other. PL links use Polish doc paths (`/download`, `/api`), EN links use
+  `/en/...`.
+- The download page (https://funnyguilds.dzikoysk.net/download) is the single download
+  entry point; stable, nightly and legacy builds are all listed there, so the README does
+  not duplicate them.
+- Use absolute URLs for every image (logo, badges). Relative paths in `.github/README.md`
+  resolve differently on the front page, in blob view and in external previewers, and that
+  has caused breakage before.
+- No GitHub alerts (`> [!WARNING]`): they do not render inside `<details>` blocks. Use a
+  plain quote with an emoji instead: `> ⚠️ **...**`.
+- No em dashes — plain hyphens only. No raw URLs where a labeled link reads better.
+- Keep it short: details belong in the docs site, the README points there. Verify claims
+  against the repo before writing them — supported versions come from `gradle.properties`
+  (`mcVersions`) and the Java toolchain in `build.gradle.kts`, not from memory.
+
+Changes to requirements (Java, Minecraft/Paper versions) or to the install flow count as
+doc-visible for the rule above and cover the README too.
