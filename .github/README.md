@@ -1,86 +1,58 @@
-FunnyGuilds  
-[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Version](https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v)](https://ci.insertt.dev/job/FunnyGuilds/job/master/) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u) [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u) [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open")
-===========
+# FunnyGuilds
 
-#### About
-FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to create guilds.
+[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Version](https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v)](https://github.com/FunnyGuilds/FunnyGuilds/releases/latest) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u)
 
----
+FunnyGuilds is a configurable guild plugin for Paper servers. Players create guilds, claim territory, form alliances and compete in rankings. Almost every part of it can be tuned from the config files.
 
-Documentation: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
-<br>
-Community/Support: <a href="https://discord.gg/CYvyq3u">Discord</a>
+## Download
 
-#### Supported Paper versions
-1.21.5 - 1.21.11,
-26.1 - 26.3
+- **Stable** — [funnyguilds.dzikoysk.net/download](https://funnyguilds.dzikoysk.net/en/download/) or [GitHub releases](https://github.com/FunnyGuilds/FunnyGuilds/releases/latest)
+- **Nightly** — a build produced on every commit, for testing only, not for a production server: [nightly release](https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/nightly-release-publish)
 
-#### Download
-Get the latest version: [FunnyGuilds 5.0.0+ Nightly](https://ci.insertt.dev/job/FunnyGuilds/job/5.x/) <br>
+## Requirements
 
-#### Hooks
-FunnyGuilds hooks into those plugins:
-- [WorldEdit](https://dev.bukkit.org/projects/worldedit)
-- [WorldGuard](https://dev.bukkit.org/projects/worldguard)
-- [Vault](https://dev.bukkit.org/projects/vault)
-- [PlaceholderAPI](https://www.spigotmc.org/resources/6245/)
-- [dynmap](https://github.com/webbukkit/dynmap)
-- [DecentHolograms](https://www.spigotmc.org/resources/96927/)
+- Paper 1.21.5-1.21.11 or 26.1-26.3
+- Java 21
 
-#### Maven
-```xml
-<repository>
-    <id>reposilite-snapshots-repository</id>
-    <url>https://maven.reposilite.com/snapshots</url>
-</repository>
-```
-```xml
-<dependency>
-    <groupId>net.dzikoysk.funnyguilds</groupId>
-    <artifactId>plugin</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
-    <classifier>all</classifier>
-    <scope>provided</scope>
-</dependency>
-```
+## Installation
 
-#### Gradle Groovy
-```groovy
-repositories {
-    mavenCentral()
-    maven {
-        name 'reposilite-snapshots-repository'
-        url 'https://maven.reposilite.com/snapshots'
-    }
-}
-```
-```groovy
-dependencies {
-    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all'
-}
-```
+1. Drop the jar into `plugins/`
+2. Restart the server
+3. Edit `config.yml` and `lang/<locale>.yml`
 
-#### Gradle Kotlin
-```kotlin
-repositories {
-    mavenCentral()
-    maven {
-        name = "reposilite-snapshots-repository"
-        url = uri("https://maven.reposilite.com/snapshots")
-    }
-}
-```
-```kotlin
-dependencies {
-    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0-SNAPSHOT:all")
-}
-```
+Config from 4.x does not load on 5.x, so plan ahead when migrating.
 
-#### Stats
-Current statistics (since 3.9.x) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
-<br>
-The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
+## Older Minecraft versions
 
-| Servers | Players | Users     | Guilds |
-|---------|---------|-----------|--------|
-| 1158    | 12 336  | 1 034 312 | 16 973 |
+- Below 1.21.5 — [FunnyGuilds 4.14.0](https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/4.14.0), the last release of the 4.x series
+- 1.7.x — [FunnyGuilds 3.9.9.15](https://github.com/FunnyGuilds/FunnyGuilds/releases/tag/3.9.9.15)
+- Full release archive — [funnyguilds.dzikoysk.net/download](https://funnyguilds.dzikoysk.net/en/download/)
+
+## Features
+
+- **Guilds** — creating and joining, member structure, guild validity, disbanding
+- **Territory** — buying and expanding land, area protection, configurable TNT behavior
+- **Guild heart** — the physical center of the guild, with protection options and a hologram (DecentHolograms)
+- **Alliances & wars** — war modes, buyable extra lives, anti-farming protection
+- **Combat & rankings** — points, kills/deaths/assists, top lists, rank farming protection
+- **Chat** — guild chat channels, tags in the main chat, nametags above heads
+- **Tablist** — header and footer, pagination, ping display, player heads, variables
+- **Placeholders** — a solid set built in, also exposed to other plugins via PlaceholderAPI
+
+## Integrations
+
+Picked up automatically when installed:
+
+- **PlaceholderAPI** — FunnyGuilds placeholders available to every other plugin
+- **Vault** — economy and offline-player permission checks
+- **WorldGuard & WorldEdit** — custom WorldGuard flags and schematic pasting
+- **dynmap** — guild territory markers on the web map
+- **DecentHolograms** — hologram above the guild heart
+
+## Links
+
+- Documentation: https://funnyguilds.dzikoysk.net/
+- Source and issue tracker: https://github.com/FunnyGuilds/FunnyGuilds
+- API for developers (Maven/Gradle): https://funnyguilds.dzikoysk.net/en/api/
+- Statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
+- Discord: https://discord.gg/CYvyq3u
