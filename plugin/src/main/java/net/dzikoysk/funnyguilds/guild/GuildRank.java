@@ -1,11 +1,15 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.rank.GuildStatAggregationType;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import net.dzikoysk.funnyguilds.rank.StatKey;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     GuildRank(Guild guild) {
@@ -18,99 +22,91 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int getPoints() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getPoints())
-                .sum();
+        return this.total(UserStatKeys.POINTS);
     }
 
     public int getAveragePoints() {
-        return this.calculateAverage(this.getPoints());
+        return this.average(UserStatKeys.POINTS);
     }
 
     @Override
     public int getKills() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getKills())
-                .sum();
+        return this.total(UserStatKeys.KILLS);
     }
 
     public int getAverageKills() {
-        return this.calculateAverage(this.getKills());
+        return this.average(UserStatKeys.KILLS);
     }
 
     @Override
     public int getDeaths() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getDeaths())
-                .sum();
+        return this.total(UserStatKeys.DEATHS);
     }
 
     public int getAverageDeaths() {
-        return this.calculateAverage(this.getDeaths());
+        return this.average(UserStatKeys.DEATHS);
     }
 
     @Override
     public int getAssists() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getAssists())
-                .sum();
+        return this.total(UserStatKeys.ASSISTS);
     }
 
     public int getAverageAssists() {
-        return this.calculateAverage(this.getAssists());
+        return this.average(UserStatKeys.ASSISTS);
     }
 
     @Override
     public int getLogouts() {
-        return this.entity.getMembers().stream()
-                .mapToInt(user -> user.getRank().getLogouts())
-                .sum();
+        return this.total(UserStatKeys.LOGOUTS);
     }
 
     public int getAverageLogouts() {
-        return this.calculateAverage(this.getLogouts());
+        return this.average(UserStatKeys.LOGOUTS);
     }
 
     @Override
     public float getKDR() {
-        return this.getDeaths() == 0
-                ? this.getKills()
-                : 1.0F * this.getKills() / this.getDeaths();
+        return this.ratio(UserStatKeys.KDR, GuildStatAggregationType.TOTAL_DOUBLE);
     }
 
     public float getAverageKDR() {
-        return (float) this.entity.getMembers().stream()
-                .mapToDouble(user -> user.getRank().getKDR())
-                .average()
-                .orElse(0.0D);
+        return this.ratio(UserStatKeys.KDR, GuildStatAggregationType.AVERAGE);
     }
 
     @Override
     public float getKDA() {
-        return this.getDeaths() == 0
-                ? this.getKills() + this.getAssists()
-                : 1.0F * (this.getKills() + this.getAssists()) / this.getDeaths();
+        return this.ratio(UserStatKeys.KDA, GuildStatAggregationType.TOTAL_DOUBLE);
     }
 
     public float getAverageKDA() {
-        return (float) this.entity.getMembers().stream()
-                .mapToDouble(user -> user.getRank().getKDA())
-                .average()
-                .orElse(0.0D);
+        return this.ratio(UserStatKeys.KDA, GuildStatAggregationType.AVERAGE);
+    }
+
+    private int total(StatKey<Integer> key) {
+        return this.stat(key, GuildStatAggregationType.TOTAL_INT);
+    }
+
+    private int average(StatKey<Integer> key) {
+        return this.stat(key, GuildStatAggregationType.AVERAGE_INT);
+    }
+
+    private float ratio(StatKey<Double> key, GuildStatAggregationType<Double> aggregation) {
+        return this.stat(key, aggregation).floatValue();
+    }
+
+    private <T extends Number, R extends Number> R stat(StatKey<T> key, GuildStatAggregationType<R> aggregation) {
+        return FunnyGuilds.getInstance().getRankService().getGuildStatValue(this.entity, key, aggregation)
+                .orElseGet(() -> aggregation.computeValue(FunnyGuilds.getInstance().getRankService(), this.entity, key));
     }
 
     @Override
     public int compareTo(@NotNull GuildRank rank) {
-        return Integer.compare(rank.getPoints(), this.getPoints());
-    }
-
-    private int calculateAverage(int value) {
-        return value / this.entity.getMembers().size();
+        return Integer.compare(rank.getAveragePoints(), this.getAveragePoints());
     }
 
     @Override
     public String toString() {
         return Integer.toString(this.getAveragePoints());
     }
-
 }

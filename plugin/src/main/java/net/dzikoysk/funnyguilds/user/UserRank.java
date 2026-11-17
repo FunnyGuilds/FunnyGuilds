@@ -23,7 +23,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return FunnyGuilds.getInstance().getRankService().getUserStatValue(
                 this.entity,
                 UserStatKeys.POINTS
-        ).orElseGet(0);
+        ).orElse(0);
     }
 
     public void setPoints(int points) {
@@ -53,7 +53,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return FunnyGuilds.getInstance().getRankService().getUserStatValue(
                 this.entity,
                 UserStatKeys.KILLS
-        ).orElseGet(0);
+        ).orElse(0);
     }
 
     public void setKills(int kills) {
@@ -83,7 +83,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return FunnyGuilds.getInstance().getRankService().getUserStatValue(
                 this.entity,
                 UserStatKeys.DEATHS
-        ).orElseGet(0);
+        ).orElse(0);
     }
 
     public void setDeaths(int deaths) {
@@ -113,7 +113,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return FunnyGuilds.getInstance().getRankService().getUserStatValue(
                 this.entity,
                 UserStatKeys.ASSISTS
-        ).orElseGet(0);
+        ).orElse(0);
     }
 
     public void setAssists(int assists) {
@@ -143,7 +143,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return FunnyGuilds.getInstance().getRankService().getUserStatValue(
                 this.entity,
                 UserStatKeys.LOGOUTS
-        ).orElseGet(0);
+        ).orElse(0);
     }
 
     public void setLogouts(int logouts) {

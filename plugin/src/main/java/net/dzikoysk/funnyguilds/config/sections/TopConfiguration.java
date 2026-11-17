@@ -17,17 +17,12 @@ import net.dzikoysk.funnyguilds.config.RawString;
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TopConfiguration extends OkaeriConfig {
 
-    @Comment("Lista topek graczy, które mają być obliczane i parsowane")
-    @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
-    @Comment("Topek tych można używać w formie placeholderów {PTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts")
+    @Deprecated
+    @Comment("Opcja zachowana dla zgodnosci. Topy wszystkich statystyk sa dostepne automatycznie, bez listy wlaczonych typow.")
     public Set<String> enabledUserTops = new TreeSet<>(Arrays.asList("points", "kills", "deaths"));
 
-    @Comment("")
-    @Comment("Lista topek gildii, które mają być obliczane i parsowane")
-    @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
-    @Comment("Topek tych można używać w formie placeholderów {GTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts")
+    @Deprecated
+    @Comment("Opcja zachowana dla zgodnosci. Topy gildii sa tworzone przy pierwszym uzyciu.")
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")

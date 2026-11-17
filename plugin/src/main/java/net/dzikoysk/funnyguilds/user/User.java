@@ -86,13 +86,22 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setGuild(@Nullable Guild guild) {
+        Guild previous = this.guild.orNull();
+        if (previous == guild) {
+            return;
+        }
         this.guild = Option.of(guild);
         this.markChanged();
+        if (previous != null) {
+            previous.removeMember(this);
+        }
+        if (guild != null) {
+            guild.addMember(this);
+        }
     }
 
     public void removeGuild() {
-        this.guild = Option.none();
-        this.markChanged();
+        this.setGuild(null);
     }
 
     public boolean canManage() {

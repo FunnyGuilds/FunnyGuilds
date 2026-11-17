@@ -7,6 +7,7 @@ import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.KeyPattern;
 import net.kyori.adventure.key.Keyed;
@@ -24,7 +25,7 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
                     total += controller.getUserStatValue(
                             member,
                             key
-                    ).map(Number::intValue).orElseGet(0);
+                    ).map(Number::intValue).orElse(0);
                 }
                 return total;
             }
@@ -39,7 +40,7 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
                     total += controller.getUserStatValue(
                             member,
                             key
-                    ).map(Number::doubleValue).orElseGet(0.0);
+                    ).map(Number::doubleValue).orElse(0.0);
                 }
                 return total;
             }
@@ -60,16 +61,23 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
                     total += controller.getUserStatValue(
                             member,
                             key
-                    ).map(Number::doubleValue).orElseGet(0.0);
+                    ).map(Number::doubleValue).orElse(0.0);
                 }
                 return total / memberCount;
             }
     );
 
+    public static final GuildStatAggregationType<Integer> AVERAGE_INT = new GuildStatAggregationType<>(
+            "guild_stat_aggregation_average_int", Integer.class,
+            (service, guild, key) -> guild.getMembers().isEmpty() ? 0
+                    : TOTAL_INT.computeValue(service, guild, key) / guild.getMembers().size()
+    );
+
     public static final Collection<GuildStatAggregationType<?>> VALUES = ImmutableList.of(
             TOTAL_INT,
             TOTAL_DOUBLE,
-            AVERAGE
+            AVERAGE,
+            AVERAGE_INT
     );
 
     private final Key key;
@@ -81,12 +89,21 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
             Class<R> valueType,
             TriFunction<RankService, Guild, StatKey<?>, R> valueComputer
     ) {
-        this.key = Key.key(
-                FunnyGuilds.NAMESPACE,
-                key
-        );
+        this(Key.key(FunnyGuilds.NAMESPACE, key), valueType, valueComputer);
+    }
+
+    private GuildStatAggregationType(Key key, Class<R> valueType, TriFunction<RankService, Guild, StatKey<?>, R> computer) {
+        if (valueType != Integer.class && valueType != Double.class) {
+            throw new IllegalArgumentException("Unsupported aggregation type " + valueType);
+        }
+        this.key = Objects.requireNonNull(key, "aggregation key");
         this.valueType = valueType;
-        this.valueComputer = valueComputer;
+        this.valueComputer = Objects.requireNonNull(computer, "aggregation function");
+    }
+
+    public static <R extends Number> GuildStatAggregationType<R> create(
+            Key key, Class<R> valueType, TriFunction<RankService, Guild, StatKey<?>, R> computer) {
+        return new GuildStatAggregationType<>(key, valueType, computer);
     }
 
     @Override
@@ -103,11 +120,24 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
             Guild guild,
             StatKey<?> key
     ) {
+        if (this == TOTAL_DOUBLE && (key.equals(UserStatKeys.KDR) || key.equals(UserStatKeys.KDA))) {
+            double kills = TOTAL_INT.computeValue(controller, guild, UserStatKeys.KILLS);
+            double deaths = TOTAL_INT.computeValue(controller, guild, UserStatKeys.DEATHS);
+            double numerator = kills + (key.equals(UserStatKeys.KDA)
+                    ? TOTAL_INT.computeValue(controller, guild, UserStatKeys.ASSISTS) : 0);
+            return this.valueType.cast(deaths == 0 ? numerator : numerator / deaths);
+        }
         return this.valueComputer.apply(
                 controller,
                 guild,
                 key
         );
+    }
+
+    public static GuildStatAggregationType<?> forTop(StatKey<?> key, boolean average) {
+        boolean legacyCounter = UserStatKeys.VALUES.contains(key) && key.getValueType() == Integer.class;
+        return average ? (legacyCounter ? AVERAGE_INT : AVERAGE)
+                : (key.getValueType() == Integer.class ? TOTAL_INT : TOTAL_DOUBLE);
     }
 
     @Override

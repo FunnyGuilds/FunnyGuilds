@@ -52,7 +52,7 @@ public class GuildManager {
      * Deletes all loaded guilds data
      */
     public void clearGuilds() {
-        this.guildsMap.clear();
+        this.getGuilds().forEach(this::removeGuild);
     }
 
     /**
@@ -211,6 +211,8 @@ public class GuildManager {
     public Guild addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         this.guildsMap.put(guild.getUUID(), guild);
+        guild.getMembers().forEach(user -> user.setGuild(guild));
+        FunnyGuilds.getInstance().getRankService().refreshGuild(guild);
         return guild;
     }
 
@@ -222,6 +224,8 @@ public class GuildManager {
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         this.guildsMap.remove(guild.getUUID());
+        guild.getMembers().forEach(User::removeGuild);
+        FunnyGuilds.getInstance().getRankService().removeGuild(guild);
     }
 
     /**
@@ -257,11 +261,12 @@ public class GuildManager {
                     });
         }
 
-        guild.getMembers().forEach(User::removeGuild);
+        Set<User> formerMembers = new HashSet<>(guild.getMembers());
+        formerMembers.forEach(User::removeGuild);
         guild.getAllies().forEach(ally -> ally.removeAlly(guild));
         this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
         plugin.getIndividualNameTagManager().peek(manager -> {
-            guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
+            formerMembers.forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });
 
         if (plugin.getDataModel() instanceof FlatDataModel) {

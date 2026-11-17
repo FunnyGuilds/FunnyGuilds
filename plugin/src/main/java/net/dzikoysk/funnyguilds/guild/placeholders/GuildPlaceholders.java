@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.guild.placeholders;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
@@ -82,7 +83,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                                 aggregationType
                         )
                         .<Object>map(GuildPlaceholders::formatNumber)
-                        .orNull(),
+                        .orElse(null),
                 entity -> 0
         );
     }
@@ -102,7 +103,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                                 aggregationType
                         )
                         .map(Object::toString)
-                        .orNull(),
+                        .orElse(null),
                 fallbackResolver
         );
     }
@@ -171,7 +172,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
     private static String formatNumber(Number number) {
         if (number instanceof Float || number instanceof Double) {
             return String.format(
-                    "%.2f",
+                    Locale.US, "%.2f",
                     number.floatValue()
             );
         }

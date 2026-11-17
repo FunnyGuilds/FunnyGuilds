@@ -99,9 +99,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
     public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl")));
     
-    @Comment("")
-    @Comment("Czy ")
-    public boolean enableLegacyPlaceholders = false;
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")

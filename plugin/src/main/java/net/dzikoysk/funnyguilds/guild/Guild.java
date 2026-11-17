@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,6 +78,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setName(String name) {
         this.name = name;
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public String getTag() {
@@ -183,19 +183,45 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setMembers(Set<User> members) {
-        this.members = Collections.synchronizedSet(members);
+        Set<User> previous = this.members;
+        this.members = ConcurrentHashMap.newKeySet();
+        this.members.addAll(members);
+        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orNull() == this) {
+            previous.stream().filter(user -> !this.members.contains(user)).forEach(user -> {
+                if (user.getGuild().orNull() == this) {
+                    user.removeGuild();
+                }
+            });
+            this.members.forEach(user -> user.setGuild(this));
+        }
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void addMember(User user) {
-        this.members.add(user);
+        boolean added = this.members.add(user);
+        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orNull() == this
+                && user.getGuild().orNull() != this) {
+            user.setGuild(this);
+        }
+        if (!added) {
+            return;
+        }
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void removeMember(User user) {
-        this.members.remove(user);
+        boolean removed = this.members.remove(user);
         this.deputies.remove(user);
+        if (user.getGuild().orNull() == this) {
+            user.removeGuild();
+        }
+        if (!removed) {
+            return;
+        }
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public Set<User> getDeputies() {

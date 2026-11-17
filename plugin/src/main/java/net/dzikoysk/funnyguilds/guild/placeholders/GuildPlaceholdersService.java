@@ -112,106 +112,27 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .property("lives-symbol-all",
                         guild -> StringUtils.repeated(guild.getLives(), pluginConfiguration.livesRepeatingSymbol.full.getValue()),
                         entity -> messages.get(entity, config -> config.livesNoValue))
-                .rankProperty("points", rankService, UserStatKeys.POINTS, GuildStatAggregationType.TOTAL_INT, minMembersToIncludeNoValue)
-                .property("points-format",
-                        (entity, guild) -> {
-                            rankService
-                                    .getGuildStatValue(
-                                            guild,
-                                            UserStatKeys.POINTS,
-                                            GuildStatAggregationType.AVERAGE
-                                    )
-                                    .map(value -> FunnyFormatter.format(
-                                            NumberRange.inRangeToString(
-                                                    value,
-                                                    pluginConfiguration.pointsFormat
-                                            ),
-                                            "{POINTS}",
-                                            value
-                                    ))
-                                    .orElseGet(0.0);
-                            
-                                    
-                            String formattedPoints = NumberRange.inRangeToString(points, pluginConfiguration.pointsFormat);
-                            return FunnyFormatter.format(formattedPoints, "{POINTS}", points);
-                        },
-                        entity -> {
-                            String formattedPoints = NumberRange.inRangeToString(0, pluginConfiguration.pointsFormat);
-                            return FunnyFormatter.format(formattedPoints, "{POINTS}", 0);
-                        })
-                .rankProperty("avg-points", rankService, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue)
+                .topPositionProperty("position", rankService, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
+                .topPositionProperty("rank", rankService, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
+                .rankProperty("total-points", rankService, UserStatKeys.POINTS, GuildStatAggregationType.TOTAL_INT, minMembersToIncludeNoValue)
+                .rankProperty("points", rankService, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
+                .rankProperty("avg-points", rankService, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
+                .property("points-format", (entity, guild) -> {
+                    int points = rankService.getGuildStatValue(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT).orElse(0);
+                    return FunnyFormatter.format(NumberRange.inRangeToString(points, pluginConfiguration.pointsFormat), "{POINTS}", points);
+                }, entity -> FunnyFormatter.format(NumberRange.inRangeToString(0, pluginConfiguration.pointsFormat), "{POINTS}", 0))
                 .rankProperty("kills", rankService, UserStatKeys.KILLS, GuildStatAggregationType.TOTAL_INT, minMembersToIncludeNoValue)
-                .rankProperty("avg-kills", rankService, UserStatKeys.KILLS, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue)
+                .rankProperty("avg-kills", rankService, UserStatKeys.KILLS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
                 .rankProperty("deaths", rankService, UserStatKeys.DEATHS, GuildStatAggregationType.TOTAL_INT, minMembersToIncludeNoValue)
-                .rankProperty("avg-deaths", rankService, UserStatKeys.DEATHS, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue)
+                .rankProperty("avg-deaths", rankService, UserStatKeys.DEATHS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
                 .rankProperty("assists", rankService, UserStatKeys.ASSISTS, GuildStatAggregationType.TOTAL_INT, minMembersToIncludeNoValue)
-                .rankProperty("avg-assists", rankService, UserStatKeys.ASSISTS, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue)
+                .rankProperty("avg-assists", rankService, UserStatKeys.ASSISTS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
                 .rankProperty("logouts", rankService, UserStatKeys.LOGOUTS, GuildStatAggregationType.TOTAL_INT, minMembersToIncludeNoValue)
-                .rankProperty("avg-logouts", rankService, UserStatKeys.LOGOUTS, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue)
-                /*.rankProperty("position",
-                        (entity, guild, rank) -> rankService.getGuildTopPosition(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE)
-                                .map(String::valueOf)
-                                .orElseGet(() -> messages.get(entity, config -> config.minMembersToIncludeNoValue)),
-                        entity -> messages.get(entity, config -> config.minMembersToIncludeNoValue))
-                .rankProperty("rank",
-                        (entity, guild, rank) -> rankService.getGuildTopPosition(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE)
-                                .map(String::valueOf)
-                                .orElseGet(() -> messages.get(entity, config -> config.minMembersToIncludeNoValue)),
-                        entity -> messages.get(entity, config -> config.minMembersToIncludeNoValue))
-                //TODO total-points -> points (I know this will break up backwards compatibility so I'm not doing it now)
-                .property(
-                        "total-points",
-                        (guild) -> rankService
-                                .getGuildStatValue(
-                                        guild,
-                                        UserStatKeys.POINTS,
-                                        GuildStatAggregationType.TOTAL_INT
-                                )
-                                .orElse(0),
-                        entity -> 0
-                )
-                .property(
-                        "avg-points",
-                        (guild) -> rankService
-                                .getGuildStatValue(
-                                        guild,
-                                        UserStatKeys.POINTS,
-                                        GuildStatAggregationType.AVERAGE
-                                )
-                                .map(Double::intValue)
-                                .orElse(0),
-                        entity -> 0
-                )
-                .property(
-                        "avg-kills",
-                        (guild) -> rankService
-                                .getGuildStatValue(
-                                        guild,
-                                        UserStatKeys.KILLS,
-                                        GuildStatAggregationType.AVERAGE
-                                )
-                                .map(Double::intValue)
-                                .orElse(0),
-                        entity -> 0
-                )
-                /*.rankProperty("avg-points", GuildRank::getAveragePoints,0)
-                .rankProperty("points", GuildRank::getAveragePoints, 0)
-                .rankProperty("points-format",
-                        (entity, guild, rank) -> FunnyFormatter.format(NumberRange.inRangeToString(rank.getAveragePoints(),
-                                pluginConfiguration.pointsFormat), "{POINTS}", guild.getRank().getAveragePoints()),
-                        entity -> FunnyFormatter.format(NumberRange.inRangeToString(0, pluginConfiguration.pointsFormat), "{POINTS}", 0))
-                .rankProperty("kills", GuildRank::getKills, 0)
-                .rankProperty("avg-kills", GuildRank::getAverageKills, 0)
-                .rankProperty("deaths", GuildRank::getDeaths, 0)
-                .rankProperty("avg-deaths", GuildRank::getAverageDeaths, 0)
-                .rankProperty("assists", GuildRank::getAssists, 0)
-                .rankProperty("avg-assists", GuildRank::getAverageAssists, 0)
-                .rankProperty("logouts", GuildRank::getLogouts, 0)
-                .rankProperty("avg-logouts", GuildRank::getAverageLogouts, 0)
-                .rankProperty("kdr", GuildRank::getKDR, 0.00)
-                .rankProperty("avg-kdr", GuildRank::getAverageKDR, 0.00)
-                .rankProperty("kda", GuildRank::getKDA, 0.00)
-                .rankProperty("avg-kda", GuildRank::getAverageKDA, 0.00);*/
+                .rankProperty("avg-logouts", rankService, UserStatKeys.LOGOUTS, GuildStatAggregationType.AVERAGE_INT, minMembersToIncludeNoValue)
+                .rankProperty("kdr", rankService, UserStatKeys.KDR, GuildStatAggregationType.TOTAL_DOUBLE, minMembersToIncludeNoValue)
+                .rankProperty("avg-kdr", rankService, UserStatKeys.KDR, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue)
+                .rankProperty("kda", rankService, UserStatKeys.KDA, GuildStatAggregationType.TOTAL_DOUBLE, minMembersToIncludeNoValue)
+                .rankProperty("avg-kda", rankService, UserStatKeys.KDA, GuildStatAggregationType.AVERAGE, minMembersToIncludeNoValue);
     }
 
     public static GuildPlaceholders createAlliesEnemiesPlaceholders(FunnyGuilds plugin) {

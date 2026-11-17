@@ -24,6 +24,10 @@ public final class DeserializationUtils {
     }
 
     public static Option<User> deserializeUser(UserManager userManager, Object[] values) {
+        return deserializeUser(userManager, values, null);
+    }
+
+    public static Option<User> deserializeUser(UserManager userManager, Object[] values, String stats) {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
@@ -35,6 +39,7 @@ public final class DeserializationUtils {
         user.getRank().setDeaths((int) values[4]);
         user.getRank().setAssists((int) values[5]);
         user.getRank().setLogouts((int) values[6]);
+        UserStatsSerializer.deserialize(user, stats);
 
         Instant ban = (Instant) values[7];
         if (ban != null) {

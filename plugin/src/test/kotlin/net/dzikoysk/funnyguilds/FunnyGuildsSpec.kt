@@ -6,13 +6,11 @@ import net.dzikoysk.funnyguilds.config.message.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.message.MessageService
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.GuildManager
-import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
-import net.dzikoysk.funnyguilds.rank.DefaultTops
+import net.dzikoysk.funnyguilds.rank.RankService
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.user.UserManager
-import net.dzikoysk.funnyguilds.user.UserRankManager
 import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -47,8 +45,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
-    protected lateinit var userRankManager: UserRankManager
-    protected lateinit var guildRankManager: GuildRankManager
+    protected lateinit var rankService: RankService
     private lateinit var regionManager: RegionManager
 
     protected lateinit var rankPlaceholdersService: RankPlaceholdersService
@@ -73,24 +70,19 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         userManager = UserManager(config)
         guildManager = GuildManager(config)
-        userRankManager = UserRankManager(config)
-        userRankManager.register(DefaultTops.defaultUserTops(config, userManager))
-        guildRankManager = GuildRankManager(config)
-        guildRankManager.register(DefaultTops.defaultGuildTops(guildManager))
         regionManager = RegionManager(config)
 
         lenient().`when`(funnyGuilds.userManager).thenReturn(userManager)
         lenient().`when`(funnyGuilds.guildManager).thenReturn(guildManager)
-        lenient().`when`(funnyGuilds.userRankManager).thenReturn(userRankManager)
-        lenient().`when`(funnyGuilds.guildRankManager).thenReturn(guildRankManager)
+        rankService = RankService.createRankService(funnyGuilds)
+        lenient().`when`(funnyGuilds.rankService).thenReturn(rankService)
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
         rankPlaceholdersService = RankPlaceholdersService(
             config,
             tablistConfig,
             messages,
-            userRankManager,
-            guildRankManager
+            rankService
         )
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)

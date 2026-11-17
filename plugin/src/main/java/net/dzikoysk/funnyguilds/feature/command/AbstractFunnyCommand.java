@@ -8,13 +8,12 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
 import org.bukkit.Server;
 import org.panda_lang.utilities.inject.annotations.Inject;
@@ -43,9 +42,7 @@ public abstract class AbstractFunnyCommand {
     @Inject
     public GuildManager guildManager;
     @Inject
-    public UserRankManager userRankManager;
-    @Inject
-    public GuildRankManager guildRankManager;
+    public RankService rankService;
     @Inject
     public RegionManager regionManager;
 

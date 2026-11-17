@@ -41,6 +41,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         if (!user.getName().equals(playerName)) {
             this.userManager.updateUsername(user, playerName);
         }
+        this.plugin.getRankService().refreshUser(user);
 
         UserCache cache = user.getCache();
 

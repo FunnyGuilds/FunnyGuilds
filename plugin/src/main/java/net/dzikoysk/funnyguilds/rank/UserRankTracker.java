@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -13,7 +14,7 @@ final class UserRankTracker<T extends Number> extends CommonRankTracker<User, T>
     ) {
         super(
                 statKey,
-                userManager::findByUuid,
+                uuid -> Optional.ofNullable(userManager.findByUuid(uuid).orNull()),
                 isRanked
         );
     }

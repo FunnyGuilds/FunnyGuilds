@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.data.util.UserStatsSerializer;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
@@ -45,7 +46,7 @@ public final class DatabaseUserSerializer {
             values[7] = ban;
             values[8] = reason;
 
-            return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
+            return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values, resultSet.getString("stats"));
         }
         catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize user", exception);
@@ -67,6 +68,7 @@ public final class DatabaseUserSerializer {
         statement.set("logouts", user.getRank().getLogouts());
         statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElseGet(0L));
         statement.set("reason", user.getBan().map(UserBan::getReason).orNull());
+        statement.set("stats", UserStatsSerializer.serialize(user));
 
         statement.executeUpdate();
         user.markUnchanged();

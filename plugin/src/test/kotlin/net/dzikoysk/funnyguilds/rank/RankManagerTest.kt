@@ -3,14 +3,13 @@ package net.dzikoysk.funnyguilds.rank
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
-import panda.std.OptionAssertions.assertOptionEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.*
 
 class RankManagerTest : FunnyGuildsSpec() {
 
     @Test
     fun `should correctly update the guilds & users ranking`() {
-        val rankRecalculationTask = RankRecalculationTask(funnyGuilds)
 
         val user1 = userManager.createFake(UUID.randomUUID(), "user1")
         val user2 = userManager.createFake(UUID.randomUUID(), "user2")
@@ -28,26 +27,24 @@ class RankManagerTest : FunnyGuildsSpec() {
         guild2.addMember(user2)
         guild3.addMember(user3)
 
-        rankRecalculationTask.run()
 
-        assertOptionEquals(user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1))
-        assertOptionEquals(user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2))
-        assertOptionEquals(user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3))
-        assertOptionEquals(guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1))
-        assertOptionEquals(guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2))
-        assertOptionEquals(guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3))
+        assertEquals(user1, rankService.getUserRankTracker(DefaultTops.USER_POINTS_TOP).get().findEntityByPosition(1).orElse(null))
+        assertEquals(user2, rankService.getUserRankTracker(DefaultTops.USER_POINTS_TOP).get().findEntityByPosition(2).orElse(null))
+        assertEquals(user3, rankService.getUserRankTracker(DefaultTops.USER_POINTS_TOP).get().findEntityByPosition(3).orElse(null))
+        assertEquals(guild1, rankService.getGuildRankTracker(DefaultTops.GUILD_AVG_POINTS_TOP).get().findEntityByPosition(1).orElse(null))
+        assertEquals(guild2, rankService.getGuildRankTracker(DefaultTops.GUILD_AVG_POINTS_TOP).get().findEntityByPosition(2).orElse(null))
+        assertEquals(guild3, rankService.getGuildRankTracker(DefaultTops.GUILD_AVG_POINTS_TOP).get().findEntityByPosition(3).orElse(null))
 
         user1.rank.points = 100
         user2.rank.points = 150
         user3.rank.points = 200
-        rankRecalculationTask.run()
 
-        assertOptionEquals(user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1))
-        assertOptionEquals(user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2))
-        assertOptionEquals(user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3))
-        assertOptionEquals(guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1))
-        assertOptionEquals(guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2))
-        assertOptionEquals(guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3))
+        assertEquals(user3, rankService.getUserRankTracker(DefaultTops.USER_POINTS_TOP).get().findEntityByPosition(1).orElse(null))
+        assertEquals(user2, rankService.getUserRankTracker(DefaultTops.USER_POINTS_TOP).get().findEntityByPosition(2).orElse(null))
+        assertEquals(user1, rankService.getUserRankTracker(DefaultTops.USER_POINTS_TOP).get().findEntityByPosition(3).orElse(null))
+        assertEquals(guild3, rankService.getGuildRankTracker(DefaultTops.GUILD_AVG_POINTS_TOP).get().findEntityByPosition(1).orElse(null))
+        assertEquals(guild2, rankService.getGuildRankTracker(DefaultTops.GUILD_AVG_POINTS_TOP).get().findEntityByPosition(2).orElse(null))
+        assertEquals(guild1, rankService.getGuildRankTracker(DefaultTops.GUILD_AVG_POINTS_TOP).get().findEntityByPosition(3).orElse(null))
     }
 
 }

@@ -3,259 +3,160 @@ package net.dzikoysk.funnyguilds.rank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
-import org.jetbrains.annotations.ApiStatus;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number> implements RankTracker<E, T> {
-  
+
     private final StatKey<T> statKey;
-    
-    private final Function<UUID, Option<E>> entityProvider;
+    private final Function<UUID, Optional<E>> entityProvider;
     private final Predicate<E> canBeTrackedChecker;
+    private final Map<UUID, Entry<T>> entries = new HashMap<>();
+    private final List<Entry<T>> ranking = new ArrayList<>();
+    private boolean rankingInitialized;
 
-    private final Map<UUID, T> statisticValueByEntity = new ConcurrentHashMap<>();
-    private final List<UUID> entitiesInTop = new ArrayList<>();
-
-    CommonRankTracker(
-            StatKey<T> statKey,
-            Function<UUID, Option<E>> entityProvider,
-            Predicate<E> canBeTrackedChecker
-    ) {
+    CommonRankTracker(StatKey<T> statKey, Function<UUID, Optional<E>> entityProvider, Predicate<E> canBeTrackedChecker) {
         this.statKey = statKey;
         this.entityProvider = entityProvider;
         this.canBeTrackedChecker = canBeTrackedChecker;
     }
 
     @Override
-    public Collection<E> entitiesInTop() {
-        List<E> entitiesInTop = PandaStream.of(this.entitiesInTop)
-                .flatMap(this.entityProvider::apply)
-                .toList();
-        return Collections.unmodifiableList(entitiesInTop);
+    public synchronized Collection<E> entitiesInTop() {
+        this.initializeRanking();
+        return this.ranking.stream()
+                .map(entry -> this.entityProvider.apply(entry.uuid))
+                .filter(Optional::isPresent)
+                .map(value -> value.orElseThrow(IllegalStateException::new))
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
     @Override
-    public int countEntitiesInTop() {
-        return this.entitiesInTop.size();
+    public synchronized int countEntitiesInTop() {
+        this.initializeRanking();
+        return this.ranking.size();
     }
 
     @Override
-    public boolean isEntityIncludedInTop(E entity) {
-        return this.canBeTrackedChecker.test(entity);
+    public synchronized boolean isEntityIncludedInTop(E entity) {
+        Entry<T> entry = this.entries.get(entity.getUUID());
+        return entry != null && entry.ranked;
     }
 
     @Override
-    public synchronized Option<Integer> findPositionByEntity(E entity) {
-        if (!this.isEntityIncludedInTop(entity)) {
-            return Option.none();
+    public synchronized Optional<Integer> findPositionByEntity(E entity) {
+        this.initializeRanking();
+        Entry<T> entry = this.entries.get(entity.getUUID());
+        if (entry == null || !entry.ranked) {
+            return Optional.empty();
         }
-
-        int position = this.entitiesInTop.indexOf(entity.getUUID());
-        return position >= 0
-                ? Option.of(position + 1)
-                : Option.none();
+        int index = Collections.binarySearch(this.ranking, entry, this::compare);
+        return index < 0 ? Optional.empty() : Optional.of(index + 1);
     }
 
     @Override
-    public synchronized Option<E> findEntityByPosition(int position) {
-        return Option.flatWhen(
-                position >= 1 && position <= this.entitiesInTop.size(),
-                () -> Option.of(this.entitiesInTop.get(position - 1))
-                        .flatMap(this.entityProvider)
-        );
+    public synchronized Optional<E> findEntityByPosition(int position) {
+        this.initializeRanking();
+        return position < 1 || position > this.ranking.size()
+                ? Optional.empty()
+                : this.entityProvider.apply(this.ranking.get(position - 1).uuid);
     }
 
     @Override
-    public Option<T> valueOfEntity(E entity) {
-        return Option.of(this.statisticValueByEntity.get(entity.getUUID()));
+    public synchronized Optional<T> valueOfEntity(E entity) {
+        return Optional.ofNullable(this.entries.get(entity.getUUID())).map(entry -> entry.value);
     }
 
-    @ApiStatus.Internal
     synchronized void initializeEntities(Map<E, T> initialValues) {
-        if (initialValues.isEmpty()) {
+        this.entries.clear();
+        this.ranking.clear();
+        initialValues.forEach((entity, value) -> {
+            Entry<T> entry = this.entry(entity, value);
+            this.entries.put(entry.uuid, entry);
+            if (this.rankingInitialized && entry.ranked) {
+                this.ranking.add(entry);
+            }
+        });
+        if (this.rankingInitialized) {
+            this.ranking.sort(this::compare);
+        }
+    }
+
+    synchronized T changeValue(E entity, UnaryOperator<T> valueChange) {
+        T current = this.valueOfEntity(entity).orElseGet(this.statKey::zero);
+        return this.setValue(entity, valueChange.apply(current));
+    }
+
+    synchronized T setValue(E entity, T value) {
+        Objects.requireNonNull(value, "statistic value");
+        Entry<T> updated = this.entry(entity, value);
+        Entry<T> previous = this.entries.get(updated.uuid);
+        if (previous != null && Objects.equals(previous.value, value)
+                && previous.name.equals(updated.name) && previous.ranked == updated.ranked) {
+            return value;
+        }
+        this.remove(entity);
+        this.entries.put(updated.uuid, updated);
+        if (this.rankingInitialized && updated.ranked) {
+            int index = Collections.binarySearch(this.ranking, updated, this::compare);
+            this.ranking.add(-index - 1, updated);
+        }
+        return value;
+    }
+
+    synchronized void remove(E entity) {
+        Entry<T> previous = this.entries.remove(entity.getUUID());
+        if (this.rankingInitialized && previous != null && previous.ranked) {
+            int index = Collections.binarySearch(this.ranking, previous, this::compare);
+            if (index >= 0) {
+                this.ranking.remove(index);
+            }
+        }
+    }
+
+    private void initializeRanking() {
+        if (this.rankingInitialized) {
             return;
         }
-
-        this.entitiesInTop.clear();
-        List<UUID> entitiesInTop = PandaStream.of(initialValues.entrySet())
-                .filterNot(entry -> !this.isEntityIncludedInTop(entry.getKey()))
-                .sorted((entry1, entry2) -> {
-                    E entity1 = entry1.getKey();
-                    T value1 = entry1.getValue();
-                    E entity2 = entry2.getKey();
-                    T value2 = entry2.getValue();
-                    return this.compareRankedEntities(
-                            entity1.getUUID(),
-                            value1,
-                            entity2.getUUID(),
-                            value2
-                    );
-                })
-                .map(Map.Entry::getKey)
-                .map(IdentifiableEntity::getUUID)
-                .toList();
-        this.entitiesInTop.addAll(entitiesInTop);
-
-        this.statisticValueByEntity.clear();
-        Map<UUID, T> statisticValuesOfEntities = initialValues.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().getUUID(),
-                        Map.Entry::getValue
-                ));
-        this.statisticValueByEntity.putAll(statisticValuesOfEntities);
+        this.entries.values().stream().filter(entry -> entry.ranked).forEach(this.ranking::add);
+        this.ranking.sort(this::compare);
+        this.rankingInitialized = true;
     }
 
-    @ApiStatus.Internal
-    T changeValue(
-            E entity,
-            UnaryOperator<T> valueChange
-    ) {
-        return this.statisticValueByEntity.compute(
-                entity.getUUID(),
-                (uuid, currentValue) -> {
-                    T newValue = valueChange.apply(currentValue);
-                    this.updateRanking(
-                            entity,
-                            newValue
-                    );
-                    return newValue;
-                }
-        );
+    private Entry<T> entry(E entity, T value) {
+        return new Entry<>(entity.getUUID(), entity.getName(), value, this.canBeTrackedChecker.test(entity));
     }
 
-    @ApiStatus.Internal
-    T setValue(
-            E entity,
-            T value
-    ) {
-        return this.statisticValueByEntity.compute(
-                entity.getUUID(),
-                (uuid, currentValue) -> {
-                    this.updateRanking(
-                            entity,
-                            value
-                    );
-                    return value;
-                }
-        );
-    }
-
-    private synchronized void updateRanking(
-            E entity,
-            T currentValue
-    ) {
-        UUID uuid = entity.getUUID();
-        this.entitiesInTop.remove(uuid);
-        if (!this.isEntityIncludedInTop(entity)) {
-            return;
-        }
-
-        int insertPosition = this.findInsertPositionBinary(
-                uuid,
-                currentValue
-        );
-        this.entitiesInTop.add(
-                insertPosition,
-                uuid
-        );
-    }
-
-    private int findInsertPositionBinary(
-            UUID uuid,
-            T value
-    ) {
-        int left = 0;
-        int right = this.entitiesInTop.size();
-
-        while (left < right) {
-            int mid = (left + right) >>> 1;
-            UUID midUuid = this.entitiesInTop.get(mid);
-            T midValue = this.statisticValueByEntity.get(midUuid);
-            if (midValue == null) {
-                return this.findInsertPositionLinear(
-                        uuid,
-                        value,
-                        left
-                );
-            }
-
-            int comparison = this.compareRankedEntities(
-                    uuid,
-                    value,
-                    midUuid,
-                    midValue
-            );
-            if (comparison < 0) {
-                right = mid;
-            }
-            else {
-                left = mid + 1;
-            }
-        }
-        return left;
-    }
-
-    private int findInsertPositionLinear(
-            UUID uuid,
-            T value,
-            int startIndex
-    ) {
-        int size = this.entitiesInTop.size();
-
-        for (int i = startIndex; i < size; i++) {
-            UUID currentUuid = this.entitiesInTop.get(i);
-            T currentValue = this.statisticValueByEntity.get(currentUuid);
-
-            if (currentValue == null) {
-                continue;
-            }
-
-            int comparison = this.compareRankedEntities(
-                    uuid,
-                    value,
-                    currentUuid,
-                    currentValue
-            );
-            if (comparison < 0) {
-                return i;
-            }
-        }
-
-        return size;
-    }
-
-    private int compareRankedEntities(
-            UUID firstUuid,
-            T firstValue,
-            UUID secondUuid,
-            T secondValue
-    ) {
-        int valueComparison = this.statKey.compare(
-                firstValue,
-                secondValue
-        );
+    private int compare(Entry<T> first, Entry<T> second) {
+        int valueComparison = this.statKey.compare(second.value, first.value);
         if (valueComparison != 0) {
             return valueComparison;
         }
-
-        String firstEntityName = this.entityProvider.apply(firstUuid)
-                .map(IdentifiableEntity::getName)
-                .get();
-        String secondEntityName = this.entityProvider.apply(secondUuid)
-                .map(IdentifiableEntity::getName)
-                .get();
-        return firstEntityName.compareToIgnoreCase(secondEntityName);
+        int nameComparison = first.name.compareToIgnoreCase(second.name);
+        return nameComparison != 0 ? nameComparison : first.uuid.compareTo(second.uuid);
     }
 
+    // Comparisons use snapshots: names and values may change before an old entry is removed.
+    private static final class Entry<T extends Number> {
+        private final UUID uuid;
+        private final String name;
+        private final T value;
+        private final boolean ranked;
+
+        private Entry(UUID uuid, String name, T value, boolean ranked) {
+            this.uuid = uuid;
+            this.name = name;
+            this.value = value;
+            this.ranked = ranked;
+        }
+    }
 }

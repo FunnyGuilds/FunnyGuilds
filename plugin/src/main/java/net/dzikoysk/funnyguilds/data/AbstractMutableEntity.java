@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.data;
 
 public abstract class AbstractMutableEntity implements MutableEntity {
 
-    private boolean wasChanged = true;
+    private volatile boolean wasChanged = true;
 
     @Override
     public void markChanged() {

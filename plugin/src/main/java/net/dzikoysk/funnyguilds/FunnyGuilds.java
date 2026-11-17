@@ -69,6 +69,7 @@ import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
+import net.dzikoysk.funnyguilds.rank.RankExemptionRefreshTask;
 import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
@@ -91,6 +92,7 @@ import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.std.Result;
 import panda.utilities.ClassUtils;
+
 import static java.lang.String.format;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -148,7 +150,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
-    private volatile BukkitTask rankRecalculationTask;
+    private volatile BukkitTask rankExemptionRefreshTask;
 
     private volatile Option<BukkitTask> nameTagUpdateTask = Option.none();
     private volatile Option<BukkitTask> dummyUpdateTask = Option.none();
@@ -340,6 +342,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.updateInterval);
+        this.rankExemptionRefreshTask = Bukkit.getScheduler().runTaskTimer(this,
+                new RankExemptionRefreshTask(this.pluginConfiguration, this.userManager, this.rankService), 20L, 40L);
 
         try {
             this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
@@ -450,7 +454,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
-        this.rankRecalculationTask.cancel();
+        this.rankExemptionRefreshTask.cancel();
+        this.rankService.close();
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -665,6 +670,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
         this.messageService.reload();
+        this.rankService.refreshAll();
         this.hookManager.callConfigUpdated();
         this.prepareScoreboardServices();
     }

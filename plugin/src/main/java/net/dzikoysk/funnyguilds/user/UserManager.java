@@ -46,6 +46,7 @@ public class UserManager {
      * Deletes all loaded users data
      */
     public void clearUsers() {
+        this.getUsers().forEach(this::removeUser);
         this.usersByUuid.clear();
         this.usersByName.clear();
     }
@@ -163,6 +164,7 @@ public class UserManager {
 
         this.usersByUuid.put(user.getUUID(), user);
         this.usersByName.put(user.getName(), user);
+        FunnyGuilds.getInstance().getRankService().refreshUser(user);
     }
 
     /**
@@ -173,8 +175,10 @@ public class UserManager {
     public void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
+        user.removeGuild();
         this.usersByUuid.remove(user.getUUID());
         this.usersByName.remove(user.getName());
+        FunnyGuilds.getInstance().getRankService().removeUser(user);
     }
 
     /**
@@ -190,6 +194,8 @@ public class UserManager {
         this.usersByName.put(newUsername, user);
 
         user.setName(newUsername);
+        user.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshUser(user);
     }
 
     /**

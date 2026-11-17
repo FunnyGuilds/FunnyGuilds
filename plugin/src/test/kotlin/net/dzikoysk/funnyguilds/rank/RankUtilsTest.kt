@@ -12,7 +12,6 @@ class RankUtilsTest : FunnyGuildsSpec() {
 
     @Test
     fun `should parse rank with guild name`() {
-        val rankRecalculationTask = RankRecalculationTask(funnyGuilds)
 
         // given: a guild on top of the ranking
         val guild = guildManager.addGuild(Guild("OnlyPanda", "OP"))
@@ -20,7 +19,6 @@ class RankUtilsTest : FunnyGuildsSpec() {
         val user = userManager.createFake(UUID.randomUUID(), "name")
         guild.addMember(user)
 
-        rankRecalculationTask.run()
 
         config.gtopPoints = RawString(" {POINTS-FORMAT}")
         config.pointsFormat = ArrayList(listOf(RangeFormatting(0, Int.MAX_VALUE, "{POINTS}")))

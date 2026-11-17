@@ -20,7 +20,6 @@ class RankTest : FunnyGuildsSpec() {
                 .usingGetClass()
                 .withRedefinedSubclass(UserRank::class.java)
                 .withPrefabValues(MutableEntity::class.java, user1, user2).withNonnullFields("entity")
-                .withIgnoredFields("position")
                 .verify()
     }
 
@@ -34,7 +33,6 @@ class RankTest : FunnyGuildsSpec() {
                 .withRedefinedSubclass(GuildRank::class.java)
                 .withPrefabValues(MutableEntity::class.java, guild1, guild2)
                 .withNonnullFields("entity")
-                .withIgnoredFields("position")
                 .verify()
     }
 
