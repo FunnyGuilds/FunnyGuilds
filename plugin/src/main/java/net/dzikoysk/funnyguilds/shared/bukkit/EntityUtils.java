@@ -8,16 +8,39 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.Optionals;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
 public final class EntityUtils {
 
     private EntityUtils() {
+    }
+
+    public static Optional<Player> getDamageAttacker(EntityDamageByEntityEvent event) {
+        DamageSource source = event.getDamageSource();
+        if (source.getDirectEntity() instanceof EnderCrystal) {
+            return getCrystalAttacker(source);
+        }
+
+        return getAttacker(event.getDamager());
+    }
+
+    /** Resolves the detonator from the server's source, never from the crystal's placer. */
+    public static Optional<Player> getCrystalAttacker(DamageSource source) {
+        if (!(source.getDirectEntity() instanceof EnderCrystal)) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(source.getCausingEntity())
+                .filter(Player.class::isInstance)
+                .map(Player.class::cast);
     }
 
     public static Optional<Player> getAttacker(Entity damager) {
