@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
@@ -18,6 +19,7 @@ import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.ApiStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,10 +29,16 @@ import org.bukkit.block.BlockFace;
 public class GuildManager {
 
     private final PluginConfiguration pluginConfiguration;
+    private RankService rankService;
     private final Map<UUID, Guild> guildsMap = new ConcurrentHashMap<>();
 
     public GuildManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
+    }
+
+    @ApiStatus.Internal
+    public void setRankService(RankService rankService) {
+        this.rankService = rankService;
     }
 
     public int countGuilds() {
@@ -50,7 +58,7 @@ public class GuildManager {
      * Deletes all loaded guilds data
      */
     public void clearGuilds() {
-        this.guildsMap.clear();
+        this.getGuilds().forEach(this::removeGuild);
     }
 
     /**
@@ -209,6 +217,10 @@ public class GuildManager {
     public Guild addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         this.guildsMap.put(guild.getUUID(), guild);
+        guild.getMembers().forEach(user -> user.setGuild(guild));
+        if (this.rankService != null) {
+            this.rankService.refreshGuild(guild);
+        }
         return guild;
     }
 
@@ -220,6 +232,10 @@ public class GuildManager {
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         this.guildsMap.remove(guild.getUUID());
+        guild.getMembers().forEach(User::removeGuild);
+        if (this.rankService != null) {
+            this.rankService.removeGuild(guild);
+        }
     }
 
     /**
@@ -255,11 +271,12 @@ public class GuildManager {
                     });
         }
 
-        guild.getMembers().forEach(User::removeGuild);
+        Set<User> formerMembers = new HashSet<>(guild.getMembers());
+        formerMembers.forEach(User::removeGuild);
         guild.getAllies().forEach(ally -> ally.removeAlly(guild));
         this.getGuilds().forEach(globalGuild -> globalGuild.removeEnemy(guild));
         plugin.getIndividualNameTagManager().ifPresent(manager -> {
-            guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
+            formerMembers.forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });
 
         if (plugin.getDataModel() instanceof FlatDataModel) {

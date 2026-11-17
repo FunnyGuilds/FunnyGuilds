@@ -166,3 +166,9 @@ tasks {
         minecraftVersion("1.21.4")
     }
 }
+
+tasks.withType<Test>().configureEach {
+    listOf("funnyguilds.rank.stressMillis", "funnyguilds.rank.stressSeed", "funnyguilds.rank.stressMinOperations").forEach { name ->
+        providers.systemProperty(name).orNull?.let { systemProperty(name, it) }
+    }
+}

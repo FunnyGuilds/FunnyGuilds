@@ -2,11 +2,15 @@ package net.dzikoysk.funnyguilds.rank;
 
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+@ApiStatus.ScheduledForRemoval
+
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;
@@ -32,9 +36,15 @@ public abstract class Rank<T extends MutableEntity> {
      *
      * @return position in which entity is for the given top, return 0 if entity is not in the top
      */
-    
+
     public int getPosition(String top) {
-        throw new UnsupportedOperationException("Rank API is deprecated, use RankService to get positions");
+        RankService service = FunnyGuilds.getInstance().getRankService();
+        if (this.entity instanceof User) {
+            return service.getUserRankTracker(top)
+                    .flatMap(tracker -> tracker.findPositionByEntity((User) this.entity)).orElse(0);
+        }
+        return service.getGuildRankTracker(top)
+                .flatMap(tracker -> tracker.findPositionByEntity((Guild) this.entity)).orElse(0);
     }
 
     /**

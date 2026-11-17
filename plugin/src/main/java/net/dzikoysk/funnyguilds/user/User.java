@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.Optional;
 import java.util.UUID;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -32,7 +33,6 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         this.markChanged();
     }
 
-    @Override
     public UUID getUUID() {
         return this.uuid;
     }
@@ -92,13 +92,22 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setGuild(@Nullable Guild guild) {
+        Guild previous = this.guild.orElse(null);
+        if (previous == guild) {
+            return;
+        }
         this.guild = Optional.ofNullable(guild);
         this.markChanged();
+        if (previous != null) {
+            previous.removeMember(this);
+        }
+        if (guild != null) {
+            guild.addMember(this);
+        }
     }
 
     public void removeGuild() {
-        this.guild = Optional.empty();
-        this.markChanged();
+        this.setGuild(null);
     }
 
     public boolean isOwner() {

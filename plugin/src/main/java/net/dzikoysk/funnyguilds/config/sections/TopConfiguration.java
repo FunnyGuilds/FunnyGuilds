@@ -20,17 +20,12 @@ public class TopConfiguration extends OkaeriConfig {
     @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
     public boolean useRelationshipColors = false;
 
-    @Comment("Lista topek graczy, które mają być obliczane i parsowane")
-    @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
-    @Comment("Topek tych można używać w formie placeholderów {PTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, kdr, kda")
+    @Deprecated
+    @Comment("Opcja zachowana dla zgodnosci. Wszystkie statystyki sa dostepne automatycznie.")
     public Set<String> enabledUserTops = new TreeSet<>(Arrays.asList("points", "kills", "deaths"));
 
-    @Comment("")
-    @Comment("Lista topek gildii, które mają być obliczane i parsowane")
-    @Comment("Najlepiej włączyć tylko te, które będą używane, żeby niepotrzebnie nie obciążać serwera")
-    @Comment("Topek tych można używać w formie placeholderów {GTOP-typ-x}, np. na tabie czy w PlaceholderAPI")
-    @Comment("Dostępne typy topek: points, kills, deaths, assists, logouts, kdr, kda, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts, avg_kdr, avg_kda, wars_won, war_streak")
+    @Deprecated
+    @Comment("Opcja zachowana dla zgodnosci. Topy gildii sa tworzone przy pierwszym uzyciu.")
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")

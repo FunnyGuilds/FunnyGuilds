@@ -76,7 +76,6 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.members.forEach(user -> user.setGuild(this));
     }
 
-    @Override
     public UUID getUUID() {
         return this.uuid;
     }
@@ -89,6 +88,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setName(String name) {
         this.name = name;
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public String getTag() {
@@ -207,19 +207,45 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setMembers(Set<User> members) {
-        this.members = Collections.synchronizedSet(members);
+        Set<User> previous = this.members;
+        this.members = ConcurrentHashMap.newKeySet();
+        this.members.addAll(members);
+        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orElse(null) == this) {
+            previous.stream().filter(user -> !this.members.contains(user)).forEach(user -> {
+                if (user.getGuild().orElse(null) == this) {
+                    user.removeGuild();
+                }
+            });
+            this.members.forEach(user -> user.setGuild(this));
+        }
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void addMember(User user) {
-        this.members.add(user);
+        boolean added = this.members.add(user);
+        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orElse(null) == this
+                && user.getGuild().orElse(null) != this) {
+            user.setGuild(this);
+        }
+        if (!added) {
+            return;
+        }
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void removeMember(User user) {
-        this.members.remove(user);
+        boolean removed = this.members.remove(user);
         this.deputies.remove(user);
+        if (user.getGuild().orElse(null) == this) {
+            user.removeGuild();
+        }
+        if (!removed) {
+            return;
+        }
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public Collection<User> getDeputies() {
@@ -447,6 +473,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setWarsWon(int warsWon) {
         this.warsWon = Math.max(0, warsWon);
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void updateWarsWon(IntFunction<Integer> update) {
@@ -460,6 +487,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setWarsLost(int warsLost) {
         this.warsLost = Math.max(0, warsLost);
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void updateWarsLost(IntFunction<Integer> update) {
@@ -482,6 +510,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setWarStreak(int warStreak) {
         this.warStreak = Math.max(0, warStreak);
         this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
     public void updateWarStreak(IntFunction<Integer> update) {

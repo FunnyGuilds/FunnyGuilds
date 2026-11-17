@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -13,7 +14,7 @@ final class GuildRankTracker<T extends Number> extends CommonRankTracker<Guild, 
     ) {
         super(
                 statKey,
-                guildManager::findByUuid,
+                uuid -> Optional.ofNullable(guildManager.findByUuid(uuid).orElse(null)),
                 isRanked
         );
     }

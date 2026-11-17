@@ -9,9 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.rank.RankService;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.ApiStatus;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -19,11 +22,17 @@ import org.jetbrains.annotations.NotNull;
 public class UserManager {
 
     private final PluginConfiguration pluginConfiguration;
+    private RankService rankService;
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     public UserManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
+    }
+
+    @ApiStatus.Internal
+    public void setRankService(RankService rankService) {
+        this.rankService = rankService;
     }
 
     public int countUsers() {
@@ -43,6 +52,7 @@ public class UserManager {
      * Deletes all loaded users data
      */
     public synchronized void clearUsers() {
+        this.getUsers().forEach(this::removeUser);
         this.usersByUuid.clear();
         this.usersByName.clear();
     }
@@ -174,6 +184,9 @@ public class UserManager {
         }
         this.usersByUuid.put(user.getUUID(), user);
         this.usersByName.put(user.getName(), user);
+        if (this.rankService != null) {
+            this.rankService.refreshUser(user);
+        }
     }
 
     /**
@@ -188,8 +201,12 @@ public class UserManager {
             return;
         }
 
+        user.removeGuild();
         this.usersByUuid.remove(user.getUUID());
         this.usersByName.remove(user.getName(), user);
+        if (this.rankService != null) {
+            this.rankService.removeUser(user);
+        }
     }
 
     /**
@@ -209,6 +226,9 @@ public class UserManager {
         user.setName(newUsername);
         this.usersByName.put(newUsername, user);
         user.markChanged();
+        if (this.rankService != null) {
+            this.rankService.refreshUser(user);
+        }
     }
 
     /**

@@ -37,6 +37,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         if (!user.getName().equals(playerName)) {
             this.userManager.updateUsername(user, playerName);
         }
+        this.plugin.getRankService().refreshUser(user);
 
         if (this.config.rankIPProtectPlayersFromGuild && player.getAddress() != null) {
             String currentIP = player.getAddress().getHostString();

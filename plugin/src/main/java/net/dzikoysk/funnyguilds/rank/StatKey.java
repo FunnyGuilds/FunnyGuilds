@@ -1,7 +1,12 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.kyori.adventure.key.InvalidKeyException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.KeyPattern;
 import net.kyori.adventure.key.Keyed;
@@ -11,31 +16,64 @@ public interface StatKey<T extends Number> extends Keyed {
 
     Class<T> getValueType();
 
+    T zero();
+
     int compare(
             T value1,
             T value2
     );
 
     static StatKey<Integer> integerStatKey(Key key) {
-        return new IntegerStatKey(key);
+        return register(new IntegerStatKey(key));
     }
 
     static StatKey<Integer> integerStatKey(@KeyPattern String key) {
-        return new IntegerStatKey(Key.key(
+        return integerStatKey(Key.key(
                 FunnyGuilds.NAMESPACE,
                 key
         ));
     }
 
     static StatKey<Double> doubleStatKey(Key key) {
-        return new DoubleStatKey(key);
+        return register(new DoubleStatKey(key));
     }
 
     static StatKey<Double> doubleStatKey(@KeyPattern String key) {
-        return new DoubleStatKey(Key.key(
+        return doubleStatKey(Key.key(
                 FunnyGuilds.NAMESPACE,
                 key
         ));
+    }
+
+    /** Keys declared through the factories are immediately available to top placeholders. */
+    static Optional<StatKey<?>> find(String name) {
+        try {
+            String normalized = name.toLowerCase(Locale.ROOT);
+            Key key = normalized.indexOf(':') >= 0 ? Key.key(normalized) : Key.key(FunnyGuilds.NAMESPACE, normalized);
+            return Optional.ofNullable(Registry.KEYS.get(key));
+        }
+        catch (InvalidKeyException invalid) {
+            return Optional.empty();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends Number> StatKey<T> register(StatKey<T> key) {
+        if (key.getValueType() != Integer.class && key.getValueType() != Double.class) {
+            throw new IllegalArgumentException("Unsupported statistic type " + key.getValueType());
+        }
+        StatKey<?> existing = Registry.KEYS.putIfAbsent(key.key(), key);
+        if (existing != null && existing.getValueType() != key.getValueType()) {
+            throw new IllegalArgumentException("Conflicting value types for statistic " + key.key());
+        }
+        return existing == null ? key : (StatKey<T>) existing;
+    }
+
+    final class Registry {
+        private static final Map<Key, StatKey<?>> KEYS = new ConcurrentHashMap<>();
+
+        private Registry() {
+        }
     }
 
     abstract class CommonStatKey<T extends Number> implements StatKey<T> {
@@ -64,7 +102,7 @@ public interface StatKey<T extends Number> extends Keyed {
         public int hashCode() {
             return Objects.hashCode(this.key);
         }
-        
+
         @Override
         public String toString() {
             return "StatKey{" +
@@ -83,6 +121,11 @@ public interface StatKey<T extends Number> extends Keyed {
         @Override
         public Class<Integer> getValueType() {
             return Integer.class;
+        }
+
+        @Override
+        public Integer zero() {
+            return 0;
         }
 
         @Override
@@ -106,6 +149,11 @@ public interface StatKey<T extends Number> extends Keyed {
         @Override
         public Class<Double> getValueType() {
             return Double.class;
+        }
+
+        @Override
+        public Double zero() {
+            return 0.0;
         }
 
         @Override

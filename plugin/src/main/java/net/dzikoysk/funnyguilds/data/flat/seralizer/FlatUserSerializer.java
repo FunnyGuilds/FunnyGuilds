@@ -6,6 +6,7 @@ import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.data.util.UserStatsSerializer;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -52,7 +53,7 @@ public final class FlatUserSerializer {
         values[8] = reason;
         values[9] = lastIP;
 
-        return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
+        return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values, wrapper.getString("stats"));
     }
 
     public static boolean serialize(User user) {
@@ -76,6 +77,7 @@ public final class FlatUserSerializer {
         wrapper.set("deaths", user.getRank().getDeaths());
         wrapper.set("assists", user.getRank().getAssists());
         wrapper.set("logouts", user.getRank().getLogouts());
+        wrapper.set("stats", UserStatsSerializer.serialize(user));
         wrapper.set("last_ip", user.getLastIP());
 
         user.getBan().ifPresent(ban -> {
