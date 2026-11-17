@@ -212,9 +212,9 @@ migration of the entire 4.x configuration. See
 
 `ranking-update-interval` has been removed: stat changes update tops without a
 periodic rebuild. The `top.enabled-user-tops` and `top.enabled-guild-tops` options
-have been removed entirely — legacy configuration files may still contain them,
-but the entries are ignored and disappear from the file on the next configuration
-save. Nothing needs to be configured: all statistics, including new API ones,
+have been removed entirely. Entries left over in legacy configuration files are
+ignored and can remain in the file; you can remove them manually.
+Nothing needs to be configured: all statistics, including new API ones,
 automatically get tops, positions, placeholders and persistence. `top.format` and
 `value-formatting` rules still apply.
 

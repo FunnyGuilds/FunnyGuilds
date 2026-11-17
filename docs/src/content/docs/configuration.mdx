@@ -213,8 +213,8 @@ migracji całej konfiguracji 4.x. Zasady dziedziczenia topek opisują
 
 `ranking-update-interval` został usunięty: zmiany statystyk aktualizują topy
 bez okresowej przebudowy. Opcje `top.enabled-user-tops` i `top.enabled-guild-tops`
-zostały usunięte — starsze pliki konfiguracyjne mogą jeszcze zawierać te wpisy,
-ale są one ignorowane i znikną z pliku przy kolejnym zapisie konfiguracji.
+zostały usunięte. Wpisy pozostawione w starszych plikach konfiguracyjnych są
+ignorowane i mogą pozostać w pliku; można je usunąć ręcznie.
 Nie trzeba nic konfigurować: wszystkie statystyki, także nowe z API, automatycznie
 mają topy, pozycje, placeholdery i zapis danych. Formaty w `top.format` oraz
 `value-formatting` nadal obowiązują.

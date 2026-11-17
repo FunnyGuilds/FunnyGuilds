@@ -106,6 +106,11 @@ registered UUID by throwing `IllegalStateException`. The existing user instance
 and both indexes remain unchanged. After rejection, do not use the supplied
 instance as a registered user; retrieve the existing account with `findByUuid(UUID)`.
 
+`UserManager#removeUser(User)` (and through it `UserManager#clearUsers()`) does more
+than remove the entry from the manager: it detaches the user from their guild,
+removes their entries from all rankings, and refreshes the former guild's rankings.
+Code that assumes a removed user remains a guild member needs updating.
+
 ### Guild
 
 Available methods for fetching a guild:
@@ -134,6 +139,11 @@ if (guildOption.isPresent()) {
 }
 ```
 
+Manage membership through `GuildManager` (`addMember`, `removeMember`, `setMembers`):
+they repair `User` back-references and refresh rankings. The internal `Guild` and
+`User` methods (`setOwner`, `addMember`, `removeMember`, `setGuild`, marked
+`@Internal`) are no replacement for these operations.
+
 ### Statistics and rankings
 
 New integrations should use `FunnyGuilds#getRankService()` instead of the removed
@@ -147,12 +157,11 @@ require migration to `RankService` (together with `StatKey` and
 - `net.dzikoysk.funnyguilds.rank.TopComparator`
 - `net.dzikoysk.funnyguilds.rank.RankManager`
 - `net.dzikoysk.funnyguilds.rank.RankRecalculationTask`
+- `net.dzikoysk.funnyguilds.rank.Rank`
+- `net.dzikoysk.funnyguilds.user.UserRank`
+- `net.dzikoysk.funnyguilds.guild.GuildRank`
+- `net.dzikoysk.funnyguilds.rank.DefaultTops`
 - the `net.dzikoysk.funnyguilds.user.top.*` and `net.dzikoysk.funnyguilds.guild.top.*` packages
-
-The retained deprecated adapters — `Rank`, `UserRank`, `GuildRank` and the
-`DefaultTops` constants — are marked as scheduled for removal in 5.0.
-`getPosition(...)` delegates to the new service, while `setPosition(...)`
-throws `UnsupportedOperationException`, because positions can no longer be set.
 
 A new statistic needs one typed key declaration:
 
@@ -178,11 +187,20 @@ including exceptional completion for failed updates or rejected scheduling.
 Updates are serialized; `RankTracker#findEntryByPosition` returns an atomic
 entity/value pair. Call `refreshUser(user)` on the server thread, for example
 after changing a ranking exemption. Custom aggregation strategies can use
-`GuildStatAggregationType.create(...)`.
+`GuildStatAggregationType.create(...)` with `Integer`, `Long` or `Double`
+results. `Long` is reserved for guild aggregation results: user statistics
+register and persist through `StatKey` as `Integer` or `Double` only.
 
-War counters belong to guilds: query them through `GuildStatKeys` with
-`TOTAL_INT`, and modify them through existing `Guild` setters. They are not
-player statistics. Their tops update when their counter changes.
+War counters belong to guilds: query them through `GuildStatKeys` with `TOTAL_LONG`.
+They are not player statistics. The `Guild` setters that change these counters
+(`setWarsWon`, `setWarsLost`, `setWarStreak` and their `update*` variants) are
+internal (`@Internal`) and do not refresh rankings themselves: the plugin's war flow
+refreshes the tops automatically, and direct counter changes require calling
+`GuildManager#refreshGuild(Guild)`. Non-averaged
+guild tops of integer statistics aggregate into exact `Long` totals, which stay
+precise beyond the Int range. Averaged tops of built-in integer counters still
+use `AVERAGE_INT`, a mean truncated to `Int`; other averaged statistics use the
+fractional `AVERAGE` aggregation.
 
 Additional user statistics are stored as typed JSON in the file's `stats` field
 or SQL's `stats TEXT` column. The existing schema migration adds missing columns.

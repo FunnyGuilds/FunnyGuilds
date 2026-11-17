@@ -106,6 +106,11 @@ rzucając `IllegalStateException`. Istniejący obiekt użytkownika oraz oba inde
 pozostają bez zmian. Po odrzuceniu nie używaj przekazanego obiektu jako
 zarejestrowanego użytkownika; istniejące konto pobierz przez `findByUuid(UUID)`.
 
+`UserManager#removeUser(User)` (i przez to `UserManager#clearUsers()`) robi więcej
+niż usunięcie wpisu z menedżera: odłącza użytkownika od jego gildii, usuwa jego
+wpisy ze wszystkich rankingów i odświeża rankingi byłej gildii. Kod zakładający,
+że użytkownik po usunięciu pozostaje członkiem gildii, wymaga aktualizacji.
+
 ### Guild
 
 Dostępne metody pobierania gildii:
@@ -134,6 +139,11 @@ if (guildOption.isPresent()) {
 }
 ```
 
+Zmiany składu gildii wykonuj przez `GuildManager` (`addMember`, `removeMember`,
+`setMembers`): naprawiają one referencje `User` i odświeżają rankingi. Wewnętrzne metody
+`Guild` i `User` (`setOwner`, `addMember`, `removeMember`, `setGuild`, oznaczone jako
+`@Internal`) nie zastępują tych operacji.
+
 ### Statystyki i rankingi
 
 Nowe integracje powinny używać `FunnyGuilds#getRankService()` zamiast usuniętego
@@ -146,12 +156,11 @@ i wymagają migracji do `RankService` (wraz z `StatKey` i `GuildStatAggregationT
 - `net.dzikoysk.funnyguilds.rank.TopComparator`
 - `net.dzikoysk.funnyguilds.rank.RankManager`
 - `net.dzikoysk.funnyguilds.rank.RankRecalculationTask`
+- `net.dzikoysk.funnyguilds.rank.Rank`
+- `net.dzikoysk.funnyguilds.user.UserRank`
+- `net.dzikoysk.funnyguilds.guild.GuildRank`
+- `net.dzikoysk.funnyguilds.rank.DefaultTops`
 - pakiety `net.dzikoysk.funnyguilds.user.top.*` i `net.dzikoysk.funnyguilds.guild.top.*`
-
-Zachowane przestarzałe adaptery — `Rank`, `UserRank`, `GuildRank` oraz stałe
-`DefaultTops` — są oznaczone jako przewidziane do usunięcia w 5.0. Odczyt
-`getPosition(...)` deleguje do nowego serwisu, a wywołanie `setPosition(...)`
-rzuca `UnsupportedOperationException`, ponieważ pozycji nie można już ustawiać.
 
 Nowa statystyka wymaga jednej deklaracji typowanego klucza:
 
@@ -177,11 +186,21 @@ Metody `queueSetUserStatValue` i `queueChangeUserStatValue` zwracają
 odrzuceniu zadania. Aktualizacje są serializowane, a odczyt
 `RankTracker#findEntryByPosition` zwraca atomową parę użytkownik/gildia i wartość.
 `refreshUser(user)` należy wywoływać na wątku serwera, np. po zmianie uprawnienia
-wykluczającego z topu. Własne agregacje udostępnia `GuildStatAggregationType.create(...)`.
+wykluczającego z topu. Własne agregacje udostępnia `GuildStatAggregationType.create(...)`
+z wynikami `Integer`, `Long` lub `Double`. Typ `Long` jest zarezerwowany dla wyników
+agregacji gildyjnych: rejestracja i zapis statystyk graczy przez `StatKey` pozostają
+ograniczone do `Integer` i `Double`.
 
 Liczniki wojen należą do gildii: odczytuj je przez `GuildStatKeys` i agregację
-`TOTAL_INT`, a zmieniaj przez istniejące settery `Guild`. Nie są statystykami
-graczy. Ich topy aktualizują się po zmianie licznika.
+`TOTAL_LONG`. Nie są statystykami graczy. Settery `Guild` zmieniające te liczniki
+(`setWarsWon`, `setWarsLost`, `setWarStreak` wraz z wariantami `update*`) są
+wewnętrzne (`@Internal`) i same nie odświeżają rankingów: przepływ wojenny pluginu
+odświeża topy automatycznie, a własne zmiany liczników wymagają wywołania
+`GuildManager#refreshGuild(Guild)`. Nieuśrednione topki
+gildyjne statystyk całkowitych agregują do dokładnych sum `Long`, które
+zachowują precyzję poza zakresem Int. Uśrednione topki wbudowanych liczników
+całkowitych nadal używają `AVERAGE_INT`, czyli średniej obcinanej do `Int`;
+pozostałe uśrednione statystyki używają ułamkowego `AVERAGE`.
 
 Dodatkowe statystyki użytkownika zapisuje pole `stats` w pliku lub kolumna
 `stats TEXT` w SQL, jako JSON z identyfikatorem, typem i wartością. Brakujące
