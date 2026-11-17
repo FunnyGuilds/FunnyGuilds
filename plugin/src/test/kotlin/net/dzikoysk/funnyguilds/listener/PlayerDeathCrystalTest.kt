@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher
 import net.dzikoysk.funnyguilds.damage.DamageManager
 import net.dzikoysk.funnyguilds.event.FunnyEvent
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause
 import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent
@@ -184,6 +185,36 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         assertEquals(0, victimUser.rank.kills)
         assertEquals(1000, victimUser.rank.points)
         assertEquals(1, victimUser.rank.deaths)
+    }
+
+    @Test
+    fun `crystal suicide credits previous attacker with last attacker fallback disabled`() {
+        assertCrystalSuicideFallback(false)
+    }
+
+    @Test
+    fun `crystal suicide credits previous attacker with last attacker fallback enabled`() {
+        assertCrystalSuicideFallback(true)
+    }
+
+    private fun assertCrystalSuicideFallback(fallbackEnabled: Boolean) {
+        config.considerLastAttackerAsKiller = fallbackEnabled
+        val (previous, previousUser) = player("Previous")
+        val (victim, victimUser) = player("Victim")
+        damageManager.getDamageState(victimUser.uuid).addDamage(previousUser, 4.0)
+        `when`(listener.funnyServer.getPlayer(previousUser.uuid)).thenReturn(Optional.of(previous))
+
+        deathHandler.callEvent(death(victim, victim))
+
+        assertEquals(1, previousUser.rank.kills)
+        assertEquals(1020, previousUser.rank.points)
+        assertEquals(0, victimUser.rank.kills)
+        assertEquals(1, victimUser.rank.deaths)
+        assertEquals(990, victimUser.rank.points)
+        val deathEvent = events.filterIsInstance<DeathsChangeEvent>().single()
+        assertEquals(EventCause.COMBAT, deathEvent.eventCause)
+        assertEquals(previousUser, deathEvent.doer.orElseThrow())
+        assertTrue(items.constructed().isEmpty())
     }
 
     @Test

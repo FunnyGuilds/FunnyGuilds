@@ -60,6 +60,12 @@ replacements show the crystal. This support does not concern guild hearts
 and requires no new configuration option. New crystal attribution requires
 an online attacker registered with FunnyGuilds.
 
+Self-detonation follows the existing suicide rule: a previous online
+attacker can receive the kill if their hit is still recorded and has not
+expired. This also applies when `rank-farming-last-attacker-as-killer` is
+disabled; that option does not disable the separate suicide rule. Without
+such a previous hit, the player receives no kill for killing themselves.
+
 ### Anti-farming protections
 
 Several independent switches guard against artificially inflating ranking

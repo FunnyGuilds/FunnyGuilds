@@ -17,7 +17,7 @@ internal fun registeredHandler(
     val handler = checkNotNull(method.getAnnotation(EventHandler::class.java))
     return RegisteredListener(
         listener,
-        { registeredListener, event -> method.invoke(registeredListener, event) },
+        { actualListener, event -> method.invoke(actualListener, event) },
         handler.priority,
         plugin,
         handler.ignoreCancelled
