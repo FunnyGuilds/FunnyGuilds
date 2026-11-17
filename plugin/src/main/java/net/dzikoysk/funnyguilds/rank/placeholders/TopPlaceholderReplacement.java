@@ -8,12 +8,9 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
-import net.dzikoysk.funnyguilds.guild.top.GuildTop;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.shared.Optionals;
-import net.dzikoysk.funnyguilds.user.UserRankManager;
-import net.dzikoysk.funnyguilds.user.top.UserTop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextColor;
@@ -23,28 +20,25 @@ import org.jetbrains.annotations.Nullable;
 public class TopPlaceholderReplacement extends ComponentReplacement {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile(
-        "\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)(?:-(NAME|TAG|UUID|VALUE))?}",
+        "\\{(PTOP|GTOP)-([A-Za-z0-9_:.-]+)-([0-9]+)(?:-(NAME|TAG|UUID|VALUE))?}",
         Pattern.CASE_INSENSITIVE
     );
 
     private final PluginConfiguration config;
     private final MessageService messageService;
-    private final UserRankManager userRankManager;
-    private final GuildRankManager guildRankManager;
+    private final RankService rankService;
     private final User targetUser;
 
     TopPlaceholderReplacement(
         PluginConfiguration config,
         MessageService messageService,
-        UserRankManager userRankManager,
-        GuildRankManager guildRankManager,
+        RankService rankService,
         User targetUser
     ) {
         super(PLACEHOLDER_PATTERN);
         this.config = config;
         this.messageService = messageService;
-        this.userRankManager = userRankManager;
-        this.guildRankManager = guildRankManager;
+        this.rankService = rankService;
         this.targetUser = targetUser;
     }
 
@@ -62,13 +56,13 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
                 Optional<Integer> indexOption = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(indexString));
                 if (indexOption.isEmpty()) {
                     FunnyGuilds.getPluginLogger().error(indexString + "is invalid " + topType + " index!");
-                    return builder;
+                    return this.messageService.getComponent(this.targetUser, config -> topType.equalsIgnoreCase("PTOP") ? config.ptopNoValue : config.gtopNoValue);
                 }
 
                 int index = indexOption.orElseThrow();
                 if (index < 1) {
                     FunnyGuilds.getPluginLogger().error("Index in " + topType + " must be greater or equal to 1!");
-                    return builder;
+                    return this.messageService.getComponent(this.targetUser, config -> topType.equalsIgnoreCase("PTOP") ? config.ptopNoValue : config.gtopNoValue);
                 }
 
                 return switch (topType.toUpperCase(Locale.ROOT)) {
@@ -79,77 +73,43 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
             }).build();
     }
 
-    private Component getPlayerTopComponent(String comparatorType, int index, String subType, User targetUser) {
-        Component noValue = this.messageService.getComponent(
-            targetUser,
-            config -> config.ptopNoValue
-        );
-
-        Optional<UserTop> userTopOption = this.userRankManager.getTop(comparatorType);
-        if (userTopOption.isEmpty()) {
-            return noValue;
-        }
-
-        UserTop userTop = userTopOption.orElseThrow();
-        Optional<User> userOption = userTop.getUser(index);
-        if (userOption.isEmpty()) {
-            return noValue;
-        }
-
-        User user = userOption.orElseThrow();
-        Number topValue = userTop.getComparator().getValue(user.getRank());
-
-        if (subType == null) {
-            return this.formatUserTop(
-                user,
-                topValue,
-                comparatorType
-            );
-        }
-
-        return switch (subType) {
-            case "NAME" -> Component.text(user.getName());
-            case "UUID" -> Component.text(user.getUUID().toString());
-            case "VALUE" -> Component.text(rawValueString(topValue));
-            default -> Component.empty();
-        };
+    private Component getPlayerTopComponent(String metric, int index, String subType, User viewer) {
+        Component noValue = this.messageService.getComponent(viewer, config -> config.ptopNoValue);
+        return this.rankService.getUserRankTracker(metric)
+                .flatMap(tracker -> tracker.findEntryByPosition(index))
+                .map(entry -> {
+                    User user = entry.getFirst();
+                    Number value = entry.getSecond();
+                    if (subType == null) {
+                        return this.formatUserTop(user, value, metric);
+                    }
+                    return switch (subType) {
+                        case "NAME" -> Component.text(user.getName());
+                        case "UUID" -> Component.text(user.getUUID().toString());
+                        case "VALUE" -> Component.text(rawValueString(value));
+                        default -> Component.empty();
+                    };
+                }).orElse(noValue);
     }
 
-    private Component getGuildTopComponent(String comparatorType, int index, String subType, User targetUser) {
-        Component noValue = this.messageService.getComponent(
-            targetUser,
-            config -> config.gtopNoValue
-        );
-
-        Optional<GuildTop> guildTopOption = this.guildRankManager.getTop(comparatorType);
-        if (guildTopOption.isEmpty()) {
-            return noValue;
-        }
-
-        GuildTop guildTop = guildTopOption.orElseThrow();
-        Optional<Guild> guildOption = guildTop.getGuild(index);
-        if (guildOption.isEmpty()) {
-            return noValue;
-        }
-
-        Guild guild = guildOption.orElseThrow();
-        Number topValue = guildTop.getComparator().getValue(guild.getRank());
-
-        if (subType == null) {
-            return this.formatGuildTop(
-                targetUser,
-                guild,
-                topValue,
-                comparatorType
-            );
-        }
-
-        return switch (subType) {
-            case "NAME" -> Component.text(guild.getName());
-            case "TAG" -> Component.text(guild.getTag());
-            case "VALUE" -> Component.text(rawValueString(topValue));
-            default -> Component.empty();
-        };
+    private Component getGuildTopComponent(String metric, int index, String subType, User viewer) {
+        Component noValue = this.messageService.getComponent(viewer, config -> config.gtopNoValue);
+        return this.rankService.getGuildRankTracker(metric)
+                .flatMap(tracker -> tracker.findEntryByPosition(index))
+                .map(entry -> {
+                    Guild guild = entry.getFirst();
+                    Number value = entry.getSecond();
+                    if (subType == null) {
+                        return this.formatGuildTop(viewer, guild, value, metric);
+                    }
+                    return switch (subType) {
+                        case "NAME" -> Component.text(guild.getName());
+                        case "TAG" -> Component.text(guild.getTag());
+                        case "UUID" -> Component.text(guild.getUUID().toString());
+                        case "VALUE" -> Component.text(rawValueString(value));
+                        default -> Component.empty();
+                    };
+                }).orElse(noValue);
     }
 
     private Component formatUserTop(User user, Number topValue, String metric) {
@@ -191,7 +151,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
 
     private String rawValueString(Number topValue) {
         return topValue instanceof Float || topValue instanceof Double
-            ? String.format(Locale.US, "%.2f", topValue.floatValue())
+            ? String.format(Locale.US, "%.2f", topValue.doubleValue())
             : topValue.toString();
     }
 }

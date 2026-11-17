@@ -30,7 +30,7 @@ Dopisek `@Deprecated` przy placeholderze oznacza, że może on zostać w przysz�
 |           `KDR`           | Zwraca KDR gracza (zabójstwa / śmierci)                                                                                                                     |
 |           `KDA`           | Zwraca KDA gracza ((zabójstwa + asysty) / śmierci)                                                                                                          |
 | **Deprecated** `POSITION` | Zwraca pozycję gracza w topce punktów rankingowych. Zalecamy użycie opisanego niżej placeholdera `POSITION-<typ>`                                            |
-|     `POSITION-<typ>`      | Pozycja gracza w topce o podanym typie (np. `DEATHS`). Listę dostępnych (i aktualnie włączonych) typów zawiera opcja `top.enabled-user-tops` w `config.yml`. |
+|     `POSITION-<typ>`      | Pozycja gracza w topce o podanym typie (np. `DEATHS`). Dostępne są typy wbudowane i statystyki dodane przez API, bez edytowania whitelisty. |
 |     `GUILD-POSITION`      | Pozycja gildii gracza w topce gildii                                                                                                                        |
 
 ## Placeholdery gildyjne
@@ -101,20 +101,23 @@ Topki graczy (`PTOP`) i gildii (`GTOP`) zawsze wymagają **typu** i **pozycji**:
 |   `PTOP-<typ>-<pozycja>`       | Gracz na podanej pozycji w topce danego typu (np. `{PTOP-KILLS-1}`, `{PTOP-POINTS-10}`)  |
 |   `GTOP-<typ>-<pozycja>`       | Gildia na podanej pozycji w topce danego typu (np. `{GTOP-AVG_POINTS-1}`)                |
 
-Domyślnie zwracany jest nick gracza (lub nazwa gildii) wraz z wartością. Można to zawęzić, dopisując na końcu jeden z członów:
+Domyślnie zwracany jest nick gracza (lub tag gildii) wraz z wartością. Można to zawęzić, dopisując na końcu jeden z członów:
 
 | Człon    | `PTOP`             | `GTOP`              |
 |:---------|:-------------------|:--------------------|
 | `-NAME`  | Nick gracza        | Nazwa gildii        |
 | `-TAG`   | —                  | Tag gildii          |
-| `-UUID`  | UUID gracza        | —                   |
+| `-UUID`  | UUID gracza        | UUID gildii         |
 | `-VALUE` | Sama wartość       | Sama wartość        |
 
 Na przykład `{PTOP-POINTS-1-NAME}` zwróci sam nick lidera topki punktów, a `{GTOP-KILLS-1-TAG}` — sam tag najlepszej gildii.
 
 :::note[Typy topek]
-Listę dostępnych (i aktualnie włączonych) typów zawierają opcje `top.enabled-user-tops`
-i `top.enabled-guild-tops` w `config.yml` — patrz [Rankingi i walka](/rankings-combat/).
+Topy wszystkich znanych `StatKey` są dostępne automatycznie, także z przestrzenią
+nazw, np. `{PTOP-arena:balance-1}`. Wariant gildii `avg_` oznacza średnią, np.
+`{GTOP-avg_arena:balance-1}`. Listy `top.enabled-user-tops` i
+`top.enabled-guild-tops` nie ograniczają już dostępnych typów.
+Patrz [Rankingi i walka](/rankings-combat/) i [API](/api/).
 :::
 
 ## Inne

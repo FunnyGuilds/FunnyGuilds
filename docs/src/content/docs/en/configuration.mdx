@@ -207,3 +207,14 @@ When moving from 4.9.x, copy `points-format` into the appropriate
 Replace `{POINTS}` or `{PING}` with `{VALUE}` in templates. There is no automatic
 migration of the entire 4.x configuration. See
 [Rankings & combat](/en/rankings-combat/#value-formatting) for top-list inheritance.
+
+## Ranking configuration after upgrading
+
+`ranking-update-interval` has been removed: stat changes update tops without a
+periodic rebuild. `top.enabled-user-tops` and `top.enabled-guild-tops` remain
+compatible legacy fields but are no longer whitelists. New API statistics are
+available automatically; `top.format` and `value-formatting` rules still apply.
+
+Additional user statistics are stored in `stats` (a file field or SQL column).
+Each new counter needs no separate configuration option or database column.
+See [Rankings & combat](/en/rankings-combat/) and [API](/en/api/) for details.

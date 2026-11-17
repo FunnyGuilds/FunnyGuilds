@@ -30,7 +30,7 @@ A `@Deprecated` note next to a placeholder means it may be removed in the future
 |           `KDR`           | Returns the player's KDR (kills / deaths)                                                                                                                            |
 |           `KDA`           | Returns the player's KDA ((kills + assists) / deaths)                                                                                                                |
 | **Deprecated** `POSITION` | Returns the player's position in the ranking-points top list. We recommend using the `POSITION-<type>` placeholder described below instead                            |
-|     `POSITION-<type>`     | The player's position in the top list of the given type (e.g. `DEATHS`). The available (and currently enabled) types are listed under `top.enabled-user-tops` in `config.yml`. |
+|     `POSITION-<type>`     | The player's position in the specified top (e.g. `DEATHS`). Built-in and API-added statistics are available without editing a whitelist. |
 |     `GUILD-POSITION`      | The position of the player's guild in the guild top list                                                                                                             |
 
 ## Guild Placeholders
@@ -101,20 +101,23 @@ Player (`PTOP`) and guild (`GTOP`) top lists always require both a **type** and 
 | `PTOP-<type>-<position>`  | The player at the given position in the top list of that type (e.g. `{PTOP-KILLS-1}`, `{PTOP-POINTS-10}`) |
 | `GTOP-<type>-<position>`  | The guild at the given position in the top list of that type (e.g. `{GTOP-AVG_POINTS-1}`)                 |
 
-By default this returns the player's nickname (or the guild's name) along with the value. You can narrow it down by appending one of these suffixes:
+By default this returns the player's nickname (or the guild's tag) along with the value. You can narrow it down by appending one of these suffixes:
 
 | Suffix   | `PTOP`               | `GTOP`              |
 |:---------|:---------------------|:--------------------|
 | `-NAME`  | The player's name    | The guild's name    |
 | `-TAG`   | —                    | The guild's tag     |
-| `-UUID`  | The player's UUID    | —                   |
+| `-UUID`  | The player's UUID    | The guild's UUID    |
 | `-VALUE` | The value alone      | The value alone     |
 
 For example, `{PTOP-POINTS-1-NAME}` returns just the nickname at the top of the points list, and `{GTOP-KILLS-1-TAG}` returns just the tag of the best guild.
 
 :::note[Top list types]
-The available (and currently enabled) types are listed under `top.enabled-user-tops` and
-`top.enabled-guild-tops` in `config.yml` — see [Rankings & combat](/en/rankings-combat/).
+Tops for all known `StatKey` identities are available automatically, including
+namespaced keys such as `{PTOP-arena:balance-1}`. The guild `avg_` variant uses
+the average, e.g. `{GTOP-avg_arena:balance-1}`. `top.enabled-user-tops` and
+`top.enabled-guild-tops` no longer restrict available types.
+See [Rankings & combat](/en/rankings-combat/) and [API](/en/api/).
 :::
 
 ## Other

@@ -134,6 +134,48 @@ if (guildOption.isPresent()) {
 }
 ```
 
+### Statistics and rankings
+
+New integrations should use `FunnyGuilds#getRankService()` instead of the removed
+`UserRankManager` and `GuildRankManager`. `Rank`, `UserRank`, `GuildRank` and
+`DefaultTops` constants remain deprecated adapters; `getPosition(...)` delegates
+to the new service. Positions are read-only.
+
+A new statistic needs one typed key declaration:
+
+```java
+public static final StatKey<Integer> ARENA_WINS = StatKey.integerStatKey("arena_wins");
+
+RankService ranks = funnyGuilds.getRankService();
+ranks.changeUserStatValue(user, ARENA_WINS, current -> current + 1);
+Optional<Integer> position = ranks.getUserTopPosition(user, ARENA_WINS);
+Optional<Double> average = ranks.getGuildStatValue(guild, ARENA_WINS, GuildStatAggregationType.AVERAGE);
+```
+
+Factories support `Integer` and `Double`, including namespaced keys such as
+`StatKey.doubleStatKey(Key.key("arena", "balance"))`. Tops, positions, totals,
+averages and persistence are available without new comparators, whitelist
+entries or per-stat SQL columns. New statistics start at zero. Conflicting
+types for one identity, NaN and infinity are rejected. Example placeholders
+include `{PTOP-arena_wins-1}`, `{POSITION-arena_wins}` and
+`{GTOP-avg_arena_wins-1}`.
+
+`queueSetUserStatValue` and `queueChangeUserStatValue` return `CompletableFuture`,
+including exceptional completion for failed updates or rejected scheduling.
+Updates are serialized; `RankTracker#findEntryByPosition` returns an atomic
+entity/value pair. Call `refreshUser(user)` on the server thread, for example
+after changing a ranking exemption. Custom aggregation strategies can use
+`GuildStatAggregationType.create(...)`.
+
+War counters belong to guilds: query them through `GuildStatKeys` with
+`TOTAL_INT`, and modify them through existing `Guild` setters. They are not
+player statistics. Their tops update when their counter changes.
+
+Additional user statistics are stored as typed JSON in the file's `stats` field
+or SQL's `stats TEXT` column. The existing schema migration adds missing columns.
+Old data still loads; existing counter columns remain authoritative. KDR/KDA
+and guild aggregates are derived rather than stored as additional copies.
+
 ### Items and requirements
 
 The `items.yml` configuration is available straight from the plugin instance:

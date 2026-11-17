@@ -174,12 +174,12 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
     }
 
     private fun rows(vararg identities: Pair<String, String>): CachedRowSet {
-        val columns = listOf("uuid", "name", "points", "kills", "deaths", "assists", "logouts", "ban", "reason", "last_ip")
+        val columns = listOf("uuid", "name", "points", "kills", "deaths", "assists", "logouts", "ban", "reason", "last_ip", "stats")
         val metadata = RowSetMetaDataImpl().apply {
             columnCount = columns.size
             columns.forEachIndexed { index, name ->
                 setColumnName(index + 1, name)
-                setColumnType(index + 1, if (name in listOf("uuid", "name", "reason", "last_ip")) Types.VARCHAR else Types.BIGINT)
+                setColumnType(index + 1, if (name in listOf("uuid", "name", "reason", "last_ip", "stats")) Types.VARCHAR else Types.BIGINT)
             }
         }
         return RowSetProvider.newFactory().createCachedRowSet().apply {
@@ -193,6 +193,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
                 }
                 updateNull("reason")
                 updateNull("last_ip")
+                updateNull("stats")
                 insertRow()
                 moveToCurrentRow()
             }

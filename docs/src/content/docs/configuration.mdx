@@ -208,3 +208,15 @@ Przenosząc konfigurację 4.9.x, skopiuj `points-format` do odpowiednich map
 W szablonach zamień `{POINTS}` lub `{PING}` na `{VALUE}`. Nie ma automatycznej
 migracji całej konfiguracji 4.x. Zasady dziedziczenia topek opisują
 [Rankingi i walka](/rankings-combat/#formatowanie-wartości).
+
+## Konfiguracja rankingów po aktualizacji
+
+`ranking-update-interval` został usunięty: zmiany statystyk aktualizują topy
+bez okresowej przebudowy. `top.enabled-user-tops` i `top.enabled-guild-tops`
+pozostają zgodnymi polami starszej konfiguracji, ale nie są już whitelistami.
+Nowe statystyki z API są dostępne automatycznie; formaty w `top.format` oraz
+`value-formatting` nadal obowiązują.
+
+Dodatkowe statystyki zapisują się w polu użytkownika `stats` (plik lub kolumna
+SQL). Nie trzeba dodawać osobnej opcji ani kolumny dla każdego nowego licznika.
+Szczegóły: [Rankingi i walka](/rankings-combat/) oraz [API](/api/).

@@ -146,7 +146,6 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
         config.top.format.ptopValueFormatting = emptyMap()
         config.valueFormatting.user = mapOf("points" to listOf(RangeFormatting("0-* &a{VALUE} pts")))
         config.loadProcessedProperties()
-        userRankManager.recalculateTops()
         val formatted = rankPlaceholdersService.format(target, Component.text("{PTOP-POINTS-1}"), target)
         assertEquals("Target [1500 pts]", text(formatted))
         assertEquals(ComponentUtil.toLegacy(Component.text("Target", config.onlineColor).append(ComponentUtil.colored(" &7[&a1500 pts&7]"))), ComponentUtil.toLegacy(formatted))

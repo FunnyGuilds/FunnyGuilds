@@ -57,11 +57,29 @@ points:
 
 The `top` section drives player and guild top lists, available as the
 `{PTOP-type-x}`/`{GTOP-type-x}` placeholders (see
-[Placeholders](/en/placeholders/)). Every type enabled in
-`enabled-user-tops`/`enabled-guild-tops` is calculated separately:
+[Placeholders](/en/placeholders/)). Tops are created on first use. A stat write
+repositions only that player's entry and updates the requested aggregates of
+their guild. Joining, leaving, renaming and deletion also refresh affected
+entries. There is no periodic rebuild of every top.
+
+`ranking-update-interval` has been removed. `top.enabled-user-tops` and
+`top.enabled-guild-tops` remain readable for configuration compatibility but no
+longer restrict types: additional API statistics become available automatically.
 
 - Player types: `points`, `kills`, `deaths`, `assists`, `logouts`, `kdr`, `kda`.
-- Guild types: the same, plus `avg_*` average variants (e.g. `avg_points`, `avg_kdr`, `avg_kda`), as well as `wars_won` and `war_streak`.
+- Guild types: the same, plus `avg_*` average variants (e.g. `avg_points`, `avg_kdr`, `avg_kda`), as well as `wars_won`, `wars_lost` and `war_streak`.
+
+Position 1 has the highest value. Ties use case-insensitive names, then UUIDs.
+Guilds below `guild-min-members` and exempt players retain their statistics but
+have no position. Empty guilds are excluded. Existing guild counter averages
+retain integer rounding; averages of new API statistics can be fractional.
+
+With `skip-privileged-players-in-rank-positions` enabled,
+`funnyguilds.ranking.exempt` checks run on the server thread. Every 40 ticks,
+online players and up to 32 pending offline players are checked. An offline
+permission change becomes visible when its queued check is reached.
+Configuration reload refreshes everyone; integrations can call
+`refreshUser(user)` on the server thread. These checks do not rebuild tops.
 
 `use-relationship-colors` colors top-list entries by guild relationship
 (same guild/allies/enemies), just like chat tags. The appearance of the
@@ -70,7 +88,6 @@ values themselves can additionally be graded by threshold in
 different color for players below and above 1500 points).
 
 :::note[Other options]
-`ranking-update-interval` (how often the ranking is recalculated),
 `kill-points-change-format` (the color of the point-change message),
 `damage-tracking.expire-time`/`max-tracks` (how long damage is remembered
 for assist purposes), `info-player-*` (viewing a player's stats on
@@ -83,7 +100,7 @@ head).
 ## Value formatting
 
 `value-formatting.user`, `value-formatting.guild` and `value-formatting.ping`
-configure placeholders ending in `-FORMAT`, independently of enabled top lists.
+configure placeholders ending in `-FORMAT`, independently of top-list queries.
 See [Configuration](/en/configuration/#numeric-value-formatting) for examples
 and range semantics.
 

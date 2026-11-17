@@ -57,11 +57,30 @@ Kilka niezależnych przełączników chroni przed sztucznym nabijaniem punktów:
 
 Sekcja `top` steruje rankingami (topkami) graczy i gildii, dostępnymi m.in.
 jako placeholdery `{PTOP-typ-x}`/`{GTOP-typ-x}` (patrz
-[Placeholdery](/placeholders/)). Każdy typ włączony w
-`enabled-user-tops`/`enabled-guild-tops` jest przeliczany osobno:
+[Placeholdery](/placeholders/)). Topy powstają przy pierwszym użyciu. Zmiana
+statystyki przestawia tylko wpis danego gracza i aktualizuje używane agregaty
+jego gildii. Dołączenie, odejście, zmiana nazwy i usunięcie również odświeżają
+odpowiednie wpisy. Nie ma okresowej przebudowy wszystkich topów.
+
+Opcja `ranking-update-interval` została usunięta. Listy `top.enabled-user-tops`
+i `top.enabled-guild-tops` są zachowane dla zgodności ze starą konfiguracją,
+ale nie ograniczają już typów: nowe statystyki z API są dostępne automatycznie.
 
 - Typy graczy: `points`, `kills`, `deaths`, `assists`, `logouts`, `kdr`, `kda`.
-- Typy gildii: jak wyżej oraz warianty średnie `avg_*` (np. `avg_points`, `avg_kdr`, `avg_kda`), a także `wars_won` i `war_streak`.
+- Typy gildii: jak wyżej oraz warianty średnie `avg_*` (np. `avg_points`, `avg_kdr`, `avg_kda`), a także `wars_won`, `wars_lost` i `war_streak`.
+
+Pozycja 1 oznacza najwyższą wartość. Remisy rozstrzyga nazwa bez uwzględniania
+wielkości liter, a następnie UUID. Gildie poniżej `guild-min-members` i gracze
+wykluczeni z rankingu zachowują statystyki, ale nie mają pozycji. Puste gildie
+nie uczestniczą w topach. Dotychczasowe średnie liczników gildii pozostają
+całkowite; średnie nowych statystyk z API mogą zawierać część ułamkową.
+
+Przy włączonym `skip-privileged-players-in-rank-positions` sprawdzanie
+`funnyguilds.ranking.exempt` odbywa się na wątku serwera. Co 40 ticków
+sprawdzani są gracze online i do 32 kolejnych graczy offline. Zmiana uprawnienia
+offline może więc być widoczna po dojściu do gracza w kolejce. Przeładowanie
+konfiguracji odświeża wszystkich; integracja może wywołać `refreshUser(user)`
+na wątku serwera. Te sprawdzenia nie przebudowują topów.
 
 `use-relationship-colors` koloruje wpisy topek według relacji gildyjnych
 (swoi/sojusznicy/wrogowie), tak jak tagi na czacie. Wygląd wartości można
@@ -70,7 +89,6 @@ dodatkowo stopniować progami w `format.ptop-value-formatting`/
 1500 punktów).
 
 :::note[Inne opcje]
-- `ranking-update-interval` — częstotliwość przeliczania rankingu.
 - `kill-points-change-format` — kolor komunikatu o zmianie punktów.
 - `damage-tracking.expire-time` / `max-tracks` — jak długo pamiętane są obrażenia na potrzeby asyst.
 - `info-player-*` — podgląd statystyk gracza po PPM.
@@ -81,7 +99,7 @@ dodatkowo stopniować progami w `format.ptop-value-formatting`/
 ## Formatowanie wartości
 
 `value-formatting.user`, `value-formatting.guild` oraz `value-formatting.ping`
-konfigurują placeholdery z końcówką `-FORMAT`, niezależnie od włączenia topek.
+konfigurują placeholdery z końcówką `-FORMAT`, niezależnie od odczytów topek.
 Przykłady i zasady zakresów opisuje [Konfiguracja](/configuration/#formatowanie-wartości-liczbowych).
 
 W topkach lokalne `{VALUE-FORMAT}` w `top.format.ptop`/`gtop` wybiera reguły tak:

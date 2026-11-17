@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
@@ -16,16 +16,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class TopPositionPlaceholderReplacement extends ComponentReplacement {
 
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z_]+)}");
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z0-9_:.-]+)}", Pattern.CASE_INSENSITIVE);
 
     private final MessageService messageService;
-    private final GuildRankManager guildRankManager;
+    private final RankService rankService;
     private final User targetUser;
 
-    TopPositionPlaceholderReplacement(MessageService messageService, GuildRankManager guildRankManager, User targetUser) {
+    TopPositionPlaceholderReplacement(MessageService messageService, RankService rankService, User targetUser) {
         super(PLACEHOLDER_PATTERN);
         this.messageService = messageService;
-        this.guildRankManager = guildRankManager;
+        this.rankService = rankService;
         this.targetUser = targetUser;
     }
 
@@ -49,7 +49,8 @@ public class TopPositionPlaceholderReplacement extends ComponentReplacement {
             return ComponentUtil.toComponent(0);
         }
 
-        int position = targetUser.getRank().getPosition(comparatorType);
+        int position = this.rankService.getUserRankTracker(comparatorType)
+                .flatMap(tracker -> tracker.findPositionByEntity(targetUser)).orElse(0);
         return ComponentUtil.toComponent(position);
     }
 
@@ -68,12 +69,8 @@ public class TopPositionPlaceholderReplacement extends ComponentReplacement {
             return minMembersToIncludeNoValue;
         }
 
-        Guild guild = guildOption.orElseThrow();
-        if (!this.guildRankManager.isRankedGuild(guild)) {
-            return minMembersToIncludeNoValue;
-        }
-
-        int position = guild.getRank().getPosition(comparatorType);
-        return ComponentUtil.toComponent(position);
+        return this.rankService.getGuildRankTracker(comparatorType)
+                .flatMap(tracker -> tracker.findPositionByEntity(guildOption.orElseThrow()))
+                .map(ComponentUtil::toComponent).orElse(minMembersToIncludeNoValue);
     }
 }

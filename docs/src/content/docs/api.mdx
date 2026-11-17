@@ -134,6 +134,49 @@ if (guildOption.isPresent()) {
 }
 ```
 
+### Statystyki i rankingi
+
+Nowe integracje powinny używać `FunnyGuilds#getRankService()` zamiast usuniętych
+`UserRankManager` i `GuildRankManager`. `Rank`, `UserRank`, `GuildRank` i stałe
+`DefaultTops` pozostają przestarzałymi adapterami; odczyt `getPosition(...)`
+deleguje do nowego serwisu. Pozycje są tylko do odczytu.
+
+Nowa statystyka wymaga jednej deklaracji typowanego klucza:
+
+```java
+public static final StatKey<Integer> ARENA_WINS = StatKey.integerStatKey("arena_wins");
+
+RankService ranks = funnyGuilds.getRankService();
+ranks.changeUserStatValue(user, ARENA_WINS, current -> current + 1);
+Optional<Integer> position = ranks.getUserTopPosition(user, ARENA_WINS);
+Optional<Double> average = ranks.getGuildStatValue(guild, ARENA_WINS, GuildStatAggregationType.AVERAGE);
+```
+
+Fabryki obsługują `Integer` i `Double`, także z przestrzenią nazw:
+`StatKey.doubleStatKey(Key.key("arena", "balance"))`. Topy, pozycje, sumy,
+średnie i zapis danych są dostępne bez dodawania komparatorów, wpisów do
+whitelisty lub kolejnych kolumn SQL. Wartości nowych statystyk zaczynają od
+zera. Dwa typy dla tego samego identyfikatora, `NaN` i nieskończoność są odrzucane.
+Przykładowe placeholdery to `{PTOP-arena_wins-1}`,
+`{POSITION-arena_wins}` i `{GTOP-avg_arena_wins-1}`.
+
+Metody `queueSetUserStatValue` i `queueChangeUserStatValue` zwracają
+`CompletableFuture`, także kończony wyjątkowo po błędzie aktualizacji lub
+odrzuceniu zadania. Aktualizacje są serializowane, a odczyt
+`RankTracker#findEntryByPosition` zwraca atomową parę użytkownik/gildia i wartość.
+`refreshUser(user)` należy wywoływać na wątku serwera, np. po zmianie uprawnienia
+wykluczającego z topu. Własne agregacje udostępnia `GuildStatAggregationType.create(...)`.
+
+Liczniki wojen należą do gildii: odczytuj je przez `GuildStatKeys` i agregację
+`TOTAL_INT`, a zmieniaj przez istniejące settery `Guild`. Nie są statystykami
+graczy. Ich topy aktualizują się po zmianie licznika.
+
+Dodatkowe statystyki użytkownika zapisuje pole `stats` w pliku lub kolumna
+`stats TEXT` w SQL, jako JSON z identyfikatorem, typem i wartością. Brakujące
+kolumny dodaje dotychczasowa migracja schematu. Stare dane nadal się wczytują;
+dotychczasowe kolumny liczników pozostają źródłem ich wartości. KDR/KDA i agregaty
+gildii są wyliczane, bez zapisywania dodatkowych kopii.
+
 ### Przedmioty i wymagania
 
 Konfiguracja przedmiotów z `items.yml` jest dostępna bezpośrednio z instancji pluginu:

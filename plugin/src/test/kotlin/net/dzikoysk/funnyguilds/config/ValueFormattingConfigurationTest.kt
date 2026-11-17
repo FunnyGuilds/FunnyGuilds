@@ -16,10 +16,14 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
+import java.io.File
 
 class ValueFormattingConfigurationTest {
 
     class SampleConfig : OkaeriConfig() {
+        // Okaeri load(File) does not close its input stream. Own it so JUnit can clean up on Windows.
+        override fun load(file: File): OkaeriConfig = file.inputStream().use { super.load(it) }
+
         @JvmField
         @CustomKey("value-formatting")
         var valueFormatting = ValueFormattingConfiguration()
