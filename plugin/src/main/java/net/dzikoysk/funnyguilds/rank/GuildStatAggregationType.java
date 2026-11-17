@@ -3,11 +3,11 @@ package net.dzikoysk.funnyguilds.rank;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildStatKeys;
-import java.util.Optional;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.kyori.adventure.key.Key;
@@ -71,8 +71,20 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
 
     public static final GuildStatAggregationType<Integer> AVERAGE_INT = new GuildStatAggregationType<>(
             "guild_stat_aggregation_average_int", Integer.class,
-            (service, guild, key) -> guild.getMembers().isEmpty() ? 0
-                    : TOTAL_INT.computeValue(service, guild, key) / guild.getMembers().size()
+            (service, guild, key) -> {
+                Collection<User> members = guild.getMembers();
+                if (members.isEmpty()) {
+                    return 0;
+                }
+                int total = 0;
+                for (User member : members) {
+                    total += service.getUserStatValue(
+                            member,
+                            key
+                    ).map(Number::intValue).orElse(0);
+                }
+                return total / members.size();
+            }
     );
 
     public static final Collection<GuildStatAggregationType<?>> VALUES = ImmutableList.of(

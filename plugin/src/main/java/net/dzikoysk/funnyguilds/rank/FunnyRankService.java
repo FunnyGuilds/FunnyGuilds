@@ -88,26 +88,50 @@ final class FunnyRankService implements RankService {
     }
 
     private void updateRatio(User user, StatKey<Double> key) {
-        this.getUserRankTracker(key).setValue(user, this.initialValue(user, key));
+        UserRankTracker<Double> tracker = this.getUserRankTracker(key);
+        Double updated = this.initialValue(user, key);
+        if (tracker.valueOfEntity(user).map(current -> Objects.equals(current, updated)).orElse(false)) {
+            return;
+        }
+        tracker.setValue(user, updated);
         this.updateGuildStats(user, key);
     }
 
     private void updateGuildStats(User user, StatKey<?> key) {
         user.getGuild().ifPresent(guild -> {
-            if (this.guildManager.findByUuid(guild.getUUID()).orElse(null) == guild) {
-                this.guildTrackers.forEach((aggregation, trackers) -> {
-                    if (trackers.containsKey(key)) {
-                        this.updateGuildStat(guild, key, aggregation);
-                    }
-                });
+            if (this.guildManager.findByUuid(guild.getUUID()).orElse(null) != guild) {
+                return;
+            }
+            boolean changed = false;
+            for (Map.Entry<GuildStatAggregationType<?>, Map<StatKey<?>, GuildRankTracker<?>>> trackers : this.guildTrackers.entrySet()) {
+                if (trackers.getValue().containsKey(key) && this.updateGuildStat(guild, key, trackers.getKey())) {
+                    changed = true;
+                }
+            }
+            // The guild row persists the average of member points. When its tracker is not
+            // materialized yet there is nothing to compare against, so dirty the row conservatively -
+            // the serializer recomputes the average fresh at save time, which also materializes
+            // the tracker for subsequent writes. Aggregates that nothing persists never dirty the row.
+            if (key.equals(UserStatKeys.POINTS)) {
+                GuildRankTracker<?> averageTracker = this.guildTrackers
+                        .getOrDefault(GuildStatAggregationType.AVERAGE_INT, Collections.emptyMap())
+                        .get(UserStatKeys.POINTS);
+                changed |= averageTracker == null
+                        || this.updateGuildStat(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT);
+            }
+            if (changed) {
                 guild.markChanged();
             }
         });
     }
 
-    private <T extends Number, R extends Number> void updateGuildStat(
+    private <T extends Number, R extends Number> boolean updateGuildStat(
             Guild guild, StatKey<T> key, GuildStatAggregationType<R> aggregation) {
-        this.getGuildRankTracker(key, aggregation).setValue(guild, aggregation.computeValue(this, guild, key));
+        GuildRankTracker<R> tracker = this.getGuildRankTracker(key, aggregation);
+        R value = aggregation.computeValue(this, guild, key);
+        boolean changed = tracker.valueOfEntity(guild).map(current -> !Objects.equals(current, value)).orElse(true);
+        tracker.setValue(guild, value);
+        return changed;
     }
 
     @Override
@@ -148,6 +172,9 @@ final class FunnyRankService implements RankService {
     }
 
     private boolean isTrackedUser(User user) {
+        // Every registered user gets an eligibility entry (constructor seed and addUser -> refreshUser),
+        // and writes require registration, so the default only covers exotic races - unknown users
+        // are treated as ranked rather than silently dropped from tops.
         return this.userManager.findByUuid(user.getUUID()).orElse(null) == user
                 && this.userEligibility.getOrDefault(user.getUUID(), true);
     }

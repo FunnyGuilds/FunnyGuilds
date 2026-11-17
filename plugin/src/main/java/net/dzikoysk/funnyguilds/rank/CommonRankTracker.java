@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import panda.std.Pair;
@@ -96,11 +95,6 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
         if (this.rankingInitialized) {
             this.ranking.sort(this::compare);
         }
-    }
-
-    synchronized T changeValue(E entity, UnaryOperator<T> valueChange) {
-        T current = this.valueOfEntity(entity).orElseGet(this.statKey::zero);
-        return this.setValue(entity, valueChange.apply(current));
     }
 
     synchronized T setValue(E entity, T value) {

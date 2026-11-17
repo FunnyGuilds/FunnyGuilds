@@ -62,6 +62,9 @@ public interface StatKey<T extends Number> extends Keyed {
         if (key.getValueType() != Integer.class && key.getValueType() != Double.class) {
             throw new IllegalArgumentException("Unsupported statistic type " + key.getValueType());
         }
+        // The registry is static and never cleared: keys registered at runtime (including custom
+        // statistics deserialized from storage) live for the whole plugin lifetime. Tests should
+        // use unique key names, since registry state is shared across test classes.
         StatKey<?> existing = Registry.KEYS.putIfAbsent(key.key(), key);
         if (existing != null && existing.getValueType() != key.getValueType()) {
             throw new IllegalArgumentException("Conflicting value types for statistic " + key.key());
@@ -95,7 +98,7 @@ public interface StatKey<T extends Number> extends Keyed {
                 return false;
             }
             CommonStatKey<?> that = (CommonStatKey<?>) o;
-            return Objects.equals(this.key, that.key);
+            return Objects.equals(this.key, that.key) && Objects.equals(this.getValueType(), that.getValueType());
         }
 
         @Override

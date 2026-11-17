@@ -9,8 +9,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval
-
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0")
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;

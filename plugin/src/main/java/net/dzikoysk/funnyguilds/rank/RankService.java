@@ -44,6 +44,12 @@ public interface RankService extends AutoCloseable {
 
     <T extends Number> T changeUserStatValue(User user, StatKey<T> key, UnaryOperator<T> updateFunction);
 
+    /**
+     * Schedules a write of an absolute value captured at enqueue time. If a newer value is written
+     * synchronously before the queue is drained, the queued write will overwrite it with the stale
+     * capture - prefer {@link #queueChangeUserStatValue(User, StatKey, UnaryOperator)} when writes
+     * may interleave.
+     */
     <T extends Number> CompletableFuture<T> queueSetUserStatValue(User user, StatKey<T> key, T value);
 
     <T extends Number> CompletableFuture<T> queueChangeUserStatValue(User user, StatKey<T> key, UnaryOperator<T> updateFunction);
@@ -69,6 +75,9 @@ public interface RankService extends AutoCloseable {
     }
 
     default Optional<RankTracker<Guild, ?>> getGuildRankTracker(String top) {
+        // The avg_ prefix selects the average aggregation of a base statistic. A custom statistic
+        // literally named "avg_something" whose base "something" also exists would resolve to that
+        // average instead - keep custom statistic names unambiguous.
         String normalized = top.toLowerCase(Locale.ROOT);
         boolean average = normalized.startsWith("avg_") || normalized.startsWith("avg-");
         String stat = average ? normalized.substring(4) : normalized;

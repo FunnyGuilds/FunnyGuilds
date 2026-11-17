@@ -13,7 +13,9 @@ import net.dzikoysk.funnyguilds.IdentifiableEntity;
 public interface TopTracker<E extends IdentifiableEntity> {
 
     /**
-     * @return the collection of UUIDs of entities included in the top rankings
+     * @return the entities included in the top rankings, ordered from the first to the last position;
+     * entities that no longer resolve (e.g. removed outside of their manager) are filtered out,
+     * so this collection may be shorter than what {@link #countEntitiesInTop()} reports
      * @see #isEntityIncludedInTop(E)
      */
     Collection<E> entitiesInTop();

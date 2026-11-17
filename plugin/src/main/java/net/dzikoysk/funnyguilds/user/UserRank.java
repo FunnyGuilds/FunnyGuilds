@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0")
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     UserRank(User user) {
@@ -170,7 +170,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     @Override
     public float getKDR() {
-           int kills = this.getKills();
+        int kills = this.getKills();
         int deaths = this.getDeaths();
         return deaths == 0
                 ? kills

@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.rank;
 import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0")
 public final class DefaultTops {
 
     public static final String USER_POINTS_TOP = "points";

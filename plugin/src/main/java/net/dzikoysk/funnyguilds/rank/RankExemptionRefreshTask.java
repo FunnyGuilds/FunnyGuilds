@@ -11,7 +11,13 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.Bukkit;
 
-/** Checks external permission changes on the server thread without rebuilding any top. */
+/**
+ * Checks external permission changes on the server thread without rebuilding any top.
+ * <p>
+ * Exemption flips are detected through the points tracker's inclusion state: eligibility is global
+ * (a single map consulted by every tracker), so an inclusion flip observed on the points tracker
+ * implies a change visible to all trackers; refreshing the user then re-evaluates each of them.
+ */
 public final class RankExemptionRefreshTask implements Runnable {
 
     private final PluginConfiguration config;

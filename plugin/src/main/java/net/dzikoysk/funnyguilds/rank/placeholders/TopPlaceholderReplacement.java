@@ -55,7 +55,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
 
                 Optional<Integer> indexOption = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(indexString));
                 if (indexOption.isEmpty()) {
-                    FunnyGuilds.getPluginLogger().error(indexString + "is invalid " + topType + " index!");
+                    FunnyGuilds.getPluginLogger().error(indexString + " is invalid " + topType + " index!");
                     return this.messageService.getComponent(this.targetUser, config -> topType.equalsIgnoreCase("PTOP") ? config.ptopNoValue : config.gtopNoValue);
                 }
 

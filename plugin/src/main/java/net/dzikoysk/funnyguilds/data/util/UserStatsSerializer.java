@@ -44,10 +44,16 @@ public final class UserStatsSerializer {
             return;
         }
         RankService service = FunnyGuilds.getInstance().getRankService();
+        // Keys unknown to this session (custom statistics or hand-edited entries) are intentionally
+        // registered: dropping them would silently lose stored data of custom statistics. Unknown
+        // entries produce a warning below and, if kept, only surface as single-entity tops.
         for (Map.Entry<String, JsonElement> entry : values.entrySet()) {
             try {
                 JsonObject stat = entry.getValue().getAsJsonObject();
-                Key identity = Key.key(entry.getKey());
+                // Serialized keys are always namespaced; normalize bare keys from hand-edited
+                // payloads into the plugin namespace instead of Adventure's minecraft default.
+                String name = entry.getKey();
+                Key identity = name.indexOf(':') >= 0 ? Key.key(name) : Key.key(FunnyGuilds.NAMESPACE, name);
                 String type = stat.get("type").getAsString();
                 if ("integer".equals(type)) {
                     StatKey<Integer> key = StatKey.integerStatKey(identity);

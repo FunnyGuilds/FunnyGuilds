@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval
+@ApiStatus.ScheduledForRemoval(inVersion = "5.0")
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     GuildRank(Guild guild) {

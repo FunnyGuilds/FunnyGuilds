@@ -16,7 +16,7 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
 
     private final UserCache cache;
     private final UserRank rank;
-    private Optional<Guild> guild = Optional.empty();
+    private volatile Optional<Guild> guild = Optional.empty();
     private Optional<UserBan> ban = Optional.empty();
     private String lastIP;
 

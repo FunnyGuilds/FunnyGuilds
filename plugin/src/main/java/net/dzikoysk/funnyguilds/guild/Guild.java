@@ -3,15 +3,17 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -52,7 +54,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     private Optional<String> lastWarGuildTag = Optional.empty();
     private Optional<Instant> lastLifeBuy = Optional.empty();
     private int warStreak;
-    private final java.util.Map<UUID, Instant> victimGainCooldowns = new ConcurrentHashMap<>();
+    private final Map<UUID, Instant> victimGainCooldowns = new ConcurrentHashMap<>();
 
     public Guild(UUID uuid, String name, String tag) {
         this.uuid = uuid != null ? uuid : UUID.randomUUID();
@@ -88,7 +90,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setName(String name) {
         this.name = name;
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public String getTag() {
@@ -219,7 +221,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
             this.members.forEach(user -> user.setGuild(this));
         }
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public void addMember(User user) {
@@ -232,7 +234,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
             return;
         }
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public void removeMember(User user) {
@@ -245,7 +247,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
             return;
         }
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public Collection<User> getDeputies() {
@@ -473,7 +475,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setWarsWon(int warsWon) {
         this.warsWon = Math.max(0, warsWon);
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public void updateWarsWon(IntFunction<Integer> update) {
@@ -487,7 +489,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setWarsLost(int warsLost) {
         this.warsLost = Math.max(0, warsLost);
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public void updateWarsLost(IntFunction<Integer> update) {
@@ -510,7 +512,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setWarStreak(int warStreak) {
         this.warStreak = Math.max(0, warStreak);
         this.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+        this.refreshRankings();
     }
 
     public void updateWarStreak(IntFunction<Integer> update) {
@@ -559,6 +561,15 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     @Override
     public EntityType getType() {
         return EntityType.GUILD;
+    }
+
+    private void refreshRankings() {
+        // The rank service is created before any guild is loaded, but guard anyway so that
+        // entities built before plugin load (e.g. in tests) never trip over a null service.
+        RankService rankService = FunnyGuilds.getInstance().getRankService();
+        if (rankService != null) {
+            rankService.refreshGuild(this);
+        }
     }
 
     @Override
