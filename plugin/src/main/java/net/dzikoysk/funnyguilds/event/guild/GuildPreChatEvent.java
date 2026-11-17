@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.event.guild;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +14,8 @@ public class GuildPreChatEvent extends GuildEvent {
     private static final HandlerList handlers = new HandlerList();
     private final GuildChatEvent.Type type;
     private final Set<Guild> receivers;
-    private String message;
+    private final Component inputMessage;
+    private Component formattedMessage;
 
     @Override
     public @NotNull HandlerList getHandlers() {
@@ -24,11 +26,13 @@ public class GuildPreChatEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildPreChatEvent(EventCause eventCause, @Nullable User doer, Guild guild, GuildChatEvent.Type type, Set<Guild> receivers, String message) {
+    public GuildPreChatEvent(EventCause eventCause, @Nullable User doer, Guild guild, GuildChatEvent.Type type, Collection<Guild> receivers,
+                             Component inputMessage, Component formattedMessage) {
         super(eventCause, doer, guild);
         this.type = type;
-        this.receivers = new HashSet<>(receivers);
-        this.message = message;
+        this.receivers = Set.copyOf(receivers);
+        this.inputMessage = inputMessage;
+        this.formattedMessage = formattedMessage;
     }
 
     public GuildChatEvent.Type getType() {
@@ -38,13 +42,17 @@ public class GuildPreChatEvent extends GuildEvent {
     public Set<Guild> getReceivers() {
         return this.receivers;
     }
-
-    public String getMessage() {
-        return this.message;
+    
+    public Component getInputMessage() {
+        return this.inputMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public Component getFormattedMessage() {
+        return this.formattedMessage;
+    }
+
+    public void setFormattedMessage(Component formattedMessage) {
+        this.formattedMessage = formattedMessage;
     }
 
     @Override

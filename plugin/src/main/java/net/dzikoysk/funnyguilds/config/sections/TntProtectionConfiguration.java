@@ -8,6 +8,9 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import net.dzikoysk.funnyguilds.config.FunnyTime;
+import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
+import org.bukkit.entity.EntityType;
+import java.util.Set;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TntProtectionConfiguration extends OkaeriConfig {
@@ -22,6 +25,10 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @Comment("")
         @Comment("Czy włączyć ochronę przed TNT na całym serwerze w podanych godzinach")
         public boolean enabledGlobal = false;
+
+        @Comment("")
+        @Comment("Lista entity, dla których NIE JEST włączona ochrona przed wybuchami")
+        public Set<EntityType> exemptEntities = EntityUtils.parseEntityTypes(true);
 
         @Comment("")
         @Comment("O której godzinie ma sie zacząć ochrona przed TNT")

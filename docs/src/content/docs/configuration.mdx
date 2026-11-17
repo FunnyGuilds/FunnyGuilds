@@ -1,0 +1,222 @@
+---
+title: Konfiguracja
+description: Typy wartości używane w konfiguracji FunnyGuilds.
+---
+
+Oprócz typów wbudowanych (String, Int, boolean...) FunnyGuilds ma kilka
+własnych typów wartości konfiguracyjnych. Ta strona zbiera je wszystkie razem
+z możliwymi wartościami i przykładami. Opis konkretnej opcji znajduje się na
+stronie funkcji, której dotyczy (np. [Gildie](/guilds/) czy
+[Tereny i ochrona](/territories/)).
+
+## Ochrona tożsamości graczy
+
+Kontrola konfliktów przy starcie jest opcjonalna i domyślnie wyłączona.
+W `config.yml` można ją włączyć przez:
+
+```yaml
+prevent-uuid-conflicts: true # domyślnie: false
+```
+
+Włączona kontrola szuka identycznego nicku zapisanego z różnymi UUID w plikach
+YAML lub bazie SQL, zanim wczyta graczy i gildie. Wielkość liter ma znaczenie:
+`Steve` i `steve` mogą być osobnymi kontami na serwerze offline-mode.
+Konflikt przerywa uruchamianie FunnyGuilds bez wpływu na start reszty serwera.
+Plugin nie scala ani nie usuwa automatycznie kont i nie zapisuje częściowo
+wczytanych danych. Przy włączonej kontroli nieczytelne pliki YAML lub brakujące
+dane tożsamości w YAML również zatrzymują ładowanie z krótkim podsumowaniem.
+Przy wyłączonej kontroli nieczytelne pliki YAML są pomijane z podsumowaniem błędów.
+
+Ta opcja nie blokuje logowania, tworzenia kont ani zmian nicku. Inne konto może
+użyć dawnego nicku gracza, który zmienił nazwę poza serwerem. Ponieważ oba konta
+mogą pozostać zapisane pod identyczną nazwą aż do ponownego wejścia poprzedniego
+właściciela, włączona kontrola może zatrzymać kolejny start. Na serwerach, gdzie
+taki stan jest prawidłowy, pozostaw `prevent-uuid-conflicts: false`.
+FunnyGuilds nie zastępuje pluginu uwierzytelniającego ani jego zasad dotyczących nicków.
+
+Sposób bezpiecznego rozstrzygnięcia konfliktu opisuje [FAQ](/faq/#konflikt-nicku-i-uuid).
+
+## Regex
+
+Typ używany do walidacji Stringów — nazw, tagów itd.
+
+Predefiniowane wartości:
+
+| Wartość                      | Opis                                                              |
+| :---------------------------- | :----------------------------------------------------------------- |
+| `LOWERCASE`                  | tylko małe litery                                                  |
+| `UPPERCASE`                  | tylko wielkie litery                                               |
+| `DIGITS`                     | tylko cyfry                                                        |
+| `LOWERCASE_DIGITS`           | małe litery i cyfry                                                |
+| `UPPERCASE_DIGITS`           | wielkie litery i cyfry                                             |
+| `LETTERS`                    | małe i wielkie litery                                              |
+| `LETTERS_DIGITS`             | małe i wielkie litery oraz cyfry                                   |
+| `LETTERS_DIGITS_UNDERSCORE`  | małe i wielkie litery, cyfry oraz podkreślnik                      |
+
+Dla tego typu można też podać własne wyrażenie regularne (do jego
+przetestowania służy np. [regex101](https://regex101.com/)).
+
+## Duration
+
+Format: `<wartość><jednostka><wartość><jednostka><...>`
+
+Jednostki:
+- `s` — sekundy
+- `m` — minuty
+- `h` — godziny
+- `d` — dni
+
+Przykład: `1m30s` — 1,5 minuty.
+
+## Material
+
+Nazwa materiału Bukkita (bloku lub przedmiotu), np. `DIAMOND` lub
+`ender_crystal` — wielkość liter nie ma znaczenia. Pełna lista nazw
+znajduje się w [dokumentacji `org.bukkit.Material`](https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html).
+
+## ItemStack
+
+Format: `<ilość> <MATERIAL>[:<data>] [atrybut:wartość] [atrybut:wartość] ...`
+
+Atrybuty (wszystkie opcjonalne, w dowolnej kolejności):
+
+| Atrybut | Wartość | Opis |
+|---|---|---|
+| `name` / `displayname` | tekst | Nazwa przedmiotu (kolory `&`, `_` zamienia się na spację) |
+| `lore` | `linia1#linia2#...` | Opis przedmiotu, linie oddzielone `#` |
+| `enchant` / `enchantment` | `ZAKLĘCIE:poziom` | Pojedyncze zaklęcie |
+| `enchants` / `enchantments` | `E1:l1,E2:l2` | Kilka zaklęć naraz |
+| `skullowner` | nick | Właściciel czaszki gracza |
+| `flags` / `itemflags` | `FLAGA1,FLAGA2` | Flagi przedmiotu (`ItemFlag`) |
+| `armorcolor` | `r_g_b` | Kolor skórzanej zbroi |
+
+Przykład: `1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze` — utworzy
+diament o nazwie „Nagroda za pierwsza gildie na serwerze”.
+
+Nazwy i lore przedmiotów domyślnie nie są pisane kursywą. Dotyczy to także
+definicji w `guild-item-library` w pliku `items.yml` oraz tekstów przedmiotów
+w GUI. Kursywę można włączyć jawnie, np. `<italic>Złoty klucz</italic>`.
+
+## Requirements
+
+```yaml
+# priority: <wartość> (od 0 do 127) # 1*
+items: (/configuration/#itemstack)
+- <przedmiot 1>
+- <przedmiot 2>
+- ...
+exp: <wartość>
+money: <wartość> (wymagany plugin Vault)
+# ranking: <wartość> # 2*
+```
+
+1\* — priorytet należy podać tylko wtedy, gdy wymagania zależą od
+posiadanych uprawnień.
+
+2\* — wartość rankingu należy podać tylko tam, gdzie ma ona zastosowanie —
+np. przy zakładaniu gildii lub dołączaniu do niej.
+
+## Formatowanie wartości liczbowych
+
+Sekcja `value-formatting` w `config.yml` ustawia wygląd placeholderów z końcówką
+`-FORMAT`. Mapy `user` i `guild` używają identyfikatorów statystyk, np. `points`,
+`kdr`, `avg_points`, `wars_won`. Lista `ping` dotyczy pingu gracza.
+
+```yaml
+value-formatting:
+  user:
+    points:
+      - '*-749 &4{VALUE}'
+      - '750-999 &c{VALUE}'
+      - '1000-1499 &a{VALUE}'
+      - '1500-* &6&l{VALUE}'
+    kills: []
+    deaths: []
+    assists: []
+    logouts: []
+    kdr:
+      - '0.0-1.0 &c{VALUE}'
+      - '1.0-2.0 &e{VALUE}'
+      - '2.0-* &a{VALUE}'
+    kda: []
+  guild:
+    points:
+      - '*-749 &4{VALUE}'
+      - '750-999 &c{VALUE}'
+      - '1000-1499 &a{VALUE}'
+      - '1500-* &6&l{VALUE}'
+    kills: []
+    deaths: []
+    assists: []
+    logouts: []
+    kdr: []
+    kda: []
+    avg_points:
+      - '*-999 &c{VALUE}'
+      - '1000-* &a{VALUE} punktów'
+    avg_kills: []
+    avg_deaths: []
+    avg_assists: []
+    avg_logouts: []
+    avg_kdr: []
+    avg_kda: []
+    wars_won: []
+    wars_lost: []
+    war_streak: []
+  ping:
+    - '0-75 &a{VALUE}'
+    - '76-150 &e{VALUE}'
+    - '151-* &c{VALUE}'
+```
+
+Wpis ma postać `min-max szablon`. Szablon może zawierać spacje, kolory legacy,
+hex i MiniMessage; podstawiane jest tylko lokalne `{VALUE}`. Inne placeholdery
+oraz PAPI nie są rozwijane wewnątrz reguły.
+
+Pierwszy pasujący wpis wygrywa, również przy nakładających się lub identycznych
+zakresach. Dwie granice całkowite są włączne (`0-1` obejmuje `1`). Jeżeli choć
+jedna granica jest dziesiętna, prawa granica jest wyłączna (`0.0-1.0` nie obejmuje
+`1`). Dla KDR/KDA używaj zapisu dziesiętnego. `*` oznacza granicę typu `int`
+(od −2147483648 do 2147483647); ujemny zakres zapisuje się np. `*--1`.
+
+Próg jest wybierany przed zaokrągleniem. Nowe warianty `-FORMAT` pokazują liczby
+ułamkowe z kropką i dwoma miejscami, także gdy żadna reguła nie pasuje.
+Brak klucza, `[]` lub luka w zakresach zwracają zwykłą wartość. Brak gildii daje
+neutralne `0` lub `0.00`, bez kolorowania jak rzeczywisty wynik zerowy.
+Ping jest przekazywany bez zmiany: profil Bukkit dla offline zwraca `0`, inne
+profile mogą zwrócić `-1`; zakres ujemny można opisać osobną regułą.
+
+Domyślnie kolorowane są punkty gracza, suma i średnia punktów gildii
+(do 749: ciemnoczerwony, 750–999: czerwony, 1000–1499: zielony, od 1500: złoty
+pogrubiony) oraz ping (0–75: zielony, 76–150: żółty, od 151: czerwony).
+Wygenerowana konfiguracja zawiera wpisy dla wszystkich wymienionych statystyk.
+Pozostałe statystyki mają domyślnie puste listy `[]` i są neutralne — zastąp je
+własnymi regułami, aby ustawić progi i kolory (jak dla KDR w przykładzie).
+Dotychczasowe placeholdery
+bez `-FORMAT` oraz domyślne komunikaty zachowują wygląd.
+
+Błędny zapis, brak szablonu, odwrócony lub pusty zakres ułamkowy przerywają
+wczytywanie z informacją o miejscu błędu. Dotyczy to również istniejących list
+formatowania topek, zmian punktów i stałych ELO. Poprawne starsze zakresy pozostają
+obsługiwane, w tym dolna granica `-*`; zalecany zapis to `*`.
+Po zmianie użyj `/funnyguilds reload`. Reguły są podmieniane razem po poprawnej
+walidacji; nieudane przeładowanie pozostawia poprzedni zestaw reguł formatowania.
+Nie oznacza to transakcyjnego przeładowania pozostałych ustawień pluginu.
+
+Przenosząc konfigurację 4.9.x, skopiuj `points-format` do odpowiednich map
+`value-formatting.user`/`guild`, a `ping-format` do `value-formatting.ping`.
+W szablonach zamień `{POINTS}` lub `{PING}` na `{VALUE}`. Nie ma automatycznej
+migracji całej konfiguracji 4.x. Zasady dziedziczenia topek opisują
+[Rankingi i walka](/rankings-combat/#formatowanie-wartości).
+
+## Konfiguracja rankingów po aktualizacji
+
+`ranking-update-interval` został usunięty: zmiany statystyk aktualizują topy
+bez okresowej przebudowy. `top.enabled-user-tops` i `top.enabled-guild-tops`
+pozostają zgodnymi polami starszej konfiguracji, ale nie są już whitelistami.
+Nowe statystyki z API są dostępne automatycznie; formaty w `top.format` oraz
+`value-formatting` nadal obowiązują.
+
+Dodatkowe statystyki zapisują się w polu użytkownika `stats` (plik lub kolumna
+SQL). Nie trzeba dodawać osobnej opcji ani kolumny dla każdego nowego licznika.
+Szczegóły: [Rankingi i walka](/rankings-combat/) oraz [API](/api/).

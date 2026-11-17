@@ -5,8 +5,8 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import java.time.LocalTime;
 import net.dzikoysk.funnyguilds.config.FunnyTime;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
 
 public class FunnyTimeTransformer extends BidirectionalTransformer<String, FunnyTime> {
 
@@ -23,7 +23,7 @@ public class FunnyTimeTransformer extends BidirectionalTransformer<String, Funny
         }
 
         // something went wrong, probably yaml spec, whoopsie... https://noyaml.com/
-        int value = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(data)).orThrow(() -> {
+        int value = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(data)).orElseThrow(() -> {
             return new IllegalArgumentException("Cannot resolve time from " + data + ", it is not a valid integer");
         });
 

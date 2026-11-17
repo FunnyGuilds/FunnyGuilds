@@ -1,0 +1,44 @@
+---
+title: Wprowadzenie
+description: Czym jest FunnyGuilds i co potrafi — plugin RPG do gildii dla serwerów Minecraft.
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+**FunnyGuilds** to konfigurowalny plugin gildyjny dla serwerów Minecraft
+opartych na Paperze. Gracze zakładają gildie, przejmują tereny,
+zawierają sojusze i rywalizują w rankingach; administrator konfiguruje każdy
+z tych elementów osobno.
+
+## Od czego zacząć
+
+<CardGrid>
+	<LinkCard title="Konfiguracja" description="Podstawowe ustawienia i pliki konfiguracyjne." href="/configuration/" />
+	<LinkCard title="Komendy" description="Pełna lista komend gracza i administratora." href="/commands/" />
+	<LinkCard title="Uprawnienia" description="Spis wszystkich uprawnień pluginu." href="/permissions/" />
+	<LinkCard title="FAQ" description="Odpowiedzi na najczęściej zadawane pytania." href="/faq/" />
+</CardGrid>
+
+:::note[Wersja 5.x]
+Dokumentacja opisuje FunnyGuilds **5.x**. Seria wymaga Papera 1.21.5+ oraz Javy 21
+i nie wczytuje konfiguracji z 4.x. Serwery na starszych wersjach Minecrafta
+obsługuje [4.14.0](/download/).
+:::
+
+## Integracje
+
+FunnyGuilds automatycznie wykrywa i wykorzystuje poniższe pluginy, jeśli są
+zainstalowane:
+
+<CardGrid>
+	<LinkCard title="WorldGuard i WorldEdit" description="Własne flagi WorldGuarda i wklejanie schematów przez WorldEdit." href="/worldguard-worldedit/" />
+	<LinkCard title="Vault" description="Ekonomia i sprawdzanie uprawnień graczy offline." href="/vault/" />
+	<LinkCard title="PlaceholderAPI" description="Placeholdery FunnyGuilds dostępne dla innych pluginów." href="/placeholderapi/" />
+	<LinkCard title="dynmap" description="Znaczniki terenów gildii na mapie dynmap." href="/dynmap/" />
+	<LinkCard title="DecentHolograms" description="Hologram nad sercem gildii." href="/decentholograms/" />
+</CardGrid>
+
+## Społeczność
+
+Pytania i dyskusje: [Discord](https://discord.gg/CYvyq3u).
+Błędy i propozycje zmian: [GitHub](https://github.com/FunnyGuilds/FunnyGuilds/issues).

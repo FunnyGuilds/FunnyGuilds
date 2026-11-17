@@ -10,15 +10,10 @@ import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.SafeUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 public final class Reflections {
-
-    public static boolean USE_PRE_13_METHODS;
-    public static boolean USE_PRE_12_METHODS;
-    public static boolean USE_PRE_9_METHODS;
 
     private static String CRAFTBUKKIT_PACKAGE;
     private static final String NMS_PACKAGE = "net.minecraft";
@@ -37,21 +32,8 @@ public final class Reflections {
     }
 
     public static void prepareServerVersion() {
-        Server server = Bukkit.getServer();
-
-        int versionNumber = Integer.parseInt(server.getBukkitVersion().split("-")[0].split("\\.")[1]);
-
-        USE_PRE_13_METHODS = versionNumber < 13;
-        USE_PRE_12_METHODS = versionNumber < 12;
-        USE_PRE_9_METHODS = versionNumber < 9;
-
-        CRAFTBUKKIT_PACKAGE = server.getClass().getPackage().getName();
-        if (versionNumber < 17) {
-            NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE + ".server." + CRAFTBUKKIT_PACKAGE.split("\\.")[3];
-        }
-        else {
-            NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE;
-        }
+        CRAFTBUKKIT_PACKAGE = Bukkit.getServer().getClass().getPackage().getName();
+        NMS_WITH_VERSION_PACKAGE = NMS_PACKAGE;
     }
 
     public static Class<?> getClassOmitCache(String className) {

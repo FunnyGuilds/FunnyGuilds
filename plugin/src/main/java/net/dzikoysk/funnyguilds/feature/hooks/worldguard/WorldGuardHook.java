@@ -5,16 +5,15 @@ import com.sk89q.worldguard.protection.flags.EnumFlag;
 import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import org.bukkit.Location;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public abstract class WorldGuardHook extends AbstractPluginHook {
 
@@ -42,56 +41,50 @@ public abstract class WorldGuardHook extends AbstractPluginHook {
 
     protected abstract void registerFlags(Flag<?>... flags);
 
-    public abstract Option<ApplicableRegionSet> getRegionSet(Location location);
+    public abstract Optional<ApplicableRegionSet> getRegionSet(Location location);
 
     public Set<ProtectedRegion> getRegions(Location location) {
-        return this.getRegionSet(location).toStream()
-                .flatMap(ApplicableRegionSet::getRegions)
+        return this.getRegionSet(location).stream()
+                .flatMap(regionSet -> regionSet.getRegions().stream())
                 .filter(Objects::nonNull)
-                .toSet();
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public List<String> getRegionNames(Location location) {
-        return PandaStream.of(this.getRegions(location))
+        return this.getRegions(location).stream()
                 .map(ProtectedRegion::getId)
                 .toList();
     }
 
     public boolean isInRegion(Location location) {
-        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
-        if (regionSet.isEmpty()) {
-            return false;
-        }
-        return regionSet.get().size() != 0;
+        return this.getRegionSet(location)
+                .map(regionSet -> regionSet.size() != 0)
+                .orElse(false);
     }
 
     public boolean isInNonPointsRegion(Location location) {
-        return PandaStream.of(this.getRegions(location))
-                .find(region -> region.getFlag(this.noPointsFlag) == StateFlag.State.ALLOW)
-                .isPresent();
+        return this.getRegions(location).stream()
+                .anyMatch(region -> region.getFlag(this.noPointsFlag) == StateFlag.State.ALLOW);
     }
 
     public boolean isInNonAssistsRegion(Location location) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return PandaStream.of(this.getRegions(location))
-                .find(region -> region.getFlag(this.noAssistsFlag) == StateFlag.State.ALLOW
-                        || config.assistsRegionsIgnored.contains(region.getId()))
-                .isPresent();
+        return this.getRegions(location).stream()
+                .anyMatch(region -> region.getFlag(this.noAssistsFlag) == StateFlag.State.ALLOW);
     }
 
     public boolean isInNonGuildsRegion(Location location) {
-        return PandaStream.of(this.getRegions(location))
-                .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
-                .isPresent();
+        return this.getRegions(location).stream()
+                .anyMatch(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW);
     }
 
     public FriendlyFireStatus getFriendlyFireStatus(Location location) {
-        return PandaStream.of(this.getRegions(location))
+        return this.getRegions(location).stream()
                 .map(region -> region.getFlag(this.friendlyFireFlag))
                 .filter(Objects::nonNull)
                 .filter(friendlyFireStatus -> friendlyFireStatus != FriendlyFireStatus.INHERIT)
-                .head()
-                .orElseGet(FriendlyFireStatus.INHERIT);
+                .findFirst()
+                .orElse(FriendlyFireStatus.INHERIT);
     }
 
     public enum FriendlyFireStatus {

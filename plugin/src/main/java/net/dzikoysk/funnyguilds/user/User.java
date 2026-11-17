@@ -1,11 +1,13 @@
 package net.dzikoysk.funnyguilds.user;
 
+import java.util.Optional;
 import java.util.UUID;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public class User extends AbstractMutableEntity implements IdentifiableEntity {
 
@@ -14,8 +16,9 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
 
     private final UserCache cache;
     private final UserRank rank;
-    private Option<Guild> guild = Option.none();
-    private Option<UserBan> ban = Option.none();
+    private Optional<Guild> guild = Optional.empty();
+    private Optional<UserBan> ban = Optional.empty();
+    private String lastIP;
 
     private final UserProfile profile;
 
@@ -30,7 +33,6 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         this.markChanged();
     }
 
-    @Override
     public UUID getUUID() {
         return this.uuid;
     }
@@ -76,8 +78,12 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
     public void sendMessage(String message) {
         this.profile.sendMessage(message);
     }
+    
+    public void sendMessage(Component message) {
+        this.profile.sendMessage(message);
+    }
 
-    public Option<Guild> getGuild() {
+    public Optional<Guild> getGuild() {
         return this.guild;
     }
 
@@ -86,11 +92,11 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setGuild(@Nullable Guild guild) {
-        Guild previous = this.guild.orNull();
+        Guild previous = this.guild.orElse(null);
         if (previous == guild) {
             return;
         }
-        this.guild = Option.of(guild);
+        this.guild = Optional.ofNullable(guild);
         this.markChanged();
         if (previous != null) {
             previous.removeMember(this);
@@ -104,34 +110,39 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         this.setGuild(null);
     }
 
-    public boolean canManage() {
-        return this.isOwner() || this.isDeputy();
-    }
-
     public boolean isOwner() {
         return this.guild
                 .map(guild -> guild.isOwner(this))
-                .orElseGet(false);
+                .orElse(false);
     }
 
     public boolean isDeputy() {
         return this.guild
                 .map(guild -> guild.isDeputy(this))
-                .orElseGet(false);
+                .orElse(false);
     }
 
-    public Option<UserBan> getBan() {
+    public Optional<UserBan> getBan() {
         return this.ban;
     }
 
     public boolean isBanned() {
         return this.ban
                 .map(UserBan::isBanned)
-                .orElseGet(false);
+                .orElse(false);
     }
 
     public void setBan(@Nullable UserBan ban) {
-        this.ban = Option.of(ban);
+        this.ban = Optional.ofNullable(ban);
+    }
+
+    public String getLastIP() {
+        return this.lastIP;
+    }
+
+    public void setLastIP(String lastIP) {
+        this.lastIP = lastIP;
+        this.markChanged();
     }
 
     public UserProfile getProfile() {

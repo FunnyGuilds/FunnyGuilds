@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+@ApiStatus.ScheduledForRemoval
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     GuildRank(Guild guild) {
@@ -98,6 +98,18 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     private <T extends Number, R extends Number> R stat(StatKey<T> key, GuildStatAggregationType<R> aggregation) {
         return FunnyGuilds.getInstance().getRankService().getGuildStatValue(this.entity, key, aggregation)
                 .orElseGet(() -> aggregation.computeValue(FunnyGuilds.getInstance().getRankService(), this.entity, key));
+    }
+
+    public int getWarsWon() {
+        return this.entity.getWarsWon();
+    }
+
+    public int getWarsLost() {
+        return this.entity.getWarsLost();
+    }
+
+    public int getWarStreak() {
+        return this.entity.getWarStreak();
     }
 
     @Override

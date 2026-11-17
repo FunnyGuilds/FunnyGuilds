@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildStatKeys;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.kyori.adventure.key.Key;
@@ -120,6 +122,11 @@ public final class GuildStatAggregationType<R extends Number> implements Keyed {
             Guild guild,
             StatKey<?> key
     ) {
+        Optional<Integer> nativeValue = GuildStatKeys.value(guild, key);
+        if (nativeValue.isPresent()) {
+            return this.valueType == Integer.class ? this.valueType.cast(nativeValue.orElseThrow())
+                    : this.valueType.cast(nativeValue.orElseThrow().doubleValue());
+        }
         if (this == TOTAL_DOUBLE && (key.equals(UserStatKeys.KDR) || key.equals(UserStatKeys.KDA))) {
             double kills = TOTAL_INT.computeValue(controller, guild, UserStatKeys.KILLS);
             double deaths = TOTAL_INT.computeValue(controller, guild, UserStatKeys.DEATHS);

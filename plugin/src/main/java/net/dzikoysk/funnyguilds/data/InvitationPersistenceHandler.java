@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -12,10 +13,9 @@ import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class InvitationPersistenceHandler {
 
@@ -59,12 +59,12 @@ public class InvitationPersistenceHandler {
 
         YamlWrapper yaml = new YamlWrapper(this.invitationsFile);
         this.guildManager.getGuilds().forEach(guild -> {
-            List<String> guildInvitations = PandaStream.of(this.guildInvitationList.getInvitationsFrom(guild))
+            List<String> guildInvitations = this.guildInvitationList.getInvitationsFrom(guild).stream()
                     .map(GuildInvitation::getToUUID)
                     .map(UUID::toString)
                     .toList();
 
-            List<String> allyInvitations = PandaStream.of(this.allyInvitationList.getInvitationsFrom(guild))
+            List<String> allyInvitations = this.allyInvitationList.getInvitationsFrom(guild).stream()
                     .map(AllyInvitation::getToUUID)
                     .map(UUID::toString)
                     .toList();
@@ -82,9 +82,9 @@ public class InvitationPersistenceHandler {
         }
 
         YamlWrapper yaml = new YamlWrapper(this.invitationsFile);
-        PandaStream.of(yaml.getKeys(false))
+        FunnyStreams.of(yaml.getKeys(false))
                 .map(UUID::fromString)
-                .mapOpt(this.guildManager::findByUuid)
+                .flatMap(uuid -> this.guildManager.findByUuid(uuid).stream())
                 .forEach(guild -> {
                     this.loadGuildInvitations(yaml, guild);
                     this.loadAllyInvitations(yaml, guild);
@@ -92,15 +92,15 @@ public class InvitationPersistenceHandler {
     }
 
     private void loadGuildInvitations(YamlWrapper yaml, Guild guild) {
-        PandaStream.of(yaml.getStringList(guild.getUUID().toString() + ".players"))
+        yaml.getStringList(guild.getUUID().toString() + ".players").stream()
                 .map(UUID::fromString)
                 .forEach(userUuid -> this.guildInvitationList.createInvitation(guild.getUUID(), userUuid));
     }
 
     private void loadAllyInvitations(YamlWrapper yaml, Guild guild) {
-        PandaStream.of(yaml.getStringList(guild.getUUID().toString() + ".guilds"))
+        yaml.getStringList(guild.getUUID().toString() + ".guilds").stream()
                 .map(UUID::fromString)
-                .mapOpt(this.guildManager::findByUuid)
+                .flatMap(uuid -> this.guildManager.findByUuid(uuid).stream())
                 .forEach(allyGuild -> this.allyInvitationList.createInvitation(guild, allyGuild));
     }
 

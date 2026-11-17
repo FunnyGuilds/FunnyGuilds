@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class VectorSerializer implements ObjectSerializer<Vector> {
 
     @Override
-    public boolean supports(@NotNull Class<? super Vector> type) {
+    public boolean supports(@NotNull Class<?> type) {
         return Vector.class.isAssignableFrom(type);
     }
 

@@ -20,22 +20,28 @@ public class PlayerLogin extends AbstractFunnyListener {
         String name = player.getName();
         switch (FunnyValidator.validateUsername(this.config, name)) {
             case TOO_SHORT:
-                event.disallow(Result.KICK_OTHER, this.messageService.get(player, config -> config.loginNickTooShort));
+                event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginNickTooShort));
                 break;
             case TOO_LONG:
-                event.disallow(Result.KICK_OTHER, this.messageService.get(player, config -> config.loginNickTooLong));
+                event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginNickTooLong));
                 break;
             case INVALID:
-                event.disallow(Result.KICK_OTHER, this.messageService.get(player, config -> config.loginNickInvalid));
+                event.disallow(Result.KICK_OTHER, (String) this.messageService.get(player, config -> config.loginNickInvalid));
                 break;
             case VALID:
                 break;
         }
 
-        this.userManager.findByPlayer(player)
-                .peek(BanUtils::checkIfBanShouldExpire)
-                .filter(User::isBanned)
-                .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));
+        if (event.getResult() != Result.ALLOWED) {
+            return;
+        }
+
+        this.userManager.findByPlayer(player).ifPresent(user -> {
+            BanUtils.checkIfBanShouldExpire(user);
+            if (user.isBanned()) {
+                event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user));
+            }
+        });
     }
 
 }

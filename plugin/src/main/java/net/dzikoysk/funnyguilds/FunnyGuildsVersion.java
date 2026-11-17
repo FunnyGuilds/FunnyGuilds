@@ -27,9 +27,12 @@ public final class FunnyGuildsVersion {
         this.funnyGuilds = funnyGuilds;
 
         String version = funnyGuilds.getDescription().getVersion();
+        // "+CI" marks jars built by a CI workflow (GH-2616) and is not part of the released
+        // version number, so it must not leak into the value compared against the latest release.
+        String plainVersion = version.replace("+CI", "");
         this.fullVersion = version;
-        this.mainVersion = version.substring(0, version.lastIndexOf('-'));
-        this.commitHash = version.substring(version.lastIndexOf('-') + 1);
+        this.mainVersion = plainVersion.substring(0, plainVersion.lastIndexOf('-'));
+        this.commitHash = plainVersion.substring(plainVersion.lastIndexOf('-') + 1);
     }
 
     public void isNewAvailable(CommandSender sender, boolean force) {

@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.IdentifiableEntity;
 
 /**
  * Track statistics for entities.
- * 
+ *
  * @param <E> the type of entity being ranked
  * @param <T> the type of statistic value used for ranking
  */

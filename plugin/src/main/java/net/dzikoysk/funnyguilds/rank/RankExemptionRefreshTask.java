@@ -36,7 +36,7 @@ public final class RankExemptionRefreshTask implements Runnable {
         Set<UUID> online = new HashSet<>();
         Bukkit.getOnlinePlayers().forEach(player -> {
             online.add(player.getUniqueId());
-            this.userManager.findByUuid(player.getUniqueId()).peek(user -> this.check(user, tracker));
+            this.userManager.findByUuid(player.getUniqueId()).ifPresent(user -> this.check(user, tracker));
         });
         if (this.pendingOfflineChecks.isEmpty()) {
             this.userManager.getUsers().forEach(user -> this.pendingOfflineChecks.add(user.getUUID()));
@@ -49,7 +49,7 @@ public final class RankExemptionRefreshTask implements Runnable {
                 break;
             }
             if (!online.contains(uuid)) {
-                this.userManager.findByUuid(uuid).peek(user -> this.check(user, tracker));
+                this.userManager.findByUuid(uuid).ifPresent(user -> this.check(user, tracker));
             }
         }
     }

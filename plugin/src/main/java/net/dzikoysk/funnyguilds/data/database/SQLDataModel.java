@@ -1,15 +1,24 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
+import net.dzikoysk.funnyguilds.data.util.UserIdentityValidator;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -17,7 +26,6 @@ import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
-import panda.std.Option;
 
 public class SQLDataModel implements DataModel {
 
@@ -51,6 +59,7 @@ public class SQLDataModel implements DataModel {
         this.usersTable.add("ban", SQLType.BIGINT);
         this.usersTable.add("reason", SQLType.TEXT);
         this.usersTable.add("stats", SQLType.TEXT);
+        this.usersTable.add("last_ip", SQLType.VARCHAR, 45);
         this.usersTable.setPrimaryKey("uuid");
 
         this.guildsTable.add("uuid", SQLType.VARCHAR, 100, true);
@@ -63,15 +72,22 @@ public class SQLDataModel implements DataModel {
         this.guildsTable.add("members", SQLType.TEXT, true);
         this.guildsTable.add("points", SQLType.INT, true);
         this.guildsTable.add("lives", SQLType.INT, true);
+        this.guildsTable.add("heart_lives", SQLType.INT, true);
         this.guildsTable.add("ban", SQLType.BIGINT, true);
         this.guildsTable.add("born", SQLType.BIGINT, true);
         this.guildsTable.add("validity", SQLType.BIGINT, true);
         this.guildsTable.add("pvp", SQLType.BOOLEAN, true);
-        this.guildsTable.add("attacked", SQLType.BIGINT); //TODO: [FG 5.0] attacked -> protection
+        this.guildsTable.add("protection", SQLType.BIGINT);
         this.guildsTable.add("allies", SQLType.TEXT);
         this.guildsTable.add("enemies", SQLType.TEXT);
         this.guildsTable.add("info", SQLType.TEXT);
         this.guildsTable.add("deputy", SQLType.TEXT);
+        this.guildsTable.add("tnt_protection_bypass", SQLType.BIGINT);
+        this.guildsTable.add("wars_won", SQLType.INT);
+        this.guildsTable.add("wars_lost", SQLType.INT);
+        this.guildsTable.add("last_war", SQLType.TEXT);
+        this.guildsTable.add("war_streak", SQLType.INT);
+        this.guildsTable.add("last_life_buy", SQLType.BIGINT);
         this.guildsTable.setPrimaryKey("uuid");
 
         this.regionsTable.add("name", SQLType.VARCHAR, 100, true);
@@ -81,33 +97,68 @@ public class SQLDataModel implements DataModel {
         this.regionsTable.setPrimaryKey("name");
     }
 
+    @Override
     public void load() throws SQLException {
-        createTableIfNotExists(this.usersTable);
-        createTableIfNotExists(this.regionsTable);
-        createTableIfNotExists(this.guildsTable);
+        Optional<Database> database = this.plugin.getDatabase();
+        if (database.isEmpty()) {
+            throw new SQLException("Database is not initialized");
+        }
+
+        try (Connection connection = database.orElseThrow().getConnection()) {
+            migrateSchema(connection, this.usersTable);
+            migrateSchema(connection, this.regionsTable);
+            migrateSchema(connection, this.guildsTable);
+        }
 
         this.loadUsers();
         this.loadRegions();
         this.loadGuilds();
 
-        this.plugin.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getIndividualNameTagManager()
+                .map(ScoreboardGlobalUpdateSyncTask::new)
+                .ifPresent(this.plugin::scheduleFunnyTasks);
     }
 
     public void loadUsers() {
-        SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(result -> {
-            while (result.next()) {
-                String userName = result.getString("name");
-
-                if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
-                    continue;
-                }
-
-                DatabaseUserSerializer.deserialize(result);
+        try (Connection connection = this.plugin.getDatabase()
+                .orElseThrow(() -> new IllegalStateException("Database is not initialized")).getConnection()) {
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                this.validateUserIdentities(connection);
             }
-        });
+
+            SQLBasicUtils.getSelectAll(this.usersTable).executeQueryOrThrow(connection, result -> {
+                while (result.next()) {
+                    String userName = result.getString("name");
+
+                    if (FunnyValidator.validateUsername(this.pluginConfiguration, userName) != NameResult.VALID) {
+                        FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
+                        continue;
+                    }
+
+                    DatabaseUserSerializer.deserialize(result);
+                }
+            });
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Could not read user identities from " + this.usersTable.getName(), exception);
+        }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
+    }
+
+    private void validateUserIdentities(Connection connection) throws SQLException {
+        SQLBasicUtils.getSelectUuidConflict(this.usersTable).executeQueryOrThrow(connection, result -> {
+            if (!result.next()) {
+                return;
+            }
+            UserIdentityValidator validator = new UserIdentityValidator();
+            for (String column : new String[] { "first_uuid", "second_uuid" }) {
+                String uuid = result.getString(column);
+                validator.accept(uuid, result.getString("name"), this.usersTable.getName() + "[uuid=" + uuid + "]")
+                        .onError(FunnyGuilds.getPluginLogger()::error)
+                        .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                                + "Back up data and check authentication/proxy settings before resolving it manually."));
+            }
+        });
     }
 
     public void loadGuilds() {
@@ -121,12 +172,12 @@ public class SQLDataModel implements DataModel {
 
         SQLBasicUtils.getSelect(this.guildsTable, "tag", "allies", "enemies").executeQuery(result -> {
             while (result.next()) {
-                Option<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
+                Optional<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
                 if (guildOption.isEmpty()) {
                     continue;
                 }
 
-                Guild guild = guildOption.get();
+                Guild guild = guildOption.orElseThrow();
                 String alliesList = result.getString("allies");
                 String enemiesList = result.getString("enemies");
 
@@ -157,7 +208,7 @@ public class SQLDataModel implements DataModel {
 
         SQLBasicUtils.getSelectAll(this.regionsTable).executeQuery(result -> {
             while (result.next()) {
-                DatabaseRegionSerializer.deserialize(result).peek(regionManager::addRegion);
+                DatabaseRegionSerializer.deserialize(result).ifPresent(regionManager::addRegion);
             }
         });
 
@@ -195,9 +246,27 @@ public class SQLDataModel implements DataModel {
         return this.regionsTable;
     }
 
-    private static void createTableIfNotExists(SQLTable table) {
-        SQLBasicUtils.getCreate(table).executeUpdate();
-        table.getSqlElements().forEach(sqlElement -> SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true));
+    static void migrateSchema(Connection connection, SQLTable table) throws SQLException {
+        SQLBasicUtils.getCreate(table).executeUpdate(connection);
+
+        Set<String> existingColumns = fetchExistingColumns(connection, table.getName());
+        for (SQLElement sqlElement : table.getSqlElements()) {
+            if (existingColumns.contains(sqlElement.getKey().toLowerCase(Locale.ROOT))) {
+                continue;
+            }
+            SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(connection);
+        }
+    }
+
+    static Set<String> fetchExistingColumns(Connection connection, String tableName) throws SQLException {
+        Set<String> columns = new HashSet<>();
+        DatabaseMetaData metaData = connection.getMetaData();
+        try (ResultSet resultSet = metaData.getColumns(connection.getCatalog(), null, tableName, null)) {
+            while (resultSet.next()) {
+                columns.add(resultSet.getString("COLUMN_NAME").toLowerCase(Locale.ROOT));
+            }
+        }
+        return columns;
     }
 
 }

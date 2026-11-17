@@ -1,0 +1,221 @@
+name: Publish release to Modrinth & Paper Hangar
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (defaults to the latest published release)
+        required: false
+        type: string
+      mc-versions:
+        description: Optional override for the supported MC version ranges (comma-separated min-max or single versions); required when publishing a tag that predates the mcVersions property
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-platforms-${{ github.event.release.tag_name || inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  metadata:
+    name: Resolve release metadata
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.repository_owner == 'FunnyGuilds'
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      name: ${{ steps.meta.outputs.name }}
+      version-type: ${{ steps.meta.outputs.version-type }}
+      game-versions: ${{ steps.versions.outputs.game-versions }}
+      hangar-versions: ${{ steps.versions.outputs.hangar-versions }}
+      changelog: ${{ steps.meta.outputs.changelog }}
+    steps:
+      - name: Resolve release
+        id: meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG="$INPUT_TAG"
+            if [ -z "$TAG" ]; then
+              TAG="$(gh release list --repo FunnyGuilds/FunnyGuilds --limit 10 --json tagName,isDraft --jq '[.[] | select(.isDraft | not)][0].tagName // empty')"
+              if [ -z "$TAG" ]; then
+                echo "::error::No published release found to publish"
+                exit 1
+              fi
+              echo "No tag provided, falling back to the latest published release: $TAG"
+            fi
+          else
+            TAG="$RELEASE_TAG"
+          fi
+          META="$(gh release view "$TAG" --repo FunnyGuilds/FunnyGuilds --json tagName,isPrerelease)"
+          TAG="$(jq -r '.tagName' <<<"$META")"
+          PRERELEASE="$(jq -r '.isPrerelease' <<<"$META")"
+          {
+            echo "tag<<METADATA_EOF"
+            echo "$TAG"
+            echo "METADATA_EOF"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "name<<METADATA_EOF"
+            gh release view "$TAG" --repo FunnyGuilds/FunnyGuilds --json name --jq '.name // ""'
+            echo "METADATA_EOF"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "changelog<<METADATA_EOF"
+            gh release view "$TAG" --repo FunnyGuilds/FunnyGuilds --json body --jq '.body // ""'
+            echo "METADATA_EOF"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$PRERELEASE" = "true" ]; then
+            echo "version-type=beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "version-type=release" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ steps.meta.outputs.tag }}
+          fetch-depth: 1
+      - name: Parse supported Minecraft versions
+        id: versions
+        env:
+          INPUT_MC_VERSIONS: ${{ inputs.mc-versions }}
+        run: |
+          set -euo pipefail
+          MC_VERSIONS="$(echo "$INPUT_MC_VERSIONS" | tr -d ' \r')"
+          if [ -z "$MC_VERSIONS" ]; then
+            MC_VERSIONS="$(sed -n 's/^mcVersions=//p' gradle.properties | tr -d ' \r')"
+          fi
+          if [ -z "$MC_VERSIONS" ]; then
+            echo "::error::Missing supported MC version metadata for this tag. Provide the mc-versions workflow input (as done for tags predating the mcVersions property, e.g. 5.0.0) or add mcVersions to gradle.properties."
+            exit 1
+          fi
+          IFS=',' read -ra RANGES <<<"$MC_VERSIONS"
+          GAME_VERSIONS=""
+          HANGAR_VERSIONS=()
+          for range in "${RANGES[@]}"; do
+            [ -z "$range" ] && continue
+            HANGAR_VERSIONS+=("$range")
+            if [[ "$range" == *-* ]]; then
+              GAME_VERSIONS+=">=${range%%-*} <=${range#*-}"$'\n'
+            else
+              GAME_VERSIONS+="${range}"$'\n'
+            fi
+          done
+          if [ ${#HANGAR_VERSIONS[@]} -eq 0 ]; then
+            echo "::error::Failed to parse mcVersions property: $MC_VERSIONS"
+            exit 1
+          fi
+          {
+            echo "game-versions<<METADATA_EOF"
+            printf '%s' "$GAME_VERSIONS"
+            echo "METADATA_EOF"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "hangar-versions<<METADATA_EOF"
+            printf '%s\n' "${HANGAR_VERSIONS[@]}" | jq -R . | jq -sc .
+            echo "METADATA_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+  modrinth:
+    name: Publish to Modrinth
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: metadata
+    if: github.repository_owner == 'FunnyGuilds'
+    steps:
+      - name: Download release jar
+        id: jar
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.metadata.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir dist
+          gh release download "$TAG" --repo FunnyGuilds/FunnyGuilds --pattern '*.jar' --dir dist --clobber
+          shopt -s nullglob
+          jars=(dist/*.jar)
+          if [ ${#jars[@]} -ne 1 ]; then
+            echo "::error::Expected exactly one .jar asset on release $TAG, found ${#jars[@]}"
+            exit 1
+          fi
+          echo "jar=${jars[0]}" >> "$GITHUB_OUTPUT"
+      - name: Publish to Modrinth
+        uses: Kira-NT/mc-publish@v3.3.2
+        with:
+          modrinth-id: Dfr6iz6l
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: dist/*.jar
+          name: ${{ needs.metadata.outputs.name }}
+          version: ${{ needs.metadata.outputs.tag }}
+          version-type: ${{ needs.metadata.outputs.version-type }}
+          changelog: ${{ needs.metadata.outputs.changelog }}
+          loaders: paper
+          game-versions: ${{ needs.metadata.outputs.game-versions }}
+          game-version-filter: releases
+          java: 21
+          retry-attempts: 3
+          retry-delay: 10000
+          fail-mode: fail
+
+  hangar:
+    name: Publish to Paper Hangar
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: metadata
+    if: github.repository_owner == 'FunnyGuilds'
+    steps:
+      - name: Download release jar
+        id: jar
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.metadata.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mkdir dist
+          gh release download "$TAG" --repo FunnyGuilds/FunnyGuilds --pattern '*.jar' --dir dist --clobber
+          shopt -s nullglob
+          jars=(dist/*.jar)
+          if [ ${#jars[@]} -ne 1 ]; then
+            echo "::error::Expected exactly one .jar asset on release $TAG, found ${#jars[@]}"
+            exit 1
+          fi
+          echo "jar=${jars[0]}" >> "$GITHUB_OUTPUT"
+      - name: Publish to Paper Hangar
+        env:
+          HANGAR_API_TOKEN: ${{ secrets.PAPER_HANGAR_TOKEN }}
+          HANGAR_PROJECT: FunnyGuilds # https://hangar.papermc.io/FunnyTeam/FunnyGuilds
+          HANGAR_VERSION: ${{ needs.metadata.outputs.tag }}
+          VERSION_TYPE: ${{ needs.metadata.outputs.version-type }}
+          PLATFORM_VERSIONS: ${{ needs.metadata.outputs.hangar-versions }}
+          CHANGELOG: ${{ needs.metadata.outputs.changelog }}
+          JAR: ${{ steps.jar.outputs.jar }}
+        run: |
+          set -euo pipefail
+          if [ "$VERSION_TYPE" = "beta" ]; then
+            CHANNEL="Beta"
+          else
+            CHANNEL="Release"
+          fi
+          jq -n \
+            --arg version "$HANGAR_VERSION" \
+            --arg channel "$CHANNEL" \
+            --arg description "$CHANGELOG" \
+            --argjson platformVersions "$PLATFORM_VERSIONS" \
+            '{version: $version, channel: $channel, description: $description, platformDependencies: {PAPER: $platformVersions}, files: [{platforms: ["PAPER"]}]}' > version-upload.json
+          JWT="$(curl --fail-with-body --silent --show-error --max-time 30 -X POST "https://hangar.papermc.io/api/v1/authenticate?apiKey=${HANGAR_API_TOKEN}" | jq -er '.token')"
+          RESPONSE="$(curl --fail-with-body --silent --show-error \
+            -H "Authorization: ${JWT}" \
+            -F "versionUpload=<version-upload.json;type=application/json" \
+            -F "files=@${JAR};type=application/java-archive" \
+            "https://hangar.papermc.io/api/v1/projects/${HANGAR_PROJECT}/upload")"
+          echo "$RESPONSE" | jq .
+          echo "Published: $(echo "$RESPONSE" | jq -r '.url // "ok"')"

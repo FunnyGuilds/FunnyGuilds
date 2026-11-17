@@ -5,8 +5,8 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import java.util.Optional;
 import org.bukkit.scoreboard.Scoreboard;
-import panda.std.Option;
 
 public class Dummy {
 
@@ -21,28 +21,28 @@ public class Dummy {
     }
 
     @SuppressWarnings("deprecation")
-    Option<Objective> initialize() {
+    Optional<Objective> initialize() {
         if (this.user.hasPermission("funnyguilds.admin.disabledummy")) {
-            return Option.none();
+            return Optional.empty();
         }
 
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to initialize Dummy, but scoreboard hasn't been initialized.");
-            return Option.none();
+            return Optional.empty();
         }
-        Scoreboard scoreboard = scoreboardOption.get();
+        Scoreboard scoreboard = scoreboardOption.orElseThrow();
 
         Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
         if (objective != null) {
-            return Option.of(objective);
+            return Optional.of(objective);
         }
 
         objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
         objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-        objective.setDisplayName(this.pluginConfiguration.scoreboard.dummy.suffix.getValue());
+        objective.displayName(this.pluginConfiguration.scoreboard.dummy.suffix);
 
-        return Option.of(objective);
+        return Optional.of(objective);
     }
 
     // Update specific player for this user
@@ -51,15 +51,15 @@ public class Dummy {
             return;
         }
 
-        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
+        Optional<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
         if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score, but scoreboard hasn't been initialized.");
             return;
         }
         scoreboardOption
                 .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
-                .orElse(this::initialize)
-                .peek(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
+                .or(this::initialize)
+                .ifPresent(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
     }
 
 }

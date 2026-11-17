@@ -2,6 +2,11 @@ package net.dzikoysk.funnyguilds.nms.v1_21_4.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import io.papermc.paper.adventure.AdventureComponent;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
@@ -14,32 +19,13 @@ import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 import net.minecraft.world.level.GameType;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 public class V1_21_4PlayerList implements PlayerList {
+
     private static final GameType DEFAULT_GAME_MODE = GameType.SURVIVAL;
-    private static final Component EMPTY_COMPONENT = Component.empty();
     // base chosen randomly to override other entries
     private static final int PRIORITY_BASE = 999;
-
-    private static final Field playerInfoEntriesField;
-
-    static {
-        try {
-            playerInfoEntriesField = ClientboundPlayerInfoUpdatePacket.class.getDeclaredField("c");
-            playerInfoEntriesField.setAccessible(true);
-        }
-        catch (NoSuchFieldException ex) {
-            throw new IllegalStateException("missing 'b' field in ClientboundPlayerInfoUpdatePacket", ex);
-        }
-    }
 
     private final int cellCount;
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
@@ -50,7 +36,7 @@ public class V1_21_4PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping,
+    public void send(Player player, net.kyori.adventure.text.Component[] playerListCells, net.kyori.adventure.text.Component header, net.kyori.adventure.text.Component footer, SkinTexture[] cellTextures, int ping,
                      Set<Integer> forceUpdateSlots) {
         List<Packet<?>> packets = Lists.newArrayList();
         List<Entry> addPlayerList = Lists.newArrayList();
@@ -68,9 +54,9 @@ public class V1_21_4PlayerList implements PlayerList {
                     );
                 }
 
-                String text = playerListCells[i];
+                net.kyori.adventure.text.Component text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                Component component = CraftChatMessage.fromString(text, false)[0];
+                Component component = new AdventureComponent(text);
 
                 if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     SkinTexture texture = cellTextures[i];
@@ -124,25 +110,15 @@ public class V1_21_4PlayerList implements PlayerList {
             );
             packets.add(updatePlayerPacket);
 
-            boolean headerNotEmpty = !header.isEmpty();
-            boolean footerNotEmpty = !footer.isEmpty();
+            Component headerComponent = new AdventureComponent(header);
+            Component footerComponent = new AdventureComponent(footer);
 
-            if (headerNotEmpty || footerNotEmpty) {
-                Component headerComponent = EMPTY_COMPONENT;
-                Component footerComponent = EMPTY_COMPONENT;
-
-                if (headerNotEmpty) {
-                    headerComponent = CraftChatMessage.fromStringOrNull(header, true);
-                }
-
-                if (footerNotEmpty) {
-                    footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
-                }
-
-                ClientboundTabListPacket headerFooterPacket =
-                        new ClientboundTabListPacket(headerComponent, footerComponent);
-                packets.add(headerFooterPacket);
-            }
+            ClientboundTabListPacket headerFooterPacket =
+                    new ClientboundTabListPacket(
+                            headerComponent,
+                            footerComponent
+                    );
+            packets.add(headerFooterPacket);
 
             for (Packet<?> packet : packets) {
                 ((CraftPlayer) player).getHandle().connection.send(packet);
@@ -153,20 +129,13 @@ public class V1_21_4PlayerList implements PlayerList {
         }
     }
 
-    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(EnumSet<Action> actions,
-                                                                     List<Entry> entries) {
-        // NOTE: this whole hack exists just because Mojang does stupid things and collects list of entries
-        //       into an immutable list without any ability to modify or pass direct entries through constructor.
-        ClientboundPlayerInfoUpdatePacket playerInfoPacket =
-                new ClientboundPlayerInfoUpdatePacket(actions, List.<Entry>of());
-
-        try {
-            playerInfoEntriesField.set(playerInfoPacket, entries);
-        }
-        catch (IllegalAccessException ex) {
-            throw new IllegalStateException("could not create player info packet", ex);
-        }
-
-        return playerInfoPacket;
+    private ClientboundPlayerInfoUpdatePacket createPlayerInfoPacket(
+            EnumSet<Action> actions,
+            List<Entry> entries
+    ) {
+        return new ClientboundPlayerInfoUpdatePacket(
+                actions,
+                entries
+        );
     }
 }

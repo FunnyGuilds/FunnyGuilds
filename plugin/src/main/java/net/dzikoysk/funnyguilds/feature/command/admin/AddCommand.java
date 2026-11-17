@@ -42,7 +42,7 @@ public final class AddCommand extends AbstractFunnyCommand {
         userToAdd.setGuild(guild);
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, userToAdd))
-                .peek(this.plugin::scheduleFunnyTasks);
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
@@ -58,7 +58,7 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastJoin)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

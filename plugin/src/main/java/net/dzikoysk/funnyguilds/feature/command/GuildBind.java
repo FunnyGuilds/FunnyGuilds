@@ -21,7 +21,7 @@ final class GuildBind implements Bind {
         injectorResources.on(Guild.class).assignHandler((property, annotation, args) ->
                 this.userBind.fetchUser(CommandUtils.getContext(args))
                         .getGuild()
-                        .orThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild)));
+                        .orElseThrow(() -> new InternalValidationException(config -> config.generalHasNoGuild)));
     }
 
 }

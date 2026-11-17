@@ -30,7 +30,7 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
         var exempt: Boolean = false
     )
 
-    private data class GuildState(val guild: Guild, var name: String, val members: MutableSet<UUID> = mutableSetOf())
+    private data class GuildState(val guild: Guild, var name: String, val members: MutableSet<UUID> = mutableSetOf(), val warStats: IntArray = IntArray(3))
 
     private val players = linkedMapOf<UUID, PlayerState>()
     private val guilds = linkedMapOf<UUID, GuildState>()
@@ -75,7 +75,7 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
             while (System.nanoTime() < deadline || operation < minimumOperations) {
                 val player = players.values.elementAt(random.nextInt(players.size))
                 val guild = guilds.values.elementAt(random.nextInt(guilds.size))
-                val action = random.nextInt(17)
+                val action = random.nextInt(20)
                 if (recent.size == 24) recent.removeFirst()
                 recent.addLast("$operation: action=$action user=${player.user.uuid} guild=${guild.guild.uuid}")
                 when (action) {
@@ -152,6 +152,15 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
                         player.stats[6] = random.nextInt(5000)
                         rankService.setUserStatValue(player.user, StatKey.doubleStatKey("stress-balance"), player.stats[6] / 4.0)
                     }
+                    in 17..19 -> {
+                        val index = action - 17
+                        guild.warStats[index] = random.nextInt(100)
+                        when (index) {
+                            0 -> guild.guild.warsWon = guild.warStats[index]
+                            1 -> guild.guild.warsLost = guild.warStats[index]
+                            2 -> guild.guild.warStreak = guild.warStats[index]
+                        }
+                    }
                 }
                 operation++
                 if (operation % 32 == 0) verifyEverything()
@@ -212,6 +221,19 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
     }
 
     private fun verifyEverything() {
+        listOf("wars_won", "wars_lost", "war_streak").forEachIndexed { index, name ->
+            val tracker = rankService.getGuildRankTracker(name).get()
+            val expected = guilds.values.filter { it.members.isNotEmpty() && it.members.size >= config.minMembersToInclude }.sortedWith(
+                compareByDescending<GuildState> { it.warStats[index] }
+                    .thenBy(String.CASE_INSENSITIVE_ORDER) { it.name }.thenBy { it.guild.uuid }
+            )
+            assertEquals(expected.map { it.guild.uuid }, tracker.entitiesInTop().map { it.uuid }, "war order: $name")
+            guilds.values.forEach { guild ->
+                assertEquals(guild.warStats[index], tracker.valueOfEntity(guild.guild).get().toInt(), "war value: $name")
+                val position = expected.indexOf(guild).let { if (it < 0) 0 else it + 1 }
+                assertEquals(position, tracker.findPositionByEntity(guild.guild).orElse(0), "war position: $name")
+            }
+        }
         keys.forEachIndexed { index, key ->
             val userTracker = rankService.getUserRankTracker(key)
             val expectedPlayers = players.values.filter { !it.exempt }.sortedWith(

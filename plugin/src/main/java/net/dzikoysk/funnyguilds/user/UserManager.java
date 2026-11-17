@@ -6,27 +6,33 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.rank.RankService;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.ApiStatus;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class UserManager {
 
     private final PluginConfiguration pluginConfiguration;
+    private RankService rankService;
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     public UserManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
+    }
+
+    @ApiStatus.Internal
+    public void setRankService(RankService rankService) {
+        this.rankService = rankService;
     }
 
     public int countUsers() {
@@ -45,7 +51,7 @@ public class UserManager {
     /**
      * Deletes all loaded users data
      */
-    public void clearUsers() {
+    public synchronized void clearUsers() {
         this.getUsers().forEach(this::removeUser);
         this.usersByUuid.clear();
         this.usersByName.clear();
@@ -58,9 +64,9 @@ public class UserManager {
      * @return set of users
      */
     public Set<User> findByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::findByName)
-                .collect(Collectors.toSet());
+        return names.stream()
+                .flatMap(name -> this.findByName(name).stream())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     /**
@@ -69,8 +75,8 @@ public class UserManager {
      * @param uuid the universally unique identifier of user
      * @return the user
      */
-    public Option<User> findByUuid(UUID uuid) {
-        return Option.of(this.usersByUuid.get(uuid));
+    public Optional<User> findByUuid(UUID uuid) {
+        return Optional.ofNullable(this.usersByUuid.get(uuid));
     }
 
     /**
@@ -79,7 +85,7 @@ public class UserManager {
      * @param nickname the name of user
      * @return the user
      */
-    public Option<User> findByName(String nickname) {
+    public Optional<User> findByName(String nickname) {
         return this.findByName(nickname, false);
     }
 
@@ -90,17 +96,16 @@ public class UserManager {
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
-    public Option<User> findByName(String nickname, boolean ignoreCase) {
+    public Optional<User> findByName(String nickname, boolean ignoreCase) {
         User foundUser = this.usersByName.get(nickname);
-
         if (foundUser == null && ignoreCase) {
-            foundUser = PandaStream.of(this.usersByName.entrySet())
-                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
+            foundUser = this.usersByName.entrySet().stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(nickname))
                     .map(Map.Entry::getValue)
-                    .orNull();
+                    .findFirst()
+                    .orElse(null);
         }
-
-        return Option.of(foundUser);
+        return Optional.ofNullable(foundUser);
     }
 
     /**
@@ -108,9 +113,9 @@ public class UserManager {
      *
      * @return the user
      */
-    public Option<User> findByPlayer(@NotNull Player player) {
+    public Optional<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
+            return Optional.empty(); // Ignore NPCs (Citizens, Shopkeepers, [...])
         }
 
         return this.findByUuid(player.getUniqueId());
@@ -121,7 +126,7 @@ public class UserManager {
      *
      * @return the user
      */
-    public Option<User> findByPlayer(OfflinePlayer offlinePlayer) {
+    public Optional<User> findByPlayer(OfflinePlayer offlinePlayer) {
         return this.findByUuid(offlinePlayer.getUniqueId());
     }
 
@@ -141,12 +146,21 @@ public class UserManager {
      * @param userProfile the user profile which will be assigned to User
      * @return the user
      */
-    public User create(UUID uuid, String name, UserProfile userProfile) {
+    public synchronized User create(UUID uuid, String name, UserProfile userProfile) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
         Validate.notNull(userProfile, "userProfile can't be null!");
         Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, name) == NameResult.VALID, "name is not valid!");
+
+        User existing = this.usersByUuid.get(uuid);
+        if (existing != null) {
+            if (!existing.getName().equals(name)) {
+                throw new IllegalStateException("UUID " + uuid + " is already registered as '" + existing.getName()
+                        + "'; use updateUsername to change its name");
+            }
+            return existing;
+        }
 
         User user = new User(uuid, name, userProfile);
         this.addUser(user);
@@ -156,15 +170,23 @@ public class UserManager {
 
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.
+     * A different user instance with an already registered UUID is rejected.
      *
      * @param user user to add
+     * @throws IllegalStateException if the UUID is already assigned to a different user instance
      */
-    public void addUser(User user) {
+    public synchronized void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
+        User existing = this.usersByUuid.get(user.getUUID());
+        if (existing != null && existing != user) {
+            throw new IllegalStateException("UUID " + user.getUUID() + " is already registered");
+        }
         this.usersByUuid.put(user.getUUID(), user);
         this.usersByName.put(user.getName(), user);
-        FunnyGuilds.getInstance().getRankService().refreshUser(user);
+        if (this.rankService != null) {
+            this.rankService.refreshUser(user);
+        }
     }
 
     /**
@@ -172,13 +194,19 @@ public class UserManager {
      *
      * @param user user to remove
      */
-    public void removeUser(User user) {
+    public synchronized void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
+
+        if (this.usersByUuid.get(user.getUUID()) != user) {
+            return;
+        }
 
         user.removeGuild();
         this.usersByUuid.remove(user.getUUID());
-        this.usersByName.remove(user.getName());
-        FunnyGuilds.getInstance().getRankService().removeUser(user);
+        this.usersByName.remove(user.getName(), user);
+        if (this.rankService != null) {
+            this.rankService.removeUser(user);
+        }
     }
 
     /**
@@ -187,15 +215,20 @@ public class UserManager {
      * @param user        the user for which the nickname will be changed
      * @param newUsername the new nickname for user
      */
-    public void updateUsername(User user, String newUsername) {
+    public synchronized void updateUsername(User user, String newUsername) {
         Validate.notNull(user, "user can't be null!");
-
-        this.usersByName.remove(user.getName());
-        this.usersByName.put(newUsername, user);
-
+        Validate.notBlank(newUsername, "name can't be blank!");
+        Validate.isTrue(FunnyValidator.validateUsername(this.pluginConfiguration, newUsername) == NameResult.VALID, "name is not valid!");
+        if (this.usersByUuid.get(user.getUUID()) != user) {
+            throw new IllegalStateException("Cannot rename an unregistered user");
+        }
+        this.usersByName.remove(user.getName(), user);
         user.setName(newUsername);
+        this.usersByName.put(newUsername, user);
         user.markChanged();
-        FunnyGuilds.getInstance().getRankService().refreshUser(user);
+        if (this.rankService != null) {
+            this.rankService.refreshUser(user);
+        }
     }
 
     /**
@@ -218,17 +251,4 @@ public class UserManager {
     public boolean playedBefore(String nickname, boolean ignoreCase) {
         return this.findByName(nickname, ignoreCase).isPresent();
     }
-
-    /**
-     * Gets the user manager.
-     *
-     * @return the user manager
-     * @deprecated for removal in the future, in favour of {@link FunnyGuilds#getUserManager()}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public static UserManager getInstance() {
-        return FunnyGuilds.getInstance().getUserManager();
-    }
-
 }

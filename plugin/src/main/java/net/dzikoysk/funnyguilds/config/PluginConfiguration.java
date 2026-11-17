@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.config;
 
-import com.google.common.collect.ImmutableMap;
+import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
+import dev.peri.yetanothermessageslibrary.replace.replacement.SimpleStringReplacement;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
@@ -19,20 +20,18 @@ import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.sections.BuyLifeConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
@@ -40,26 +39,30 @@ import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.ValueFormattingConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.WarConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.shared.LegacyUtils;
+import net.dzikoysk.funnyguilds.shared.Optionals;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
 @Header("          FunnyGuilds           #")
-@Header("         4.13.0 Snowdrop        #")
+@Header("        5.0.0 Primrose          #")
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderów znajduje się tutaj:")
@@ -68,13 +71,15 @@ import panda.std.Option;
 @Header("Jeżeli chcesz, aby dana wiadomość była pusta, zamiast wiadomości umieść: ''")
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class PluginConfiguration extends OkaeriConfig {
+    
+    @Exclude
+    private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.builder()
+            .character('&')
+            .hexColors()
+            .build();
 
     @Exclude
     public final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
-
-    @Comment("")
-    @Comment("Wyświetlana nazwa pluginu")
-    public String pluginName = "FunnyGuilds";
 
     @Comment("")
     @Comment("Czy plugin ma działać w trybie debug - służy on do wysyłania dodatkowych wiadomości, w celu diagnozowania błędów")
@@ -98,7 +103,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jeżeli chcesz dodać nowy język dodaj go tutaj - utworzy to nowy plik z domyślnymi wartościami, które możesz później edytować")
     @Comment("Języki gracza są dobierane automatycznie na podstawie ustawiań klienta")
     public Set<Locale> availableLocales = new HashSet<>(Arrays.asList(Locale.forLanguageTag("pl")));
-    
 
     @Comment("")
     @Comment("Czy ma być włączona możliwość zakładania gildii (można ją zmienić także za pomocą komendy /ga enabled)")
@@ -127,6 +131,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Działa tylko jeśli regiony są włączone")
     @CustomKey("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
+
+    @Comment("")
+    @Comment("Zablokuj rozlewanie się wybranych cieczy na teren gildii (np. woda, lawa)")
+    @Comment("Przydatne, aby chronić teren gildii przed zalewaniem przez wrogów")
+    @Comment("Zostaw puste, aby wyłączyć. Działa tylko jeśli regiony są włączone")
+    @CustomKey("block-flow-on-region")
+    public Set<Material> blockFlowOnRegion = new HashSet<>();
 
     @Comment("")
     @Comment("Czy gracz po śmierci ma się pojawiać w bazie swojej gildii")
@@ -196,138 +207,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
 
-    @Comment("")
-    @Comment("Czy wiadomości o braku potrzebnych przedmiotów maja zawierać elementy, na które można najechać")
-    @Comment("Takie elementy pokazują informacje o przedmiocie, np. jego typ, nazwę czy opis")
-    public boolean enableItemComponent = false;
-
-    @Comment("")
-    @Comment("Przedmioty wymagane do założenia gildii")
-    @Comment("Tylko wartości ujęte w <> są wymagane - reszta, ujeta w [], jest opcjonalna")
-    @Comment("Wzór: <ilosc> <przedmiot>:[metadata] [name:lore:enchants:eggtype:skullowner:armorcolor:flags]")
-    @Comment("Przykład: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
-    @Comment(" ")
-    @Comment("Zamiast spacji wstawiaj podkreślnik: _")
-    @Comment("Aby zrobić nową linię lore wstaw hash: #")
-    @Comment("Aby w lore użyć znaku # wstaw {HASH}")
-    @Comment(" ")
-    @Comment("eggtype to typ jajka do spawnu moba, używane tylko gdy typem przedmiotu jest MONSTER_EGG")
-    @Comment("skullowner to nick gracza, którego głowa jest tworzona, używane tylko gdy typem przedmiotu jest SKULL_ITEM")
-    @Comment("armorcolor to kolor, w którym będzie przedmiot, używane tylko gdy przedmiot jest częścią zbroi skórzanej")
-    @Comment("flags to flagi, które maja byc nałożone na przedmiot. Dostepne flagi: HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_DESTROYS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS")
-    @Comment("Kolor musi byc podany w postaci: \"R_G_B\"")
-    @Comment(" ")
-    @Comment("UWAGA: Nazwy przedmiotów musza pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    @Comment("UWAGA: Typ jajka musi pasować do typów entity podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
-    @CustomKey("items")
-    public List<ItemStack> createItems = ItemUtils.parseItems("5 stone", "5 dirt", "5 tnt");
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość doświadczenia wymagana do założenia gildii")
-    public int requiredExperience = 0;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość pieniędzy wymagana do założenia gildii")
-    @Comment("UWAGA: Aby ta opcja mogła działać - na serwerze musi być plugin Vault oraz plugin dodający ekonomię")
-    public double requiredMoney = 0;
-
-    @Comment("")
-    @Comment("Przedmioty wymagane do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CustomKey("items-vip")
-    public List<ItemStack> createItemsVip = ItemUtils.parseItems("1 gold_ingot");
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość doświadczenia wymagana do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
-    public int requiredExperienceVip = 0;
-
-    @Min(0)
-    @Comment("")
-    @Comment("Ilość pieniędzy wymagana do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.items")
-    @Comment("UWAGA: Aby ta opcja mogła działać - na serwerze musi być plugin Vault oraz plugin dodający ekonomię")
-    public double requiredMoneyVip = 0;
-
-    @Comment("")
-    @Comment("Czy opcja wymaganego rankingu do założenia gildii ma byc włączona")
-    public boolean rankCreateEnable = true;
-
-    @Comment("")
-    @Comment("Minimalny ranking wymagany do założenia gildii")
-    public int rankCreate = 1000;
-
-    @Comment("")
-    @Comment("Minimalny ranking wymagany do założenia gildii, dla osoby z uprawnieniem funnyguilds.vip.rank")
-    public int rankCreateVip = 800;
-
-    @Comment("")
-    @Comment("Czy GUI z przedmiotami na gildię ma być wspólne dla wszystkich")
-    @Comment("Jeśli włączone - wszyscy gracze będą widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip będzie ignorowane")
-    public boolean useCommonGUI = false;
-
-    @Comment("")
-    @Comment("GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
-    @Comment("Jeśli włączone jest use-common-gui - poniższe GUI jest używane także dla osób z uprawnieniem funnyguilds.vip.items")
-    @Comment("Każda linijka listy oznacza jeden slot, liczba slotów powinna byc wielokrotnością liczby 9 i nie powinna byc większa niz 54")
-    @Comment("Aby użyć przedmiotu, stworzonego w jednym slocie, w innym - można użyć {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, który jest w pierwszym slocie")
-    @Comment("Aby wstawić przedmiot na gildię należy użyć {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildię")
-    @Comment("Aby wstawić przedmiot na gildię z listy vip należy użyć {VIPITEM-nr}")
-    @CustomKey("gui-items")
-    public List<String> guiItems_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-            "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
-            "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
-
-    @Exclude
-    public List<ItemStack> guiItems;
-
-    @Comment("")
-    @Comment("Nazwa GUI z przedmiotami na gildię, dla osób bez uprawnienia funnyguilds.vip.items")
-    @Comment("Nazwa może zawierać max. 32 znaki, wliczając w to kody kolorów")
-    public RawString guiItemsTitle = new RawString("&5&lPrzedmioty na gildie");
-
-    @Comment("")
-    @Comment("GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
-    @Comment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
-    @Comment("Poniższe GUI będzie ignorowane, jeśli wlaczone jest use-common-gui")
-    @CustomKey("gui-items-vip")
-    public List<String> guiItemsVip_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-            "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
-            "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
-
-    @Exclude
-    public List<ItemStack> guiItemsVip;
-
-    @Comment("")
-    @Comment("Nazwa GUI z przedmiotami na gildię, dla osób z uprawnieniem funnyguilds.vip.items")
-    @Comment("Nazwa może zawierać max. 32 znaki, wliczając w to kody kolorów")
-    public RawString guiItemsVipTitle = new RawString("&5&lPrzedmioty na gildie (VIP)");
-
-    @Comment("")
-    @Comment("Zmiana nazwy i koloru przedmiotów na gildię (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
-    @Comment("Jeśli nie chcesz używac tej funkcji - to pozostaw gui-items-name: \"\"")
-    @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
-    @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby (np. golden_apple)")
-    public RawString guiItemsName = new RawString("&7>> &a{ITEM-NO-AMOUNT} &7<<");
-
-    @Comment("")
-    @Comment("Czy do przedmiotów na gildię, które są w GUI, mają być dodawane dodatkowe linie opisu")
-    @Comment("Linie te można ustawić poniżej")
-    public boolean addLoreLines = true;
-
-    @Comment("")
-    @Comment("Dodatkowe linie opisu, dodawane do każdego przedmiotu, który jest jednocześnie przedmiotem na gildię")
-    @Comment("Dodawane linie nie zależą od otwieranego GUI - są wspólne dla zwykłego i VIP")
-    @Comment("Możliwe do użycia zmienne:")
-    @Comment("{REQ-AMOUNT} - całkowita wymagana liczba przedmiotów")
-    @Comment("{PINV-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie")
-    @Comment("{PINV-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie")
-    @Comment("{EC-AMOUNT} - liczba danego przedmiotu, jaką gracz ma w enderchescie")
-    @Comment("{EC-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma w enderchescie")
-    @Comment("{ALL-AMOUNT} - liczba danego przedmiotu, jaką gracz ma przy sobie i w enderchescie")
-    @Comment("{ALL-PERCENT} - procent wymaganej liczby danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
-            "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
 
     @Comment("")
     @Comment("Minimalna odległość od spawnu")
@@ -360,23 +239,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Bloki, których nie można 'bugować'")
     @Comment("Nazwy bloków muszą pasować do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
-    public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
-            // Ban basic
-            "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
-            // Ban TNT Minecart placement
-            "RAILS", "DETECTOR_RAIL", "ACTIVATOR_RAIL", "POWERED_RAIL",
-            // Ban gravity blocks that won't be removed when fallen
-            "ANVIL", "GRAVEL", "SAND", "DRAGON_EGG",
-            // Ban pistons and other components that may produce redstone output or interact with it
-            "PISTON_BASE", "PISTON_STICKY_BASE",
-            "REDSTONE_BLOCK", "REDSTONE_TORCH_ON", "REDSTONE_TORCH_OFF", "DIODE", "REDSTONE_COMPARATOR", "DAYLIGHT_DETECTOR",
-            "DISPENSER", "HOPPER", "DROPPER", "OBSERVER",
-            "STONE_PLATE", "WOOD_PLATE", "GOLD_PLATE", "IRON_PLATE", "LEVER", "TRIPWIRE_HOOK", "TRAP_DOOR", "IRON_TRAPDOOR", "WOOD_BUTTON", "STONE_BUTTON",
-            "WOOD_DOOR", "IRON_DOOR", "SPRUCE_DOOR_ITEM", "BIRCH_DOOR_ITEM", "JUNGLE_DOOR_ITEM", "ACACIA_DOOR_ITEM", "DARK_OAK_DOOR_ITEM",
-            "FENCE_GATE", "SPRUCE_FENCE_GATE", "JUNGLE_FENCE_GATE", "DARK_OAK_FENCE_GATE", "BIRCH_FENCE_GATE",
-            "REDSTONE_LAMP_ON", "REDSTONE_LAMP_OFF",
-            "TRAPPED_CHEST", "CHEST"
-    );
+    public Set<Material> buggedBlocksExclude = defaultBuggedBlocksExclude();
 
     @Comment("")
     @Comment("Czy klocki po 'zbugowaniu' mają zostać oddane")
@@ -529,61 +392,20 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy blokada po wybuchu ma obejmować rownież interakcje z blocked-interact")
     public boolean regionExplodeBlockInteractions = false;
 
-    @Min(0)
     @Comment("")
-    @Comment("Zasięg pobieranych przedmiotów po wybuchu, jeżeli chcesz wyłączyć - wpisz 0")
-    public int explodeRadius = 3;
+    @Comment("Kontrola niszczenia bloków przez wybuchy")
+    @Comment("Podzielona na sekcje 'guild' (wybuchy na terenie gildii) oraz 'global' (wybuchy poza terenem gildii)")
+    @CustomKey("explosion-control")
+    public ExplosionControlConfiguration explosionControl = new ExplosionControlConfiguration();
 
     @Comment("")
-    @Comment("Jakie materiały, i z jaka szansą, maja byc niszczone po wybuchu")
-    @Comment("<material>: <szansa (w %)>")
-    @Comment("Jeżeli wszystkie materiały mają mieć określony % na wybuch - uzyj specjalnego znaku '*'")
-    @CustomKey("explode-materials")
-    public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
-            "ender_chest", 20.0,
-            "enchantment_table", 20.0,
-            "obsidian", 20.0,
-            "water", 33.0,
-            "lava", 33.0
-    );
-
-    @Exclude
-    public Map<Material, Double> explodeMaterials;
-    @Exclude
-    public boolean allMaterialsAreExplosive;
-    @Exclude
-    public double defaultExplodeChance = -1.0;
+    @Comment("Sekcja konfiguracji wojen i podbijania gildii")
+    public WarConfiguration war = new WarConfiguration();
 
     @Comment("")
-    @Comment("Czy powstałe wybuchy powinny niszczyć bloki wyłącznie na terenach gildii")
-    public boolean explodeShouldAffectOnlyGuild = false;
-
-    @Comment("")
-    @Comment("Możliwość podbijania gildii")
-    public boolean warEnabled = true;
-
-    @Min(1)
-    @Comment("")
-    @Comment("Ile żyć ma gildia")
-    public int warLives = 3;
-
-    @PositiveOrZero
-    @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
-    @Comment("")
-    @Comment("Po jakim czasie od założenia można zaatakować gildię")
-    @CustomKey("war-protection")
-    public Duration warProtection = Duration.ofHours(24);
-
-    @PositiveOrZero
-    @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
-    @Comment("")
-    @Comment("Ile czasu trzeba czekać do następnego ataku na gildię")
-    @CustomKey("war-wait")
-    public Duration warWait = Duration.ofHours(24);
-
-    @Comment("")
-    @Comment("Czy gildia podczas okresu ochronnego ma posiadać ochronę przeciw TNT")
-    public boolean warTntProtection = true;
+    @Comment("Sekcja konfiguracji wykupu zyc dla gildii (/g kupzycie)")
+    @CustomKey("buy-life")
+    public BuyLifeConfiguration buyLife = new BuyLifeConfiguration();
 
     @Comment("")
     @Comment("Czy zwierzęta na terenie gildii mają być chronione przed osobami spoza gildii")
@@ -681,8 +503,17 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration rankFarmingCooldown = Duration.ofHours(2);
 
     @Comment("")
+    @Comment("Czy blokada nabijania rankingu powinna działać również na adres IP gracza zabitego")
+    @Comment("Zapobiega to nabijaniu rankingu przez logowanie się na wielu kontach z tego samego adresu IP")
+    public boolean rankFarmingCooldownIP = true;
+
+    @Comment("")
     @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki mają taki sam adres IP")
     public boolean rankIPProtect = false;
+
+    @Comment("")
+    @Comment("Czy ma być zablokowana zmiana rankingu, jeśli atakujący ma taki sam adres IP jak członek gildii ofiary")
+    public boolean rankIPProtectPlayersFromGuild = false;
 
     @Comment("")
     @Comment("Czy ma być zablokowana zmiana rankingu, jeśli obie osoby z walki są członkami tej samej gildii")
@@ -721,13 +552,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy zabójcy zawsze mają dzielić sie ilością punktów według rank-assist-killer-share, nawet gdy nie ma osób asystujących")
     @CustomKey("rank-assist-victim-always-share")
     public boolean assistKillerAlwaysShare = false;
-
-    @Comment("")
-    @Comment("Na jakich regionach ma być ignorowane nadawanie asyst")
-    @Comment("UWAGA: wymagany plugin WorldGuard")
-    @Comment("Zamiast tej opcji w configu, zalecamy ustawienie flagi 'fg-no-assists' na regionach, na których asysty nie powinny być naliczane")
-    @Comment("Ta opcja konfiguracji zniknie z configu w przyszłych wydaniach i nie powinna być używana")
-    public Set<String> assistsRegionsIgnored = Collections.emptySet(); //TODO [5.0]: Remove
 
     @Comment("")
     @Comment("System rankingowy używany przez plugin, do wyboru:")
@@ -825,82 +649,81 @@ public class PluginConfiguration extends OkaeriConfig {
     public static class LivesRepeatingSymbol extends OkaeriConfig {
 
         @Comment("Symbol (lub słowo), który ma być powtarzany przy użyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
-        public RawString full = new RawString("&c\u2764");
+        public Component full = AMPERSAND_SERIALIZER.deserialize("&c\u2764");
 
         @Comment("")
         @Comment("Symbol (lub słowo), który ma być powtarzany przy użyciu placeholdera LIVES-SYMBOL")
-        public RawString empty = new RawString("&8\u2764");
+        public Component empty = AMPERSAND_SERIALIZER.deserialize("&8\u2764");
 
         @Comment("")
         @Comment("Symbol (lub słowo), który ma być pokazywany na końcu placeholdera LIVES-SYMBOL, kiedy gildia posiada więcej żyć niz podstawowe (war-lives)")
-        public RawString more = new RawString("&a+");
+        public Component more = AMPERSAND_SERIALIZER.deserialize("&a+");
 
     }
 
     @Comment("")
     @Comment("Wygląd znacznika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktoś jest liderem, zastępcą lub zwykłym członkiem gildii")
-    public RawString chatPosition = new RawString("&b{POS} ");
+    public String chatPosition = "&b{POS} ";
 
     @Comment("")
     @Comment("Znacznik dla lidera gildii")
     @CustomKey("chat-position-leader")
-    public RawString chatPositionLeader = new RawString("**");
+    public Component chatPositionLeader = Component.text("**");
 
     @Comment("")
     @Comment("Znacznik dla zastępcy gildii")
     @CustomKey("chat-position-deputy")
-    public RawString chatPositionDeputy = new RawString("*");
+    public Component chatPositionDeputy = Component.text("*");
 
     @Comment("")
     @Comment("Znacznik dla członka gildii")
     @CustomKey("chat-position-member")
-    public RawString chatPositionMember = new RawString("");
+    public Component chatPositionMember = Component.text("");
 
     @Comment("")
     @Comment("Wygląd znacznika {TAG} wstawionego w format chatu")
-    public RawString chatGuild = new RawString("&b{TAG} ");
+    public String chatGuild = "&b{TAG} ";
 
     @Comment("")
     @Comment("Wygląd znacznika {RANK} wstawionego w format chatu")
-    public RawString chatRank = new RawString("&b{RANK} ");
+    public String chatRank = "&b{RANK} ";
 
     @Comment("")
     @Comment("Wygląd znacznika {POINTS} wstawionego w format chatu")
-    @Comment("Możesz tu także użyć znacznika {POINTS-FORMAT}")
-    public RawString chatPoints = new RawString("&b{POINTS} ");
+    public String chatPoints = "&b{POINTS} ";
 
     @Comment("")
     public TopConfiguration top = new TopConfiguration();
 
     @Comment("")
-    @Comment("Wygląd znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zależności od wartości punktów")
-    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS}, jest używane jedynie na liście graczy")
-    @Comment("Lista powinna być podana od najmniejszych do największych rankingów i zawierać tylko liczby naturalne, z zerem włącznie")
-    @Comment("Elementy listy powinny być postaci: \"minRank-maxRank wygląd\", np.: \"0-750 &4{POINTS}\"")
-    @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    public List<RangeFormatting> pointsFormat = Arrays.asList(
-            new RangeFormatting(0, 749, "&4{POINTS}"),
-            new RangeFormatting(750, 999, "&c{POINTS}"),
-            new RangeFormatting(1000, 1499, "&a{POINTS}"),
-            new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
-    );
+    @Comment("Formatowanie wartości placeholderów z końcówką -FORMAT; niezależne od włączenia topek")
+    @Comment("Sekcja zawiera wszystkie statystyki gracza i gildii; puste listy [] można zastąpić własnymi progami")
+    @CustomKey("value-formatting")
+    public ValueFormattingConfiguration valueFormatting = new ValueFormattingConfiguration();
+
+    // Must be declared after valueFormatting and top - the initializer reads those fields directly.
+    @Exclude
+    private volatile ValueFormatting processedValueFormatting = new ValueFormatting(this.valueFormatting, this.top);
+
+    public ValueFormatting getValueFormatting() {
+        return this.processedValueFormatting;
+    }
 
     @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Używaj zmiennych {POINTS}")
     @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam nick - nie podawaj tu nic")
-    public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
+    public Component ptopPoints = AMPERSAND_SERIALIZER.deserialize(" &7[{POINTS}&7]");
 
     @Comment("")
     @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
-    @Comment("Używaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Używaj zmiennych {POINTS}")
     @Comment("Jeśli nie chcesz wyświetlać punktów, tylko sam tag - nie podawaj tu nic")
-    public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
+    public Component gtopPoints = AMPERSAND_SERIALIZER.deserialize(" &7[&b{POINTS}&7]");
 
     @Comment("")
-    @Comment("Wygląd znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED}, w zależności od wartości zmiany w rankingu")
+    @Comment("Wygląd znacznika {ATTACKER-CHANGE-FORMATTED} i {VICTIM-CHANGE-FORMATTED}, w zależności od wartości zmiany w rankingu")
     @Comment("Lista powinna być podana od najmniejszych do największych wartości i zawierać tylko liczby naturalne, z zerem włącznie")
     @Comment("Elementy listy powinny być postaci: \"minChange-maxChange wygląd\", np.: \"0-50 &a+{CHANGE}\"")
     @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minChange w górę, np.: \"50-* &2+{CHANGE}\"")
@@ -909,18 +732,6 @@ public class PluginConfiguration extends OkaeriConfig {
             new RangeFormatting(Integer.MIN_VALUE, -1, "&c-{CHANGE}"),
             new RangeFormatting(0, 0, "&7{CHANGE}"),
             new RangeFormatting(1, Integer.MAX_VALUE, "&a+{CHANGE}")
-    );
-
-    @Comment("")
-    @Comment("Wygląd znacznika {PING-FORMAT} w zależności od wartości pingu")
-    @Comment("Lista powinna być podana od najmniejszych do największych wartości i zawierać tylko liczby naturalne, z zerem włącznie")
-    @Comment("Elementy listy powinny być postaci: \"minPing-maxPing wygląd\", np.: \"0-75 &a{PING}\"")
-    @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minPing w górę, np.: \"301-* &c{PING}\"")
-    public List<RangeFormatting> pingFormat = Arrays.asList(
-            new RangeFormatting(0, 75, "&a{PING}"),
-            new RangeFormatting(76, 150, "&e{PING}"),
-            new RangeFormatting(151, 300, "&c{PING}"),
-            new RangeFormatting(301, Integer.MAX_VALUE, "&c{PING}")
     );
 
     @NotBlank
@@ -944,22 +755,22 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatPrivDesign = new RawString("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
+    public Component chatPrivDesign = AMPERSAND_SERIALIZER.deserialize("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie dla sojuszników")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatAllyDesign = new RawString("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
+    public Component chatAllyDesign = AMPERSAND_SERIALIZER.deserialize("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomości wysyłanej na czacie globalnym gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatGlobalDesign = new RawString("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
+    public Component chatGlobalDesign = AMPERSAND_SERIALIZER.deserialize("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Wygląd wiadomoci wysyłanej na czacie gildyjnym/sojuszniczym/globalnym gildii, dla osób z włączonym /ga spy")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public RawString chatSpyDesign = new RawString("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
+    public Component chatSpyDesign = AMPERSAND_SERIALIZER.deserialize("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("")
     @Comment("Czy wiadomości z chatów gildyjnych powinny być wyświetlane w logach serwera")
@@ -972,54 +783,63 @@ public class PluginConfiguration extends OkaeriConfig {
     public static class RelationalTag extends OkaeriConfig {
 
         @Comment("Wygląd tagu osób w tej samej gildii")
-        public RawString our = new RawString("&a{TAG}&f");
+        public String our = "&a{TAG}&f ";
 
         @Comment("")
         @Comment("Wygląd tagu gildii sojuszniczej")
-        public RawString allies = new RawString("&6{TAG}&f");
+        public String allies = "&6{TAG}&f ";
 
         @Comment("")
         @Comment("Wygląd tagu wrogiej gildii")
-        public RawString enemies = new RawString("&c{TAG}&f");
+        public String enemies = "&c{TAG}&f ";
 
         @Comment("")
         @Comment("Wygląd tagu gildii neutralnej, widziany również przez graczy bez gildii")
-        public RawString other = new RawString("&7{TAG}&f");
+        public String other = "&7{TAG}&f ";
 
+        public Component chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
+            if (targetGuild == null) {
+                return Component.empty();
+            }
+
+            SimpleStringReplacement tagReplacement = Replacement.string(
+                    "{TAG}",
+                    targetGuild.getTag()
+            );
+            String rawPreparedTag = tagReplacement.replace(this.chooseTag(guild, targetGuild));
+            return ComponentUtil.colored(rawPreparedTag);
+        }
+        
         public String chooseTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
             if (targetGuild == null) {
                 return "";
             }
 
             if (guild == null) {
-                return this.other.getValue();
+                return this.other;
             }
 
             if (guild.equals(targetGuild)) {
-                return this.our.getValue();
+                return this.our;
             }
 
             if (guild.isAlly(targetGuild)) {
-                return this.allies.getValue();
+                return this.allies;
             }
 
-            if (guild.isEnemy(targetGuild) || targetGuild.isEnemy(guild)) {
-                return this.enemies.getValue();
+            if (guild.isAtWar(targetGuild)) {
+                return this.enemies;
             }
 
-            return this.other.getValue();
+            return this.other;
         }
-
-        public String chooseAndPrepareTag(@Nullable Guild guild, @Nullable Guild targetGuild) {
-            if (targetGuild == null) {
-                return "";
-            }
-
-            return FunnyFormatter.of("{TAG}", targetGuild.getTag())
-                    .format(this.chooseTag(guild, targetGuild));
-        }
-
     }
+    
+    @Comment("")
+    @Comment("Czy placeholdery wyświetlające listę graczy online/offline mają uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean usersListRespectVanish = true;
 
     @Comment("")
     @Comment("Czy ptop-online/ptop-offline mają uznawać graczy na vanishu za graczy offline")
@@ -1028,14 +848,24 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean ptopRespectVanish = true;
 
     @Comment("")
-    @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
-    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-offline) pustą")
-    public RawString ptopOnline = new RawString("&a");
+    @Comment("Czy gtop-online/gtop-offline mają uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean gtopRespectVanish = true;
 
     @Comment("")
-    @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
-    @Comment("Jeśli nie chcesz kolorowania zależnego od statusu online - pozostaw tę sekcję (i ptop-online) pustą")
-    public RawString ptopOffline = new RawString("&c");
+    @Comment("Czy placeholder G-MEMBER-X ma uznawać graczy na vanishu za graczy offline")
+    @Comment("UWAGA: opcja powinna wspierać pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jeśli opcja by nie działała z tymi (lub innymi) pluginami - proszę stworzyć issue na GitHubie")
+    public boolean gMemberRespectVanish = true;
+
+    @Comment("")
+    @Comment("Kolory dodawane dla nicków graczy/nazw gildii online")
+    public TextColor onlineColor = NamedTextColor.GREEN;
+
+    @Comment("")
+    @Comment("Kolory dodawane dla nicków graczy/nazw gildii offline")
+    public TextColor offlineColor = NamedTextColor.RED;
 
     @Comment("")
     public ScoreboardConfiguration scoreboard = new ScoreboardConfiguration();
@@ -1053,29 +883,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean guildTagUppercase = false;
 
     @Comment("")
-    @Comment("Czy włączyć tłumaczenie nazw przedmiotów?")
-    @CustomKey("translated-materials-enable")
-    public boolean translatedMaterialsEnable = true;
-
-    @Comment("")
-    @Comment("Czy do tłumaczenia nazw przedmiotów plugin ma używać tzw. TranslatableComponents - nazwy przedmiotów będą wyświetlane wtedy w języku gracza")
-    @Comment("Jeśli opcja będzie włączona opcja 'translated-materials-name' nie będzie miała wpływu na nazwy przedmiotów")
-    public boolean useTranslatableComponentsForMaterials = false;
-
-    @Comment("")
-    @Comment("Tłumaczenia nazw przedmiotów dla znaczników {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
-    @Comment("Wpisywać w formacie - nazwa_przedmiotu: \"tłumaczona nazwa przedmiotu\"")
-    @CustomKey("translated-materials-name")
-    public Map<Material, String> translatedMaterials = ImmutableMap.<Material, String>builder()
-            .put(Material.DIAMOND_SWORD, "&3diamentowy miecz")
-            .put(Material.IRON_SWORD, "&7zelazny miecz")
-            .put(Material.GOLD_INGOT, "&ezloto")
-            .build();
-
-    @Comment("")
     @Comment("Wygląd znaczników {ITEM} i {ITEMS} za liczbą przedmiotu")
     @Comment("Dla np. item-amount-suffix: \"szt. \" otrzymamy 1szt. golden_apple")
-    public RawString itemAmountSuffix = new RawString("x ");
+    public Component itemAmountSuffix = Component.text("x ");
 
     @Comment("")
     @Comment("Czy sprawdzanie zakazanych nazw i tagów gildii powinno być włączone")
@@ -1100,8 +910,17 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
     @Comment("")
-    @Comment("Czy powiadomienie o zabójstwie gracza powinno się wyświetlać dla zabójcy")
-    public boolean displayNotificationForKiller = false;
+    @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla atakującego")
+    public boolean displayCombatPredictionAttacker = false;
+
+    @Comment("")
+    @Comment("Czy powiadomienie o przewidywanej zmianie punktów powinno się wyświetlać dla ofiary")
+    public boolean displayCombatPredictionVictim = false;
+
+    @PositiveOrZero
+    @Comment("")
+    @Comment("Minimalny odstęp między kolejnymi powiadomieniami o przewidywanej zmianie punktów dla tej samej pary atakujący-ofiara")
+    public Duration combatPredictionInterval = Duration.ofSeconds(30);
 
     @Comment("")
     @Comment("Czy powiadomienia o wejściu na teren gildii członka gildii powinny byc wyświetlane")
@@ -1172,7 +991,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Hooki do pluginów, które powinny zostać wyłączone, opcja ta powinna być stosowania jedynie w awaryjnych sytuacjach!")
-    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, HolographicDisplays, DecentHolograms, dynmap")
+    @Comment("Lista hooków, które można wyłączyć: WorldEdit, WorldGuard, Vault, PlaceholderAPI, DecentHolograms, dynmap")
     @Comment("Aby zostawić wszystkie hooki włączone wystarczy wpisać: disabled-hooks: []")
     public Set<String> disabledHooks = new HashSet<>();
 
@@ -1204,7 +1023,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
             @Comment("")
             @Comment("Etykieta środka gildii")
-            @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+            @Comment("Dostępne zmienne: {NAME}, {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}")
             public String label = "{NAME} ({TAG})";
 
             @Comment("")
@@ -1224,7 +1043,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
             @Comment("")
             @Comment("Etykieta obszaru gildii")
-            @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+            @Comment("Dostępne zmienne: {NAME}, {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}")
             @Comment("Wspierane są tutaj znaczniki HTML")
             public String label = "<b>{NAME} ({TAG})</b><br><br>" +
                     "<b>Właściciel:</b> {OWNER}<br>" +
@@ -1281,6 +1100,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public DataModel dataModel = DataModel.FLAT;
 
     @Comment("")
+    @Comment("Opcjonalna kontrola konfliktów UUID podczas uruchamiania pluginu")
+    @Comment("Zatrzymuje start FunnyGuilds, jeśli identyczny nick jest zapisany z różnymi UUID")
+    @Comment("Wielkość liter ma znaczenie: Steve i steve są różnymi nickami")
+    @Comment("Nie blokuje logowania ani ponownego użycia nicku przez inne konto")
+    public boolean preventUuidConflicts = false;
+
+    @Comment("")
     @Comment("Dane wymagane do połączenia z bazą")
     @Comment("UWAGA: connectionTimeout jest w milisekundach!")
     @Comment(" ")
@@ -1295,55 +1121,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("3. Zmień nazwy tabel w bazie używając np. phpMyAdmin")
     public MysqlConfiguration mysql = new MysqlConfiguration();
 
-    private List<ItemStack> loadGUI(List<String> contents) {
-        List<ItemStack> items = new ArrayList<>();
-
-        for (String guiEntry : contents) {
-            ItemStack item = null;
-
-            if (guiEntry.contains("GUI-")) {
-                int index = LegacyUtils.getIndex(guiEntry);
-                if (index > 0 && index <= items.size()) {
-                    item = items.get(index - 1);
-                }
-            }
-            else if (guiEntry.contains("VIPITEM-")) {
-                try {
-                    int index = LegacyUtils.getIndex(guiEntry);
-                    if (index > 0 && index <= this.createItemsVip.size()) {
-                        item = this.createItemsVip.get(index - 1);
-                    }
-                }
-                catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItemsVip.size() + " or <= 0");
-                }
-            }
-            else if (guiEntry.contains("ITEM-")) {
-                try {
-                    int index = LegacyUtils.getIndex(guiEntry);
-                    if (index > 0 && index <= this.createItems.size()) {
-                        item = this.createItems.get(index - 1);
-                    }
-                }
-                catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItems.size() + " or <= 0");
-                }
-            }
-            else {
-                item = ItemUtils.parseItem(guiEntry);
-            }
-
-            if (item == null) {
-                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14)
-                        .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
-            }
-
-            items.add(item);
-        }
-
-        return items;
-    }
-
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();
@@ -1355,6 +1132,7 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
+        ValueFormatting formatting = new ValueFormatting(this.valueFormatting, this.top);
         if (this.availableLocales.add(this.defaultLocale)) {
             FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' hasn't been added in available locales, adding it automatically");
         }
@@ -1367,13 +1145,7 @@ public class PluginConfiguration extends OkaeriConfig {
                     .collect(Collectors.toSet());
         }
 
-        this.guiItems = this.loadGUI(this.guiItems_);
-
-        if (!this.useCommonGUI) {
-            this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
-        }
-
-        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getFirst())) {
+        if (this.heart.createMaterial != null && this.heart.createMaterial.hasGravity()) {
             this.eventPhysics = true;
         }
 
@@ -1381,7 +1153,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eloConstants = new HashMap<>();
 
             NumberRange.parseIntegerRange(this.eloConstants_, false).forEach((key, value) -> {
-                int constant = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(value)).orElseGet(() -> {
+                int constant = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(value)).orElseGet(() -> {
                     FunnyGuilds.getPluginLogger().parser("\"" + value + "\" is not a valid elo constant!");
                     return 0;
                 });
@@ -1394,28 +1166,68 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventTeleport = true;
         }
 
-        this.explodeMaterials = new EnumMap<>(Material.class);
-        for (Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
-            double chance = entry.getValue();
-            if (chance < 0) {
-                continue;
-            }
-
-            if (entry.getKey().equalsIgnoreCase("*")) {
-                this.allMaterialsAreExplosive = true;
-                this.defaultExplodeChance = chance;
-                continue;
-            }
-
-            Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
-            if (material == null || material == Material.AIR) {
-                continue;
-            }
-
-            this.explodeMaterials.put(material, chance);
-        }
+        this.explosionControl.loadProcessedProperties();
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
+        this.processedValueFormatting = formatting;
+    }
+
+    public Set<Material> defaultBuggedBlocksExclude() {
+        Set<Material> excludedBlocks = new HashSet<>(Set.of(
+            // Ban basic
+            Material.TNT, Material.LAVA, Material.WATER,
+
+            // Ban TNT Minecart placement
+            Material.RAIL, Material.DETECTOR_RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL,
+
+            // Ban pistons and other components that may produce redstone output or interact with it
+            Material.PISTON, Material.STICKY_PISTON, Material.REDSTONE_BLOCK, Material.REDSTONE_TORCH,
+            Material.REDSTONE_WALL_TORCH, Material.REPEATER, Material.COMPARATOR, Material.DAYLIGHT_DETECTOR,
+            Material.DISPENSER, Material.HOPPER, Material.DROPPER, Material.OBSERVER, Material.LEVER,
+            Material.TRIPWIRE_HOOK, Material.REDSTONE_LAMP, Material.TRAPPED_CHEST, Material.CHEST
+        ));
+
+        Set<Material> filteredMaterials = Arrays.stream(Material.values()).filter(material -> {
+            // Ignore legacy materials
+            if (material.name().startsWith("LEGACY_")) {
+                return false;
+            }
+
+            // Ban all gravity affected blocks, as they won't be removed when fallen
+            if (material.hasGravity()) {
+                return true;
+            }
+
+            // Ban all pressure plates
+            if (material.name().endsWith("_PRESSURE_PLATE")) {
+                return true;
+            }
+
+            // Ban all trapdoors
+            if (material.name().endsWith("_TRAPDOOR")) {
+                return true;
+            }
+
+            // Ban all buttons
+            if (material.name().endsWith("_BUTTON")) {
+                return true;
+            }
+
+            // Ban all doors
+            if (material.name().endsWith("_DOOR")) {
+                return true;
+            }
+
+            // Ban all fence gates
+            if (material.name().endsWith("_FENCE_GATE")) {
+                return true;
+            }
+
+            return false;
+        }).collect(Collectors.toSet());
+
+        excludedBlocks.addAll(filteredMaterials);
+        return excludedBlocks;
     }
 
     public enum DataModel {

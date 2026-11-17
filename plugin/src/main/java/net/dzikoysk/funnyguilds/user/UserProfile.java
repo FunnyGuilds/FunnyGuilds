@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.shared.Position;
+import net.kyori.adventure.text.Component;
 
 public interface UserProfile {
 
@@ -21,8 +22,10 @@ public interface UserProfile {
     }
 
     void sendMessage(String message);
+    
+    void sendMessage(Component message);
 
-    void kick(String reason);
+    void kick(Component reason);
 
     void teleport(Position position);
 

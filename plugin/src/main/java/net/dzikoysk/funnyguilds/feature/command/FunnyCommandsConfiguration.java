@@ -11,31 +11,34 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.AssistsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BaseAdminCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.DeathsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeleteAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.DeputyAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.GuildsEnabledCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.KickAdminCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.KillsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LeaderAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.LivesCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.LogoutsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.MainCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.MoveCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.NameCommand;
-import net.dzikoysk.funnyguilds.feature.command.admin.PointsCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ProtectionCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.SpyCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TagCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.TeleportCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.TntAdminCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.UnbanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.ValidityAdminCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.AssistsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.DeathsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.KillsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.LogoutsCommand;
+import net.dzikoysk.funnyguilds.feature.command.admin.stats.PointsCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.AllyCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.BreakCommand;
+import net.dzikoysk.funnyguilds.feature.command.user.BuyLifeCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ConfirmCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.CreateCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.DeleteCommand;
@@ -54,11 +57,9 @@ import net.dzikoysk.funnyguilds.feature.command.user.LeaveCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.PvPCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.RankResetCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.RankingCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.SetBaseCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.StatsResetCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
-import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -87,6 +88,7 @@ public final class FunnyCommandsConfiguration {
                 .command("ally", commands.ally, AllyCommand.class)
                 .command("base", commands.base, BaseCommand.class)
                 .command("break", commands.break_, BreakCommand.class)
+                .command("buyLife", commands.buyLife, BuyLifeCommand.class)
                 .command("confirm", commands.confirm, ConfirmCommand.class)
                 .command("create", commands.create, CreateCommand.class)
                 .command("delete", commands.delete, DeleteCommand.class)
@@ -104,11 +106,9 @@ public final class FunnyCommandsConfiguration {
                 .command("leave", commands.leave, LeaveCommand.class)
                 .command("player", commands.player, PlayerInfoCommand.class)
                 .command("pvp", commands.pvp, PvPCommand.class)
-                .command("ranking", commands.ranking, RankingCommand.class)
                 .command("rank-reset", commands.rankReset, RankResetCommand.class)
                 .command("stats-reset", commands.statsReset, StatsResetCommand.class)
                 .command("set-base", commands.setbase, SetBaseCommand.class)
-                .command("top", commands.top, TopCommand.class)
                 .command("validity", commands.validity, ValidityCommand.class)
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class);
@@ -135,8 +135,10 @@ public final class FunnyCommandsConfiguration {
                 .command("spy", commands.admin.spy, SpyCommand.class)
                 .command("tag", commands.admin.tag, TagCommand.class)
                 .command("teleport", commands.admin.teleport, TeleportCommand.class)
+                .command("tnt", commands.admin.tnt, TntAdminCommand.class)
                 .command("unban", commands.admin.unban, UnbanCommand.class)
-                .command("validity", commands.admin.validity, ValidityAdminCommand.class);
+                .command("validity", commands.admin.validity, ValidityAdminCommand.class)
+                .command("items", commands.admin.items, ItemsAdminCommand.class);
 
         return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()
@@ -151,8 +153,9 @@ public final class FunnyCommandsConfiguration {
                 .completer(new AlliesCompleter(userManager))
                 .completer(new GuildInvitationsCompleter(userManager, plugin.getGuildInvitationList()))
                 .completer(new InvitePlayersCompleter(config, userManager))
-                .validator(new MemberValidator())
-                .validator(new ManageValidator())
+                .completer(new StatsOperationsCompleter())
+                .completer(new ItemsGiveTypeCompleter())
+                .validator(new HasGuildPermissionValidator(plugin.getGuildPermissionChecker()))
                 .validator(new OwnerValidator())
                 .commands(userCommands.commands)
                 .commands(adminCommands.commands)

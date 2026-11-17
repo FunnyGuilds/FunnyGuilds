@@ -4,6 +4,7 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +16,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,8 +24,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class DecentHologramsHook extends HologramsHook implements Listener {
 
@@ -60,11 +59,11 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             return;
         }
 
-        Option<Location> guildCenterOption = guild.getCenter();
+        Optional<Location> guildCenterOption = guild.getCenter();
         if (guildCenterOption.isEmpty()) {
             return;
         }
-        Location holoCenter = guildCenterOption.get()
+        Location holoCenter = guildCenterOption.orElseThrow()
                 .add(holoConfig.locationCorrection);
 
         Hologram holo = this.holograms.computeIfAbsent(
@@ -81,9 +80,9 @@ public class DecentHologramsHook extends HologramsHook implements Listener {
             // A little hacky, but prevents from hologram blinking
             lines.add("#ICON:" + HologramItem.fromItemStack(new ItemStack(holoConfig.item)).getContent());
         }
-        lines.addAll(PandaStream.of(holoConfig.displayedLines)
+        lines.addAll(holoConfig.displayedLines.stream()
                 .map(line -> this.plugin.getGuildPlaceholdersService().format(null, line, guild))
-                .map(ChatUtils::colored)
+                .map(ComponentUtil::toLegacy)
                 .toList());
         DHAPI.setHologramLines(holo, lines);
     }

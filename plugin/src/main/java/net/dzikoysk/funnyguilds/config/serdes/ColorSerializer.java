@@ -9,7 +9,7 @@ import org.bukkit.Color;
 public class ColorSerializer implements ObjectSerializer<Color> {
 
     @Override
-    public boolean supports(Class<? super Color> type) {
+    public boolean supports(Class<?> type) {
         return Color.class.isAssignableFrom(type);
     }
 

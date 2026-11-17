@@ -14,7 +14,7 @@ final class GuildRankTracker<T extends Number> extends CommonRankTracker<Guild, 
     ) {
         super(
                 statKey,
-                uuid -> Optional.ofNullable(guildManager.findByUuid(uuid).orNull()),
+                uuid -> Optional.ofNullable(guildManager.findByUuid(uuid).orElse(null)),
                 isRanked
         );
     }

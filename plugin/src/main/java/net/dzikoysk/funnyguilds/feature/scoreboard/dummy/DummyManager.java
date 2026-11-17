@@ -30,8 +30,8 @@ public class DummyManager extends AbstractScoreboardHandler<Dummy> {
 
     @Override
     protected void update(AbstractScoreboardHandler<Dummy>.UpdateData observerData, AbstractScoreboardHandler<Dummy>.UpdateData targetData) {
-        observerData.getData().peek(dummy -> dummy.updatePlayer(targetData.getUser()));
-        targetData.getData().peek(dummy -> dummy.updatePlayer(observerData.getUser()));
+        observerData.getData().ifPresent(dummy -> dummy.updatePlayer(targetData.getUser()));
+        targetData.getData().ifPresent(dummy -> dummy.updatePlayer(observerData.getUser()));
     }
 
 

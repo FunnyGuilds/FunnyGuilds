@@ -12,23 +12,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
-import net.dzikoysk.funnyguilds.config.RawString;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TopConfiguration extends OkaeriConfig {
+    
+    @Comment("")
+    @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
+    public boolean useRelationshipColors = false;
 
     @Deprecated
-    @Comment("Opcja zachowana dla zgodnosci. Topy wszystkich statystyk sa dostepne automatycznie, bez listy wlaczonych typow.")
+    @Comment("Opcja zachowana dla zgodnosci. Wszystkie statystyki sa dostepne automatycznie.")
     public Set<String> enabledUserTops = new TreeSet<>(Arrays.asList("points", "kills", "deaths"));
 
     @Deprecated
     @Comment("Opcja zachowana dla zgodnosci. Topy gildii sa tworzone przy pierwszym uzyciu.")
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
-
-    @Comment("")
-    @Comment("Czy placeholdery {PTOP-x} oraz {GTOP-x} mają byc właczone na tabie oraz w PlaceholderAPI")
-    @Comment("Wyłączenie tej funkcji może minimalnie odciążyć serwer")
-    public boolean enableLegacyPlaceholders = true;
 
     @Comment("")
     public Format format = new Format();
@@ -38,20 +36,20 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Znacznik z wartością dodawany do zmiennej {PTOP-typ-x}")
         @Comment("Używaj zmiennych {VALUE} i {VALUE-FORMAT}")
         @Comment("Jeśli nie chcesz wyświetlać wartości, tylko sam nick - nie podawaj tu nic")
-        public RawString ptop = new RawString(" &7[{VALUE}&7]");
+        public String ptop = " &7[{VALUE}&7]";
 
         @Comment("")
         @Comment("Znacznik z wartością dodawany do zmiennej {GTOP-typ-x}")
         @Comment("Używaj zmiennych {VALUE} i {VALUE-FORMAT}")
         @Comment("Jeśli nie chcesz wyświetlać wartości, tylko sam tag - nie podawaj tu nic")
-        public RawString gtop = new RawString(" &7[&b{VALUE}&7]");
+        public String gtop = " &7[&b{VALUE}&7]";
 
         @Comment("")
         @Comment("Wygląd znacznika {VALUE-FORMAT} w zależności od wartości topki graczy")
-        @Comment("Lista powinna być podana od najmniejszych do największych rankingów")
+        @Comment("Pierwszy pasujący wpis wygrywa; kolejność wpisów ma znaczenie")
         @Comment("Elementy listy powinny być postaci: \"minValue-maxValue wygląd\", np.: \"0-750 &4{VALUE}\"")
-        @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment("Brak dopasowania lub [] zwraca samą liczbę; brak klucza typu dziedziczy value-formatting")
+        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{VALUE}\"")
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma być używane dane formatowanie")
         public Map<String, List<RangeFormatting>> ptopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
                 .put("points", Arrays.asList(
@@ -76,10 +74,10 @@ public class TopConfiguration extends OkaeriConfig {
 
         @Comment("")
         @Comment("Wygląd znacznika {VALUE-FORMAT} w zależności od wartości topki gildii")
-        @Comment("Lista powinna być podana od najmniejszych do największych rankingów")
+        @Comment("Pierwszy pasujący wpis wygrywa; kolejność wpisów ma znaczenie")
         @Comment("Elementy listy powinny być postaci: \"minValue-maxValue wygląd\", np.: \"0-750 &4{VALUE}\"")
-        @Comment("Pamiętaj, aby każdy możliwy ranking miał ustalony format!")
-        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment("Brak dopasowania lub [] zwraca samą liczbę; brak klucza typu dziedziczy value-formatting")
+        @Comment("* użyta w zapisie elementu listy oznacza wszystkie wartości od danego minRank w górę, np.: \"1500-* &6&l{VALUE}\"")
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma być używane dane formatowanie")
         public Map<String, List<RangeFormatting>> gtopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
                 .put("kills", Arrays.asList(

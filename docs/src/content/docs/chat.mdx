@@ -1,0 +1,63 @@
+---
+title: Czat
+description: Kanały czatu gildyjnego, znaczniki w formacie czatu i tagi nad głową gracza.
+---
+
+## Kanały czatu gildyjnego
+
+FunnyGuilds dodaje trzy prywatne kanały czatu, aktywowane prefiksem na
+początku wiadomości:
+
+| Prefiks | Domyślnie | Odbiorcy |
+|---|---|---|
+| `chat-priv` | `!` | Członkowie własnej gildii |
+| `chat-ally` | `!!` | Własna gildia i sojusznicy |
+| `chat-global` | `!!!` | Wszystkie gildie |
+
+Wygląd każdej wiadomości ustawiają osobne szablony (`chat-priv-design`,
+`chat-ally-design`, `chat-global-design`) ze zmiennymi `{PLAYER}`, `{TAG}`,
+`{MESSAGE}` i `{POS}`. Administrator z włączonym trybem `/ga spy` widzi
+wszystkie trzy kanały w formacie `chat-spy-design` — `log-guild-chat`
+dodatkowo zapisuje je w logach serwera.
+
+## Statystyki w głównym czacie
+
+W FG 5.x główny czat formatuje zewnętrzny plugin czatowy. Użyj w jego szablonie
+[PlaceholderAPI](/placeholderapi/), np. `%funnyguilds_points-format%`,
+`%funnyguilds_kdr-format%` lub `%funnyguilds_g-avg-points-format%`.
+Progi i kolory ustawia `value-formatting` w `config.yml`.
+
+Dawne automatyczne przepisywanie znaczników `{POINTS}`, `{POINTS-FORMAT}`,
+`{RANK}`, `{TAG}` i `{POS}` w ogólnym formacie czatu nie jest obsługiwane przez
+obecny listener FG 5.x. Pola takie jak `chat-points` nie włączają tego mechanizmu.
+Kanały gildyjne opisane wyżej zachowują własne szablony i zmienne.
+
+## Tagi nad głową gracza (nametag)
+
+Sekcja `scoreboard.nametag` pozwala doczepić prefiks/sufiks do nicku gracza
+widocznego nad jego głową (i na tabliście) — kolorowany w zależności od
+relacji patrzącego z gildią danego gracza, tak jak tagi na czacie:
+
+```yaml
+nametag:
+  prefix:
+    no-guild: ''
+    our-guild: '&a{TAG}&f '
+    allies-guild: '&6{TAG}&f '
+    enemies-guild: '&c{TAG}&f '
+    other-guild: '&7{TAG}&f '
+```
+
+Dostępne zmienne to `{TAG}`, `{REL_TAG}`, `{NAME}` i `{POS}` — obsługiwane jest
+też PlaceholderAPI, łącznie z placeholderami relacyjnymi. `update-rate`
+ustala, jak często nametagi są odświeżane niezależnie od innych wyzwalaczy
+(np. zmiany gildii).
+
+:::note[Inne opcje]
+- `scoreboard.enabled` / `use-shared-scoreboard` — współdzielenie scoreboardu z innymi pluginami.
+- `scoreboard.queue-configuration` — throttling aktualizacji przy dużym ruchu.
+- `online-color` / `offline-color` — kolor nicków/gildii online i offline.
+- `users-list-respect-vanish` / `ptop-respect-vanish` / `gtop-respect-vanish` / `g-member-respect-vanish` — czy gracze na vanishu liczą się jako online w placeholderach.
+
+Punkty pod nickiem gracza to osobna opcja `scoreboard.dummy` — patrz [Rankingi i walka](/rankings-combat/).
+:::

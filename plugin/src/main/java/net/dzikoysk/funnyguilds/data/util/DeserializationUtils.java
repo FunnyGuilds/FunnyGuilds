@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.util;
 
 import java.time.Instant;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -16,18 +17,17 @@ import net.dzikoysk.funnyguilds.user.UserBan;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserProfile;
 import org.bukkit.Location;
-import panda.std.Option;
 
 public final class DeserializationUtils {
 
     private DeserializationUtils() {
     }
 
-    public static Option<User> deserializeUser(UserManager userManager, Object[] values) {
+    public static Optional<User> deserializeUser(UserManager userManager, Object[] values) {
         return deserializeUser(userManager, values, null);
     }
 
-    public static Option<User> deserializeUser(UserManager userManager, Object[] values, String stats) {
+    public static Optional<User> deserializeUser(UserManager userManager, Object[] values, String stats) {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
@@ -46,15 +46,19 @@ public final class DeserializationUtils {
             user.setBan(new UserBan((String) values[8], ban));
         }
 
+        if (values.length > 9 && values[9] != null) {
+            user.setLastIP((String) values[9]);
+        }
+
         user.markUnchanged();
-        return Option.of(user);
+        return Optional.of(user);
     }
 
     @SuppressWarnings("unchecked")
-    public static Option<Guild> deserializeGuild(PluginConfiguration pluginConfiguration, GuildManager guildManager, Object[] values) {
+    public static Optional<Guild> deserializeGuild(PluginConfiguration pluginConfiguration, GuildManager guildManager, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize guild, caused by: null");
-            return Option.none();
+            return Optional.empty();
         }
 
         UUID guildUuid = (UUID) values[0];
@@ -88,28 +92,45 @@ public final class DeserializationUtils {
         guild.setLives((int) values[12]);
         guild.setBan((Instant) values[13]);
         guild.setDeputies((Set<User>) values[14]);
-        guild.setPvP((boolean) values[15]);
+        guild.setTntProtectionBypass((Instant) values[15]);
+        guild.setPvP((boolean) values[16]);
+        guild.setHeartLives((int) values[17]);
+        if (values.length > 18 && values[18] != null) {
+            guild.setWarsWon((int) values[18]);
+        }
+        if (values.length > 19 && values[19] != null) {
+            guild.setWarsLost((int) values[19]);
+        }
+        if (values.length > 20 && values[20] != null) {
+            guild.setLastWarGuildTag((String) values[20]);
+        }
+        if (values.length > 21 && values[21] != null) {
+            guild.setWarStreak((int) values[21]);
+        }
+        if (values.length > 22 && values[22] != null) {
+            guild.setLastLifeBuy((Instant) values[22]);
+        }
         guild.deserializationUpdate();
 
         guild.markUnchanged();
-        return Option.of(guild);
+        return Optional.of(guild);
     }
 
-    public static Option<Region> deserializeRegion(RegionManager regionManager, Object[] values) {
+    public static Optional<Region> deserializeRegion(RegionManager regionManager, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().deserialize("Cannot deserialize region, caused by: null");
-            return Option.none();
+            return Optional.empty();
         }
 
         String regionName = (String) values[0];
-        Region region = regionManager.findByName(regionName).orElseGet(new Region(regionName, (Location) values[1]));
+        Region region = regionManager.findByName(regionName).orElse(new Region(regionName, (Location) values[1]));
 
         // region.setSize((int) values[2]); // We don't set size here like before, now region size is calculated from region enlargement level (method below)
         regionManager.changeRegionEnlargement(region, (int) values[3]);
         region.update();
 
         region.markUnchanged();
-        return Option.of(region);
+        return Optional.of(region);
     }
 
 }

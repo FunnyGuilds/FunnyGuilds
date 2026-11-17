@@ -1,10 +1,14 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
@@ -12,8 +16,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
 
@@ -24,24 +26,33 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
 
     private final GuildRank rank;
     private int lives;
+    private int heartLives;
 
-    private Option<Region> region = Option.none();
-    private Option<Location> home = Option.none();
+    private Optional<Region> region = Optional.empty();
+    private Optional<Location> home = Optional.empty();
 
     private User owner;
     private Set<User> members = ConcurrentHashMap.newKeySet();
     private Set<User> deputies = ConcurrentHashMap.newKeySet();
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
     private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
-    private Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
+    private final Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
 
     private Instant born;
     private Instant validity;
     private Instant protection;
-    private Option<Instant> build = Option.none();
-    private Option<Instant> ban = Option.none();
+    private Optional<Instant> build = Optional.empty();
+    private Optional<Instant> ban = Optional.empty();
+    private Optional<Instant> tntProtectionBypass = Optional.empty();
 
     private boolean pvp;
+
+    private int warsWon;
+    private int warsLost;
+    private Optional<String> lastWarGuildTag = Optional.empty();
+    private Optional<Instant> lastLifeBuy = Optional.empty();
+    private int warStreak;
+    private final java.util.Map<UUID, Instant> victimGainCooldowns = new ConcurrentHashMap<>();
 
     public Guild(UUID uuid, String name, String tag) {
         this.uuid = uuid != null ? uuid : UUID.randomUUID();
@@ -65,7 +76,6 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.members.forEach(user -> user.setGuild(this));
     }
 
-    @Override
     public UUID getUUID() {
         return this.uuid;
     }
@@ -107,10 +117,23 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.setLives(update.apply(this.lives));
     }
 
+    public int getHeartLives() {
+        return this.heartLives;
+    }
+
+    public void setHeartLives(int heartLives) {
+        this.heartLives = Math.max(0, heartLives);
+        this.markChanged();
+    }
+
+    public void updateHeartLives(IntFunction<Integer> update) {
+        this.setHeartLives(update.apply(this.heartLives));
+    }
+
     /**
      * @return region of the guild.
      */
-    public Option<Region> getRegion() {
+    public Optional<Region> getRegion() {
         return this.region;
     }
 
@@ -119,25 +142,25 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setRegion(@Nullable Region region) {
-        this.region = Option.of(region);
-        this.region.peek(peekRegion -> peekRegion.setGuild(this));
+        this.region = Optional.ofNullable(region);
+        this.region.ifPresent(peekRegion -> peekRegion.setGuild(this));
         this.markChanged();
     }
 
-    public Option<Location> getCenter() {
+    public Optional<Location> getCenter() {
         return this.region
                 .map(Region::getCenter)
                 .map(Location::clone);
     }
 
-    public Option<Location> getEnderCrystal() {
+    public Optional<Location> getEnderCrystal() {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
     /**
      * @return home location of the guild
      */
-    public Option<Location> getHome() {
+    public Optional<Location> getHome() {
         return this.home;
     }
 
@@ -146,12 +169,12 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public void setHome(@Nullable Location home) {
-        this.home = Option.of(home);
+        this.home = Optional.ofNullable(home);
         this.markChanged();
     }
 
     public void teleportHome(Player player) {
-        this.home.peek(player::teleport);
+        this.home.ifPresent(player::teleport);
     }
 
     public User getOwner() {
@@ -172,10 +195,11 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.members;
     }
 
-    public Set<User> getOnlineMembers() {
-        return PandaStream.of(this.members)
-                .filter(User::isOnline)
-                .toSet();
+    public Set<User> getOnlineMembers(boolean includeVanished) {
+        return this.members.stream()
+            .filter(User::isOnline)
+            .filter(user -> includeVanished || !user.isVanished())
+            .collect(Collectors.toSet());
     }
 
     public boolean isMember(User user) {
@@ -186,9 +210,9 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         Set<User> previous = this.members;
         this.members = ConcurrentHashMap.newKeySet();
         this.members.addAll(members);
-        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orNull() == this) {
+        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orElse(null) == this) {
             previous.stream().filter(user -> !this.members.contains(user)).forEach(user -> {
-                if (user.getGuild().orNull() == this) {
+                if (user.getGuild().orElse(null) == this) {
                     user.removeGuild();
                 }
             });
@@ -200,8 +224,8 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
 
     public void addMember(User user) {
         boolean added = this.members.add(user);
-        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orNull() == this
-                && user.getGuild().orNull() != this) {
+        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orElse(null) == this
+                && user.getGuild().orElse(null) != this) {
             user.setGuild(this);
         }
         if (!added) {
@@ -214,7 +238,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void removeMember(User user) {
         boolean removed = this.members.remove(user);
         this.deputies.remove(user);
-        if (user.getGuild().orNull() == this) {
+        if (user.getGuild().orElse(null) == this) {
             user.removeGuild();
         }
         if (!removed) {
@@ -224,7 +248,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         FunnyGuilds.getInstance().getRankService().refreshGuild(this);
     }
 
-    public Set<User> getDeputies() {
+    public Collection<User> getDeputies() {
         return this.deputies;
     }
 
@@ -251,7 +275,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.markChanged();
     }
 
-    public Set<Guild> getAllies() {
+    public Collection<Guild> getAllies() {
         return this.allies;
     }
 
@@ -260,6 +284,9 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public boolean isAlly(@Nullable Guild guild) {
+        if (guild == null) {
+            return false;
+        }
         return this.allies.contains(guild);
     }
 
@@ -278,7 +305,7 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.markChanged();
     }
 
-    public Set<Guild> getEnemies() {
+    public Collection<Guild> getEnemies() {
         return this.enemies;
     }
 
@@ -287,7 +314,17 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public boolean isEnemy(@Nullable Guild guild) {
+        if (guild == null) {
+            return false;
+        }
         return this.enemies.contains(guild);
+    }
+
+    public boolean isAtWar(@Nullable Guild guild) {
+        if (guild == null) {
+            return false;
+        }
+        return this.isEnemy(guild) || guild.isEnemy(this);
     }
 
     public void setEnemies(Set<Guild> guilds) {
@@ -306,6 +343,9 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     }
 
     public boolean isNeutral(@Nullable Guild guild) {
+        if (guild == null) {
+            return true;
+        }
         return !this.isEnemy(guild) && !this.isAlly(guild);
     }
 
@@ -348,16 +388,16 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.markChanged();
     }
 
-    public Option<Instant> getBuild() {
+    public Optional<Instant> getBuild() {
         return this.build;
     }
 
     public boolean canBuild() {
-        if (this.build.is(build -> build.isAfter(Instant.now()))) {
+        if (this.build.filter(build -> build.isAfter(Instant.now())).isPresent()) {
             return false;
         }
 
-        this.build = Option.none();
+        this.build = Optional.empty();
         this.markChanged();
         return true;
     }
@@ -367,20 +407,20 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
             time = null;
         }
 
-        this.build = Option.of(time);
+        this.build = Optional.ofNullable(time);
         this.markChanged();
     }
 
-    public Option<Instant> getBan() {
+    public Optional<Instant> getBan() {
         return this.ban;
     }
 
     public boolean isBanned() {
-        if (this.ban.is(ban -> ban.isAfter(Instant.now()))) {
+        if (this.ban.filter(ban -> ban.isAfter(Instant.now())).isPresent()) {
             return true;
         }
 
-        this.ban = Option.none();
+        this.ban = Optional.empty();
         this.markChanged();
         return false;
     }
@@ -390,7 +430,24 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
             time = null;
         }
 
-        this.ban = Option.of(time);
+        this.ban = Optional.ofNullable(time);
+        this.markChanged();
+    }
+
+    public Optional<Instant> getTntProtectionBypass() {
+        return this.tntProtectionBypass;
+    }
+
+    public boolean hasTntProtectionBypass() {
+        return this.tntProtectionBypass.filter(bypass -> bypass.isAfter(Instant.now())).isPresent();
+    }
+
+    public void setTntProtectionBypass(@Nullable Instant time) {
+        if (time != null && time.isBefore(Instant.now())) {
+            time = null;
+        }
+
+        this.tntProtectionBypass = Optional.ofNullable(time);
         this.markChanged();
     }
 
@@ -407,6 +464,80 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.pvp = !this.pvp;
         this.markChanged();
         return this.pvp;
+    }
+
+    public int getWarsWon() {
+        return this.warsWon;
+    }
+
+    public void setWarsWon(int warsWon) {
+        this.warsWon = Math.max(0, warsWon);
+        this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+    }
+
+    public void updateWarsWon(IntFunction<Integer> update) {
+        this.setWarsWon(update.apply(this.warsWon));
+    }
+
+    public int getWarsLost() {
+        return this.warsLost;
+    }
+
+    public void setWarsLost(int warsLost) {
+        this.warsLost = Math.max(0, warsLost);
+        this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+    }
+
+    public void updateWarsLost(IntFunction<Integer> update) {
+        this.setWarsLost(update.apply(this.warsLost));
+    }
+
+    public Optional<String> getLastWarGuildTag() {
+        return this.lastWarGuildTag;
+    }
+
+    public void setLastWarGuildTag(@Nullable String lastWarGuildTag) {
+        this.lastWarGuildTag = Optional.ofNullable(lastWarGuildTag);
+        this.markChanged();
+    }
+
+    public int getWarStreak() {
+        return this.warStreak;
+    }
+
+    public void setWarStreak(int warStreak) {
+        this.warStreak = Math.max(0, warStreak);
+        this.markChanged();
+        FunnyGuilds.getInstance().getRankService().refreshGuild(this);
+    }
+
+    public void updateWarStreak(IntFunction<Integer> update) {
+        this.setWarStreak(update.apply(this.warStreak));
+    }
+
+    public Optional<Instant> getLastLifeBuy() {
+        return this.lastLifeBuy;
+    }
+
+    public void setLastLifeBuy(@Nullable Instant lastLifeBuy) {
+        this.lastLifeBuy = Optional.ofNullable(lastLifeBuy);
+        this.markChanged();
+    }
+
+    public boolean canGainLifeOn(Guild victimGuild, java.time.Duration cooldown) {
+        if (cooldown == null || cooldown.isZero() || cooldown.isNegative()) {
+            return true;
+        }
+        Instant until = this.victimGainCooldowns.get(victimGuild.getUUID());
+        return until == null || Instant.now().isAfter(until);
+    }
+
+    public void setGainLifeCooldownOn(Guild victimGuild, java.time.Duration cooldown) {
+        if (cooldown != null && !cooldown.isZero() && !cooldown.isNegative()) {
+            this.victimGainCooldowns.put(victimGuild.getUUID(), Instant.now().plus(cooldown));
+        }
     }
 
     public boolean hasAllyPvPEnabled(Guild alliedGuild) {

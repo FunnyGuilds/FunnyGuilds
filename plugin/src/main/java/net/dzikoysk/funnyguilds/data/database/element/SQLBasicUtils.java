@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 public final class SQLBasicUtils {
@@ -41,8 +41,8 @@ public final class SQLBasicUtils {
         StringBuilder query = new StringBuilder();
 
         query.append("SELECT ");
-        query.append(PandaStream.of(sqlElements)
-                .mapOpt(table::getSQLElement)
+        query.append(Arrays.stream(sqlElements)
+                .flatMap(element -> table.getSQLElement(element).stream())
                 .map(SQLElement::getKeyGraveAccent)
                 .collect(Collectors.joining(", "))
         );
@@ -58,6 +58,16 @@ public final class SQLBasicUtils {
         }
 
         String query = "SELECT * FROM " + table.getNameGraveAccent();
+        return new SQLNamedStatement(query, new HashMap<>());
+    }
+
+    public static SQLNamedStatement getSelectUuidConflict(SQLTable table) {
+        if (table == null) {
+            throw new IllegalArgumentException("Given SQLTable is null");
+        }
+        String query = "SELECT BINARY `name` AS `name`, MIN(LOWER(`uuid`)) AS `first_uuid`, "
+                + "MAX(LOWER(`uuid`)) AS `second_uuid` FROM " + table.getNameGraveAccent()
+                + " GROUP BY BINARY `name` HAVING COUNT(DISTINCT LOWER(`uuid`)) > 1 LIMIT 1";
         return new SQLNamedStatement(query, new HashMap<>());
     }
 

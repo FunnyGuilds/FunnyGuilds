@@ -2,14 +2,14 @@ package net.dzikoysk.funnyguilds.event.rank;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.DoubleFunction;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.event.rank.CombatPointsChangeEvent.CombatTable.Assist;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 /**
  * Points change event called only in combat for tracking attacker, victim and assists points change at the same time.
@@ -39,7 +39,7 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
     }
 
     public User getAttacker() {
-        return getDoer().get();
+        return getDoer().orElseThrow();
     }
 
     public User getVictim() {
@@ -84,24 +84,24 @@ public class CombatPointsChangeEvent extends AbstractRankEvent {
         }
 
         public Map<User, Integer> getPointChanges() {
-            return PandaStream.of(this.assistsMap.entrySet())
-                    .toMap(Map.Entry::getKey, entry -> entry.getValue().getPointsChange());
+            return this.assistsMap.entrySet().stream()
+                    .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().getPointsChange()));
         }
 
         public Map<User, Double> getDamageShares() {
-            return PandaStream.of(this.assistsMap.entrySet())
-                    .toMap(Map.Entry::getKey, entry -> entry.getValue().getDamageShare());
+            return this.assistsMap.entrySet().stream()
+                    .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().getDamageShare()));
         }
 
-        public Option<Assist> getUserAssist(User user) {
-            return Option.of(this.assistsMap.get(user));
+        public Optional<Assist> getUserAssist(User user) {
+            return Optional.ofNullable(this.assistsMap.get(user));
         }
 
-        public Option<Integer> getUserPointsChange(User user) {
+        public Optional<Integer> getUserPointsChange(User user) {
             return this.getUserAssist(user).map(Assist::getPointsChange);
         }
 
-        public Option<Double> getUserDamageShare(User user) {
+        public Optional<Double> getUserDamageShare(User user) {
             return this.getUserAssist(user).map(Assist::getDamageShare);
         }
 

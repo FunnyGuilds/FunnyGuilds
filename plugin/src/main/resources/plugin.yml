@@ -1,10 +1,10 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: '${funnyGuildsVersion} Snowdrop-${funnyGuildsCommit}'
+version: '${funnyGuildsVersion} Primrose-${funnyGuildsCommit}'
 author: 'FunnyGuilds Team'
 website: https://github.com/FunnyGuilds
-softdepend: [WorldEdit, WorldGuard, Vault, PlaceholderAPI, FunnyTab, HolographicDisplays, DecentHolograms, Multiverse-Core, dynmap]
-api-version: 1.13
+softdepend: [WorldEdit, WorldGuard, Vault, PlaceholderAPI, DecentHolograms, Multiverse-Core, dynmap]
+api-version: 1.21
 
 permissions:
   funnyguilds.*:
@@ -23,6 +23,9 @@ permissions:
       funnyguilds.admin.teleport: true
       funnyguilds.admin.notification: true
       funnyguilds.admin.disabledummy: false
+
+  funnyguilds.bypass.rank-ip-protect-guild:
+    default: false
 
   funnyguilds.vip:
     default: op
@@ -53,11 +56,10 @@ permissions:
       funnyguilds.leave: true
       funnyguilds.playerinfo: true
       funnyguilds.pvp: true
-      funnyguilds.ranking: true
       funnyguilds.rankreset: true
       funnyguilds.statsreset: true
       funnyguilds.setbase: true
       funnyguilds.tnt: true
-      funnyguilds.top: true
       funnyguilds.validity: true
       funnyguilds.war: true
+      funnyguilds.buylife: true

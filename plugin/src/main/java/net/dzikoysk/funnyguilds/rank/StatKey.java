@@ -102,7 +102,7 @@ public interface StatKey<T extends Number> extends Keyed {
         public int hashCode() {
             return Objects.hashCode(this.key);
         }
-        
+
         @Override
         public String toString() {
             return "StatKey{" +

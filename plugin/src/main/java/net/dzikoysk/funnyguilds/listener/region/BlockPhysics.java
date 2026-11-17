@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -10,7 +11,7 @@ public class BlockPhysics extends AbstractFunnyListener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
-        if (this.regionManager.isGuildHeart(event.getBlock())) {
+        if (this.regionManager.isGuildHeart(event.getBlock()) || ProtectionSystem.isGuildHeartProtectedRegion(event.getBlock().getLocation())) {
             event.setCancelled(true);
         }
     }
@@ -18,6 +19,11 @@ public class BlockPhysics extends AbstractFunnyListener {
     @EventHandler
     public void onFall(EntityChangeBlockEvent event) {
         if (event.getEntityType() == EntityType.FALLING_BLOCK && this.regionManager.isGuildHeart(event.getBlock())) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (ProtectionSystem.isGuildHeartProtectedRegion(event.getBlock().getLocation())) {
             event.setCancelled(true);
         }
     }

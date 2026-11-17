@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
+import java.util.Optional;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -9,13 +10,11 @@ import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityReach;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import panda.std.Option;
 
 public final class SecuritySystem {
 
@@ -31,7 +30,7 @@ public final class SecuritySystem {
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, guild);
-        return SecurityUtils.isBlocked(FunnyGuilds.getInstance().getUserManager().findByPlayer(player).orNull());
+        return SecurityUtils.isBlocked(FunnyGuilds.getInstance().getUserManager().findByPlayer(player).orElse(null));
     }
 
     private static void scan(Player player, Guild guild) {
@@ -44,11 +43,11 @@ public final class SecuritySystem {
             return;
         }
 
-        Option<Region> regionOption = guild.getRegion();
+        Optional<Region> regionOption = guild.getRegion();
         if (regionOption.isEmpty()) {
             return;
         }
-        Region region = regionOption.get();
+        Region region = regionOption.orElseThrow();
         Location center = region.getCenter();
 
         double x = center.getX() + 0.5;
@@ -57,7 +56,7 @@ public final class SecuritySystem {
 
         Location eye = player.getEyeLocation();
         Vector direction = eye.getDirection();
-        Vector origin = (player.isSneaking() && !Reflections.USE_PRE_9_METHODS)
+        Vector origin = player.isSneaking()
                 ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
                 : eye.toVector();
 

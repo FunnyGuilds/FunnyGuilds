@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.rank;
 import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+@ApiStatus.ScheduledForRemoval
 public final class DefaultTops {
 
     public static final String USER_POINTS_TOP = "points";
@@ -29,6 +29,8 @@ public final class DefaultTops {
     public static final String GUILD_AVG_KDA_TOP = "avg_kda";
     public static final String GUILD_AVG_ASSISTS_TOP = "avg_assists";
     public static final String GUILD_AVG_LOGOUTS_TOP = "avg_logouts";
+    public static final String GUILD_WARS_WON_TOP = "wars_won";
+    public static final String GUILD_WAR_STREAK_TOP = "war_streak";
 
     private DefaultTops() {
     }

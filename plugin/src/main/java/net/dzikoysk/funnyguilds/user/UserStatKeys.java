@@ -6,7 +6,7 @@ import java.util.List;
 import net.dzikoysk.funnyguilds.rank.StatKey;
 
 public final class UserStatKeys {
-    
+
     public static final StatKey<Integer> POINTS = StatKey.integerStatKey("points");
     public static final StatKey<Integer> KILLS = StatKey.integerStatKey("kills");
     public static final StatKey<Integer> DEATHS = StatKey.integerStatKey("deaths");
@@ -19,7 +19,7 @@ public final class UserStatKeys {
             POINTS, KILLS, DEATHS, ASSISTS, LOGOUTS, KDR, KDA
     ));
 
-    
+
     private UserStatKeys() {
     }
 }

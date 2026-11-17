@@ -1,7 +1,8 @@
 package net.dzikoysk.funnyguilds;
 
 import java.util.Set;
-import panda.std.stream.PandaStream;
+import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.shared.FunnyStreams;
 
 public interface Entity {
 
@@ -10,9 +11,9 @@ public interface Entity {
     String getName();
 
     static <T extends Entity> Set<String> names(Iterable<T> entities) {
-        return PandaStream.of(entities)
+        return FunnyStreams.of(entities)
                 .map(Entity::getName)
-                .toSet();
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     enum EntityType {

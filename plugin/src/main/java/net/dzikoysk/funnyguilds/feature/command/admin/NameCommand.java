@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.util.Optional;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -12,7 +13,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
@@ -44,10 +44,10 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guild.getRegion().peek(region -> {
+        guild.getRegion().ifPresent(region -> {
             if (this.dataModel instanceof FlatDataModel) {
                 FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-                dataModel.getRegionFile(region).peek(FunnyIOUtils::deleteFile);
+                dataModel.getRegionFile(region).ifPresent(FunnyIOUtils::deleteFile);
             }
             else if (this.dataModel instanceof SQLDataModel) {
                 DatabaseRegionSerializer.delete(region);
@@ -58,7 +58,7 @@ public final class NameCommand extends AbstractFunnyCommand {
 
         if (this.dataModel instanceof FlatDataModel) {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-            dataModel.getGuildFile(guild).peek(FunnyIOUtils::deleteFile);
+            dataModel.getGuildFile(guild).ifPresent(FunnyIOUtils::deleteFile);
         }
         else if (this.dataModel instanceof SQLDataModel) {
             DatabaseGuildSerializer.delete(guild);
@@ -66,7 +66,7 @@ public final class NameCommand extends AbstractFunnyCommand {
 
         guild.setName(args[1]);
         this.messageService.getMessage(config -> config.adminNameChanged)
-                .with(FunnyFormatter.of("{GUILD}", guild.getName()))
+                .with("{GUILD}", guild.getName())
                 .receiver(sender)
                 .send();
 

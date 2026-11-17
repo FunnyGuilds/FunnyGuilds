@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.security.cheat;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.text.DecimalFormat;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.SecuritySystemConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
@@ -38,8 +39,8 @@ public final class SecurityReach {
             return;
         }
 
-        SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
-        SecurityUtils.sendToOperator(player, CheatType.REACH, Replacement.of("{DISTANCE}", FORMAT.format(distance)));
+        SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orElse(null));
+        SecurityUtils.sendToOperator(player, CheatType.REACH, Replacement.string("{DISTANCE}", FORMAT.format(distance)));
     }
 
 }

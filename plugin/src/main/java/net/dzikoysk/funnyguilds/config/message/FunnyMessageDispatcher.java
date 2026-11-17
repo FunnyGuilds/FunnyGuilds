@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import java.util.Optional;
 
 public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessageDispatcher> {
 
@@ -35,6 +36,11 @@ public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessage
         }
         return this;
     }
+    
+    public FunnyMessageDispatcher receiver(Optional<User> userOption) {
+        userOption.ifPresent(this::receiver);
+        return this;
+    }
 
     public FunnyMessageDispatcher receivers(Iterable<User> receivers) {
         receivers.forEach(receiver -> this.receiver(this.supplyReceiver.apply(receiver)));
@@ -42,7 +48,7 @@ public class FunnyMessageDispatcher extends BukkitMessageDispatcher<FunnyMessage
     }
 
     public FunnyMessageDispatcher receiver(Guild guild) {
-        return this.receivers(guild.getOnlineMembers());
+        return this.receivers(guild.getOnlineMembers(true));
     }
 
 }

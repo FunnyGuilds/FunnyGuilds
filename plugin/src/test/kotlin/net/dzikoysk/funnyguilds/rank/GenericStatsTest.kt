@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.rank
 
 import com.google.gson.JsonParser
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.config.RawString
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement
@@ -25,10 +24,13 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
-import panda.std.Option
+import java.util.Optional
 import java.nio.file.Path
 import java.sql.ResultSet
 import java.util.UUID
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import net.dzikoysk.funnyguilds.user.User
 
 class GenericStatsTest : FunnyGuildsSpec() {
 
@@ -40,10 +42,11 @@ class GenericStatsTest : FunnyGuildsSpec() {
     fun `a typed key automatically exposes user and guild tops positions and placeholders`() {
         config.top.enabledUserTops.clear()
         config.top.enabledGuildTops.clear()
-        config.ptopOffline = RawString("")
-        config.top.format.ptop = RawString(":{VALUE}")
-        config.top.format.gtop = RawString(":{VALUE}")
-        funnyGuilds.tablistConfiguration.useRelationshipColors = false
+        config.top.format.ptop = ":{VALUE}"
+        config.loadProcessedProperties()
+        config.top.format.gtop = ":{VALUE}"
+        config.loadProcessedProperties()
+        config.top.useRelationshipColors = false
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
@@ -54,9 +57,8 @@ class GenericStatsTest : FunnyGuildsSpec() {
         rankService.setUserStatValue(first, balance, 2.25)
         rankService.setUserStatValue(second, balance, 0.75)
         val input = "{PTOP-arena-wins-1}|{POSITION-arena-wins}|{GTOP-arena-wins-1}|{GTOP-avg_arena-wins-1}|{G-POSITION-arena-wins}"
-        assertEquals("First:7|1|TAG:9|TAG:4.50|1", rankPlaceholdersService.format(first, input, first))
-        assertEquals("First:2.25|TAG:3.00|TAG:1.50", rankPlaceholdersService.format(first,
-            "{PTOP-arena:balance-1}|{GTOP-arena:balance-1}|{GTOP-avg_arena:balance-1}", first))
+        assertEquals("First:7|1|TAG:9|TAG:4.50|1", render(input, first))
+        assertEquals("First:2.25|TAG:3.00|TAG:1.50", render("{PTOP-arena:balance-1}|{GTOP-arena:balance-1}|{GTOP-avg_arena:balance-1}", first))
     }
 
     @Test
@@ -68,7 +70,7 @@ class GenericStatsTest : FunnyGuildsSpec() {
         rankService.setUserStatValue(user, balance, 2.125)
         val file = directory.resolve("player.yml").toFile()
         val model = mock(FlatDataModel::class.java)
-        `when`(model.getUserFile(user)).thenReturn(Option.of(file))
+        `when`(model.getUserFile(user)).thenReturn(Optional.of(file))
         `when`(funnyGuilds.dataModel).thenReturn(model)
         assertTrue(FlatUserSerializer.serialize(user))
         val saved = JsonParser().parse(YamlWrapper(file).getString("stats")).asJsonObject
@@ -111,6 +113,7 @@ class GenericStatsTest : FunnyGuildsSpec() {
         `when`(row.getString("name")).thenReturn("Player")
         `when`(row.getString("stats")).thenReturn(payload)
         `when`(row.getString("reason")).thenReturn(null)
+        `when`(row.getString("last_ip")).thenReturn(null)
         `when`(row.getInt("points")).thenReturn(1234)
         val loaded = DatabaseUserSerializer.deserialize(row).get()
         assertEquals(1234, loaded.rank.points)
@@ -138,6 +141,22 @@ class GenericStatsTest : FunnyGuildsSpec() {
     }
 
     @Test
+    fun `equal stat identities share one tracker even with a different key implementation`() {
+        val alias = object : StatKey<Int> {
+            override fun key(): Key = wins.key()
+            override fun getValueType(): Class<Int> = Int::class.javaObjectType
+            override fun zero(): Int = 0
+            override fun compare(first: Int, second: Int): Int = first.compareTo(second)
+        }
+        val user = userManager.createFake(UUID.randomUUID(), "Player")
+        rankService.setUserStatValue(user, alias, 7)
+        rankService.changeUserStatValue(user, wins) { it + 1 }
+        assertEquals(8, rankService.getUserStatValue(user, alias).get())
+        assertEquals(8, rankService.getUserStatValue(user, wins).get())
+        assertEquals(1, rankService.getUserStats(user).keys.count { it.key() == wins.key() })
+    }
+
+    @Test
     fun `a custom guild aggregation follows member stat changes automatically`() {
         val maximum = GuildStatAggregationType.create(Key.key("arena", "maximum"), Int::class.javaObjectType) { service, guild, key ->
             guild.members.maxOfOrNull { member -> service.getUserStatValue(member, key).map { it.toInt() }.orElse(0) } ?: 0
@@ -155,10 +174,13 @@ class GenericStatsTest : FunnyGuildsSpec() {
         assertEquals(5, tracker.valueOfEntity(guild).get().toInt())
     }
 
+    private fun render(text: String, user: User): String = PlainTextComponentSerializer.plainText()
+        .serialize(rankPlaceholdersService.format(user, Component.text(text), user))
+
     private fun prepareServer(uuid: UUID) {
         val server = mock(FunnyServer::class.java)
         `when`(server.getOfflinePlayer(uuid)).thenReturn(mock(OfflinePlayer::class.java))
-        `when`(server.getPlayer(uuid)).thenReturn(Option.none())
+        `when`(server.getPlayer(uuid)).thenReturn(Optional.empty())
         `when`(funnyGuilds.funnyServer).thenReturn(server)
     }
 }

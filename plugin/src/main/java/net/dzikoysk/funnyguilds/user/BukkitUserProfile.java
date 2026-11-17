@@ -1,17 +1,19 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.lang.ref.WeakReference;
+import java.util.Optional;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.Position;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.NmsUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
-import panda.std.Option;
 
 public class BukkitUserProfile implements UserProfile {
 
@@ -26,10 +28,10 @@ public class BukkitUserProfile implements UserProfile {
         this.funnyServer = funnyServer;
 
         this.offlinePlayerRef = new WeakReference<>(funnyServer.getOfflinePlayer(uuid));
-        this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orNull());
+        this.playerRef = new WeakReference<>(funnyServer.getPlayer(uuid).orElse(null));
     }
 
-    private Option<Player> getPlayer() {
+    private Optional<Player> getPlayer() {
         Player player = this.playerRef.get();
 
         if (player == null) {
@@ -37,7 +39,7 @@ public class BukkitUserProfile implements UserProfile {
             player = this.playerRef.get();
         }
 
-        return Option.of(player);
+        return Optional.ofNullable(player);
     }
 
     private void refreshOfflinePlayerRef() {
@@ -48,7 +50,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public boolean isOnline() {
-        return this.getPlayer().is(Player::isOnline);
+        return this.getPlayer().filter(Player::isOnline).isPresent();
     }
 
     @Override
@@ -57,7 +59,7 @@ public class BukkitUserProfile implements UserProfile {
         return this.getPlayer()
                 .map(player -> player.getMetadata("vanished"))
                 .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
-                .orElseGet(false);
+                .orElse(false);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public int getPing() {
-        return this.getPlayer().map(NmsUtils::getPing).orElseGet(0);
+        return this.getPlayer().map(NmsUtils::getPing).orElse(0);
     }
 
     @Override
@@ -84,25 +86,33 @@ public class BukkitUserProfile implements UserProfile {
             return;
         }
 
-        this.getPlayer().peek(player -> player.sendMessage(message));
+        this.getPlayer().ifPresent(player -> player.sendMessage(message));
     }
 
     @Override
-    public void kick(String reason) {
-        this.getPlayer().peek(player -> player.kickPlayer(reason));
+    public void sendMessage(Component message) {
+        if (ComponentUtil.isEmpty(message)) {
+            return;
+        }
+        this.getPlayer().ifPresent(player -> player.sendMessage(message));
+    }
+
+    @Override
+    public void kick(Component reason) {
+        this.getPlayer().ifPresent(player -> player.kick(reason));
     }
 
     @Override
     public void teleport(Position position) {
-        this.getPlayer().peek(player -> player.teleport(PositionConverter.adapt(position)));
+        this.getPlayer().ifPresent(player -> player.teleport(PositionConverter.adapt(position)));
     }
 
     @Override
     public void refresh() {
-        this.funnyServer.getPlayer(this.uuid).peek(player -> {
+        this.funnyServer.getPlayer(this.uuid).ifPresentOrElse(player -> {
             this.playerRef = new WeakReference<>(player);
             this.offlinePlayerRef = new WeakReference<>(player);
-        }).onEmpty(() -> {
+        }, () -> {
             this.playerRef = new WeakReference<>(null);
         });
     }
@@ -112,7 +122,7 @@ public class BukkitUserProfile implements UserProfile {
         return this.getPlayer()
                 .map(Player::getLocation)
                 .map(PositionConverter::adapt)
-                .orElseGet(Position.ZERO);
+                .orElse(Position.ZERO);
     }
 
 }

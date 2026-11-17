@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.ApiStatus;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+@ApiStatus.ScheduledForRemoval
 
 public abstract class Rank<T extends MutableEntity> {
 
@@ -36,7 +36,7 @@ public abstract class Rank<T extends MutableEntity> {
      *
      * @return position in which entity is for the given top, return 0 if entity is not in the top
      */
-    
+
     public int getPosition(String top) {
         RankService service = FunnyGuilds.getInstance().getRankService();
         if (this.entity instanceof User) {

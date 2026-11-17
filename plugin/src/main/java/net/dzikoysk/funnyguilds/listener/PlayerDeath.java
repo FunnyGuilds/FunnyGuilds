@@ -1,17 +1,19 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import dev.peri.yetanothermessageslibrary.replace.Replaceable;
+import dev.peri.yetanothermessageslibrary.message.MessageDispatcherModifier;
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
+import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher;
 import net.dzikoysk.funnyguilds.damage.Damage;
@@ -33,23 +35,20 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
+import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
+import java.util.Optional;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -66,23 +65,23 @@ public class PlayerDeath extends AbstractFunnyListener {
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
 
-        Option<User> victimOption = this.userManager.findByPlayer(playerVictim);
+        Optional<User> victimOption = this.userManager.findByPlayer(playerVictim);
         if (victimOption.isEmpty()) {
             return;
         }
 
-        User victim = victimOption.get();
+        User victim = victimOption.orElseThrow();
         DamageState victimDamageState = damageManager.getDamageState(victim.getUUID());
 
-        Option<User> attackerOption = Option.none();
+        Optional<User> attackerOption = Optional.empty();
         if (playerAttacker == null && this.config.considerLastAttackerAsKiller || playerVictim.equals(playerAttacker)) { // If player killed himself use last attacker as a killer
-            Option<Damage> lastDamageOption = victimDamageState.getLastDamage();
-            if (lastDamageOption.isEmpty() || !lastDamageOption.get().getAttacker().isOnline()) {
+            Optional<Damage> lastDamageOption = victimDamageState.getLastDamage();
+            if (lastDamageOption.isEmpty() || !lastDamageOption.orElseThrow().getAttacker().isOnline()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
                 victimDamageState.clear();
                 return;
             }
-            Damage lastDamage = lastDamageOption.get();
+            Damage lastDamage = lastDamageOption.orElseThrow();
 
             if (lastDamage.isExpired(this.config.lastAttackerAsKillerConsiderationTimeout)) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
@@ -90,7 +89,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            attackerOption = Option.of(lastDamage.getAttacker());
+            attackerOption = Optional.of(lastDamage.getAttacker());
             playerAttacker = this.funnyServer.getPlayer(lastDamage.getAttacker().getUUID()).get();
         }
 
@@ -98,12 +97,12 @@ public class PlayerDeath extends AbstractFunnyListener {
             attackerOption = this.userManager.findByPlayer(playerAttacker);
         }
 
-        this.handleDeathEvent(victim, attackerOption.orElseGet(victim), attackerOption.isPresent() ? EventCause.COMBAT : EventCause.USER);
+        this.handleDeathEvent(victim, attackerOption.orElse(victim), attackerOption.isPresent() ? EventCause.COMBAT : EventCause.USER);
 
         if (attackerOption.isEmpty()) {
             return;
         }
-        User attacker = attackerOption.get();
+        User attacker = attackerOption.orElseThrow();
         DamageState attackerDamageState = this.damageManager.getDamageState(attacker.getUUID());
 
         if (victim.equals(attacker)) {
@@ -121,11 +120,17 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         if (this.checkRankFarmingProtection(playerVictim, playerAttacker, victim, victimDamageState, attacker, attackerDamageState)) {
             victimDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(null);
             return;
         }
 
         if (this.checkIPRankFarmingProtection(playerVictim, playerAttacker)) {
+            victimDamageState.clear();
+            event.deathMessage(null);
+            return;
+        }
+
+        if (this.checkIPRankFarmingGuildMembersProtection(playerVictim, playerAttacker, attacker)) {
             victimDamageState.clear();
             event.setDeathMessage(null);
             return;
@@ -133,13 +138,13 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         if (this.checkMemberRankChangeProtection(victim, attacker)) {
             victimDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(null);
             return;
         }
 
         if (this.checkAllyRankChangeProtection(victim, attacker)) {
             attackerDamageState.clear();
-            event.setDeathMessage(null);
+            event.deathMessage(null);
             return;
         }
 
@@ -149,6 +154,12 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         victimDamageState.addKill(attacker);
+        
+        // Track kill by IP address if IP-based cooldown protection is enabled
+        if (this.config.rankFarmingCooldownIP) {
+            InetAddress attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getAddress() : null;
+            victimDamageState.addKillByIP(attackerIP);
+        }
 
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
@@ -192,11 +203,11 @@ public class PlayerDeath extends AbstractFunnyListener {
         victimDamageState.clear();
 
         if (this.config.dataModel.isSQL()) {
-            victim.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
-            attacker.getGuild().peek(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
+            victim.getGuild().ifPresent(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
+            attacker.getGuild().ifPresent(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
 
-            PandaStream.of(calculatedAssists.keySet())
-                    .flatMap(User::getGuild)
+            calculatedAssists.keySet().stream()
+                    .flatMap(user -> user.getGuild().stream())
                     .forEach(guild -> this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildPointsAsyncTask(guild)));
 
             this.plugin.scheduleFunnyTasks(
@@ -209,7 +220,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             );
         }
 
-        this.plugin.getDummyManager().peek(manager -> {
+        this.plugin.getDummyManager().ifPresent(manager -> {
             this.plugin.scheduleFunnyTasks(
                     new ScoreboardGlobalUpdateUserSyncTask(manager, victim),
                     new ScoreboardGlobalUpdateUserSyncTask(manager, attacker)
@@ -218,68 +229,132 @@ public class PlayerDeath extends AbstractFunnyListener {
         });
 
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
-        int victimPointsChange = Math.min(victimPoints, combatPointsChangeEvent.getVictimPointsChange());
+        int victimPointsChange = combatPointsChangeEvent.getVictimPointsChange();
 
-        FunnyFormatter killFormatter = new FunnyFormatter()
-                .register("{ATTACKER}", attacker.getName())
-                .register("{VICTIM}", victim.getName())
-                .register("{+}", attackerPointsChange)
-                .register("{-}", victimPointsChange)
-                .register("{PLUS-FORMATTED}", formatChangeWithRange(attackerPointsChange))
-                .register("{CHANGE}", Math.abs(attackerPointsChange))
-                .register("{MINUS-FORMATTED}", formatChangeWithRange(victimPointsChange))
-                .register("{CHANGE}", Math.abs(victimPointsChange))
-                .register("{POINTS-FORMAT}", formatPointsWithRange(victimPoints))
-                .register("{POINTS}", victimPoints)
-                .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
-                .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
-                .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
-                .register("{REMAINING-HEARTS}", (int) (playerAttacker.getHealth() / 2))
-                .register("{VTAG}", victim.getGuild()
-                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                        .orElseGet(""))
-                .register("{ATAG}", attacker.getGuild()
-                        .map(guild -> FunnyFormatter.format(this.config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                        .orElseGet(""));
+        Player finalPlayerAttacker = playerAttacker;
+        Guild attackerGuild = attacker.getGuild().orElse(null);
+        Guild victimGuild = victim.getGuild().orElse(null);
 
-        Replaceable itemReplacement = ItemComponentHelper.prepareItemReplacement(playerAttacker.getItemInHand());
+        String plusFormatted = RankFormatter.formatPointsChange(attackerPointsChange, this.config.killPointsChangeFormat);
+        String minusFormatted = RankFormatter.formatPointsChange(victimPointsChange, this.config.killPointsChangeFormat);
 
-        if (this.config.displayNotificationForKiller) {
-            this.messageService.getMessage(config -> config.rankKillMessage)
-                    .with(killFormatter)
-                    .with(itemReplacement)
-                    .receiver(attacker)
+        MessageDispatcherModifier<CommandSender, FunnyMessageDispatcher> dispatcherModifier = dispatcher -> dispatcher
+                .with("{ATTACKER}", attacker.getName())
+                .with("{VICTIM}", victim.getName())
+                .with("{ATTACKER-CHANGE}", attackerPointsChange)
+                .with("{VICTIM-CHANGE}", victimPointsChange)
+                .with("{ATTACKER-CHANGE-FORMATTED}", plusFormatted)
+                .with("{VICTIM-CHANGE-FORMATTED}", minusFormatted)
+                .with("{WEAPON}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), true))
+                .with("{WEAPON-NO-AMOUNT}", ItemComponentHelper.itemAsComponent(finalPlayerAttacker.getInventory().getItemInMainHand(), false))
+                .with("{ATTACKER-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
+                .with("{ATTACKER-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
+                .with(
+                        Player.class,
+                        messageReceiver -> {
+                            Guild receiverGuild = this.userManager
+                                    .findByUuid(messageReceiver.getUniqueId())
+                                    .flatMap(User::getGuild)
+                                    .orElse(null);
+                            return Replacement.component(
+                                    "{ATTACKER-TAG}",
+                                    this.config.relationalTag.chooseAndPrepareTag(
+                                            receiverGuild,
+                                            attackerGuild
+                                    )
+                            );
+                        },
+                        fallbackReceiver -> Replacement.string(
+                                "{ATTACKER-TAG}",
+                                attackerGuild != null ? attackerGuild.getTag() + " " : ""
+                        )
+                )
+                .with(
+                        Player.class,
+                        messageReceiver -> {
+                            Guild receiverGuild = this.userManager
+                                    .findByUuid(messageReceiver.getUniqueId())
+                                    .flatMap(User::getGuild)
+                                    .orElse(null);
+                            return Replacement.component(
+                                    "{VICTIM-TAG}",
+                                    this.config.relationalTag.chooseAndPrepareTag(
+                                            receiverGuild,
+                                            victimGuild
+                                    )
+                            );
+                        },
+                        fallbackReceiver -> Replacement.string(
+                                "{VICTIM-TAG}",
+                                victimGuild != null ? victimGuild.getTag() + " " : ""
+                        )
+                )
+                .with(
+                        Player.class,
+                        messageReceiver -> this.buildAssistsReplacement(
+                                messageReceiver,
+                                combatPointsChangeEvent.getAssistsMap()
+                        ),
+                        fallbackReceiver -> Replacement.string("{ASSISTS}", "")
+                );
+
+        this.messageService.getMessage(config -> config.rankKillAttackerMessage)
+                .receiver(attacker)
+                .modifier(dispatcherModifier)
+                .send();
+
+        this.messageService.getMessage(config -> config.rankDeathVictimMessage)
+                .receiver(victim)
+                .modifier(dispatcherModifier)
+                .send();
+
+        for (Map.Entry<User, Assist> assistEntry : calculatedAssists.entrySet()) {
+            User assistUser = assistEntry.getKey();
+            Assist assist = assistEntry.getValue();
+            int assistPoints = assist.getPointsChange();
+            double damageShare = assist.getDamageShare();
+
+            this.messageService.getMessage(config -> config.rankKillAssistMessage)
+                    .receiver(assistUser)
+                    .modifier(dispatcherModifier)
+                    .with("{ASSIST-CHANGE}", assistPoints)
+                    .with("{SHARE}", FunnyStringUtils.getPercent(damageShare))
                     .send();
         }
 
         if (this.config.disableDefaultDeathMessage) {
-            event.setDeathMessage(null);
+            event.deathMessage(null);
         }
 
-        FunnyMessageDispatcher deathMessage = this.messageService.getMessage(config -> config.rankDeathMessage)
-                .with(killFormatter)
-                .with(itemReplacement)
-                .with(buildAssistsFormatter(combatPointsChangeEvent.getAssistsMap()))
-                .receiver(attacker)
-                .receiver(victim)
-                .receivers(calculatedAssists.keySet())
-                .console();
+        Collection<User> receivers = new LinkedHashSet<>();
+        receivers.add(attacker);
+        receivers.add(victim);
+        receivers.addAll(calculatedAssists.keySet());
 
         switch (this.config.deathMessageReceivers) {
             case GUILD:
-                attacker.getGuild().peek(guild -> deathMessage.receivers(guild.getOnlineMembers()));
-                victim.getGuild().peek(guild -> deathMessage.receivers(guild.getOnlineMembers()));
-                calculatedAssists.keySet().forEach(user -> user.getGuild().peek(guild -> deathMessage.receivers(guild.getOnlineMembers())));
+                attacker.getGuild().ifPresent(guild -> receivers.addAll(guild.getOnlineMembers(true)));
+                victim.getGuild().ifPresent(guild -> receivers.addAll(guild.getOnlineMembers(true)));
+                calculatedAssists.keySet()
+                        .forEach(user -> user.getGuild().ifPresent(guild -> receivers.addAll(guild.getOnlineMembers(true))));
                 break;
             case WORLD:
-                deathMessage.receivers(event.getEntity().getWorld().getPlayers());
+                event.getEntity()
+                        .getWorld()
+                        .getPlayers()
+                        .forEach(player -> this.userManager.findByPlayer(player).ifPresent(receivers::add));
                 break;
             case ALL:
-                deathMessage.receivers(Bukkit.getOnlinePlayers());
+                Bukkit.getOnlinePlayers()
+                        .forEach(player -> this.userManager.findByPlayer(player).ifPresent(receivers::add));
                 break;
         }
 
-        deathMessage.send();
+        this.messageService.getMessage(config -> config.rankDeathMessage)
+                .modifier(dispatcherModifier)
+                .receivers(receivers)
+                .console()
+                .send();
     }
 
     private void handleDeathEvent(User victim, User attacker, EventCause cause) {
@@ -295,10 +370,22 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Option<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
-        Option<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
+        Optional<Instant> victimTimestamp = victimDamageState.getLastKillTime(attacker);
+        Optional<Instant> attackerTimestamp = attackerDamageState.getLastKillTime(victim);
 
-        if (victimTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        // Check IP-based kill history if enabled
+        Optional<Instant> victimIPTimestamp = Optional.empty();
+        Optional<Instant> attackerIPTimestamp = Optional.empty();
+
+        if (this.config.rankFarmingCooldownIP) {
+            InetAddress attackerIP = playerAttacker.getAddress() != null ? playerAttacker.getAddress().getAddress() : null;
+            InetAddress victimIP = playerVictim.getAddress() != null ? playerVictim.getAddress().getAddress() : null;
+
+            victimIPTimestamp = attackerIP != null ? victimDamageState.getLastKillTimeByIP(attackerIP) : Optional.empty();
+            attackerIPTimestamp = victimIP != null ? attackerDamageState.getLastKillTimeByIP(victimIP) : Optional.empty();
+        }
+
+        if (victimTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastVictimV)
                     .receiver(playerVictim)
                     .send();
@@ -307,7 +394,25 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .send();
 
             return true;
-        } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.is(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0)) {
+        } else if (this.config.rankFarmingCooldownIP && victimIPTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
+            this.messageService.getMessage(config -> config.rankLastVictimV)
+                    .receiver(playerVictim)
+                    .send();
+            this.messageService.getMessage(config -> config.rankLastVictimA)
+                    .receiver(playerAttacker)
+                    .send();
+
+            return true;
+        } else if (this.config.bidirectionalRankFarmingProtect && attackerTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
+            this.messageService.getMessage(config -> config.rankLastAttackerV)
+                    .receiver(playerVictim)
+                    .send();
+            this.messageService.getMessage(config -> config.rankLastAttackerA)
+                    .receiver(playerAttacker)
+                    .send();
+
+            return true;
+        } else if (this.config.rankFarmingCooldownIP && this.config.bidirectionalRankFarmingProtect && attackerIPTimestamp.filter(timestamp -> Duration.between(timestamp, Instant.now()).compareTo(this.config.rankFarmingCooldown) < 0).isPresent()) {
             this.messageService.getMessage(config -> config.rankLastAttackerV)
                     .receiver(playerVictim)
                     .send();
@@ -341,6 +446,57 @@ public class PlayerDeath extends AbstractFunnyListener {
         return false;
     }
 
+    // Function to check if victim shares IP with any guild member of the attacker (alt account protection)
+    private boolean checkIPRankFarmingGuildMembersProtection(Player playerVictim, Player playerAttacker, User attacker) {
+        if (!this.config.rankIPProtectPlayersFromGuild) {
+            return false;
+        }
+
+        if (playerAttacker.hasPermission("funnyguilds.bypass.rank-ip-protect-guild")) {
+            return false;
+        }
+
+        Optional<Guild> attackerGuildOption = attacker.getGuild();
+        if (attackerGuildOption.isEmpty()) {
+            return false;
+        }
+
+        if (playerVictim.getAddress() == null) {
+            return false;
+        }
+
+        Guild attackerGuild = attackerGuildOption.orElseThrow();
+        String victimIP = playerVictim.getAddress().getHostString();
+
+        if (!victimSharesIPWithGuildMember(victimIP, attackerGuild, attacker)) {
+            return false;
+        }
+
+        this.messageService.getMessage(config -> config.rankIPGuildMemberVictim)
+                .receiver(playerVictim)
+                .send();
+        this.messageService.getMessage(config -> config.rankIPGuildMemberAttacker)
+                .receiver(playerAttacker)
+                .send();
+        return true;
+    }
+
+    static boolean victimSharesIPWithGuildMember(String victimIP, Guild attackerGuild, User attacker) {
+        if (victimIP == null) {
+            return false;
+        }
+        for (User guildMember : attackerGuild.getMembers()) {
+            if (guildMember.equals(attacker)) {
+                continue;
+            }
+            String guildMemberIP = guildMember.getLastIP();
+            if (guildMemberIP != null && guildMemberIP.equals(victimIP)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Function to check if both players are in the same guild
     private boolean checkMemberRankChangeProtection(User victim, User attacker) {
         if (!this.config.rankMemberProtect) {
@@ -370,13 +526,13 @@ public class PlayerDeath extends AbstractFunnyListener {
             return false;
         }
 
-        Option<Guild> victimGuildOption = victim.getGuild();
-        Option<Guild> attackerGuildOption = attacker.getGuild();
+        Optional<Guild> victimGuildOption = victim.getGuild();
+        Optional<Guild> attackerGuildOption = attacker.getGuild();
         if (victimGuildOption.isEmpty() || attackerGuildOption.isEmpty()) {
             return false;
         }
-        Guild victimGuild = victimGuildOption.get();
-        Guild attackerGuild = attackerGuildOption.get();
+        Guild victimGuild = victimGuildOption.orElseThrow();
+        Guild attackerGuild = attackerGuildOption.orElseThrow();
 
         if (victimGuild.isAlly(attackerGuild) || attackerGuild.isAlly(victimGuild)) {
             this.messageService.getMessage(config -> config.rankAllyVictim)
@@ -438,48 +594,38 @@ public class PlayerDeath extends AbstractFunnyListener {
         return calculatedAssists;
     }
 
-    private Component formatChangeWithRange(int change) {
-        String format = NumberRange.inRangeToString(change, this.config.killPointsChangeFormat, true);
-        String value = FunnyFormatter.format(format, "{CHANGE}", Math.abs(change));
-        return ChatUtils.deserializeSection(value);
-    }
-
-    private Component formatPointsWithRange(int points) {
-        String format = NumberRange.inRangeToString(points, this.config.pointsFormat, true);
-        String value = FunnyFormatter.format(format, "{POINTS}", points);
-        return ChatUtils.deserializeSection(value);
-    }
-
-    private Component formatAssist(User user, Assist assist) {
-        int points = assist.getPointsChange();
-        double damageShare = assist.getDamageShare();
-
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PLAYER}", user.getName())
-                .register("{+}", points)
-                .register("{PLUS-FORMATTED}", formatChangeWithRange(points))
-                .register("{CHANGE}", Math.abs(points))
-                .register("{SHARE}", FunnyStringUtils.getPercent(damageShare));
-        Component entryComponent = ChatUtils.deserializeAmpersand(this.messageService.get(config -> config.rankAssistEntry));
-
-        return formatter.replace(entryComponent);
-    }
-
-    private FunnyFormatter buildAssistsFormatter(CombatTable combatTable) {
+    private Replacement buildAssistsReplacement(Player receiver, CombatTable combatTable) {
         if (combatTable.isEmpty()) {
-            return FunnyFormatter.of("{ASSISTS}", "");
+            return Replacement.string("{ASSISTS}", "");
         }
 
         List<Component> assists = combatTable.getAssistsMap().entrySet().stream()
-                .map(entry -> formatAssist(entry.getKey(), entry.getValue()))
+                .map(entry -> this.formatAssist(receiver, entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-        Component delimiterComponent = ChatUtils.deserializeSection(this.messageService.get(config -> config.rankAssistDelimiter));
-        Component messageComponent = ChatUtils.deserializeSection(this.messageService.get(config -> config.rankAssistMessage));
+
+        Component delimiterComponent = this.messageService.get(
+                receiver,
+                config -> config.rankAssistDelimiter
+        );
         JoinConfiguration joinConfiguration = JoinConfiguration.separator(delimiterComponent);
 
-        return FunnyFormatter.of(
-                "{ASSISTS}",
-                FunnyFormatter.of("{ASSISTS}", Component.join(joinConfiguration, assists)).replace(messageComponent)
+        Component assistsMessage = this.messageService.getComponent(
+                receiver,
+                config -> config.rankAssistMessage,
+                Replacement.component("{ASSISTS}", Component.join(joinConfiguration, assists))
+        );
+
+        return Replacement.component("{ASSISTS}", assistsMessage);
+    }
+
+    private Component formatAssist(Player receiver, User assistingUser, Assist assist) {
+        return this.messageService.getComponent(
+                receiver,
+                config -> config.rankAssistEntry,
+                new FunnyFormatter()
+                        .register("{PLAYER}", assistingUser.getName())
+                        .register("{CHANGE}", assist.getPointsChange())
+                        .register("{SHARE}", FunnyStringUtils.getPercent(assist.getDamageShare()))
         );
     }
 }

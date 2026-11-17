@@ -1,0 +1,67 @@
+---
+title: Chat
+description: Guild chat channels, chat-format tags and above-head player tags.
+---
+
+## Guild chat channels
+
+FunnyGuilds adds three private chat channels, activated with a prefix at the
+start of a message:
+
+| Prefix | Default | Recipients |
+|---|---|---|
+| `chat-priv` | `!` | Your own guild's members |
+| `chat-ally` | `!!` | Your guild and its allies |
+| `chat-global` | `!!!` | Every guild |
+
+Each message's appearance is set by its own template (`chat-priv-design`,
+`chat-ally-design`, `chat-global-design`) with the `{PLAYER}`, `{TAG}`,
+`{MESSAGE}` and `{POS}` variables. An admin with `/ga spy` mode enabled sees
+all three channels in the `chat-spy-design` format — `log-guild-chat`
+additionally writes them to the server log.
+
+## Statistics in main chat
+
+In FG 5.x, an external chat plugin formats main chat. Use
+[PlaceholderAPI](/en/placeholderapi/) in its template, for example
+`%funnyguilds_points-format%`, `%funnyguilds_kdr-format%` or
+`%funnyguilds_g-avg-points-format%`. Thresholds and colors are configured in
+`value-formatting` in `config.yml`.
+
+The FG 5.x listener does not implement the old automatic substitution of
+`{POINTS}`, `{POINTS-FORMAT}`, `{RANK}`, `{TAG}` and `{POS}` in the general chat
+format. Fields such as `chat-points` do not enable that mechanism. The guild
+channels above retain their own templates and variables.
+
+## Above-head player tags (nametag)
+
+The `scoreboard.nametag` section lets you attach a prefix/suffix to a
+player's nickname shown above their head (and in the tablist) — colored
+based on the viewer's relationship with that player's guild, the same as
+chat tags:
+
+```yaml
+nametag:
+  prefix:
+    no-guild: ''
+    our-guild: '&a{TAG}&f '
+    allies-guild: '&6{TAG}&f '
+    enemies-guild: '&c{TAG}&f '
+    other-guild: '&7{TAG}&f '
+```
+
+Available variables are `{TAG}`, `{REL_TAG}`, `{NAME}` and `{POS}` —
+PlaceholderAPI is supported too, including relational placeholders.
+`update-rate` sets how often nametags refresh independently of other triggers
+(e.g. changing guilds).
+
+:::note[Other options]
+`scoreboard.enabled`/`use-shared-scoreboard` (sharing the scoreboard with
+other plugins), `scoreboard.queue-configuration` (throttling updates under
+heavy load), `online-color`/`offline-color` (color for online/offline
+names and guilds) and `users-list-respect-vanish`/`ptop-respect-vanish`/
+`gtop-respect-vanish`/`g-member-respect-vanish` (whether vanished players
+count as online in placeholders). Points shown under a player's nickname
+are a separate option, `scoreboard.dummy` — see
+[Rankings & combat](/en/rankings-combat/).
+:::

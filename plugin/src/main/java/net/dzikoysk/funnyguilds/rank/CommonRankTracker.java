@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
+import panda.std.Pair;
 
 abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number> implements RankTracker<E, T> {
 
@@ -74,6 +75,12 @@ abstract class CommonRankTracker<E extends IdentifiableEntity, T extends Number>
     @Override
     public synchronized Optional<T> valueOfEntity(E entity) {
         return Optional.ofNullable(this.entries.get(entity.getUUID())).map(entry -> entry.value);
+    }
+
+    @Override
+    public synchronized Optional<Pair<E, T>> findEntryByPosition(int position) {
+        return this.findEntityByPosition(position).flatMap(entity -> this.valueOfEntity(entity)
+                .map(value -> Pair.of(entity, value)));
     }
 
     synchronized void initializeEntities(Map<E, T> initialValues) {

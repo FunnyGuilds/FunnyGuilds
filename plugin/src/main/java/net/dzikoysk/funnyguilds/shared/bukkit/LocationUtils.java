@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.util.List;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,7 +9,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
 
 public final class LocationUtils {
 
@@ -71,8 +71,8 @@ public final class LocationUtils {
                 "," + (float) location.getZ();
     }
 
-    public static String toString(Option<Location> location) {
-        return toString(location.orNull());
+    public static String toString(Optional<Location> location) {
+        return toString(location.orElse(null));
     }
 
     public static boolean checkWorld(Player player) {

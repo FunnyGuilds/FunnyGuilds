@@ -9,9 +9,9 @@ import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Joiner;
@@ -49,14 +49,14 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{TIME}", args[1])
-                .register("{REASON}", ChatUtils.colored(reason));
+                .register("{REASON}", ComponentUtil.colored(reason));
 
         this.messageService.getMessage(config -> config.adminGuildBan)
                 .receiver(sender)
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastBan)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

@@ -13,8 +13,12 @@ import java.lang.reflect.Field;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.FunnyTimeFormatter;
+import net.dzikoysk.funnyguilds.feature.command.admin.ItemsAdminCommand.ItemsGiveType;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 @Header("Dla większości wiadomości poprawny jest format: https://github.com/P3ridot/YetAnotherMessagesLibrary/blob/master/repository/okaeri/FORMAT.md")
 @Header("Pozwala on m.in. na zmianę miejsca wyświetlania wiadomości (np. wyświetlanie danej wiadomość na actionbarze zamiast chacie)")
@@ -31,21 +35,23 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
 
     @Comment("")
     @Comment("<------- No Value Messages -------> #")
-    public String gNameNoValue = "Brak (G-NAME/NAME)";
-    public String gTagNoValue = "Brak (G-TAG/TAG)";
-    public String gOwnerNoValue = "Brak (G-OWNER)";
-    public String gDeputiesNoValue = "Brak (G-DEPUTIES)";
-    public String gDeputyNoValue = "Brak (G-DEPUTY)";
-    public String gValidityNoValue = "Brak (G-VALIDITY)";
-    public String gProtectionNoValue = "Brak (G-PROTECTION)";
-    public String gRegionSizeNoValue = "Brak (G-REGION-SIZE)";
-    public String livesNoValue = "Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)";
-    public String alliesNoValue = "Brak (ALLIES)";
-    public String enemiesNoValue = "Brak (ENEMIES)";
-    public String gtopNoValue = "Brak (GTOP-x)";
-    public String ptopNoValue = "Brak (PTOP-x)";
-    public String wgRegionNoValue = "Brak (WG-REGION)";
-    public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
+    public Component gNameNoValue = ComponentUtil.colored("Brak (G-NAME/NAME)");
+    public Component gTagNoValue = ComponentUtil.colored("Brak (G-TAG/TAG)");
+    public Component gOwnerNoValue = ComponentUtil.colored("Brak (G-OWNER)");
+    public Component gDeputiesNoValue = ComponentUtil.colored("Brak (G-DEPUTIES)");
+    public Component gDeputyNoValue = ComponentUtil.colored("Brak (G-DEPUTY)");
+    public Component gMembersNoValue = ComponentUtil.colored("Brak (G-MEMBERS)");
+    public Component gMemberNoValue = ComponentUtil.colored("Brak (G-MEMBER-x)");
+    public Component gValidityNoValue = ComponentUtil.colored("Brak (G-VALIDITY)");
+    public Component gProtectionNoValue = ComponentUtil.colored("Brak (G-PROTECTION)");
+    public Component gRegionSizeNoValue = ComponentUtil.colored("Brak (G-REGION-SIZE)");
+    public Component livesNoValue = ComponentUtil.colored("Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)");
+    public Component alliesNoValue = ComponentUtil.colored("Brak (ALLIES)");
+    public Component enemiesNoValue = ComponentUtil.colored("Brak (ENEMIES)");
+    public Component gtopNoValue = ComponentUtil.colored("Brak (GTOP-x)");
+    public Component ptopNoValue = ComponentUtil.colored("Brak (PTOP-x)");
+    public Component wgRegionNoValue = ComponentUtil.colored("Brak (WG-REGION)");
+    public Component minMembersToIncludeNoValue = ComponentUtil.colored("Brak (guild-min-members w config.yml)");
 
     @Comment("")
     @Comment("<------- Permission Messages -------> #")
@@ -61,19 +67,30 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage rankLastAttackerA = ChatHolder.message("&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja dodane!");
     public SendableMessage rankIPVictim = ChatHolder.message("&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!");
     public SendableMessage rankIPAttacker = ChatHolder.message("&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!");
+    public SendableMessage rankIPGuildMemberVictim = ChatHolder.message("&7Ten gracz jest w gildii z czlonkiem o twoim adresie IP, punkty nie zostaja odjete!");
+    public SendableMessage rankIPGuildMemberAttacker = ChatHolder.message("&7Ten gracz ma taki sam adres IP jak czlonek twojej gildii, punkty nie zostaja dodane!");
     public SendableMessage rankMemberVictim = ChatHolder.message("&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja odebrane!");
     public SendableMessage rankMemberAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem twojej gildii, punkty nie zostaja dodane!");
     public SendableMessage rankAllyVictim = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja odebrane!");
     public SendableMessage rankAllyAttacker = ChatHolder.message("&7Ten gracz jest czlonkiem sojuszniczej gildii, punkty nie zostaja dodane!");
-    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {ITEM}, {ITEM-NO-AMOUNT}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public SendableMessage rankDeathMessage = ChatHolder.message("{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{ITEM-NO-AMOUNT}");
-    public SendableMessage rankKillMessage = TitleHolder.message("&cZabiles gracza {VICTIM}", "&7{PLUS-FORMATTED}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {ATTACKER-TAG}, {VICTIM-TAG}, {ATTACKER-CHANGE}, {VICTIM-CHANGE}, {ATTACKER-CHANGE-FORMATTED}, {VICTIM-CHANGE-FORMATTED}, {WEAPON}, {WEAPON-NO-AMOUNT}, {ATTACKER-HEALTH}, {ATTACKER-HEARTS}, {ASSISTS}")
+    public SendableMessage rankDeathMessage = ChatHolder.message("{ATTACKER-TAG}&b{ATTACKER} &7({ATTACKER-CHANGE-FORMATTED}&7) zabil {VICTIM-TAG}&b{VICTIM} &7({VICTIM-CHANGE-FORMATTED}&7) uzywajac &b{WEAPON-NO-AMOUNT}");
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {ATTACKER-TAG}, {VICTIM-TAG}, {ATTACKER-CHANGE}, {VICTIM-CHANGE}, {ATTACKER-CHANGE-FORMATTED}, {VICTIM-CHANGE-FORMATTED}, {WEAPON}, {WEAPON-NO-AMOUNT}, {ATTACKER-HEALTH}, {ATTACKER-HEARTS}")
+    public SendableMessage rankKillAttackerMessage = TitleHolder.message("&cZabiles gracza {VICTIM}", "&7{ATTACKER-CHANGE-FORMATTED}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM}, {ATTACKER-TAG}, {VICTIM-TAG}, {VICTIM-CHANGE}, {VICTIM-CHANGE-FORMATTED}, {WEAPON}, {WEAPON-NO-AMOUNT}")
+    public SendableMessage rankDeathVictimMessage = TitleHolder.message("&cZostales zabity przez {ATTACKER}", "&7{VICTIM-CHANGE-FORMATTED}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {VICTIM}, {ASSIST-CHANGE}, {SHARE}")
+    public SendableMessage rankKillAssistMessage = TitleHolder.message("&aAsysta przy zabiciu {VICTIM}", "&7+{ASSIST-CHANGE}", 10, 10, 10);
+    @Comment("Dostępne zmienne: {VICTIM}, {ATTACKER-CHANGE}, {ATTACKER-CHANGE-FORMATTED}")
+    public SendableMessage combatPredictionAttackerMessage = TitleHolder.message("", "&7Punkty z walki: {ATTACKER-CHANGE-FORMATTED}", 10, 20, 10);
+    @Comment("Dostępne zmienne: {ATTACKER}, {VICTIM-CHANGE}, {VICTIM-CHANGE-FORMATTED}")
+    public SendableMessage combatPredictionVictimMessage = TitleHolder.message("", "&7Punkty z walki: {VICTIM-CHANGE-FORMATTED}", 10, 20, 10);
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane są kolejne wpisy o asystujących graczach")
-    public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
-    @Comment("Dostępne zmienne: {PLAYER}, {+}, {PLUS-FORMATTED}, {SHARE}")
-    public String rankAssistEntry = "&b{PLAYER} &7({PLUS-FORMATTED}&7, {SHARE}% dmg)";
+    public Component rankAssistMessage = ComponentUtil.colored("&7Asystowali: {ASSISTS}");
+    @Comment("Dostępne zmienne: {PLAYER}, {CHANGE}, {SHARE}")
+    public Component rankAssistEntry = ComponentUtil.colored("&b{PLAYER} &7(+{CHANGE}&7, {SHARE}% dmg)");
     @Comment("Znaki oddzielające kolejne wpisy o asystujących graczach")
-    public String rankAssistDelimiter = "&8, ";
+    public Component rankAssistDelimiter = ComponentUtil.colored("&8, ");
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
     public SendableMessage rankResetItems = ChatHolder.message("&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}");
     @Comment("Dostępne zmienne: {LAST-RANK}, {CURRENT-RANK}")
@@ -93,7 +110,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("")
     @Comment("<------- Ban Messages -------> #")
     @Comment("Dostępne zmienne: {PLAYER}, {REASON}, {DATE}, {NEWLINE}")
-    public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
+    public Component banMessage = LegacyComponentSerializer.legacyAmpersand().deserialize("&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}");
 
     @Comment("")
     @Comment("<------- Region Messages -------> #")
@@ -164,7 +181,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage broadcastValidity = ChatHolder.message("&7Gildia &b{TAG} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!");
     @Comment("Dostępne zmienne: {WINNER}, {LOSER}")
     public SendableMessage broadcastWar = ChatHolder.message("&7Gildia &4{WINNER}&7 podblila gildie &4{LOSER}&7!!");
-    public String noInformation = "Brak informacji";
+    public Component noInformation = ComponentUtil.colored("Brak informacji");
 
     @Comment("")
     @Comment("<------- Help Messages -------> #")
@@ -191,6 +208,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/opusc &8- &7Opuszcza gildie",
             "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
             "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
+            "&a/wojna [tag] &8- &7Wypowiada wojne gildii",
+            "&a/kupzycie &8- &7Wykupuje dodatkowe zycie dla gildii",
             "&a/usun &8- &7Usuwa gildie",
             "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
             "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii"
@@ -216,12 +235,14 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
             "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
-            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii"
+            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii",
+            "&a/ga tnt [tag] [czas] &8- &7Wlacza TNT na terenie gildii na okreslony czas"
     );
 
     @Comment("")
     @Comment("<------- Info Messages -------> #")
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
+    @Comment("Statystyki gracza i ping obsługują także końcówkę -FORMAT, np. {POINTS-FORMAT}, {KDR-FORMAT}, {PING-FORMAT}")
     public SendableMessage playerInfoList = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -235,7 +256,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&8-------------.------------------"
     );
 
-    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}")
+    @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {RANK}, {POINTS-GAIN}, {POINTS-GAIN-FORMATTED}, {POINTS-LOSS}, {POINTS-LOSS-FORMATTED}")
+    @Comment("Statystyki gracza i ping obsługują także końcówkę -FORMAT, np. {POINTS-FORMAT}, {KDR-FORMAT}, {PING-FORMAT}")
     public SendableMessage playerRightClickInfo = ChatHolder.message(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -247,7 +269,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage infoTag = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage infoExists = ChatHolder.message("&cGildia o takim tagu nie istnieje!");
 
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {WAR-MAX-LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}, {WARS-WON}, {WARS-LOST}, {WARS-LAST}, {WAR-STREAK}")
+    @Comment("Statystyki gildii obsługują także końcówkę -FORMAT bez prefiksu G-, np. {POINTS-FORMAT}, {AVG-KDR-FORMAT}, {WARS-WON-FORMAT}")
     public SendableMessage infoList = ChatHolder.message(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
@@ -255,11 +278,13 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&7Zastepcy: &c{DEPUTIES}",
             "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
             "&7Ochrona: &c{PROTECTION}",
-            "&7Zycia: &4{LIVES}",
+            "&7Zycia: &4{LIVES}&8/&4{WAR-MAX-LIVES}",
+            "&7Wojny: &a{WARS-WON} &7wygranych &8/ &c{WARS-LOST} &7przegranych &8(Seria: &e{WAR-STREAK}&8)",
+            "&7Ostatnia wojna: &c{WARS-LAST}",
             "&7Waznosc: &c{VALIDITY}",
             "&7Czlonkowie: &7{MEMBERS}",
             "&7Sojusze: &c{ALLIES}",
-            "&7Wojny: &c{ENEMIES}",
+            "&7Wrogowie: &c{ENEMIES}",
             "&8-------------------------------"
     );
 
@@ -268,16 +293,16 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("{GTOP-<pozycja>} - gildia na podanej pozycji w rankingu")
     public SendableMessage topList = ChatHolder.message(
             "&8----------{ &cTOP 10 &8}----------",
-            "&71&8. &c{GTOP-1}",
-            "&72&8. &c{GTOP-2}",
-            "&73&8. &c{GTOP-3}",
-            "&74&8. &c{GTOP-4}",
-            "&75&8. &c{GTOP-5}",
-            "&76&8. &c{GTOP-6}",
-            "&77&8. &c{GTOP-7}",
-            "&78&8. &c{GTOP-8}",
-            "&79&8. &c{GTOP-9}",
-            "&710&8. &c{GTOP-10}"
+            "&71&8. &c{GTOP-AVG_POINTS-1}",
+            "&72&8. &c{GTOP-AVG_POINTS-2}",
+            "&73&8. &c{GTOP-AVG_POINTS-3}",
+            "&74&8. &c{GTOP-AVG_POINTS-4}",
+            "&75&8. &c{GTOP-AVG_POINTS-5}",
+            "&76&8. &c{GTOP-AVG_POINTS-6}",
+            "&77&8. &c{GTOP-AVG_POINTS-7}",
+            "&78&8. &c{GTOP-AVG_POINTS-8}",
+            "&79&8. &c{GTOP-AVG_POINTS-9}",
+            "&710&8. &c{GTOP-AVG_POINTS-10}"
     );
 
     @Comment("")
@@ -285,16 +310,16 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("{PTOP-<pozycja>} - gracz na podanej pozycji w rankingu")
     public SendableMessage rankingList = ChatHolder.message(
             "&8----------{ &cTOP 10 Graczy &8}----------",
-            "&71&8. &c{PTOP-1}",
-            "&72&8. &c{PTOP-2}",
-            "&73&8. &c{PTOP-3}",
-            "&74&8. &c{PTOP-4}",
-            "&75&8. &c{PTOP-5}",
-            "&76&8. &c{PTOP-6}",
-            "&77&8. &c{PTOP-7}",
-            "&78&8. &c{PTOP-8}",
-            "&79&8. &c{PTOP-9}",
-            "&710&8. &c{PTOP-10}"
+            "&71&8. &c{PTOP-POINTS-1}",
+            "&72&8. &c{PTOP-POINTS-2}",
+            "&73&8. &c{PTOP-POINTS-3}",
+            "&74&8. &c{PTOP-POINTS-4}",
+            "&75&8. &c{PTOP-POINTS-5}",
+            "&76&8. &c{PTOP-POINTS-6}",
+            "&77&8. &c{PTOP-POINTS-7}",
+            "&78&8. &c{PTOP-POINTS-8}",
+            "&79&8. &c{PTOP-POINTS-9}",
+            "&710&8. &c{PTOP-POINTS-10}"
     );
 
     @Comment("")
@@ -303,6 +328,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalNoNameGiven = ChatHolder.message("&cPodaj nazwe gildii!");
     public SendableMessage generalHasNoGuild = ChatHolder.message("&cNie masz gildii!");
     public SendableMessage generalIsNotOwner = ChatHolder.message("&cNie jestes zalozycielem gildii!");
+    public SendableMessage generalInsufficientGuildPermission = ChatHolder.message("&cNie posiadasz wystarczających uprawnień jako członek gildii!");
     public SendableMessage generalNoTagGiven = ChatHolder.message("&cPodaj tag gildii!");
     public SendableMessage generalNoNickGiven = ChatHolder.message("&cPodaj nick gracza!");
     public SendableMessage generalUserHasGuild = ChatHolder.message("&cTen gracz ma juz gildie!");
@@ -316,7 +342,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalPlayerHasNoGuild = ChatHolder.message("&cTen gracz nie ma gildii!");
     public SendableMessage generalCommandDisabled = ChatHolder.message("&cTa komenda jest wylaczona!");
     public SendableMessage generalAllyPvpDisabled = ChatHolder.message("&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!");
-
+    
     @Comment("")
     @Comment("<------- Escape Messages -------> #")
     public SendableMessage escapeDisabled = ChatHolder.message("&cPrzykro mi, ucieczki sa wylaczone!");
@@ -354,7 +380,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {DISTANCE}")
     public SendableMessage createSpawn = ChatHolder.message("&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}");
     public SendableMessage createIsNear = ChatHolder.message("&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!");
-    @Comment("Dostępne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
+    @Comment("Dostępne zmienne: {POINTS}, {REQUIRED}")
     public SendableMessage createRank = ChatHolder.message("&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.");
     @Comment("Dostępne zmienne: {ITEM}, {ITEMS}")
     public SendableMessage createItems = ChatHolder.message("&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. Najedz na przedmiot, aby dowiedziec sie wiecej");
@@ -535,16 +561,44 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage warDisabled = ChatHolder.message("&cPodbijanie gildii jest wyłączone.");
     public SendableMessage warHasNotGuild = ChatHolder.message("&cMusisz miec gildie, aby zaatkowac inna!");
     public SendableMessage warAlly = ChatHolder.message("&cNie mozesz zaatakowac sojusznika!");
+    @Comment("Wiadomosc wysylana, gdy gracz próbuje zaatakować gildię, z którą nie ma aktywnej wojny (gdy war-require-declaration jest włączone)")
+    public SendableMessage warNotEnemy = ChatHolder.message("&cMusisz najpierw wypowiedziec wojne tej gildii (/g war <tag>)!");
     @Comment("Dostępne zmienne: {TIME}")
     public SendableMessage warWait = ChatHolder.message("&7Atak na gildie mozliwy za &4{TIME}");
     @Comment("Dostępne zmienne: {ATTACKED}")
     public SendableMessage warAttacker = ChatHolder.message("&7Twoja gildia pozbawila gildie &4{ATTACKED} &7z &41 zycia&7!");
     @Comment("Dostępne zmienne: {ATTACKER}")
     public SendableMessage warAttacked = ChatHolder.message("&7Twoja gildia stracila &41 zycie &7przez &4{ATTACKER}&7!");
+    @Comment("Dostępne zmienne: {ATTACKED}, {LIVES}, {MAX-LIVES}")
+    public SendableMessage warAttackerGainedLife = ChatHolder.message("&aTwoja gildia zdobyla &2+1 zycie &aza zbicie serca &a{ATTACKED}&a! (&2{LIVES}&a/&2{MAX-LIVES})");
+    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {STREAK}")
+    public SendableMessage warStreakBroadcast = ChatHolder.message("&6[WOJNA] &eGildia &6{GUILD} &8[&6{TAG}&8] &eosiagnela serie &c{STREAK} &ewygranych wojen z rzedu!");
+    public SendableMessage warAntiFarmingBlocked = ChatHolder.message("&cTa akcja nie przyznaje zycia z powodu ochrony anty-farmingowej.");
+    @Comment("Wiadomosc wysylana, gdy atak zbije HP serca, ale gildia nie traci jeszcze zycia")
+    @Comment("Dostępne zmienne: {ATTACKED}, {HEART-LIVES}, {HEART-LIVES-MAX}")
+    public SendableMessage warAttackerHeart = ChatHolder.message("&7Twoja gildia zbila serce gildii &4{ATTACKED} &7do &4{HEART-LIVES}&7/&4{HEART-LIVES-MAX} &7HP!");
+    @Comment("Dostępne zmienne: {ATTACKER}, {HEART-LIVES}, {HEART-LIVES-MAX}")
+    public SendableMessage warAttackedHeart = ChatHolder.message("&7Serce twojej gildii zostalo zbite do &4{HEART-LIVES}&7/&4{HEART-LIVES-MAX} &7HP przez &4{ATTACKER}&7!");
     @Comment("Dostępne zmienne: {LOSER}")
     public SendableMessage warWin = ChatHolder.message("&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!");
     @Comment("Dostępne zmienne: {WINNER}")
     public SendableMessage warLose = ChatHolder.message("&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!");
+
+    @Comment("")
+    @Comment("<------- Buy Life Messages -------> #")
+    public SendableMessage buyLifeDisabled = ChatHolder.message("&cWykupywanie zyc dla gildii jest wylaczone.");
+    @Comment("Dostępne zmienne: {LIVES}, {MAX-LIVES}")
+    public SendableMessage buyLifeMaxLives = ChatHolder.message("&cTwoja gildia posiada juz maksymalna liczbe zyc ({LIVES}/{MAX-LIVES})!");
+    @Comment("Dostępne zmienne: {TIME}")
+    public SendableMessage buyLifeCooldown = ChatHolder.message("&cKolejne zycie mozesz wykupic dopiero za &7{TIME}&c!");
+    @Comment("Dostępne zmienne: {ITEM}")
+    public SendableMessage buyLifeNoItems = ChatHolder.message("&cNie posiadasz wymaganych przedmiotow do wykupienia zycia! Brakuje: &7{ITEM}");
+    @Comment("Dostępne zmienne: {MONEY}")
+    public SendableMessage buyLifeNoMoney = ChatHolder.message("&cNie posiadasz wystarczajacych srodkow! Potrzebujesz: &7{MONEY}");
+    @Comment("Dostępne zmienne: {LIVES}, {MAX-LIVES}")
+    public SendableMessage buyLifeSuccess = ChatHolder.message("&aPomyslnie wykupiono &21 zycie &adla gildii! Aktualny stan: &2{LIVES}&a/&2{MAX-LIVES}");
+    @Comment("Dostępne zmienne: {PLAYER}, {LIVES}, {MAX-LIVES}")
+    public SendableMessage buyLifeBroadcast = ChatHolder.message("&aGracz &2{PLAYER} &awykupil dodatkowe zycie dla gildii! Aktualny stan: &2{LIVES}&a/&2{MAX-LIVES}");
 
     @Comment("")
     @Comment("<------- Leader Messages -------> #")
@@ -596,10 +650,14 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage adminGuildOwner = ChatHolder.message("&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!");
     public SendableMessage adminNoRegionFound = ChatHolder.message("&cGildia nie posiada terenu!");
 
+    public SendableMessage adminNoStatsOperationGiven = ChatHolder.message("&cPodaj operację: set/add/remove!");
+    @Comment("Dostępne zmienne: {OPERATION}")
+    public SendableMessage adminInvalidStatsOperation = ChatHolder.message("&cNieznana operacja: {OPERATION}! Dostępne: set, add, remove");
+
     public SendableMessage adminNoPointsGiven = ChatHolder.message("&cPodaj liczbe punktow!");
     @Comment("Dostępne zmienne: {ERROR}")
     public SendableMessage adminErrorInNumber = ChatHolder.message("&cNieznana jest liczba: {ERROR}");
-    @Comment("Dostępne zmienne: {PLAYER}, {POINTS}, {POINTS-FORMAT}")
+    @Comment("Dostępne zmienne: {PLAYER}, {POINTS}")
     public SendableMessage adminPointsChanged = ChatHolder.message("&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}");
 
     public SendableMessage adminNoKillsGiven = ChatHolder.message("&cPodaj liczbe zabojstw!");
@@ -660,6 +718,10 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage adminInvalidProtectionDate = ChatHolder.message("&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss");
     public SendableMessage adminProtectionSetSuccessfully = ChatHolder.message("&aPomyslnie ustawiono ochrone dla gildii &7{TAG} &ado &7{DATE}");
 
+    public SendableMessage adminNoTntTimeGive = ChatHolder.message("&cPodaj czas na jaki ma dzialac bypass TNT!");
+    @Comment("Dostępne zmienne: {TAG}, {TIME}")
+    public SendableMessage adminTntSetSuccessfully = ChatHolder.message("&aPomyslnie wlaczono TNT na terenie gildii &7{TAG} &ana &7{TIME}");
+
     public SendableMessage adminGuildHasNoHome = ChatHolder.message("&cGildia gracza nie ma ustawionej bazy!");
     @Comment("Dostępne zmienne: {ADMIN}")
     public SendableMessage adminTeleportedToBase = ChatHolder.message("&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!");
@@ -674,9 +736,9 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
             "&8[&4Security&8] &7Notatka: &7{NOTE}"
     );
     @Comment("Dostępne zmienne: {DISTANCE}")
-    public String securitySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
+    public Component securitySystemReach = ComponentUtil.colored("&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!");
     @Comment("Dostępne zmienne: {BLOCKS}")
-    public String securitySystemFreeCam = "&7Zaatakowal krysztal przez bloki: &c{BLOCKS}";
+    public Component securitySystemFreeCam = ComponentUtil.colored("&7Zaatakowal krysztal przez bloki: &c{BLOCKS}");
 
     @Comment("")
     @Comment("<------- FunnyGuilds Version Messages -------> #")
@@ -724,6 +786,60 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public String loginNickTooShort = "&cNick jest za krotki!";
     public String loginNickTooLong = "&cNick jest za dlugi!";
     public String loginNickInvalid = "&cNick zawiera niedozwolone znaki!";
+
+    @Comment("")
+    @Comment("<------- Items System Messages -------> #")
+    public SendableMessage itemsAdminBypass = ChatHolder.message("<yellow>⚡ Posiadasz uprawnienia admina — wymagania zostają pominięte.");
+    @Comment("Dostępne zmienne: {PLAYER}")
+    public SendableMessage itemsPlayerOffline = ChatHolder.message("<red>Gracz <white>{PLAYER} <red>nie jest online!");
+    @Comment("Dostępne zmienne: {SET}, {SETS}")
+    public SendableMessage itemsSetNotFound = ChatHolder.message("<red>Set <white>{SET} <red>nie istnieje. Dostępne: <white>{SETS}");
+
+    @Comment("")
+    @Comment("Wiadomości tekstowe wymagań (gdy GUI wyłączone)")
+    public SendableMessage itemsRequirementsNotMet = ChatHolder.message("<red>✘ Nie spełniasz wymagań do założenia gildii!");
+    @Comment("Dostępne zmienne: {STATUS_COLOR} (<green> gdy spełniony, <red> gdy nie), {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementMoney = ChatHolder.message("<gray>  Pieniądze: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementLevel = ChatHolder.message("<gray>  Poziom: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementRank = ChatHolder.message("<gray>  Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+    public SendableMessage itemsRequirementItemsHeader = ChatHolder.message("<gray>  Brakujące przedmioty:");
+    public SendableMessage itemsCheckItemsHeader = ChatHolder.message("<gray>  Wymagane przedmioty:");
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {ITEM} (nazwa wyświetlana), {KEY} (klucz z library), {CURRENT}, {REQUIRED}")
+    public SendableMessage itemsRequirementItemLine = ChatHolder.message("<gray>    • <white>{ITEM}<gray>: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}");
+
+    @Comment("")
+    @Comment("Nagłówek podglądu wymagań /przedmioty (tryb tekstowy, gdy GUI wyłączone)")
+    @Comment("Dostępne zmienne: {PLAYER}, {SET}")
+    public SendableMessage itemsCheckHeader = ChatHolder.message("<gray>--- Wymagania do założenia gildii <gray>(set: <white>{SET}<gray>) ---");
+
+    @Comment("")
+    @Comment("Wiadomości komendy admina /ga items")
+    public SendableMessage itemsAdminUsage = ChatHolder.message(
+        "<red>Poprawne użycie: <gray>/ga items <nick> <typ> [set]",
+        "<red>Dostępne typy: <gray>" + String.join(", ", ItemsGiveType.ALL_COMMAND_ARGS)
+    );
+    @Comment("Dostępne zmienne: {TYPE}")
+    public SendableMessage itemsAdminUnknownType = ChatHolder.message(
+        "<red>Nieznany typ: <gray>{TYPE}",
+        "<red>Dostępne typy: <gray>" + String.join(", ", ItemsGiveType.ALL_COMMAND_ARGS)
+    );
+    @Comment("Dostępne zmienne: {TYPE}")
+    public SendableMessage itemsAdminNoItems = ChatHolder.message("<red>Podany typ <gray>{TYPE} <red>nie zawiera żadnych przedmiotów do wydania");
+    @Comment("Dostępne zmienne: {PLAYER}, {TYPE}, {COUNT}, {COUNT_ADDED}, {COUNT_DROPPED}")
+    public SendableMessage itemsAdminGiven = ChatHolder.message("<green>Wydano przedmioty typu <gray>{TYPE} <green>graczowi <gray>{PLAYER} <green>(<gray>{COUNT} <green>przedmiotów).");
+    @Comment("Dostępne zmienne: {TYPE}, {COUNT}, {COUNT_ADDED}, {COUNT_DROPPED}")
+    public SendableMessage itemsAdminReceived = ChatHolder.message("<green>Otrzymałeś przedmioty typu <gray>{TYPE} <green>(<gray>{COUNT} <green>przedmiotów).");
+
+    @Comment("")
+    @Comment("Linie GUI summary (MiniMessage, wstawiane do lore ItemStack)")
+    @Comment("Dostępne zmienne: {STATUS_COLOR}, {CURRENT}, {REQUIRED}")
+    public String itemsGuiMoneyLine = "<gray>Pieniądze: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiLevelLine = "<gray>Poziom: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiRankLine = "<gray>Ranking: {STATUS_COLOR}{CURRENT} <dark_gray>/ <white>{REQUIRED}";
+    public String itemsGuiStatusReady = "<green>✔ Możesz założyć gildię!";
+    public String itemsGuiStatusNotReady = "<red>✘ Brakuje Ci wymagań";
 
     @Override
     public OkaeriConfig load() throws OkaeriException {

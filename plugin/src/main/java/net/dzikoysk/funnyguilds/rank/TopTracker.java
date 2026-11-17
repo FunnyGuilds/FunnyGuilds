@@ -6,12 +6,12 @@ import net.dzikoysk.funnyguilds.IdentifiableEntity;
 
 /**
  * Tracks top-ranked entities based on a specific statistic.
- * 
+ *
  * @param <E> the type of entity being ranked
  * @param <T> the type of statistic value used for ranking
  */
 public interface TopTracker<E extends IdentifiableEntity> {
-    
+
     /**
      * @return the collection of UUIDs of entities included in the top rankings
      * @see #isEntityIncludedInTop(E)
@@ -30,7 +30,7 @@ public interface TopTracker<E extends IdentifiableEntity> {
      * @return whether the entity is included in the top rankings
      */
     boolean isEntityIncludedInTop(E entity);
-    
+
     /**
      * Get the position of the entity in the top rankings.
      *
@@ -46,5 +46,5 @@ public interface TopTracker<E extends IdentifiableEntity> {
      * @return the entity at the top position, or none if not found, or out of range
      */
     Optional<E> findEntityByPosition(int position);
-    
+
 }

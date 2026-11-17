@@ -16,7 +16,12 @@ public class RangeFormattingTransformer extends BidirectionalTransformer<String,
 
     @Override
     public RangeFormatting leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
-        return new RangeFormatting(ChatUtils.colored(data));
+        try {
+            return new RangeFormatting(ChatUtils.colored(data));
+        }
+        catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(serdesContext.getPath() + ": " + exception.getMessage(), exception);
+        }
     }
 
     @Override

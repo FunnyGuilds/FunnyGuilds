@@ -8,6 +8,7 @@ import java.util.concurrent.Executor;
 import java.util.function.UnaryOperator;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildStatKeys;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ public interface RankService extends AutoCloseable {
     }
 
     default Optional<RankTracker<User, ?>> getUserRankTracker(String top) {
-        return StatKey.find(top).map(this::getUserRankTracker);
+        return StatKey.find(top).filter(key -> !GuildStatKeys.isNative(key)).map(this::getUserRankTracker);
     }
 
     <T extends Number> T setUserStatValue(User user, StatKey<T> key, T value);
@@ -71,7 +72,7 @@ public interface RankService extends AutoCloseable {
         String normalized = top.toLowerCase(Locale.ROOT);
         boolean average = normalized.startsWith("avg_") || normalized.startsWith("avg-");
         String stat = average ? normalized.substring(4) : normalized;
-        return StatKey.find(stat).map(key -> this.getGuildRankTracker(
+        return StatKey.find(stat).filter(key -> !average || !GuildStatKeys.isNative(key)).map(key -> this.getGuildRankTracker(
                 key, GuildStatAggregationType.forTop(key, average)));
     }
 

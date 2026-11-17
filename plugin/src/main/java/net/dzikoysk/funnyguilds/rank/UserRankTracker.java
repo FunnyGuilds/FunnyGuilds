@@ -14,7 +14,7 @@ final class UserRankTracker<T extends Number> extends CommonRankTracker<User, T>
     ) {
         super(
                 statKey,
-                uuid -> Optional.ofNullable(userManager.findByUuid(uuid).orNull()),
+                uuid -> Optional.ofNullable(userManager.findByUuid(uuid).orElse(null)),
                 isRanked
         );
     }

@@ -1,0 +1,218 @@
+---
+title: API for Developers
+description: A guide to the FunnyGuilds API for developers.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+:::note
+FunnyGuilds API 5.0.0
+
+Nightly builds are published to the `snapshots` repository as `5.0.1-SNAPSHOT`.
+:::
+
+## FunnyGuilds API
+
+<Tabs syncKey="package-manager">
+<TabItem label="Maven">
+```xml
+<repository>
+    <id>reposilite-repository</id>
+    <url>https://maven.reposilite.com/releases</url>
+</repository>
+```
+```xml
+<dependency>
+    <groupId>net.dzikoysk.funnyguilds</groupId>
+    <artifactId>plugin</artifactId>
+    <version>5.0.0</version>
+    <classifier>all</classifier>
+    <scope>provided</scope>
+</dependency>
+```
+</TabItem>
+<TabItem label="Gradle Groovy">
+```groovy
+repositories {
+    mavenCentral()
+    maven {
+        name 'reposilite-repository'
+        url 'https://maven.reposilite.com/releases'
+    }
+}
+```
+```groovy
+dependencies {
+    implementation 'net.dzikoysk.funnyguilds:plugin:5.0.0:all'
+}
+```
+</TabItem>
+<TabItem label="Gradle Kotlin">
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        name = "reposilite-repository"
+        url = uri("https://maven.reposilite.com/releases")
+    }
+}
+```
+```kotlin
+dependencies {
+    implementation("net.dzikoysk.funnyguilds:plugin:5.0.0:all")
+}
+```
+</TabItem>
+</Tabs>
+
+### FunnyGuilds
+
+The plugin's main instance. It should be fetched only once, e.g.:
+
+```java
+public class MyPlugin extends JavaPlugin {
+
+    private FunnyGuilds funnyGuilds;
+    
+    @Override
+    public void onEnable() {
+        funnyGuilds = FunnyGuilds.getInstance();
+    }
+    
+}
+```
+
+### User
+
+Available methods for fetching a user:
+
+- `UserManager#findByName(String)`
+- `UserManager#findByPlayer(Player)`
+- `UserManager#findByUuid(UUID)`
+
+Example usage:
+
+```java
+UserManager userManager = funnyGuilds.getUserManager();
+Optional<User> userOption = userManager.findByName("PlayerName");
+
+if (userOption.isPresent()) {
+    User user = userOption.orElseThrow();
+}
+```
+
+`UserManager#addUser(User)` rejects a different user instance with an already
+registered UUID by throwing `IllegalStateException`. The existing user instance
+and both indexes remain unchanged. After rejection, do not use the supplied
+instance as a registered user; retrieve the existing account with `findByUuid(UUID)`.
+
+### Guild
+
+Available methods for fetching a guild:
+
+- `GuildManager#findByName(String)`
+- `GuildManager#findByTag(String)`
+- `GuildManager#findByUuid(UUID)`
+- `User#getGuild()`
+
+Example usage:
+
+```java
+GuildManager guildManager = funnyGuilds.getGuildManager();
+Optional<Guild> guildOption = guildManager.findByTag("TAG");
+
+if (guildOption.isPresent()) {
+    Guild guild = guildOption.orElseThrow();
+}
+```
+
+```java
+Optional<Guild> guildOption = user.getGuild();
+
+if (guildOption.isPresent()) {
+    Guild guild = guildOption.orElseThrow();
+}
+```
+
+### Statistics and rankings
+
+New integrations should use `FunnyGuilds#getRankService()` instead of the removed
+`UserRankManager` and `GuildRankManager`. `Rank`, `UserRank`, `GuildRank` and
+`DefaultTops` constants remain deprecated adapters; `getPosition(...)` delegates
+to the new service. Positions are read-only.
+
+A new statistic needs one typed key declaration:
+
+```java
+public static final StatKey<Integer> ARENA_WINS = StatKey.integerStatKey("arena_wins");
+
+RankService ranks = funnyGuilds.getRankService();
+ranks.changeUserStatValue(user, ARENA_WINS, current -> current + 1);
+Optional<Integer> position = ranks.getUserTopPosition(user, ARENA_WINS);
+Optional<Double> average = ranks.getGuildStatValue(guild, ARENA_WINS, GuildStatAggregationType.AVERAGE);
+```
+
+Factories support `Integer` and `Double`, including namespaced keys such as
+`StatKey.doubleStatKey(Key.key("arena", "balance"))`. Tops, positions, totals,
+averages and persistence are available without new comparators, whitelist
+entries or per-stat SQL columns. New statistics start at zero. Conflicting
+types for one identity, NaN and infinity are rejected. Example placeholders
+include `{PTOP-arena_wins-1}`, `{POSITION-arena_wins}` and
+`{GTOP-avg_arena_wins-1}`.
+
+`queueSetUserStatValue` and `queueChangeUserStatValue` return `CompletableFuture`,
+including exceptional completion for failed updates or rejected scheduling.
+Updates are serialized; `RankTracker#findEntryByPosition` returns an atomic
+entity/value pair. Call `refreshUser(user)` on the server thread, for example
+after changing a ranking exemption. Custom aggregation strategies can use
+`GuildStatAggregationType.create(...)`.
+
+War counters belong to guilds: query them through `GuildStatKeys` with
+`TOTAL_INT`, and modify them through existing `Guild` setters. They are not
+player statistics. Their tops update when their counter changes.
+
+Additional user statistics are stored as typed JSON in the file's `stats` field
+or SQL's `stats TEXT` column. The existing schema migration adds missing columns.
+Old data still loads; existing counter columns remain authoritative. KDR/KDA
+and guild aggregates are derived rather than stored as additional copies.
+
+### Items and requirements
+
+The `items.yml` configuration is available straight from the plugin instance:
+
+- `FunnyGuilds#getItemsConfiguration()` — the item library and requirement sets.
+- `FunnyGuilds#getGuildItemSetService()` — the set a given player qualifies for.
+- `FunnyGuilds#getGuildItemRequirementChecker()` — whether a player meets the requirements.
+
+### Listening for events
+
+Events related to:
+- Ranking changes: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
+- Guilds: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
+- Guild members: [net/dzikoysk/funnyguilds/event/guild/member](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/member)
+- Alliances: [net/dzikoysk/funnyguilds/event/guild/ally](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild/ally)
+
+An example using `GuildDeleteEvent`:
+
+```java
+public class GuildDeleteListener implements Listener {
+
+    @EventHandler
+    public void onGuildDelete(GuildDeleteEvent event) {
+        Guild guild = event.getGuild();
+        User doer = event.getDoer();
+        FunnyEvent.EventCause eventCause = event.getEventCause();
+
+    }
+    
+}
+```
+
+Registration in the `onEnable()` method:
+
+```java
+@Override
+public void onEnable() {
+    this.getServer().getPluginManager().registerEvents(new GuildDeleteListener(), this);
+}
+```

@@ -5,9 +5,9 @@ import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
-import panda.std.stream.PandaStream;
 import panda.utilities.StringUtils;
 
+@Deprecated
 public final class ChatUtils {
 
     private ChatUtils() {
@@ -31,7 +31,7 @@ public final class ChatUtils {
     }
 
     public static List<String> colored(List<String> messages) {
-        return PandaStream.of(messages).map(ChatUtils::colored).toList();
+        return messages.stream().map(ChatUtils::colored).toList();
     }
 
     public static String decolor(String coloredString) {

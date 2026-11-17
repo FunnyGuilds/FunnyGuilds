@@ -3,16 +3,17 @@ package net.dzikoysk.funnyguilds.config;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public final class NumberRange {
 
     private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[0-9.*]+)-(-?[0-9.*]+)");
+    private static final Pattern STRICT_RANGE_PATTERN = Pattern.compile("(-?(?:\\*|[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+))-(-?(?:\\*|[0-9]+(?:\\.[0-9]*)?|\\.[0-9]+))");
 
     private final Number minRange;
     private final Number maxRange;
@@ -44,31 +45,58 @@ public final class NumberRange {
         return this.maxRange;
     }
 
-    public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
-        return PandaStream.of(rangeMap.entrySet())
-                .find((entry) -> {
-                    NumberRange range = entry.getKey();
+    public static NumberRange parseStrict(String text) {
+        Matcher matcher = STRICT_RANGE_PATTERN.matcher(text);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException("Invalid number range: " + text);
+        }
+        NumberRange range = new NumberRange(
+                parseBoundary(matcher.group(1), Integer.MIN_VALUE),
+                parseBoundary(matcher.group(2), Integer.MAX_VALUE)
+        );
+        range.validate();
+        return range;
+    }
 
-                    Number minRange = range.minRange;
-                    Number maxRange = range.maxRange;
-                    float floatValue = value.floatValue();
+    private static Number parseBoundary(String text, int wildcard) {
+        if (text.equals("*") || text.equals("-*")) {
+            return wildcard;
+        }
+        if (text.contains(".")) {
+            return Double.parseDouble(text);
+        }
+        return Integer.parseInt(text);
+    }
 
-                    // If range boundaries are both integers - we treat both inclusively
-                    if (minRange instanceof Integer && maxRange instanceof Integer) {
-                        return floatValue >= minRange.intValue() && floatValue <= maxRange.intValue();
-                    }
+    public void validate() {
+        double min = this.minRange.doubleValue();
+        double max = this.maxRange.doubleValue();
+        if (!Double.isFinite(min) || !Double.isFinite(max) || min > max
+                || (min == max && !(this.minRange instanceof Integer && this.maxRange instanceof Integer))) {
+            throw new IllegalArgumentException("Invalid or empty number range: " + this.minRange + "-" + this.maxRange);
+        }
+    }
 
-                    // If any of the boundaries is not an integer - we treat right boundary as exclusive
-                    return floatValue >= minRange.floatValue() && floatValue < maxRange.floatValue();
-                })
-                .map(Map.Entry::getValue);
+    public boolean contains(Number value) {
+        double number = value.doubleValue();
+        return number >= this.minRange.doubleValue()
+                && (this.minRange instanceof Integer && this.maxRange instanceof Integer
+                    ? number <= this.maxRange.doubleValue()
+                    : number < this.maxRange.doubleValue());
+    }
+
+    public static <V> Optional<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
+        return rangeMap.entrySet().stream()
+                .filter(entry -> entry.getKey().contains(value))
+                .map(Map.Entry::getValue)
+                .findFirst();
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap, boolean color) {
         return inRange(value, rangeMap)
                 .map(Objects::toString)
                 .map(string -> color ? ChatUtils.colored(string) : string)
-                .orElseGet(value.toString());
+                .orElse(value.toString());
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
@@ -84,12 +112,12 @@ public final class NumberRange {
     }
 
     public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
-        return PandaStream.of(rangeEntries)
+        return rangeEntries.stream()
                 .map(RangeFormatting::new)
-                .toMap(RangeFormatting::getRange, (formatting) -> color
+                .collect(Collectors.toUnmodifiableMap(RangeFormatting::getRange, (formatting) -> color
                         ? ChatUtils.colored(formatting.getValue())
                         : formatting.getValue()
-                );
+                ));
     }
 
     private static Number parseNumber(String numberString, Number borderValue) {

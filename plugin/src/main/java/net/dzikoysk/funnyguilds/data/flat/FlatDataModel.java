@@ -1,7 +1,13 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -11,6 +17,7 @@ import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseFixAlliesAsyncTask;
+import net.dzikoysk.funnyguilds.data.util.UserIdentityValidator;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -20,9 +27,9 @@ import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import panda.std.Option;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import panda.std.Result;
-import panda.std.stream.PandaStream;
 
 public class FlatDataModel implements DataModel {
 
@@ -41,11 +48,9 @@ public class FlatDataModel implements DataModel {
         this.usersFolderFile = new File(dataFolder, "users");
         this.guildsFolderFile = new File(dataFolder, "guilds");
         this.regionsFolderFile = new File(dataFolder, "regions");
-
-        FlatPatcher.patch(plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
     }
 
-    private Option<File> loadCustomFile(EntityType type, String name) {
+    private Optional<File> loadCustomFile(EntityType type, String name) {
         File fileFolder;
 
         switch (type) {
@@ -63,27 +68,27 @@ public class FlatDataModel implements DataModel {
         }
 
         if (fileFolder == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         Result<File, String> createResult = FunnyIOUtils.createFile(new File(fileFolder, name + ".yml"), false);
         if (createResult.isErr()) {
             FunnyGuilds.getPluginLogger().error(createResult.getError());
-            return Option.none();
+            return Optional.empty();
         }
 
-        return Option.of(createResult.get());
+        return Optional.of(createResult.get());
     }
 
-    public Option<File> getUserFile(User user) {
+    public Optional<File> getUserFile(User user) {
         return this.loadCustomFile(EntityType.USER, user.getUUID().toString());
     }
 
-    public Option<File> getGuildFile(Guild guild) {
+    public Optional<File> getGuildFile(Guild guild) {
         return this.loadCustomFile(EntityType.GUILD, guild.getName());
     }
 
-    public Option<File> getRegionFile(Region region) {
+    public Optional<File> getRegionFile(Region region) {
         return this.loadCustomFile(EntityType.REGION, region.getName());
     }
 
@@ -105,27 +110,95 @@ public class FlatDataModel implements DataModel {
 
     private void loadUsers() {
         UserManager userManager = this.plugin.getUserManager();
-        userManager.clearUsers();
 
-        File[] userFiles = this.usersFolderFile.listFiles();
-        if (userFiles == null || userFiles.length == 0) {
+        UserIdentityValidator validator = new UserIdentityValidator();
+        if (!this.pluginConfiguration.preventUuidConflicts) {
+            FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
+        }
+        Map<File, YamlConfiguration> users = readAndValidateUserFiles(this.usersFolderFile, validator)
+                .onError(FunnyGuilds.getPluginLogger()::error)
+                .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                        + "Back up data and check authentication/proxy settings before resolving it manually."));
+        if (this.pluginConfiguration.preventUuidConflicts) {
+            Map<File, YamlConfiguration> legacyUsers = readAndValidateUserFiles(new File(this.plugin.getDataFolder(), "users"), validator)
+                    .onError(FunnyGuilds.getPluginLogger()::error)
+                    .orThrow(error -> new IllegalStateException("User data validation failed; no accounts were merged or deleted. "
+                            + "Back up data and check authentication/proxy settings before resolving it manually."));
+            FlatPatcher.patch(this.plugin, this.usersFolderFile, this.guildsFolderFile, this.regionsFolderFile);
+            legacyUsers.forEach((file, yaml) -> {
+                if (file.exists()) {
+                    throw new IllegalStateException("Could not migrate legacy user file " + file + "; resolve the data folders manually");
+                }
+                users.put(new File(this.usersFolderFile, file.getName()), yaml);
+            });
+        }
+        if (users.isEmpty()) {
+            userManager.clearUsers();
             FunnyGuilds.getPluginLogger().info("No users to load");
             return;
         }
 
+        userManager.clearUsers();
         AtomicInteger deserializationErrors = new AtomicInteger();
-        PandaStream.of(userFiles)
-                .filter(file -> file.length() != 0)
-                .mapOpt(file -> UserUtils.checkUserFile(this.pluginConfiguration, file))
-                .forEach(file -> FlatUserSerializer.deserialize(file)
-                        .onEmpty(deserializationErrors::incrementAndGet)
-                );
+        users.forEach((file, yaml) -> UserUtils.checkUserFile(this.pluginConfiguration, file)
+                .ifPresent(checkedFile -> FlatUserSerializer.deserialize(yaml)
+                        .ifPresentOrElse(checkedYaml -> {
+                        }, deserializationErrors::incrementAndGet)));
 
         if (deserializationErrors.get() > 0) {
             FunnyGuilds.getPluginLogger().error("Users load errors " + deserializationErrors.get());
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
+    }
+
+    private Result<Map<File, YamlConfiguration>, String> readAndValidateUserFiles(File folder, UserIdentityValidator validator) {
+        Map<File, YamlConfiguration> users = new LinkedHashMap<>();
+        if (!folder.exists()) {
+            return Result.ok(users);
+        }
+
+        File[] userFiles = folder.listFiles();
+        if (userFiles == null) {
+            return Result.error("Could not list user files in " + folder);
+        }
+
+        int readErrors = 0;
+        File firstUnreadableFile = null;
+        for (File file : userFiles) {
+            if (!file.isFile() || file.length() == 0) {
+                continue;
+            }
+
+            YamlConfiguration yaml = new YamlConfiguration();
+            try {
+                yaml.load(file);
+            } catch (IOException | InvalidConfigurationException exception) {
+                readErrors++;
+                if (firstUnreadableFile == null) {
+                    firstUnreadableFile = file;
+                }
+                continue;
+            }
+
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                Result<UUID, String> identity = validator.accept(yaml.getString("uuid"), yaml.getString("name"), file.getAbsolutePath());
+                if (identity.isErr()) {
+                    return Result.error(identity.getError());
+                }
+            }
+            users.put(file, yaml);
+        }
+
+        if (readErrors > 0) {
+            String error = "Could not read " + readErrors + " user file(s) in " + folder
+                    + "; first unreadable file: " + firstUnreadableFile;
+            if (this.pluginConfiguration.preventUuidConflicts) {
+                return Result.error(error);
+            }
+            FunnyGuilds.getPluginLogger().error(error);
+        }
+        return Result.ok(users);
     }
 
     private void saveUsers(boolean ignoreNotChanged) {
@@ -135,10 +208,10 @@ public class FlatDataModel implements DataModel {
         }
 
         AtomicInteger incorrectUsersCount = new AtomicInteger();
-        long serializationErrors = PandaStream.of(users)
+        long serializationErrors = users.stream()
                 .filter(user -> checkUser(user, incorrectUsersCount))
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
-                .filterNot(FlatUserSerializer::serialize)
+                .filter(user -> !FlatUserSerializer.serialize(user))
                 .count();
 
         long errors = serializationErrors + incorrectUsersCount.get();
@@ -160,9 +233,14 @@ public class FlatDataModel implements DataModel {
         AtomicInteger incorrectGuildsCount = new AtomicInteger();
         AtomicInteger ownerlessGuilds = new AtomicInteger();
 
-        PandaStream.of(guildFiles)
-                .mapOpt(guildFile -> FlatGuildSerializer.deserialize(guildFile)
-                        .onEmpty(incorrectGuildsCount::incrementAndGet))
+        Arrays.stream(guildFiles)
+                .flatMap(guildFile -> {
+                    Optional<Guild> deserialized = FlatGuildSerializer.deserialize(guildFile);
+                    if (deserialized.isEmpty()) {
+                        incorrectGuildsCount.incrementAndGet();
+                    }
+                    return deserialized.stream();
+                })
                 .filter(guild -> guild.getOwner() == null)
                 .forEach(guild -> {
                     FunnyGuilds.getPluginLogger().error("Guild " + guild.getTag() + " has no owner!");
@@ -175,7 +253,9 @@ public class FlatDataModel implements DataModel {
         }
 
         this.plugin.scheduleFunnyTasks(new DatabaseFixAlliesAsyncTask(guildManager));
-        this.plugin.getIndividualNameTagManager().map(ScoreboardGlobalUpdateSyncTask::new).peek(this.plugin::scheduleFunnyTasks);
+        this.plugin.getIndividualNameTagManager()
+                .map(ScoreboardGlobalUpdateSyncTask::new)
+                .ifPresent(this.plugin::scheduleFunnyTasks);
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
@@ -186,9 +266,9 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        long errors = PandaStream.of(guilds)
+        long errors = guilds.stream()
                 .filter(guild -> !ignoreNotChanged || guild.wasChanged())
-                .filterNot(FlatGuildSerializer::serialize)
+                .filter(guild -> !FlatGuildSerializer.serialize(guild))
                 .count();
 
         if (errors > 0) {
@@ -212,8 +292,8 @@ public class FlatDataModel implements DataModel {
         }
 
         AtomicInteger correctlyLoaded = new AtomicInteger();
-        PandaStream.of(regionFiles)
-                .mapOpt(FlatRegionSerializer::deserialize)
+        Arrays.stream(regionFiles)
+                .flatMap(regionFile -> FlatRegionSerializer.deserialize(regionFile).stream())
                 .forEach(region -> {
                     regionManager.addRegion(region);
                     correctlyLoaded.incrementAndGet();
@@ -237,9 +317,9 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        long errors = PandaStream.of(regions)
+        long errors = regions.stream()
                 .filter(region -> !ignoreNotChanged || region.wasChanged())
-                .filterNot(FlatRegionSerializer::serialize)
+                .filter(region -> !FlatRegionSerializer.serialize(region))
                 .count();
 
         if (errors > 0) {

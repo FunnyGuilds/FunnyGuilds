@@ -18,7 +18,7 @@ import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.bukkit.Bukkit
-import panda.std.Option
+import java.util.Optional
 import java.nio.file.Path
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
@@ -114,7 +114,7 @@ class RankServiceTest : FunnyGuildsSpec() {
 
         val file = directory.resolve("player.yml").toFile()
         val model = mock(FlatDataModel::class.java)
-        `when`(model.getUserFile(user)).thenReturn(Option.of(file))
+        `when`(model.getUserFile(user)).thenReturn(Optional.of(file))
         `when`(funnyGuilds.dataModel).thenReturn(model)
         assertTrue(FlatUserSerializer.serialize(user))
         val saved = YamlWrapper(file)

@@ -1,45 +1,51 @@
 package net.dzikoysk.funnyguilds.rank
 
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.config.RawString
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter
+import net.dzikoysk.funnyguilds.user.User
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.Instant
+import java.util.Locale
 import java.util.UUID
 
 class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
 
+    private fun render(text: String, user: User?): String = PlainTextComponentSerializer.plainText()
+        .serialize(rankPlaceholdersService.format(user, Component.text(text), user))
+
     @Test
-    fun `all occurrences and positions are replaced and immediately reflect stat changes`() {
-        config.ptopOffline = RawString("")
-        config.top.format.ptop = RawString(":{VALUE}")
+    fun `all occurrences and positions immediately reflect stat changes`() {
+        config.top.format.ptop = ":{VALUE}"
+        config.loadProcessedProperties()
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
         first.rank.points = 1500
         second.rank.points = 1000
         val text = "{PTOP-points-1}|{PTOP-points-2}|{PTOP-points-1}|{POSITION-points}"
-        assertEquals("First:1500|Second:1000|First:1500|1", rankPlaceholdersService.format(first, text, first))
+        assertEquals("First:1500|Second:1000|First:1500|1", render(text, first))
         second.rank.points = 2000
-        assertEquals("Second:2000|First:1500|Second:2000|2", rankPlaceholdersService.format(first, text, first))
+        assertEquals("Second:2000|First:1500|Second:2000|2", render(text, first))
+        assertEquals("Second|2000|${second.uuid}", render("{PTOP-points-1-NAME}|{PTOP-points-1-VALUE}|{PTOP-points-1-UUID}", first))
     }
 
     @Test
-    fun `invalid and missing top entries use the configured fallback`() {
+    fun `invalid unknown and missing top entries use configured fallbacks`() {
         val viewer = userManager.createFake(UUID.randomUUID(), "Viewer")
         listOf("{PTOP-points-0}", "{PTOP-points-99999999999999999999999}", "{PTOP-unknown-1}", "{PTOP-points-2}").forEach {
-            assertEquals("Brak (PTOP-x)", rankPlaceholdersService.formatTop(it, viewer), it)
+            assertEquals("Brak (PTOP-x)", render(it, viewer), it)
         }
-        assertEquals("0", rankPlaceholdersService.formatTopPosition("{POSITION-points}", null))
-        assertEquals("Brak (guild-min-members w config.yml)", rankPlaceholdersService.formatTopPosition("{G-POSITION-avg_points}", null))
+        assertEquals("0", render("{POSITION-points}", null))
+        assertEquals("Brak (guild-min-members w config.yml)", render("{G-POSITION-avg_points}", null))
     }
 
     @Test
-    fun `legacy guild tops keep using average points and accept underscore and hyphen names`() {
-        funnyGuilds.tablistConfiguration.useRelationshipColors = false
-        config.gtopPoints = RawString(":{POINTS}")
-        config.top.format.gtop = RawString(":{VALUE}")
+    fun `guild tops support average names and native war counters`() {
+        config.top.format.gtop = ":{VALUE}"
+        config.loadProcessedProperties()
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
         first.rank.points = 1400
@@ -47,27 +53,29 @@ class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
         guild.addMember(first)
         guild.addMember(second)
-        val input = "{GTOP-1}|{GTOP-avg_points-1}|{GTOP-avg-points-1}|{G-POSITION-avg_points}"
-        assertEquals("TAG:1000|TAG:1000|TAG:1000|1", rankPlaceholdersService.format(first, input, first))
-        config.top.enableLegacyPlaceholders = false
-        assertEquals("{GTOP-1}", rankPlaceholdersService.format(first, "{GTOP-1}", first))
+        val input = "{GTOP-avg_points-1}|{GTOP-avg-points-1}|{G-POSITION-avg_points}"
+        assertEquals("TAG:1000|TAG:1000|1", render(input, first))
+        assertEquals("0", render("{GTOP-wars_won-1-VALUE}", first))
+        guild.warsWon = 3
+        guild.warStreak = 2
+        assertEquals("3|2|1", render("{GTOP-wars_won-1-VALUE}|{GTOP-war_streak-1-VALUE}|{G-POSITION-wars_won}", first))
     }
 
     @Test
-    fun `guild points placeholders preserve the average versus total distinction`() {
+    fun `guild points preserve current 5x total and average placeholders`() {
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
         first.rank.points = 1500
         second.rank.points = 500
-        val guild = Guild("Guild", "TAG")
-        guild.setOwner(first)
-        guild.validity = Instant.now().plusSeconds(86400)
-        guild.protection = Instant.now().plusSeconds(3600)
-        guildManager.addGuild(guild)
+        val guild = guildManager.addGuild(Guild("Guild", "TAG"))
+        guild.addMember(first)
         guild.addMember(second)
         val placeholders = GuildPlaceholdersService.createGuildPlaceholders(funnyGuilds)
-        assertEquals("1000/2000/1000", placeholders.formatVariables("{POINTS}/{TOTAL-POINTS}/{AVG-POINTS}", guild))
+        val formatter = FunnyFormatter().register(placeholders, guild)
+        fun format() = PlainTextComponentSerializer.plainText().serialize(
+            formatter.replace(Locale.ROOT, Component.text("{POINTS}/{AVG-POINTS}")))
+        assertEquals("2000/1000", format())
         first.rank.points = 2500
-        assertEquals("1500/3000/1500", placeholders.formatVariables("{POINTS}/{TOTAL-POINTS}/{AVG-POINTS}", guild))
+        assertEquals("3000/1500", format())
     }
 }

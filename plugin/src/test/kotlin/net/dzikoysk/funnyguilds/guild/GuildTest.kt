@@ -6,7 +6,12 @@ import net.dzikoysk.funnyguilds.user.User
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.bukkit.Location
 import org.junit.jupiter.api.Test
-import java.util.*
+import java.util.Optional
+import java.time.Instant
+import java.util.UUID
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class GuildTest : FunnyGuildsSpec() {
 
@@ -27,10 +32,78 @@ class GuildTest : FunnyGuildsSpec() {
                 .withPrefabValues(User::class.java, user1, user2)
                 .withPrefabValues(MutableEntity::class.java, user1, user2)
                 .withPrefabValues(Location::class.java, Location(null, 0.0, 0.0, 0.0), Location(null, 1.0, 2.0, 3.0))
-                .withIgnoredFields("name", "tag", "rank", "lives", "region", "home", "owner")
+                .withIgnoredFields("name", "tag", "rank", "lives", "heartLives", "region", "home", "owner")
                 .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds")
-                .withIgnoredFields("born", "validity", "protection", "build", "ban", "pvp", "wasChanged")
+                .withIgnoredFields("born", "validity", "protection", "build", "ban", "tntProtectionBypass", "pvp", "wasChanged")
+                .withIgnoredFields("warsWon", "warsLost", "lastWarGuildTag", "lastLifeBuy", "warStreak", "victimGainCooldowns")
                 .verify()
+    }
+
+    @Test
+    fun `guild heart lives should not go below zero`() {
+        val guild = Guild("guild1", "TEST1")
+
+        guild.setHeartLives(-5)
+
+        assertEquals(0, guild.heartLives)
+    }
+
+    @Test
+    fun `guild heart lives should update correctly`() {
+        val guild = Guild("guild1", "TEST1")
+        guild.setHeartLives(3)
+
+        guild.updateHeartLives { it - 1 }
+
+        assertEquals(2, guild.heartLives)
+    }
+
+    @Test
+    fun `guild war stats should update and maintain state`() {
+        val guild = Guild("guild1", "TEST1")
+        val enemyGuild = Guild("guild2", "TEST2")
+
+        assertEquals(0, guild.warsWon)
+        assertEquals(0, guild.warsLost)
+        assertEquals(0, guild.warStreak)
+
+        guild.updateWarsWon { it + 1 }
+        guild.updateWarStreak { it + 1 }
+        guild.setLastWarGuildTag(enemyGuild.tag)
+
+        assertEquals(1, guild.warsWon)
+        assertEquals(1, guild.warStreak)
+        assertEquals("TEST2", guild.lastWarGuildTag.get())
+
+        guild.updateWarsLost { it + 1 }
+        guild.setWarStreak(0)
+
+        assertEquals(1, guild.warsLost)
+        assertEquals(0, guild.warStreak)
+    }
+
+    @Test
+    fun `guild victim cooldown should work correctly`() {
+        val guild = Guild("guild1", "TEST1")
+        val victim = Guild("victim", "VIC")
+
+        val cooldown = java.time.Duration.ofHours(1)
+        assertEquals(true, guild.canGainLifeOn(victim, cooldown))
+
+        guild.setGainLifeCooldownOn(victim, cooldown)
+        assertEquals(false, guild.canGainLifeOn(victim, cooldown))
+    }
+
+    @Test
+    fun `guild tnt bypass should be active only until the given instant`() {
+        val guild = Guild("guild1", "TEST1")
+
+        guild.setTntProtectionBypass(Instant.now().plusSeconds(60))
+        assertTrue(guild.hasTntProtectionBypass())
+
+        guild.setTntProtectionBypass(Instant.now().minusSeconds(60))
+        assertFalse(guild.hasTntProtectionBypass())
+        assertEquals(Optional.empty<Instant>(), guild.tntProtectionBypass)
     }
 
 }

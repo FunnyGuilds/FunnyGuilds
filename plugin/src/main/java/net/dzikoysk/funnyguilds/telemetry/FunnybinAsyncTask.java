@@ -19,8 +19,7 @@ import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
+import java.util.Optional;
 
 public final class FunnybinAsyncTask extends AsyncFunnyTask {
 
@@ -62,8 +61,10 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                 type = PasteType.CONFIG;
 
                 PluginConfiguration config = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                    it.withConfigurer(new YamlBukkitConfigurer(), new SerdesCommons());
-                    it.withBindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
+                    it.configure(opt -> {
+                        opt.configurer(new YamlBukkitConfigurer(), new SerdesCommons());
+                        opt.bindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
+                    });
                     it.load();
                 });
 
@@ -124,8 +125,8 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
                 .send();
 
         try {
-            Option<FunnybinResponse> response = FunnyTelemetry.createBundle(
-                    PandaStream.of(sentPastes)
+            Optional<FunnybinResponse> response = FunnyTelemetry.createBundle(
+                    sentPastes.stream()
                             .map(FunnybinResponse::getUuid)
                             .toList()
             );
@@ -135,7 +136,7 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
             }
 
             messageService.getMessage(config -> config.funnybinBundleSent)
-                    .with("{LINK}", response.get().getShortUrl())
+                    .with("{LINK}", response.orElseThrow().getShortUrl())
                     .receiver(this.sender)
                     .send();
         }
@@ -179,8 +180,8 @@ public final class FunnybinAsyncTask extends AsyncFunnyTask {
         return null;
     }
 
-    public static Option<FunnybinAsyncTask> of(CommandSender sender, String[] args) {
-        return Option.of(ofData(sender, args));
+    public static Optional<FunnybinAsyncTask> of(CommandSender sender, String[] args) {
+        return Optional.ofNullable(ofData(sender, args));
     }
 
 }

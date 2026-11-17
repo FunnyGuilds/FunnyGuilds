@@ -1,12 +1,13 @@
 package net.dzikoysk.funnyguilds.config.sections;
 
-import com.google.common.collect.ImmutableList;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.util.List;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
@@ -27,16 +28,16 @@ public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("Tekst wyświetlany przez hologram")
-    @Comment("Dostępne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {KDA}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
-    public List<String> displayedLines = new ImmutableList.Builder<String>()
-            .add("&7&m-------------------")
-            .add("&7- &bFunnyGuilds &7-")
-            .add("&7- &bgithub.com/funnyguilds/ &7-")
-            .add("&7- &bGildia {TAG} &7-")
-            .add("&7- &bZycia {LIVES} &7-")
-            .add("&7~ Created by &bFunnyGuilds Team &7~")
-            .add("&7&m-------------------")
-            .build();
+    @Comment("Dostępne zmienne: {NAME}, {GUILD}, {TAG}, {OWNER}, {DEPUTY}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {AVG-POINTS}, {KILLS}, {AVG-KILLS}, {DEATHS}, {AVG-DEATHS}, {ASSISTS}, {AVG-ASSISTS}, {LOGOUTS}, {AVG-LOGOUTS}, {KDR}, {AVG-KDR}, {KDA}, {AVG-KDA}, {ALLIES}, {ALLIES-TAGS}, {ALLIES-ALL}, {ENEMIES}, {ENEMIES-TAGS}, {ENEMIES-ALL}, {PVP}, {RANK}, {POSITION}, {VALIDITY}, {VALIDITY-TIME}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {PROTECTION}, {PROTECTION-TIME}")
+    public List<Component> displayedLines = ComponentUtil.coloredByNewLine("""
+                                                                          &7&m-------------------
+                                                                          &7- &bFunnyGuilds &7-
+                                                                          &7- &bgithub.com/funnyguilds/ &7-
+                                                                          &7- &bGildia {TAG} &7-
+                                                                          &7- &bZycia {LIVES} &7-
+                                                                          &7~ Created by &bFunnyGuilds Team &7~
+                                                                          &7&m-------------------
+                                                                          """);
 
     @Comment("")
     @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji")

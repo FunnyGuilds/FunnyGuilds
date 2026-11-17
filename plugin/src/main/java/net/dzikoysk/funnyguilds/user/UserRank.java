@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
+@ApiStatus.ScheduledForRemoval
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     UserRank(User user) {

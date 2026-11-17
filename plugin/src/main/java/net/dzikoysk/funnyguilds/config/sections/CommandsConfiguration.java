@@ -55,19 +55,18 @@ public class CommandsConfiguration extends OkaeriConfig {
     @Comment("")
     public FunnyCommand player = new FunnyCommand("gracz");
     @Comment("")
-    public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
-    @Comment("")
     public FunnyCommand validity = new FunnyCommand("przedluz");
     @Comment("")
     public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
     @Comment("")
     public FunnyCommand deputy = new FunnyCommand("zastepca");
     @Comment("")
-    public FunnyCommand ranking = new FunnyCommand("ranking");
-    @Comment("")
     public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
     @Comment("")
     public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+    @Comment("")
+    @CustomKey("buy-life")
+    public FunnyCommand buyLife = new FunnyCommand("kupzycie", Arrays.asList("wykup", "buylife", "wykupzycie"));
 
     @Comment
     @Comment("Komendy administratora")
@@ -125,6 +124,8 @@ public class CommandsConfiguration extends OkaeriConfig {
         public String base = "ga baza";
         public String logouts = "ga logouts";
         public String assists = "ga assists";
+        public String items = "ga items";
+        public String tnt = "ga tnt";
 
     }
 

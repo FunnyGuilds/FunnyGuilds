@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -34,8 +33,6 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        FunnyFormatter formatter = FunnyFormatter.of("{PLAYER}", userToMove.getName());
-
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
             this.messageService.getMessage(config -> config.deputyRemove)
@@ -45,7 +42,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
                     .receiver(userToMove)
                     .send();
             this.messageService.getMessage(config -> config.deputyNoLongerMembers)
-                    .with(formatter)
+                    .with("{PLAYER}", userToMove.getName())
                     .receiver(guild)
                     .send();
             return;
@@ -60,7 +57,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
                 .receiver(userToMove)
                 .send();
         this.messageService.getMessage(config -> config.deputyMembers)
-                .with(formatter)
+                .with("{PLAYER}", userToMove.getName())
                 .receiver(guild)
                 .send();
     }

@@ -16,6 +16,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildStatKeys;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -39,16 +40,19 @@ final class FunnyRankService implements RankService {
         this.config = config;
         this.userManager = userManager;
         this.guildManager = guildManager;
+        this.userManager.setRankService(this);
+        this.guildManager.setRankService(this);
         this.userManager.getUsers().forEach(user -> this.userEligibility.put(user.getUUID(), this.isRankedUser(user)));
         UserStatKeys.VALUES.forEach(this::getUserRankTracker);
     }
 
     @Override
-    public synchronized <T extends Number> T setUserStatValue(User user, StatKey<T> key, T value) {
+    public synchronized <T extends Number> T setUserStatValue(User user, StatKey<T> requestedKey, T value) {
+        StatKey<T> key = StatKey.register(requestedKey);
         if (this.closed) {
             throw new IllegalStateException("Rank service is closed");
         }
-        if (this.userManager.findByUuid(user.getUUID()).orNull() != user) {
+        if (this.userManager.findByUuid(user.getUUID()).orElse(null) != user) {
             throw new IllegalArgumentException("User is no longer registered: " + user.getUUID());
         }
         if (key.equals(UserStatKeys.KDR) || key.equals(UserStatKeys.KDA)) {
@@ -77,7 +81,8 @@ final class FunnyRankService implements RankService {
     }
 
     @Override
-    public synchronized <T extends Number> T changeUserStatValue(User user, StatKey<T> key, UnaryOperator<T> updateFunction) {
+    public synchronized <T extends Number> T changeUserStatValue(User user, StatKey<T> requestedKey, UnaryOperator<T> updateFunction) {
+        StatKey<T> key = StatKey.register(requestedKey);
         T current = this.getUserRankTracker(key).valueOfEntity(user).orElseGet(key::zero);
         return this.setUserStatValue(user, key, updateFunction.apply(current));
     }
@@ -88,8 +93,8 @@ final class FunnyRankService implements RankService {
     }
 
     private void updateGuildStats(User user, StatKey<?> key) {
-        user.getGuild().peek(guild -> {
-            if (this.guildManager.findByUuid(guild.getUUID()).orNull() == guild) {
+        user.getGuild().ifPresent(guild -> {
+            if (this.guildManager.findByUuid(guild.getUUID()).orElse(null) == guild) {
                 this.guildTrackers.forEach((aggregation, trackers) -> {
                     if (trackers.containsKey(key)) {
                         this.updateGuildStat(guild, key, aggregation);
@@ -107,8 +112,11 @@ final class FunnyRankService implements RankService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public synchronized <T extends Number> UserRankTracker<T> getUserRankTracker(StatKey<T> key) {
-        StatKey.register(key);
+    public synchronized <T extends Number> UserRankTracker<T> getUserRankTracker(StatKey<T> requestedKey) {
+        StatKey<T> key = StatKey.register(requestedKey);
+        if (GuildStatKeys.isNative(key)) {
+            throw new IllegalArgumentException("This statistic belongs to guilds: " + key.key());
+        }
         UserRankTracker<T> tracker = (UserRankTracker<T>) this.userTrackers.get(key);
         if (tracker == null) {
             tracker = new UserRankTracker<>(key, this.userManager, this::isTrackedUser);
@@ -135,19 +143,20 @@ final class FunnyRankService implements RankService {
 
     @Override
     public boolean isRankedUser(User user) {
-        return this.userManager.findByUuid(user.getUUID()).orNull() == user
+        return this.userManager.findByUuid(user.getUUID()).orElse(null) == user
                 && (!this.config.skipPrivilegedPlayersInRankPositions || !user.hasPermission("funnyguilds.ranking.exempt"));
     }
 
     private boolean isTrackedUser(User user) {
-        return this.userManager.findByUuid(user.getUUID()).orNull() == user
+        return this.userManager.findByUuid(user.getUUID()).orElse(null) == user
                 && this.userEligibility.getOrDefault(user.getUUID(), true);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public synchronized <T extends Number, R extends Number> GuildRankTracker<R> getGuildRankTracker(
-            StatKey<T> key, GuildStatAggregationType<R> aggregation) {
+            StatKey<T> requestedKey, GuildStatAggregationType<R> aggregation) {
+        StatKey<T> key = StatKey.register(requestedKey);
         Map<StatKey<?>, GuildRankTracker<?>> trackers = this.guildTrackers.computeIfAbsent(aggregation, ignored -> new HashMap<>());
         GuildRankTracker<R> tracker = (GuildRankTracker<R>) trackers.get(key);
         if (tracker == null) {
@@ -186,13 +195,13 @@ final class FunnyRankService implements RankService {
 
     @Override
     public boolean isRankedGuild(Guild guild) {
-        return this.guildManager.findByUuid(guild.getUUID()).orNull() == guild
+        return this.guildManager.findByUuid(guild.getUUID()).orElse(null) == guild
                 && !guild.getMembers().isEmpty() && guild.getMembers().size() >= this.config.minMembersToInclude;
     }
 
     @Override
     public synchronized void refreshUser(User user) {
-        if (this.userManager.findByUuid(user.getUUID()).orNull() != user) {
+        if (this.userManager.findByUuid(user.getUUID()).orElse(null) != user) {
             return;
         }
         this.userEligibility.put(user.getUUID(), this.isRankedUser(user));
@@ -206,7 +215,7 @@ final class FunnyRankService implements RankService {
 
     @Override
     public synchronized void refreshGuild(Guild guild) {
-        if (this.guildManager.findByUuid(guild.getUUID()).orNull() != guild) {
+        if (this.guildManager.findByUuid(guild.getUUID()).orElse(null) != guild) {
             return;
         }
         this.guildTrackers.forEach((aggregation, trackers) ->

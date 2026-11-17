@@ -25,7 +25,7 @@ final class MembersCompleter implements Completer {
                 .filter(User::hasGuild)
                 .flatMap(User::getGuild)
                 .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))
-                .orElseGet(Collections.emptyList());
+                .orElse(Collections.emptyList());
     }
 
     @Override

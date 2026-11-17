@@ -1,22 +1,26 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Function;
+import dev.peri.yetanothermessageslibrary.message.Sendable;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
-import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
-import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.shared.Optionals;
+import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
+import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
+import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -24,36 +28,23 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
-import panda.std.Option;
 import panda.std.Pair;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
-import dev.peri.yetanothermessageslibrary.message.Sendable;
-import dev.peri.yetanothermessageslibrary.replace.StringReplacer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class ItemUtils {
 
-    private static Method BY_IN_GAME_NAME_ENCHANT;
-    private static Method CREATE_NAMESPACED_KEY;
-
-    private static Method GET_IN_GAME_NAME_ENCHANT;
-    private static Method GET_NAMESPACED_KEY;
-
-    static {
-        if (!Reflections.USE_PRE_12_METHODS) {
-            Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
-
-            BY_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getByKey");
-            CREATE_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "minecraft", String.class);
-
-            GET_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getKey");
-            GET_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "getKey");
-        }
-    }
-
-    private ItemUtils() {
-    }
+    private ItemUtils() { }
 
     public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, Function<MessageConfiguration, Sendable> messageSupplier) {
         for (ItemStack requiredItem : requiredItems) {
@@ -72,37 +63,23 @@ public final class ItemUtils {
         return true;
     }
 
-    public static String translateTextPlaceholder(String text, Collection<ItemStack> items, ItemStack item) {
-        return StringReplacer.replace(
-                text,
-                ItemComponentHelper.prepareItemReplacement(item),
-                ItemComponentHelper.prepareItemsReplacement(items)
-        );
-    }
-
-    public static String itemAsString(ItemStack item, boolean displayAmount) {
-        String materialName = MaterialUtils.getMaterialName(item.getType());
-        if (!displayAmount) {
-            return materialName;
-        }
-        return item.getAmount() + FunnyGuilds.getInstance().getPluginConfiguration().itemAmountSuffix.getValue() + materialName;
-    }
-
     public static ItemStack parseItem(String itemString) {
         String[] split = itemString.split(" ");
         String[] typeSplit = split[1].split(":");
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
-        Material material = MaterialUtils.parseMaterial(typeSplit[0], false);
-        Option<Integer> amount = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0])).onEmpty(() -> {
+        Material material = Material.matchMaterial(typeSplit[0]);
+        Optional<Integer> amount = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0]));
+        if (amount.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
-        });
+        }
 
-        Option<Integer> data = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype)).onEmpty(() -> {
+        Optional<Integer> data = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(subtype));
+        if (data.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown data: " + subtype);
-        });
+        }
 
-        ItemBuilder item = new ItemBuilder(material, amount.orElseGet(1), data.orElseGet(0));
+        ItemBuilder item = new ItemBuilder(material, amount.orElse(1), data.orElse(0));
         FunnyFormatter formatter = new FunnyFormatter().register("_", " ").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {
@@ -119,11 +96,16 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase(Locale.ROOT)) {
                 case "name":
                 case "displayname":
-                    item.setName(formatter.format(attributeValue), true);
+                    Component coloredName = coloredWithoutItalics(attributeValue);
+                    Component formattedName = formatter.replace(coloredName);
+                    item.setName(formattedName);
                     continue;
                 case "lore":
-                    List<String> lore = PandaStream.of(attributeValue.split("#")).map(formatter::format).toList();
-                    item.setLore(lore, true);
+                    List<Component> lore = Arrays.stream(attributeValue.split("#"))
+                            .map(ItemUtils::coloredWithoutItalics)
+                            .map(formatter::replace)
+                            .toList();
+                    item.setLore(lore);
                     continue;
                 case "enchant":
                 case "enchantment":
@@ -136,7 +118,7 @@ public final class ItemUtils {
                     continue;
                 case "enchants":
                 case "enchantments":
-                    PandaStream.of(attributeValue.split(","))
+                    Arrays.stream(attributeValue.split(","))
                             .map(ItemUtils::parseEnchant)
                             .filter(enchant -> enchant.getFirst() != null)
                             .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
@@ -152,9 +134,10 @@ public final class ItemUtils {
                     continue;
                 case "flags":
                 case "itemflags":
-                    PandaStream.of(attributeValue.split(","))
+                    Arrays.stream(attributeValue.split(","))
                             .map(String::trim)
-                            .mapOpt(ItemUtils::matchItemFlag)
+                            .map(ItemUtils::matchItemFlag)
+                            .flatMap(Optional::stream)
                             .forEach(item::setFlag);
 
                     continue;
@@ -174,25 +157,6 @@ public final class ItemUtils {
                     catch (NumberFormatException numberFormatException) {
                         FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + attributeValue);
                     }
-
-                    continue;
-                case "eggtype":
-                    if (!EggTypeChanger.needsSpawnEggMeta()) {
-                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, " +
-                                "no need to use eggtype in item creation!");
-                        continue;
-                    }
-
-                    Option<EntityType> entityType = Option.attempt(IllegalArgumentException.class, () -> {
-                        return EntityType.valueOf(attributeValue.toUpperCase(Locale.ROOT));
-                    }).onEmpty(() -> {
-                        FunnyGuilds.getPluginLogger().parser("Unknown entity type: " + attributeValue);
-                    });
-
-                    if (entityType.isPresent()) {
-                        EggTypeChanger.applyChanges(item.getMeta(), entityType.get());
-                        item.refreshMeta();
-                    }
             }
         }
 
@@ -200,7 +164,7 @@ public final class ItemUtils {
     }
 
     public static List<ItemStack> parseItems(List<String> itemStrings) {
-        return PandaStream.of(itemStrings).map(ItemUtils::parseItem).toList();
+        return itemStrings.stream().map(ItemUtils::parseItem).collect(Collectors.toList());
     }
 
     public static List<ItemStack> parseItems(String... itemStrings) {
@@ -221,20 +185,24 @@ public final class ItemUtils {
         }
 
         if (meta.hasDisplayName()) {
-            itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
+            Component replacedDisplayName = formatter.replace(meta.displayName());
+            String displayName = MiniLegacyHelper.miniMessage().serialize(replacedDisplayName);
+            itemString.append(" name:").append(displayName);
         }
 
         if (meta.hasLore()) {
-            List<String> lore = PandaStream.of(meta.getLore())
-                    .map(ChatUtils::decolor)
-                    .map(formatter::format)
+            List<String> lore = meta.lore().stream()
+                    .map(line -> {
+                        Component replacedLine = formatter.replace(line);
+                        return MiniLegacyHelper.miniMessage().serialize(replacedLine);
+                    })
                     .toList();
 
             itemString.append(" lore:").append(Joiner.on("#").join(lore));
         }
 
         if (meta.hasEnchants()) {
-            List<String> enchants = PandaStream.of(meta.getEnchants().entrySet().stream())
+            List<String> enchants = meta.getEnchants().entrySet().stream()
                     .map(entry -> getEnchantName(entry.getKey()).toLowerCase(Locale.ROOT) + ":" + entry.getValue())
                     .toList();
 
@@ -242,7 +210,7 @@ public final class ItemUtils {
         }
 
         if (!meta.getItemFlags().isEmpty()) {
-            List<String> flags = PandaStream.of(meta.getItemFlags())
+            List<String> flags = meta.getItemFlags().stream()
                     .map(ItemFlag::name)
                     .map(name -> name.toLowerCase(Locale.ROOT))
                     .toList();
@@ -250,64 +218,28 @@ public final class ItemUtils {
             itemString.append(" flags:").append(Joiner.on(",").join(flags));
         }
 
-        if (meta instanceof SkullMeta) {
-            SkullMeta skullMeta = (SkullMeta) meta;
+        if (meta instanceof SkullMeta skullMeta) {
             if (skullMeta.hasOwner()) {
-                itemString.append(" skullowner:").append(skullMeta.getOwner());
+                itemString.append(" skullowner:").append(skullMeta.getOwningPlayer().getName());
             }
         }
 
-        if (meta instanceof LeatherArmorMeta) {
-            LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
+        if (meta instanceof LeatherArmorMeta armorMeta) {
             Color color = armorMeta.getColor();
-
             String colorString = color.getRed() + "_" + color.getGreen() + "_" + color.getBlue();
             itemString.append(" armorcolor:").append(colorString);
-        }
-
-        if (EggTypeChanger.needsSpawnEggMeta()) {
-            if (meta instanceof SpawnEggMeta) {
-                SpawnEggMeta eggMeta = (SpawnEggMeta) meta;
-                String entityType = eggMeta.getSpawnedType().name().toLowerCase(Locale.ROOT);
-                itemString.append(" eggtype:").append(entityType);
-            }
         }
 
         return itemString.toString();
     }
 
     private static Enchantment matchEnchant(String enchantName) {
-        if (BY_IN_GAME_NAME_ENCHANT != null && CREATE_NAMESPACED_KEY != null) {
-            try {
-                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase(Locale.ROOT));
-                Object enchantment = BY_IN_GAME_NAME_ENCHANT.invoke(null, namespacedKey);
-
-                if (enchantment != null) {
-                    return (Enchantment) enchantment;
-                }
-            }
-            catch (IllegalAccessException | InvocationTargetException ignored) {
-            }
-        }
-
-        return Enchantment.getByName(enchantName.toUpperCase(Locale.ROOT));
+        Registry<Enchantment> enchantmentRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        return enchantmentRegistry.get(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
     }
 
     private static String getEnchantName(Enchantment enchantment) {
-        if (GET_IN_GAME_NAME_ENCHANT != null && GET_NAMESPACED_KEY != null) {
-            try {
-                Object enchantmentName = GET_IN_GAME_NAME_ENCHANT.invoke(enchantment);
-                Object namespacedKey = GET_NAMESPACED_KEY.invoke(enchantmentName);
-
-                if (namespacedKey != null) {
-                    return (String) namespacedKey;
-                }
-            }
-            catch (InvocationTargetException | IllegalAccessException ignored) {
-            }
-        }
-
-        return enchantment.getName();
+        return enchantment.getKey().getKey();
     }
 
     private static Pair<Enchantment, Integer> parseEnchant(String enchantString) {
@@ -318,32 +250,141 @@ public final class ItemUtils {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant: " + split[0]);
         }
 
-        Option<Integer> level = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1]));
+        Optional<Integer> level = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(split[1]));
         if (level.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown enchant level: " + split[1]);
         }
 
-        return Pair.of(enchant, level.orElseGet(1));
+        return Pair.of(enchant, level.orElse(1));
     }
 
-    private static Option<ItemFlag> matchItemFlag(String flagName) {
-        return Option.attempt(IllegalArgumentException.class, () -> {
+    private static Optional<ItemFlag> matchItemFlag(String flagName) {
+        Optional<ItemFlag> itemFlag = Optionals.attempt(IllegalArgumentException.class, () -> {
             return ItemFlag.valueOf(flagName.toUpperCase(Locale.ROOT));
-        }).onEmpty(() -> {
-            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flagName);
         });
+
+        if (itemFlag.isEmpty()) {
+            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flagName);
+        }
+
+        return itemFlag;
     }
 
     public static int getItemAmount(ItemStack item, Inventory inv) {
-        return PandaStream.of(inv.getContents())
+        return Arrays.stream(inv.getContents())
                 .filter(item::isSimilar)
-                .toStream()
                 .mapToInt(ItemStack::getAmount)
                 .sum();
     }
 
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
         return collection.toArray(new ItemStack[0]);
+    }
+
+    public static List<ItemStack> buildRequiredItems(GuildItemSet set, ItemsConfiguration config) {
+        List<ItemStack> items = new ArrayList<>();
+        if (!set.requirements.itemsEnabled) {
+            return items;
+        }
+        for (Map.Entry<String, Integer> entry : set.getItems().entrySet()) {
+            config.getLibraryItem(entry.getKey())
+                    .ifPresent(def -> items.add(toItemStack(def, entry.getValue())));
+        }
+        return items;
+    }
+
+    public static ItemStack toItemStack(GuildItemDefinition def, int amount) {
+        if (def == null) return new ItemStack(Material.STONE, amount);
+
+        Material material = Material.matchMaterial(def.material);
+        if (material == null) material = Material.STONE;
+
+        ItemStack item = new ItemStack(material, amount);
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return item;
+
+        if (def.name != null && !def.name.isEmpty()) {
+            meta.displayName(coloredWithoutItalics(def.name));
+        }
+
+        if (def.lore != null && !def.lore.isEmpty()) {
+            List<Component> lore = new ArrayList<>();
+            for (String line : def.lore) {
+                lore.add(line == null || line.isEmpty() ? Component.empty() : coloredWithoutItalics(line));
+            }
+
+            meta.lore(lore);
+        }
+
+        applyDefinitionEnchants(meta, def.getEnchantsOrEmpty());
+        applyDefinitionFlags(meta, def.getFlagsOrEmpty());
+        applySkullOwner(meta, def.skullOwner, def.material);
+        applyArmorColor(meta, def.armorColor, def.material);
+
+        if (def.customModelData != null) {
+            meta.setCustomModelData(def.customModelData);
+        }
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private static void applyDefinitionEnchants(ItemMeta meta, List<String> enchants) {
+        for (String enchantStr : enchants) {
+            String[] parts = enchantStr.split(":");
+            if (parts.length < 1) continue;
+            Enchantment enchant = matchEnchant(parts[0]);
+            if (enchant == null) continue;
+            int level = 1;
+            if (parts.length >= 2) {
+                try { level = Integer.parseInt(parts[1]); }
+                catch (NumberFormatException ignored) { /* default to 1 */ }
+            }
+            meta.addEnchant(enchant, level, true);
+        }
+    }
+
+    private static void applyDefinitionFlags(ItemMeta meta, List<String> flags) {
+        for (String flagStr : flags) {
+            matchItemFlag(flagStr).ifPresent(meta::addItemFlags);
+        }
+    }
+
+    private static void applySkullOwner(ItemMeta meta, String skullOwner, String material) {
+        if (skullOwner == null || skullOwner.isEmpty()) return;
+        if (!(meta instanceof SkullMeta skullMeta)) {
+            FunnyGuilds.getPluginLogger().parser("skull-owner ignored: material " + material + " is not a skull");
+            return;
+        }
+        skullMeta.setPlayerProfile(Bukkit.createProfile(skullOwner));
+    }
+
+    private static void applyArmorColor(ItemMeta meta, String armorColor, String material) {
+        if (armorColor == null || armorColor.isEmpty()) return;
+        if (!(meta instanceof LeatherArmorMeta armorMeta)) {
+            FunnyGuilds.getPluginLogger().parser("armor-color ignored: material " + material + " is not leather armor");
+            return;
+        }
+        String[] parts = armorColor.split("_");
+        if (parts.length != 3) {
+            FunnyGuilds.getPluginLogger().parser("Invalid armor-color (expected R_G_B): " + armorColor);
+            return;
+        }
+        try {
+            armorMeta.setColor(Color.fromRGB(
+                    Integer.parseInt(parts[0]),
+                    Integer.parseInt(parts[1]),
+                    Integer.parseInt(parts[2])
+            ));
+        }
+        catch (NumberFormatException ex) {
+            FunnyGuilds.getPluginLogger().parser("Invalid armor-color (non-integer): " + armorColor);
+        }
+    }
+
+    /** Parses item text with italics disabled unless explicitly configured. */
+    public static Component coloredWithoutItalics(String text) {
+        return ComponentUtil.colored(text).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
 }

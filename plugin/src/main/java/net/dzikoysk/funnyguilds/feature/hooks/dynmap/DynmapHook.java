@@ -1,8 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.hooks.dynmap;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
@@ -13,6 +15,8 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,9 +29,10 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.PlayerSet;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
 
 public class DynmapHook extends AbstractPluginHook implements Listener {
+    
+    private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.plainText();
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration.DynmapHook hookConfig;
@@ -57,8 +62,26 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
         Bukkit.getPluginManager().registerEvents(this, this.plugin);
         Bukkit.getScheduler().runTaskTimer(this.plugin, () -> this.guilds.forEach((guild, dynmapGuild) -> {
-            dynmapGuild.getCenterMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild), true));
-            dynmapGuild.getAreaMarker().peek(marker -> marker.setLabel(this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild), true));
+            dynmapGuild.getCenterMarker()
+                    .ifPresent(marker -> {
+                        Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                                null,
+                                Component.text(this.hookConfig.center.label),
+                                guild
+                        );
+                        String labelText = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
+                        marker.setLabel(labelText, true);
+                    });
+            dynmapGuild.getAreaMarker()
+                    .ifPresent(marker -> {
+                        Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                                null,
+                                Component.text(this.hookConfig.area.label),
+                                guild
+                        );
+                        String labelText = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
+                        marker.setLabel(labelText, true);
+                    });
         }), 0, this.hookConfig.updateInterval);
 
         return HookInitResult.SUCCESS;
@@ -84,28 +107,34 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
         this.forceUpdateDynmapGuild(event.getGuild());
     }
 
-    private @NotNull Option<DynmapGuild> getDynmapGuild(@NotNull Guild guild) {
-        return Option.of(this.guilds.get(guild));
+    private @NotNull Optional<DynmapGuild> getDynmapGuild(@NotNull Guild guild) {
+        return Optional.ofNullable(this.guilds.get(guild));
     }
 
-    private @NotNull Option<DynmapGuild> getOrCreateDynmapGuild(@NotNull Guild guild) {
-        return Option.of(this.guilds.computeIfAbsent(guild, key -> {
-            Option<Region> regionOption = guild.getRegion();
+    private @NotNull Optional<DynmapGuild> getOrCreateDynmapGuild(@NotNull Guild guild) {
+        return Optional.ofNullable(this.guilds.computeIfAbsent(guild, key -> {
+            Optional<Region> regionOption = guild.getRegion();
             if (regionOption.isEmpty()) {
                 return null;
             }
-            Region region = regionOption.get();
+            Region region = regionOption.orElseThrow();
             World world = region.getWorld();
 
-            Option<Marker> centerMarker = Option.when(this.hookConfig.center.enabled, () -> {
+            Optional<Marker> centerMarker = Optionals.when(this.hookConfig.center.enabled, () -> {
                 Location center = LocationUtils.toCenter(region.getCenter());
                 if (this.hookConfig.center.hideCenterY) {
                     center.setY(world.getHighestBlockYAt(center) + 0.5);
                 }
 
+                Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                        null,
+                        Component.text(this.hookConfig.center.label),
+                        guild
+                );
+                String formattedLabel = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
                 return this.guildsMarkerSet.createMarker(
                         "fg_guild_center_" + guild.getName(),
-                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.center.label, guild),
+                        formattedLabel,
                         region.getWorld().getName(),
                         center.getX(),
                         center.getY(),
@@ -115,13 +144,19 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
                 );
             });
 
-            Option<AreaMarker> areaMarker = Option.when(this.hookConfig.area.enabled, () -> {
+            Optional<AreaMarker> areaMarker = Optionals.when(this.hookConfig.area.enabled, () -> {
                 Location firstCorner = region.getFirstCorner();
                 Location secondCorner = region.getSecondCorner();
 
+                Component formattedLabelComponent = this.plugin.getGuildPlaceholdersService().format(
+                        null,
+                        Component.text(this.hookConfig.area.label),
+                        guild
+                );
+                String formattedLabel = PLAIN_SERIALIZER.serialize(formattedLabelComponent);
                 AreaMarker marker = this.guildsMarkerSet.createAreaMarker(
                         "fg_guild_area_" + guild.getName(),
-                        this.plugin.getGuildPlaceholdersService().format(null, this.hookConfig.area.label, guild),
+                        formattedLabel,
                         true,
                         region.getWorld().getName(),
                         new double[]{firstCorner.getX(), secondCorner.getX()},
@@ -156,25 +191,25 @@ public class DynmapHook extends AbstractPluginHook implements Listener {
 
     private static class DynmapGuild {
 
-        private final Option<Marker> centerMarker;
-        private final Option<AreaMarker> areaMarker;
+        private final Optional<Marker> centerMarker;
+        private final Optional<AreaMarker> areaMarker;
 
-        private DynmapGuild(Option<Marker> centerMarker, Option<AreaMarker> areaMarker) {
+        private DynmapGuild(Optional<Marker> centerMarker, Optional<AreaMarker> areaMarker) {
             this.centerMarker = centerMarker;
             this.areaMarker = areaMarker;
         }
 
-        public Option<Marker> getCenterMarker() {
+        public Optional<Marker> getCenterMarker() {
             return this.centerMarker;
         }
 
-        public Option<AreaMarker> getAreaMarker() {
+        public Optional<AreaMarker> getAreaMarker() {
             return this.areaMarker;
         }
 
         private void delete() {
-            this.centerMarker.peek(Marker::deleteMarker);
-            this.areaMarker.peek(AreaMarker::deleteMarker);
+            this.centerMarker.ifPresent(Marker::deleteMarker);
+            this.areaMarker.ifPresent(AreaMarker::deleteMarker);
         }
 
     }

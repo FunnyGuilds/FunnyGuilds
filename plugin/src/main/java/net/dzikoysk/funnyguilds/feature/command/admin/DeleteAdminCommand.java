@@ -46,7 +46,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
                 .with(formatter)
                 .send();
         this.messageService.getMessage(config -> config.broadcastDelete)
-                .broadcast()
+                .all()
                 .with(formatter)
                 .send();
     }

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import java.sql.ResultSet;
 import java.time.Instant;
+import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -12,16 +13,15 @@ import net.dzikoysk.funnyguilds.data.util.UserStatsSerializer;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
-import panda.std.Option;
 
 public final class DatabaseUserSerializer {
 
     private DatabaseUserSerializer() {
     }
 
-    public static Option<User> deserialize(ResultSet resultSet) {
+    public static Optional<User> deserialize(ResultSet resultSet) {
         if (resultSet == null) {
-            return Option.none();
+            return Optional.empty();
         }
 
         try {
@@ -34,8 +34,9 @@ public final class DatabaseUserSerializer {
             int logouts = resultSet.getInt("logouts");
             Instant ban = TimeUtils.positiveOrNullInstant(resultSet.getLong("ban"));
             String reason = resultSet.getString("reason");
+            String lastIP = resultSet.getString("last_ip");
 
-            Object[] values = new Object[9];
+            Object[] values = new Object[10];
             values[0] = uuid;
             values[1] = name;
             values[2] = points;
@@ -45,6 +46,7 @@ public final class DatabaseUserSerializer {
             values[6] = logouts;
             values[7] = ban;
             values[8] = reason;
+            values[9] = lastIP;
 
             return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values, resultSet.getString("stats"));
         }
@@ -52,7 +54,7 @@ public final class DatabaseUserSerializer {
             FunnyGuilds.getPluginLogger().error("Could not deserialize user", exception);
         }
 
-        return Option.none();
+        return Optional.empty();
     }
 
     public static void serialize(User user) {
@@ -66,9 +68,10 @@ public final class DatabaseUserSerializer {
         statement.set("deaths", user.getRank().getDeaths());
         statement.set("assists", user.getRank().getAssists());
         statement.set("logouts", user.getRank().getLogouts());
-        statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElseGet(0L));
-        statement.set("reason", user.getBan().map(UserBan::getReason).orNull());
         statement.set("stats", UserStatsSerializer.serialize(user));
+        statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElse(0L));
+        statement.set("reason", user.getBan().map(UserBan::getReason).orElse(null));
+        statement.set("last_ip", user.getLastIP());
 
         statement.executeUpdate();
         user.markUnchanged();
@@ -77,7 +80,7 @@ public final class DatabaseUserSerializer {
     public static void updatePoints(User user) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLTable table = dataModel.getUsersTable();
-        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orNull());
+        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
 
         statement.set("points", user.getRank().getPoints());
         statement.set("uuid", user.getUUID().toString());

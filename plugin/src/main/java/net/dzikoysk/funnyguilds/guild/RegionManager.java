@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -24,9 +24,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.ApiStatus;
-import panda.std.Option;
-import panda.std.Pair;
-import panda.std.stream.PandaStream;
 
 public class RegionManager {
 
@@ -66,10 +63,11 @@ public class RegionManager {
      * @param ignoreCase ignore the case of the tag
      * @return the guild
      */
-    public Option<Region> findByName(String name, boolean ignoreCase) {
-        return PandaStream.of(this.regions.values())
-                .flatMap(r -> r)
-                .find(region -> ignoreCase ? region.getName().equalsIgnoreCase(name) : region.getName().equals(name));
+    public Optional<Region> findByName(String name, boolean ignoreCase) {
+        return this.regions.values().stream()
+                .flatMap(Collection::stream)
+                .filter(region -> ignoreCase ? region.getName().equalsIgnoreCase(name) : region.getName().equals(name))
+                .findFirst();
     }
 
     /**
@@ -78,7 +76,7 @@ public class RegionManager {
      * @param name the name of region (probably name of guild)
      * @return the region
      */
-    public Option<Region> findByName(String name) {
+    public Optional<Region> findByName(String name) {
         return this.findByName(name, false);
     }
 
@@ -88,15 +86,15 @@ public class RegionManager {
      * @param location the location of region
      * @return the region
      */
-    public Option<Region> findRegionAtLocation(Location location) {
+    public Optional<Region> findRegionAtLocation(Location location) {
         long packedPos = packChunkPosition(location.getBlockX() >> 4, location.getBlockZ() >> 4);
         Set<Region> applicableRegions = this.regions.get(packedPos);
 
         if (applicableRegions == null || applicableRegions.isEmpty()) {
-            return Option.none();
+            return Optional.empty();
         }
 
-        return PandaStream.of(applicableRegions).find(region -> region.isIn(location));
+        return applicableRegions.stream().filter(region -> region.isIn(location)).findFirst();
     }
 
     /**
@@ -115,30 +113,19 @@ public class RegionManager {
         }
 
         FunnyBox box = region.toBox();
-        return PandaStream.of(Bukkit.getOnlinePlayers())
+        return Bukkit.getOnlinePlayers().stream()
                 .filter(player -> !ignoredUuids.contains(player.getUniqueId()))
-                .find(player -> box.contains(player.getLocation()))
+                .filter(player -> box.contains(player.getLocation()))
+                .findFirst()
                 .isPresent();
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isAnyPlayerInRegion(Region region) {
-        return this.isAnyPlayerInRegion(region, Collections.emptySet());
-    }
-
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
-        return this.isAnyPlayerInRegion(region, PandaStream.of(ignoredUsers)
+        return this.isAnyPlayerInRegion(region, ignoredUsers.stream()
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
-        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers)).orElseGet(false);
-    }
-
+    
     /**
      * Checks if there is any region in area (used to check if it's possible to create a new guild in given location).
      *
@@ -153,19 +140,18 @@ public class RegionManager {
         int size = this.pluginConfiguration.regionSize + (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
-        return PandaStream.of(this.regions.values())
-                .flatMap(r -> r)
+        return this.regions.values().stream()
+                .flatMap(Collection::stream)
                 .map(Region::getCenter)
-                .filterNot(regionCenter -> regionCenter.equals(center))
+                .filter(regionCenter -> !regionCenter.equals(center))
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
-                .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
+                .filter(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
+                .findFirst()
                 .isPresent();
     }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public boolean isNearRegion(Option<Location> center) {
-        return center.map(this::isNearRegion).orElseGet(false);
+    
+    public boolean isNearRegion(Optional<Location> center) {
+        return center.map(this::isNearRegion).orElse(false);
     }
 
     /**
@@ -175,15 +161,15 @@ public class RegionManager {
      * @return if given block is guild's heart
      */
     public boolean isGuildHeart(Block block) {
-        Pair<Material, Byte> md = this.pluginConfiguration.heart.createMaterial;
-        if (md == null || block.getType() != md.getFirst()) {
+        Material md = this.pluginConfiguration.heart.createMaterial;
+        if (md == null || block.getType() != md) {
             return false;
         }
 
         Location blockLocation = block.getLocation();
         return this.findRegionAtLocation(blockLocation)
-                .map(region -> region.getHeart().contentEquals(blockLocation))
-                .orElseGet(false);
+                .map(region -> region.getHeart().filter(blockLocation::equals).isPresent())
+                .orElse(false);
     }
 
     /**
@@ -262,7 +248,7 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
 
         if (dataModel instanceof FlatDataModel) {
-            ((FlatDataModel) dataModel).getRegionFile(region).peek(FunnyIOUtils::deleteFile);
+            ((FlatDataModel) dataModel).getRegionFile(region).ifPresent(FunnyIOUtils::deleteFile);
         }
 
         if (dataModel instanceof SQLDataModel) {
