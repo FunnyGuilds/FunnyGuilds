@@ -38,6 +38,28 @@ Who sees a death message, and how, is set by `death-message-receivers`
 off the server's own message, which would otherwise appear alongside the
 FunnyGuilds one.
 
+### Crystal PvP
+
+Kills caused by ordinary End Crystal explosions use the same point system,
+assists and anti-farming protections as other PvP kills. The attacker is
+the player identified by the server's damage source as the detonator,
+including projectile detonations. Placing a crystal alone grants neither
+a kill nor an assist. The placer can earn an assist if they previously
+dealt damage to the victim that qualifies under the assist system.
+
+Direct crystal kills are identified even when assists and
+`rank-farming-last-attacker-as-killer` are disabled. If the server does not
+identify a responsible player, FunnyGuilds does not guess from the placer
+or nearest player; existing killer handling and the configured last-attacker
+fallback remain in effect. This also applies to ambiguous chain explosions.
+
+Damage respects guild and ally PvP protections and WorldGuard rules.
+Cancelled damage is not added to assist history. The death message names
+the detonator, and the kill-message `{WEAPON}` and `{WEAPON-NO-AMOUNT}`
+replacements show the crystal. This support does not concern guild hearts
+and requires no new configuration option. New crystal attribution requires
+an online attacker registered with FunnyGuilds.
+
 ### Anti-farming protections
 
 Several independent switches guard against artificially inflating ranking
