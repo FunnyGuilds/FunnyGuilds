@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class RankPlaceholdersService implements PlaceholdersService<User> {
 
     private final EntityLocaleProvider entityLocaleProvider;
+    private final PluginConfiguration config;
     private final MessageService messageService;
     private final RankService rankService;
 
@@ -25,6 +26,7 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
         RankService rankService
     ) {
         this.entityLocaleProvider = entityLocaleProvider;
+        this.config = config;
         this.messageService = messageService;
         this.rankService = rankService;
     }
