@@ -137,9 +137,22 @@ if (guildOption.isPresent()) {
 ### Statistics and rankings
 
 New integrations should use `FunnyGuilds#getRankService()` instead of the removed
-`UserRankManager` and `GuildRankManager`. `Rank`, `UserRank`, `GuildRank` and
-`DefaultTops` constants remain deprecated adapters; `getPosition(...)` delegates
-to the new service. Positions are read-only.
+ranking API. The following classes and packages were removed without shims and
+require migration to `RankService` (together with `StatKey` and
+`GuildStatAggregationType`):
+
+- `net.dzikoysk.funnyguilds.user.UserRankManager`
+- `net.dzikoysk.funnyguilds.guild.GuildRankManager`
+- `net.dzikoysk.funnyguilds.rank.Top`
+- `net.dzikoysk.funnyguilds.rank.TopComparator`
+- `net.dzikoysk.funnyguilds.rank.RankManager`
+- `net.dzikoysk.funnyguilds.rank.RankRecalculationTask`
+- the `net.dzikoysk.funnyguilds.user.top.*` and `net.dzikoysk.funnyguilds.guild.top.*` packages
+
+The retained deprecated adapters — `Rank`, `UserRank`, `GuildRank` and the
+`DefaultTops` constants — are marked as scheduled for removal in 5.0.
+`getPosition(...)` delegates to the new service, while `setPosition(...)`
+throws `UnsupportedOperationException`, because positions can no longer be set.
 
 A new statistic needs one typed key declaration:
 

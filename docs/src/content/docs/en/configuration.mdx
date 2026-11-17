@@ -211,9 +211,12 @@ migration of the entire 4.x configuration. See
 ## Ranking configuration after upgrading
 
 `ranking-update-interval` has been removed: stat changes update tops without a
-periodic rebuild. `top.enabled-user-tops` and `top.enabled-guild-tops` remain
-compatible legacy fields but are no longer whitelists. New API statistics are
-available automatically; `top.format` and `value-formatting` rules still apply.
+periodic rebuild. The `top.enabled-user-tops` and `top.enabled-guild-tops` options
+have been removed entirely — legacy configuration files may still contain them,
+but the entries are ignored and disappear from the file on the next configuration
+save. Nothing needs to be configured: all statistics, including new API ones,
+automatically get tops, positions, placeholders and persistence. `top.format` and
+`value-formatting` rules still apply.
 
 Additional user statistics are stored in `stats` (a file field or SQL column).
 Each new counter needs no separate configuration option or database column.

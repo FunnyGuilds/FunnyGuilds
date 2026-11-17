@@ -136,10 +136,22 @@ if (guildOption.isPresent()) {
 
 ### Statystyki i rankingi
 
-Nowe integracje powinny używać `FunnyGuilds#getRankService()` zamiast usuniętych
-`UserRankManager` i `GuildRankManager`. `Rank`, `UserRank`, `GuildRank` i stałe
-`DefaultTops` pozostają przestarzałymi adapterami; odczyt `getPosition(...)`
-deleguje do nowego serwisu. Pozycje są tylko do odczytu.
+Nowe integracje powinny używać `FunnyGuilds#getRankService()` zamiast usuniętego
+API rankingów. Następujące klasy i pakiety zostały usunięte bez klas zastępczych
+i wymagają migracji do `RankService` (wraz z `StatKey` i `GuildStatAggregationType`):
+
+- `net.dzikoysk.funnyguilds.user.UserRankManager`
+- `net.dzikoysk.funnyguilds.guild.GuildRankManager`
+- `net.dzikoysk.funnyguilds.rank.Top`
+- `net.dzikoysk.funnyguilds.rank.TopComparator`
+- `net.dzikoysk.funnyguilds.rank.RankManager`
+- `net.dzikoysk.funnyguilds.rank.RankRecalculationTask`
+- pakiety `net.dzikoysk.funnyguilds.user.top.*` i `net.dzikoysk.funnyguilds.guild.top.*`
+
+Zachowane przestarzałe adaptery — `Rank`, `UserRank`, `GuildRank` oraz stałe
+`DefaultTops` — są oznaczone jako przewidziane do usunięcia w 5.0. Odczyt
+`getPosition(...)` deleguje do nowego serwisu, a wywołanie `setPosition(...)`
+rzuca `UnsupportedOperationException`, ponieważ pozycji nie można już ustawiać.
 
 Nowa statystyka wymaga jednej deklaracji typowanego klucza:
 
