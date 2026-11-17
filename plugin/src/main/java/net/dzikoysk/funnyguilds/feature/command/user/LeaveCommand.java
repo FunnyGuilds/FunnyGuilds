@@ -33,8 +33,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guild.removeMember(member);
-        member.removeGuild();
+        this.guildManager.removeMember(guild, member);
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, member))
                 .ifPresent(this.plugin::scheduleFunnyTasks);

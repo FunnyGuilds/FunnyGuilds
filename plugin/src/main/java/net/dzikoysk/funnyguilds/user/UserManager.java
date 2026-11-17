@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
@@ -49,7 +49,9 @@ public class UserManager {
     }
 
     /**
-     * Deletes all loaded users data
+     * Removes all loaded users from storage. Delegates to {@link UserManager#removeUser(User)},
+     * so every user is also detached from their guild, dropped from all rank trackers, and
+     * each affected former guild gets its rankings refreshed.
      */
     public synchronized void clearUsers() {
         this.getUsers().forEach(this::removeUser);
@@ -191,8 +193,9 @@ public class UserManager {
 
     /**
      * Remove user from storage. If you think you should use this method you probably shouldn't.
-     *
-     * @param user user to remove
+     * A no-op when the user is not the registered instance for its UUID.
+     * The user is detached from their current guild, their entries are dropped from all rank
+     * trackers, and the former guild's rankings are refreshed afterwards.
      */
     public synchronized void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
@@ -201,11 +204,13 @@ public class UserManager {
             return;
         }
 
+        Optional<Guild> previousGuild = user.getGuild();
         user.removeGuild();
         this.usersByUuid.remove(user.getUUID());
         this.usersByName.remove(user.getName(), user);
         if (this.rankService != null) {
             this.rankService.removeUser(user);
+            previousGuild.filter(previous -> !previous.isMember(user)).ifPresent(this.rankService::refreshGuild);
         }
     }
 

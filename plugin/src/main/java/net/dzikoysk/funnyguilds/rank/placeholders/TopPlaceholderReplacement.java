@@ -100,7 +100,7 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
                     Guild guild = entry.getFirst();
                     Number value = entry.getSecond();
                     if (subType == null) {
-                        return this.formatGuildTop(viewer, guild, value, metric);
+                        return this.formatGuildTop(viewer, guild, value, formattingMetric(metric));
                     }
                     return switch (subType) {
                         case "NAME" -> Component.text(guild.getName());
@@ -110,6 +110,13 @@ public class TopPlaceholderReplacement extends ComponentReplacement {
                         default -> Component.empty();
                     };
                 }).orElse(noValue);
+    }
+
+    // Value formatting keys use the underscore spelling (avg_kdr), while guild top ids accept both
+    // spellings of the avg_ prefix alias - format both aliases through the underscore key.
+    private static String formattingMetric(String metric) {
+        String normalized = metric.toLowerCase(Locale.ROOT);
+        return normalized.startsWith("avg-") ? "avg_" + normalized.substring(4) : normalized;
     }
 
     private Component formatUserTop(User user, Number topValue, String metric) {

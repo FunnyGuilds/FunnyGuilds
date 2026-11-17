@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.TestLogger
 import net.dzikoysk.funnyguilds.data.DataModelLoader
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer
+import net.dzikoysk.funnyguilds.user.UserStatKeys
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
@@ -77,7 +78,7 @@ class SQLUserIdentityTest : FunnyGuildsSpec() {
         assertEquals(2, userManager.countUsers())
         assertEquals("Steve", userManager.findByUuid(first).get().name)
         assertEquals("Steve", userManager.findByUuid(second).get().name)
-        assertEquals(1234, userManager.findByUuid(first).get().rank.points)
+        assertEquals(1234, rankService.getUserStatValue(userManager.findByUuid(first).get(), UserStatKeys.POINTS).orElse(0))
         verify(connection).prepareStatement(anyString())
         verify(statement).executeQuery()
         verify(statement, never()).executeUpdate()

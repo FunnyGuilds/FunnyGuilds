@@ -234,6 +234,9 @@ public class WarSystem {
         loser.setWarStreak(0);
         loser.setLastWarGuildTag(conqueror.getTag());
 
+        plugin.getGuildManager().refreshGuild(conqueror);
+        plugin.getGuildManager().refreshGuild(loser);
+
         SimpleEventHandler.handle(new GuildWarWinEvent(EventCause.SYSTEM, attacker, conqueror, loser, conqueror.getWarStreak()));
 
         FunnyFormatter formatter = new FunnyFormatter()

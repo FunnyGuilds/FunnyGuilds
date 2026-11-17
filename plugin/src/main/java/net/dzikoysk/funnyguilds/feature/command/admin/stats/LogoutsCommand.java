@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.admin.stats;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.rank.LogoutsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.command.CommandSender;
 
 public final class LogoutsCommand extends AbstractFunnyCommand {
@@ -16,9 +16,8 @@ public final class LogoutsCommand extends AbstractFunnyCommand {
     )
     public void execute(CommandSender sender, String[] args) {
         StatsCommand.execute(
-                this.messageService, sender, args,
-                UserRank::getLogouts,
-                UserRank::setLogouts,
+                this.messageService, this.rankService, sender, args,
+                UserStatKeys.LOGOUTS,
                 LogoutsChangeEvent::new,
                 LogoutsChangeEvent::getLogoutsChange,
                 config -> config.adminNoLogoutsGiven,

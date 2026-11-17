@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.rank
 
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.config.RangeFormatting
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter
 import net.dzikoysk.funnyguilds.user.User
+import net.dzikoysk.funnyguilds.user.UserStatKeys
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,11 +25,11 @@ class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
         config.loadProcessedProperties()
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
-        first.rank.points = 1500
-        second.rank.points = 1000
+        rankService.setUserStatValue(first, UserStatKeys.POINTS, 1500)
+        rankService.setUserStatValue(second, UserStatKeys.POINTS, 1000)
         val text = "{PTOP-points-1}|{PTOP-points-2}|{PTOP-points-1}|{POSITION-points}"
         assertEquals("First:1500|Second:1000|First:1500|1", render(text, first))
-        second.rank.points = 2000
+        rankService.setUserStatValue(second, UserStatKeys.POINTS, 2000)
         assertEquals("Second:2000|First:1500|Second:2000|2", render(text, first))
         assertEquals("Second|2000|${second.uuid}", render("{PTOP-points-1-NAME}|{PTOP-points-1-VALUE}|{PTOP-points-1-UUID}", first))
     }
@@ -48,16 +50,17 @@ class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
         config.loadProcessedProperties()
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
-        first.rank.points = 1400
-        second.rank.points = 600
+        rankService.setUserStatValue(first, UserStatKeys.POINTS, 1400)
+        rankService.setUserStatValue(second, UserStatKeys.POINTS, 600)
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
-        guild.addMember(first)
-        guild.addMember(second)
+        guildManager.addMember(guild, first)
+        guildManager.addMember(guild, second)
         val input = "{GTOP-avg_points-1}|{GTOP-avg-points-1}|{G-POSITION-avg_points}"
         assertEquals("TAG:1000|TAG:1000|1", render(input, first))
         assertEquals("0", render("{GTOP-wars_won-1-VALUE}", first))
         guild.warsWon = 3
         guild.warStreak = 2
+        guildManager.refreshGuild(guild)
         assertEquals("3|2|1", render("{GTOP-wars_won-1-VALUE}|{GTOP-war_streak-1-VALUE}|{G-POSITION-wars_won}", first))
     }
 
@@ -65,17 +68,17 @@ class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
     fun `guild points preserve current 5x total and average placeholders`() {
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
-        first.rank.points = 1500
-        second.rank.points = 500
+        rankService.setUserStatValue(first, UserStatKeys.POINTS, 1500)
+        rankService.setUserStatValue(second, UserStatKeys.POINTS, 500)
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
-        guild.addMember(first)
-        guild.addMember(second)
+        guildManager.addMember(guild, first)
+        guildManager.addMember(guild, second)
         val placeholders = GuildPlaceholdersService.createGuildPlaceholders(funnyGuilds)
         val formatter = FunnyFormatter().register(placeholders, guild)
         fun format() = PlainTextComponentSerializer.plainText().serialize(
             formatter.replace(Locale.ROOT, Component.text("{POINTS}/{AVG-POINTS}")))
         assertEquals("2000/1000", format())
-        first.rank.points = 2500
+        rankService.setUserStatValue(first, UserStatKeys.POINTS, 2500)
         assertEquals("3000/1500", format())
     }
 
@@ -87,19 +90,20 @@ class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
 
     @Test
     fun `dash and underscore average guild top variants render identically`() {
-        config.top.format.gtop = ":{VALUE}"
+        config.top.format.gtop = ":{VALUE-FORMAT}"
+        config.top.format.gtopValueFormatting = mapOf("avg_kdr" to listOf(RangeFormatting("0-* avg {VALUE}")))
         config.loadProcessedProperties()
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
-        first.rank.kills = 4
-        first.rank.deaths = 2
-        second.rank.kills = 2
-        second.rank.deaths = 1
+        rankService.setUserStatValue(first, UserStatKeys.KILLS, 4)
+        rankService.setUserStatValue(first, UserStatKeys.DEATHS, 2)
+        rankService.setUserStatValue(second, UserStatKeys.KILLS, 2)
+        rankService.setUserStatValue(second, UserStatKeys.DEATHS, 1)
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
         guild.addMember(first)
         guild.addMember(second)
         val underscore = render("{GTOP-avg_kdr-1}", first)
-        assertEquals("TAG:2.00", underscore)
+        assertEquals("TAG:avg 2.00", underscore)
         assertEquals(underscore, render("{GTOP-avg-kdr-1}", first))
     }
 }

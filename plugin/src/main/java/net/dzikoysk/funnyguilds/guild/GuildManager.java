@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -214,13 +215,12 @@ public class GuildManager {
      *
      * @param guild guild to add
      */
+    @ApiStatus.Internal
     public Guild addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         this.guildsMap.put(guild.getUUID(), guild);
         guild.getMembers().forEach(user -> user.setGuild(guild));
-        if (this.rankService != null) {
-            this.rankService.refreshGuild(guild);
-        }
+        this.refreshGuild(guild);
         return guild;
     }
 
@@ -229,12 +229,110 @@ public class GuildManager {
      *
      * @param guild guild to remove
      */
+    @ApiStatus.Internal
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         this.guildsMap.remove(guild.getUUID());
         guild.getMembers().forEach(User::removeGuild);
         if (this.rankService != null) {
             this.rankService.removeGuild(guild);
+        }
+    }
+
+    /**
+     * Coordinated membership replacement: swaps the guild's member set, repairs the {@link User}
+     * back-references of members that left or joined, and refreshes the rankings of this guild and
+     * of any guild a joined member was pulled out of.
+     *
+     * @param guild   guild to update
+     * @param members the new member set
+     */
+    public void setMembers(Guild guild, Set<User> members) {
+        Set<User> previousMembers = new HashSet<>(guild.getMembers());
+        Map<User, Guild> previousGuilds = new HashMap<>();
+        for (User member : members) {
+            member.getGuild()
+                    .filter(previous -> previous != guild && previous.isMember(member))
+                    .ifPresent(previous -> previousGuilds.put(member, previous));
+        }
+
+        guild.setMembers(members);
+
+        previousMembers.stream()
+                .filter(user -> !guild.isMember(user))
+                .forEach(user -> {
+                    if (user.getGuild().orElse(null) == guild) {
+                        user.removeGuild();
+                    }
+                });
+        guild.getMembers().forEach(user -> {
+            if (user.getGuild().orElse(null) != guild) {
+                user.setGuild(guild);
+            }
+        });
+
+        this.refreshGuild(guild);
+        previousGuilds.forEach((user, previous) -> {
+            if (!previous.isMember(user)) {
+                this.refreshGuild(previous);
+            }
+        });
+    }
+
+    /**
+     * Coordinated membership addition: adds the user to the guild, repairs the {@link User}
+     * back-reference and refreshes the rankings of this guild (and of the guild the user was
+     * pulled out of, if any) when the membership effectively changed.
+     *
+     * @param guild guild to update
+     * @param user  user to add as member
+     */
+    public void addMember(Guild guild, User user) {
+        Optional<Guild> previousGuild = user.getGuild();
+        boolean leavesPreviousGuild = previousGuild
+                .map(previous -> previous != guild && previous.isMember(user))
+                .orElse(false);
+
+        boolean added = guild.addMember(user);
+        if (previousGuild.orElse(null) != guild) {
+            user.setGuild(guild);
+        }
+        if (added) {
+            this.refreshGuild(guild);
+        }
+        if (leavesPreviousGuild) {
+            this.refreshGuild(previousGuild.orElseThrow());
+        }
+    }
+
+    /**
+     * Coordinated membership removal: removes the user from the guild (including deputies), repairs
+     * the {@link User} back-reference and refreshes the guild's rankings when the membership
+     * effectively changed.
+     *
+     * @param guild guild to update
+     * @param user  user to remove from members
+     */
+    public void removeMember(Guild guild, User user) {
+        boolean removed = guild.removeMember(user);
+        if (user.getGuild().orElse(null) == guild) {
+            user.removeGuild();
+        }
+        if (removed) {
+            this.refreshGuild(guild);
+        }
+    }
+
+    /**
+     * Refresh the guild's ranking entries after a data mutation that does not go through the
+     * coordinated membership operations, like a rename, deserialization or war statistics.
+     * No-op for guilds unknown to this manager.
+     *
+     * @param guild guild to refresh
+     */
+    public void refreshGuild(Guild guild) {
+        if (this.rankService != null) {
+            this.rankService.refreshGuild(guild);
         }
     }
 

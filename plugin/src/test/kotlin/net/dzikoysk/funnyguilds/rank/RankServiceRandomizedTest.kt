@@ -17,7 +17,7 @@ import java.util.concurrent.Executor
 
 /**
  * The oracle owns separate values and membership sets, and sorts everything from scratch.
- * It deliberately does not use GuildRank, aggregation helpers or tracker comparators.
+ * It deliberately does not use aggregation helpers or tracker comparators.
  */
 class RankServiceRandomizedTest : FunnyGuildsSpec() {
 
@@ -60,7 +60,7 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
         }
         players.values.forEachIndexed { index, player ->
             val guild = guilds.values.elementAt(index % guilds.size)
-            guild.guild.addMember(player.user)
+            guildManager.addMember(guild.guild, player.user)
             player.guild = guild.guild.uuid
             guild.members.add(player.user.uuid)
         }
@@ -86,13 +86,19 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
                     }
                     5 -> {
                         detach(player)
-                        guild.guild.addMember(player.user)
+                        guildManager.addMember(guild.guild, player.user)
                         player.guild = guild.guild.uuid
                         guild.members.add(player.user.uuid)
                     }
                     6 -> {
+                        val previous = player.guild?.let { guilds.getValue(it).guild }
                         detach(player)
-                        player.user.removeGuild()
+                        if (previous == null) {
+                            player.user.removeGuild()
+                        }
+                        else {
+                            guildManager.removeMember(previous, player.user)
+                        }
                     }
                     7 -> {
                         player.name = "P${player.user.uuid.leastSignificantBits}_${random.nextInt(100)}"
@@ -101,6 +107,7 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
                     8 -> {
                         guild.name = "Guild${random.nextInt(100)}"
                         guild.guild.name = guild.name
+                        guildManager.refreshGuild(guild.guild)
                     }
                     9 -> {
                         player.exempt = !player.exempt
@@ -131,7 +138,7 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
                             it.guild = guild.guild.uuid
                             guild.members.add(it.user.uuid)
                         }
-                        guild.guild.setMembers(selected.map { it.user }.toSet())
+                        guildManager.setMembers(guild.guild, selected.map { it.user }.toSet())
                     }
                     13 -> {
                         config.minMembersToInclude = random.nextInt(8)
@@ -160,6 +167,7 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
                             1 -> guild.guild.warsLost = guild.warStats[index]
                             2 -> guild.guild.warStreak = guild.warStats[index]
                         }
+                        guildManager.refreshGuild(guild.guild)
                     }
                 }
                 operation++
@@ -185,11 +193,11 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
 
     private fun setStat(user: User, index: Int, value: Int) {
         when (index) {
-            0 -> user.rank.points = value
-            1 -> user.rank.kills = value
-            2 -> user.rank.deaths = value
-            3 -> user.rank.assists = value
-            4 -> user.rank.logouts = value
+            0 -> rankService.setUserStatValue(user, UserStatKeys.POINTS, value)
+            1 -> rankService.setUserStatValue(user, UserStatKeys.KILLS, value)
+            2 -> rankService.setUserStatValue(user, UserStatKeys.DEATHS, value)
+            3 -> rankService.setUserStatValue(user, UserStatKeys.ASSISTS, value)
+            4 -> rankService.setUserStatValue(user, UserStatKeys.LOGOUTS, value)
         }
     }
 

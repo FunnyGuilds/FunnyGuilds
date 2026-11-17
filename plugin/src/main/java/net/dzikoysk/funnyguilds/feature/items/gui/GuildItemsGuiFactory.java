@@ -22,9 +22,11 @@ import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
@@ -43,9 +45,10 @@ public final class GuildItemsGuiFactory {
             GuildItemSet set,
             String setName,
             ItemsConfiguration config,
-            MessageService messageService
+            MessageService messageService,
+            RankService rankService
     ) {
-        return new GuildItemsGui(player, user, set, setName, config, messageService);
+        return new GuildItemsGui(player, user, set, setName, config, messageService, rankService);
     }
 
     static ChestGui buildChestGui(GuildItemsGui gui) {
@@ -73,7 +76,7 @@ public final class GuildItemsGuiFactory {
         Player player = gui.getPlayer();
 
         GuildItemRequirementChecker checker = new GuildItemRequirementChecker();
-        ItemRequirementResult result = checker.check(player, gui.getUser(), set, config);
+        ItemRequirementResult result = checker.check(player, gui.getUser(), set, config, gui.getRankService());
 
         ItemDisplayGroup displayGroup = guiConfig.itemDisplay;
 
@@ -235,7 +238,7 @@ public final class GuildItemsGuiFactory {
                         }
                         case "{RANK_LINE}" -> {
                             if (set.requirements.rankEnabled && gui.getUser() != null) {
-                                int current = gui.getUser().getRank().getPoints();
+                                int current = gui.getRankService().getUserStatValue(gui.getUser(), UserStatKeys.POINTS).orElse(0);
                                 String statusColor = result.isMeetsRank() ? "<green>" : "<red>";
                                 String template = messageService.get(player, cfg -> cfg.itemsGuiRankLine)
                                         .replace("{STATUS_COLOR}", statusColor)

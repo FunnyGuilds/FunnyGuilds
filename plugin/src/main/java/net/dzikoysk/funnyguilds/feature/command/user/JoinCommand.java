@@ -78,8 +78,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guild.addMember(user);
-        user.setGuild(guild);
+        this.guildManager.addMember(guild, user);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         this.plugin.getIndividualNameTagManager()

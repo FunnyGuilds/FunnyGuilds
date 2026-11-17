@@ -2,7 +2,9 @@ package net.dzikoysk.funnyguilds.feature.scoreboard.dummy;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import java.util.Optional;
@@ -13,10 +15,12 @@ public class Dummy {
     private static final String OBJECTIVE_NAME = "FG-Points";
 
     private final PluginConfiguration pluginConfiguration;
+    private final RankService rankService;
     private final User user;
 
-    Dummy(PluginConfiguration pluginConfiguration, User user) {
+    Dummy(PluginConfiguration pluginConfiguration, RankService rankService, User user) {
         this.pluginConfiguration = pluginConfiguration;
+        this.rankService = rankService;
         this.user = user;
     }
 
@@ -59,7 +63,7 @@ public class Dummy {
         scoreboardOption
                 .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
                 .or(this::initialize)
-                .ifPresent(objective -> objective.getScore(target.getName()).setScore(target.getRank().getPoints()));
+                .ifPresent(objective -> objective.getScore(target.getName()).setScore(this.rankService.getUserStatValue(target, UserStatKeys.POINTS).orElse(0)));
     }
 
 }

@@ -20,11 +20,13 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.rank.GuildStatAggregationType;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 
 public final class DatabaseGuildSerializer {
 
@@ -207,7 +209,8 @@ public final class DatabaseGuildSerializer {
         statement.set("deputy", deputies);
         statement.set("allies", allies);
         statement.set("enemies", enemies);
-        statement.set("points", guild.getRank().getAveragePoints());
+        statement.set("points", FunnyGuilds.getInstance().getRankService()
+                .getGuildStatValue(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT).orElse(0));
         statement.set("lives", guild.getLives());
         statement.set("heart_lives", guild.getHeartLives());
         statement.set("wars_won", guild.getWarsWon());
@@ -240,7 +243,8 @@ public final class DatabaseGuildSerializer {
         SQLTable table = dataModel.getGuildsTable();
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
 
-        statement.set("points", guild.getRank().getAveragePoints());
+        statement.set("points", FunnyGuilds.getInstance().getRankService()
+                .getGuildStatValue(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT).orElse(0));
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }

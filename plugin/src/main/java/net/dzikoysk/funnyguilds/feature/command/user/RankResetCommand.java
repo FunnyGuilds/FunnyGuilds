@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,13 +28,13 @@ public final class RankResetCommand extends AbstractFunnyCommand {
             return;
         }
 
-        int lastRank = user.getRank().getPoints();
-        user.getRank().setPoints(this.config.rankStart);
+        int lastRank = this.rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0);
+        this.rankService.setUserStatValue(user, UserStatKeys.POINTS, Math.max(0, this.config.rankStart));
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{LAST-RANK}", lastRank)
-                .register("{CURRENT-RANK}", user.getRank().getPoints());
+                .register("{CURRENT-RANK}", this.rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0));
 
         this.messageService.getMessage(config -> config.rankResetMessage)
                 .receiver(player)

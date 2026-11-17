@@ -35,11 +35,13 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
+import net.dzikoysk.funnyguilds.rank.StatKey;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import org.bukkit.Bukkit;
@@ -150,7 +152,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         KillsChangeEvent killsChangeEvent = new KillsChangeEvent(EventCause.COMBAT, attacker, victim, 1);
         if (SimpleEventHandler.handle(killsChangeEvent)) {
-            attacker.getRank().updateKills(currentValue -> currentValue + killsChangeEvent.getKillsChange());
+            this.changeClampedStat(attacker, UserStatKeys.KILLS, killsChangeEvent.getKillsChange());
         }
 
         victimDamageState.addKill(attacker);
@@ -161,8 +163,8 @@ public class PlayerDeath extends AbstractFunnyListener {
             victimDamageState.addKillByIP(attackerIP);
         }
 
-        int victimPoints = victim.getRank().getPoints();
-        int attackerPoints = attacker.getRank().getPoints();
+        int victimPoints = this.plugin.getRankService().getUserStatValue(victim, UserStatKeys.POINTS).orElse(0);
+        int attackerPoints = this.plugin.getRankService().getUserStatValue(attacker, UserStatKeys.POINTS).orElse(0);
 
         RankSystem.RankResult result = this.rankSystem.calculate(this.config.rankSystem, attackerPoints, victimPoints);
 
@@ -192,12 +194,12 @@ public class PlayerDeath extends AbstractFunnyListener {
         );
 
         if (SimpleEventHandler.handle(combatPointsChangeEvent)) {
-            attacker.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getAttackerPointsChange());
-            victim.getRank().updatePoints(currentValue -> currentValue + combatPointsChangeEvent.getVictimPointsChange());
+            this.changeClampedStat(attacker, UserStatKeys.POINTS, combatPointsChangeEvent.getAttackerPointsChange());
+            this.changeClampedStat(victim, UserStatKeys.POINTS, combatPointsChangeEvent.getVictimPointsChange());
 
             combatPointsChangeEvent.getAssistsMap()
                     .getPointChanges()
-                    .forEach((user, points) -> user.getRank().updatePoints(currentValue -> currentValue + points));
+                    .forEach((user, points) -> this.changeClampedStat(user, UserStatKeys.POINTS, points));
         }
 
         victimDamageState.clear();
@@ -360,8 +362,14 @@ public class PlayerDeath extends AbstractFunnyListener {
     private void handleDeathEvent(User victim, User attacker, EventCause cause) {
         DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(cause, attacker, victim, 1);
         if (SimpleEventHandler.handle(deathsChangeEvent)) {
-            victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getDeathsChange());
+            this.changeClampedStat(victim, UserStatKeys.DEATHS, deathsChangeEvent.getDeathsChange());
         }
+    }
+
+    // The rank service stores counter values unclamped, so keep the former shim behavior of
+    // flooring combat-driven changes at zero.
+    private void changeClampedStat(User user, StatKey<Integer> key, int change) {
+        this.plugin.getRankService().changeUserStatValue(user, key, currentValue -> Math.max(0, currentValue + change));
     }
 
     // Function to check if player is rank farming (killing player indefinitely to get points)
@@ -587,7 +595,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
             AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.COMBAT, victim, assistUser, 1);
             if (SimpleEventHandler.handle(assistsChangeEvent)) {
-                assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
+                this.changeClampedStat(assistUser, UserStatKeys.ASSISTS, assistsChangeEvent.getAssistsChange());
             }
         }
 

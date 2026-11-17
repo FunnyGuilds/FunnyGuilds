@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.entity.Player;
 
 public class UserPlaceholders extends Placeholders<User, UserPlaceholders> {
@@ -23,9 +22,9 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholders> {
         return this.playerProperty(name, player -> resolver.resolve(player, Optional.ofNullable(player)));
     }
 
-    public UserPlaceholders rankProperty(String name, MonoResolver<UserRank> resolver) {
+    public UserPlaceholders rankProperty(String name, MonoResolver<User> resolver) {
         return this.property(name, (Object entity, User user) -> {
-            Object value = resolver.resolve(entity, user.getRank());
+            Object value = resolver.resolve(user);
             if (value instanceof Float || value instanceof Double) {
                 return String.format(Locale.US, "%.2f", ((Number) value).floatValue());
             }
@@ -33,9 +32,9 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholders> {
         });
     }
 
-    public UserPlaceholders numericRankProperty(String name, String metric, Function<UserRank, Number> resolver, Supplier<ValueFormatting> formatting) {
-        return this.rankProperty(name, rank -> resolver.apply(rank))
-                .property(name + "-format", user -> formatting.get().user(metric, resolver.apply(user.getRank())));
+    public UserPlaceholders numericRankProperty(String name, String metric, Function<User, Number> resolver, Supplier<ValueFormatting> formatting) {
+        return this.rankProperty(name, resolver::apply)
+                .property(name + "-format", user -> formatting.get().user(metric, resolver.apply(user)));
     }
 
     @Override

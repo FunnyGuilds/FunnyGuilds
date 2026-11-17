@@ -13,11 +13,9 @@ import net.dzikoysk.funnyguilds.feature.placeholders.formatting.NumericValueForm
 import net.dzikoysk.funnyguilds.feature.placeholders.formatting.ValueFormatting;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleMonoResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocalePairResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.LocaleSimpleResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 
@@ -31,14 +29,10 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
         return this.property(name, (entity, data) -> resolver.resolve(data), fallbackResolve);
     }
 
-    public GuildPlaceholders rankProperty(String name, LocalePairResolver<Guild, GuildRank> resolver, LocaleSimpleResolver fallbackResolver) {
-        return this.property(name, (entity, guild) -> resolver.resolve(entity, guild, guild.getRank()), fallbackResolver);
-    }
-
-    public GuildPlaceholders rankProperty(String name, MonoResolver<GuildRank> resolver, Number fallbackValue) {
+    public GuildPlaceholders rankProperty(String name, MonoResolver<Guild> resolver, Number fallbackValue) {
         return this.property(name,
                 (entity, guild) -> {
-                    Object value = resolver.resolve(guild.getRank());
+                    Object value = resolver.resolve(guild);
                     if (value instanceof Float || value instanceof Double) {
                         return String.format(Locale.ROOT, "%.2f", ((Number) value).floatValue());
                     }
@@ -62,9 +56,9 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                 );
     }
 
-    public GuildPlaceholders numericRankProperty(String name, String metric, Function<GuildRank, Number> resolver, Number fallback, Supplier<ValueFormatting> formatting) {
-        return this.rankProperty(name, rank -> resolver.apply(rank), fallback)
-                .property(name + "-format", guild -> formatting.get().guild(metric, resolver.apply(guild.getRank())),
+    public GuildPlaceholders numericRankProperty(String name, String metric, Function<Guild, Number> resolver, Number fallback, Supplier<ValueFormatting> formatting) {
+        return this.rankProperty(name, resolver::apply, fallback)
+                .property(name + "-format", guild -> formatting.get().guild(metric, resolver.apply(guild)),
                         entity -> NumericValueFormatter.plain(fallback));
     }
 

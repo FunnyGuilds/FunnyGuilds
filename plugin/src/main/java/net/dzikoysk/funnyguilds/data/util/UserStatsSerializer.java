@@ -17,6 +17,11 @@ public final class UserStatsSerializer {
     private UserStatsSerializer() {
     }
 
+    /**
+     * Serializes every non-built-in statistic of the user into a JSON object: each entry is keyed by the
+     * fully qualified key name and carries a {@code type} ({@code integer} or {@code double}) and a
+     * {@code value}. Built-ins are omitted - their legacy columns remain authoritative.
+     */
     public static String serialize(User user) {
         JsonObject result = new JsonObject();
         FunnyGuilds.getInstance().getRankService().getUserStats(user).forEach((key, value) -> {
@@ -31,6 +36,13 @@ public final class UserStatsSerializer {
         return result.toString();
     }
 
+    /**
+     * Registers and applies serialized statistics to the user. Bare key names are normalized into the
+     * {@code funnyguilds} namespace; built-in keys are skipped in favor of the authoritative legacy
+     * columns. Keys unknown to this session are registered rather than dropped, so stored custom
+     * statistics survive a session that does not declare them; such keys surface only as single-entity
+     * tops. Malformed entries are logged and skipped; a null or blank payload is ignored.
+     */
     public static void deserialize(User user, String serialized) {
         if (serialized == null || serialized.trim().isEmpty()) {
             return;
@@ -44,14 +56,9 @@ public final class UserStatsSerializer {
             return;
         }
         RankService service = FunnyGuilds.getInstance().getRankService();
-        // Keys unknown to this session (custom statistics or hand-edited entries) are intentionally
-        // registered: dropping them would silently lose stored data of custom statistics. Unknown
-        // entries produce a warning below and, if kept, only surface as single-entity tops.
         for (Map.Entry<String, JsonElement> entry : values.entrySet()) {
             try {
                 JsonObject stat = entry.getValue().getAsJsonObject();
-                // Serialized keys are always namespaced; normalize bare keys from hand-edited
-                // payloads into the plugin namespace instead of Adventure's minecraft default.
                 String name = entry.getKey();
                 Key identity = name.indexOf(':') >= 0 ? Key.key(name) : Key.key(FunnyGuilds.NAMESPACE, name);
                 String type = stat.get("type").getAsString();

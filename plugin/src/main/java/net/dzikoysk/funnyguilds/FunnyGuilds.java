@@ -749,7 +749,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.dummyManager = Optionals.when(
                 scoreboardConfig.dummy.enabled,
-                () -> new DummyManager(this.pluginConfiguration, this.userManager, scoreboardService)
+                () -> new DummyManager(this.pluginConfiguration, this.rankService, this.userManager, scoreboardService)
         );
         this.dummyUpdateTask = this.dummyManager.map(manager -> Bukkit.getScheduler().runTaskTimer(
                 plugin,

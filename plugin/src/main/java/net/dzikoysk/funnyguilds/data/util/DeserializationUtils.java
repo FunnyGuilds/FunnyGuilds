@@ -11,11 +11,13 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserProfile;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.Location;
 
 public final class DeserializationUtils {
@@ -34,11 +36,14 @@ public final class DeserializationUtils {
         UserProfile profile = new BukkitUserProfile(playerUniqueId, FunnyGuilds.getInstance().getFunnyServer()); // :(
         User user = userManager.create(playerUniqueId, playerName, profile);
 
-        user.getRank().setPoints((int) values[2]);
-        user.getRank().setKills((int) values[3]);
-        user.getRank().setDeaths((int) values[4]);
-        user.getRank().setAssists((int) values[5]);
-        user.getRank().setLogouts((int) values[6]);
+        // Persisted values may be negative from manual edits; keep the former shim clamping so
+        // counters never enter the ranking engine below zero.
+        RankService rankService = FunnyGuilds.getInstance().getRankService();
+        rankService.setUserStatValue(user, UserStatKeys.POINTS, Math.max(0, (int) values[2]));
+        rankService.setUserStatValue(user, UserStatKeys.KILLS, Math.max(0, (int) values[3]));
+        rankService.setUserStatValue(user, UserStatKeys.DEATHS, Math.max(0, (int) values[4]));
+        rankService.setUserStatValue(user, UserStatKeys.ASSISTS, Math.max(0, (int) values[5]));
+        rankService.setUserStatValue(user, UserStatKeys.LOGOUTS, Math.max(0, (int) values[6]));
         UserStatsSerializer.deserialize(user, stats);
 
         Instant ban = (Instant) values[7];
@@ -83,11 +88,16 @@ public final class DeserializationUtils {
             guild.setRegion((Region) values[5]);
         }
 
-        guild.setMembers((Set<User>) values[6]);
+        guildManager.setMembers(guild, (Set<User>) values[6]);
         guild.setAllies((Set<Guild>) values[7]);
         guild.setEnemies((Set<Guild>) values[8]);
         guild.setBorn((Instant) values[9]);
-        guild.setValidity((Instant) values[10]);
+
+        Instant validity = (Instant) values[10];
+        if (validity == null || validity.equals(guild.getBorn())) {
+            validity = Instant.now().plus(pluginConfiguration.validityStart);
+        }
+        guild.setValidity(validity);
         guild.setProtection((Instant) values[11]);
         guild.setLives((int) values[12]);
         guild.setBan((Instant) values[13]);
@@ -111,6 +121,7 @@ public final class DeserializationUtils {
             guild.setLastLifeBuy((Instant) values[22]);
         }
         guild.deserializationUpdate();
+        guildManager.refreshGuild(guild);
 
         guild.markUnchanged();
         return Optional.of(guild);

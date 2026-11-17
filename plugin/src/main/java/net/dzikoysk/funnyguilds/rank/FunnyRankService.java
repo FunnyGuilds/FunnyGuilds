@@ -3,12 +3,16 @@ package net.dzikoysk.funnyguilds.rank;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -32,8 +36,18 @@ final class FunnyRankService implements RankService {
     private final Map<UUID, Boolean> userEligibility = new ConcurrentHashMap<>();
     private final Map<GuildStatAggregationType<?>, Map<StatKey<?>, GuildRankTracker<?>>> guildTrackers = new HashMap<>();
     private final Queue<Update<?>> updates = new ArrayDeque<>();
+    // Updates a drain has polled but not completed yet, guarded by this. Between the poll and the
+    // action re-acquiring the monitor, the update is owned by no lock, so close() needs this set to
+    // know which accepted updates it still has to wait for.
+    private final Set<Update<?>> inFlightUpdates = new HashSet<>();
     private boolean processingUpdates;
+    // closing rejects new enqueues from the moment close() starts draining; closed rejects direct
+    // operations once every accepted update has completed.
+    private boolean closing;
     private boolean closed;
+    // Test seam: invoked between polling an update and running it, with no monitor held, which is
+    // exactly the window close() must not race through. Null outside tests; must not throw.
+    volatile Runnable afterPollHook;
 
     FunnyRankService(Executor executor, PluginConfiguration config, UserManager userManager, GuildManager guildManager) {
         this.executor = executor;
@@ -204,12 +218,27 @@ final class FunnyRankService implements RankService {
 
             @Override
             public R zero() {
-                return aggregation.getValueType() == Integer.class
-                        ? aggregation.getValueType().cast(0) : aggregation.getValueType().cast(0.0);
+                Class<R> type = aggregation.getValueType();
+                if (type == Integer.class) {
+                    return type.cast(0);
+                }
+                if (type == Long.class) {
+                    return type.cast(0L);
+                }
+                return type.cast(0.0);
             }
 
             @Override
             public int compare(R first, R second) {
+                Class<R> type = aggregation.getValueType();
+                // Compare in the tracked type: routing Long through Double.compare would merge
+                // totals that differ beyond 2^53 and corrupt positions of exact Long sums.
+                if (type == Long.class) {
+                    return Long.compare(first.longValue(), second.longValue());
+                }
+                if (type == Integer.class) {
+                    return Integer.compare(first.intValue(), second.intValue());
+                }
                 return Double.compare(first.doubleValue(), second.doubleValue());
             }
         };
@@ -280,7 +309,7 @@ final class FunnyRankService implements RankService {
 
     private synchronized <T> CompletableFuture<T> enqueue(Supplier<T> action) {
         Update<T> update = new Update<>(action);
-        if (this.closed) {
+        if (this.closing) {
             update.future.completeExceptionally(new IllegalStateException("Rank service is closed"));
             return update.future;
         }
@@ -301,33 +330,84 @@ final class FunnyRankService implements RankService {
         return update.future;
     }
 
-    private synchronized void processUpdates() {
-        try {
+    // The monitor is held only to poll the next update, so server-thread reads and writes can
+    // interleave between queued updates instead of waiting behind a whole external batch. Clearing
+    // the flag under the monitor together with the empty poll keeps the enqueue race closed: a
+    // producer either sees the flag set (its update joins this drain) or schedules a new drain.
+    // The polled update is remembered as in-flight until its action completes: the action has to
+    // re-acquire the monitor after this method released it, so close() can slip in between the two
+    // and must be able to wait for exactly these updates instead of failing them as closed.
+    private void processUpdates() {
+        while (true) {
             Update<?> update;
-            while ((update = this.updates.poll()) != null) {
+            synchronized (this) {
+                update = this.updates.poll();
+                if (update == null) {
+                    this.processingUpdates = false;
+                    return;
+                }
+                this.inFlightUpdates.add(update);
+            }
+            Runnable afterPollHook = this.afterPollHook;
+            if (afterPollHook != null) {
+                afterPollHook.run();
+            }
+            try {
                 update.run();
             }
-        }
-        finally {
-            this.processingUpdates = false;
+            finally {
+                synchronized (this) {
+                    this.inFlightUpdates.remove(update);
+                }
+            }
         }
     }
 
     @Override
-    public synchronized void close() {
-        this.processUpdates();
-        this.closed = true;
+    public void close() {
+        List<Update<?>> pending;
+        synchronized (this) {
+            // Rejecting enqueues from here on makes the inline drain below the last chance for work
+            // to be accepted: close completes queued updates itself instead of waiting on a
+            // scheduled drain task that may never start.
+            this.closing = true;
+            this.processUpdates();
+            pending = List.copyOf(this.inFlightUpdates);
+        }
+        // A polled update has left the queue but may not have started yet; an already running one
+        // has not completed either. Waiting below finishes every update accepted before close while
+        // holding no monitor, because those actions need it to run. An update that invoked close()
+        // from within its own function is skipped: joining its future from inside the action would
+        // deadlock, so it completes when its function returns, like any other failing action.
+        Thread current = Thread.currentThread();
+        for (Update<?> update : pending) {
+            if (update.runner == current) {
+                continue;
+            }
+            try {
+                update.future.join();
+            }
+            catch (CompletionException ignored) {
+                // A failed update still counts as completed; close must not propagate its failure.
+            }
+        }
+        synchronized (this) {
+            this.closed = true;
+        }
     }
 
     private static final class Update<T> {
         private final Supplier<T> action;
         private final CompletableFuture<T> future = new CompletableFuture<>();
+        // Set once when the action starts, so close() can recognize an update running on its own thread.
+        private volatile Thread runner;
 
         private Update(Supplier<T> action) {
             this.action = action;
         }
 
         private void run() {
+            this.runner = Thread.currentThread();
             try {
                 this.future.complete(this.action.get());
             }

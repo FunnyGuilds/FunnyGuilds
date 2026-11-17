@@ -9,14 +9,16 @@ import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.SetRequirements;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class GuildItemRequirementChecker {
 
-    public ItemRequirementResult check(Player player, User user, GuildItemSet set, ItemsConfiguration config) {
+    public ItemRequirementResult check(Player player, User user, GuildItemSet set, ItemsConfiguration config, RankService rankService) {
         SetRequirements req = set.requirements;
 
         boolean meetsMoney = true;
@@ -31,7 +33,7 @@ public class GuildItemRequirementChecker {
 
         boolean meetsRank = true;
         if (req.rankEnabled && set.requiredRank > 0 && user != null) {
-            meetsRank = user.getRank().getPoints() >= set.requiredRank;
+            meetsRank = rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0) >= set.requiredRank;
         }
 
         Map<String, ItemCountResult> itemCounts = new LinkedHashMap<>();

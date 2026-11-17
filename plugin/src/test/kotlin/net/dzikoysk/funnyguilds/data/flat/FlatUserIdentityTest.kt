@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds
 import net.dzikoysk.funnyguilds.TestLogger
 import net.dzikoysk.funnyguilds.data.DataModelLoader
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer
+import net.dzikoysk.funnyguilds.user.UserStatKeys
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -81,7 +82,7 @@ class FlatUserIdentityTest : FunnyGuildsSpec() {
             FlatDataModel(funnyGuilds).load()
             val user = userManager.findByUuid(uuid).get()
             assertEquals("Steve", user.name)
-            assertEquals(1234, user.rank.points)
+            assertEquals(1234, rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0))
             assertTrue(!user.wasChanged())
             Files.delete(folder.resolve("data/users/$uuid.yml"))
             Files.delete(folder.resolve("data/users"))

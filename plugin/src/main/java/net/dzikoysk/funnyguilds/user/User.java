@@ -2,11 +2,11 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.Optional;
 import java.util.UUID;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class User extends AbstractMutableEntity implements IdentifiableEntity {
@@ -15,7 +15,6 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
     private String name;
 
     private final UserCache cache;
-    private final UserRank rank;
     private volatile Optional<Guild> guild = Optional.empty();
     private Optional<UserBan> ban = Optional.empty();
     private String lastIP;
@@ -28,7 +27,6 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         this.profile = profile;
 
         this.cache = new UserCache(this);
-        this.rank = new UserRank(this);
 
         this.markChanged();
     }
@@ -53,10 +51,6 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
 
     public UserCache getCache() {
         return this.cache;
-    }
-
-    public UserRank getRank() {
-        return this.rank;
     }
 
     public boolean isOnline() {
@@ -91,6 +85,12 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         return this.guild.isPresent();
     }
 
+    /**
+     * Internal: keeps the {@link User} back-reference and the guild's member set consistent.
+     * Managed membership changes belong in {@link net.dzikoysk.funnyguilds.guild.GuildManager}
+     * ({@code addMember}, {@code removeMember}, {@code setMembers}), which also refresh rankings.
+     */
+    @ApiStatus.Internal
     public void setGuild(@Nullable Guild guild) {
         Guild previous = this.guild.orElse(null);
         if (previous == guild) {
@@ -106,6 +106,8 @@ public class User extends AbstractMutableEntity implements IdentifiableEntity {
         }
     }
 
+    /** Internal: see {@link #setGuild(Guild)}; membership coordination belongs in {@link net.dzikoysk.funnyguilds.guild.GuildManager}. */
+    @ApiStatus.Internal
     public void removeGuild() {
         this.setGuild(null);
     }

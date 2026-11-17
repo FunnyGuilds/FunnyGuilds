@@ -65,6 +65,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
 
         guild.setName(args[1]);
+        this.guildManager.refreshGuild(guild);
         this.messageService.getMessage(config -> config.adminNameChanged)
                 .with("{GUILD}", guild.getName())
                 .receiver(sender)

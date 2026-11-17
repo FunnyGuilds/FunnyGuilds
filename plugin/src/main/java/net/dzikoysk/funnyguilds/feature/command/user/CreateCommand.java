@@ -29,6 +29,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -117,7 +118,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     .send();
         }
         else {
-            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, activeSet, this.itemsConfiguration);
+            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, activeSet, this.itemsConfiguration, this.rankService);
 
             if (!result.meetsAll()) {
                 this.messageService.getMessage(config -> config.itemsRequirementsNotMet)
@@ -145,7 +146,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     this.messageService.getMessage(config -> config.itemsRequirementRank)
                             .receiver(player)
                             .with("{STATUS_COLOR}", "<red>")
-                            .with("{CURRENT}", user.getRank().getPoints())
+                            .with("{CURRENT}", this.rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0))
                             .with("{REQUIRED}", activeSet.requiredRank)
                             .send();
                 }
@@ -277,7 +278,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         this.guildManager.addGuild(guild);
-        user.setGuild(guild);
 
         guild.getRegion().ifPresent(region -> this.regionManager.addRegion(region));
 

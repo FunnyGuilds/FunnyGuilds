@@ -9,12 +9,11 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,18 +44,16 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
     }
 
     public void sendInfoMessage(Function<MessageConfiguration, Sendable> baseMessage, User infoUser, CommandSender messageTarget) {
-        UserRank rank = infoUser.getRank();
-
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", infoUser.getName())
-                .register("{POINTS}", rank.getPoints())
-                .register("{KILLS}", rank.getKills())
-                .register("{DEATHS}", rank.getDeaths())
-                .register("{ASSISTS}", rank.getAssists())
-                .register("{LOGOUTS}", rank.getLogouts())
-                .register("{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()))
-                .register("{KDA}", String.format(Locale.US, "%.2f", rank.getKDA()))
-                .register("{RANK}", rank.getPosition(DefaultTops.USER_POINTS_TOP));
+                .register("{POINTS}", this.rankService.getUserStatValue(infoUser, UserStatKeys.POINTS).orElse(0))
+                .register("{KILLS}", this.rankService.getUserStatValue(infoUser, UserStatKeys.KILLS).orElse(0))
+                .register("{DEATHS}", this.rankService.getUserStatValue(infoUser, UserStatKeys.DEATHS).orElse(0))
+                .register("{ASSISTS}", this.rankService.getUserStatValue(infoUser, UserStatKeys.ASSISTS).orElse(0))
+                .register("{LOGOUTS}", this.rankService.getUserStatValue(infoUser, UserStatKeys.LOGOUTS).orElse(0))
+                .register("{KDR}", String.format(Locale.US, "%.2f", this.rankService.getUserStatValue(infoUser, UserStatKeys.KDR).orElse(0.0)))
+                .register("{KDA}", String.format(Locale.US, "%.2f", this.rankService.getUserStatValue(infoUser, UserStatKeys.KDA).orElse(0.0)))
+                .register("{RANK}", this.rankService.getUserTopPosition(infoUser, UserStatKeys.POINTS).orElse(0));
 
         this.messageService.getMessage(baseMessage)
                 .receiver(messageTarget)
@@ -84,8 +81,8 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         if (receiver instanceof Player) {
             User receiverUser = this.userManager.findByPlayer((Player) receiver).orElse(null);
             if (receiverUser != null && !receiverUser.equals(infoUser)) {
-                int receiverPoints = receiverUser.getRank().getPoints();
-                int infoUserPoints = infoUser.getRank().getPoints();
+                int receiverPoints = this.rankService.getUserStatValue(receiverUser, UserStatKeys.POINTS).orElse(0);
+                int infoUserPoints = this.rankService.getUserStatValue(infoUser, UserStatKeys.POINTS).orElse(0);
                 gain = this.rankSystem.calculate(this.config.rankSystem, receiverPoints, infoUserPoints).getAttackerPoints();
                 loss = -this.rankSystem.calculate(this.config.rankSystem, infoUserPoints, receiverPoints).getVictimPoints();
             }

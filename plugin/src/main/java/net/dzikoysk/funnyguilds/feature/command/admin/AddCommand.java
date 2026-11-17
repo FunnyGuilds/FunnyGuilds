@@ -38,8 +38,7 @@ public final class AddCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guild.addMember(userToAdd);
-        userToAdd.setGuild(guild);
+        this.guildManager.addMember(guild, userToAdd);
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, userToAdd))
                 .ifPresent(this.plugin::scheduleFunnyTasks);

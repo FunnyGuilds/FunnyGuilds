@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.RankFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -170,8 +171,8 @@ public class EntityDamage extends AbstractFunnyListener {
 
         RankSystem.RankResult predicted = this.rankSystem.calculate(
                 this.config.rankSystem,
-                attacker.getRank().getPoints(),
-                victim.getRank().getPoints()
+                this.plugin.getRankService().getUserStatValue(attacker, UserStatKeys.POINTS).orElse(0),
+                this.plugin.getRankService().getUserStatValue(victim, UserStatKeys.POINTS).orElse(0)
         );
 
         if (this.config.displayCombatPredictionAttacker) {

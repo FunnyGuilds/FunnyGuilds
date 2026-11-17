@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.admin.stats;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.command.CommandSender;
 
 public final class DeathsCommand extends AbstractFunnyCommand {
@@ -16,9 +16,8 @@ public final class DeathsCommand extends AbstractFunnyCommand {
     )
     public void execute(CommandSender sender, String[] args) {
         StatsCommand.execute(
-                this.messageService, sender, args,
-                UserRank::getDeaths,
-                UserRank::setDeaths,
+                this.messageService, this.rankService, sender, args,
+                UserStatKeys.DEATHS,
                 DeathsChangeEvent::new,
                 DeathsChangeEvent::getDeathsChange,
                 config -> config.adminNoDeathsGiven,

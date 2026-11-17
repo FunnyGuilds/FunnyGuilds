@@ -49,14 +49,18 @@ public final class RankExemptionRefreshTask implements Runnable {
         }
         // Offline Vault permission lookups may be expensive. Spread them over ticks instead of
         // moving the old all-player scan onto the server thread in a single large batch.
-        for (int i = 0; i < OFFLINE_CHECKS_PER_RUN; i++) {
+        for (int checked = 0; checked < OFFLINE_CHECKS_PER_RUN; ) {
             UUID uuid = this.pendingOfflineChecks.poll();
             if (uuid == null) {
                 break;
             }
-            if (!online.contains(uuid)) {
-                this.userManager.findByUuid(uuid).ifPresent(user -> this.check(user, tracker));
+            if (online.contains(uuid)) {
+                // Online players were already checked above; their stale queue entry must not
+                // consume the offline check budget.
+                continue;
             }
+            this.userManager.findByUuid(uuid).ifPresent(user -> this.check(user, tracker));
+            checked++;
         }
     }
 

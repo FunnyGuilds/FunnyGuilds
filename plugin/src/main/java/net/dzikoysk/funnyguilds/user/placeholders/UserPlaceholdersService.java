@@ -11,9 +11,9 @@ import net.dzikoysk.funnyguilds.config.message.EntityLocaleProvider;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -30,6 +30,7 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
 
     public static UserPlaceholders createUserPlaceholders(FunnyGuilds plugin) {
         PluginConfiguration config = plugin.getPluginConfiguration();
+        RankService rankService = plugin.getRankService();
         return new UserPlaceholders()
                 .property("name", User::getName)
                 .property("player", User::getName)
@@ -37,14 +38,14 @@ public class UserPlaceholdersService extends StaticPlaceholdersService<User, Use
                 .property("ping-format", user -> config.getValueFormatting().ping(user.getPing()))
                 .property("has-guild", User::hasGuild)
                 .property("guild-position", user -> UserUtils.getUserPosition(plugin.getGuildPermissionChecker(), user))
-                .rankProperty("position", (rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
-                .numericRankProperty("points", "points", UserRank::getPoints, config::getValueFormatting)
-                .numericRankProperty("kills", "kills", UserRank::getKills, config::getValueFormatting)
-                .numericRankProperty("deaths", "deaths", UserRank::getDeaths, config::getValueFormatting)
-                .numericRankProperty("kdr", "kdr", UserRank::getKDR, config::getValueFormatting)
-                .numericRankProperty("kda", "kda", UserRank::getKDA, config::getValueFormatting)
-                .numericRankProperty("assists", "assists", UserRank::getAssists, config::getValueFormatting)
-                .numericRankProperty("logouts", "logouts", UserRank::getLogouts, config::getValueFormatting);
+                .rankProperty("position", user -> rankService.getUserTopPosition(user, UserStatKeys.POINTS).orElse(0))
+                .numericRankProperty("points", "points", user -> rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0), config::getValueFormatting)
+                .numericRankProperty("kills", "kills", user -> rankService.getUserStatValue(user, UserStatKeys.KILLS).orElse(0), config::getValueFormatting)
+                .numericRankProperty("deaths", "deaths", user -> rankService.getUserStatValue(user, UserStatKeys.DEATHS).orElse(0), config::getValueFormatting)
+                .numericRankProperty("kdr", "kdr", user -> rankService.getUserStatValue(user, UserStatKeys.KDR).orElse(0.0), config::getValueFormatting)
+                .numericRankProperty("kda", "kda", user -> rankService.getUserStatValue(user, UserStatKeys.KDA).orElse(0.0), config::getValueFormatting)
+                .numericRankProperty("assists", "assists", user -> rankService.getUserStatValue(user, UserStatKeys.ASSISTS).orElse(0), config::getValueFormatting)
+                .numericRankProperty("logouts", "logouts", user -> rankService.getUserStatValue(user, UserStatKeys.LOGOUTS).orElse(0), config::getValueFormatting);
     }
 
     public static UserPlaceholders createPlayerPlaceholders(FunnyGuilds plugin) {

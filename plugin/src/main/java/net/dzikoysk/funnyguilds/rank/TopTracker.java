@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.IdentifiableEntity;
  * Tracks top-ranked entities based on a specific statistic.
  *
  * @param <E> the type of entity being ranked
- * @param <T> the type of statistic value used for ranking
  */
 public interface TopTracker<E extends IdentifiableEntity> {
 

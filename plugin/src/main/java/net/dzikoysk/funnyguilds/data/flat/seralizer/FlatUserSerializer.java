@@ -8,8 +8,10 @@ import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.UserStatsSerializer;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.configuration.ConfigurationSection;
 
 public final class FlatUserSerializer {
@@ -70,13 +72,14 @@ public final class FlatUserSerializer {
         }
 
         YamlWrapper wrapper = new YamlWrapper(userFile);
+        RankService rankService = FunnyGuilds.getInstance().getRankService();
         wrapper.set("uuid", user.getUUID().toString());
         wrapper.set("name", user.getName());
-        wrapper.set("points", user.getRank().getPoints());
-        wrapper.set("kills", user.getRank().getKills());
-        wrapper.set("deaths", user.getRank().getDeaths());
-        wrapper.set("assists", user.getRank().getAssists());
-        wrapper.set("logouts", user.getRank().getLogouts());
+        wrapper.set("points", rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0));
+        wrapper.set("kills", rankService.getUserStatValue(user, UserStatKeys.KILLS).orElse(0));
+        wrapper.set("deaths", rankService.getUserStatValue(user, UserStatKeys.DEATHS).orElse(0));
+        wrapper.set("assists", rankService.getUserStatValue(user, UserStatKeys.ASSISTS).orElse(0));
+        wrapper.set("logouts", rankService.getUserStatValue(user, UserStatKeys.LOGOUTS).orElse(0));
         wrapper.set("stats", UserStatsSerializer.serialize(user));
         wrapper.set("last_ip", user.getLastIP());
 

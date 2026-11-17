@@ -12,17 +12,27 @@ import net.kyori.adventure.key.KeyPattern;
 import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A typed ranking statistic identified by an Adventure {@link Key} and a value type - only {@link Integer}
+ * and {@link Double} are supported. Keys live in a process-wide registry that is never cleared, so a key
+ * obtained once stays usable for the whole plugin lifetime. Rank trackers order entities descending by
+ * {@link #compare} - higher values take earlier positions.
+ */
 public interface StatKey<T extends Number> extends Keyed {
 
+    /** The value class this statistic is tracked and stored as. */
     Class<T> getValueType();
 
+    /** The default value assumed for entities without a stored value. */
     T zero();
 
+    /** Orders two values; rank trackers sort descending by this comparison, so higher values rank first. */
     int compare(
             T value1,
             T value2
     );
 
+    /** Returns the key registered under this identity, or registers it if new. */
     static StatKey<Integer> integerStatKey(Key key) {
         return register(new IntegerStatKey(key));
     }
@@ -34,6 +44,7 @@ public interface StatKey<T extends Number> extends Keyed {
         ));
     }
 
+    /** Returns the key registered under this identity, or registers it if new. */
     static StatKey<Double> doubleStatKey(Key key) {
         return register(new DoubleStatKey(key));
     }
@@ -45,7 +56,11 @@ public interface StatKey<T extends Number> extends Keyed {
         ));
     }
 
-    /** Keys declared through the factories are immediately available to top placeholders. */
+    /**
+     * Finds a registered key by name: case-insensitive, bare names resolve in the {@code funnyguilds}
+     * namespace. Returns empty for names that are not valid keys or are not registered; keys declared
+     * through the factories are immediately resolvable and therefore usable in top placeholders.
+     */
     static Optional<StatKey<?>> find(String name) {
         try {
             String normalized = name.toLowerCase(Locale.ROOT);
@@ -57,14 +72,17 @@ public interface StatKey<T extends Number> extends Keyed {
         }
     }
 
+    /**
+     * Registers the key in the process-wide registry, idempotently: an equal key (same identity and value
+     * type) returns the already registered instance, while the same key with a conflicting value type
+     * throws {@link IllegalArgumentException}. Non {@link Integer}/{@link Double} value types are rejected.
+     */
     @SuppressWarnings("unchecked")
     static <T extends Number> StatKey<T> register(StatKey<T> key) {
         if (key.getValueType() != Integer.class && key.getValueType() != Double.class) {
             throw new IllegalArgumentException("Unsupported statistic type " + key.getValueType());
         }
-        // The registry is static and never cleared: keys registered at runtime (including custom
-        // statistics deserialized from storage) live for the whole plugin lifetime. Tests should
-        // use unique key names, since registry state is shared across test classes.
+        // Registry state is shared across test classes; tests should use unique key names.
         StatKey<?> existing = Registry.KEYS.putIfAbsent(key.key(), key);
         if (existing != null && existing.getValueType() != key.getValueType()) {
             throw new IllegalArgumentException("Conflicting value types for statistic " + key.key());

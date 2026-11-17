@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.LogoutsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +40,12 @@ public class PlayerQuit extends AbstractFunnyListener {
                 LogoutsChangeEvent logoutsChangeEvent = new LogoutsChangeEvent(FunnyEvent.EventCause.USER, user, user, 1);
 
                 if (SimpleEventHandler.handle(logoutsChangeEvent)) {
-                    user.getRank().updateLogouts(currentValue -> currentValue + logoutsChangeEvent.getLogoutsChange());
+                    // Floor at zero like the former shim setter; the rank service stores values unclamped.
+                    this.plugin.getRankService().changeUserStatValue(
+                            user,
+                            UserStatKeys.LOGOUTS,
+                            currentValue -> Math.max(0, currentValue + logoutsChangeEvent.getLogoutsChange())
+                    );
                 }
             }
 

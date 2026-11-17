@@ -4,6 +4,7 @@ import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,7 @@ public class GuildItemsGui {
     private final String setName;
     private final ItemsConfiguration config;
     private final MessageService messageService;
+    private final RankService rankService;
 
     private ChestGui chestGui;
 
@@ -26,7 +28,8 @@ public class GuildItemsGui {
             GuildItemSet set,
             String setName,
             ItemsConfiguration config,
-            MessageService messageService
+            MessageService messageService,
+            RankService rankService
     ) {
         this.player = player;
         this.user = user;
@@ -34,6 +37,7 @@ public class GuildItemsGui {
         this.setName = setName;
         this.config = config;
         this.messageService = messageService;
+        this.rankService = rankService;
     }
 
     public void open() {
@@ -61,6 +65,7 @@ public class GuildItemsGui {
     public String getSetName() { return setName; }
     public ItemsConfiguration getConfig() { return config; }
     public MessageService getMessageService() { return messageService; }
+    public RankService getRankService() { return rankService; }
     public boolean isShowOnlyMissing() { return showOnlyMissing; }
     public ChestGui getChestGui() { return chestGui; }
 

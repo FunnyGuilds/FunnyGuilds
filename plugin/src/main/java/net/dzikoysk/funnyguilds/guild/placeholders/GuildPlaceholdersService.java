@@ -18,16 +18,16 @@ import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.feature.placeholders.StaticPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildRank;
+import net.dzikoysk.funnyguilds.rank.GuildStatAggregationType;
 import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.permission.GenericGuildPermissions;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -178,30 +178,30 @@ public class GuildPlaceholdersService extends StaticPlaceholdersService<Guild, G
                 .property("lives-symbol-all",
                         guild -> ComponentUtil.repeat(pluginConfiguration.livesRepeatingSymbol.full, guild.getLives()),
                         entity -> messages.get(entity, config -> config.livesNoValue))
-                .rankProperty("position",
-                        (entity, guild, rank) -> rankManager.isRankedGuild(guild)
-                                ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
+                .property("position",
+                        (entity, guild) -> rankManager.isRankedGuild(guild)
+                                ? String.valueOf(rankManager.getGuildTopPosition(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT).orElse(0))
                                 : messages.get(entity, config -> config.minMembersToIncludeNoValue),
                         entity -> messages.get(entity, config -> config.minMembersToIncludeNoValue))
-                .rankProperty("rank",
-                        (entity, guild, rank) -> rankManager.isRankedGuild(guild)
-                                ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
+                .property("rank",
+                        (entity, guild) -> rankManager.isRankedGuild(guild)
+                                ? String.valueOf(rankManager.getGuildTopPosition(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT).orElse(0))
                                 : messages.get(entity, config -> config.minMembersToIncludeNoValue),
                         entity -> messages.get(entity, config -> config.minMembersToIncludeNoValue))
-                .numericRankProperty("points", "points", GuildRank::getPoints, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-points", "avg_points", GuildRank::getAveragePoints, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("kills", "kills", GuildRank::getKills, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-kills", "avg_kills", GuildRank::getAverageKills, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("deaths", "deaths", GuildRank::getDeaths, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-deaths", "avg_deaths", GuildRank::getAverageDeaths, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("assists", "assists", GuildRank::getAssists, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-assists", "avg_assists", GuildRank::getAverageAssists, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("logouts", "logouts", GuildRank::getLogouts, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-logouts", "avg_logouts", GuildRank::getAverageLogouts, 0, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("kdr", "kdr", GuildRank::getKDR, 0.00, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-kdr", "avg_kdr", GuildRank::getAverageKDR, 0.00, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("kda", "kda", GuildRank::getKDA, 0.00, pluginConfiguration::getValueFormatting)
-                .numericRankProperty("avg-kda", "avg_kda", GuildRank::getAverageKDA, 0.00, pluginConfiguration::getValueFormatting);
+                .numericRankProperty("points", "points", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.POINTS, GuildStatAggregationType.TOTAL_LONG).orElse(0L), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-points", "avg_points", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.POINTS, GuildStatAggregationType.AVERAGE_INT).orElse(0), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("kills", "kills", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.KILLS, GuildStatAggregationType.TOTAL_LONG).orElse(0L), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-kills", "avg_kills", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.KILLS, GuildStatAggregationType.AVERAGE_INT).orElse(0), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("deaths", "deaths", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.DEATHS, GuildStatAggregationType.TOTAL_LONG).orElse(0L), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-deaths", "avg_deaths", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.DEATHS, GuildStatAggregationType.AVERAGE_INT).orElse(0), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("assists", "assists", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.ASSISTS, GuildStatAggregationType.TOTAL_LONG).orElse(0L), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-assists", "avg_assists", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.ASSISTS, GuildStatAggregationType.AVERAGE_INT).orElse(0), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("logouts", "logouts", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.LOGOUTS, GuildStatAggregationType.TOTAL_LONG).orElse(0L), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-logouts", "avg_logouts", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.LOGOUTS, GuildStatAggregationType.AVERAGE_INT).orElse(0), 0, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("kdr", "kdr", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.KDR, GuildStatAggregationType.TOTAL_DOUBLE).orElse(0.0), 0.00, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-kdr", "avg_kdr", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.KDR, GuildStatAggregationType.AVERAGE).orElse(0.0), 0.00, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("kda", "kda", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.KDA, GuildStatAggregationType.TOTAL_DOUBLE).orElse(0.0), 0.00, pluginConfiguration::getValueFormatting)
+                .numericRankProperty("avg-kda", "avg_kda", guild -> rankManager.getGuildStatValue(guild, UserStatKeys.KDA, GuildStatAggregationType.AVERAGE).orElse(0.0), 0.00, pluginConfiguration::getValueFormatting);
     }
 
     public static GuildPlaceholders createMemberPlaceholders(FunnyGuilds plugin) {

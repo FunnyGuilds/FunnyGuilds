@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountRes
 import net.dzikoysk.funnyguilds.feature.items.gui.GuildItemsGui;
 import net.dzikoysk.funnyguilds.feature.items.gui.GuildItemsGuiFactory;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 import org.bukkit.entity.Player;
 
 @FunnyComponent
@@ -32,11 +33,11 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         if (this.itemsConfiguration.gui.enabled) {
             GuildItemsGui gui = GuildItemsGuiFactory.create(
                     player, user, set, setName,
-                    this.itemsConfiguration, this.messageService
+                    this.itemsConfiguration, this.messageService, this.rankService
             );
             gui.open();
         } else {
-            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, set, this.itemsConfiguration);
+            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, set, this.itemsConfiguration, this.rankService);
 
             this.messageService.getMessage(config -> config.itemsCheckHeader)
                     .receiver(player)
@@ -65,7 +66,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 this.messageService.getMessage(config -> config.itemsRequirementRank)
                         .receiver(player)
                         .with("{STATUS_COLOR}", result.isMeetsRank() ? "<green>" : "<red>")
-                        .with("{CURRENT}", user.getRank().getPoints())
+                        .with("{CURRENT}", this.rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0))
                         .with("{REQUIRED}", set.requiredRank)
                         .send();
             }

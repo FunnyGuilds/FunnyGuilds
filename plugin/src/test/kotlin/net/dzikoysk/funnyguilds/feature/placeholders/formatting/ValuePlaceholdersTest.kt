@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter
 import net.dzikoysk.funnyguilds.user.FakeUserProfile
 import net.dzikoysk.funnyguilds.user.User
+import net.dzikoysk.funnyguilds.user.UserStatKeys
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholders
 import net.kyori.adventure.text.Component
@@ -56,11 +57,11 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
         guilds.register(funnyGuilds, "guild", GuildPlaceholdersService.createGuildPlaceholders(funnyGuilds))
         tablist = TablistPlaceholdersService(messageService, BasicPlaceholdersService(messageService), TimePlaceholdersService(messageService), users, guilds)
         target = userManager.createFake(UUID.randomUUID(), "Target", FakeUserProfile.online(80))
-        target.rank.points = 1500
-        target.rank.kills = 9
-        target.rank.deaths = 4
-        target.rank.assists = 3
-        target.rank.logouts = 2
+        rankService.setUserStatValue(target, UserStatKeys.POINTS, 1500)
+        rankService.setUserStatValue(target, UserStatKeys.KILLS, 9)
+        rankService.setUserStatValue(target, UserStatKeys.DEATHS, 4)
+        rankService.setUserStatValue(target, UserStatKeys.ASSISTS, 3)
+        rankService.setUserStatValue(target, UserStatKeys.LOGOUTS, 2)
     }
 
     private fun text(component: Component) = PlainTextComponentSerializer.plainText().serialize(component)
@@ -75,7 +76,7 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
             assertEquals("$value units / $value", text(render("{$name-FORMAT} / {$name}")))
         }
         assertEquals("§e80", LegacyComponentSerializer.legacySection().serialize(render("{PING-FORMAT}")))
-        target.rank.kills = 12
+        rankService.setUserStatValue(target, UserStatKeys.KILLS, 12)
         assertEquals("12 units", text(render("{KILLS-FORMAT}")))
     }
 
@@ -85,11 +86,11 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
         guild.addMember(target)
         target.setGuild(guild)
         val other = userManager.createFake(UUID.randomUUID(), "Other", FakeUserProfile.online())
-        other.rank.points = 500
-        other.rank.kills = 3
-        other.rank.deaths = 2
-        other.rank.assists = 1
-        other.rank.logouts = 4
+        rankService.setUserStatValue(other, UserStatKeys.POINTS, 500)
+        rankService.setUserStatValue(other, UserStatKeys.KILLS, 3)
+        rankService.setUserStatValue(other, UserStatKeys.DEATHS, 2)
+        rankService.setUserStatValue(other, UserStatKeys.ASSISTS, 1)
+        rankService.setUserStatValue(other, UserStatKeys.LOGOUTS, 4)
         guild.addMember(other)
         guild.warsWon = 3
         guild.warsLost = 2
@@ -168,6 +169,7 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
         command.config = config
         command.messageService = messageService
         command.userPlaceholdersService = users
+        command.rankService = rankService
         command.sendInfoMessage({ it.playerInfoList }, target, receiver)
         command.sendInfoMessage({ it.playerRightClickInfo }, target, receiver)
         val captured = ArgumentCaptor.forClass(Component::class.java)

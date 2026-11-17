@@ -10,9 +10,11 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.UserStatsSerializer;
+import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
+import net.dzikoysk.funnyguilds.user.UserStatKeys;
 
 public final class DatabaseUserSerializer {
 
@@ -60,14 +62,15 @@ public final class DatabaseUserSerializer {
     public static void serialize(User user) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getUsersTable());
+        RankService rankService = FunnyGuilds.getInstance().getRankService();
 
         statement.set("uuid", user.getUUID().toString());
         statement.set("name", user.getName());
-        statement.set("points", user.getRank().getPoints());
-        statement.set("kills", user.getRank().getKills());
-        statement.set("deaths", user.getRank().getDeaths());
-        statement.set("assists", user.getRank().getAssists());
-        statement.set("logouts", user.getRank().getLogouts());
+        statement.set("points", rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0));
+        statement.set("kills", rankService.getUserStatValue(user, UserStatKeys.KILLS).orElse(0));
+        statement.set("deaths", rankService.getUserStatValue(user, UserStatKeys.DEATHS).orElse(0));
+        statement.set("assists", rankService.getUserStatValue(user, UserStatKeys.ASSISTS).orElse(0));
+        statement.set("logouts", rankService.getUserStatValue(user, UserStatKeys.LOGOUTS).orElse(0));
         statement.set("stats", UserStatsSerializer.serialize(user));
         statement.set("ban", user.getBan().map(UserBan::getTime).map(Instant::toEpochMilli).orElse(0L));
         statement.set("reason", user.getBan().map(UserBan::getReason).orElse(null));
@@ -82,7 +85,7 @@ public final class DatabaseUserSerializer {
         SQLTable table = dataModel.getUsersTable();
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
 
-        statement.set("points", user.getRank().getPoints());
+        statement.set("points", FunnyGuilds.getInstance().getRankService().getUserStatValue(user, UserStatKeys.POINTS).orElse(0));
         statement.set("uuid", user.getUUID().toString());
         statement.executeUpdate();
     }

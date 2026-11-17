@@ -10,13 +10,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.IdentifiableEntity;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.rank.RankService;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
@@ -26,7 +25,6 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     private String name;
     private String tag;
 
-    private final GuildRank rank;
     private int lives;
     private int heartLives;
 
@@ -61,7 +59,6 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.name = name;
         this.tag = tag;
 
-        this.rank = new GuildRank(this);
         this.born = Instant.now();
     }
 
@@ -73,6 +70,11 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         this.members.forEach(user -> user.sendMessage(message));
     }
 
+    /**
+     * Internal: repairs {@link User} back-references after deserialization.
+     * Membership changes belong in {@link GuildManager}.
+     */
+    @ApiStatus.Internal
     public void deserializationUpdate() {
         this.owner.setGuild(this);
         this.members.forEach(user -> user.setGuild(this));
@@ -87,10 +89,10 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.name;
     }
 
+    @ApiStatus.Internal
     public void setName(String name) {
         this.name = name;
         this.markChanged();
-        this.refreshRankings();
     }
 
     public String getTag() {
@@ -100,10 +102,6 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     public void setTag(String tag) {
         this.tag = tag;
         this.markChanged();
-    }
-
-    public GuildRank getRank() {
-        return this.rank;
     }
 
     public int getLives() {
@@ -187,14 +185,26 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.owner.equals(user);
     }
 
+    /**
+     * Internal: assigns the owner and adds them to the member set. The caller is responsible for
+     * the owner's consistency: the user must end up with a matching {@link User#getGuild()}
+     * back-reference (use {@link GuildManager#addMember(Guild, User)} or
+     * {@link GuildManager#setMembers(Guild, Set)} for managed membership changes).
+     */
+    @ApiStatus.Internal
     public void setOwner(User user) {
         this.owner = user;
         this.addMember(user);
         this.markChanged();
     }
 
+    /**
+     * @return an unmodifiable, live view of the member set: it reflects membership changes made
+     * through {@link GuildManager} or the guild's internal mutators without copying, and it
+     * rejects mutation attempts with {@link UnsupportedOperationException}.
+     */
     public Set<User> getMembers() {
-        return this.members;
+        return Collections.unmodifiableSet(this.members);
     }
 
     public Set<User> getOnlineMembers(boolean includeVanished) {
@@ -208,46 +218,52 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.members.contains(user);
     }
 
-    public void setMembers(Set<User> members) {
-        Set<User> previous = this.members;
-        this.members = ConcurrentHashMap.newKeySet();
-        this.members.addAll(members);
-        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orElse(null) == this) {
-            previous.stream().filter(user -> !this.members.contains(user)).forEach(user -> {
-                if (user.getGuild().orElse(null) == this) {
-                    user.removeGuild();
-                }
-            });
-            this.members.forEach(user -> user.setGuild(this));
-        }
+    /**
+     * Pure data mutation: atomically replaces the member set and marks the guild changed.
+     * Managed membership changes belong in {@link GuildManager#setMembers(Guild, Set)}, which
+     * also maintains {@link User} back-references and rankings; this package-private mutator
+     * exists for {@link GuildManager} and deserialization within this package.
+     */
+    void setMembers(Set<User> members) {
+        Set<User> newMembers = ConcurrentHashMap.newKeySet();
+        newMembers.addAll(members);
+        this.members = newMembers;
         this.markChanged();
-        this.refreshRankings();
     }
 
-    public void addMember(User user) {
+    /**
+     * Internal: pure data mutation that adds the user to the member set and marks the guild changed
+     * only when the membership effectively changed. Managed membership changes belong in
+     * {@link GuildManager#addMember(Guild, User)}, which also repairs the {@link User}
+     * back-reference and refreshes rankings.
+     *
+     * @return whether the member set changed
+     */
+    @ApiStatus.Internal
+    public boolean addMember(User user) {
         boolean added = this.members.add(user);
-        if (FunnyGuilds.getInstance().getGuildManager().findByUuid(this.uuid).orElse(null) == this
-                && user.getGuild().orElse(null) != this) {
-            user.setGuild(this);
+        if (added) {
+            this.markChanged();
         }
-        if (!added) {
-            return;
-        }
-        this.markChanged();
-        this.refreshRankings();
+        return added;
     }
 
-    public void removeMember(User user) {
+    /**
+     * Internal: pure data mutation that removes the user from the member and deputy sets and marks
+     * the guild changed only when the membership effectively changed. Managed membership changes
+     * belong in {@link GuildManager#removeMember(Guild, User)}, which also repairs the {@link User}
+     * back-reference and refreshes rankings.
+     *
+     * @return whether the member set changed
+     */
+    @ApiStatus.Internal
+    public boolean removeMember(User user) {
         boolean removed = this.members.remove(user);
         this.deputies.remove(user);
-        if (user.getGuild().orElse(null) == this) {
-            user.removeGuild();
+        if (removed) {
+            this.markChanged();
         }
-        if (!removed) {
-            return;
-        }
-        this.markChanged();
-        this.refreshRankings();
+        return removed;
     }
 
     public Collection<User> getDeputies() {
@@ -368,11 +384,11 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return Instant.now().isBefore(this.validity);
     }
 
+    /**
+     * Pure setter for a real validity instant; null or "born" defaults are resolved by callers
+     * (see {@code DeserializationUtils}).
+     */
     public void setValidity(Instant time) {
-        if (time == null || this.born.equals(time)) {
-            time = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
-        }
-
         this.validity = time;
         this.markChanged();
     }
@@ -472,12 +488,18 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.warsWon;
     }
 
+    /**
+     * Internal: pure data mutation that does not refresh ranking trackers itself. The plugin's war
+     * flow refreshes them via {@link GuildManager#refreshGuild(Guild)}; direct counter changes must
+     * do the same.
+     */
+    @ApiStatus.Internal
     public void setWarsWon(int warsWon) {
         this.warsWon = Math.max(0, warsWon);
         this.markChanged();
-        this.refreshRankings();
     }
 
+    @ApiStatus.Internal
     public void updateWarsWon(IntFunction<Integer> update) {
         this.setWarsWon(update.apply(this.warsWon));
     }
@@ -486,12 +508,18 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.warsLost;
     }
 
+    /**
+     * Internal: pure data mutation that does not refresh ranking trackers itself. The plugin's war
+     * flow refreshes them via {@link GuildManager#refreshGuild(Guild)}; direct counter changes must
+     * do the same.
+     */
+    @ApiStatus.Internal
     public void setWarsLost(int warsLost) {
         this.warsLost = Math.max(0, warsLost);
         this.markChanged();
-        this.refreshRankings();
     }
 
+    @ApiStatus.Internal
     public void updateWarsLost(IntFunction<Integer> update) {
         this.setWarsLost(update.apply(this.warsLost));
     }
@@ -509,12 +537,18 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
         return this.warStreak;
     }
 
+    /**
+     * Internal: pure data mutation that does not refresh ranking trackers itself. The plugin's war
+     * flow refreshes them via {@link GuildManager#refreshGuild(Guild)}; direct counter changes must
+     * do the same.
+     */
+    @ApiStatus.Internal
     public void setWarStreak(int warStreak) {
         this.warStreak = Math.max(0, warStreak);
         this.markChanged();
-        this.refreshRankings();
     }
 
+    @ApiStatus.Internal
     public void updateWarStreak(IntFunction<Integer> update) {
         this.setWarStreak(update.apply(this.warStreak));
     }
@@ -561,15 +595,6 @@ public class Guild extends AbstractMutableEntity implements IdentifiableEntity {
     @Override
     public EntityType getType() {
         return EntityType.GUILD;
-    }
-
-    private void refreshRankings() {
-        // The rank service is created before any guild is loaded, but guard anyway so that
-        // entities built before plugin load (e.g. in tests) never trip over a null service.
-        RankService rankService = FunnyGuilds.getInstance().getRankService();
-        if (rankService != null) {
-            rankService.refreshGuild(this);
-        }
     }
 
     @Override

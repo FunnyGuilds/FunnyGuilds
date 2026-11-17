@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.data.util.UserStatsSerializer
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer
+import net.dzikoysk.funnyguilds.user.UserStatKeys
 import net.kyori.adventure.key.Key
 import org.bukkit.OfflinePlayer
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -48,8 +49,8 @@ class GenericStatsTest : FunnyGuildsSpec() {
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
-        guild.addMember(first)
-        guild.addMember(second)
+        guildManager.addMember(guild, first)
+        guildManager.addMember(guild, second)
         rankService.setUserStatValue(first, wins, 7)
         rankService.setUserStatValue(second, wins, 2)
         rankService.setUserStatValue(first, balance, 2.25)
@@ -63,7 +64,7 @@ class GenericStatsTest : FunnyGuildsSpec() {
     fun `generic stats survive the real YAML save and load path`(@TempDir directory: Path) {
         val uuid = UUID.randomUUID()
         val user = userManager.createFake(uuid, "Player")
-        user.rank.points = 1234
+        rankService.setUserStatValue(user, UserStatKeys.POINTS, 1234)
         rankService.setUserStatValue(user, wins, 17)
         rankService.setUserStatValue(user, balance, 2.125)
         val file = directory.resolve("player.yml").toFile()
@@ -79,7 +80,7 @@ class GenericStatsTest : FunnyGuildsSpec() {
         userManager.removeUser(user)
         prepareServer(uuid)
         val loaded = FlatUserSerializer.deserialize(file).get()
-        assertEquals(1234, loaded.rank.points)
+        assertEquals(1234, rankService.getUserStatValue(loaded, UserStatKeys.POINTS).orElse(0))
         assertEquals(17, rankService.getUserStatValue(loaded, wins).get())
         assertEquals(2.125, rankService.getUserStatValue(loaded, balance).get())
         assertFalse(loaded.wasChanged())
@@ -114,7 +115,7 @@ class GenericStatsTest : FunnyGuildsSpec() {
         `when`(row.getString("last_ip")).thenReturn(null)
         `when`(row.getInt("points")).thenReturn(1234)
         val loaded = DatabaseUserSerializer.deserialize(row).get()
-        assertEquals(1234, loaded.rank.points)
+        assertEquals(1234, rankService.getUserStatValue(loaded, UserStatKeys.POINTS).orElse(0))
         assertEquals(17, rankService.getUserStatValue(loaded, wins).get())
         assertEquals(2.125, rankService.getUserStatValue(loaded, balance).get())
         assertFalse(loaded.wasChanged())
@@ -125,7 +126,7 @@ class GenericStatsTest : FunnyGuildsSpec() {
         val user = userManager.createFake(UUID.randomUUID(), "Player")
         assertFalse(StatKey.find("restored:unknown-wins").isPresent)
         UserStatsSerializer.deserialize(user, """{"restored:unknown-wins":{"type":"integer","value":9},"funnyguilds:points":{"type":"integer","value":1}}""")
-        assertEquals(config.rankStart, user.rank.points)
+        assertEquals(config.rankStart, rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0))
         val restored = rankService.getUserRankTracker("restored:unknown-wins").get()
         assertEquals(9, restored.valueOfEntity(user).get().toInt())
     }
@@ -145,11 +146,11 @@ class GenericStatsTest : FunnyGuildsSpec() {
     fun `deserialization restores stored custom stats but keeps built in counters authoritative`() {
         val restored = StatKey.integerStatKey("arena-restored")
         val user = userManager.createFake(UUID.randomUUID(), "Player")
-        user.rank.points = 500
+        rankService.setUserStatValue(user, UserStatKeys.POINTS, 500)
         UserStatsSerializer.deserialize(user, """{"funnyguilds:arena-restored":{"type":"integer","value":5}}""")
         assertEquals(5, rankService.getUserStatValue(user, restored).get())
         UserStatsSerializer.deserialize(user, """{"funnyguilds:points":{"type":"integer","value":9999}}""")
-        assertEquals(500, user.rank.points)
+        assertEquals(500, rankService.getUserStatValue(user, UserStatKeys.POINTS).orElse(0))
     }
 
     @Test
@@ -184,13 +185,13 @@ class GenericStatsTest : FunnyGuildsSpec() {
         val first = userManager.createFake(UUID.randomUUID(), "First")
         val second = userManager.createFake(UUID.randomUUID(), "Second")
         val guild = guildManager.addGuild(Guild("Guild", "TAG"))
-        guild.addMember(first)
-        guild.addMember(second)
+        guildManager.addMember(guild, first)
+        guildManager.addMember(guild, second)
         val tracker = rankService.getGuildRankTracker(wins, maximum)
         rankService.setUserStatValue(first, wins, 5)
         rankService.setUserStatValue(second, wins, 8)
         assertEquals(8, tracker.valueOfEntity(guild).get().toInt())
-        guild.removeMember(second)
+        guildManager.removeMember(guild, second)
         assertEquals(5, tracker.valueOfEntity(guild).get().toInt())
     }
 
