@@ -150,6 +150,27 @@ class RankServiceTest : FunnyGuildsSpec() {
     }
 
     @Test
+    fun `guild ratios refresh when deaths change without changing the member ratio`() {
+        val contributor = userManager.createFake(UUID.randomUUID(), "Contributor")
+        val other = userManager.createFake(UUID.randomUUID(), "Other")
+        contributor.rank.kills = 4
+        contributor.rank.deaths = 1
+        contributor.rank.assists = 2
+        val guild = guildManager.addGuild(Guild("Guild", "TAG"))
+        guild.addMember(contributor)
+        guild.addMember(other)
+        assertEquals(4.0f, guild.rank.kdr)
+        assertEquals(6.0f, guild.rank.kda)
+
+        other.rank.deaths = 1
+
+        assertEquals(0.0, rankService.getUserStatValue(other, UserStatKeys.KDR).get())
+        assertEquals(0.0, rankService.getUserStatValue(other, UserStatKeys.KDA).get())
+        assertEquals(2.0f, guild.rank.kdr)
+        assertEquals(3.0f, guild.rank.kda)
+    }
+
+    @Test
     fun `membership updates refresh both guilds and removing a guild clears its positions`() {
         val user = userManager.createFake(UUID.randomUUID(), "Player")
         val first = guildManager.addGuild(Guild("First", "ONE"))

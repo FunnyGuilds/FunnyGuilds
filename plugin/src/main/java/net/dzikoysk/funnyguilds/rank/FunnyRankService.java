@@ -88,12 +88,7 @@ final class FunnyRankService implements RankService {
     }
 
     private void updateRatio(User user, StatKey<Double> key) {
-        UserRankTracker<Double> tracker = this.getUserRankTracker(key);
-        Double updated = this.initialValue(user, key);
-        if (tracker.valueOfEntity(user).map(current -> Objects.equals(current, updated)).orElse(false)) {
-            return;
-        }
-        tracker.setValue(user, updated);
+        this.getUserRankTracker(key).setValue(user, this.initialValue(user, key));
         this.updateGuildStats(user, key);
     }
 
