@@ -69,7 +69,6 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
     @Test
     fun `all user metrics work independently of top configuration and preserve raw values`() {
         val values = mapOf("POINTS" to "1500", "KILLS" to "9", "DEATHS" to "4", "ASSISTS" to "3", "LOGOUTS" to "2", "KDR" to "2.25", "KDA" to "3.00")
-        config.top.enabledUserTops = emptySet()
         config.valueFormatting.user = values.keys.associate { it.lowercase() to listOf(RangeFormatting("0-* &a{VALUE} units")) }
         config.loadProcessedProperties()
         for ((name, value) in values) {
@@ -101,7 +100,6 @@ class ValuePlaceholdersTest : FunnyGuildsSpec() {
             "LOGOUTS" to "6", "AVG-LOGOUTS" to "3", "KDR" to "2.00", "AVG-KDR" to "1.88",
             "KDA" to "2.67", "AVG-KDA" to "2.50", "WARS-WON" to "3", "WARS-LOST" to "2", "WAR-STREAK" to "1"
         )
-        config.top.enabledGuildTops = emptySet()
         config.valueFormatting.guild = values.keys.associate { it.lowercase().replace('-', '_') to listOf(RangeFormatting("0-* &b{VALUE} units")) }
         config.loadProcessedProperties()
         for ((name, value) in values) {

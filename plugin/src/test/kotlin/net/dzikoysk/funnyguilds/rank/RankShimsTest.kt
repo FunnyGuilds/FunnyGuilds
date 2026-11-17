@@ -4,9 +4,9 @@ import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals
-import java.util.*
+import java.util.UUID
 
-class RankManagerTest : FunnyGuildsSpec() {
+class RankShimsTest : FunnyGuildsSpec() {
 
     @Test
     fun `should correctly update the guilds & users ranking`() {

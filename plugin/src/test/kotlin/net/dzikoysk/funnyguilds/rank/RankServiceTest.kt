@@ -176,6 +176,30 @@ class RankServiceTest : FunnyGuildsSpec() {
     }
 
     @Test
+    fun `a guild row is marked dirty only when a tracked aggregate actually moves`() {
+        val first = userManager.createFake(UUID.randomUUID(), "First")
+        val second = userManager.createFake(UUID.randomUUID(), "Second")
+        val third = userManager.createFake(UUID.randomUUID(), "Third")
+        val guild = guildManager.addGuild(Guild("Guild", "TAG"))
+        guild.addMember(first)
+        guild.addMember(second)
+        guild.addMember(third)
+        first.rank.logouts = 1
+        second.rank.logouts = 1
+        third.rank.logouts = 1
+        val logoutsTop = rankService.getGuildRankTracker("avg_logouts")
+        assertTrue(logoutsTop.isPresent)
+        guild.markUnchanged()
+        // (1 + 1 + 2) / 3 truncates back to the same average of 1, so the guild row stays clean.
+        first.rank.logouts = 2
+        assertFalse(guild.wasChanged())
+        guild.markUnchanged()
+        // (1 + 1 + 10) / 3 = 4 moves the average, so the guild row is marked for the saver.
+        first.rank.logouts = 10
+        assertTrue(guild.wasChanged())
+    }
+
+    @Test
     fun `failed queued update does not strand later futures and closing flushes pending changes`() {
         val scheduled = mutableListOf<Runnable>()
         val service = useExecutor(Executor { scheduled.add(it) })

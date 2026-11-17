@@ -78,4 +78,28 @@ class RankPlaceholdersServiceTest : FunnyGuildsSpec() {
         first.rank.points = 2500
         assertEquals("3000/1500", format())
     }
+
+    @Test
+    fun `a guild native stat inside a user top renders the no value fallback`() {
+        val viewer = userManager.createFake(UUID.randomUUID(), "Viewer")
+        assertEquals("Brak (PTOP-x)", render("{PTOP-wars_won-1}", viewer))
+    }
+
+    @Test
+    fun `dash and underscore average guild top variants render identically`() {
+        config.top.format.gtop = ":{VALUE}"
+        config.loadProcessedProperties()
+        val first = userManager.createFake(UUID.randomUUID(), "First")
+        val second = userManager.createFake(UUID.randomUUID(), "Second")
+        first.rank.kills = 4
+        first.rank.deaths = 2
+        second.rank.kills = 2
+        second.rank.deaths = 1
+        val guild = guildManager.addGuild(Guild("Guild", "TAG"))
+        guild.addMember(first)
+        guild.addMember(second)
+        val underscore = render("{GTOP-avg_kdr-1}", first)
+        assertEquals("TAG:2.00", underscore)
+        assertEquals(underscore, render("{GTOP-avg-kdr-1}", first))
+    }
 }

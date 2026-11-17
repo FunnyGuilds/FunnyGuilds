@@ -9,8 +9,6 @@ import eu.okaeri.configs.annotation.Names;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
@@ -19,14 +17,6 @@ public class TopConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("Czy zmienne typu {PTOP-x} oraz {GTOP-x} powinny być pokolorowane w zależności od relacji gildyjnych")
     public boolean useRelationshipColors = false;
-
-    @Deprecated
-    @Comment("Opcja zachowana dla zgodnosci. Wszystkie statystyki sa dostepne automatycznie.")
-    public Set<String> enabledUserTops = new TreeSet<>(Arrays.asList("points", "kills", "deaths"));
-
-    @Deprecated
-    @Comment("Opcja zachowana dla zgodnosci. Topy gildii sa tworzone przy pierwszym uzyciu.")
-    public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
     @Comment("")
     public Format format = new Format();

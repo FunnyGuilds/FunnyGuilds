@@ -40,8 +40,6 @@ class GenericStatsTest : FunnyGuildsSpec() {
 
     @Test
     fun `a typed key automatically exposes user and guild tops positions and placeholders`() {
-        config.top.enabledUserTops.clear()
-        config.top.enabledGuildTops.clear()
         config.top.format.ptop = ":{VALUE}"
         config.loadProcessedProperties()
         config.top.format.gtop = ":{VALUE}"
@@ -130,6 +128,28 @@ class GenericStatsTest : FunnyGuildsSpec() {
         assertEquals(config.rankStart, user.rank.points)
         val restored = rankService.getUserRankTracker("restored:unknown-wins").get()
         assertEquals(9, restored.valueOfEntity(user).get().toInt())
+    }
+
+    @Test
+    fun `malformed and unsupported custom statistic entries are skipped without throwing`() {
+        val user = userManager.createFake(UUID.randomUUID(), "Player")
+        UserStatsSerializer.deserialize(user, "not-json")
+        UserStatsSerializer.deserialize(user, "[1,2]")
+        UserStatsSerializer.deserialize(user, """{"x":{"type":"float","value":1}}""")
+        assertFalse(StatKey.find("x").isPresent)
+        assertFalse(StatKey.find("minecraft:x").isPresent)
+        assertFalse(rankService.getUserStats(user).keys.any { it.key().value() == "x" })
+    }
+
+    @Test
+    fun `deserialization restores stored custom stats but keeps built in counters authoritative`() {
+        val restored = StatKey.integerStatKey("arena-restored")
+        val user = userManager.createFake(UUID.randomUUID(), "Player")
+        user.rank.points = 500
+        UserStatsSerializer.deserialize(user, """{"funnyguilds:arena-restored":{"type":"integer","value":5}}""")
+        assertEquals(5, rankService.getUserStatValue(user, restored).get())
+        UserStatsSerializer.deserialize(user, """{"funnyguilds:points":{"type":"integer","value":9999}}""")
+        assertEquals(500, user.rank.points)
     }
 
     @Test

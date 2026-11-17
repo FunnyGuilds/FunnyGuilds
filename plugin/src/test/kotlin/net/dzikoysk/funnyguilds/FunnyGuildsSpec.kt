@@ -92,6 +92,8 @@ open class FunnyGuildsSpec : BukkitSpec() {
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
         mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
+        // Wiring the mock above records interactions on it; clear them so verify() in a test
+        // only sees the interactions made by that test itself.
         clearInvocations(funnyGuilds)
     }
 

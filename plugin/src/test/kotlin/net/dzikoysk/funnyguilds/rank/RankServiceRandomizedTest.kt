@@ -169,7 +169,6 @@ class RankServiceRandomizedTest : FunnyGuildsSpec() {
         } catch (failure: Throwable) {
             throw AssertionError("seed=$seed, operation=$operation, stressMillis=$durationMillis, recent=$recent", failure)
         }
-        println("Ranking stress passed: seed=$seed, operations=$operation, elapsedMillis=${(System.nanoTime() - started) / 1_000_000}")
         assertTrue(operation >= minimumOperations)
     }
 
