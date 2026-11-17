@@ -9,7 +9,10 @@ import org.bukkit.entity.EnderCrystal
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.entity.Projectile
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.plugin.RegisteredListener
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -17,6 +20,8 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import java.util.UUID
 
@@ -24,6 +29,8 @@ class EntityDamageCrystalTest : FunnyGuildsSpec() {
 
     private lateinit var damageManager: DamageManager
     private lateinit var listener: EntityDamage
+    private lateinit var damageHandler: RegisteredListener
+    private lateinit var damageMonitor: RegisteredListener
     private lateinit var attacker: Player
     private lateinit var victim: Player
     private lateinit var attackerUser: User
@@ -44,6 +51,8 @@ class EntityDamageCrystalTest : FunnyGuildsSpec() {
             isAccessible = true
             set(listener, damageManager)
         }
+        damageHandler = registeredHandler(listener, "onDamage", EntityDamageByEntityEvent::class.java, funnyGuilds)
+        damageMonitor = registeredHandler(listener, "onDamageMonitor", EntityDamageByEntityEvent::class.java, funnyGuilds)
     }
 
     @Test
@@ -55,18 +64,37 @@ class EntityDamageCrystalTest : FunnyGuildsSpec() {
     @Test
     fun `damage is recorded only once after protection listeners`() {
         val event = event()
-        listener.onDamage(event)
+        damageHandler.callEvent(event)
         assertEquals(0.0, history().totalDamage)
-        listener.onDamageMonitor(event)
+        damageMonitor.callEvent(event)
         assertEquals(8.0, history().totalDamage)
     }
 
     @Test
-    fun `later cancellation does not add crystal damage`() {
+    fun `HIGHEST cancellation does not add crystal damage`() {
         val event = event()
-        listener.onDamage(event)
+        val protection = RegisteredListener(
+            object : Listener {},
+            { _, dispatchedEvent -> (dispatchedEvent as EntityDamageByEntityEvent).isCancelled = true },
+            EventPriority.HIGHEST,
+            funnyGuilds,
+            true
+        )
+        listOf(damageHandler, damageMonitor, protection)
+            .sortedBy { it.priority }
+            .forEach { it.callEvent(event) }
+
+        assertEquals(0.0, history().totalDamage)
+    }
+
+    @Test
+    fun `already cancelled damage skips both handlers`() {
+        val event = event()
         event.isCancelled = true
-        listener.onDamageMonitor(event)
+
+        hit(event)
+
+        verify(event, never()).damageSource
         assertEquals(0.0, history().totalDamage)
     }
 
@@ -138,8 +166,8 @@ class EntityDamageCrystalTest : FunnyGuildsSpec() {
     private fun history() = damageManager.getDamageState(victimUser.uuid)
 
     private fun hit(event: EntityDamageByEntityEvent) {
-        listener.onDamage(event)
-        listener.onDamageMonitor(event)
+        damageHandler.callEvent(event)
+        damageMonitor.callEvent(event)
     }
 
     private fun player(): Player = mock(Player::class.java).also {

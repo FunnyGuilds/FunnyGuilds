@@ -65,16 +65,12 @@ public class PlayerDeath extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDeath(PlayerDeathEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
         Player playerVictim = event.getEntity();
         Optional<Player> crystalAttacker = EntityUtils.getCrystalAttacker(event.getDamageSource());
-        Player playerAttacker = crystalAttacker.orElseGet(playerVictim::getKiller);
-        if (crystalAttacker.isPresent() && !playerAttacker.isOnline()) {
-            playerAttacker = null;
-        }
+        // Filter after choosing the source so an offline detonator cannot fall back to the vanilla killer.
+        Optional<Player> playerAttackerOption = crystalAttacker
+                .or(() -> Optional.ofNullable(playerVictim.getKiller()))
+                .filter(player -> crystalAttacker.isEmpty() || player.isOnline());
 
         Optional<User> victimOption = this.userManager.findByPlayer(playerVictim);
         if (victimOption.isEmpty()) {
@@ -85,7 +81,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         DamageState victimDamageState = damageManager.getDamageState(victim.getUUID());
 
         Optional<User> attackerOption = Optional.empty();
-        if ((playerAttacker == null && this.config.considerLastAttackerAsKiller) || playerVictim.equals(playerAttacker)) { // If player killed himself use last attacker as a killer
+        if ((playerAttackerOption.isEmpty() && this.config.considerLastAttackerAsKiller)
+                || playerAttackerOption.filter(playerVictim::equals).isPresent()) { // If player killed himself use last attacker as a killer
             Optional<Damage> lastDamageOption = victimDamageState.getLastDamage();
             if (lastDamageOption.isEmpty() || !lastDamageOption.orElseThrow().getAttacker().isOnline()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
@@ -100,8 +97,8 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            playerAttacker = this.funnyServer.getPlayer(lastDamage.getAttacker().getUUID()).orElse(null);
-            if (playerAttacker == null) {
+            playerAttackerOption = this.funnyServer.getPlayer(lastDamage.getAttacker().getUUID());
+            if (playerAttackerOption.isEmpty()) {
                 this.handleDeathEvent(victim, victim, EventCause.USER);
                 victimDamageState.clear();
                 return;
@@ -109,8 +106,10 @@ public class PlayerDeath extends AbstractFunnyListener {
             attackerOption = Optional.of(lastDamage.getAttacker());
         }
 
-        if (attackerOption.isEmpty() && playerAttacker != null && !playerVictim.equals(playerAttacker)) { // If player killed himself do not use him as a killer
-            attackerOption = this.userManager.findByPlayer(playerAttacker);
+        if (attackerOption.isEmpty()) { // If player killed himself do not use him as a killer
+            attackerOption = playerAttackerOption
+                    .filter(player -> !playerVictim.equals(player))
+                    .flatMap(this.userManager::findByPlayer);
         }
 
         this.handleDeathEvent(victim, attackerOption.orElse(victim), attackerOption.isPresent() ? EventCause.COMBAT : EventCause.USER);
@@ -120,6 +119,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
         User attacker = attackerOption.orElseThrow();
+        Player playerAttacker = playerAttackerOption.orElseThrow();
         DamageState attackerDamageState = this.damageManager.getDamageState(attacker.getUUID());
 
         if (victim.equals(attacker)) {
@@ -248,10 +248,10 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = combatPointsChangeEvent.getAttackerPointsChange();
         int victimPointsChange = combatPointsChangeEvent.getVictimPointsChange();
 
-        Player finalPlayerAttacker = playerAttacker;
-        ItemStack weapon = crystalAttacker.filter(finalPlayerAttacker::equals).isPresent()
-                ? new ItemStack(Material.END_CRYSTAL)
-                : finalPlayerAttacker.getInventory().getItemInMainHand();
+        ItemStack weapon = crystalAttacker
+                .filter(playerAttacker::equals)
+                .map(ignored -> new ItemStack(Material.END_CRYSTAL))
+                .orElseGet(() -> playerAttacker.getInventory().getItemInMainHand());
         Guild attackerGuild = attacker.getGuild().orElse(null);
         Guild victimGuild = victim.getGuild().orElse(null);
 
@@ -267,8 +267,8 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .with("{VICTIM-CHANGE-FORMATTED}", minusFormatted)
                 .with("{WEAPON}", ItemComponentHelper.itemAsComponent(weapon, true))
                 .with("{WEAPON-NO-AMOUNT}", ItemComponentHelper.itemAsComponent(weapon, false))
-                .with("{ATTACKER-HEALTH}", String.format(Locale.US, "%.2f", finalPlayerAttacker.getHealth()))
-                .with("{ATTACKER-HEARTS}", (int) (finalPlayerAttacker.getHealth() / 2))
+                .with("{ATTACKER-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
+                .with("{ATTACKER-HEARTS}", (int) (playerAttacker.getHealth() / 2))
                 .with(
                         Player.class,
                         messageReceiver -> {

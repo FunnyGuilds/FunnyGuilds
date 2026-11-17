@@ -52,10 +52,6 @@ public class EntityDamage extends AbstractFunnyListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
         EntityUtils.getDamageAttacker(event).ifPresent(attacker -> {
             Optional<User> attackerUserOption = this.userManager.findByPlayer(attacker);
             if (attackerUserOption.isEmpty()) {
@@ -146,9 +142,10 @@ public class EntityDamage extends AbstractFunnyListener {
         });
     }
 
+    // Record accepted damage after protection listeners, including those running at HIGHEST.
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamageMonitor(EntityDamageByEntityEvent event) {
-        if (event.isCancelled() || !(event.getEntity() instanceof Player victim)) {
+        if (!(event.getEntity() instanceof Player victim)) {
             return;
         }
 

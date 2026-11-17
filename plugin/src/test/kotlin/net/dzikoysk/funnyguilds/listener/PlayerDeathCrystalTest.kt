@@ -20,6 +20,7 @@ import org.bukkit.entity.EnderCrystal
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.RegisteredListener
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -42,6 +43,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
 
     private lateinit var damageManager: DamageManager
     private lateinit var listener: PlayerDeath
+    private lateinit var deathHandler: RegisteredListener
     private val events = mutableListOf<FunnyEvent>()
     private var cancelPoints = false
     private lateinit var items: MockedConstruction<ItemStack>
@@ -72,6 +74,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
             isAccessible = true
             set(listener, damageManager)
         }
+        deathHandler = registeredHandler(listener, "onDeath", PlayerDeathEvent::class.java, funnyGuilds)
         val eventManager = Bukkit.getPluginManager()
         lenient().doAnswer { invocation ->
             val event = invocation.arguments[0]
@@ -97,7 +100,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val (attacker, attackerUser) = player("Detonator")
         val (victim, victimUser) = player("Victim")
 
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
 
         assertEquals(1, attackerUser.rank.kills)
         assertEquals(1020, attackerUser.rank.points)
@@ -116,7 +119,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val (victim, _) = player("Victim")
         lenient().`when`(victim.killer).thenReturn(previous)
 
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
 
         assertEquals(1, attackerUser.rank.kills)
         assertEquals(0, previousUser.rank.kills)
@@ -128,7 +131,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val (attacker, attackerUser) = player("Detonator")
         val (victim, _) = player("Victim")
 
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
 
         assertEquals(1, attackerUser.rank.kills)
         assertEquals(0, placerUser.rank.assists)
@@ -143,7 +146,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         damageManager.getDamageState(victimUser.uuid).addDamage(placerUser, 8.0)
         damageManager.getDamageState(victimUser.uuid).addDamage(attackerUser, 8.0)
 
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
 
         assertEquals(1, placerUser.rank.assists)
         assertEquals(1005, placerUser.rank.points)
@@ -156,8 +159,8 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val (first, _) = player("First")
         val (second, _) = player("Second")
         val crystal = mock(EnderCrystal::class.java)
-        listener.onDeath(death(first, attacker, crystal))
-        listener.onDeath(death(second, attacker, crystal))
+        deathHandler.callEvent(death(first, attacker, crystal))
+        deathHandler.callEvent(death(second, attacker, crystal))
         assertEquals(2, attackerUser.rank.kills)
         assertEquals(1040, attackerUser.rank.points)
     }
@@ -168,7 +171,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val (victim, victimUser) = player("Victim")
         val event = death(victim, attacker)
         `when`(event.isCancelled).thenReturn(true)
-        listener.onDeath(event)
+        deathHandler.callEvent(event)
         assertEquals(1000, attackerUser.rank.points)
         assertEquals(0, victimUser.rank.deaths)
         assertTrue(events.isEmpty())
@@ -177,7 +180,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
     @Test
     fun `suicide does not award a kill`() {
         val (victim, victimUser) = player("Victim")
-        listener.onDeath(death(victim, victim))
+        deathHandler.callEvent(death(victim, victim))
         assertEquals(0, victimUser.rank.kills)
         assertEquals(1000, victimUser.rank.points)
         assertEquals(1, victimUser.rank.deaths)
@@ -189,13 +192,61 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         lenient().`when`(unknown.uniqueId).thenReturn(UUID.randomUUID())
         lenient().`when`(unknown.isOnline).thenReturn(true)
         val (victim, victimUser) = player("Victim")
-        listener.onDeath(death(victim, unknown))
+        deathHandler.callEvent(death(victim, unknown))
         val (offline, offlineUser) = player("Offline")
         `when`(offline.isOnline).thenReturn(false)
-        listener.onDeath(death(victim, offline))
+        deathHandler.callEvent(death(victim, offline))
         assertEquals(0, offlineUser.rank.kills)
         assertEquals(1000, victimUser.rank.points)
         assertEquals(2, victimUser.rank.deaths)
+    }
+
+    @Test
+    fun `offline crystal detonator is not selected again through vanilla killer`() {
+        config.considerLastAttackerAsKiller = false
+        val (attacker, attackerUser) = player("Offline")
+        val (victim, victimUser) = player("Victim")
+        `when`(attacker.isOnline).thenReturn(false)
+        lenient().`when`(victim.killer).thenReturn(attacker)
+
+        deathHandler.callEvent(death(victim, attacker))
+
+        assertEquals(0, attackerUser.rank.kills)
+        assertEquals(1000, attackerUser.rank.points)
+        assertEquals(1, victimUser.rank.deaths)
+    }
+
+    @Test
+    fun `offline crystal detonator does not fall back to a previous vanilla killer`() {
+        config.considerLastAttackerAsKiller = false
+        val (previous, previousUser) = player("Previous")
+        val (attacker, attackerUser) = player("Offline")
+        val (victim, victimUser) = player("Victim")
+        `when`(attacker.isOnline).thenReturn(false)
+        lenient().`when`(victim.killer).thenReturn(previous)
+
+        deathHandler.callEvent(death(victim, attacker))
+
+        assertEquals(0, attackerUser.rank.kills)
+        assertEquals(0, previousUser.rank.kills)
+        assertEquals(1, victimUser.rank.deaths)
+    }
+
+    @Test
+    fun `last attacker fallback keeps its own weapon instead of a crystal`() {
+        config.considerLastAttackerAsKiller = true
+        val (attacker, attackerUser) = player("Previous")
+        val (offline, offlineUser) = player("Offline")
+        val (victim, victimUser) = player("Victim")
+        `when`(offline.isOnline).thenReturn(false)
+        damageManager.getDamageState(victimUser.uuid).addDamage(attackerUser, 4.0)
+        `when`(listener.funnyServer.getPlayer(attackerUser.uuid)).thenReturn(Optional.of(attacker))
+
+        deathHandler.callEvent(death(victim, offline))
+
+        assertEquals(1, attackerUser.rank.kills)
+        assertEquals(0, offlineUser.rank.kills)
+        assertTrue(items.constructed().isEmpty())
     }
 
     @Test
@@ -203,7 +254,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         cancelPoints = true
         val (attacker, attackerUser) = player("Detonator")
         val (victim, victimUser) = player("Victim")
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
         assertEquals(1000, attackerUser.rank.points)
         assertEquals(1000, victimUser.rank.points)
         assertEquals(1, attackerUser.rank.kills)
@@ -218,7 +269,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val event = mock(PlayerDeathEvent::class.java)
         `when`(event.entity).thenReturn(victim)
         `when`(event.damageSource).thenReturn(mock(DamageSource::class.java))
-        listener.onDeath(event)
+        deathHandler.callEvent(event)
         assertEquals(1, attackerUser.rank.kills)
     }
 
@@ -232,7 +283,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val event = mock(PlayerDeathEvent::class.java)
         `when`(event.entity).thenReturn(victim)
         `when`(event.damageSource).thenReturn(mock(DamageSource::class.java))
-        listener.onDeath(event)
+        deathHandler.callEvent(event)
         assertEquals(0, attackerUser.rank.kills)
         assertEquals(1, victimUser.rank.deaths)
         assertTrue(damageManager.getDamageState(victimUser.uuid).lastDamage.isEmpty)
@@ -246,7 +297,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val event = mock(PlayerDeathEvent::class.java)
         `when`(event.entity).thenReturn(victim)
         `when`(event.damageSource).thenReturn(mock(DamageSource::class.java))
-        listener.onDeath(event)
+        deathHandler.callEvent(event)
         assertTrue(damageManager.getDamageState(victimUser.uuid).lastDamage.isEmpty)
         assertEquals(0, attackerUser.rank.kills)
     }
@@ -255,9 +306,9 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
     fun `crystal kills still respect anti-farming history`() {
         val (attacker, attackerUser) = player("Detonator")
         val (victim, _) = player("Victim")
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
         config.rankFarmingProtect = true
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
         assertEquals(1, attackerUser.rank.kills)
         assertEquals(1020, attackerUser.rank.points)
     }
@@ -270,7 +321,7 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
         val address = InetSocketAddress("127.0.0.1", 25565)
         `when`(attacker.address).thenReturn(address)
         `when`(victim.address).thenReturn(address)
-        listener.onDeath(death(victim, attacker))
+        deathHandler.callEvent(death(victim, attacker))
         assertEquals(0, attackerUser.rank.kills)
         assertEquals(1000, victimUser.rank.points)
     }
@@ -298,18 +349,19 @@ class PlayerDeathCrystalTest : FunnyGuildsSpec() {
             isAccessible = true
             set(configuredListener, damageManager)
         }
+        val configuredHandler = registeredHandler(configuredListener, "onDeath", PlayerDeathEvent::class.java, funnyGuilds)
         val (crystalAttacker, crystalUser) = player("Crystal")
         val (crystalVictim, crystalVictimUser) = player("CrystalVictim")
         val (meleeAttacker, meleeUser) = player("Melee")
         val (meleeVictim, meleeVictimUser) = player("MeleeVictim")
         crystalVictimUser.rank.points = 1500
         meleeVictimUser.rank.points = 1500
-        configuredListener.onDeath(death(crystalVictim, crystalAttacker))
+        configuredHandler.callEvent(death(crystalVictim, crystalAttacker))
         `when`(meleeVictim.killer).thenReturn(meleeAttacker)
         val meleeEvent = mock(PlayerDeathEvent::class.java)
         `when`(meleeEvent.entity).thenReturn(meleeVictim)
         `when`(meleeEvent.damageSource).thenReturn(mock(DamageSource::class.java))
-        configuredListener.onDeath(meleeEvent)
+        configuredHandler.callEvent(meleeEvent)
         assertEquals(meleeUser.rank.points, crystalUser.rank.points)
         assertEquals(meleeVictimUser.rank.points, crystalVictimUser.rank.points)
         assertEquals(1, crystalUser.rank.kills)
