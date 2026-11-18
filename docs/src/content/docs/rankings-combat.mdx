@@ -39,6 +39,36 @@ Komu i jak wyświetla się wiadomość o śmierci gracza, ustala
 `disable-default-death-message` wyłącza domyślny komunikat serwera, który w
 przeciwnym razie pojawi się obok komunikatu FunnyGuilds.
 
+### Crystal PvP
+
+Zabójstwa wybuchem zwykłego End Crystala są rozliczane tak jak pozostałe
+zabójstwa PvP: korzystają z wybranego systemu punktowego, asyst i ochron
+przed farmieniem. Sprawcą jest gracz wskazany przez źródło obrażeń serwera
+jako detonujący, również przy trafieniu pociskiem. Samo postawienie
+kryształu nie daje zabójstwa ani asysty. Stawiający może otrzymać asystę,
+jeżeli wcześniej zadał ofierze obrażenia uwzględniane przez system asyst.
+
+Bezpośredni zabójca kryształowy jest rozpoznawany także przy wyłączonych
+asystach i opcji `rank-farming-last-attacker-as-killer`. Jeśli serwer nie
+wskazuje gracza odpowiedzialnego za eksplozję, FunnyGuilds nie przypisuje
+jej stawiającemu ani najbliższemu graczowi; pozostaje dotychczasowa obsługa
+zabójcy i skonfigurowanego ostatniego atakującego. Dotyczy to również
+niejednoznacznych eksplozji łańcuchowych.
+
+Obrażenia podlegają ochronie PvP gildii i sojuszy oraz regułom WorldGuard.
+Anulowane obrażenia nie są dodawane do historii asyst. Komunikat śmierci
+wskazuje detonującego, a `{WEAPON}` i `{WEAPON-NO-AMOUNT}` w wiadomościach
+zabójstwa pokazują kryształ. Obsługa ta nie dotyczy serca gildii i nie
+wymaga nowej opcji konfiguracji. Nowe rozliczenie kryształowe wymaga
+dostępnego online sprawcy zarejestrowanego w FunnyGuilds.
+
+Przy samobójstwie własnym kryształem obowiązuje dotychczasowa reguła
+samobójstw: wcześniejszy atakujący online może otrzymać zabójstwo, jeśli
+historia zawiera jego nieprzedawnione trafienie. Dotyczy to także wyłączonego
+`rank-farming-last-attacker-as-killer`; ta opcja nie wyłącza osobnej reguły
+samobójstw. Bez takiego wcześniejszego trafienia gracz nie otrzymuje
+zabójstwa za zabicie samego siebie.
+
 ### Ochrona przed farmieniem rankingu
 
 Kilka niezależnych przełączników chroni przed sztucznym nabijaniem punktów:

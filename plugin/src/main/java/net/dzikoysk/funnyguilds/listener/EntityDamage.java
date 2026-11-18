@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
@@ -49,9 +50,9 @@ public class EntityDamage extends AbstractFunnyListener {
             })
             .build();
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        EntityUtils.getAttacker(event.getDamager()).ifPresent(attacker -> {
+        EntityUtils.getDamageAttacker(event).ifPresent(attacker -> {
             Optional<User> attackerUserOption = this.userManager.findByPlayer(attacker);
             if (attackerUserOption.isEmpty()) {
                 return;
@@ -138,10 +139,29 @@ public class EntityDamage extends AbstractFunnyListener {
                     return;
                 }
             }
+        });
+    }
 
-            if (attacker.equals(victim) || event.isCancelled()) {
+    // Record accepted damage after protection listeners, including those running at HIGHEST.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDamageMonitor(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) {
+            return;
+        }
+
+        EntityUtils.getDamageAttacker(event).ifPresent(attacker -> {
+            if (attacker.equals(victim)) {
                 return;
             }
+
+            Optional<User> attackerOption = this.userManager.findByPlayer(attacker);
+            Optional<User> victimOption = this.userManager.findByPlayer(victim);
+            if (attackerOption.isEmpty() || victimOption.isEmpty()) {
+                return;
+            }
+
+            User attackerUser = attackerOption.orElseThrow();
+            User victimUser = victimOption.orElseThrow();
 
             if (this.config.displayCombatPredictionAttacker || this.config.displayCombatPredictionVictim) {
                 this.sendCombatPrediction(attackerUser, victimUser);
