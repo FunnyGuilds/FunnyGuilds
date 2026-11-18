@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.items.gui;
 
 import com.github.stefvanschie.inventoryframework.gui.GuiItem;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
-import com.github.stefvanschie.inventoryframework.pane.Pane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public final class GuildItemsGuiFactory {
         return new GuildItemsGui(player, user, set, setName, config, messageService);
     }
 
-    static ChestGui buildChestGui(GuildItemsGui gui) {
+    static ChestGui buildChestGui(GuildItemsGui gui, StaticPane pane) {
         GuiConfiguration guiConfig = gui.getConfig().gui;
         PerSetConfig perSet = guiConfig.getPerSetConfig(gui.getSetName());
 
@@ -61,11 +60,12 @@ public final class GuildItemsGuiFactory {
         ChestGui chestGui = new ChestGui(guiConfig.rows, legacyTitle);
         chestGui.setOnGlobalClick(event -> event.setCancelled(true));
 
-        populatePanes(gui, chestGui);
+        populatePane(gui, pane);
+        chestGui.addPane(Slot.fromXY(0, 0), pane);
         return chestGui;
     }
 
-    static void populatePanes(GuildItemsGui gui, ChestGui chestGui) {
+    static void populatePane(GuildItemsGui gui, StaticPane pane) {
         ItemsConfiguration config = gui.getConfig();
         GuiConfiguration guiConfig = config.gui;
         PerSetConfig perSet = guiConfig.getPerSetConfig(gui.getSetName());
@@ -80,11 +80,10 @@ public final class GuildItemsGuiFactory {
         List<String> setItemKeys = new ArrayList<>(set.getItems().keySet());
 
         List<String> pattern = guiConfig.pattern;
-        int rows = guiConfig.rows;
 
-        StaticPane pane = new StaticPane(9, rows, Pane.Priority.NORMAL);
+        pane.clear();
 
-        for (int row = 0; row < Math.min(pattern.size(), rows); row++) {
+        for (int row = 0; row < Math.min(pattern.size(), pane.getHeight()); row++) {
             String line = pattern.get(row);
             List<String> tokens = extractTokens(line);
 
@@ -97,8 +96,6 @@ public final class GuildItemsGuiFactory {
                 }
             }
         }
-
-        chestGui.addPane(Slot.fromXY(0, 0), pane);
     }
 
     static List<String> extractTokens(String line) {
