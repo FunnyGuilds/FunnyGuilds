@@ -137,7 +137,7 @@ public class RegionManager {
             return false;
         }
 
-        int size = this.pluginConfiguration.regionSize + (this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize);
+        int size = this.sizeAtEnlargementLevel(this.pluginConfiguration.getMaxEnlargementLevel());
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
         return this.regions.values().stream()
@@ -225,15 +225,19 @@ public class RegionManager {
         Validate.notNull(region, "region can't be null!");
         Validate.isTrue(level >= 0, "level can't be negative!");
 
-        int maxEnlargeLevel = this.pluginConfiguration.enlargeItems.size();
+        int maxEnlargeLevel = this.pluginConfiguration.getMaxEnlargementLevel();
         if (level > maxEnlargeLevel) {
             level = maxEnlargeLevel;
         }
 
         this.removeRegion(region);
         region.setEnlargementLevel(level);
-        region.setSize(this.pluginConfiguration.regionSize + (level * this.pluginConfiguration.enlargeSize));
+        region.setSize(this.sizeAtEnlargementLevel(level));
         this.addRegion(region);
+    }
+
+    public int sizeAtEnlargementLevel(int level) {
+        return this.pluginConfiguration.regionSize + (level * this.pluginConfiguration.enlargeSize);
     }
 
     /**

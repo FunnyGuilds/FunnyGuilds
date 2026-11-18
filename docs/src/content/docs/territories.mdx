@@ -68,12 +68,21 @@ enlarge-items:
 # ... aż do 10 poziomu (80 diamentów)
 ```
 
-Wpisanie pustej listy (`enlarge-items: []`) całkowicie wyłącza możliwość
+W trybie `ITEMS` wpisanie pustej listy (`enlarge-items: []`) wyłącza możliwość
 powiększania.
+
+Ekran **Rozbudowa terenu** w `/panel` pokazuje koszt, promień i stan każdego
+poziomu oraz powód blokady. Zielony beton oznacza aktualny poziom, żółty
+dostępny zakup, czerwony blokadę, a szary wcześniej kupiony poziom.
+Można kupić tylko następny poziom. W trybie
+`MONEY` poziomy i ceny określa lista `enlarge-payment.money`, a `BOTH`
+wymaga ceny w przedmiotach i walucie dla każdego poziomu.
 
 ## Ochrona terenu
 
 Domyślnie tylko członkowie gildii mogą budować i niszczyć na jej terenie.
+W **Rolach i uprawnieniach** w `/panel` można też ograniczyć członkom
+otwieranie pojemników i używanie drzwi, furtek, przycisków oraz dźwigni.
 Dodatkowo:
 
 - **Zablokowane interakcje** — `blocked-interact` (domyślnie skrzynki i

@@ -8,6 +8,8 @@ import eu.okaeri.configs.annotation.Names;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CommandsConfiguration extends OkaeriConfig {
 
@@ -39,6 +41,10 @@ public class CommandsConfiguration extends OkaeriConfig {
     public FunnyCommand war = new FunnyCommand("wojna");
     @Comment("")
     public FunnyCommand items = new FunnyCommand("przedmioty");
+    public FunnyCommand panel = new FunnyCommand("panel");
+
+    @Comment("Ustawienia komend rozszerzeń według ID, np. guild-panel.panel.")
+    public Map<String, ExtensionCommand> extensions = new LinkedHashMap<>();
     @Comment("")
     public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
     @Comment("")
@@ -96,6 +102,14 @@ public class CommandsConfiguration extends OkaeriConfig {
             this.enabled = enabled;
         }
 
+    }
+
+    @Names(strategy = NameStrategy.IDENTITY)
+    public static class ExtensionCommand extends OkaeriConfig {
+
+        public String name;
+        public List<String> aliases;
+        public Boolean enabled;
     }
 
     @Names(strategy = NameStrategy.IDENTITY)

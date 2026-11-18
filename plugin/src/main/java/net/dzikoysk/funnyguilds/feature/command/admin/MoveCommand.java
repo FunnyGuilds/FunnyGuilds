@@ -45,10 +45,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             location.setY(location.getBlockY() + 2);
         }
 
-        int distance = this.config.regionSize + this.config.createDistance;
-        if (this.config.enlargeItems != null) {
-            distance = this.config.enlargeItems.size() * this.config.enlargeSize + distance;
-        }
+        int distance = this.regionManager.sizeAtEnlargementLevel(this.config.getMaxEnlargementLevel()) + this.config.createDistance;
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
                 config -> config.createSpawn, Replacement.string("{DISTANCE}", distance));

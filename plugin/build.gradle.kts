@@ -43,6 +43,9 @@ publishing {
 dependencies {
     /* funnyguilds */
     implementation(project(":nms:api"))
+    implementation(project(":extensions:api"))
+    implementation(project(":extensions:gui"))
+    implementation(project(":extensions:guild-panel"))
 
     val java25NmsModules = setOf(
         ":nms:v26_1_1",
@@ -168,6 +171,7 @@ tasks.withType<ShadowJar> {
         exclude(dependency("com.fasterxml.jackson.core:jackson-core:.*"))
         exclude(dependency("org.mariadb.jdbc:mariadb-java-client:.*"))
         exclude(dependency("com.github.stefvanschie.inventoryframework:IF:.*"))
+        exclude(project(":extensions:guild-panel"))
 
         // nms implementation modules are not referenced in the project but are required at runtime
         parent!!.project(":nms").subprojects.forEach {

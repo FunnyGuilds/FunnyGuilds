@@ -179,6 +179,7 @@ class GuildItemDefinitionTest {
             "tablistConfiguration" to tablist,
             "messageService" to messages,
             "hookManager" to hooks,
+            "panelModule" to mock(net.dzikoysk.funnyguilds.feature.panel.PanelModule::class.java),
             "nameTagUpdateTask" to Optional.empty<Any>(),
             "dummyUpdateTask" to Optional.empty<Any>(),
             "scoreboardQueueUpdateTask" to Optional.empty<Any>()

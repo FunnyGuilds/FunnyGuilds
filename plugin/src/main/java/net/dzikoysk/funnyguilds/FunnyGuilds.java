@@ -6,12 +6,14 @@ import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.Map;
 import java.util.function.Consumer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.PanelConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.damage.DamageManager;
@@ -20,12 +22,23 @@ import net.dzikoysk.funnyguilds.data.DataModelLoader;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
+import net.dzikoysk.funnyguilds.feature.base.GuildBaseService;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditService;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.ExtensionCommandRegistry;
+import net.dzikoysk.funnyguilds.feature.diplomacy.GuildDiplomacyService;
+import net.dzikoysk.funnyguilds.feature.purchase.GuildPurchaseService;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemSetService;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildMembershipService;
+import net.dzikoysk.funnyguilds.feature.panel.GuildRoleNameInput;
+import net.dzikoysk.funnyguilds.feature.panel.PanelModule;
+import net.dzikoysk.funnyguilds.feature.panel.PanelAccessAdapter;
+import net.dzikoysk.funnyguilds.feature.items.gui.GuiItemBuilder;
+import net.dzikoysk.funnyguilds.module.api.GuildPanelAccess;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
@@ -41,6 +54,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.permission.GuildPermissionChecker;
+import net.dzikoysk.funnyguilds.guild.permission.GuildRoleService;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -110,6 +124,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File itemsConfigurationFile = new File(this.getDataFolder(), "items.yml");
+    private final GuildBaseService guildBaseService = new GuildBaseService(this);
+    private final GuildDiplomacyService guildDiplomacyService = new GuildDiplomacyService(this);
+    private final GuildPurchaseService guildPurchaseService = new GuildPurchaseService(this);
+    private final GuildRoleService guildRoleService = new GuildRoleService();
+    private final PanelModule panelModule = new PanelModule(this, this::findPanelAccess, this::sendPanelDisabled,
+            MiniLegacyHelper::miniMessage, GuiItemBuilder::buildSimple);
+    private final GuildAuditService guildAuditService = new GuildAuditService(this);
+    private final GuildMembershipService guildMembershipService = new GuildMembershipService(this);
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File pluginLanguageFolderFile = new File(this.getDataFolder(), "lang");
     private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
@@ -204,6 +226,7 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
             this.itemsConfiguration = ConfigurationFactory.createItemsConfiguration(this.itemsConfigurationFile);
+            this.panelModule.reload();
             this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
@@ -381,7 +404,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.rankRecalculationTask = Optional.of(Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval));
 
         try {
-            this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
+            ExtensionCommandRegistry extensionCommands = new ExtensionCommandRegistry();
+            this.panelModule.registerCommands(extensionCommands);
+            this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this, extensionCommands,
+                    Map.of(PanelModule.COMMAND_ID, this.pluginConfiguration.commands.panel));
         }
         catch (Exception exception) {
             logger.error("Could not register commands", exception);
@@ -412,6 +438,9 @@ public class FunnyGuilds extends JavaPlugin {
             for (Class<? extends Listener> listenerClass : setBuilder.build()) {
                 pluginManager.registerEvents(this.injector.newInstanceWithFields(listenerClass), this);
             }
+            this.panelModule.registerListeners();
+            pluginManager.registerEvents(this.guildAuditService, this);
+            this.getServer().getScheduler().runTaskTimer(this, this.guildAuditService::pruneExpiredEntries, 6000L, 6000L);
 
             this.dynamicListenerManager.registerDynamic(() -> this.pluginConfiguration.regionsEnabled,
                     this.injector.newInstanceWithFields(BlockBreak.class),
@@ -504,6 +533,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.isDisabling = true;
+        this.panelModule.nameInput().clear();
 
         this.funnyCommands.dispose();
         this.dynamicListenerManager.unregisterAll();
@@ -619,6 +649,51 @@ public class FunnyGuilds extends JavaPlugin {
         return this.itemsConfiguration;
     }
 
+    public PanelModule getPanelModule() {
+        return this.panelModule;
+    }
+
+    private Optional<GuildPanelAccess> findPanelAccess(Player player) {
+        Optional<GuildPanelAccess> session = this.userManager.findByPlayer(player)
+                .flatMap(user -> user.getGuild().map(guild -> new PanelAccessAdapter(this, player, user, guild)));
+        if (session.isEmpty()) {
+            this.messageService.getMessage(config -> config.generalHasNoGuild).receiver(player).send();
+        }
+        return session;
+    }
+
+    private void sendPanelDisabled(Player player) {
+        this.messageService.getMessage(config -> config.panelDisabled).receiver(player).send();
+    }
+
+    public PanelConfiguration getPanelConfiguration() {
+        return this.panelModule.configuration();
+    }
+
+    public GuildBaseService getGuildBaseService() {
+        return this.guildBaseService;
+    }
+
+    public GuildDiplomacyService getGuildDiplomacyService() {
+        return this.guildDiplomacyService;
+    }
+
+    public GuildPurchaseService getGuildPurchaseService() {
+        return this.guildPurchaseService;
+    }
+
+    public GuildRoleService getGuildRoleService() {
+        return this.guildRoleService;
+    }
+
+    public GuildRoleNameInput getGuildRoleNameInput() {
+        return this.panelModule.nameInput();
+    }
+
+    public GuildAuditService getGuildAuditService() {
+        return this.guildAuditService;
+    }
+
     public GuildItemSetService getGuildItemSetService() {
         return this.guildItemSetService;
     }
@@ -683,6 +758,10 @@ public class FunnyGuilds extends JavaPlugin {
         return this.guildInvitationList;
     }
 
+    public GuildMembershipService getGuildMembershipService() {
+        return this.guildMembershipService;
+    }
+
     public AllyInvitationList getAllyInvitationList() {
         return this.allyInvitationList;
     }
@@ -737,6 +816,7 @@ public class FunnyGuilds extends JavaPlugin {
             reportItemsError.accept(exception.getMessage());
         }
         this.tablistConfiguration.load();
+        this.panelModule.reload();
         this.messageService.reload();
         this.hookManager.callConfigUpdated();
         this.prepareScoreboardServices();

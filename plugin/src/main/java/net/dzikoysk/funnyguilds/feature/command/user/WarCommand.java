@@ -6,9 +6,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
-import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -28,47 +26,11 @@ public final class WarCommand extends AbstractFunnyCommand {
         when(args.length < 1, config -> config.enemyCorrectUse);
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", enemyGuild.getName())
-                .register("{TAG}", enemyGuild.getTag())
-                .register("{AMOUNT}", this.config.maxEnemiesBetweenGuilds);
-
-        when(guild.equals(enemyGuild), config -> config.enemySame);
-        when(guild.isAlly(enemyGuild), config -> config.enemyAlly);
-        when(guild.isEnemy(enemyGuild), config -> config.enemyAlready);
-        when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, config -> config.enemyMaxAmount, formatter);
-
-        if (enemyGuild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds) {
-            this.messageService.getMessage(config -> config.enemyMaxTargetAmount)
-                    .receiver(owner)
-                    .with(formatter)
-                    .send();
-            return;
+        if (args.length > 1 && args[1].equalsIgnoreCase("zakoncz")) {
+            this.plugin.getGuildDiplomacyService().withdrawWar(owner, guild, enemyGuild);
+        } else {
+            this.plugin.getGuildDiplomacyService().declareWar(owner, guild, enemyGuild);
         }
-
-        guild.addEnemy(enemyGuild);
-
-        FunnyFormatter enemyFormatter = new FunnyFormatter()
-                .register("{GUILD}", enemyGuild.getName())
-                .register("{TAG}", enemyGuild.getTag());
-
-        FunnyFormatter enemyIFormatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag());
-
-        this.messageService.getMessage(config -> config.enemyDone)
-                .receiver(owner)
-                .with(enemyFormatter)
-                .send();
-        this.messageService.getMessage(config -> config.enemyIDone)
-                .receiver(enemyGuild.getOwner())
-                .with(enemyIFormatter)
-                .send();
-
-        this.plugin.getIndividualNameTagManager().ifPresent(manager -> {
-            guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
-            enemyGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
-        });
     }
 
 }

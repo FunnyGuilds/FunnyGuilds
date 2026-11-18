@@ -6,6 +6,7 @@ public enum SQLType {
     BIGINT("bigint"),
     VARCHAR("varchar"),
     TEXT("text"),
+    LONGTEXT("longtext"),
     BOOLEAN("boolean");
 
     private final String type;

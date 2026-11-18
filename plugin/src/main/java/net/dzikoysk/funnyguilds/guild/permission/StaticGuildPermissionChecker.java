@@ -66,6 +66,12 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
             ));
         }
 
+        if (GuildRoleService.editable(permission)) {
+            @SuppressWarnings("unchecked")
+            GuildPermission<Boolean> editable = (GuildPermission<Boolean>) permission;
+            return this.handlePermission(this.getStoredDecision(guild, user, editable).allowed(), user,
+                    config -> config.generalInsufficientGuildPermission).map(permission.getValueType()::cast);
+        }
         return this.getPermissionResultInternal(guild, user, permission)
                 .mapErr(errorAction -> {
                     if (errorAction != null) {
@@ -154,10 +160,16 @@ final class StaticGuildPermissionChecker implements GuildPermissionChecker {
             @Nullable Event event
     ) {
         return this.handlePermission(
-                guild.isMember(user),
+                GuildRoleService.editable(permission) ? this.getStoredDecision(guild, user, permission).allowed() : guild.isMember(user),
                 user,
                 config -> config.regionUnauthorized
         );
+    }
+
+    @Override
+    public GuildPermissionDecision getStoredDecision(Guild guild, User user, GuildPermission<Boolean> permission) {
+        return GuildRoleService.editable(permission) ? GuildRoleService.decision(guild, user, permission)
+                : GuildPermissionChecker.super.getStoredDecision(guild, user, permission);
     }
 
     private Result<Boolean, Runnable> handlePermission(

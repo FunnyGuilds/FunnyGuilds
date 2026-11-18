@@ -134,6 +134,33 @@ if (guildOption.isPresent()) {
 }
 ```
 
+### Role i uprawnienia gildyjne
+
+- `FunnyGuilds#getGuildPermissionChecker()` udostępnia
+  `getStoredDecision(guild, user, permission)` z wartością i źródłem.
+  `handlePermission` i `handleProtectionPermission` uwzględniają też
+  zdarzenia integracji podczas wykonywania akcji.
+- `FunnyGuilds#getGuildRoleService()` tworzy i przypisuje role oraz edytuje prawa,
+  wyjątki i zakres delegowania. Zmianę wykonuj w głównym wątku i przekaż
+  wykonawcę do sprawdzenia. `GuildRoleChangeEvent` udostępnia politykę
+  sprzed zmiany i po jej zatwierdzeniu.
+
+### Komendy rozszerzeń
+
+Moduły w `extensions/` mogą zgłaszać komendy przy starcie przez
+`ExtensionCommands` z `:extensions:api`. Moduł podaje stałe ID w formacie
+`nazwa-modułu.nazwa-komendy`, domyślną nazwę, aliasy i instancję klasy z adnotacjami
+`@FunnyComponent` oraz `@FunnyCommand`. W adnotacji używa parametrów
+`${extension.<id>.name}` i `${extension.<id>.aliases}`. Uprawnienie Bukkit
+deklaruje w adnotacji komendy.
+
+Nowy moduł podpina się w kodzie startowym `:plugin`, który przekazuje rejestr
+metodzie modułu `registerCommands`. Moduł tworzy instancje komend i przekazuje
+im ich zależności. Wspólna konfiguracja instaluje te komendy przy starcie
+serwera. Panel korzysta z tej ścieżki dla `guild-panel.panel`. Samo GUI można
+otworzyć w głównym wątku przez `FunnyGuilds#getPanelModule().open(player)`.
+Wywołujący odpowiada za sprawdzenie prawa dostępu do swojego punktu wejścia.
+
 ### Przedmioty i wymagania
 
 Konfiguracja przedmiotów z `items.yml` jest dostępna bezpośrednio z instancji pluginu:

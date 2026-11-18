@@ -76,6 +76,9 @@ public class SQLDataModel implements DataModel {
         this.guildsTable.add("born", SQLType.BIGINT, true);
         this.guildsTable.add("validity", SQLType.BIGINT, true);
         this.guildsTable.add("pvp", SQLType.BOOLEAN, true);
+        this.guildsTable.add("allied_pvp", SQLType.TEXT);
+        this.guildsTable.add("role_policy", SQLType.LONGTEXT);
+        this.guildsTable.add("audit_log", SQLType.LONGTEXT);
         this.guildsTable.add("protection", SQLType.BIGINT);
         this.guildsTable.add("allies", SQLType.TEXT);
         this.guildsTable.add("enemies", SQLType.TEXT);

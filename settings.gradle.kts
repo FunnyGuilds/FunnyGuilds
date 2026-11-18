@@ -13,6 +13,9 @@ pluginManagement {
 
 include(
     ":plugin",
+    ":extensions:api",
+    ":extensions:gui",
+    ":extensions:guild-panel",
     ":nms:api",
     ":nms:v1_21",
     ":nms:v1_21_2",

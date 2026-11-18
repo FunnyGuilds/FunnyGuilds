@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
+import java.util.Map;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
@@ -40,6 +42,7 @@ public final class AddCommand extends AbstractFunnyCommand {
 
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
+        this.plugin.getGuildAuditService().record(guild, sender, Type.JOINED, Map.of("TARGET", userToAdd.getName()));
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, userToAdd))
                 .ifPresent(this.plugin::scheduleFunnyTasks);

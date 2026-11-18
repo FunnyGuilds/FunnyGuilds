@@ -8,6 +8,10 @@ color of its tag in chat and the tablist (see [Chat](/en/chat/)) and whether
 you can enter its territory (see
 [Territories & protection](/en/territories/)).
 
+In `/panel`, open **Alliances, wars and PvP** to see active alliances,
+incoming and outgoing invitations, and wars. Select a guild to see the
+available actions. The panel and commands use the same permissions and limits.
+
 ## Alliances
 
 `/sojusz <tag>` proposes an alliance to another guild — the other leader
@@ -19,6 +23,10 @@ By default allies can't damage each other — controlled by `damage-ally`. This
 can also be overridden per-region with WorldGuard's `fg-friendly-fire` flag,
 see [WorldGuard & WorldEdit](/en/worldguard-worldedit/).
 
+With `damage-ally` enabled, both guilds must allow PvP for that alliance
+through `/pvp <tag>` or the panel. These settings persist across restarts.
+Accepting an alliance removes the war declarations between the two guilds.
+
 ## Wars
 
 Attacking another guild (when `war.enabled` is on) requires declaring war on
@@ -26,6 +34,10 @@ it first with `/wojna <tag>` — unless `war.require-declaration` is disabled,
 in which case any non-allied guild can be attacked without a declaration. A
 guild can be at war with at most `max-enemies` guilds at once (**15** by
 default).
+
+The wars tab distinguishes outgoing, incoming, and mutual declarations.
+Withdraw your own declaration through the panel or `/wojna <tag> zakoncz`.
+The war continues if the other guild still has an active declaration.
 
 ### War modes (War Mode)
 

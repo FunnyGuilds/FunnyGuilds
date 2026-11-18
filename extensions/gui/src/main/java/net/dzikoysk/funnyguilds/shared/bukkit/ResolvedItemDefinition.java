@@ -8,10 +8,16 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
+import net.dzikoysk.funnyguilds.shared.adventure.MiniLegacyHelper;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -38,11 +44,11 @@ public record ResolvedItemDefinition(
                         .orElseThrow(() -> new IllegalArgumentException("Unknown material")))
                 : null;
         Component name = isSet(definition.name)
-                ? parse(path, "name", definition.name, () -> ItemUtils.coloredWithoutItalics(definition.name))
+                ? parse(path, "name", definition.name, () -> coloredWithoutItalics(definition.name))
                 : null;
         List<Component> lore = definition.lore == null ? List.of()
                 : parse(path, "lore", definition.lore, () -> definition.lore.stream()
-                        .map(line -> isSet(line) ? ItemUtils.coloredWithoutItalics(line) : Component.empty())
+                        .map(line -> isSet(line) ? coloredWithoutItalics(line) : Component.empty())
                         .toList());
         Set<ItemFlag> flags = parse(path, "flags", definition.flags, () -> definition.getFlagsOrEmpty().stream()
                 .map(flag -> {
@@ -69,7 +75,7 @@ public record ResolvedItemDefinition(
                     throw new IllegalArgumentException("Expected an enchantment name and optional level");
                 }
                 String[] parts = value.split(":", 2);
-                Enchantment type = ItemUtils.matchEnchant(parts[0]);
+                Enchantment type = matchEnchant(parts[0]);
                 if (type == null) {
                     throw new IllegalArgumentException("Unknown enchantment");
                 }
@@ -130,6 +136,18 @@ public record ResolvedItemDefinition(
         if (this.armorColor != null && meta instanceof LeatherArmorMeta armor) {
             armor.setColor(this.armorColor);
         }
+    }
+
+    private static Component coloredWithoutItalics(String text) {
+        // Merge inherited styles into text nodes so Bukkit does not insert legacy resets between them.
+        return MiniLegacyHelper.colored(text)
+                .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                .compact();
+    }
+
+    private static Enchantment matchEnchant(String enchantName) {
+        Registry<Enchantment> enchantmentRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
+        return enchantmentRegistry.get(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
     }
 
     private static boolean isSet(String value) {

@@ -8,19 +8,29 @@ import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
+import net.dzikoysk.funnyguilds.feature.protection.GuildProtectionPermission;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.Gate;
+import org.bukkit.block.data.type.Switch;
+import org.bukkit.block.data.type.TrapDoor;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
 
 public class PlayerInteract extends AbstractFunnyListener {
 
@@ -69,13 +79,47 @@ public class PlayerInteract extends AbstractFunnyListener {
                 boolean blocked = this.config.blockedInteract.contains(clicked.getType());
 
                 if (guild.isMember(user)) {
-                    event.setCancelled(blocked && this.config.regionExplodeBlockInteractions && !guild.canBuild());
+                    if (blocked && this.config.regionExplodeBlockInteractions && !guild.canBuild()) {
+                        event.setCancelled(true);
+                    } else if (!player.hasPermission("funnyguilds.admin.interact")) {
+                        GuildProtectionPermission permission = interactionPermission(clicked);
+                        if (permission != null && !this.plugin.getGuildPermissionChecker().handleProtectionPermission(guild, user, permission, event)) {
+                            event.setCancelled(true);
+                        }
+                    }
                 }
                 else {
                     event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
                 }
             });
         }
+    }
+
+    private static GuildProtectionPermission interactionPermission(Block block) {
+        BlockData data = block.getBlockData();
+        if (data instanceof Door || data instanceof TrapDoor || data instanceof Gate || data instanceof Switch) {
+            return GuildProtectionPermission.USE_MECHANISM;
+        }
+        if (block.getType() == Material.ENDER_CHEST || block.getState(false) instanceof InventoryHolder) {
+            return GuildProtectionPermission.OPEN_CONTAINER;
+        }
+        return null;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEntityInventoryOpen(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player player) || player.hasPermission("funnyguilds.admin.interact")
+                || !(event.getInventory().getHolder() instanceof Entity container)) {
+            return;
+        }
+        this.regionManager.findRegionAtLocation(container.getLocation()).ifPresent(region ->
+                this.userManager.findByPlayer(player).ifPresent(user -> {
+                    Guild guild = region.getGuild();
+                    if (guild.isMember(user) && !this.plugin.getGuildPermissionChecker().handleProtectionPermission(
+                            guild, user, GuildProtectionPermission.OPEN_CONTAINER, event)) {
+                        event.setCancelled(true);
+                    }
+                }));
     }
 
     private void handleHeartClick(Player player, Action eventAction, Guild guild, Cancellable event) {
