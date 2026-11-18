@@ -134,6 +134,33 @@ if (guildOption.isPresent()) {
 }
 ```
 
+### Guild roles and permissions
+
+- `FunnyGuilds#getGuildPermissionChecker()` exposes
+  `getStoredDecision(guild, user, permission)` with the stored value and source.
+  `handlePermission` and `handleProtectionPermission` also include permission
+  events from integrations when an action runs.
+- `FunnyGuilds#getGuildRoleService()` creates and assigns roles and edits
+  permissions, overrides, and delegation scope. Run mutations on the main
+  server thread and supply the actor to check. `GuildRoleChangeEvent` exposes
+  the policy before and after a committed change.
+
+### Extension commands
+
+Modules in `extensions/` can contribute commands at startup through
+`ExtensionCommands` from `:extensions:api`. The module supplies a stable
+`module-name.command-name` ID, default name, aliases, and an instance of a class with
+`@FunnyComponent` and `@FunnyCommand` annotations. The command annotation
+uses `${extension.<id>.name}` and `${extension.<id>.aliases}` and declares the
+Bukkit permission.
+
+Wire a new module into the `:plugin` bootstrap, which passes the registry to
+the module's `registerCommands` method. The module creates each command
+instance with its dependencies. The shared configuration installs these commands
+on server startup. The panel uses this path for `guild-panel.panel`. Use
+`FunnyGuilds#getPanelModule().open(player)` to open the GUI on the main server
+thread. Callers are responsible for checking access at their own entry point.
+
 ### Items and requirements
 
 The `items.yml` configuration is available straight from the plugin instance:

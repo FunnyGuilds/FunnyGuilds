@@ -1,25 +1,17 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
-import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
-import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
+import net.dzikoysk.funnyguilds.config.sections.GuildPurchaseConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
+import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
+import net.dzikoysk.funnyguilds.feature.purchase.GuildPurchaseService;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class ValidityCommand extends AbstractFunnyCommand {
@@ -32,43 +24,17 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, @HasGuildPermission(GuildCommandPermission.EXTEND_VALIDITY) User deputy, Guild guild) {
-        if (!this.config.validityWhen.isZero()) {
-            Instant validity = guild.getValidity();
-            Duration delta = Duration.between(Instant.now(), validity);
-
-            when(delta.compareTo(this.config.validityWhen) > 0,config -> config.validityWhen, Replacement.string("{TIME}",
-                    TimeUtils.formatTime(delta.minus(this.config.validityWhen))));
+    public void execute(Player player, @HasGuildPermission(GuildCommandPermission.EXTEND_VALIDITY) User deputy, Guild guild, String[] args) {
+        Duration period = this.config.validityTime;
+        if (args.length > 0) {
+            try {
+                period = GuildPurchaseConfiguration.parsePeriod(args[0]);
+            } catch (IllegalArgumentException | ArithmeticException exception) {
+                throw new InternalValidationException(config -> config.validityPeriodUnavailable);
+            }
         }
-
-        List<ItemStack> requiredItems = this.config.validityItems;
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, config -> config.validityItems)) {
-            return;
-        }
-
-        Duration validityTime = this.config.validityTime;
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, deputy, guild, validityTime))) {
-            return;
-        }
-
-        player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
-
-        Instant validity = guild.getValidity();
-        if (validity.toEpochMilli() == 0) {
-            validity = Instant.now();
-        }
-
-        validity = validity.plus(validityTime);
-        guild.setValidity(validity);
-
-        Instant finalValidity = validity;
-        this.messageService.getMessage(config -> config.validityDone)
-                .receiver(player)
-                .with(CommandSender.class, receiver -> {
-                    String formattedValidity = this.messageService.get(receiver, config -> config.dateFormat).format(finalValidity);
-                    return Replacement.string("{DATE}", formattedValidity);
-                })
-                .send();
+        GuildPurchaseService purchases = this.plugin.getGuildPurchaseService();
+        purchases.renew(player, deputy, guild, purchases.quoteRenewal(guild, period));
     }
 
 }

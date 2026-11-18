@@ -297,8 +297,10 @@ public final class ItemUtils {
         if (def == null) return new ItemStack(Material.STONE, amount);
 
         Material material = Material.matchMaterial(def.material);
-        if (material == null) material = Material.STONE;
+        return toItemStack(def, amount, material == null ? Material.STONE : material);
+    }
 
+    public static ItemStack toItemStack(GuildItemDefinition def, int amount, Material material) {
         ItemStack item = new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
@@ -318,8 +320,8 @@ public final class ItemUtils {
 
         applyDefinitionEnchants(meta, def.getEnchantsOrEmpty());
         applyDefinitionFlags(meta, def.getFlagsOrEmpty());
-        applySkullOwner(meta, def.skullOwner, def.material);
-        applyArmorColor(meta, def.armorColor, def.material);
+        applySkullOwner(meta, def.skullOwner, material.name());
+        applyArmorColor(meta, def.armorColor, material.name());
 
         if (def.customModelData != null) {
             meta.setCustomModelData(def.customModelData);

@@ -3,6 +3,118 @@ title: Configuration
 description: Value types used in the FunnyGuilds configuration.
 ---
 
+## Guild panel (`panel.yml`)
+
+The plugin creates `panel.yml` on startup. Set `enabled: false` to turn off
+panel access. In `screens.overview` you can change the title, row count (1 to 6),
+slot pattern, icons, and text using MiniMessage. A pattern row holds up to
+9 tokens, for example `{summary} {empty} {base} {close}`. `{empty}` leaves a
+slot blank. Other tokens refer to entries in `screens.overview.items`.
+`base` teleports to the guild's base and `close` closes the panel.
+
+### Extension commands (`config.yml`)
+
+Use `commands.extensions` to override a command's name, aliases, and
+registration by its ID. The ID for `/panel` is `guild-panel.panel`.
+
+```yaml
+commands:
+  extensions:
+    'guild-panel.panel':
+      name: panel
+      aliases: [menu]
+      enabled: true
+```
+
+Supply only the fields you want to change. For the panel, omitted values
+come from the existing `commands.panel` settings. Other extensions use
+the defaults declared by their module. `aliases: []` clears the aliases,
+and `enabled: false` disables command registration. Restart the server
+to apply changes to command registration. Access to the GUI itself is
+controlled by `enabled` in `panel.yml`.
+
+Title and item text support `{TAG}`, `{GUILD}`, `{OWNER}`, `{DEPUTIES}`,
+`{ONLINE}`, `{MEMBERS}`, `{RANK}`, `{POINTS}`, `{LIVES}`, `{EXPIRY}`,
+`{REMAINING}`, `{LEVEL}`, `{SIZE}`, `{PVP}`, `{ALLIES}`, `{BASE_COST}`,
+and `{BASE_DELAY}`. The `alliance-line` template supports
+`{ALLY}`, `{ALLY_TAG}`, `{ALLY_PVP}`, `{OUR_PVP}`, and `{THEIR_PVP}`.
+Teleport and territory rules are set in `config.yml`. Apply layout changes
+with `/funnyguilds reload`. If validation fails, the plugin keeps the
+previous valid layout.
+
+`screens.relations` controls the relation list and its navigation. Each
+`{entry}` reserves one guild slot on a page. `screens.relation` configures the
+selected guild's details, and `screens.confirm` configures the confirmation
+screen. `screens.relation-labels` changes the labels for relationships and
+declaration directions. Use `{TARGET}`, `{TARGET_TAG}`, and `{RELATION}` for the
+selected guild, `{PAGE}` and `{PAGES}` for the list, and `{ACTION}` for a confirmation.
+
+Purchase screens are `screens.expansion`, `screens.renewal`, and
+`screens.purchase-confirm`. Status labels are in `screens.purchase-labels`.
+The upgrade and renewal screens default to six rows and the confirmation
+screen to five. Change the level and legend materials in
+`screens.expansion-materials` using `current`, `available`, `locked`, and
+`purchased`.
+Item templates can use `{COST}`, `{MISSING}`, `{STATUS}`, `{LEVEL}`, `{SIZE}`,
+`{MAX_LEVEL}`, `{PERIOD}`, `{NEW_DATE}`, and `{WAIT}`. The confirmation
+also supplies `{PRODUCT}` and `{RESULT}`. If you have a custom overview
+layout, add `{territory}` and `{validity}` where you want the purchase buttons.
+
+Configure the role editor layout in `screens.roles`. An `{entry}` displays a
+role, a player head, or a permission. Use `screens.permission-names` for
+permission names, `screens.role-labels` for labels, and `screens.role-name-prompt`
+for the chat prompt. Add `{roles}` to a custom overview layout to open the editor.
+Set permission icon materials in `screens.permission-materials`, for example
+`protection.bucket-empty: LAVA_BUCKET`. The member management controls use
+`{invite-player}`, `{pending-invites}`, and `{kick}` in `screens.roles`.
+The panel accepts both `CHAIN` and `IRON_CHAIN` for the chain icon.
+
+Configure the activity log in `screens.audit`. Use `screens.audit-categories`
+for filter names and `screens.audit-descriptions` for event descriptions.
+Add `{audit}` to a custom overview layout to open the log.
+
+### Activity log retention
+
+In `config.yml`, the defaults are `guild-audit.max-entries: 200` and
+`guild-audit.retention: 30d`. The plugin keeps the newest entries that
+fit both limits. `max-entries: 0` disables recording and clears existing
+entries during cleanup. `retention: 0` removes the age limit.
+
+## Guild purchases
+
+Set purchase rules and prices in `config.yml`. Both operations default to
+`ITEMS`. `MONEY` debits the player's account through Vault, and `BOTH`
+charges items and currency. The currency modes require an active economy
+provider. This example uses both payment types for renewal and buys three
+territory upgrades with currency.
+
+```yaml
+validity-periods: [12h, 1d, 3d, 5d, 7d, 14d, 31d]
+validity-items:
+  - '8 diamond'
+validity-payment:
+  mode: BOTH
+  rate-unit: 1d
+  money: 1000
+enlarge-payment:
+  mode: MONEY
+  money: [1000, 2500, 5000]
+```
+
+- `validity-time` is the default command period and always appears in the panel.
+  The default or an empty `validity-periods` list gives `12h`, `1d`, `3d`,
+  `5d`, `7d`, `14d`, and `31d`. Custom lists accept `s`, `m`, `h`, or `d`. Leave
+  `validity-payment.rate-unit` empty to charge the base rate per `validity-time`.
+- Renewal prices are the base rate multiplied by the ratio of the purchased
+  period to the rate period. Items round up to whole units and currency rounds
+  up to the provider's precision or two decimal places. In this example,
+  three days cost 24 diamonds and 3000 units of currency.
+- Territory upgrades in `ITEMS` use `enlarge-items`. For `MONEY`,
+  `enlarge-payment.money` determines how many levels are available.
+  `BOTH` requires matching list lengths. The first entry buys level 1 from 0.
+- An uncertain Vault response or a failed refund is logged to
+  `purchase-recovery.log` for manual reconciliation.
+
 FunnyGuilds has a handful of its own configuration value types besides the
 built-in ones (String, Int, boolean...). This page collects all of them,
 along with their possible values and examples — for what a specific option

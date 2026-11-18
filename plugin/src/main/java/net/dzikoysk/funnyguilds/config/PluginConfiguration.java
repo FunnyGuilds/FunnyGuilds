@@ -18,6 +18,8 @@ import eu.okaeri.validator.annotation.Min;
 import eu.okaeri.validator.annotation.NotBlank;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
+import net.dzikoysk.funnyguilds.config.sections.GuildAuditConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.GuildPurchaseConfiguration;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -316,6 +318,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Aby wyłączyć możliwość powiększanie gildii - wystarczy wpisać: enlarge-items: []")
     public List<ItemStack> enlargeItems = ItemUtils.parseItems("8 diamond", "16 diamond", "24 diamond", "32 diamond", "40 diamond", "48 diamond", "56 diamond", "64 diamond", "72 diamond", "80 diamond");
 
+    public GuildPurchaseConfiguration.Enlargement enlargePayment = new GuildPurchaseConfiguration.Enlargement();
+
+    public int getMaxEnlargementLevel() {
+        if (this.enlargePayment.mode.includesItems()) {
+            return this.enlargeItems == null ? 0 : this.enlargeItems.size();
+        }
+        return this.enlargePayment.money.size();
+    }
+
     @Min(1)
     @Comment("")
     @Comment("Wielkość regionu gildii")
@@ -428,13 +439,20 @@ public class PluginConfiguration extends OkaeriConfig {
     @PositiveOrZero
     @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
     @Comment("")
-    @Comment("Ile dni przed końcem wygasania można przedłużyć gildię, wpisz 0 jeżeli funkcja ma byc wylaczona")
+    @Comment("Ile czasu przed wygaśnięciem można przedłużyć gildię. 0 wyłącza ograniczenie czasowe.")
     @CustomKey("validity-when")
-    public Duration validityWhen = Duration.ofDays(14);
+    public Duration validityWhen = Duration.ZERO;
 
     @Comment("")
     @Comment("Koszt przedłużenia gildii")
     public List<ItemStack> validityItems = ItemUtils.parseItems("10 diamond");
+
+    @Comment("Okresy przedłużenia. Pusta lista wczytuje siedem domyślnych okresów. validity-time jest zawsze dostępny.")
+    public List<String> validityPeriods = GuildPurchaseConfiguration.DEFAULT_RENEWAL_PERIODS;
+
+    public GuildPurchaseConfiguration.Renewal validityPayment = new GuildPurchaseConfiguration.Renewal();
+
+    public GuildAuditConfiguration guildAudit = new GuildAuditConfiguration();
 
     @Comment("")
     @Comment("Komu ma być wyświetlana wiadomość o śmierci gracza")
@@ -1137,6 +1155,7 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
+        this.validatePurchaseConfiguration();
         ValueFormatting formatting = new ValueFormatting(this.valueFormatting, this.top);
         if (this.availableLocales.add(this.defaultLocale)) {
             FunnyGuilds.getPluginLogger().parser("Default locale '" + this.defaultLocale + "' hasn't been added in available locales, adding it automatically");
@@ -1175,6 +1194,23 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
         this.processedValueFormatting = formatting;
+    }
+
+    private void validatePurchaseConfiguration() {
+        this.validityPeriods.forEach(GuildPurchaseConfiguration::parsePeriod);
+        this.validityPayment.rateUnit(this.validityTime);
+        if (this.validityPayment.mode.includesMoney()
+                && (!Double.isFinite(this.validityPayment.money) || this.validityPayment.money <= 0)) {
+            throw new IllegalArgumentException("validity-payment.money must be positive when paying with Vault");
+        }
+        if (this.enlargePayment.mode.includesMoney()) {
+            if (this.enlargePayment.mode.includesItems() && this.enlargePayment.money.size() != this.getMaxEnlargementLevel()) {
+                throw new IllegalArgumentException("enlarge-payment.money must have the same number of levels as enlarge-items in BOTH mode");
+            }
+            if (this.enlargePayment.money.stream().anyMatch(amount -> !Double.isFinite(amount) || amount <= 0)) {
+                throw new IllegalArgumentException("enlarge-payment.money must contain positive Vault prices");
+            }
+        }
     }
 
     public Set<Material> defaultBuggedBlocksExclude() {

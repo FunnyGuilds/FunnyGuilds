@@ -8,8 +8,6 @@ import com.github.stefvanschie.inventoryframework.pane.util.Slot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
@@ -33,7 +31,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public final class GuildItemsGuiFactory {
 
-    private static final Pattern TOKEN_PATTERN = Pattern.compile("\\{([^}]+)}");
 
     private GuildItemsGuiFactory() {}
 
@@ -86,7 +83,7 @@ public final class GuildItemsGuiFactory {
 
         for (int row = 0; row < Math.min(pattern.size(), rows); row++) {
             String line = pattern.get(row);
-            List<String> tokens = extractTokens(line);
+            List<String> tokens = GuiPattern.slots(line);
 
             for (int col = 0; col < Math.min(tokens.size(), 9); col++) {
                 String token = tokens.get(col);
@@ -99,15 +96,6 @@ public final class GuildItemsGuiFactory {
         }
 
         chestGui.addPane(Slot.fromXY(0, 0), pane);
-    }
-
-    static List<String> extractTokens(String line) {
-        List<String> tokens = new ArrayList<>();
-        Matcher matcher = TOKEN_PATTERN.matcher(line);
-        while (matcher.find()) {
-            tokens.add(matcher.group(1)); // zawartość bez { }
-        }
-        return tokens;
     }
 
     private static GuiItem resolveToken(

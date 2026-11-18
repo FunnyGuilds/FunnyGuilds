@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
+import java.util.Map;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
@@ -37,6 +39,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
 
         guild.removeMember(user);
         user.removeGuild();
+        this.plugin.getGuildAuditService().record(guild, sender, Type.KICKED, Map.of("TARGET", user.getName()));
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
                 .ifPresent(this.plugin::scheduleFunnyTasks);

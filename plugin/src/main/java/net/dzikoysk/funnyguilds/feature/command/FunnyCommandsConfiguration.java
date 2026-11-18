@@ -72,7 +72,8 @@ public final class FunnyCommandsConfiguration {
     private FunnyCommandsConfiguration() {
     }
 
-    public static FunnyCommands createFunnyCommands(FunnyGuilds plugin) {
+    public static FunnyCommands createFunnyCommands(FunnyGuilds plugin, ExtensionCommandRegistry extensions,
+                                                    Map<String, CommandsConfiguration.FunnyCommand> legacyExtensionSettings) {
         Server server = plugin.getServer();
 
         PluginConfiguration config = plugin.getPluginConfiguration();
@@ -84,7 +85,7 @@ public final class FunnyCommandsConfiguration {
         UserManager userManager = plugin.getUserManager();
         GuildManager guildManager = plugin.getGuildManager();
 
-        CommandComponents userCommands = new CommandComponents("user")
+        CommandComponents<Class<?>> userCommands = new CommandComponents<Class<?>>("user")
                 .command("ally", commands.ally, AllyCommand.class)
                 .command("base", commands.base, BaseCommand.class)
                 .command("break", commands.break_, BreakCommand.class)
@@ -113,7 +114,7 @@ public final class FunnyCommandsConfiguration {
                 .command("war", commands.war, WarCommand.class)
                 .command("tnt", commands.tnt, TntCommand.class);
 
-        CommandComponents adminCommands = new CommandComponents("admin")
+        CommandComponents<Class<?>> adminCommands = new CommandComponents<Class<?>>("admin")
                 .command("add", commands.admin.add, AddCommand.class)
                 .command("assists", commands.admin.assists, AssistsCommand.class)
                 .command("base", commands.admin.base, BaseAdminCommand.class)
@@ -140,10 +141,18 @@ public final class FunnyCommandsConfiguration {
                 .command("validity", commands.admin.validity, ValidityAdminCommand.class)
                 .command("items", commands.admin.items, ItemsAdminCommand.class);
 
-        return FunnyCommands.configuration(() -> plugin)
+        CommandComponents<Object> extensionCommands = new CommandComponents<>("extension");
+        for (var command : extensions.entries()) {
+            var settings = ExtensionCommandRegistry.settings(command, commands.extensions.get(command.id()),
+                    legacyExtensionSettings.get(command.id()));
+            extensionCommands.command(command.id(), settings, command.component());
+        }
+
+        var registration = FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()
                 .placeholders(userCommands.placeholders)
                 .placeholders(adminCommands.placeholders)
+                .placeholders(extensionCommands.placeholders)
                 .injector(plugin.getInjector().fork(resources -> {}))
                 .bind(new UserBind(userManager))
                 .bind(new GuildBind(userManager))
@@ -160,21 +169,22 @@ public final class FunnyCommandsConfiguration {
                 .commands(userCommands.commands)
                 .commands(adminCommands.commands)
                 .exceptionHandler(new InternalValidationExceptionHandler(plugin.getMessageService()))
-                .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()))
-                .install();
+                .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()));
+        extensionCommands.commands.forEach(registration::command);
+        return registration.install();
     }
 
-    private static final class CommandComponents {
+    private static final class CommandComponents<T> {
 
         private final String group;
         private final Map<String, Function<String, String>> placeholders = new HashMap<>();
-        private final List<Class<?>> commands = new ArrayList<>();
+        private final List<T> commands = new ArrayList<>();
 
         private CommandComponents(String group) {
             this.group = group;
         }
 
-        private CommandComponents command(String name, CommandsConfiguration.FunnyCommand configuration, Class<?> command) {
+        private CommandComponents<T> command(String name, CommandsConfiguration.FunnyCommand configuration, T command) {
             if (configuration.enabled) {
                 this.placeholders.put(this.group + "." + name + ".name", key -> configuration.name);
                 this.placeholders.put(this.group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
@@ -185,7 +195,7 @@ public final class FunnyCommandsConfiguration {
             return this;
         }
 
-        private CommandComponents command(String name, String alias, Class<?> command) {
+        private CommandComponents<T> command(String name, String alias, T command) {
             this.placeholders.put(this.group + "." + name + ".name", key -> alias);
             this.commands.add(command);
             return this;

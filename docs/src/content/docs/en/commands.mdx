@@ -35,7 +35,7 @@ See [Guilds](/en/guilds/) — creation, membership, validity and disbanding.
 | `/wyrzuc <player>` | Kicks a player from the guild. |
 | `/lider` `/zalozyciel` `<player>` | Transfers guild leadership. |
 | `/zastepca <player>` | Grants/revokes deputy status. |
-| `/przedluz` | Extends the guild's validity. |
+| `/przedluz [period]` | Extends the guild's validity. With no argument, buys `validity-time`. The period, such as `3d`, must be available in the configuration. |
 | `/przedmioty` | Shows the items needed to create a guild. |
 | `/info <tag>` | Information about a guild. |
 | `/gracz <player>` | Information about a player. |
@@ -63,6 +63,7 @@ protection, TNT.
 | Command | Description |
 |---|---|
 | `/baza` | Teleports to the guild's base. |
+| `/panel` | Opens the guild overview with access to the base, relations, purchases, roles, permissions, and the activity log. |
 | `/ustawbaze` `/ustawdom` | Sets the guild's home. |
 | `/powieksz` | Enlarges the guild's territory. |
 | `/ucieczka` `/escape` | Starts an escape from another guild's territory. |
@@ -85,6 +86,7 @@ See [Alliances & wars](/en/alliances-wars/).
 | `/sojusz <tag>` | Proposes/accepts an alliance. |
 | `/rozwiaz <tag>` | Breaks an alliance. |
 | `/wojna <tag>` | Declares war on a guild. |
+| `/wojna <tag> zakoncz` | Withdraws your guild's declaration. The other guild's declaration may still be active. |
 | `/kupzycie` `/wykup` `/buylife` `/wykupzycie` | Buys an additional life for the guild. |
 | `/pvp` `/ustawpvp` `[tag]` | Toggles PvP within the guild or between allies. |
 

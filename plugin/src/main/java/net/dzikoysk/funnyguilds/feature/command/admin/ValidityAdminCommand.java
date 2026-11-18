@@ -2,9 +2,11 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -44,6 +46,8 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
         validity = validity.plus(time);
         guild.setValidity(validity);
+        this.plugin.getGuildAuditService().record(guild, sender, Type.VALIDITY_RENEWED,
+                Map.of("PERIOD", TimeUtils.formatTime(time), "COST", "0"));
 
         Instant finalValidity = validity;
         this.messageService.getMessage(config -> config.adminNewValidity)

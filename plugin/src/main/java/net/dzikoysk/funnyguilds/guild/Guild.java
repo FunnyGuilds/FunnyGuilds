@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,12 +12,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry;
+import net.dzikoysk.funnyguilds.guild.permission.GuildRolePolicy;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 public class Guild extends AbstractMutableEntity {
+
+    private volatile GuildRolePolicy rolePolicy = GuildRolePolicy.EMPTY;
+    private volatile List<GuildAuditEntry> auditEntries = List.of();
+
+    public List<GuildAuditEntry> getAuditEntries() {
+        return this.auditEntries;
+    }
+
+    public void setAuditEntries(List<GuildAuditEntry> entries) {
+        this.auditEntries = List.copyOf(entries);
+        this.markChanged();
+    }
 
     private final UUID uuid;
 
@@ -184,6 +199,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setOwner(User user) {
+        if (this.owner != null && !this.owner.equals(user)) {
+            this.rolePolicy = this.rolePolicy.removeMember(this.owner.getUUID()).removeMember(user.getUUID());
+        }
         this.owner = user;
         this.addMember(user);
         this.markChanged();
@@ -217,6 +235,7 @@ public class Guild extends AbstractMutableEntity {
     public void removeMember(User user) {
         this.members.remove(user);
         this.deputies.remove(user);
+        this.rolePolicy = this.rolePolicy.removeMember(user.getUUID());
         this.markChanged();
     }
 
@@ -238,12 +257,25 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addDeputy(User user) {
-        this.deputies.add(user);
+        if (this.deputies.add(user)) {
+            this.rolePolicy = this.rolePolicy.removeMember(user.getUUID());
+        }
         this.markChanged();
     }
 
     public void removeDeputy(User user) {
-        this.deputies.remove(user);
+        if (this.deputies.remove(user)) {
+            this.rolePolicy = this.rolePolicy.removeMember(user.getUUID());
+        }
+        this.markChanged();
+    }
+
+    public GuildRolePolicy getRolePolicy() {
+        return this.rolePolicy;
+    }
+
+    public void setRolePolicy(GuildRolePolicy rolePolicy) {
+        this.rolePolicy = rolePolicy;
         this.markChanged();
     }
 
@@ -274,6 +306,7 @@ public class Guild extends AbstractMutableEntity {
 
     public void removeAlly(Guild guild) {
         this.allies.remove(guild);
+        this.alliedPvPGuilds.remove(guild.uuid);
         this.markChanged();
     }
 
@@ -511,6 +544,16 @@ public class Guild extends AbstractMutableEntity {
 
     public boolean hasAllyPvPEnabled(Guild alliedGuild) {
         return this.allies.contains(alliedGuild) && this.alliedPvPGuilds.contains(alliedGuild.uuid);
+    }
+
+    public Set<UUID> getAlliedPvPGuilds() {
+        return Set.copyOf(this.alliedPvPGuilds);
+    }
+
+    public void setAlliedPvPGuilds(Set<UUID> guilds) {
+        this.alliedPvPGuilds.clear();
+        this.alliedPvPGuilds.addAll(guilds);
+        this.markChanged();
     }
 
     public boolean toggleAllyPvP(Guild alliedGuild) {

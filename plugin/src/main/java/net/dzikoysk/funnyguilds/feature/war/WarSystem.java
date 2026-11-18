@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildLifeGainEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLifeGainEvent.GainReason;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildWarWinEvent;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
@@ -234,6 +235,7 @@ public class WarSystem {
         loser.setWarStreak(0);
         loser.setLastWarGuildTag(conqueror.getTag());
 
+        plugin.getGuildAuditService().recordRelation(conqueror, loser, attacker, Type.WAR_WON);
         SimpleEventHandler.handle(new GuildWarWinEvent(EventCause.SYSTEM, attacker, conqueror, loser, conqueror.getWarStreak()));
 
         FunnyFormatter formatter = new FunnyFormatter()

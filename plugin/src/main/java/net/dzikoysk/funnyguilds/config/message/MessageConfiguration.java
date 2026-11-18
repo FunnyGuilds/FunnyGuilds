@@ -327,6 +327,12 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage generalHasGuild = ChatHolder.message("&cMasz juz gildie!");
     public SendableMessage generalNoNameGiven = ChatHolder.message("&cPodaj nazwe gildii!");
     public SendableMessage generalHasNoGuild = ChatHolder.message("&cNie masz gildii!");
+
+    public SendableMessage panelDisabled = ChatHolder.message("&cPanel gildii jest wyłączony.");
+    public SendableMessage guildRoleDenied = ChatHolder.message("&cNie możesz wprowadzić tej zmiany uprawnień.");
+    public SendableMessage guildRoleInvalidName = ChatHolder.message("&cPodaj unikalną nazwę roli o długości od 1 do 24 znaków.");
+    public SendableMessage guildRoleInputTimedOut = ChatHolder.message("&eUpłynął czas wpisywania nazwy roli. Otwórz ponownie /panel.");
+    public SendableMessage memberInvitationChanged = ChatHolder.message("&eStan gracza lub zaproszenia się zmienił.");
     public SendableMessage generalIsNotOwner = ChatHolder.message("&cNie jestes zalozycielem gildii!");
     public SendableMessage generalInsufficientGuildPermission = ChatHolder.message("&cNie posiadasz wystarczających uprawnień jako członek gildii!");
     public SendableMessage generalNoTagGiven = ChatHolder.message("&cPodaj tag gildii!");
@@ -501,13 +507,15 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
     public SendableMessage enemyIDone = ChatHolder.message("&7Gildia &a{GUILD} &7wypowiedziala twojej gildii wojne!");
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
-    public SendableMessage enemyEnd = ChatHolder.message("&7Zakonczono wojne z gildia &a{GUILD}&7!");
+    public SendableMessage enemyEnd = ChatHolder.message("&7Wycofano deklarację wojny z gildią &a{GUILD}&7.");
+    public SendableMessage enemyNoDeclaration = ChatHolder.message("&cTwoja gildia nie ma deklaracji wojny przeciw tej gildii.");
     @Comment("Dostępne zmienne: {GUILD}, {TAG}")
-    public SendableMessage enemyIEnd = ChatHolder.message("&7Gildia &a{GUILD} &7zakonczyla wojne z twoja gildia!");
+    public SendableMessage enemyIEnd = ChatHolder.message("&7Gildia &a{GUILD} &7wycofała deklarację wojny przeciw twojej gildii.");
 
     @Comment("")
     @Comment("<------- Ally Messages -------> #")
     public SendableMessage allyHasNotInvitation = ChatHolder.message("&7Aby zaprosic gildie do sojuszy wpisz &c/sojusz [tag]");
+    public SendableMessage allyInvitationChanged = ChatHolder.message("&cStan zaproszenia do sojuszu się zmienił.");
     @Comment("Dostępne zmienne: {GUILDS}")
     public SendableMessage allyInvitationList = ChatHolder.message(
             "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
@@ -551,6 +559,14 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("<------- Validity Messages -------> #")
     @Comment("Dostępne zmienne: {TIME}")
     public SendableMessage validityWhen = ChatHolder.message("&7Gildie mozesz przedluzyc dopiero za &c{TIME}&7!");
+    public SendableMessage validityPeriodUnavailable = ChatHolder.message("&cTen okres przedłużenia jest niedostępny.");
+    public SendableMessage purchaseChanged = ChatHolder.message("&eOferta się zmieniła. Otwórz ponownie wycenę.");
+    public SendableMessage purchaseBusy = ChatHolder.message("&cWłaśnie trwa zakup dla tej gildii.");
+    public SendableMessage purchaseEconomyUnavailable = ChatHolder.message("&cZakup wymaga dostawcy ekonomii Vault.");
+    public SendableMessage purchaseMissingItems = ChatHolder.message("&cBrakuje przedmiotów: &f{ITEMS}");
+    public SendableMessage purchaseMissingMoney = ChatHolder.message("&cBrakuje środków: &f{MONEY}");
+    public SendableMessage purchasePaymentFailed = ChatHolder.message("&cNie udało się zrealizować zakupu.");
+    public SendableMessage purchaseInvalidPrice = ChatHolder.message("&cNie udało się wyliczyć ceny zakupu.");
     @Comment("Dostępne zmienne: {ITEM}")
     public SendableMessage validityItems = ChatHolder.message("&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}");
     @Comment("Dostępne zmienne: {DATE}")

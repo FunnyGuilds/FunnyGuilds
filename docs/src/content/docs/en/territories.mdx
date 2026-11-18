@@ -69,7 +69,17 @@ enlarge-items:
 # ... up to level 10 (80 diamonds)
 ```
 
-An empty list (`enlarge-items: []`) disables enlarging entirely.
+In `ITEMS` mode, an empty list (`enlarge-items: []`) disables upgrades.
+The **Territory upgrades** screen in `/panel` shows each level's cost,
+radius, current status, and any reason it is blocked. Green concrete is the
+current level, yellow is available, red is blocked, and gray is already
+purchased. You can buy only
+the next level. In `MONEY` mode, `enlarge-payment.money` defines the levels
+and prices. `BOTH` requires an item and a currency cost for each level.
+
+Use **Roles and permissions** in `/panel` to control members' access to
+building, breaking, containers, doors, gates, buttons, and levers in the
+guild's own territory.
 
 ## Territory protection
 
