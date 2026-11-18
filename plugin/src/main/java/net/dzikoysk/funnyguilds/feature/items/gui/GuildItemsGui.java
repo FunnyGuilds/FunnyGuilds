@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.items.gui;
 
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
+import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
@@ -17,6 +18,7 @@ public class GuildItemsGui {
     private final MessageService messageService;
 
     private ChestGui chestGui;
+    private StaticPane itemsPane;
 
     private boolean showOnlyMissing = false;
 
@@ -37,7 +39,8 @@ public class GuildItemsGui {
     }
 
     public void open() {
-        this.chestGui = GuildItemsGuiFactory.buildChestGui(this);
+        this.itemsPane = new StaticPane(9, this.config.gui.rows);
+        this.chestGui = GuildItemsGuiFactory.buildChestGui(this, this.itemsPane);
         this.chestGui.show(player);
     }
 
@@ -50,8 +53,7 @@ public class GuildItemsGui {
     public void toggleView() {
         this.showOnlyMissing = !this.showOnlyMissing;
         if (chestGui == null) return;
-        chestGui.getPanes().clear();
-        GuildItemsGuiFactory.populatePanes(this, chestGui);
+        GuildItemsGuiFactory.populatePane(this, this.itemsPane);
         chestGui.update();
     }
 
