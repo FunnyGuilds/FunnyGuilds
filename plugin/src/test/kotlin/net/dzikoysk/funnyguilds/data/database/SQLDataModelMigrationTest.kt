@@ -168,15 +168,16 @@ internal abstract class SQLDataModelMigrationTest {
     }
 
     @Test
-    fun `guilds migration adds the tnt protection bypass column`() {
+    fun `guilds migration adds the tnt protection bypass and guild policy columns`() {
         val tableName = uniqueTableName("guilds")
-        val oldGuildsTable = guildsTable(tableName, withTntProtectionBypass = false)
+        val oldGuildsTable = guildsTable(tableName, withNewColumns = false)
+        val newColumns = listOf("tnt_protection_bypass", "allied_pvp", "role_policy", "audit_log")
 
         SQLDataModel.migrateSchema(connection, oldGuildsTable)
-        assertTrue(
-            "tnt_protection_bypass" !in readColumns(tableName),
-            "test setup: old guilds schema should not contain 'tnt_protection_bypass'"
-        )
+        val oldColumns = readColumns(tableName)
+        for (column in newColumns) {
+            assertTrue(column !in oldColumns, "test setup: old guilds schema should not contain '$column'")
+        }
 
         val guildUuid = UUID.randomUUID().toString()
         connection.prepareStatement(
@@ -191,18 +192,26 @@ internal abstract class SQLDataModelMigrationTest {
         SQLDataModel.migrateSchema(connection, guildsTable(tableName))
 
         val columns = readColumns(tableName)
-        assertTrue("tnt_protection_bypass" in columns, "expected 'tnt_protection_bypass' column to be added, got $columns")
+        for (column in newColumns) {
+            assertTrue(column in columns, "expected '$column' column to be added, got $columns")
+        }
 
-        connection.prepareStatement("SELECT `tnt_protection_bypass` FROM ${oldGuildsTable.nameGraveAccent} WHERE `uuid` = ?").use { select ->
+        connection.prepareStatement(
+            "SELECT `tnt_protection_bypass`, `allied_pvp`, `role_policy`, `audit_log` " +
+                "FROM ${oldGuildsTable.nameGraveAccent} WHERE `uuid` = ?"
+        ).use { select ->
             select.setString(1, guildUuid)
             select.executeQuery().use { resultSet ->
                 assertTrue(resultSet.next(), "inserted guild row should still exist after migration")
                 assertNull(resultSet.getString("tnt_protection_bypass"), "pre-existing guild row should have no TNT protection bypass")
+                assertNull(resultSet.getString("allied_pvp"), "pre-existing guild row should have no allied PvP state")
+                assertNull(resultSet.getString("role_policy"), "pre-existing guild row should have no role policy")
+                assertNull(resultSet.getString("audit_log"), "pre-existing guild row should have no audit log")
             }
         }
     }
 
-    private fun guildsTable(name: String, withTntProtectionBypass: Boolean = true): SQLTable = SQLTable(name).apply {
+    private fun guildsTable(name: String, withNewColumns: Boolean = true): SQLTable = SQLTable(name).apply {
         add("uuid", SQLType.VARCHAR, 100, true)
         add("name", SQLType.TEXT, true)
         add("tag", SQLType.TEXT, true)
@@ -218,12 +227,17 @@ internal abstract class SQLDataModelMigrationTest {
         add("born", SQLType.BIGINT, true)
         add("validity", SQLType.BIGINT, true)
         add("pvp", SQLType.BOOLEAN, true)
+        if (withNewColumns) {
+            add("allied_pvp", SQLType.TEXT)
+            add("role_policy", SQLType.LONGTEXT)
+            add("audit_log", SQLType.LONGTEXT)
+        }
         add("protection", SQLType.BIGINT)
         add("allies", SQLType.TEXT)
         add("enemies", SQLType.TEXT)
         add("info", SQLType.TEXT)
         add("deputy", SQLType.TEXT)
-        if (withTntProtectionBypass) {
+        if (withNewColumns) {
             add("tnt_protection_bypass", SQLType.BIGINT)
         }
         add("wars_won", SQLType.INT)

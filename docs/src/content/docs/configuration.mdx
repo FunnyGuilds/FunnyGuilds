@@ -112,6 +112,11 @@ enlarge-payment:
 - W trybie `ITEMS` rozbudowa korzysta z `enlarge-items`. W `MONEY` liczbę
   poziomów wyznacza `enlarge-payment.money`. W `BOTH` obie listy muszą mieć
   tę samą długość. Pierwszy wpis jest ceną przejścia z poziomu 0 na 1.
+- Ceny Vault w trybach `MONEY` i `BOTH` muszą być liczbami dodatnimi i
+  skończonymi. Dotyczy to `validity-payment.money` oraz każdego wpisu
+  `enlarge-payment.money`. Plugin sprawdza je przy wczytywaniu konfiguracji:
+  niepoprawna cena albo niezgodne długości list w `BOTH` przerywają
+  uruchamianie FunnyGuilds bez wpływu na start reszty serwera.
 - Jeśli Vault zwróci niejednoznaczny wynik lub zwrot się nie powiedzie,
   zgłoszenie do ręcznego uzgodnienia ląduje w `purchase-recovery.log`.
 
