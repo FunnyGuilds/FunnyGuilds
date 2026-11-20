@@ -20,7 +20,16 @@ import kotlin.test.assertTrue
 class GuildDiplomacyServiceTest : FunnyGuildsSpec() {
 
     @Test
+    fun `alliance acceptance ends a one-sided declaration with one withdrawal audit entry per guild`() {
+        assertAllianceAcceptance(false)
+    }
+
+    @Test
     fun `alliance acceptance ends a mutual war with one withdrawal audit entry per guild`() {
+        assertAllianceAcceptance(true)
+    }
+
+    private fun assertAllianceAcceptance(mutual: Boolean) {
         val firstOwner = userManager.createFake(UUID.randomUUID(), "FirstOwner")
         val secondOwner = userManager.createFake(UUID.randomUUID(), "SecondOwner")
         val first = Guild("First", "ONE")
@@ -30,7 +39,9 @@ class GuildDiplomacyServiceTest : FunnyGuildsSpec() {
         guildManager.addGuild(first)
         guildManager.addGuild(second)
         first.addEnemy(second)
-        second.addEnemy(first)
+        if (mutual) {
+            second.addEnemy(first)
+        }
         val invitations = AllyInvitationList(guildManager)
         invitations.createInvitation(second, first)
         val audit = GuildAuditService(funnyGuilds)
