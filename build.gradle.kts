@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `java-library`
-    application
     `maven-publish`
 
     kotlin("jvm") version "2.2.21" apply false
@@ -29,12 +28,7 @@ allprojects {
     apply(plugin = "java-library")
     apply(plugin = "kotlin")
     apply(plugin = "maven-publish")
-    apply(plugin = "application")
     apply(plugin = "com.gradleup.shadow")
-
-    application {
-        mainClass.set("net.dzikoysk.funnyguilds.FunnyGuilds")
-    }
 
     repositories {
         /* Panda libs & Maven Central */
@@ -133,7 +127,6 @@ subprojects {
             "--add-opens=java.base/java.util=ALL-UNNAMED"
         ) // I hate JDK team (https://github.com/mockito/mockito/issues/3037)
         useJUnitPlatform()
-        setForkEvery(1)
         maxParallelForks = 4
 
         testLogging {
