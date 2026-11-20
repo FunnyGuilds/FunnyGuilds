@@ -75,11 +75,7 @@ public final class GuildDiplomacyService {
         var invitations = this.plugin.getAllyInvitationList();
         when(!invitations.hasInvitation(target, guild), config -> config.allyInvitationChanged);
         if (SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, actor, guild, target))) {
-            this.withdrawIfDeclared(actor, guild, target);
-            if (target.isEnemy(guild)) {
-                target.removeEnemy(guild);
-                this.plugin.getGuildAuditService().recordRelation(target, guild, actor, Type.WAR_WITHDRAWN);
-            }
+            this.withdrawForAlliance(actor, guild, target);
             invitations.expireInvitation(target, guild);
             invitations.expireInvitation(guild, target);
             guild.addAlly(target);
@@ -133,6 +129,26 @@ public final class GuildDiplomacyService {
         when(!guild.isEnemy(target), config -> config.enemyNoDeclaration);
         this.withdrawIfDeclared(actor, guild, target);
         this.refreshNameTags(guild, target);
+    }
+
+    private void withdrawForAlliance(User actor, Guild guild, Guild target) {
+        boolean guildDeclared = guild.isEnemy(target);
+        boolean targetDeclared = target.isEnemy(guild);
+        if (!guildDeclared && !targetDeclared) {
+            return;
+        }
+
+        guild.removeEnemy(target);
+        target.removeEnemy(guild);
+        this.plugin.getGuildAuditService().recordRelation(guild, target, actor, Type.WAR_WITHDRAWN);
+        if (guildDeclared) {
+            this.notifyParties(actor, guild, target, config -> config.enemyEnd, config -> config.enemyIEnd);
+        }
+        if (targetDeclared) {
+            var messages = this.plugin.getMessageService();
+            messages.getMessage(config -> config.enemyEnd).receiver(target.getOwner()).with(relationFormatter(guild)).send();
+            messages.getMessage(config -> config.enemyIEnd).receiver(guild.getOwner()).with(relationFormatter(target)).send();
+        }
     }
 
     private void withdrawIfDeclared(User actor, Guild guild, Guild target) {
