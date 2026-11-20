@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -26,11 +27,15 @@ public final class WarCommand extends AbstractFunnyCommand {
         when(args.length < 1, config -> config.enemyCorrectUse);
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
-        if (args.length > 1 && args[1].equalsIgnoreCase("zakoncz")) {
+        if (args.length > 1 && isWithdrawKeyword(this.config.commands.warWithdrawKeywords, args[1])) {
             this.plugin.getGuildDiplomacyService().withdrawWar(owner, guild, enemyGuild);
         } else {
             this.plugin.getGuildDiplomacyService().declareWar(owner, guild, enemyGuild);
         }
+    }
+
+    static boolean isWithdrawKeyword(List<String> withdrawKeywords, String argument) {
+        return withdrawKeywords.stream().anyMatch(keyword -> keyword.equalsIgnoreCase(argument));
     }
 
 }

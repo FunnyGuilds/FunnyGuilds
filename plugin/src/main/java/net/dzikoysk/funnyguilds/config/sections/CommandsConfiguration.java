@@ -40,6 +40,10 @@ public class CommandsConfiguration extends OkaeriConfig {
     @Comment("")
     public FunnyCommand war = new FunnyCommand("wojna");
     @Comment("")
+    @Comment("Słowa kluczowe wycofujące wojnę jako drugi argument komendy /wojna <tag>")
+    @CustomKey("war-withdraw-keywords")
+    public List<String> warWithdrawKeywords = Arrays.asList("zakoncz", "end");
+    @Comment("")
     public FunnyCommand items = new FunnyCommand("przedmioty");
     public FunnyCommand panel = new FunnyCommand("panel");
 
