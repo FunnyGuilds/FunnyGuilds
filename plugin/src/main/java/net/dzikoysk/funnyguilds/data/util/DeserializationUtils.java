@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.util;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -13,6 +14,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.permission.GuildRolePolicy;
 import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
@@ -116,10 +118,20 @@ public final class DeserializationUtils {
                     .collect(Collectors.toUnmodifiableSet()));
         }
         if (values.length > 24) {
-            guild.setRolePolicy(GuildRoleSerializer.deserialize((String) values[24]));
+            try {
+                guild.setRolePolicy(GuildRoleSerializer.deserialize((String) values[24]));
+            } catch (RuntimeException exception) {
+                FunnyGuilds.getPluginLogger().error("Could not deserialize role policy for guild " + guildName + " (" + guildUuid + "), using empty policy", exception);
+                guild.setRolePolicy(GuildRolePolicy.EMPTY);
+            }
         }
         if (values.length > 25) {
-            guild.setAuditEntries(GuildAuditSerializer.deserialize((String) values[25]));
+            try {
+                guild.setAuditEntries(GuildAuditSerializer.deserialize((String) values[25]));
+            } catch (RuntimeException exception) {
+                FunnyGuilds.getPluginLogger().error("Could not deserialize audit log for guild " + guildName + " (" + guildUuid + "), using empty log", exception);
+                guild.setAuditEntries(List.of());
+            }
         }
         guild.deserializationUpdate();
 
