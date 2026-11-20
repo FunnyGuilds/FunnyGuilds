@@ -112,6 +112,11 @@ enlarge-payment:
 - Territory upgrades in `ITEMS` use `enlarge-items`. For `MONEY`,
   `enlarge-payment.money` determines how many levels are available.
   `BOTH` requires matching list lengths. The first entry buys level 1 from 0.
+- Vault prices in `MONEY` and `BOTH` modes must be positive, finite numbers.
+  This covers `validity-payment.money` and every `enlarge-payment.money`
+  entry. The plugin validates them while loading the configuration: an
+  invalid price or mismatched `BOTH` list lengths abort the FunnyGuilds
+  startup without affecting the rest of the server.
 - An uncertain Vault response or a failed refund is logged to
   `purchase-recovery.log` for manual reconciliation.
 
