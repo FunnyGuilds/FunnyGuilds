@@ -81,12 +81,16 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     @Override
     public void expireInvitation(UUID from, UUID to) {
         this.getInvitationsFor(to).stream()
-                .filter(invitation -> invitation.getToUUID().equals(to))
+                .filter(invitation -> invitation.getFromUUID().equals(from))
                 .forEach(this.invitations::remove);
     }
 
     public void expireInvitation(Guild from, User to) {
         this.expireInvitation(from.getUUID(), to.getUUID());
+    }
+
+    public void expireAllFor(User user) {
+        this.getInvitationsFor(user).forEach(this.invitations::remove);
     }
 
 }

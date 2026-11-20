@@ -35,7 +35,7 @@ Patrz [Gildie](/guilds/) — zakładanie, członkostwo, ważność i rozwiązywa
 | `/wyrzuc <gracz>` | Wyrzuca gracza z gildii. |
 | `/lider` `/zalozyciel` `<gracz>` | Przekazuje przywództwo gildii. |
 | `/zastepca <gracz>` | Nadaje/odbiera rangę zastępcy. |
-| `/przedluz` | Przedłuża ważność gildii. |
+| `/przedluz [okres]` | Przedłuża ważność gildii. Bez argumentu kupuje `validity-time`. Okres, np. `3d`, musi być dostępny w konfiguracji. |
 | `/przedmioty` | Pokazuje przedmioty potrzebne do założenia gildii. |
 | `/info <tag>` | Wyświetla informacje o gildii. |
 | `/gracz <gracz>` | Wyświetla informacje o graczu. |
@@ -62,6 +62,7 @@ Patrz [Tereny i ochrona](/territories/) — serce, powiększanie, ochrona, TNT.
 | Komenda | Opis |
 |---|---|
 | `/baza` | Teleportuje do bazy gildii. |
+| `/panel` | Otwiera podsumowanie gildii z dostępem do bazy, relacji, zakupów, ról, uprawnień i dziennika. |
 | `/ustawbaze` `/ustawdom` | Ustawia bazę (home) gildii. |
 | `/powieksz` | Powiększa teren gildii. |
 | `/ucieczka` `/escape` | Rozpoczyna ucieczkę z cudzego terenu. |
@@ -84,6 +85,7 @@ Patrz [Sojusze i wojny](/alliances-wars/).
 | `/sojusz <tag>` | Proponuje/akceptuje sojusz. |
 | `/rozwiaz <tag>` | Rozwiązuje sojusz. |
 | `/wojna <tag>` | Wypowiada wojnę gildii. |
+| `/wojna <tag> zakoncz` | Wycofuje własną deklarację wojny (słowo kluczowe konfigurowalne opcją `commands.war-withdraw-keywords`). Deklaracja drugiej gildii może nadal obowiązywać. |
 | `/kupzycie` `/wykup` `/buylife` `/wykupzycie` | Wykupuje dodatkowe życie dla gildii. |
 | `/pvp` `/ustawpvp` `[tag]` | Włącza/wyłącza PvP w gildii lub między sojusznikami. |
 

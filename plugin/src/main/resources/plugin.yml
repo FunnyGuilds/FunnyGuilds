@@ -50,6 +50,7 @@ permissions:
       funnyguilds.info: true
       funnyguilds.invite: true
       funnyguilds.items: true
+      funnyguilds.panel: true
       funnyguilds.join: true
       funnyguilds.kick: true
       funnyguilds.leader: true

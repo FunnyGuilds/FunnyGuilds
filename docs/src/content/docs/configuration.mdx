@@ -3,6 +3,123 @@ title: Konfiguracja
 description: Typy wartości używane w konfiguracji FunnyGuilds.
 ---
 
+## Panel gildii (`panel.yml`)
+
+`panel.yml` powstaje przy starcie pluginu. Ustaw `enabled: false`, aby
+wyłączyć dostęp do panelu. W sekcji `screens.overview` możesz zmienić tytuł,
+liczbę rzędów (od 1 do 6), wzór slotów, ikony oraz teksty w formacie MiniMessage.
+Każdy rząd wzoru mieści do 9 tokenów, np. `{summary} {empty} {base} {close}`.
+`{empty}` zostawia pusty slot. Pozostałe tokeny wskazują wpisy w `screens.overview.items`.
+`base` teleportuje do bazy, a `close` zamyka panel.
+
+### Komendy rozszerzeń (`config.yml`)
+
+W `commands.extensions` można nadpisać nazwę, aliasy i rejestrację komendy
+po jej identyfikatorze. Dla `/panel` identyfikatorem jest `guild-panel.panel`.
+
+```yaml
+commands:
+  extensions:
+    'guild-panel.panel':
+      name: panel
+      aliases: [menu]
+      enabled: true
+```
+
+Możesz podać tylko te pola, które chcesz zmienić. Dla panelu pozostałe wartości
+pochodzą z dotychczasowego `commands.panel`. Dla innych rozszerzeń obowiązują
+wartości domyślne zadeklarowane przez moduł. `aliases: []` usuwa aliasy,
+a `enabled: false` wyłącza rejestrację komendy. Zmiany w rejestracji komend
+wymagają restartu serwera. Dostęp do samego GUI kontroluje `enabled` w `panel.yml`.
+
+Tytuł i opisy obsługują `{TAG}`, `{GUILD}`, `{OWNER}`, `{DEPUTIES}`,
+`{ONLINE}`, `{MEMBERS}`, `{RANK}`, `{POINTS}`, `{LIVES}`, `{EXPIRY}`,
+`{REMAINING}`, `{LEVEL}`, `{SIZE}`, `{PVP}`, `{ALLIES}`, `{BASE_COST}`
+i `{BASE_DELAY}`. Wiersz sojuszu `alliance-line` udostępnia
+`{ALLY}`, `{ALLY_TAG}`, `{ALLY_PVP}`, `{OUR_PVP}` i `{THEIR_PVP}`.
+Zasady teleportu i regionów ustawia się w `config.yml`.
+Zastosuj zmiany w wyglądzie przez `/funnyguilds reload`. Przy błędzie plugin
+używa poprzedniego poprawnego układu.
+
+`screens.relations` konfiguruje listę relacji i jej nawigację. Każdy
+`{entry}` zajmuje jedno miejsce na gildię na stronie. `screens.relation`
+konfiguruje szczegóły wybranej gildii, a `screens.confirm` ekran potwierdzenia.
+`screens.relation-labels` zmienia opisy relacji i kierunków deklaracji.
+Te widoki obsługują między innymi `{TARGET}`, `{TARGET_TAG}` i `{RELATION}`
+dla wybranej gildii, `{PAGE}` i `{PAGES}` dla listy oraz `{ACTION}` dla potwierdzenia.
+
+Widoki zakupów to `screens.expansion`, `screens.renewal` i
+`screens.purchase-confirm`. Etykiety stanów są w `screens.purchase-labels`.
+Rozbudowa i przedłużanie mają domyślnie po sześć rzędów, a potwierdzenie
+zakupu ma pięć. Materiały ikon poziomów i legendy zmienisz w
+`screens.expansion-materials` pod kluczami `current`, `available`,
+`locked` i `purchased`.
+W ikonach możesz użyć `{COST}`, `{MISSING}`, `{STATUS}`, `{LEVEL}`,
+`{SIZE}`, `{MAX_LEVEL}`, `{PERIOD}`, `{NEW_DATE}` i `{WAIT}`. Potwierdzenie
+udostępnia też `{PRODUCT}` i `{RESULT}`. Jeśli masz własny układ podsumowania,
+dodaj tokeny `{territory}` i `{validity}` tam, gdzie mają być przyciski zakupów.
+
+Ustaw układ edytora ról w `screens.roles`. Token `{entry}` wyświetla rolę,
+głowę gracza lub prawo. Nazwy praw są w `screens.permission-names`, etykiety
+stanów w `screens.role-labels`, a komunikat wpisywania nazwy na czacie w
+`screens.role-name-prompt`.
+Materiały ikon praw ustawisz w `screens.permission-materials`, np.
+`protection.bucket-empty: LAVA_BUCKET`. Przyciski członków i zaproszeń
+to tokeny `{invite-player}`, `{pending-invites}` i `{kick}` w `screens.roles`.
+Dla ikony łańcucha panel rozpoznaje zarówno `CHAIN`, jak i `IRON_CHAIN`.
+We własnym układzie podsumowania dodaj `{roles}`, aby otworzyć edytor.
+
+Ekran dziennika ustawia się w `screens.audit`. `screens.audit-categories`
+określa nazwy filtrów, a `screens.audit-descriptions` opisy typów zdarzeń.
+Dodaj `{audit}` do własnego układu podsumowania, aby udostępnić ekran.
+
+### Przechowywanie dziennika
+
+W `config.yml` domyślnie obowiązuje `guild-audit.max-entries: 200` oraz
+`guild-audit.retention: 30d`. Plugin zachowuje najnowsze wpisy mieszczące
+się w obu limitach. `max-entries: 0` wyłącza zapis i usuwa dotychczasowe
+wpisy przy czyszczeniu. `retention: 0` wyłącza limit wieku.
+
+## Zakupy gildii
+
+Zasady i ceny zakupów ustawiasz w `config.yml`. Domyślny tryb obu operacji
+to `ITEMS`. `MONEY` pobiera walutę z konta gracza przez Vault, a `BOTH`
+pobiera przedmioty i walutę. Oba tryby walutowe wymagają aktywnego dostawcy
+ekonomii. Poniższy przykład ustawia podwójną płatność za ważność oraz
+trzy poziomy rozbudowy opłacane walutą.
+
+```yaml
+validity-periods: [12h, 1d, 3d, 5d, 7d, 14d, 31d]
+validity-items:
+  - '8 diamond'
+validity-payment:
+  mode: BOTH
+  rate-unit: 1d
+  money: 1000
+enlarge-payment:
+  mode: MONEY
+  money: [1000, 2500, 5000]
+```
+
+- `validity-time` to domyślny okres komendy i zawsze pojawia się w panelu.
+  Domyślne lub puste `validity-periods` udostępnia `12h`, `1d`, `3d`, `5d`,
+  `7d`, `14d` i `31d`. Własna lista przyjmuje jednostki `s`, `m`, `h` lub `d`.
+  Przy pustym `validity-payment.rate-unit` stawka dotyczy `validity-time`.
+- Koszt przedłużenia to stawka pomnożona przez stosunek kupowanego okresu
+  do okresu stawki. Liczby przedmiotów zaokrąglamy w górę do pełnych sztuk,
+  a walutę do precyzji dostawcy lub dwóch miejsc po przecinku. W przykładzie
+  3 dni kosztują 24 diamenty i 3000 jednostek waluty.
+- W trybie `ITEMS` rozbudowa korzysta z `enlarge-items`. W `MONEY` liczbę
+  poziomów wyznacza `enlarge-payment.money`. W `BOTH` obie listy muszą mieć
+  tę samą długość. Pierwszy wpis jest ceną przejścia z poziomu 0 na 1.
+- Ceny Vault w trybach `MONEY` i `BOTH` muszą być liczbami dodatnimi i
+  skończonymi. Dotyczy to `validity-payment.money` oraz każdego wpisu
+  `enlarge-payment.money`. Plugin sprawdza je przy wczytywaniu konfiguracji:
+  niepoprawna cena albo niezgodne długości list w `BOTH` przerywają
+  uruchamianie FunnyGuilds bez wpływu na start reszty serwera.
+- Jeśli Vault zwróci niejednoznaczny wynik lub zwrot się nie powiedzie,
+  zgłoszenie do ręcznego uzgodnienia ląduje w `purchase-recovery.log`.
+
 Oprócz typów wbudowanych (String, Int, boolean...) FunnyGuilds ma kilka
 własnych typów wartości konfiguracyjnych. Ta strona zbiera je wszystkie razem
 z możliwymi wartościami i przykładami. Opis konkretnej opcji znajduje się na

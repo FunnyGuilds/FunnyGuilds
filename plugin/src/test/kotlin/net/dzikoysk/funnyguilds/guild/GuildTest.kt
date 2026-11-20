@@ -33,7 +33,7 @@ class GuildTest : FunnyGuildsSpec() {
                 .withPrefabValues(MutableEntity::class.java, user1, user2)
                 .withPrefabValues(Location::class.java, Location(null, 0.0, 0.0, 0.0), Location(null, 1.0, 2.0, 3.0))
                 .withIgnoredFields("name", "tag", "rank", "lives", "heartLives", "region", "home", "owner")
-                .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds")
+                .withIgnoredFields("members", "deputies", "allies", "enemies", "alliedPvPGuilds", "rolePolicy", "auditEntries")
                 .withIgnoredFields("born", "validity", "protection", "build", "ban", "tntProtectionBypass", "pvp", "wasChanged")
                 .withIgnoredFields("warsWon", "warsLost", "lastWarGuildTag", "lastLifeBuy", "warStreak", "victimGainCooldowns")
                 .verify()
@@ -80,6 +80,21 @@ class GuildTest : FunnyGuildsSpec() {
 
         assertEquals(1, guild.warsLost)
         assertEquals(0, guild.warStreak)
+    }
+
+    @Test
+    fun `reforming an alliance starts with allied pvp disabled`() {
+        val guild = Guild("guild1", "TEST1")
+        val ally = Guild("guild2", "TEST2")
+        guild.addAlly(ally)
+        guild.setAlliedPvPGuilds(setOf(ally.getUUID()))
+        assertTrue(guild.hasAllyPvPEnabled(ally))
+
+        guild.removeAlly(ally)
+        guild.addAlly(ally)
+
+        assertFalse(guild.hasAllyPvPEnabled(ally))
+        assertTrue(guild.alliedPvPGuilds.isEmpty())
     }
 
     @Test

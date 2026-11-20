@@ -1,16 +1,21 @@
 package net.dzikoysk.funnyguilds.data.util;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.permission.GuildRolePolicy;
+import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
@@ -104,6 +109,29 @@ public final class DeserializationUtils {
         }
         if (values.length > 22 && values[22] != null) {
             guild.setLastLifeBuy((Instant) values[22]);
+        }
+        if (values.length > 23 && values[23] instanceof Collection<?> alliedPvp) {
+            guild.setAlliedPvPGuilds(alliedPvp.stream()
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .flatMap(id -> Optionals.attempt(IllegalArgumentException.class, () -> UUID.fromString(id)).stream())
+                    .collect(Collectors.toUnmodifiableSet()));
+        }
+        if (values.length > 24) {
+            try {
+                guild.setRolePolicy(GuildRoleSerializer.deserialize((String) values[24]));
+            } catch (RuntimeException exception) {
+                FunnyGuilds.getPluginLogger().error("Could not deserialize role policy for guild " + guildName + " (" + guildUuid + "), using empty policy", exception);
+                guild.setRolePolicy(GuildRolePolicy.EMPTY);
+            }
+        }
+        if (values.length > 25) {
+            try {
+                guild.setAuditEntries(GuildAuditSerializer.deserialize((String) values[25]));
+            } catch (RuntimeException exception) {
+                FunnyGuilds.getPluginLogger().error("Could not deserialize audit log for guild " + guildName + " (" + guildUuid + "), using empty log", exception);
+                guild.setAuditEntries(List.of());
+            }
         }
         guild.deserializationUpdate();
 

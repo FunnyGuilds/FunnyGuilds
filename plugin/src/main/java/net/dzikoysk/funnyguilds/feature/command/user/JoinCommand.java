@@ -9,6 +9,8 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
+import java.util.Map;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
@@ -72,15 +74,15 @@ public final class JoinCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.guildInvitationList.expireInvitation(guild, user);
-
         if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(EventCause.USER, user, guild, user))) {
             return;
         }
 
         guild.addMember(user);
         user.setGuild(guild);
+        this.guildInvitationList.expireAllFor(user);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
+        this.plugin.getGuildAuditService().record(guild, user, Type.JOINED, Map.of("TARGET", user.getName()));
 
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))

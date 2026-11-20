@@ -7,6 +7,10 @@ Relacja z inną gildią (neutralna/sojusz/wojna) decyduje o kolorze jej tagu na
 czacie i tabliście (patrz [Czat](/chat/)) oraz o wejściu na jej teren (patrz
 [Tereny i ochrona](/territories/)).
 
+W `/panel` wybierz **Sojusze, wojny i PvP**, aby zobaczyć aktywne sojusze,
+zaproszenia przychodzące i wychodzące oraz wojny. Wybierz gildię z listy, aby
+zobaczyć jej dostępne akcje. Panel i komendy stosują te same uprawnienia i limity.
+
 ## Sojusze
 
 `/sojusz <tag>` proponuje sojusz drugiej gildii — jej lider akceptuje go tą
@@ -14,6 +18,9 @@ samą komendą. Zerwać sojusz można w każdej chwili komendą `/rozwiaz <tag>`
 Gildia może mieć maksymalnie `max-allies` sojuszników (domyślnie **15**).
 
 Domyślnie sojusznicy nie mogą się nawzajem ranić — steruje tym `damage-ally`.
+Po włączeniu tej opcji obie gildie muszą zezwolić na walkę dla tego sojuszu
+przez `/pvp <tag>` albo panel. Ich ustawienia są zapisywane po restarcie.
+Przyjęcie sojuszu kończy deklaracje wojny między obiema stronami.
 To zachowanie można też nadpisać dla konkretnego regionu flagą WorldGuarda
 `fg-friendly-fire`, patrz [WorldGuard i WorldEdit](/worldguard-worldedit/).
 
@@ -24,6 +31,12 @@ wcześniejszego wypowiedzenia jej wojny komendą `/wojna <tag>`. Wyjątkiem jest
 wyłączona opcja `war.require-declaration` — wtedy można atakować dowolną
 gildię spoza sojuszy bez wypowiadania wojny. Jedna gildia może prowadzić maksymalnie
 `max-enemies` wojen naraz (domyślnie **15**).
+
+Zakładka wojen rozróżnia deklaracje własne, przychodzące i obustronne.
+Panel i `/wojna <tag> zakoncz` pozwalają wycofać własną deklarację. Słowo
+kluczowe wycofania ustawia się w `commands.war-withdraw-keywords`
+(domyślnie `zakoncz` i `end`, porównywane bez rozróżniania wielkości liter).
+Wojna nadal trwa, jeśli druga gildia utrzymuje swoją.
 
 ### Tryby wojen (War Mode)
 

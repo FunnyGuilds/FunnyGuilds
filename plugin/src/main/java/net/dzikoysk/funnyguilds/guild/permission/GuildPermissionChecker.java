@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.guild.permission;
 
-import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
@@ -9,6 +8,12 @@ import org.bukkit.event.Event;
 import panda.std.Result;
 
 public interface GuildPermissionChecker {
+
+    /** Resolves the stored guild policy without firing context-dependent permission events. */
+    default GuildPermissionDecision getStoredDecision(Guild guild, User user, GuildPermission<Boolean> permission) {
+        return new GuildPermissionDecision(this.getPermissionValue(guild, user, permission).orElse(false),
+                GuildPermissionDecision.Source.DEFAULT);
+    }
 
     /**
      * Get the value of a specific protection permission for a user, or fallback action if user lacks permission
@@ -53,7 +58,7 @@ public interface GuildPermissionChecker {
     default boolean handlePermission(Guild guild, User user, GuildPermission<Boolean> permission) {
         return this.getPermissionResult(guild, user, permission)
                 .onError(Runnable::run)
-                .matches(Objects::nonNull);
+                .matches(Boolean.TRUE::equals);
     }
     
     /**
@@ -67,7 +72,7 @@ public interface GuildPermissionChecker {
     default boolean handleProtectionPermission(Guild guild, User user, GuildPermission<Boolean> permission, Event event) {
         return this.getProtectionPermissionResult(guild, user, permission, event)
                 .onError(Runnable::run)
-                .matches(Objects::nonNull);
+                .matches(Boolean.TRUE::equals);
     }
     
     static GuildPermissionChecker create(FunnyGuilds plugin) {

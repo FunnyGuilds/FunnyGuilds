@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 public final class GuiItemBuilder {
 
@@ -24,6 +25,18 @@ public final class GuiItemBuilder {
 
     public static ItemStack buildSimple(GuildItemDefinition def) {
         return ItemUtils.toItemStack(def, 1);
+    }
+
+    public static ItemStack buildSimple(GuildItemDefinition def, @Nullable String materialOverride) {
+        Material material = matchIconMaterial(materialOverride);
+        if (material == null) {
+            material = matchIconMaterial(def.material);
+        }
+        return material == null ? buildSimple(def) : ItemUtils.toItemStack(def, 1, material);
+    }
+
+    public static @Nullable Material matchIconMaterial(@Nullable String name) {
+        return IconMaterials.resolve(name);
     }
 
     public static ItemStack buildWithDisplay(GuildItemDefinition def, ItemDisplayConfig display, ItemCountResult counts) {

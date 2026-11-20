@@ -76,16 +76,55 @@ Liczbę członków ogranicza `max-members` (domyślnie **15** graczy).
 domyślnie 10 bloków, maksymalnie `invite-command-all-max-range` — 50 bloków).
 :::
 
+## Panel gildii
+
+`/panel` pokazuje lidera, zastępców, liczbę członków online, ranking, punkty,
+życia, ważność gildii, poziom i promień terenu oraz ustawienia PvP gildii i jej
+sojuszy. Przycisk teleportu stosuje te same uprawnienia i zasady co `/baza`,
+w tym koszt, opóźnienie i uprawnienia VIP. Punkt docelowy ustawisz komendą
+`/ustawbaze`.
+
+### Role gildii
+
+Otwórz **Role i uprawnienia** w `/panel`. Po kliknięciu **Utwórz rolę** lider ma
+30 sekund na wpisanie nazwy na czacie. Wiadomość trafia tylko do edytora.
+Wpisz `anuluj`, aby wrócić do listy ról. Rolę przypiszesz z listy głów graczy.
+Ta lista obejmuje też osoby offline. Rola lidera jest widoczna do odczytu.
+
+Kliknięcie uprawnienia przełącza **Dziedzicz**, **Zezwól** i **Zabroń**.
+Wyjątek gracza ma pierwszeństwo. Własna rola dziedziczy brakujące ustawienia
+z roli członka. Panel pokazuje decyzję i jej źródło. Po usunięciu roli
+przypisani gracze wracają do roli członka. Ustawienia zachowują się po restarcie.
+
+W zakładce **Członkowie** możesz zaprosić gracza online z listy głów albo
+cofnąć wysłane zaproszenie w **Oczekujących zaproszeniach**. Wybierz członka,
+aby móc go wyrzucić po potwierdzeniu. Panel stosuje te same prawa co
+`/zapros` i `/wyrzuc`.
+
+### Dziennik gildii
+
+W `/panel` otwórz **Dziennik gildii**. Wpisy pokazują datę, wykonawcę
+i opis. Zacznij od najnowszej strony lub kliknij filtr, aby przejść do
+kategorii. Dziennik obejmuje m.in. zaproszenia i zmiany członkostwa,
+uprawnienia, PvP, sojusze, wojny, rozbudowę i przedłużanie. Pokazuje też
+koszt zakupów. Lider może nadać innym prawo **Odczyt dziennika**.
+
 ## Ważność gildii
 
 Nowo założona gildia otrzymuje `validity-start` ważności (domyślnie **14
 dni**) — po jej upływie zostaje automatycznie usunięta.
 
-Ważność przedłuża komenda `/przedluz`: dodaje `validity-time` (domyślnie 14
-dni) i kosztuje `validity-items` (domyślnie 10 diamentów). Można jej użyć
-dopiero, gdy do wygaśnięcia zostało mniej niż `validity-when` (domyślnie 14
-dni — tyle samo, co ważność nowej gildii) — ustawienie `0` całkowicie wyłącza
-możliwość przedłużania.
+Ważność przedłużysz w `/panel` lub komendą `/przedluz [okres]`. Panel pokazuje
+ostateczny koszt, ewentualne braki i nową datę przed zatwierdzeniem. Czas
+jest dodawany do aktualnej daty wygaśnięcia. Sama komenda bez argumentu
+dodaje `validity-time` (domyślnie 14 dni za 10 diamentów). Domyślny panel
+pokazuje 12 godzin oraz 1, 3, 5, 7, 14 i 31 dni. Okresy można zmienić
+przez `validity-periods`.
+
+Domyślne `validity-when: 0` pozwala kupować przedłużenia w dowolnym momencie,
+również kilka razy pod rząd. Dodatnia wartość, np. `14d`, ogranicza zakup
+do ostatnich 14 dni ważności gildii.
+Ceny, stawkę i tryby płatności opisuje [konfiguracja](/configuration/#zakupy-gildii).
 
 ## Rozwiązanie gildii
 

@@ -5,6 +5,8 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaveEvent;
+import java.util.Map;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
@@ -35,6 +37,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
 
         guild.removeMember(member);
         member.removeGuild();
+        this.plugin.getGuildAuditService().record(guild, member, Type.LEFT, Map.of("TARGET", member.getName()));
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, member))
                 .ifPresent(this.plugin::scheduleFunnyTasks);

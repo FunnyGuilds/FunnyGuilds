@@ -5,6 +5,8 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
+import java.util.Map;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
@@ -38,6 +40,7 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
+            this.plugin.getGuildAuditService().record(guild, owner, Type.DEPUTY_REMOVED, Map.of("TARGET", deputyUser.getName()));
             this.messageService.getMessage(config -> config.deputyRemove)
                     .receiver(owner)
                     .send();
@@ -48,6 +51,7 @@ public final class DeputyCommand extends AbstractFunnyCommand {
         }
 
         guild.addDeputy(deputyUser);
+        this.plugin.getGuildAuditService().record(guild, owner, Type.DEPUTY_ADDED, Map.of("TARGET", deputyUser.getName()));
         this.messageService.getMessage(config -> config.deputySet)
                 .receiver(owner)
                 .send();

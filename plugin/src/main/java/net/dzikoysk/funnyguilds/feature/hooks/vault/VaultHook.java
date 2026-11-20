@@ -63,6 +63,15 @@ public class VaultHook extends AbstractPluginHook {
         return economyHook.withdrawPlayer(player, money);
     }
 
+    public static int moneyScale() {
+        int digits = economyHook == null ? -1 : economyHook.fractionalDigits();
+        return digits < 0 ? 2 : Math.min(digits, 15);
+    }
+
+    public static EconomyResponse refund(OfflinePlayer player, double money) {
+        return economyHook.depositPlayer(player, money);
+    }
+
     public static boolean hasPermission(OfflinePlayer player, String permission) {
         return permissionHook != null && permissionHook.playerHas(null, player, permission);
     }

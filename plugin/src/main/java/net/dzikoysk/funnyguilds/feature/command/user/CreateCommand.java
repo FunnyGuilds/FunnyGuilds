@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -101,10 +102,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 guildLocation.setY(guildLocation.getBlockY() + 2);
             }
 
-            int distance = this.config.regionSize + this.config.createDistance;
-            if (this.config.enlargeItems != null) {
-                distance += this.config.enlargeItems.size() * this.config.enlargeSize;
-            }
+            int distance = this.regionManager.sizeAtEnlargementLevel(this.config.getMaxEnlargementLevel()) + this.config.createDistance;
 
             when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation),
                     config -> config.createSpawn, Replacement.string("{DISTANCE}", distance));
@@ -281,6 +279,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         guild.getRegion().ifPresent(region -> this.regionManager.addRegion(region));
 
+        this.plugin.getGuildAuditService().record(guild, user, Type.GUILD_CREATED, Map.of("TARGET", guild.getTag()));
         this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
         this.plugin.getIndividualNameTagManager()
                 .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
