@@ -367,9 +367,6 @@ public final class PanelAccessAdapter implements GuildPanelAccess {
                 throw new InternalValidationException(config -> config.permission);
             }
             if (this.plugin.getGuildPermissionChecker().handlePermission(this.guild, this.user, guildPermission)) {
-                if (guildPermission == GuildCommandPermission.BASE) {
-                    this.player.closeInventory();
-                }
                 action.run();
                 return true;
             }

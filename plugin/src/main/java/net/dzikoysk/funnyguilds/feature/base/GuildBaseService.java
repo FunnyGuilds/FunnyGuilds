@@ -62,6 +62,10 @@ public final class GuildBaseService {
             return;
         }
 
+        // All checks passed, so it is safe to close the panel (if open) - a failed
+        // validation above must leave the inventory untouched
+        player.closeInventory();
+
         ItemStack[] items = ItemUtils.toArray(requiredItems);
         player.getInventory().removeItem(items);
 
