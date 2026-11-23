@@ -21,10 +21,14 @@ Write commits in English, imperative mood ("Add", "Fix", not "Added"/"Fixes").
 Merge PRs with squash merge (`gh pr merge <number> --squash`), never with a merge
 commit or rebase. This keeps the history linear, matching how recent PRs landed.
 
-- The squash title uses the PR title format from the global instructions:
-  `GH-<issue number> <Title>`, falling back to `GH-<PR number> <Title>` when no
-  linked issue exists. Single-commit PRs already carry that title, so the squash
-  usually needs no edit; verify before confirming.
+- The squash title (which becomes the commit on the base branch) follows the
+  same rules as commit messages above: `GH-<issue number> <Title>` for
+  issue-linked changes, conventional prefixes (`ci:`, `build:`, `chore:`,
+  `docs:`) otherwise. When a PR title does not follow the convention, edit
+  it (`gh pr edit <number> --title ...`) or override the squash title at
+  merge time instead of merging it as-is.
+- The PR title itself must already follow that format when the PR is opened
+  (see global instructions), so the squash usually needs no edit.
 - Before merging, confirm all required checks have passed (`gh pr checks <number>`).
 - Merging happens only on explicit request (see global instructions).
 
