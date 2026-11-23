@@ -141,13 +141,8 @@ public final class GuildDiplomacyService {
         guild.removeEnemy(target);
         target.removeEnemy(guild);
         this.plugin.getGuildAuditService().recordRelation(guild, target, actor, Type.WAR_WITHDRAWN);
-        if (guildDeclared) {
+        if (guildDeclared || targetDeclared) {
             this.notifyParties(actor, guild, target, config -> config.enemyEnd, config -> config.enemyIEnd);
-        }
-        if (targetDeclared) {
-            var messages = this.plugin.getMessageService();
-            messages.getMessage(config -> config.enemyEnd).receiver(target.getOwner()).with(relationFormatter(guild)).send();
-            messages.getMessage(config -> config.enemyIEnd).receiver(guild.getOwner()).with(relationFormatter(target)).send();
         }
     }
 
