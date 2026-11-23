@@ -18,7 +18,7 @@ plugins {
 }
 
 idea {
-    project.jdkName = "21"
+    project.jdkName = "25"
 }
 
 allprojects {
