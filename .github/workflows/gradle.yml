@@ -66,8 +66,8 @@ jobs:
           arguments: ${{ github.event_name == 'pull_request' && 'build --stacktrace -i' || 'build :plugin:publish --stacktrace -i' }}
           read-only: ${{ github.ref != 'refs/heads/4.x' && github.ref != 'refs/heads/5.x' && github.ref != 'refs/heads/6.x' }}
         env:
-          MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
-          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+          MAVEN_NAME: ${{ github.event_name == 'push' && secrets.MAVEN_NAME || '' }}
+          MAVEN_TOKEN: ${{ github.event_name == 'push' && secrets.MAVEN_TOKEN || '' }}
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         id: upload-artifact
