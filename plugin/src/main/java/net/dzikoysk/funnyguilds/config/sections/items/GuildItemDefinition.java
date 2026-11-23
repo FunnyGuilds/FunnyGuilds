@@ -1,11 +1,13 @@
 package net.dzikoysk.funnyguilds.config.sections.items;
 
 import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.util.Collections;
 import java.util.List;
+import net.dzikoysk.funnyguilds.shared.bukkit.ResolvedItemDefinition;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -17,6 +19,9 @@ import org.jetbrains.annotations.Nullable;
  */
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class GuildItemDefinition extends OkaeriConfig {
+
+    @Exclude
+    private ResolvedItemDefinition resolved;
 
     @Nullable
     public String material;
@@ -55,6 +60,18 @@ public class GuildItemDefinition extends OkaeriConfig {
 
     public List<String> getFlagsOrEmpty() {
         return flags != null ? flags : Collections.emptyList();
+    }
+
+    public void resolve(String path) {
+        this.resolved = ResolvedItemDefinition.resolve(this, path);
+    }
+
+    /** Loaded definitions are resolved eagerly; programmatic GUI/API definitions resolve on first use. */
+    public ResolvedItemDefinition getResolved() {
+        if (this.resolved == null) {
+            resolve("item");
+        }
+        return this.resolved;
     }
 
 }

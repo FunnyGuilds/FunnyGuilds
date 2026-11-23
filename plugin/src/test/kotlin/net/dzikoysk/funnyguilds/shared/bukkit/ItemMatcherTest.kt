@@ -1,12 +1,9 @@
 package net.dzikoysk.funnyguilds.shared.bukkit
 
 import com.destroystokyo.paper.profile.PlayerProfile
-import io.papermc.paper.registry.RegistryAccess
-import io.papermc.paper.registry.RegistryKey
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition
 import org.bukkit.Color
 import org.bukkit.Material
-import org.bukkit.Registry
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -14,9 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.RETURNS_DEFAULTS
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.mockStatic
 import org.mockito.Mockito.`when`
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -129,23 +124,7 @@ class ItemMatcherTest {
 
     @Test
     fun `configured enchantments check the whole map and levels`() {
-        mockStatic(RegistryAccess::class.java).use { registryMock ->
-            // Paper initializes legacy Registry and Enchantment constants while these classes load.
-            val access = mock(RegistryAccess::class.java) { invocation ->
-                if (invocation.method.name == "getRegistry") {
-                    mock(Registry::class.java) { lookup ->
-                        if (lookup.method.name == "get" && invocation.arguments[0] == Enchantment::class.java) {
-                            mock(Enchantment::class.java)
-                        }
-                        else RETURNS_DEFAULTS.answer(lookup)
-                    }
-                }
-                else RETURNS_DEFAULTS.answer(invocation)
-            }
-            registryMock.`when`<RegistryAccess> { RegistryAccess.registryAccess() }.thenReturn(access)
-            @Suppress("UNCHECKED_CAST")
-            val registry = mock(Registry::class.java) as Registry<Enchantment>
-            `when`(access.getRegistry(RegistryKey.ENCHANTMENT)).thenReturn(registry)
+        withEnchantmentRegistry { registry ->
             val enchantment = mock(Enchantment::class.java)
             val extraEnchantment = mock(Enchantment::class.java)
             `when`(registry.get(org.bukkit.NamespacedKey.minecraft("sharpness"))).thenReturn(enchantment)

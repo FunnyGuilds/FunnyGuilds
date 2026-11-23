@@ -110,7 +110,7 @@ Pusta definicja akceptuje dowolny niepusty przedmiot.
 | `material` | Dokładny materiał |
 | `name` | Dokładna sformatowana nazwa (MiniMessage, domyślnie bez kursywy) |
 | `lore` | Dokładne sformatowane linie wraz z ich kolejnością |
-| `enchants` | Dokładna mapa zaklęć i poziomów, np. `['sharpness:2']` |
+| `enchants` | Dokładna mapa zaklęć i dodatnich całkowitych poziomów, np. `['sharpness:2']`; pominięty poziom to `1` |
 | `flags` | Dokładny zbiór flag przedmiotu, np. `['HIDE_ENCHANTS']` |
 | `custom-model-data` | Dokładna wartość, również `0` |
 | `skull-owner` | Nazwa profilu gracza bez uwzględniania wielkości liter; wymaga czaszki gracza |
@@ -139,6 +139,16 @@ używają `STONE` do przedstawienia definicji. Podaj materiał przy generowaniu
 przedmiotów z właściwościami zależnymi od typu, takimi jak `skull-owner` lub
 `armor-color`. Zasady pobierania przedmiotów i nakładających się wymagań opisuje
 strona [Gildie](/guilds/#tworzenie-gildii).
+
+Definicje są sprawdzane i przetwarzane podczas startu oraz `/funnyguilds reload`,
+w tym oba stany przełączników i nadpisania GUI. Nieznane materiały, zaklęcia
+lub flagi, błędne poziomy i kolory RGB powodują odrzucenie konfiguracji przedmiotów.
+Błąd wskazuje definicję, właściwość i wartość, np.
+`items.yml.guild-item-library.key.material: invalid value TYPO`.
+Dopasowanie i tworzenie przedmiotów używają tych samych przetworzonych wartości.
+Jeśli walidacja przedmiotów podczas przeładowania nie powiedzie się, poprzednie
+ustawienia `items.yml` pozostają aktywne. Dotyczy to konfiguracji przedmiotów,
+a nie całej konfiguracji pluginu.
 
 ## Requirements
 

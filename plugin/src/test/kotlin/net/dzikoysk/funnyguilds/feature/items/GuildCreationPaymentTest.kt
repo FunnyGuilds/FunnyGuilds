@@ -4,7 +4,11 @@ import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
+import net.dzikoysk.funnyguilds.shared.bukkit.InventoryUtils
+import net.dzikoysk.funnyguilds.feature.items.GuildCreationPayment.PaymentResult
 import org.bukkit.Material
+import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -12,6 +16,8 @@ import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.ItemMeta
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.ArgumentMatchers.nullable
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.mock
@@ -22,8 +28,9 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import java.util.concurrent.atomic.AtomicBoolean
 
-class GuildItemPaymentTest {
+class GuildCreationPaymentTest {
 
     private fun stack(material: Material, amount: Int, meta: ItemMeta? = null): ItemStack {
         val item = mock(ItemStack::class.java)
@@ -68,7 +75,7 @@ class GuildItemPaymentTest {
             stack(Material.EMERALD, 20),
             null
         )
-        val payment = GuildItemPayment(inventory(contents), set("diamonds" to 8),
+        val payment = GuildCreationPayment(inventory(contents), set("diamonds" to 8),
             config("diamonds" to GuildItemDefinition("DIAMOND")))
 
         assertTrue(payment.isSatisfied)
@@ -85,7 +92,7 @@ class GuildItemPaymentTest {
         val meta = mock(ItemMeta::class.java)
         `when`(meta.displayName()).thenReturn(ItemUtils.coloredWithoutItalics("Key"))
         val contents = arrayOf<ItemStack?>(stack(Material.STICK, 3, meta), stack(Material.DIAMOND, 5, meta))
-        val payment = GuildItemPayment(inventory(contents), set("key" to 6),
+        val payment = GuildCreationPayment(inventory(contents), set("key" to 6),
             config("key" to GuildItemDefinition().also { it.name = "Key" }))
 
         assertTrue(payment.isSatisfied)
@@ -106,7 +113,7 @@ class GuildItemPaymentTest {
         val requirements = set("diamonds" to 15, "keys" to 5)
         val definitions = config("diamonds" to GuildItemDefinition("DIAMOND"),
             "keys" to GuildItemDefinition().also { it.name = "Key" })
-        val payment = GuildItemPayment(inventory(contents), requirements, definitions)
+        val payment = GuildCreationPayment(inventory(contents), requirements, definitions)
 
         assertTrue(payment.isSatisfied)
         assertEquals(mapOf("diamonds" to 15, "keys" to 5), payment.availableCounts)
@@ -134,7 +141,7 @@ class GuildItemPaymentTest {
             "key" to GuildItemDefinition().also { it.name = "Key" },
             "fee" to GuildItemDefinition().also { it.lore = listOf("Fee") }
         )
-        val payment = GuildItemPayment(inventory(contents), requirements, definitions)
+        val payment = GuildCreationPayment(inventory(contents), requirements, definitions)
 
         assertTrue(payment.isSatisfied)
         assertEquals(mapOf("diamond" to 1, "key" to 1, "fee" to 1), payment.availableCounts)
@@ -147,7 +154,7 @@ class GuildItemPaymentTest {
     @Test
     fun `one stack cannot pay twice and failed payment removes nothing`() {
         val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 10))
-        val payment = GuildItemPayment(inventory(contents), set("first" to 6, "second" to 6),
+        val payment = GuildCreationPayment(inventory(contents), set("first" to 6, "second" to 6),
             config("first" to GuildItemDefinition("DIAMOND"), "second" to GuildItemDefinition("DIAMOND")))
 
         assertFalse(payment.isSatisfied)
@@ -162,12 +169,136 @@ class GuildItemPaymentTest {
         val inventory = inventory(contents)
         val requirements = set("unknown" to 1)
         val definitions = config()
-        assertFalse(GuildItemPayment(inventory, requirements, definitions).isSatisfied)
+        assertFalse(GuildCreationPayment(inventory, requirements, definitions).isSatisfied)
         requirements.requirements.itemsEnabled = false
-        val disabled = GuildItemPayment(inventory, requirements, definitions)
+        val disabled = GuildCreationPayment(inventory, requirements, definitions)
         assertTrue(disabled.isSatisfied)
         disabled.removeItems()
         assertEquals(10, contents[0]!!.amount)
+    }
+
+    @Test
+    fun `emptied replaced or reduced slots abort the entire payment before withdrawal`() {
+        for (change in listOf<(Array<ItemStack?>) -> Unit>(
+            { it[1] = null },
+            { it[1] = stack(Material.EMERALD, 5) },
+            { it[1]!!.amount = 1 }
+        )) {
+            val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5), stack(Material.DIAMOND, 5))
+            val first = contents[0]
+            val payment = GuildCreationPayment(inventory(contents), set("diamonds" to 8),
+                config("diamonds" to GuildItemDefinition("DIAMOND")))
+            change(contents)
+            val before = contents.map { it?.amount }
+            val charged = AtomicBoolean(false)
+
+            val result = payment.pay({ charged.set(true); true }, { error("No refund should be needed") })
+
+            assertEquals(PaymentResult.ITEMS_CHANGED, result)
+            assertFalse(charged.get())
+            assertSame(first, contents[0])
+            assertEquals(before, contents.map { it?.amount })
+        }
+    }
+
+    @Test
+    fun `live replacements may differ in ignored properties but must still satisfy every allocated requirement`() {
+        val key = mock(ItemMeta::class.java)
+        `when`(key.displayName()).thenReturn(ItemUtils.coloredWithoutItalics("Key"))
+        val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5, key))
+        val inventory = inventory(contents)
+        val definitions = config("key" to GuildItemDefinition().also { it.name = "Key" })
+        val payment = GuildCreationPayment(inventory, set("key" to 3), definitions)
+        val replacementMeta = mock(ItemMeta::class.java)
+        `when`(replacementMeta.displayName()).thenReturn(ItemUtils.coloredWithoutItalics("Key"))
+        `when`(replacementMeta.lore()).thenReturn(listOf(ItemUtils.coloredWithoutItalics("Ignored lore")))
+        contents[0] = stack(Material.EMERALD, 7, replacementMeta)
+
+        assertEquals(PaymentResult.SUCCESS, payment.pay({ true }, { error("Unexpected refund") }))
+        assertEquals(4, contents[0]!!.amount)
+        assertSame(replacementMeta, contents[0]!!.itemMeta)
+
+        val nextPayment = GuildCreationPayment(inventory, set("key" to 3), definitions)
+        contents[0] = stack(Material.EMERALD, 7)
+        assertEquals(PaymentResult.ITEMS_CHANGED,
+            nextPayment.pay({ error("Must not withdraw") }, { error("Unexpected refund") }))
+        assertEquals(7, contents[0]!!.amount)
+    }
+
+    @Test
+    fun `withdrawal failure returns the exact reserved stacks without overwriting provider changes`() {
+        val meta = mock(ItemMeta::class.java)
+        val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5, meta), stack(Material.DIAMOND, 5), null)
+        val payment = GuildCreationPayment(inventory(contents), set("diamonds" to 8),
+            config("diamonds" to GuildItemDefinition("DIAMOND")))
+        val providerItem = stack(Material.EMERALD, 1)
+        val refunded = mutableListOf<ItemStack>()
+
+        val result = payment.pay({
+            // Items are already reserved, so provider callbacks cannot invalidate their planned removal.
+            assertNull(contents[0])
+            assertEquals(2, contents[1]!!.amount)
+            contents[0] = providerItem
+            false
+        }, { items -> refunded.addAll(items) })
+
+        assertEquals(PaymentResult.WITHDRAWAL_FAILED, result)
+        assertSame(providerItem, contents[0])
+        assertEquals(listOf(5, 3), refunded.map { it.amount })
+        assertTrue(refunded.all { it.type == Material.DIAMOND })
+        assertSame(meta, refunded[0].itemMeta)
+        assertEquals(2, contents[1]!!.amount)
+        assertEquals(10, refunded.sumOf { it.amount } + contents[1]!!.amount)
+    }
+
+    @Test
+    fun `refunds overflow at the player location when a provider fills the inventory`() {
+        val meta = mock(ItemMeta::class.java)
+        val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5, meta), null)
+        val inventory = inventory(contents)
+        val payment = GuildCreationPayment(inventory, set("diamonds" to 3),
+            config("diamonds" to GuildItemDefinition("DIAMOND")))
+        val player = mock(Player::class.java)
+        val world = mock(World::class.java)
+        val location = mock(Location::class.java)
+        `when`(player.inventory).thenReturn(inventory)
+        `when`(player.world).thenReturn(world)
+        `when`(player.location).thenReturn(location)
+        doAnswer { invocation -> hashMapOf(0 to invocation.getArgument<ItemStack>(0)) }
+            .`when`(inventory).addItem(any(ItemStack::class.java))
+        val dropped = mutableListOf<ItemStack>()
+        doAnswer { invocation -> dropped.add(invocation.getArgument(1)); null }
+            .`when`(world).dropItemNaturally(eq(location), any(ItemStack::class.java))
+
+        val result = payment.pay({
+            contents[0] = stack(Material.EMERALD, 64)
+            contents[1] = stack(Material.STONE, 64)
+            false
+        }, { InventoryUtils.addItemsWithOverflowDrop(player, it) })
+
+        assertEquals(PaymentResult.WITHDRAWAL_FAILED, result)
+        assertEquals(3, dropped.single().amount)
+        assertEquals(Material.DIAMOND, dropped.single().type)
+        assertSame(meta, dropped.single().itemMeta)
+        assertEquals(Material.EMERALD, contents[0]!!.type)
+        assertEquals(64, contents[0]!!.amount)
+        assertEquals(Material.STONE, contents[1]!!.type)
+        assertEquals(64, contents[1]!!.amount)
+    }
+
+    @Test
+    fun `a withdrawal exception also refunds reservations and a payment cannot be reused`() {
+        val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5))
+        val payment = GuildCreationPayment(inventory(contents), set("diamonds" to 3),
+            config("diamonds" to GuildItemDefinition("DIAMOND")))
+        val refunded = mutableListOf<ItemStack>()
+        assertFailsWith<IllegalStateException> {
+            payment.pay({ error("Provider failed") }, { refunded.addAll(it) })
+        }
+        assertEquals(2, contents[0]!!.amount)
+        assertEquals(3, refunded.single().amount)
+        assertEquals(PaymentResult.ITEMS_CHANGED,
+            payment.pay({ error("Must not charge again") }, { error("Must not refund twice") }))
     }
 
     @Test

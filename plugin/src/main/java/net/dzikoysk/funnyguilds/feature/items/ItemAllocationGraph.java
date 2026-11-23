@@ -23,6 +23,7 @@ final class ItemAllocationGraph {
         return connect(new Node(), this.sink, amount);
     }
 
+    /** Connect all matches before allocation starts; capacities capture the stock available at construction. */
     Edge connectMatch(Edge requirement, Edge stock) {
         return connect(requirement.to, stock.from, stock.remainingCapacity());
     }

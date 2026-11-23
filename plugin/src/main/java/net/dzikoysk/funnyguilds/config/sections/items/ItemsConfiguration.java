@@ -8,6 +8,7 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.configurer.Configurer;
 import eu.okaeri.configs.exception.OkaeriException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -45,14 +46,16 @@ public class ItemsConfiguration extends OkaeriConfig {
     @Comment("Inne dane przedmiotu są ignorowane. Bez material GUI i nadawanie używają STONE.")
     @Comment("Przedmioty są pobierane z głównego ekwipunku i paska, bez zbroi i drugiej ręki.")
     @Comment("Jeden przedmiot może opłacić tylko jedno wymaganie, nawet jeśli pasuje do kilku.")
-    public Map<String, GuildItemDefinition> guildItemLibrary = defaultLibrary();
+    @Comment("Definicje są sprawdzane podczas wczytywania i /funnyguilds reload.")
+    @Comment("Błędna wartość odrzuca konfigurację z nazwą pola; podczas przeładowania zachowana jest poprzednia.")
+    public volatile Map<String, GuildItemDefinition> guildItemLibrary = defaultLibrary();
 
     @Comment("")
     @Comment("=======================================")
     @Comment(" BIBLIOTEKA PRZYCISKÓW TOGGLE")
     @Comment("=======================================")
     @Comment("Itemy z dwoma stanami (all / missing-only) — używane w GUI jako przycisk toggle widoku.")
-    public Map<String, GuildItemToggleDefinition> guildToggleLibrary = defaultToggleLibrary();
+    public volatile Map<String, GuildItemToggleDefinition> guildToggleLibrary = defaultToggleLibrary();
 
     @Comment("")
     @Comment("=======================================")
@@ -60,20 +63,20 @@ public class ItemsConfiguration extends OkaeriConfig {
     @Comment("=======================================")
     @Comment("Sety sortowane malejąco po priority — pierwszy pasujący (gracz ma permisję) wygrywa.")
     @Comment("Set bez permission (null) = domyślny, dostępny dla wszystkich.")
-    public Map<String, GuildItemSet> guildItemSets = defaultSets();
+    public volatile Map<String, GuildItemSet> guildItemSets = defaultSets();
 
     @Comment("")
     @Comment("=======================================")
     @Comment(" BYPASS ADMINISTRACYJNY")
     @Comment("=======================================")
     @Comment("Gracz z tą permisją pomija WSZYSTKIE wymagania (itemy, exp, money, rank)")
-    public String adminItemsBypassPermission = "funnyguilds.items.admin.bypass";
+    public volatile String adminItemsBypassPermission = "funnyguilds.items.admin.bypass";
 
     @Comment("")
     @Comment("=======================================")
     @Comment(" GUI")
     @Comment("=======================================")
-    public GuiConfiguration gui = new GuiConfiguration();
+    public volatile GuiConfiguration gui = new GuiConfiguration();
 
     // -------------------------------------------------------
     // API
@@ -149,6 +152,70 @@ public class ItemsConfiguration extends OkaeriConfig {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public synchronized OkaeriConfig load(InputStream input) throws OkaeriException {
+        // Reload runs asynchronously. Keep unvalidated values away from command and GUI readers.
+        ItemsConfiguration candidate = new ItemsConfiguration();
+        candidate.setConfigurer(this.getConfigurer());
+        candidate.setBindFile(this.getBindFile());
+        candidate.getContext().setValidator(this.getContext().getValidator());
+        candidate.getContext().setLogger(this.getContext().getLogger());
+        candidate.getContext().setErrorComments(this.getContext().isErrorComments());
+        candidate.getContext().setRemoveOrphans(this.getContext().isRemoveOrphans());
+        candidate.loadCandidate(input);
+        publish(candidate);
+        return this;
+    }
+
+    private void loadCandidate(InputStream input) {
+        super.load(input);
+        loadProcessedProperties();
+    }
+
+    public void loadProcessedProperties() {
+        resolveLibrary(this.guildItemLibrary, "items.yml.guild-item-library");
+        if (this.guildToggleLibrary != null) {
+            this.guildToggleLibrary.forEach((key, toggle) -> {
+                if (toggle == null) {
+                    throw new IllegalArgumentException("items.yml.guild-toggle-library." + key + ": missing definition");
+                }
+                resolveDefinition(toggle.all, "items.yml.guild-toggle-library." + key + ".all");
+                resolveDefinition(toggle.missingOnly, "items.yml.guild-toggle-library." + key + ".missing-only");
+            });
+        }
+        if (this.gui != null && this.gui.perSet != null) {
+            this.gui.perSet.forEach((key, perSet) -> {
+                if (perSet != null) {
+                    resolveLibrary(perSet.libraryOverrides, "items.yml.gui.per-set." + key + ".library-overrides");
+                }
+            });
+        }
+    }
+
+    private static void resolveLibrary(Map<String, GuildItemDefinition> library, String path) {
+        if (library != null) {
+            library.forEach((key, definition) -> resolveDefinition(definition, path + "." + key));
+        }
+    }
+
+    private static void resolveDefinition(GuildItemDefinition definition, String path) {
+        if (definition == null) {
+            throw new IllegalArgumentException(path + ": missing definition");
+        }
+        definition.resolve(path);
+    }
+
+    private void publish(ItemsConfiguration candidate) {
+        // Volatile root references publish the fully initialized definitions to server-thread readers.
+        this.guildItemLibrary = candidate.guildItemLibrary;
+        this.guildToggleLibrary = candidate.guildToggleLibrary;
+        this.guildItemSets = candidate.guildItemSets;
+        this.adminItemsBypassPermission = candidate.adminItemsBypassPermission;
+        this.gui = candidate.gui;
+        this.setInternalState(candidate.getInternalState());
+        this.getContext().setRawContent(candidate.getContext().getRawContent());
     }
 
     @Override

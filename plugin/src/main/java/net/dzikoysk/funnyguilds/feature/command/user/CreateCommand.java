@@ -17,7 +17,8 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.items.GuildItemPayment;
+import net.dzikoysk.funnyguilds.feature.items.GuildCreationPayment;
+import net.dzikoysk.funnyguilds.feature.items.GuildCreationPayment.PaymentResult;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
@@ -25,6 +26,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.shared.bukkit.InventoryUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
@@ -222,24 +224,17 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         if (!adminBypass) {
             // Rebuild after GuildPreCreateEvent: listeners may have changed the inventory.
-            GuildItemPayment payment = new GuildItemPayment(player.getInventory(), activeSet, this.itemsConfiguration);
+            GuildCreationPayment payment = new GuildCreationPayment(player.getInventory(), activeSet, this.itemsConfiguration);
             when(!payment.isSatisfied(), config -> config.itemsRequirementsNotMet);
 
-            // Withdraw money first — it's the only deduction that can fail. If we did items/levels first
-            // and Vault failed, the player would be charged without getting a guild.
-            if (VaultHook.isEconomyHooked() && activeSet.requirements.moneyEnabled && activeSet.requiredMoney > 0) {
-                EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, activeSet.requiredMoney);
-
-                if (!withdrawResult.transactionSuccess()) {
-                    this.messageService.getMessage(config -> config.withdrawError)
-                            .receiver(player)
-                            .with("{ERROR}", withdrawResult.errorMessage)
-                            .send();
-                    return;
-                }
+            PaymentResult paymentResult = payment.pay(
+                    () -> withdrawCreationMoney(player, activeSet),
+                    items -> InventoryUtils.addItemsWithOverflowDrop(player, items)
+            );
+            when(paymentResult == PaymentResult.ITEMS_CHANGED, config -> config.itemsRequirementsNotMet);
+            if (paymentResult == PaymentResult.WITHDRAWAL_FAILED) {
+                return;
             }
-
-            payment.removeItems();
 
             if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
                 int newLevel = player.getLevel() - activeSet.requiredLevel;
@@ -317,6 +312,21 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             player.getInventory().addItem(item);
         });
+    }
+
+    private boolean withdrawCreationMoney(Player player, GuildItemSet set) {
+        if (!set.requirements.moneyEnabled || set.requiredMoney <= 0 || !VaultHook.isEconomyHooked()) {
+            return true;
+        }
+        EconomyResponse response = VaultHook.withdrawFromPlayerBank(player, set.requiredMoney);
+        if (response.transactionSuccess()) {
+            return true;
+        }
+        this.messageService.getMessage(config -> config.withdrawError)
+                .receiver(player)
+                .with("{ERROR}", response.errorMessage)
+                .send();
+        return false;
     }
 
 }

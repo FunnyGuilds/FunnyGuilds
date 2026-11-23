@@ -724,6 +724,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
+        this.itemsConfiguration.load();
         this.tablistConfiguration.load();
         this.messageService.reload();
         this.hookManager.callConfigUpdated();

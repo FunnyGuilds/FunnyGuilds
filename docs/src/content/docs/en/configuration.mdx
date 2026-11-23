@@ -110,7 +110,7 @@ accepts any nonempty item.
 | `material` | Exact material |
 | `name` | Exact formatted name (MiniMessage, non-italic by default) |
 | `lore` | Exact formatted lines, including their order |
-| `enchants` | Exact enchantment map and levels, e.g. `['sharpness:2']` |
+| `enchants` | Exact enchantment map and positive integer levels, e.g. `['sharpness:2']`; omitted level defaults to `1` |
 | `flags` | Exact set of item flags, e.g. `['HIDE_ENCHANTS']` |
 | `custom-model-data` | Exact value, including `0` |
 | `skull-owner` | Player profile name, ignoring case; requires a player skull |
@@ -137,6 +137,15 @@ When `material` is omitted, the GUI and the admin item-giving command use `STONE
 to represent the definition. Set a material when generating items with
 type-specific properties such as `skull-owner` or `armor-color`.
 See [Guilds](/en/guilds/#creating-a-guild) for payment and overlapping requirements.
+
+Definitions are validated and parsed at startup and during `/funnyguilds reload`,
+including both toggle states and GUI overrides. Unknown materials, enchantments
+or flags, invalid levels and invalid RGB colors reject the item configuration.
+Errors identify the definition, property and value, for example
+`items.yml.guild-item-library.key.material: invalid value TYPO`.
+Matching and item rendering share the parsed values. If item validation fails
+during reload, the previous `items.yml` settings remain active. This retention
+applies to the item configuration, not the entire plugin configuration.
 
 ## Requirements
 

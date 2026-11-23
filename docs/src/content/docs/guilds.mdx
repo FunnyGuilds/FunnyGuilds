@@ -58,6 +58,13 @@ Przedmioty są przydzielane do wymagań przed płatnością, a pobierana jest
 dokładnie wymagana ilość. Przy nakładających się definicjach liczniki
 ekwipunku w GUI pomijają przedmioty zarezerwowane dla innych wymagań.
 
+Przed płatnością każdy używany slot ekwipunku jest ponownie sprawdzany pod kątem
+przydzielonych wymagań i ilości. Jeśli slot już ich nie spełnia, tworzenie gildii
+zostaje przerwane przed pobraniem przedmiotów i pieniędzy. Pasujące przedmioty
+są rezerwowane przed pobraniem pieniędzy przez Vault. Jeśli pobranie pieniędzy
+nie powiedzie się, zwracane są dokładnie te same przedmioty; te, które już nie
+mieszczą się w ekwipunku, są upuszczane pod nogami gracza.
+
 Nazwa i tag gildii podlegają dodatkowej walidacji:
 
 | Opcja | Domyślnie | Opis |

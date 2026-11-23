@@ -34,7 +34,7 @@ public class GuildItemRequirementChecker {
 
         Map<String, ItemCountResult> itemCounts = new LinkedHashMap<>();
         if (req.itemsEnabled) {
-            GuildItemPayment payment = new GuildItemPayment(player.getInventory(), set, config);
+            GuildCreationPayment payment = new GuildCreationPayment(player.getInventory(), set, config);
             Map<String, Integer> inventoryCounts = payment.getAvailableCounts();
             Map<String, Integer> enderCounts = payment.countMatching(player.getEnderChest());
             for (Map.Entry<String, Integer> entry : set.getItems().entrySet()) {

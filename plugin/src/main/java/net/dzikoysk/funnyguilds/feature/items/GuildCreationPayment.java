@@ -1,10 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.items;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
@@ -14,14 +18,15 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ItemMatcher;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-/** Allocates storage items to requirements without spending any item twice. Use synchronously. */
-public final class GuildItemPayment {
+/** Coordinates guild creation item allocation, reservation and money withdrawal. Use on the server thread. */
+public final class GuildCreationPayment {
 
     private final Inventory inventory;
     private final List<InventorySlot> slots;
     private final List<RequirementAllocation> allocations;
+    private boolean consumed;
 
-    public GuildItemPayment(Inventory inventory, GuildItemSet set, ItemsConfiguration config) {
+    public GuildCreationPayment(Inventory inventory, GuildItemSet set, ItemsConfiguration config) {
         this.inventory = inventory;
         ItemAllocationGraph graph = new ItemAllocationGraph();
         this.slots = readStorageSlots(inventory, graph);
@@ -90,10 +95,70 @@ public final class GuildItemPayment {
 
     /** Applies the successful allocation to actual slots, preserving all remaining metadata. */
     public void removeItems() {
-        if (!isSatisfied()) {
-            throw new IllegalStateException("Cannot remove items for unsatisfied guild requirements");
+        List<SlotRemoval> removals = prepareRemoval()
+                .orElseThrow(() -> new IllegalStateException("Guild item requirements are unsatisfied or the inventory has changed"));
+        applyRemoval(removals);
+    }
+
+    /** Reserves validated items before calling the economy provider; failed charges return the exact items. */
+    public PaymentResult pay(BooleanSupplier withdrawMoney, Consumer<List<ItemStack>> refundItems) {
+        Optional<List<SlotRemoval>> prepared = prepareRemoval();
+        if (prepared.isEmpty()) {
+            return PaymentResult.ITEMS_CHANGED;
         }
-        this.slots.forEach(slot -> slot.removeAllocatedItems(this.inventory));
+        List<SlotRemoval> removals = prepared.orElseThrow();
+        List<ItemStack> reserved = removals.stream().map(SlotRemoval::removed).toList();
+        applyRemoval(removals);
+
+        boolean withdrawn;
+        try {
+            withdrawn = withdrawMoney.getAsBoolean();
+        }
+        catch (RuntimeException exception) {
+            refundItems.accept(reserved);
+            throw exception;
+        }
+        if (!withdrawn) {
+            refundItems.accept(reserved);
+            return PaymentResult.WITHDRAWAL_FAILED;
+        }
+        return PaymentResult.SUCCESS;
+    }
+
+    private Optional<List<SlotRemoval>> prepareRemoval() {
+        if (this.consumed || !isSatisfied() || !matchesAllocatedRequirements()) {
+            return Optional.empty();
+        }
+        List<SlotRemoval> removals = new ArrayList<>();
+        for (InventorySlot slot : this.slots) {
+            if (slot.stock().allocatedAmount() == 0) {
+                continue;
+            }
+            Optional<SlotRemoval> removal = slot.prepareRemoval(this.inventory);
+            if (removal.isEmpty()) {
+                return Optional.empty();
+            }
+            removals.add(removal.orElseThrow());
+        }
+        return Optional.of(List.copyOf(removals));
+    }
+
+    private boolean matchesAllocatedRequirements() {
+        return this.allocations.stream().allMatch(allocation -> allocation.matchingSlots().stream()
+                .filter(match -> match.allocation().allocatedAmount() > 0)
+                .allMatch(match -> allocation.requirement().matcher().test(this.inventory.getItem(match.slot().index()))));
+    }
+
+    private void applyRemoval(List<SlotRemoval> removals) {
+        // No callbacks between validation and removal: use only on the server thread.
+        removals.forEach(removal -> removal.apply(this.inventory));
+        this.consumed = true;
+    }
+
+    public enum PaymentResult {
+        SUCCESS,
+        ITEMS_CHANGED,
+        WITHDRAWAL_FAILED
     }
 
     private record ItemRequirement(String key, int amount, Predicate<ItemStack> matcher) {
@@ -109,14 +174,25 @@ public final class GuildItemPayment {
 
     private record InventorySlot(int index, ItemStack item, Edge stock) {
 
-        void removeAllocatedItems(Inventory inventory) {
+        Optional<SlotRemoval> prepareRemoval(Inventory inventory) {
             int amount = this.stock.allocatedAmount();
-            if (amount == 0) {
-                return;
+            ItemStack current = inventory.getItem(this.index);
+            if (current == null || current.getAmount() < amount) {
+                return Optional.empty();
             }
-            ItemStack remaining = inventory.getItem(this.index).clone();
+            ItemStack removed = current.clone();
+            removed.setAmount(amount);
+            ItemStack remaining = current.clone();
             remaining.setAmount(remaining.getAmount() - amount);
-            inventory.setItem(this.index, remaining.getAmount() == 0 ? null : remaining);
+            return Optional.of(new SlotRemoval(this.index, removed, remaining));
+        }
+
+    }
+
+    private record SlotRemoval(int index, ItemStack removed, ItemStack remaining) {
+
+        void apply(Inventory inventory) {
+            inventory.setItem(this.index, this.remaining.getAmount() == 0 ? null : this.remaining);
         }
 
     }
