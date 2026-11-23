@@ -144,8 +144,10 @@ or flags, invalid levels and invalid RGB colors reject the item configuration.
 Errors identify the definition, property and value, for example
 `items.yml.guild-item-library.key.material: invalid value TYPO`.
 Matching and item rendering share the parsed values. If item validation fails
-during reload, the previous `items.yml` settings remain active. This retention
-applies to the item configuration, not the entire plugin configuration.
+during reload, the previous `items.yml` settings remain active. The administrator
+sees the error and the rest of the reload continues. An open item GUI keeps
+the settings from when it was opened. Reopen it to see the new settings after a
+successful reload.
 
 ## Requirements
 

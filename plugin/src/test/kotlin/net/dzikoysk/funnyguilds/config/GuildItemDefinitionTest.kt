@@ -3,14 +3,22 @@ package net.dzikoysk.funnyguilds.config
 import eu.okaeri.configs.ConfigManager
 import eu.okaeri.configs.serdes.commons.SerdesCommons
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
+import net.dzikoysk.funnyguilds.FunnyGuilds
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger
+import net.dzikoysk.funnyguilds.config.message.MessageService
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.kyori.adventure.text.Component
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.mockito.Mockito.CALLS_REAL_METHODS
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.mockStatic
+import org.mockito.Mockito.verify
 import java.nio.file.Path
+import java.util.Optional
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertFailsWith
@@ -79,10 +87,50 @@ class GuildItemDefinitionTest {
     }
 
     @Test
+    fun `operations keep their sets library and GUI from the same load across reload`(@TempDir directory: Path) {
+        val file = directory.resolve("items.yml").toFile()
+        fun writeVersion(key: String, material: String) {
+            file.writeText("""
+                guild-item-library:
+                  $key: {material: $material}
+                guild-item-sets:
+                  default:
+                    items: {$key: 1}
+                gui:
+                  title: $key
+                  per-set:
+                    default:
+                      library-overrides:
+                        $key: {material: PAPER}
+            """.trimIndent())
+        }
+
+        writeVersion("old", "DIAMOND")
+        val config = create(file)
+        val captured = config.snapshot()
+        val selectedSet = captured.guildItemSets.getValue("default")
+
+        writeVersion("new", "EMERALD")
+        config.load()
+
+        val oldKey = selectedSet.items.keys.single()
+        assertEquals("old", oldKey)
+        assertEquals("DIAMOND", captured.getLibraryItem(oldKey).orElseThrow().material)
+        assertEquals("old", captured.gui.title)
+        assertEquals("PAPER", captured.resolveItem(oldKey, captured.gui.getPerSetConfig("default")).orElseThrow().material)
+
+        val latest = config.snapshot()
+        assertEquals(setOf("new"), latest.guildItemSets.getValue("default").items.keys)
+        assertEquals("EMERALD", latest.getLibraryItem("new").orElseThrow().material)
+        assertEquals("new", latest.gui.title)
+    }
+
+    @Test
     fun `failed reload retains previous item definitions sets GUI and cached resolved values`(@TempDir directory: Path) {
         val file = directory.resolve("items.yml").toFile()
         file.writeText("guild-item-library:\n  key:\n    name: Key")
         val config = create(file)
+        val snapshot = config.snapshot()
         val definition = config.guildItemLibrary["key"]!!
         val resolved = definition.resolved
         val oldGuiTitle = config.gui.title
@@ -99,6 +147,7 @@ class GuildItemDefinitionTest {
         """.trimIndent())
 
         assertFailsWith<IllegalArgumentException> { config.load() }
+        assertSame(snapshot, config.snapshot())
         assertSame(definition, config.guildItemLibrary["key"])
         assertSame(resolved, config.guildItemLibrary["key"]!!.resolved)
         assertEquals(oldCost, config.guildItemSets["default"]!!.items)
@@ -108,6 +157,47 @@ class GuildItemDefinitionTest {
         config.load()
         assertEquals("Updated", config.guildItemLibrary["key"]!!.name)
         assertEquals("Updated", (config.guildItemLibrary["key"]!!.resolved.name() as net.kyori.adventure.text.TextComponent).content())
+    }
+
+    @Test
+    fun `plugin reload reports the rejected item path and continues reloading services`(@TempDir directory: Path) {
+        val file = directory.resolve("items.yml").toFile()
+        file.writeText("guild-item-library:\n  key: {material: DIAMOND}")
+        val items = create(file)
+        val active = items.snapshot()
+        file.writeText("guild-item-library:\n  key: {material: TYPO}")
+
+        val plugin = mock(FunnyGuilds::class.java, CALLS_REAL_METHODS)
+        val config = mock(PluginConfiguration::class.java)
+        config.scoreboard = net.dzikoysk.funnyguilds.config.sections.ScoreboardConfiguration().apply { enabled = false }
+        val tablist = mock(TablistConfiguration::class.java)
+        val messages = mock(MessageService::class.java)
+        val hooks = mock(HookManager::class.java)
+        for ((field, value) in mapOf(
+            "pluginConfiguration" to config,
+            "itemsConfiguration" to items,
+            "tablistConfiguration" to tablist,
+            "messageService" to messages,
+            "hookManager" to hooks,
+            "nameTagUpdateTask" to Optional.empty<Any>(),
+            "dummyUpdateTask" to Optional.empty<Any>(),
+            "scoreboardQueueUpdateTask" to Optional.empty<Any>()
+        )) {
+            FunnyGuilds::class.java.getDeclaredField(field).apply { isAccessible = true }.set(plugin, value)
+        }
+        val reported = mutableListOf<String>()
+        val logger = mock(FunnyGuildsLogger::class.java)
+        mockStatic(FunnyGuilds::class.java).use {
+            it.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(logger)
+            plugin.reloadConfiguration { error -> reported.add(error) }
+        }
+
+        assertTrue(reported.single().contains("items.yml.guild-item-library.key.material"))
+        assertSame(active, items.snapshot())
+        verify(config).load()
+        verify(tablist).load()
+        verify(messages).reload()
+        verify(hooks).callConfigUpdated()
     }
 
     @Test

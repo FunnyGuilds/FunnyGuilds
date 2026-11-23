@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config.sections.items;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.Header;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
@@ -32,6 +33,15 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 @Header("Tekst w name/lore: wyłącznie MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html)")
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class ItemsConfiguration extends OkaeriConfig {
+
+    @Exclude
+    private volatile ItemsConfiguration loadedSnapshot;
+
+    /** Capture once per operation. Reloads replace the snapshot without modifying previous snapshots. */
+    public ItemsConfiguration snapshot() {
+        ItemsConfiguration current = this.loadedSnapshot;
+        return current != null ? current : this;
+    }
 
     @Comment("")
     @Comment("=======================================")
@@ -208,7 +218,7 @@ public class ItemsConfiguration extends OkaeriConfig {
     }
 
     private void publish(ItemsConfiguration candidate) {
-        // Volatile root references publish the fully initialized definitions to server-thread readers.
+        // Keep the public YAML fields available for configuration access and saving.
         this.guildItemLibrary = candidate.guildItemLibrary;
         this.guildToggleLibrary = candidate.guildToggleLibrary;
         this.guildItemSets = candidate.guildItemSets;
@@ -216,6 +226,7 @@ public class ItemsConfiguration extends OkaeriConfig {
         this.gui = candidate.gui;
         this.setInternalState(candidate.getInternalState());
         this.getContext().setRawContent(candidate.getContext().getRawContent());
+        this.loadedSnapshot = candidate;
     }
 
     @Override
