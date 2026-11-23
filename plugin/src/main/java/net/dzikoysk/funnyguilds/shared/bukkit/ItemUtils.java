@@ -384,7 +384,10 @@ public final class ItemUtils {
 
     /** Parses item text with italics disabled unless explicitly configured. */
     public static Component coloredWithoutItalics(String text) {
-        return ComponentUtil.colored(text).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+        // Merge inherited styles into text nodes so Bukkit does not insert legacy resets between them.
+        return ComponentUtil.colored(text)
+                .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+                .compact();
     }
 
 }
