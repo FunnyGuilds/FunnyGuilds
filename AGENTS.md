@@ -6,9 +6,7 @@ Write commits in English, imperative mood ("Add", "Fix", not "Added"/"Fixes").
 
 - Plugin or docs changes tied to an issue: `GH-<issue number> <Title>`,
   e.g. `GH-2740 Migrate Option/PandaStream to Java 21 Optional/Stream API`.
-- Changes without a linked issue (including PRs that exist only for the
-  change itself): `PR-<PR number> <Title>`, e.g.
-  `PR-2752 Add merge and commit message guidelines to AGENTS.md`.
+  Fall back to the PR number when no linked issue exists.
 - Build, CI, infrastructure and other non-feature changes use Conventional
   Commit prefixes instead: `ci:`, `build:`, `chore:`, `docs:`, `test:`,
   e.g. `ci: cancel superseded PR runs and publish snapshots in the CI build`.
@@ -24,11 +22,12 @@ Merge PRs with squash merge (`gh pr merge <number> --squash`), never with a merg
 commit or rebase. This keeps the history linear, matching how recent PRs landed.
 
 - The squash title (which becomes the commit on the base branch) follows the
-  same rules as commit messages above: `GH-<issue number> <Title>` for
-  issue-linked changes, `PR-<PR number> <Title>` or conventional prefixes
-  (`ci:`, `build:`, `chore:`, `docs:`) otherwise. When a PR title does not
-  follow the convention, edit it (`gh pr edit <number> --title ...`) or
-  override the squash title at merge time instead of merging it as-is.
+  same rules as commit messages above: `GH-<issue number> <Title>`, falling
+  back to `GH-<PR number> <Title>` when no linked issue exists, or
+  conventional prefixes (`ci:`, `build:`, `chore:`, `docs:`) for
+  non-feature changes. When a PR title does not follow the convention, edit
+  it (`gh pr edit <number> --title ...`) or override the squash title at
+  merge time instead of merging it as-is.
 - The PR title itself must already follow that format when the PR is opened
   (see global instructions), so the squash usually needs no edit.
 - Before merging, confirm all required checks have passed (`gh pr checks <number>`).
