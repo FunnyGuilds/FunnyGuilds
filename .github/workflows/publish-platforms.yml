@@ -161,7 +161,7 @@ jobs:
           loaders: paper
           game-versions: ${{ needs.metadata.outputs.game-versions }}
           game-version-filter: releases
-          java: 21
+          java: 25
           retry-attempts: 3
           retry-delay: 10000
           fail-mode: fail
