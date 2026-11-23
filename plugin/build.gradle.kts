@@ -1,5 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+
 plugins {
     kotlin("jvm")
     id("xyz.jpenilla.run-paper")
@@ -163,6 +165,12 @@ tasks.withType<ShadowJar> {
 
 tasks {
     runServer {
-        minecraftVersion("1.21.4")
+        minecraftVersion("26.3")
+
+        // MC 26.x requires Java 25; the Java 21 launcher would fail to remap
+        // the Java 25 classes of the v26_x NMS modules inside the plugin jar.
+        javaLauncher.set(project.javaToolchains.launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        })
     }
 }
