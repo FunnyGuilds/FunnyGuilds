@@ -1,5 +1,17 @@
 # AGENTS.md
 
+## Merging pull requests
+
+Merge PRs with squash merge (`gh pr merge <number> --squash`), never with a merge
+commit or rebase. This keeps the history linear, matching how recent PRs landed.
+
+- The squash title uses the PR title format from the global instructions:
+  `GH-<issue number> <Title>`, falling back to `GH-<PR number> <Title>` when no
+  linked issue exists. Single-commit PRs already carry that title, so the squash
+  usually needs no edit; verify before confirming.
+- Before merging, confirm all required checks have passed (`gh pr checks <number>`).
+- Merging happens only on explicit request (see global instructions).
+
 ## Java imports
 
 Never use wildcard imports in Java, including static imports. Always import
