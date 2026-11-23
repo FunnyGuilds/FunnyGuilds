@@ -43,6 +43,21 @@ Nazwy i lore przedmiotów z `guild-item-library` oraz teksty przedmiotów w GUI
 domyślnie nie mają kursywy. Aby ją włączyć, użyj tagu MiniMessage `<italic>`
 w odpowiednim tekście.
 
+Wymagania przedmiotów porównują tylko właściwości podane w
+[`guild-item-library`](/configuration/#definicje-przedmiotów-gildii-itemsyml).
+Wszystkie właściwości są opcjonalne, także materiał, więc wymaganie może
+dotyczyć samej nazwy niezależnie od typu przedmiotu. Nieustawione metadane
+są ignorowane.
+
+Płatność łączy pasujące stacki, nawet gdy różnią się typem lub pozostałymi
+metadanymi. Uwzględnia tylko główny ekwipunek i pasek; pomija sloty zbroi
+i drugą rękę. Liczby przedmiotów w Ender Chest w GUI są informacyjne.
+Każdy przedmiot opłaca tylko jedno wymaganie: nakładające się definicje
+wymagają wystarczającej liczby osobnych przedmiotów na pokrycie sumy ilości.
+Przedmioty są przydzielane do wymagań przed płatnością, a pobierana jest
+dokładnie wymagana ilość. Przy nakładających się definicjach liczniki
+ekwipunku w GUI pomijają przedmioty zarezerwowane dla innych wymagań.
+
 Nazwa i tag gildii podlegają dodatkowej walidacji:
 
 | Opcja | Domyślnie | Opis |

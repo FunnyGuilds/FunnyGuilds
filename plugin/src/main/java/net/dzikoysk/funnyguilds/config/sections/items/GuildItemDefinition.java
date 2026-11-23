@@ -4,7 +4,6 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -14,27 +13,34 @@ import org.jetbrains.annotations.Nullable;
  * Używana zarówno dla itemów wymaganych do gildii, jak i itemów GUI (fillery, summary, close).
  *
  * <p>Wszystkie pola tekstowe (name, lore) w formacie MiniMessage.
- * Puste pola to pusty string / pusta lista — nigdy {@code null} w YAML.
+ * Wszystkie właściwości są opcjonalne. Brak wartości oznacza brak ograniczenia.
  */
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class GuildItemDefinition extends OkaeriConfig {
 
-    public String material = "STONE";
+    @Nullable
+    public String material;
 
-    public String name = "";
+    @Nullable
+    public String name;
 
-    public List<String> lore = new ArrayList<>();
+    @Nullable
+    public List<String> lore;
 
-    public List<String> enchants = new ArrayList<>();
+    @Nullable
+    public List<String> enchants;
 
-    public List<String> flags = new ArrayList<>();
+    @Nullable
+    public List<String> flags;
 
     @Nullable
     public Integer customModelData;
 
-    public String skullOwner = "";
+    @Nullable
+    public String skullOwner;
 
-    public String armorColor = "";
+    @Nullable
+    public String armorColor;
 
     public GuildItemDefinition() {
     }

@@ -33,7 +33,7 @@ public final class GuiItemBuilder {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
 
-        String rawName = (def.name != null && !def.name.isEmpty()) ? def.name : def.material;
+        String rawName = (def.name != null && !def.name.isEmpty()) ? def.name : item.getType().name();
         String prefix = display.namePrefix != null ? display.namePrefix : "";
         meta.displayName(miniMessage(prefix + rawName));
 

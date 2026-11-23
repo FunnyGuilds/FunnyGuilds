@@ -38,9 +38,13 @@ public class ItemsConfiguration extends OkaeriConfig {
     @Comment("=======================================")
     @Comment("Wszystkie itemy — zarówno wymagane do gildii jak i GUI — definiowane tu.")
     @Comment("Klucz = unikalna nazwa, referencjonowana w setach i patternie GUI.")
-    @Comment("UWAGA: Dla itemów wymaganych do gildii, ustawione pola (name/lore/enchants/custom-model-data)")
-    @Comment("są wymuszane przy sprawdzaniu — gracz musi mieć item z dokładnie taką metadaną.")
-    @Comment("Pozostaw pola puste, by akceptować vanilla itemy danego materiału.")
+    @Comment("Wszystkie właściwości są opcjonalne, także material. Sprawdzane są tylko ustawione pola:")
+    @Comment("material, name, lore, enchants, flags, custom-model-data, skull-owner, armor-color.")
+    @Comment("Pominięte pola, null, puste teksty i puste listy nie ograniczają dopasowania.")
+    @Comment("Ustawione właściwości muszą pasować dokładnie (w tym całe listy zaklęć i flag).")
+    @Comment("Inne dane przedmiotu są ignorowane. Bez material GUI i nadawanie używają STONE.")
+    @Comment("Przedmioty są pobierane z głównego ekwipunku i paska, bez zbroi i drugiej ręki.")
+    @Comment("Jeden przedmiot może opłacić tylko jedno wymaganie, nawet jeśli pasuje do kilku.")
     public Map<String, GuildItemDefinition> guildItemLibrary = defaultLibrary();
 
     @Comment("")
@@ -225,8 +229,7 @@ public class ItemsConfiguration extends OkaeriConfig {
     private static Map<String, GuildItemDefinition> defaultLibrary() {
         Map<String, GuildItemDefinition> library = new LinkedHashMap<>();
 
-        // Required-item entries: leave name/lore/enchants empty so vanilla items satisfy them.
-        // Setting any metadata here makes matching strict (player must have an item with the same metadata).
+        // Required-item entries constrain only material; all unconfigured metadata is ignored.
         library.put("diamonds", new GuildItemDefinition("DIAMOND"));
         library.put("emeralds", new GuildItemDefinition("EMERALD"));
         library.put("iron", new GuildItemDefinition("IRON_INGOT"));

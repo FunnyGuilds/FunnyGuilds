@@ -97,6 +97,47 @@ Item names and lore are non-italic by default. This also applies to
 `guild-item-library` definitions in `items.yml` and GUI item text. You can
 explicitly enable italics, for example `<italic>Golden key</italic>`.
 
+## Guild item definitions (`items.yml`)
+
+Guild creation uses `guild-item-library` definitions and quantities from
+`guild-item-sets.<set>.items`. Every definition property is optional, including
+`material`. Only supplied, nonempty properties constrain matching. Omitted
+properties, `null`, empty strings and empty lists are ignored. An empty definition
+accepts any nonempty item.
+
+| Property | Matching rule when supplied |
+|---|---|
+| `material` | Exact material |
+| `name` | Exact formatted name (MiniMessage, non-italic by default) |
+| `lore` | Exact formatted lines, including their order |
+| `enchants` | Exact enchantment map and levels, e.g. `['sharpness:2']` |
+| `flags` | Exact set of item flags, e.g. `['HIDE_ENCHANTS']` |
+| `custom-model-data` | Exact value, including `0` |
+| `skull-owner` | Player profile name, ignoring case; requires a player skull |
+| `armor-color` | Exact `R_G_B` color; requires leather armor |
+
+Other item data, such as damage, custom plugin data or skull textures, is ignored.
+For example, an entry with only `material: DIAMOND` also accepts named or enchanted
+diamonds. A name-only entry accepts that name on any material:
+
+```yaml
+guild-item-library:
+  diamonds:
+    material: DIAMOND
+  key:
+    name: '<gold>Guild key'
+guild-item-sets:
+  default:
+    items:
+      diamonds: 64
+      key: 1
+```
+
+When `material` is omitted, the GUI and the admin item-giving command use `STONE`
+to represent the definition. Set a material when generating items with
+type-specific properties such as `skull-owner` or `armor-color`.
+See [Guilds](/en/guilds/#creating-a-guild) for payment and overlapping requirements.
+
 ## Requirements
 
 ```yaml

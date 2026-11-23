@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
+import net.dzikoysk.funnyguilds.feature.items.GuildItemPayment;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
@@ -24,7 +25,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
@@ -221,6 +221,10 @@ public final class CreateCommand extends AbstractFunnyCommand {
         boolean adminBypass = player.hasPermission(this.itemsConfiguration.adminItemsBypassPermission);
 
         if (!adminBypass) {
+            // Rebuild after GuildPreCreateEvent: listeners may have changed the inventory.
+            GuildItemPayment payment = new GuildItemPayment(player.getInventory(), activeSet, this.itemsConfiguration);
+            when(!payment.isSatisfied(), config -> config.itemsRequirementsNotMet);
+
             // Withdraw money first — it's the only deduction that can fail. If we did items/levels first
             // and Vault failed, the player would be charged without getting a guild.
             if (VaultHook.isEconomyHooked() && activeSet.requirements.moneyEnabled && activeSet.requiredMoney > 0) {
@@ -235,8 +239,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 }
             }
 
-            player.getInventory().removeItem(ItemUtils.toArray(ItemUtils.buildRequiredItems(
-                    activeSet, this.itemsConfiguration)));
+            payment.removeItems();
 
             if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
                 int newLevel = player.getLevel() - activeSet.requiredLevel;

@@ -68,7 +68,7 @@ public final class ItemUtils {
         String[] typeSplit = split[1].split(":");
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
-        Material material = Material.matchMaterial(typeSplit[0]);
+        Material material = MaterialUtils.matchMaterial(typeSplit[0]).orElse(null);
         Optional<Integer> amount = Optionals.attempt(NumberFormatException.class, () -> Integer.parseInt(split[0]));
         if (amount.isEmpty()) {
             FunnyGuilds.getPluginLogger().parser("Unknown amount: " + split[0]);
@@ -233,7 +233,7 @@ public final class ItemUtils {
         return itemString.toString();
     }
 
-    private static Enchantment matchEnchant(String enchantName) {
+    static Enchantment matchEnchant(String enchantName) {
         Registry<Enchantment> enchantmentRegistry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
         return enchantmentRegistry.get(NamespacedKey.minecraft(enchantName.toLowerCase(Locale.ROOT)));
     }
@@ -258,7 +258,7 @@ public final class ItemUtils {
         return Pair.of(enchant, level.orElse(1));
     }
 
-    private static Optional<ItemFlag> matchItemFlag(String flagName) {
+    static Optional<ItemFlag> matchItemFlag(String flagName) {
         Optional<ItemFlag> itemFlag = Optionals.attempt(IllegalArgumentException.class, () -> {
             return ItemFlag.valueOf(flagName.toUpperCase(Locale.ROOT));
         });
@@ -296,8 +296,7 @@ public final class ItemUtils {
     public static ItemStack toItemStack(GuildItemDefinition def, int amount) {
         if (def == null) return new ItemStack(Material.STONE, amount);
 
-        Material material = Material.matchMaterial(def.material);
-        if (material == null) material = Material.STONE;
+        Material material = MaterialUtils.matchMaterial(def.material).orElse(Material.STONE);
 
         ItemStack item = new ItemStack(material, amount);
         ItemMeta meta = item.getItemMeta();

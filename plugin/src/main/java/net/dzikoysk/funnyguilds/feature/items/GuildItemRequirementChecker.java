@@ -9,10 +9,8 @@ import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.SetRequirements;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class GuildItemRequirementChecker {
 
@@ -36,6 +34,9 @@ public class GuildItemRequirementChecker {
 
         Map<String, ItemCountResult> itemCounts = new LinkedHashMap<>();
         if (req.itemsEnabled) {
+            GuildItemPayment payment = new GuildItemPayment(player.getInventory(), set, config);
+            Map<String, Integer> inventoryCounts = payment.getAvailableCounts();
+            Map<String, Integer> enderCounts = payment.countMatching(player.getEnderChest());
             for (Map.Entry<String, Integer> entry : set.getItems().entrySet()) {
                 String itemKey = entry.getKey();
                 int required = entry.getValue();
@@ -47,14 +48,8 @@ public class GuildItemRequirementChecker {
                         .filter(name -> name != null && !name.isEmpty())
                         .orElse(itemKey);
 
-                int inv = 0;
-                int ender = 0;
-
-                if (libraryItem.isPresent()) {
-                    ItemStack template = ItemUtils.toItemStack(libraryItem.get(), 1);
-                    inv = ItemUtils.getItemAmount(template, player.getInventory());
-                    ender = ItemUtils.getItemAmount(template, player.getEnderChest());
-                }
+                int inv = inventoryCounts.get(itemKey);
+                int ender = enderCounts.get(itemKey);
 
                 itemCounts.put(itemKey, new ItemCountResult(required, inv, ender, displayName));
             }

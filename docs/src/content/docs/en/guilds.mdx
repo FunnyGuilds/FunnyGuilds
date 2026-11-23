@@ -43,6 +43,19 @@ Names and lore from `guild-item-library`, as well as GUI item text, are
 non-italic by default. To enable italics, use the MiniMessage `<italic>` tag
 in the relevant text.
 
+Item requirements compare only the properties supplied in
+[`guild-item-library`](/en/configuration/#guild-item-definitions-itemsyml).
+All properties are optional, including material, so a requirement can match
+only a name regardless of item type. Unconfigured metadata is ignored.
+
+Payment combines matching stacks even when their types or other metadata differ.
+Only the main inventory and hotbar count; armor and offhand slots are excluded.
+Ender chest counts in the GUI are informational. Each item pays for one
+requirement only: overlapping definitions need enough separate items to cover
+their combined quantities. Items are allocated across requirements before
+payment, and only the exact required quantities are removed. For overlapping
+definitions, GUI inventory counts exclude items reserved for other requirements.
+
 The guild's name and tag are validated separately:
 
 | Option | Default | Description |
