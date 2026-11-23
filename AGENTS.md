@@ -1,5 +1,21 @@
 # AGENTS.md
 
+## Commit messages
+
+Write commits in English, imperative mood ("Add", "Fix", not "Added"/"Fixes").
+
+- Plugin or docs changes tied to an issue: `GH-<issue number> <Title>`,
+  e.g. `GH-2740 Migrate Option/PandaStream to Java 21 Optional/Stream API`.
+  Fall back to the PR number when no linked issue exists.
+- Build, CI, infrastructure and other non-feature changes use Conventional
+  Commit prefixes instead: `ci:`, `build:`, `chore:`, `docs:`, `test:`,
+  e.g. `ci: cancel superseded PR runs and publish snapshots in the CI build`.
+- Subject under ~72 characters, no trailing period, no conventional-commit
+  type in front of `GH-` entries (never `fix: GH-123 ...`).
+- Commit as you go: one logical unit per commit, staged files only (never
+  sweep unrelated changes or junk files in). Details in the body when the
+  "why" is not obvious from the subject; body lines wrapped at ~72 chars.
+
 ## Merging pull requests
 
 Merge PRs with squash merge (`gh pr merge <number> --squash`), never with a merge
