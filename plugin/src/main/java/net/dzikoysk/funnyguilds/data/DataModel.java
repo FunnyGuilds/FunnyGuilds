@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -27,8 +28,9 @@ public interface DataModel {
             return;
         }
 
-        Set<String> guilds = Entity.names(guildManager.getGuilds());
-        Set<String> regions = Entity.names(regionManager.getRegions());
+        // Entity.names() returns an unmodifiable set, so collect into mutable sets for repair removals
+        Set<String> guilds = new HashSet<>(Entity.names(guildManager.getGuilds()));
+        Set<String> regions = new HashSet<>(Entity.names(regionManager.getRegions()));
 
         int repaired = 0;
 
@@ -42,8 +44,8 @@ public interface DataModel {
             repaired++;
         }
 
-        guilds = Entity.names(guildManager.getGuilds());
-        regions = Entity.names(regionManager.getRegions());
+        guilds = new HashSet<>(Entity.names(guildManager.getGuilds()));
+        regions = new HashSet<>(Entity.names(regionManager.getRegions()));
 
         for (Region region : regionManager.getRegions()) {
             if (guilds.contains(region.getName())) {

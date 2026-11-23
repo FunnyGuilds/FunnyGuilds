@@ -8,14 +8,21 @@ on:
 permissions:
   pull-requests: write
   issues: write
-  
+
+concurrency:
+  # pull_request events use refs/pull/<n>/merge, so this groups runs per PR and
+  # cancels superseded runs after rapid pushes. Push runs on release branches are
+  # never cancelled: they publish snapshots and must not be interrupted mid-publish.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     name: "Build with JDK${{ matrix.jdk }}"
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        jdk: [ 21 ]
+        jdk: [ 25 ]
     steps:
       - name: Find comment with artifact link
         uses: peter-evans/find-comment@v3
@@ -54,8 +61,13 @@ jobs:
         name: Build FunnyGuilds
         with:
           job-id: jdk${{ matrix.jdk }}
-          arguments: build --stacktrace -i
+          # Pushes to release branches also publish snapshots in the same invocation,
+          # so the dedicated publish workflow does not have to rebuild everything again.
+          arguments: ${{ github.event_name == 'pull_request' && 'build --stacktrace -i' || 'build :plugin:publish --stacktrace -i' }}
           read-only: ${{ github.ref != 'refs/heads/4.x' && github.ref != 'refs/heads/5.x' && github.ref != 'refs/heads/6.x' }}
+        env:
+          MAVEN_NAME: ${{ github.event_name == 'push' && secrets.MAVEN_NAME || '' }}
+          MAVEN_TOKEN: ${{ github.event_name == 'push' && secrets.MAVEN_TOKEN || '' }}
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         id: upload-artifact
