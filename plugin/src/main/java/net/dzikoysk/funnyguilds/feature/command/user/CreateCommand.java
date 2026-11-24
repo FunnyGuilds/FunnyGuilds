@@ -2,17 +2,20 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -260,6 +263,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         boolean levelDeducted = false;
         boolean heartPlaced = false;
         boolean regionAdded = false;
+        List<BlockState> changedBlocks = new ArrayList<>();
+        List<Runnable> schematicUndo = new ArrayList<>(1);
         Optional<BlockState> previousHeartState = Optional.empty();
 
         try {
@@ -272,7 +277,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
             if (this.config.regionsEnabled) {
                 if (heartConfig.pasteSchematicOnCreation) {
                     HookManager.WORLD_EDIT.ifPresent(worldEdit -> {
-                        if (!worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
+                        if (!worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir,
+                                schematicUndo::add)) {
                             this.messageService.getMessage(config -> config.createGuildCouldNotPasteSchematic)
                                     .receiver(player)
                                     .send();
@@ -280,13 +286,25 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     });
                 }
                 else if (heartConfig.createCenterSphere) {
-                    for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
+                    // Snapshot every block this attempt is about to modify so a rollback can
+                    // restore the full terrain, not only the heart.
+                    List<Location> airSphere = SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0);
+                    List<Location> obsidianSphere = SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0);
+                    Stream.concat(airSphere.stream(), obsidianSphere.stream())
+                            .map(Location::getBlock)
+                            .map(Block::getState)
+                            .forEach(changedBlocks::add);
+                    if (this.config.eventPhysics) {
+                        changedBlocks.add(guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().getState());
+                    }
+
+                    for (Location locationInSphere : airSphere) {
                         if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
                             locationInSphere.getBlock().setType(Material.AIR);
                         }
                     }
 
-                    for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
+                    for (Location locationInSphere : obsidianSphere) {
                         if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
                             locationInSphere.getBlock().setType(Material.OBSIDIAN);
                         }
@@ -302,8 +320,11 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 if (heartConfig.createEntityType == null && heartConfig.createMaterial != null && heartConfig.createMaterial != Material.AIR) {
                     previousHeartState = guild.getRegion().flatMap(Region::getHeartBlock).map(Block::getState);
                 }
-                this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
+                // Mark the spawn attempt before calling into NMS: the helper caches the entity
+                // before sending spawn packets, so a packet failure must still let the rollback
+                // despawn the partially spawned heart (cleanup tolerates an absent entity).
                 heartPlaced = true;
+                this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
                 guild.teleportHome(player);
             }
 
@@ -337,7 +358,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
         catch (RuntimeException exception) {
             this.rollbackCreation(player, user, guild, payment, moneyWithdrawn, activeSet, previousLevel, levelDeducted,
-                    heartPlaced, regionAdded, previousHeartState);
+                    heartPlaced, regionAdded, changedBlocks, schematicUndo, previousHeartState);
             throw exception;
         }
 
@@ -362,12 +383,13 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
     /**
      * Compensates a failure after payment and before the commit point: refunds money, items and levels,
-     * then undoes the heart, region, membership and manager registrations this attempt made. Every step
-     * is guarded independently so one failure cannot skip the remaining cleanup.
+     * then undoes the terrain, heart, region, membership and manager registrations this attempt made.
+     * Every step is guarded independently so one failure cannot skip the remaining cleanup.
      */
     private void rollbackCreation(Player player, User user, Guild guild, GuildCreationPayment payment, AtomicBoolean moneyWithdrawn,
                                   GuildItemSet set, int previousLevel, boolean levelDeducted, boolean heartPlaced,
-                                  boolean regionAdded, Optional<BlockState> previousHeartState) {
+                                  boolean regionAdded, List<BlockState> changedBlocks, List<Runnable> schematicUndo,
+                                  Optional<BlockState> previousHeartState) {
         FunnyGuilds.getPluginLogger().warning("Guild creation failed after payment, rolling back the transaction");
 
         if (moneyWithdrawn.get()) {
@@ -408,14 +430,21 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 if (this.config.heart.createEntityType != null) {
                     this.plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                 }
-                else {
-                    // The guild was never announced as live, so the heart is the only world mutation
-                    // to undo: restore the exact block state this attempt replaced.
-                    previousHeartState.ifPresent(state -> state.update(true, false));
-                }
             }
             catch (RuntimeException compensationFailure) {
                 FunnyGuilds.getPluginLogger().error("Could not remove the spawned guild heart", compensationFailure);
+            }
+
+            try {
+                // The guild was never announced as live, so restore the terrain this attempt
+                // modified: the schematic (via the WorldEdit undo) or the sphere blocks, plus
+                // the exact block state the heart replaced.
+                schematicUndo.forEach(Runnable::run);
+                changedBlocks.forEach(state -> state.update(true, false));
+                previousHeartState.ifPresent(state -> state.update(true, false));
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not restore the terrain modified by guild creation", compensationFailure);
             }
         }
 
@@ -440,6 +469,18 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
         catch (RuntimeException compensationFailure) {
             FunnyGuilds.getPluginLogger().error("Could not remove the partially created guild", compensationFailure);
+        }
+
+        try {
+            // A periodic save running concurrently may have snapshotted the guild between
+            // registration and this rollback, so erase anything it persisted. A save task
+            // that serializes the guild after this delete can still recreate the row; the
+            // window is a single in-flight save and the next periodic save (or load) cleans
+            // it up because the guild no longer exists in memory.
+            this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(this.plugin.getDataModel(), guild));
+        }
+        catch (RuntimeException compensationFailure) {
+            FunnyGuilds.getPluginLogger().error("Could not schedule the deletion of the rolled-back guild", compensationFailure);
         }
 
         try {
