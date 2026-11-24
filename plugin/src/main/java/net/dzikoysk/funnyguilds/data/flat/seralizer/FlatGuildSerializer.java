@@ -16,6 +16,8 @@ import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.data.util.GuildAuditSerializer;
+import net.dzikoysk.funnyguilds.data.util.GuildRoleSerializer;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -155,7 +157,7 @@ public final class FlatGuildSerializer {
             lives = config.war.lives;
         }
 
-        Object[] values = new Object[23];
+        Object[] values = new Object[26];
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -173,6 +175,9 @@ public final class FlatGuildSerializer {
         values[14] = deputies;
         values[15] = tntProtectionBypass;
         values[16] = pvp;
+        values[23] = loadSet(wrapper, "allied-pvp");
+        values[24] = wrapper.getString("role-policy");
+        values[25] = wrapper.getString("audit-log");
         values[17] = heartLives;
         values[18] = warsWon;
         values[19] = warsLost;
@@ -230,6 +235,9 @@ public final class FlatGuildSerializer {
         wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElse(0L));
         wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElse(0L));
         wrapper.set("pvp", guild.hasPvPEnabled());
+        wrapper.set("allied-pvp", guild.getAlliedPvPGuilds().stream().map(UUID::toString).sorted().toList());
+        wrapper.set("role-policy", GuildRoleSerializer.serialize(guild.getRolePolicy()));
+        wrapper.set("audit-log", GuildAuditSerializer.serialize(guild, FunnyGuilds.getInstance().getPluginConfiguration().guildAudit));
         wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
 
         wrapper.save();

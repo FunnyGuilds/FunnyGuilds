@@ -25,7 +25,22 @@ Oryginalny zapis uprawnień FunnyGuilds znajduje się w [plugin.yml](https://git
 
 ### `funnyguilds.player` — podstawowe uprawnienia dla gracza `default`
 
-`funnyguilds.ally` · `funnyguilds.base` · `funnyguilds.break` · `funnyguilds.buylife` · `funnyguilds.create` · `funnyguilds.delete` · `funnyguilds.deputy` · `funnyguilds.enlarge` · `funnyguilds.escape` · `funnyguilds.guild` · `funnyguilds.info` · `funnyguilds.invite` · `funnyguilds.items` · `funnyguilds.join` · `funnyguilds.kick` · `funnyguilds.leader` · `funnyguilds.leave` · `funnyguilds.playerinfo` · `funnyguilds.pvp` · `funnyguilds.rankreset` · `funnyguilds.statsreset` · `funnyguilds.setbase` · `funnyguilds.tnt` · `funnyguilds.validity` · `funnyguilds.war`
+`funnyguilds.ally` · `funnyguilds.base` · `funnyguilds.break` · `funnyguilds.buylife` · `funnyguilds.create` · `funnyguilds.delete` · `funnyguilds.deputy` · `funnyguilds.enlarge` · `funnyguilds.escape` · `funnyguilds.guild` · `funnyguilds.info` · `funnyguilds.invite` · `funnyguilds.items` · `funnyguilds.join` · `funnyguilds.kick` · `funnyguilds.leader` · `funnyguilds.leave` · `funnyguilds.panel` · `funnyguilds.playerinfo` · `funnyguilds.pvp` · `funnyguilds.rankreset` · `funnyguilds.statsreset` · `funnyguilds.setbase` · `funnyguilds.tnt` · `funnyguilds.validity` · `funnyguilds.war`
+
+Do otwarcia `/panel` potrzeba `funnyguilds.panel` i członkostwa w gildii.
+Akcje w panelu podlegają również uprawnieniom odpowiadających im komend.
+
+W **Rolach i uprawnieniach** lider może edytować prawa zastępcy i członka,
+tworzyć własne role oraz nadawać wyjątki konkretnym osobom. Węzły Bukkit,
+takie jak `funnyguilds.pvp`, nadal są wymagane przy odpowiadających im akcjach.
+
+Aby zastępca mógł edytować prawa członków, włącz mu **Zarządzanie
+uprawnieniami** i ustaw **Zakres delegowania** w widoku roli zastępcy.
+Zastępca może zmieniać tylko objęte zakresem prawa, które sam posiada.
+Dotyczy to też uprawnień dziedziczonych z przypisywanej roli.
+
+**Odczyt dziennika** jest prawem gildyjnym. Domyślnie ma je lider, który
+może je przyznać innym przez rolę lub wyjątek gracza.
 
 ### Inne uprawnienia `-`
 

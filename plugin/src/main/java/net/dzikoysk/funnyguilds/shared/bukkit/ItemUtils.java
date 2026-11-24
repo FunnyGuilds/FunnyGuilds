@@ -298,6 +298,12 @@ public final class ItemUtils {
         return def.getResolved().toItemStack(amount);
     }
 
+    public static ItemStack toItemStack(GuildItemDefinition def, int amount, Material material) {
+        ItemStack item = toItemStack(def, amount);
+        item.setType(material);
+        return item;
+    }
+
     /** Parses item text with italics disabled unless explicitly configured. */
     public static Component coloredWithoutItalics(String text) {
         // Merge inherited styles into text nodes so Bukkit does not insert legacy resets between them.

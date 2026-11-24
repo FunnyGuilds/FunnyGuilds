@@ -5,6 +5,8 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
+import java.util.Map;
+import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
@@ -36,6 +38,7 @@ public final class LeaderCommand extends AbstractFunnyCommand {
         }
 
         guild.setOwner(leaderUser);
+        this.plugin.getGuildAuditService().record(guild, owner, Type.LEADER_CHANGED, Map.of("TARGET", leaderUser.getName()));
 
         this.messageService.getMessage(config -> config.leaderSet)
                 .receiver(owner)

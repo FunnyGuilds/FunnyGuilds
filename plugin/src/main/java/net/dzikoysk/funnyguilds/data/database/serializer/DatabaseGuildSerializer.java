@@ -17,6 +17,8 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.data.util.GuildAuditSerializer;
+import net.dzikoysk.funnyguilds.data.util.GuildRoleSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
@@ -153,7 +155,7 @@ public final class DatabaseGuildSerializer {
                 lives = config.war.lives;
             }
 
-            Object[] values = new Object[23];
+            Object[] values = new Object[26];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -171,6 +173,9 @@ public final class DatabaseGuildSerializer {
             values[14] = deputies;
             values[15] = tntProtectionBypass;
             values[16] = pvp;
+            values[23] = FunnyStringUtils.fromString(resultSet.getString("allied_pvp"));
+            values[24] = resultSet.getString("role_policy");
+            values[25] = resultSet.getString("audit_log");
             values[17] = heartLives;
             values[18] = warsWon;
             values[19] = warsLost;
@@ -221,6 +226,9 @@ public final class DatabaseGuildSerializer {
         statement.set("ban", guild.getBan().map(Instant::toEpochMilli).orElse(0L));
         statement.set("tnt_protection_bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElse(0L));
         statement.set("pvp", guild.hasPvPEnabled());
+        statement.set("allied_pvp", FunnyStringUtils.join(guild.getAlliedPvPGuilds().stream().map(UUID::toString).sorted().toList()));
+        statement.set("role_policy", GuildRoleSerializer.serialize(guild.getRolePolicy()));
+        statement.set("audit_log", GuildAuditSerializer.serialize(guild, FunnyGuilds.getInstance().getPluginConfiguration().guildAudit));
         statement.set("info", "");
 
         statement.executeUpdate();

@@ -3,17 +3,12 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.Entity;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
-import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
-import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildCommandPermission;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.HasGuildPermission;
-import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
-import net.dzikoysk.funnyguilds.shared.formatter.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -40,41 +35,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", oppositeGuild.getName())
-                .register("{TAG}", guild.getTag());
-
-        when(!guild.isAlly(oppositeGuild), config -> config.breakAllyExists);
-
-        if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, owner, guild, oppositeGuild))) {
-            return;
-        }
-
-        FunnyFormatter breakFormatter = new FunnyFormatter()
-                .register("{GUILD}", oppositeGuild.getName())
-                .register("{TAG}", oppositeGuild.getTag());
-
-        FunnyFormatter breakIFormatter = new FunnyFormatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag());
-
-        guild.removeAlly(oppositeGuild);
-        oppositeGuild.removeAlly(guild);
-
-        this.plugin.getIndividualNameTagManager().ifPresent(manager -> {
-            guild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
-            oppositeGuild.getMembers().forEach(member -> this.plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
-        });
-
-        this.messageService.getMessage(config -> config.breakDone)
-                .receiver(owner)
-                .with(breakFormatter)
-                .send();
-        this.messageService.getMessage(config -> config.breakIDone)
-                .receiver(oppositeGuild.getOwner())
-                .with(breakIFormatter)
-                .send();
+        this.plugin.getGuildDiplomacyService().breakAlliance(owner, guild, GuildValidation.requireGuildByTag(args[0]));
     }
 
 }

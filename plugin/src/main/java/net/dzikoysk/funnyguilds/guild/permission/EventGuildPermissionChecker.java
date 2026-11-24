@@ -20,6 +20,11 @@ final class EventGuildPermissionChecker implements GuildPermissionChecker {
     }
 
     @Override
+    public GuildPermissionDecision getStoredDecision(Guild guild, User user, GuildPermission<Boolean> permission) {
+        return this.staticChecker.getStoredDecision(guild, user, permission);
+    }
+
+    @Override
     public <T> Result<T, Runnable> getPermissionResult(
             Guild guild,
             User user,

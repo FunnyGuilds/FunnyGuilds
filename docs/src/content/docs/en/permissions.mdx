@@ -25,7 +25,22 @@ The raw FunnyGuilds permission definitions live in [plugin.yml](https://github.c
 
 ### `funnyguilds.player` — basic permissions for the player `default`
 
-`funnyguilds.ally` · `funnyguilds.base` · `funnyguilds.break` · `funnyguilds.buylife` · `funnyguilds.create` · `funnyguilds.delete` · `funnyguilds.deputy` · `funnyguilds.enlarge` · `funnyguilds.escape` · `funnyguilds.guild` · `funnyguilds.info` · `funnyguilds.invite` · `funnyguilds.items` · `funnyguilds.join` · `funnyguilds.kick` · `funnyguilds.leader` · `funnyguilds.leave` · `funnyguilds.playerinfo` · `funnyguilds.pvp` · `funnyguilds.rankreset` · `funnyguilds.statsreset` · `funnyguilds.setbase` · `funnyguilds.tnt` · `funnyguilds.validity` · `funnyguilds.war`
+`funnyguilds.ally` · `funnyguilds.base` · `funnyguilds.break` · `funnyguilds.buylife` · `funnyguilds.create` · `funnyguilds.delete` · `funnyguilds.deputy` · `funnyguilds.enlarge` · `funnyguilds.escape` · `funnyguilds.guild` · `funnyguilds.info` · `funnyguilds.invite` · `funnyguilds.items` · `funnyguilds.join` · `funnyguilds.kick` · `funnyguilds.leader` · `funnyguilds.leave` · `funnyguilds.panel` · `funnyguilds.playerinfo` · `funnyguilds.pvp` · `funnyguilds.rankreset` · `funnyguilds.statsreset` · `funnyguilds.setbase` · `funnyguilds.tnt` · `funnyguilds.validity` · `funnyguilds.war`
+
+Opening `/panel` requires `funnyguilds.panel` and guild membership.
+Panel actions also require the permissions of their corresponding commands.
+
+In **Roles and permissions**, the guild leader can edit deputy and member
+permissions, create custom roles, and set individual overrides. Bukkit nodes
+such as `funnyguilds.pvp` are still required for the corresponding actions.
+
+To let a deputy edit member permissions, enable **Manage permissions** for
+them and set the **Delegation scope** in the deputy role view. Deputies can
+change only the permissions they hold and are authorized to delegate. This
+also applies to permissions inherited through a role they assign.
+
+**View activity log** is a guild permission. The leader has it by default
+and can grant it through a role or a player override.
 
 ### Other permissions `-`
 

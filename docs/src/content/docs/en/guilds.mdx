@@ -95,16 +95,56 @@ A guild can have at most `max-members` players (**15** by default).
 `invite-command-all-max-range` — 50 blocks).
 :::
 
+## Guild panel
+
+`/panel` shows the leader, deputies, online member count, rank, points, lives,
+expiry, territory level and radius, and PvP settings for the guild and its
+alliances. The teleport button uses the same permissions and rules as
+`/baza`, including the cost, delay, and VIP permissions. Use `/ustawbaze` to
+set the destination.
+
+### Guild roles
+
+Open **Roles and permissions** in `/panel`. After clicking **Create role**,
+the leader has 30 seconds to enter the name in chat. The message goes only
+to the editor. Type `cancel` to return to the role list. Assign the role from
+the player-head list, which includes offline members. The leader role is read-only.
+
+Click a permission to cycle through **Inherit**, **Allow**, and **Deny**.
+Individual overrides take priority. Custom roles inherit missing settings
+from the member role. The panel shows each decision and its source.
+Deleting a role moves its members back to the member role. Settings survive restarts.
+
+In **Members**, invite an online player from the player-head list or revoke
+a sent invitation under **Pending invitations**. Select a member to kick
+them after confirmation. The panel uses the same permissions as `/zapros`
+and `/wyrzuc`.
+
+### Guild activity log
+
+Open **Guild activity log** in `/panel`. Each entry shows the time, actor, and
+description. Newest entries appear first. Click the filter to switch
+categories and use the arrows to change pages. The log covers invitations,
+membership, permissions, PvP, alliances, wars, upgrades, and renewals. It also
+shows purchase costs. The leader can grant **View activity log** to others.
+
 ## Guild validity
 
 A newly created guild starts with `validity-start` worth of validity
 (**14 days** by default) — once it runs out, the guild is deleted
 automatically.
 
-`/przedluz` extends it by `validity-time` (14 days by default) at a cost of
-`validity-items` (10 diamonds by default). It can only be used once less than
-`validity-when` remains before expiry (14 days by default — the same as a new
-guild's validity); setting it to `0` disables renewal entirely.
+Renew through `/panel` or `/przedluz [period]`. The panel shows the final
+cost, any shortfall, and the new expiry date before confirmation. Purchased
+time is added to the current expiry date. With no argument, the command buys
+`validity-time` (14 days for 10 diamonds by default). The panel defaults to
+12 hours and 1, 3, 5, 7, 14, and 31 days. Change the options with
+`validity-periods`.
+
+The default `validity-when: 0` allows renewals at any time, including
+consecutive purchases. A positive value such as `14d` limits renewal to
+the last 14 days of the guild's validity.
+See [configuration](/en/configuration/#guild-purchases) for rates and payment modes.
 
 ## Disbanding a guild
 

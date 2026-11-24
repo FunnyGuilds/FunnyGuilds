@@ -12,7 +12,9 @@ public enum GuildProtectionPermission implements GuildPermission<Boolean> {
     BUCKET_EMPTY("protection.bucket-empty"),
     HANGING_PLACE("protection.hanging-place"),
     HANGING_BREAK("protection.hanging-break"),
-    ENTITY_PLACE("protection.entity-place");
+    ENTITY_PLACE("protection.entity-place"),
+    OPEN_CONTAINER("protection.open-container"),
+    USE_MECHANISM("protection.use-mechanism");
 
     private final Key key;
 
