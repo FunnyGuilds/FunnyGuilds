@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
@@ -90,7 +89,7 @@ public final class ItemsAdminCommand extends AbstractFunnyCommand {
     private List<ItemStack> findGuildSetItems(Player targetPlayer, String[] args) {
         ItemsSnapshot items = this.itemsConfiguration.snapshot();
         if (args.length >= 3) {
-            Optional<GuildItemSet> foundSet = items.findGuildItemSet(args[2], true);
+            Optional<ItemsSnapshot.ItemSet> foundSet = items.findGuildItemSet(args[2], true);
             if (foundSet.isEmpty()) {
                 throw new InternalValidationException(
                     config -> config.itemsSetNotFound,

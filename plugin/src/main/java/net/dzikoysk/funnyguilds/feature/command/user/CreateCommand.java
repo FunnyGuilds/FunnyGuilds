@@ -7,7 +7,6 @@ import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -114,7 +113,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         ItemsSnapshot items = this.itemsConfiguration.snapshot();
-        GuildItemSet activeSet = this.guildItemSetService.getSetForPlayer(player, items);
+        ItemsSnapshot.ItemSet activeSet = this.guildItemSetService.getSetForPlayer(player, items);
         if (player.hasPermission(items.getAdminItemsBypassPermission())) {
             this.messageService.getMessage(config -> config.itemsAdminBypass)
                     .receiver(player)
@@ -316,7 +315,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         });
     }
 
-    private boolean withdrawCreationMoney(Player player, GuildItemSet set) {
+    private boolean withdrawCreationMoney(Player player, ItemsSnapshot.ItemSet set) {
         if (!set.requirements.moneyEnabled || set.requiredMoney <= 0 || !VaultHook.isEconomyHooked()) {
             return true;
         }

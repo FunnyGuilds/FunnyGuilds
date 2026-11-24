@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.items.gui;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -12,7 +11,7 @@ public class GuildItemsGui {
 
     private final Player player;
     private final User user;
-    private final GuildItemSet set;
+    private final ItemsSnapshot.ItemSet set;
     private final String setName;
     private final ItemsSnapshot config;
     private final MessageService messageService;
@@ -25,7 +24,7 @@ public class GuildItemsGui {
     public GuildItemsGui(
             Player player,
             User user,
-            GuildItemSet set,
+            ItemsSnapshot.ItemSet set,
             String setName,
             ItemsSnapshot config,
             MessageService messageService
@@ -59,7 +58,7 @@ public class GuildItemsGui {
 
     public Player getPlayer() { return player; }
     public User getUser() { return user; }
-    public GuildItemSet getSet() { return set; }
+    public ItemsSnapshot.ItemSet getSet() { return set; }
     public String getSetName() { return setName; }
     public ItemsSnapshot getConfig() { return config; }
     public MessageService getMessageService() { return messageService; }

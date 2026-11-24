@@ -4,7 +4,6 @@ import java.util.Locale;
 import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
@@ -28,7 +27,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, User user) {
         ItemsSnapshot items = this.itemsConfiguration.snapshot();
-        GuildItemSet set = this.guildItemSetService.getSetForPlayer(player, items);
+        ItemsSnapshot.ItemSet set = this.guildItemSetService.getSetForPlayer(player, items);
         String setName = this.guildItemSetService.getNameForSet(set, items);
 
         if (items.getGui().enabled) {

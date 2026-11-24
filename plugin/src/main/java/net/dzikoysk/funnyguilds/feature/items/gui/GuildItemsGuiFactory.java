@@ -11,12 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemToggleDefinition;
-import net.dzikoysk.funnyguilds.config.sections.items.GuiConfiguration;
-import net.dzikoysk.funnyguilds.config.sections.items.GuiConfiguration.ItemDisplayGroup;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
-import net.dzikoysk.funnyguilds.config.sections.items.PerSetConfig;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
@@ -39,7 +34,7 @@ public final class GuildItemsGuiFactory {
     public static GuildItemsGui create(
             Player player,
             User user,
-            GuildItemSet set,
+            ItemsSnapshot.ItemSet set,
             String setName,
             ItemsSnapshot config,
             MessageService messageService
@@ -48,8 +43,8 @@ public final class GuildItemsGuiFactory {
     }
 
     static ChestGui buildChestGui(GuildItemsGui gui, StaticPane pane) {
-        GuiConfiguration guiConfig = gui.getConfig().getGui();
-        PerSetConfig perSet = guiConfig.getPerSetConfig(gui.getSetName());
+        ItemsSnapshot.Gui guiConfig = gui.getConfig().getGui();
+        ItemsSnapshot.PerSet perSet = guiConfig.getPerSetConfig(gui.getSetName());
 
         String rawTitle = perSet.hasTitle() ? perSet.title : guiConfig.title;
         if (rawTitle == null) rawTitle = gui.getSetName();
@@ -67,15 +62,15 @@ public final class GuildItemsGuiFactory {
 
     static void populatePane(GuildItemsGui gui, StaticPane pane) {
         ItemsSnapshot config = gui.getConfig();
-        GuiConfiguration guiConfig = config.getGui();
-        PerSetConfig perSet = guiConfig.getPerSetConfig(gui.getSetName());
-        GuildItemSet set = gui.getSet();
+        ItemsSnapshot.Gui guiConfig = config.getGui();
+        ItemsSnapshot.PerSet perSet = guiConfig.getPerSetConfig(gui.getSetName());
+        ItemsSnapshot.ItemSet set = gui.getSet();
         Player player = gui.getPlayer();
 
         GuildItemRequirementChecker checker = new GuildItemRequirementChecker();
         ItemRequirementResult result = checker.check(player, gui.getUser(), set, config);
 
-        ItemDisplayGroup displayGroup = guiConfig.itemDisplay;
+        ItemsSnapshot.DisplayGroup displayGroup = guiConfig.itemDisplay;
 
         List<String> setItemKeys = new ArrayList<>(set.getItems().keySet());
 
@@ -109,11 +104,11 @@ public final class GuildItemsGuiFactory {
 
     private static GuiItem resolveToken(
             String token,
-            GuildItemSet set,
+            ItemsSnapshot.ItemSet set,
             List<String> setItemKeys,
             ItemRequirementResult result,
-            ItemDisplayGroup displayGroup,
-            PerSetConfig perSet,
+            ItemsSnapshot.DisplayGroup displayGroup,
+            ItemsSnapshot.PerSet perSet,
             ItemsSnapshot config,
             GuildItemsGui gui
     ) {
@@ -148,7 +143,7 @@ public final class GuildItemsGuiFactory {
                 return buildFillerItem("item-x", config, perSet);
             }
 
-            GuildItemDefinition def = config.resolveItem(itemKey, perSet).orElse(null);
+            ItemsSnapshot.ItemDefinition def = config.resolveItem(itemKey, perSet).orElse(null);
             if (def == null) return buildFillerItem("item-x", config, perSet);
 
             ItemStack stack = GuiItemBuilder.buildWithDisplay(
@@ -162,22 +157,22 @@ public final class GuildItemsGuiFactory {
         return buildFillerItem(token, config, perSet);
     }
 
-    private static GuiItem buildFillerItem(String key, ItemsSnapshot config, PerSetConfig perSet) {
-        GuildItemDefinition def = config.resolveItem(key, perSet)
+    private static GuiItem buildFillerItem(String key, ItemsSnapshot config, ItemsSnapshot.PerSet perSet) {
+        ItemsSnapshot.ItemDefinition def = config.resolveItem(key, perSet)
                 .orElseGet(GuildItemsGuiFactory::fallbackDef);
         ItemStack stack = GuiItemBuilder.buildSimple(def);
         return new GuiItem(stack, event -> event.setCancelled(true));
     }
 
-    private static GuiItem buildToggleItem(String key, ItemsSnapshot config, PerSetConfig perSet, GuildItemsGui gui) {
-        GuildItemToggleDefinition toggle = config.getToggleItem(key).orElse(null);
+    private static GuiItem buildToggleItem(String key, ItemsSnapshot config, ItemsSnapshot.PerSet perSet, GuildItemsGui gui) {
+        ItemsSnapshot.ToggleDefinition toggle = config.getToggleItem(key).orElse(null);
 
         ItemStack stack;
         if (toggle != null) {
-            GuildItemDefinition def = gui.isShowOnlyMissing() ? toggle.missingOnly : toggle.all;
+            ItemsSnapshot.ItemDefinition def = gui.isShowOnlyMissing() ? toggle.missingOnly : toggle.all;
             stack = GuiItemBuilder.buildSimple(def);
         } else {
-            GuildItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
+            ItemsSnapshot.ItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
             stack = GuiItemBuilder.buildSimple(def);
         }
 
@@ -190,12 +185,12 @@ public final class GuildItemsGuiFactory {
     private static GuiItem buildSummaryItem(
             String key,
             ItemsSnapshot config,
-            PerSetConfig perSet,
-            GuildItemSet set,
+            ItemsSnapshot.PerSet perSet,
+            ItemsSnapshot.ItemSet set,
             ItemRequirementResult result,
             GuildItemsGui gui
     ) {
-        GuildItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
+        ItemsSnapshot.ItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
         ItemStack base = GuiItemBuilder.buildSimple(def);
 
         ItemMeta meta = base.getItemMeta();
@@ -260,8 +255,8 @@ public final class GuildItemsGuiFactory {
         return new GuiItem(base, event -> event.setCancelled(true));
     }
 
-    private static GuiItem buildCloseItem(String key, ItemsSnapshot config, PerSetConfig perSet, GuildItemsGui gui) {
-        GuildItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
+    private static GuiItem buildCloseItem(String key, ItemsSnapshot config, ItemsSnapshot.PerSet perSet, GuildItemsGui gui) {
+        ItemsSnapshot.ItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
         ItemStack stack = GuiItemBuilder.buildSimple(def);
         return new GuiItem(stack, event -> {
             event.setCancelled(true);
@@ -269,10 +264,10 @@ public final class GuildItemsGuiFactory {
         });
     }
 
-    private static GuildItemDefinition fallbackDef() {
+    private static ItemsSnapshot.ItemDefinition fallbackDef() {
         GuildItemDefinition def = new GuildItemDefinition("BLACK_STAINED_GLASS_PANE");
         def.name = " ";
-        return def;
+        return new ItemsSnapshot.ItemDefinition(def);
     }
 
     private static String formatMoney(double value) {

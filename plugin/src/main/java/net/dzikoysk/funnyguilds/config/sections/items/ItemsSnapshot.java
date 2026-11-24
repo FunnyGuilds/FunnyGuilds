@@ -1,25 +1,28 @@
 package net.dzikoysk.funnyguilds.config.sections.items;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import net.dzikoysk.funnyguilds.shared.bukkit.ResolvedItemDefinition;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Immutable runtime view of {@code items.yml}, published by {@link ItemsConfiguration#snapshot()}
- * only after a successful validation. Readers capture one snapshot per operation and never see
- * a mix of versions during an asynchronous reload.
+ * only after a successful validation. Values are deep copies detached from the live configuration:
+ * readers capture one snapshot per operation and neither an asynchronous reload nor mutation of the
+ * source objects can change an already captured version, and published values cannot be mutated.
  */
 public final class ItemsSnapshot {
 
-    private final Map<String, GuildItemDefinition> guildItemLibrary;
-    private final Map<String, GuildItemToggleDefinition> guildToggleLibrary;
-    private final Map<String, GuildItemSet> guildItemSets;
+    private final Map<String, ItemDefinition> guildItemLibrary;
+    private final Map<String, ToggleDefinition> guildToggleLibrary;
+    private final Map<String, ItemSet> guildItemSets;
     private final String adminItemsBypassPermission;
-    private final GuiConfiguration gui;
+    private final Gui gui;
 
     public ItemsSnapshot(
             Map<String, GuildItemDefinition> guildItemLibrary,
@@ -28,14 +31,15 @@ public final class ItemsSnapshot {
             String adminItemsBypassPermission,
             GuiConfiguration gui
     ) {
-        this.guildItemLibrary = copyMap(guildItemLibrary);
-        this.guildToggleLibrary = copyMap(guildToggleLibrary);
-        this.guildItemSets = copyMap(guildItemSets);
+        this.guildItemLibrary = copyValues(guildItemLibrary, ItemDefinition::new);
+        this.guildToggleLibrary = copyValues(guildToggleLibrary, ToggleDefinition::new);
+        this.guildItemSets = copyValues(guildItemSets, ItemSet::new);
         this.adminItemsBypassPermission = adminItemsBypassPermission;
-        this.gui = gui;
+        this.gui = gui != null ? new Gui(gui) : null;
     }
 
-    static ItemsSnapshot of(ItemsConfiguration config) {
+    /** Captures a deeply immutable copy of the current configuration values. */
+    public static ItemsSnapshot of(ItemsConfiguration config) {
         return new ItemsSnapshot(
                 config.guildItemLibrary,
                 config.guildToggleLibrary,
@@ -45,22 +49,28 @@ public final class ItemsSnapshot {
         );
     }
 
-    private static <K, V> Map<K, V> copyMap(Map<K, V> map) {
-        if (map == null) {
+    private static <K, S, T> Map<K, T> copyValues(Map<K, S> source, Function<S, T> copier) {
+        if (source == null) {
             return Map.of();
         }
-        return Collections.unmodifiableMap(new LinkedHashMap<>(map));
+        Map<K, T> copy = new LinkedHashMap<>();
+        source.forEach((key, value) -> copy.put(key, value != null ? copier.apply(value) : null));
+        return Map.copyOf(copy);
     }
 
-    public Map<String, GuildItemDefinition> getGuildItemLibrary() {
+    private static <E> List<E> copyList(@Nullable List<E> source) {
+        return source != null ? List.copyOf(source) : null;
+    }
+
+    public Map<String, ItemDefinition> getGuildItemLibrary() {
         return this.guildItemLibrary;
     }
 
-    public Map<String, GuildItemToggleDefinition> getGuildToggleLibrary() {
+    public Map<String, ToggleDefinition> getGuildToggleLibrary() {
         return this.guildToggleLibrary;
     }
 
-    public Map<String, GuildItemSet> getGuildItemSets() {
+    public Map<String, ItemSet> getGuildItemSets() {
         return this.guildItemSets;
     }
 
@@ -68,7 +78,7 @@ public final class ItemsSnapshot {
         return this.adminItemsBypassPermission;
     }
 
-    public GuiConfiguration getGui() {
+    public Gui getGui() {
         return this.gui;
     }
 
@@ -76,12 +86,12 @@ public final class ItemsSnapshot {
      * Pobiera definicję itemu z library po kluczu.
      * Sprawdza najpierw zwykłe itemy, potem toggle (zwraca stan "all").
      */
-    public Optional<GuildItemDefinition> getLibraryItem(String key) {
-        GuildItemDefinition direct = this.guildItemLibrary.get(key);
+    public Optional<ItemDefinition> getLibraryItem(String key) {
+        ItemDefinition direct = this.guildItemLibrary.get(key);
         if (direct != null) {
             return Optional.of(direct);
         }
-        GuildItemToggleDefinition toggle = this.guildToggleLibrary.get(key);
+        ToggleDefinition toggle = this.guildToggleLibrary.get(key);
         if (toggle != null) {
             return Optional.ofNullable(toggle.all);
         }
@@ -91,16 +101,16 @@ public final class ItemsSnapshot {
     /**
      * Pobiera definicję toggle itemu z library.
      */
-    public Optional<GuildItemToggleDefinition> getToggleItem(String key) {
+    public Optional<ToggleDefinition> getToggleItem(String key) {
         return Optional.ofNullable(this.guildToggleLibrary.get(key));
     }
 
     /**
      * Rozwiązuje item — najpierw sprawdza per-set overrides, potem library.
      */
-    public Optional<GuildItemDefinition> resolveItem(String key, PerSetConfig perSet) {
-        if (perSet != null && perSet.libraryOverrides != null) {
-            GuildItemDefinition override = perSet.libraryOverrides.get(key);
+    public Optional<ItemDefinition> resolveItem(String key, PerSet perSet) {
+        if (perSet != null) {
+            ItemDefinition override = perSet.libraryOverrides.get(key);
             if (override != null) {
                 return Optional.of(override);
             }
@@ -111,18 +121,18 @@ public final class ItemsSnapshot {
     /**
      * Zwraca sety posortowane malejąco po priority.
      */
-    public List<GuildItemSet> getSetsSortedByPriority() {
-        List<GuildItemSet> sorted = new ArrayList<>(this.guildItemSets.values());
-        sorted.sort(Comparator.comparingInt((GuildItemSet set) -> set.priority).reversed());
+    public List<ItemSet> getSetsSortedByPriority() {
+        List<ItemSet> sorted = new ArrayList<>(this.guildItemSets.values());
+        sorted.sort(Comparator.comparingInt((ItemSet set) -> set.priority).reversed());
         return List.copyOf(sorted);
     }
 
-    public Optional<GuildItemSet> findGuildItemSet(String name, boolean ignoreCase) {
+    public Optional<ItemSet> findGuildItemSet(String name, boolean ignoreCase) {
         if (this.guildItemSets.isEmpty()) {
             return Optional.empty();
         }
 
-        GuildItemSet exactSet = this.guildItemSets.get(name);
+        ItemSet exactSet = this.guildItemSets.get(name);
         if (exactSet != null) {
             return Optional.of(exactSet);
         }
@@ -135,6 +145,192 @@ public final class ItemsSnapshot {
         }
 
         return Optional.empty();
+    }
+
+    /** Immutable runtime values of a single guild item definition. */
+    public static final class ItemDefinition {
+
+        private final ResolvedItemDefinition resolved;
+
+        public final @Nullable String material;
+        public final @Nullable String name;
+        public final @Nullable List<String> lore;
+        public final @Nullable List<String> enchants;
+        public final @Nullable List<String> flags;
+        public final @Nullable Integer customModelData;
+        public final @Nullable String skullOwner;
+        public final @Nullable String armorColor;
+
+        public ItemDefinition(GuildItemDefinition definition) {
+            this.material = definition.material;
+            this.name = definition.name;
+            this.lore = copyList(definition.lore);
+            this.enchants = copyList(definition.enchants);
+            this.flags = copyList(definition.flags);
+            this.customModelData = definition.customModelData;
+            this.skullOwner = definition.skullOwner;
+            this.armorColor = definition.armorColor;
+            this.resolved = definition.getResolved();
+        }
+
+        /** Loaded definitions are resolved eagerly at snapshot creation. */
+        public ResolvedItemDefinition getResolved() {
+            return this.resolved;
+        }
+
+    }
+
+    /** Immutable runtime values of a toggle item with its two states. */
+    public static final class ToggleDefinition {
+
+        public final ItemDefinition all;
+        public final ItemDefinition missingOnly;
+
+        public ToggleDefinition(GuildItemToggleDefinition toggle) {
+            this.all = toggle.all != null ? new ItemDefinition(toggle.all) : null;
+            this.missingOnly = toggle.missingOnly != null ? new ItemDefinition(toggle.missingOnly) : null;
+        }
+
+    }
+
+    /** Immutable runtime values of the requirement flags of a set. */
+    public static final class Requirements {
+
+        public final boolean itemsEnabled;
+        public final boolean levelEnabled;
+        public final boolean moneyEnabled;
+        public final boolean rankEnabled;
+
+        public Requirements(SetRequirements requirements) {
+            this.itemsEnabled = requirements != null && requirements.itemsEnabled;
+            this.levelEnabled = requirements != null && requirements.levelEnabled;
+            this.moneyEnabled = requirements != null && requirements.moneyEnabled;
+            this.rankEnabled = requirements != null && requirements.rankEnabled;
+        }
+
+    }
+
+    /** Immutable runtime values of a single guild item set. */
+    public static final class ItemSet {
+
+        public final @Nullable String permission;
+        public final int priority;
+        public final Requirements requirements;
+        public final Map<String, Integer> items;
+        public final int requiredLevel;
+        public final double requiredMoney;
+        public final int requiredRank;
+
+        public ItemSet(GuildItemSet set) {
+            this.permission = set.permission;
+            this.priority = set.priority;
+            this.requirements = new Requirements(set.requirements);
+            this.items = set.items != null ? Map.copyOf(set.items) : Map.of();
+            this.requiredLevel = set.requiredLevel;
+            this.requiredMoney = set.requiredMoney;
+            this.requiredRank = set.requiredRank;
+        }
+
+        public Map<String, Integer> getItems() {
+            return this.items;
+        }
+
+    }
+
+    /** Immutable runtime values of the display overlay of GUI items. */
+    public static final class DisplayConfig {
+
+        public final boolean glow;
+        public final @Nullable String namePrefix;
+        public final @Nullable List<String> additionalLore;
+
+        public DisplayConfig(ItemDisplayConfig display) {
+            this.glow = display.glow;
+            this.namePrefix = display.namePrefix;
+            this.additionalLore = copyList(display.additionalLore);
+        }
+
+        public boolean hasAdditionalLore() {
+            return this.additionalLore != null && !this.additionalLore.isEmpty();
+        }
+
+    }
+
+    /** Immutable runtime values of the two display variants (has-enough / missing). */
+    public static final class DisplayGroup {
+
+        public final DisplayConfig hasEnough;
+        public final DisplayConfig missing;
+
+        public DisplayGroup(GuiConfiguration.ItemDisplayGroup group) {
+            this.hasEnough = group != null && group.hasEnough != null ? new DisplayConfig(group.hasEnough) : null;
+            this.missing = group != null && group.missing != null ? new DisplayConfig(group.missing) : null;
+        }
+
+    }
+
+    /** Immutable runtime values of the per-set GUI overrides. */
+    public static final class PerSet {
+
+        private static final PerSet EMPTY = new PerSet(null, Map.of());
+
+        public final @Nullable String title;
+        public final Map<String, ItemDefinition> libraryOverrides;
+
+        public PerSet(@Nullable String title, Map<String, ItemDefinition> libraryOverrides) {
+            this.title = title;
+            this.libraryOverrides = libraryOverrides;
+        }
+
+        private static PerSet copy(PerSetConfig perSet) {
+            if (perSet == null) {
+                return EMPTY;
+            }
+            return new PerSet(
+                    perSet.title,
+                    perSet.libraryOverrides != null
+                            ? Map.copyOf(copyValues(perSet.libraryOverrides, ItemDefinition::new))
+                            : Map.of()
+            );
+        }
+
+        public boolean hasTitle() {
+            return this.title != null && !this.title.isEmpty();
+        }
+
+    }
+
+    /** Immutable runtime values of the GUI section. */
+    public static final class Gui {
+
+        public final boolean enabled;
+        public final @Nullable String title;
+        public final int rows;
+        public final List<String> pattern;
+        public final DisplayGroup itemDisplay;
+        public final Map<String, PerSet> perSet;
+
+        public Gui(GuiConfiguration gui) {
+            this.enabled = gui.enabled;
+            this.title = gui.title;
+            this.rows = gui.rows;
+            this.pattern = gui.pattern != null ? List.copyOf(gui.pattern) : List.of();
+            this.itemDisplay = gui.itemDisplay != null ? new DisplayGroup(gui.itemDisplay) : null;
+            if (gui.perSet != null) {
+                Map<String, PerSet> perSet = new LinkedHashMap<>();
+                gui.perSet.forEach((key, value) -> perSet.put(key, PerSet.copy(value)));
+                this.perSet = Map.copyOf(perSet);
+            }
+            else {
+                this.perSet = Map.of();
+            }
+        }
+
+        public PerSet getPerSetConfig(String setName) {
+            PerSet perSet = this.perSet.get(setName);
+            return perSet != null ? perSet : new PerSet(null, Map.of());
+        }
+
     }
 
 }

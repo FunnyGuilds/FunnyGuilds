@@ -5,8 +5,6 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
@@ -280,7 +278,7 @@ public final class ItemUtils {
         return collection.toArray(new ItemStack[0]);
     }
 
-    public static List<ItemStack> buildRequiredItems(GuildItemSet set, ItemsSnapshot config) {
+    public static List<ItemStack> buildRequiredItems(ItemsSnapshot.ItemSet set, ItemsSnapshot config) {
         List<ItemStack> items = new ArrayList<>();
         if (!set.requirements.itemsEnabled) {
             return items;
@@ -292,7 +290,7 @@ public final class ItemUtils {
         return items;
     }
 
-    public static ItemStack toItemStack(GuildItemDefinition def, int amount) {
+    public static ItemStack toItemStack(ItemsSnapshot.ItemDefinition def, int amount) {
         if (def == null) return new ItemStack(Material.STONE, amount);
 
         return def.getResolved().toItemStack(amount);

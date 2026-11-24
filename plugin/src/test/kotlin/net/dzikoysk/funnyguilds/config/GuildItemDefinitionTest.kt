@@ -137,7 +137,7 @@ class GuildItemDefinitionTest {
         assertIs<ItemsSnapshot>(snapshot)
 
         val library = snapshot.guildItemLibrary
-        assertFailsWith<UnsupportedOperationException> { library["staged"] = GuildItemDefinition("STONE") }
+        assertFailsWith<UnsupportedOperationException> { library["staged"] = ItemsSnapshot.ItemDefinition(GuildItemDefinition("STONE")) }
         assertFailsWith<UnsupportedOperationException> { library.clear() }
         assertFailsWith<UnsupportedOperationException> { snapshot.guildToggleLibrary.clear() }
         assertFailsWith<UnsupportedOperationException> { snapshot.guildItemSets.clear() }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,7 +19,14 @@ public final class ItemMatcher implements Predicate<ItemStack> {
     private final List<Predicate<ItemMeta>> metadataChecks;
 
     public ItemMatcher(GuildItemDefinition definition) {
-        ResolvedItemDefinition resolved = definition.getResolved();
+        this(definition.getResolved());
+    }
+
+    public ItemMatcher(ItemsSnapshot.ItemDefinition definition) {
+        this(definition.getResolved());
+    }
+
+    private ItemMatcher(ResolvedItemDefinition resolved) {
         this.material = resolved.material();
         List<Predicate<ItemMeta>> checks = new ArrayList<>();
 
