@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.config.sections.items
 
 import org.junit.jupiter.api.Test
+import java.util.LinkedHashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
@@ -131,6 +132,45 @@ class ItemsSnapshotTest {
         val items = snapshot(sets = linkedMapOf("low" to low, "high" to high))
 
         assertEquals(listOf(10, 1), items.getSetsSortedByPriority().map { it.priority })
+    }
+
+    @Test
+    fun `snapshot preserves the configured insertion order`() {
+        val library = LinkedHashMap<String, GuildItemDefinition>()
+        library["zebra"] = definition("DIAMOND")
+        library["alpha"] = definition("EMERALD")
+        library["middle"] = definition("IRON_INGOT")
+        val sets = LinkedHashMap<String, GuildItemSet>()
+        sets["low"] = GuildItemSet().apply { priority = 1 }
+        sets["high"] = GuildItemSet().apply { priority = 1 }
+        sets["equal"] = GuildItemSet().apply {
+            items = linkedMapOf("zulu" to 1, "alpha" to 2)
+        }
+        val gui = GuiConfiguration().apply {
+            perSet = linkedMapOf("zulu" to PerSetConfig(), "alpha" to PerSetConfig())
+        }
+        val items = ItemsSnapshot(library, LinkedHashMap(), sets, "bypass", gui)
+
+        assertEquals(listOf("zebra", "alpha", "middle"), items.guildItemLibrary.keys.toList())
+        assertEquals(listOf("low", "high", "equal"), items.guildItemSets.keys.toList())
+        assertEquals(listOf("zulu", "alpha"), items.guildItemSets.getValue("equal").items.keys.toList())
+        assertEquals(listOf("zulu", "alpha"), items.gui.perSet.keys.toList())
+    }
+
+    @Test
+    fun `snapshot tolerates null lore lines like validation does`() {
+        val items = ItemsSnapshot(
+            linkedMapOf("diamonds" to definition("DIAMOND").apply {
+                lore = arrayListOf(null, "Fee", null)
+            }),
+            linkedMapOf(),
+            linkedMapOf(),
+            "bypass",
+            GuiConfiguration()
+        )
+
+        assertEquals(listOf(null, "Fee", null), items.guildItemLibrary.getValue("diamonds").lore)
+        assertFailsWith<UnsupportedOperationException> { items.guildItemLibrary.getValue("diamonds").lore!!.add("staged") }
     }
 
     @Test

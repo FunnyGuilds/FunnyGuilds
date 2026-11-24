@@ -140,6 +140,10 @@ public class ItemsConfiguration extends OkaeriConfig {
     }
 
     private void publish(ItemsConfiguration candidate) {
+        // Build the snapshot before replacing any active state: if snapshot construction fails
+        // after validation (for example on values rejected while copying), the previous
+        // configuration and snapshot stay active instead of a half-committed rejected candidate.
+        ItemsSnapshot snapshot = constructSnapshot(candidate);
         // Keep the public YAML fields available for configuration access and saving.
         this.guildItemLibrary = candidate.guildItemLibrary;
         this.guildToggleLibrary = candidate.guildToggleLibrary;
@@ -148,8 +152,12 @@ public class ItemsConfiguration extends OkaeriConfig {
         this.gui = candidate.gui;
         this.setInternalState(candidate.getInternalState());
         this.getContext().setRawContent(candidate.getContext().getRawContent());
-        // Publish only after validation succeeded: loadCandidate throws before this line.
-        this.loadedSnapshot = ItemsSnapshot.of(candidate);
+        this.loadedSnapshot = snapshot;
+    }
+
+    /** Extension point for tests to fail snapshot construction after validation succeeded. */
+    protected ItemsSnapshot constructSnapshot(ItemsConfiguration candidate) {
+        return ItemsSnapshot.of(candidate);
     }
 
     @Override

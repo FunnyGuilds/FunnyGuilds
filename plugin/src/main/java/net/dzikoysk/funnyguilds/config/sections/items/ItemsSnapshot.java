@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.config.sections.items;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,13 +54,15 @@ public final class ItemsSnapshot {
         if (source == null) {
             return Map.of();
         }
+        // Keep insertion order: set selection and GUI slots depend on the configured YAML order.
         Map<K, T> copy = new LinkedHashMap<>();
         source.forEach((key, value) -> copy.put(key, value != null ? copier.apply(value) : null));
-        return Map.copyOf(copy);
+        return Collections.unmodifiableMap(copy);
     }
 
     private static <E> List<E> copyList(@Nullable List<E> source) {
-        return source != null ? List.copyOf(source) : null;
+        // Null elements are legal in lore (rendered as blank lines), so reject nothing here.
+        return source != null ? Collections.unmodifiableList(new ArrayList<>(source)) : null;
     }
 
     public Map<String, ItemDefinition> getGuildItemLibrary() {
@@ -225,7 +228,7 @@ public final class ItemsSnapshot {
             this.permission = set.permission;
             this.priority = set.priority;
             this.requirements = new Requirements(set.requirements);
-            this.items = set.items != null ? Map.copyOf(set.items) : Map.of();
+            this.items = set.items != null ? Collections.unmodifiableMap(new LinkedHashMap<>(set.items)) : Map.of();
             this.requiredLevel = set.requiredLevel;
             this.requiredMoney = set.requiredMoney;
             this.requiredRank = set.requiredRank;
@@ -272,7 +275,7 @@ public final class ItemsSnapshot {
     /** Immutable runtime values of the per-set GUI overrides. */
     public static final class PerSet {
 
-        private static final PerSet EMPTY = new PerSet(null, Map.of());
+        private static final PerSet EMPTY = new PerSet(null, new LinkedHashMap<>());
 
         public final @Nullable String title;
         public final Map<String, ItemDefinition> libraryOverrides;
@@ -289,7 +292,7 @@ public final class ItemsSnapshot {
             return new PerSet(
                     perSet.title,
                     perSet.libraryOverrides != null
-                            ? Map.copyOf(copyValues(perSet.libraryOverrides, ItemDefinition::new))
+                            ? copyValues(perSet.libraryOverrides, ItemDefinition::new)
                             : Map.of()
             );
         }
@@ -314,12 +317,14 @@ public final class ItemsSnapshot {
             this.enabled = gui.enabled;
             this.title = gui.title;
             this.rows = gui.rows;
-            this.pattern = gui.pattern != null ? List.copyOf(gui.pattern) : List.of();
+            this.pattern = gui.pattern != null
+                    ? Collections.unmodifiableList(new ArrayList<>(gui.pattern))
+                    : List.of();
             this.itemDisplay = gui.itemDisplay != null ? new DisplayGroup(gui.itemDisplay) : null;
             if (gui.perSet != null) {
                 Map<String, PerSet> perSet = new LinkedHashMap<>();
                 gui.perSet.forEach((key, value) -> perSet.put(key, PerSet.copy(value)));
-                this.perSet = Map.copyOf(perSet);
+                this.perSet = Collections.unmodifiableMap(perSet);
             }
             else {
                 this.perSet = Map.of();
@@ -328,7 +333,7 @@ public final class ItemsSnapshot {
 
         public PerSet getPerSetConfig(String setName) {
             PerSet perSet = this.perSet.get(setName);
-            return perSet != null ? perSet : new PerSet(null, Map.of());
+            return perSet != null ? perSet : new PerSet(null, new LinkedHashMap<>());
         }
 
     }

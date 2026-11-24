@@ -22,6 +22,7 @@ import org.mockito.Mockito.verify
 import java.nio.file.Path
 import java.util.Optional
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertFailsWith
@@ -181,6 +182,38 @@ class GuildItemDefinitionTest {
         config.load()
         assertEquals("Updated", config.guildItemLibrary["key"]!!.name)
         assertEquals("Updated", (config.guildItemLibrary["key"]!!.resolved.name() as net.kyori.adventure.text.TextComponent).content())
+    }
+
+    @Test
+    fun `failed snapshot construction leaves active configuration and snapshot untouched`(@TempDir directory: Path) {
+        val file = directory.resolve("items.yml").toFile()
+        file.writeText("guild-item-library:\n  key:\n    name: Original")
+        val probe = object : ItemsConfiguration() {
+            var failSnapshotConstruction = false
+            override fun constructSnapshot(candidate: ItemsConfiguration): ItemsSnapshot {
+                if (failSnapshotConstruction) {
+                    throw IllegalStateException("snapshot construction failed")
+                }
+                return super.constructSnapshot(candidate)
+            }
+        }
+        val config = ConfigManager.initialize(probe)
+        config.configure { options ->
+            options.configurer(YamlBukkitConfigurer(), SerdesCommons())
+            options.bindFile(file)
+        }
+        config.load(true)
+        val previousSnapshot = config.snapshot()
+        val previousLibrary = config.guildItemLibrary
+
+        probe.failSnapshotConstruction = true
+        assertFailsWith<IllegalStateException> { config.load() }
+        probe.failSnapshotConstruction = false
+
+        assertSame(previousSnapshot, config.snapshot())
+        assertSame(previousLibrary, config.guildItemLibrary)
+        assertEquals("Original", config.guildItemLibrary["key"]!!.name)
+        assertFalse(config.guildItemLibrary.containsKey("staged"))
     }
 
     @Test
