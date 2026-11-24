@@ -3,9 +3,11 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.message.MessageService;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.FunnyTask.AsyncFunnyTask;
@@ -106,7 +108,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         this.plugin.scheduleFunnyTasks(new ReloadAsyncTask(this.plugin, sender));
     }
 
-    private static final class ReloadAsyncTask extends AsyncFunnyTask {
+    static final class ReloadAsyncTask extends AsyncFunnyTask {
 
         private final FunnyGuilds plugin;
         private final CommandSender sender;
@@ -120,18 +122,41 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
         @Override
         public void execute() {
-            this.plugin.reloadConfiguration(error -> this.plugin.getMessageService()
-                    .getMessage(config -> config.reloadItemsError)
-                    .receiver(this.sender)
-                    .with("{ERROR}", error)
-                    .send());
-            this.plugin.getDataPersistenceHandler().reloadHandler();
-            this.plugin.getDynamicListenerManager().reloadAll();
-            this.plugin.reloadTablistRendering();
-            
+            AtomicReference<String> itemsError = new AtomicReference<>();
+            this.plugin.reloadConfiguration(error -> {
+                itemsError.set(error);
+                this.plugin.getMessageService()
+                        .getMessage(config -> config.reloadItemsError)
+                        .receiver(this.sender)
+                        .with("{ERROR}", error)
+                        .send();
+            });
+
+            try {
+                this.plugin.getDataPersistenceHandler().reloadHandler();
+                this.plugin.getDynamicListenerManager().reloadAll();
+                this.plugin.reloadTablistRendering();
+            }
+            catch (Exception exception) {
+                FunnyGuilds.getPluginLogger().error("An error occurred while reloading plugin data!", exception);
+                return;
+            }
+
             String time = TimeUtils.formatTimeSimple(Duration.between(this.startTime, Instant.now()));
-            FunnyGuilds.getInstance().getMessageService().getMessage(config -> config.reloadTime)
-                    .receiver(this.sender)
+            reportReloadCompleted(this.plugin.getMessageService(), this.sender, time, itemsError.get());
+        }
+
+        static void reportReloadCompleted(MessageService messageService, CommandSender sender, String time, String itemsError) {
+            if (itemsError != null) {
+                messageService.getMessage(config -> config.reloadItemsPartial)
+                        .receiver(sender)
+                        .with("{TIME}", time)
+                        .with("{ERROR}", itemsError)
+                        .send();
+                return;
+            }
+            messageService.getMessage(config -> config.reloadTime)
+                    .receiver(sender)
                     .with("{TIME}", time)
                     .send();
         }
