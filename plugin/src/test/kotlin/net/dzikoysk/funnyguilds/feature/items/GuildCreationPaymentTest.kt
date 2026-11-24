@@ -302,6 +302,39 @@ class GuildCreationPaymentTest {
     }
 
     @Test
+    fun `a successful payment keeps reserved stacks for rollback and exposes them exactly once`() {
+        val meta = mock(ItemMeta::class.java)
+        val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5, meta))
+        val payment = GuildCreationPayment(inventory(contents), set("diamonds" to 3),
+            config("diamonds" to GuildItemDefinition("DIAMOND")))
+
+        assertEquals(PaymentResult.SUCCESS, payment.pay({ true }, { error("Unexpected refund") }))
+        assertEquals(2, contents[0]!!.amount)
+
+        val reserved = payment.takeReservedItems()
+        assertEquals(3, reserved.single().amount)
+        assertEquals(Material.DIAMOND, reserved.single().type)
+        assertSame(meta, reserved.single().itemMeta)
+        assertTrue(payment.takeReservedItems().isEmpty())
+    }
+
+    @Test
+    fun `failed or exceptional payments do not expose reserved stacks for a later rollback`() {
+        val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5))
+        val payment = GuildCreationPayment(inventory(contents), set("diamonds" to 3),
+            config("diamonds" to GuildItemDefinition("DIAMOND")))
+
+        assertEquals(PaymentResult.WITHDRAWAL_FAILED, payment.pay({ false }, { }))
+        assertTrue(payment.takeReservedItems().isEmpty())
+
+        val nextContents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 5))
+        val nextPayment = GuildCreationPayment(inventory(nextContents), set("diamonds" to 3),
+            config("diamonds" to GuildItemDefinition("DIAMOND")))
+        assertFailsWith<IllegalStateException> { nextPayment.pay({ error("Provider failed") }, { }) }
+        assertTrue(nextPayment.takeReservedItems().isEmpty())
+    }
+
+    @Test
     fun `checker and payment ignore armor offhand and ender chest for satisfying requirements`() {
         val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 2))
         val inventory = inventory(contents)

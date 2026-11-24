@@ -392,6 +392,7 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     @Comment("Dostępne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public SendableMessage createGuild = ChatHolder.message("&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!");
     public SendableMessage createGuildCouldNotPasteSchematic = ChatHolder.message("&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.");
+    public SendableMessage createGuildWorldEditMissing = ChatHolder.message("&cWtyczka WorldEdit nie jest dostepna, nie mozna stworzyc terenu gildii. Zglos sie do administracji.");
     @Comment("Dostępne zmienne: {BORDER-MIN-DISTANCE}")
     public SendableMessage createNotEnoughDistanceFromBorder = ChatHolder.message("&cJestes zbyt blisko granicy mapy aby zalozyc gildie! (Minimalna odleglosc: {BORDER-MIN-DISTANCE})");
 
