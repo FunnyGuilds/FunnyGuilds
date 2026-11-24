@@ -24,6 +24,7 @@ public final class GuildCreationPayment {
     private final Inventory inventory;
     private final List<InventorySlot> slots;
     private final List<RequirementAllocation> allocations;
+    private List<ItemStack> reservedItems = List.of();
     private boolean consumed;
 
     public GuildCreationPayment(Inventory inventory, GuildItemSet set, ItemsConfiguration config) {
@@ -109,6 +110,7 @@ public final class GuildCreationPayment {
         List<SlotRemoval> removals = prepared.orElseThrow();
         List<ItemStack> reserved = removals.stream().map(SlotRemoval::removed).toList();
         applyRemoval(removals);
+        this.reservedItems = reserved;
 
         boolean withdrawn;
         try {
@@ -116,13 +118,25 @@ public final class GuildCreationPayment {
         }
         catch (RuntimeException exception) {
             refundItems.accept(reserved);
+            this.reservedItems = List.of();
             throw exception;
         }
         if (!withdrawn) {
             refundItems.accept(reserved);
+            this.reservedItems = List.of();
             return PaymentResult.WITHDRAWAL_FAILED;
         }
         return PaymentResult.SUCCESS;
+    }
+
+    /**
+     * Reserved stacks from a successful payment, kept so a later creation failure can refund them.
+     * The first call clears them, so compensation cannot refund the same payment twice.
+     */
+    public List<ItemStack> takeReservedItems() {
+        List<ItemStack> reserved = this.reservedItems;
+        this.reservedItems = List.of();
+        return reserved;
     }
 
     private Optional<List<SlotRemoval>> prepareRemoval() {

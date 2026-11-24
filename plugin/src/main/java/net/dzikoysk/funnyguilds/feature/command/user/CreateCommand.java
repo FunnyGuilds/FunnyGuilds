@@ -2,10 +2,13 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import dev.peri.yetanothermessageslibrary.replace.replacement.Replacement;
 import java.time.Instant;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
@@ -38,6 +41,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -223,97 +227,150 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         boolean adminBypass = player.hasPermission(items.adminItemsBypassPermission);
+        AtomicBoolean moneyWithdrawn = new AtomicBoolean(false);
+        GuildCreationPayment payment = null;
 
         if (!adminBypass) {
             // Rebuild after GuildPreCreateEvent: listeners may have changed the inventory.
-            GuildCreationPayment payment = new GuildCreationPayment(player.getInventory(), activeSet, items);
+            payment = new GuildCreationPayment(player.getInventory(), activeSet, items);
             when(!payment.isSatisfied(), config -> config.itemsRequirementsNotMet);
 
             PaymentResult paymentResult = payment.pay(
-                    () -> withdrawCreationMoney(player, activeSet),
+                    () -> {
+                        boolean withdrawn = withdrawCreationMoney(player, activeSet);
+                        if (withdrawn && activeSet.requirements.moneyEnabled && activeSet.requiredMoney > 0) {
+                            moneyWithdrawn.set(true);
+                        }
+                        return withdrawn;
+                    },
                     refund -> InventoryUtils.addItemsWithOverflowDrop(player, refund)
             );
             when(paymentResult == PaymentResult.ITEMS_CHANGED, config -> config.itemsRequirementsNotMet);
             if (paymentResult == PaymentResult.WITHDRAWAL_FAILED) {
                 return;
             }
+        }
 
-            if (activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
+        // From here on the player is charged: any failure must compensate money, items and levels
+        // and remove the partially created guild or region before the error propagates.
+        try {
+            if (!adminBypass && activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
                 int newLevel = player.getLevel() - activeSet.requiredLevel;
                 player.setLevel(Math.max(0, newLevel));
             }
-        }
 
-        if (this.config.regionsEnabled) {
-            if (heartConfig.pasteSchematicOnCreation) {
-                HookManager.WORLD_EDIT.ifPresent(worldEdit -> {
-                    if (!worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
-                        this.messageService.getMessage(config -> config.createGuildCouldNotPasteSchematic)
-                                .receiver(player)
-                                .send();
+            if (this.config.regionsEnabled) {
+                if (heartConfig.pasteSchematicOnCreation) {
+                    HookManager.WORLD_EDIT.ifPresent(worldEdit -> {
+                        if (!worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
+                            this.messageService.getMessage(config -> config.createGuildCouldNotPasteSchematic)
+                                    .receiver(player)
+                                    .send();
+                        }
+                    });
+                }
+                else if (heartConfig.createCenterSphere) {
+                    for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
+                        if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
+                            locationInSphere.getBlock().setType(Material.AIR);
+                        }
                     }
-                });
+
+                    for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
+                        if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
+                            locationInSphere.getBlock().setType(Material.OBSIDIAN);
+                        }
+                    }
+
+                    if (this.config.eventPhysics) {
+                        guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
+                    }
+                }
+
+                this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
+                guild.teleportHome(player);
             }
-            else if (heartConfig.createCenterSphere) {
-                for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
-                    if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
-                        locationInSphere.getBlock().setType(Material.AIR);
-                    }
-                }
 
-                for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
-                    if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
-                        locationInSphere.getBlock().setType(Material.OBSIDIAN);
-                    }
-                }
+            this.guildManager.addGuild(guild);
+            user.setGuild(guild);
 
-                if (this.config.eventPhysics) {
-                    guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
-                }
-            }
+            guild.getRegion().ifPresent(region -> this.regionManager.addRegion(region));
 
-            this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
-            guild.teleportHome(player);
-        }
+            this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
+            this.plugin.getIndividualNameTagManager()
+                    .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
+                    .ifPresent(this.plugin::scheduleFunnyTasks);
 
-        this.guildManager.addGuild(guild);
-        user.setGuild(guild);
+            SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));
 
-        guild.getRegion().ifPresent(region -> this.regionManager.addRegion(region));
+            FunnyFormatter formatter = new FunnyFormatter()
+                    .register("{GUILD}", name)
+                    .register("{TAG}", tag)
+                    .register("{PLAYER}", player.getName());
 
-        this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
-        this.plugin.getIndividualNameTagManager()
-                .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
-                .ifPresent(this.plugin::scheduleFunnyTasks);
+            this.messageService.getMessage(config -> config.createGuild)
+                    .receiver(player)
+                    .with(formatter)
+                    .send();
+            this.messageService.getMessage(config -> config.broadcastCreate)
+                    .all()
+                    .with(formatter)
+                    .send();
 
-        SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));
-
-        FunnyFormatter formatter = new FunnyFormatter()
-                .register("{GUILD}", name)
-                .register("{TAG}", tag)
-                .register("{PLAYER}", player.getName());
-
-        this.messageService.getMessage(config -> config.createGuild)
-                .receiver(player)
-                .with(formatter)
-                .send();
-        this.messageService.getMessage(config -> config.broadcastCreate)
-                .all()
-                .with(formatter)
-                .send();
-
-        if (!this.config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {
-            return;
-        }
-
-        this.config.firstGuildRewards.forEach(item -> {
-            if (player.getInventory().firstEmpty() == -1) {
-                player.getWorld().dropItemNaturally(player.getLocation(), item);
+            if (!this.config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {
                 return;
             }
 
-            player.getInventory().addItem(item);
-        });
+            this.config.firstGuildRewards.forEach(item -> {
+                if (player.getInventory().firstEmpty() == -1) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    return;
+                }
+
+                player.getInventory().addItem(item);
+            });
+        }
+        catch (RuntimeException exception) {
+            this.rollbackCreation(player, guild, payment, moneyWithdrawn, activeSet, adminBypass);
+            throw exception;
+        }
+    }
+
+    /** Compensates a failure after payment: refunds money, items and levels, then removes guild and region state. */
+    private void rollbackCreation(Player player, Guild guild, GuildCreationPayment payment, AtomicBoolean moneyWithdrawn,
+                                  GuildItemSet set, boolean adminBypass) {
+        FunnyGuilds.getPluginLogger().warning("Guild creation failed after payment, rolling back the transaction");
+
+        if (moneyWithdrawn.get()) {
+            try {
+                EconomyResponse response = VaultHook.depositToPlayerBank(player, set.requiredMoney);
+                if (!response.transactionSuccess()) {
+                    FunnyGuilds.getPluginLogger().error("Could not refund guild creation money: " + response.errorMessage);
+                }
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not refund guild creation money", compensationFailure);
+            }
+        }
+
+        if (payment != null) {
+            try {
+                List<ItemStack> reserved = payment.takeReservedItems();
+                if (!reserved.isEmpty()) {
+                    InventoryUtils.addItemsWithOverflowDrop(player, reserved);
+                }
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not return reserved guild creation items", compensationFailure);
+            }
+        }
+
+        try {
+            this.guildManager.deleteGuild(this.plugin, guild);
+        }
+        catch (RuntimeException compensationFailure) {
+            FunnyGuilds.getPluginLogger().error("Could not remove the partially created guild", compensationFailure);
+        }
     }
 
     private boolean withdrawCreationMoney(Player player, GuildItemSet set) {

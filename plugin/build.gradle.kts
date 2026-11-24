@@ -119,7 +119,8 @@ tasks.processResources {
     val isCiServer = System.getenv().containsKey("CI")
 
     val version = "${project.version}${if (isCiServer) "+CI" else ""}"
-    val commitId = grgit.head().abbreviatedId
+    // JGit cannot resolve HEAD inside a linked git worktree, so fall back to a plain id there.
+    val commitId = grgit.head()?.abbreviatedId ?: "unknown"
 
     expand(
         "funnyGuildsVersion" to version,
@@ -128,8 +129,19 @@ tasks.processResources {
 }
 
 tasks.withType<ShadowJar> {
-    val commitCount = grgitService.service.get().grgit.log().size
-    archiveFileName = "FunnyGuilds ${project.version}.$commitCount (MC 1.21.5 - 26.x).jar"
+    // JGit cannot resolve HEAD inside a linked git worktree, so fall back to a plain name there.
+    val commitCount = try {
+        grgitService.service.get().grgit.log().size
+    }
+    catch (exception: Exception) {
+        0
+    }
+    archiveFileName = if (commitCount > 0) {
+        "FunnyGuilds ${project.version}.$commitCount (MC 1.21.5 - 26.x).jar"
+    }
+    else {
+        "FunnyGuilds ${project.version}.jar"
+    }
 
     relocate("net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands")
     relocate("panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities")
