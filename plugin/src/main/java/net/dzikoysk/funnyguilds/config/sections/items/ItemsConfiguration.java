@@ -11,11 +11,9 @@ import eu.okaeri.configs.configurer.Configurer;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 /**
@@ -35,12 +33,12 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 public class ItemsConfiguration extends OkaeriConfig {
 
     @Exclude
-    private volatile ItemsConfiguration loadedSnapshot;
+    private volatile ItemsSnapshot loadedSnapshot;
 
     /** Capture once per operation. Reloads replace the snapshot without modifying previous snapshots. */
-    public ItemsConfiguration snapshot() {
-        ItemsConfiguration current = this.loadedSnapshot;
-        return current != null ? current : this;
+    public ItemsSnapshot snapshot() {
+        ItemsSnapshot current = this.loadedSnapshot;
+        return current != null ? current : ItemsSnapshot.of(this);
     }
 
     @Comment("")
@@ -87,82 +85,6 @@ public class ItemsConfiguration extends OkaeriConfig {
     @Comment(" GUI")
     @Comment("=======================================")
     public volatile GuiConfiguration gui = new GuiConfiguration();
-
-    // -------------------------------------------------------
-    // API
-    // -------------------------------------------------------
-
-    /**
-     * Pobiera definicję itemu z library po kluczu.
-     * Sprawdza najpierw zwykłe itemy, potem toggle (zwraca stan "all").
-     */
-    public Optional<GuildItemDefinition> getLibraryItem(String key) {
-        if (guildItemLibrary != null) {
-            GuildItemDefinition direct = guildItemLibrary.get(key);
-            if (direct != null) return Optional.of(direct);
-        }
-        if (guildToggleLibrary != null) {
-            GuildItemToggleDefinition toggle = guildToggleLibrary.get(key);
-            if (toggle != null) return Optional.ofNullable(toggle.all);
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Pobiera definicję toggle itemu z library.
-     */
-    public Optional<GuildItemToggleDefinition> getToggleItem(String key) {
-        if (guildToggleLibrary == null) return Optional.empty();
-        return Optional.ofNullable(guildToggleLibrary.get(key));
-    }
-
-    /**
-     * Rozwiązuje item — najpierw sprawdza per-set overrides, potem library.
-     */
-    public Optional<GuildItemDefinition> resolveItem(String key, PerSetConfig perSet) {
-        if (perSet != null && perSet.libraryOverrides != null) {
-            GuildItemDefinition override = perSet.libraryOverrides.get(key);
-            if (override != null) return Optional.of(override);
-        }
-        return getLibraryItem(key);
-    }
-
-    /**
-     * Zwraca sety posortowane malejąco po priority.
-     */
-    public List<GuildItemSet> getSetsSortedByPriority() {
-        if (guildItemSets == null) return List.of();
-        List<GuildItemSet> sorted = new ArrayList<>(guildItemSets.values());
-        sorted.sort(Comparator.comparingInt((GuildItemSet s) -> s.priority).reversed());
-        return sorted;
-    }
-
-    /**
-     * Zwraca mapę setów.
-     */
-    public Map<String, GuildItemSet> getGuildItemSets() {
-        return guildItemSets != null ? guildItemSets : Map.of();
-    }
-
-    public Optional<GuildItemSet> findGuildItemSet(String name, boolean ignoreCase) {
-        if (guildItemSets == null || guildItemSets.isEmpty()) {
-            return Optional.empty();
-        }
-
-        GuildItemSet exactSet = guildItemSets.get(name);
-        if (exactSet != null) {
-            return Optional.of(exactSet);
-        }
-
-        if (ignoreCase) {
-            return guildItemSets.entrySet().stream()
-                .filter(e -> e.getKey().equalsIgnoreCase(name))
-                .map(Map.Entry::getValue)
-                .findFirst();
-        }
-
-        return Optional.empty();
-    }
 
     @Override
     public synchronized OkaeriConfig load(InputStream input) throws OkaeriException {
@@ -226,7 +148,8 @@ public class ItemsConfiguration extends OkaeriConfig {
         this.gui = candidate.gui;
         this.setInternalState(candidate.getInternalState());
         this.getContext().setRawContent(candidate.getContext().getRawContent());
-        this.loadedSnapshot = candidate;
+        // Publish only after validation succeeded: loadCandidate throws before this line.
+        this.loadedSnapshot = ItemsSnapshot.of(candidate);
     }
 
     @Override

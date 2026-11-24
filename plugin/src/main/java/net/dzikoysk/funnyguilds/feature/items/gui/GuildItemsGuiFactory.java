@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemToggleDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuiConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuiConfiguration.ItemDisplayGroup;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.config.sections.items.PerSetConfig;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.GuildItemRequirementChecker;
@@ -41,14 +41,14 @@ public final class GuildItemsGuiFactory {
             User user,
             GuildItemSet set,
             String setName,
-            ItemsConfiguration config,
+            ItemsSnapshot config,
             MessageService messageService
     ) {
         return new GuildItemsGui(player, user, set, setName, config, messageService);
     }
 
     static ChestGui buildChestGui(GuildItemsGui gui, StaticPane pane) {
-        GuiConfiguration guiConfig = gui.getConfig().gui;
+        GuiConfiguration guiConfig = gui.getConfig().getGui();
         PerSetConfig perSet = guiConfig.getPerSetConfig(gui.getSetName());
 
         String rawTitle = perSet.hasTitle() ? perSet.title : guiConfig.title;
@@ -66,8 +66,8 @@ public final class GuildItemsGuiFactory {
     }
 
     static void populatePane(GuildItemsGui gui, StaticPane pane) {
-        ItemsConfiguration config = gui.getConfig();
-        GuiConfiguration guiConfig = config.gui;
+        ItemsSnapshot config = gui.getConfig();
+        GuiConfiguration guiConfig = config.getGui();
         PerSetConfig perSet = guiConfig.getPerSetConfig(gui.getSetName());
         GuildItemSet set = gui.getSet();
         Player player = gui.getPlayer();
@@ -114,7 +114,7 @@ public final class GuildItemsGuiFactory {
             ItemRequirementResult result,
             ItemDisplayGroup displayGroup,
             PerSetConfig perSet,
-            ItemsConfiguration config,
+            ItemsSnapshot config,
             GuildItemsGui gui
     ) {
         if (token.startsWith("toggle:")) {
@@ -162,14 +162,14 @@ public final class GuildItemsGuiFactory {
         return buildFillerItem(token, config, perSet);
     }
 
-    private static GuiItem buildFillerItem(String key, ItemsConfiguration config, PerSetConfig perSet) {
+    private static GuiItem buildFillerItem(String key, ItemsSnapshot config, PerSetConfig perSet) {
         GuildItemDefinition def = config.resolveItem(key, perSet)
                 .orElseGet(GuildItemsGuiFactory::fallbackDef);
         ItemStack stack = GuiItemBuilder.buildSimple(def);
         return new GuiItem(stack, event -> event.setCancelled(true));
     }
 
-    private static GuiItem buildToggleItem(String key, ItemsConfiguration config, PerSetConfig perSet, GuildItemsGui gui) {
+    private static GuiItem buildToggleItem(String key, ItemsSnapshot config, PerSetConfig perSet, GuildItemsGui gui) {
         GuildItemToggleDefinition toggle = config.getToggleItem(key).orElse(null);
 
         ItemStack stack;
@@ -189,7 +189,7 @@ public final class GuildItemsGuiFactory {
 
     private static GuiItem buildSummaryItem(
             String key,
-            ItemsConfiguration config,
+            ItemsSnapshot config,
             PerSetConfig perSet,
             GuildItemSet set,
             ItemRequirementResult result,
@@ -260,7 +260,7 @@ public final class GuildItemsGuiFactory {
         return new GuiItem(base, event -> event.setCancelled(true));
     }
 
-    private static GuiItem buildCloseItem(String key, ItemsConfiguration config, PerSetConfig perSet, GuildItemsGui gui) {
+    private static GuiItem buildCloseItem(String key, ItemsSnapshot config, PerSetConfig perSet, GuildItemsGui gui) {
         GuildItemDefinition def = config.resolveItem(key, perSet).orElseGet(GuildItemsGuiFactory::fallbackDef);
         ItemStack stack = GuiItemBuilder.buildSimple(def);
         return new GuiItem(stack, event -> {

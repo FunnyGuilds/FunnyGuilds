@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.config.sections.items.SetRequirements;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 public class GuildItemRequirementChecker {
 
-    public ItemRequirementResult check(Player player, User user, GuildItemSet set, ItemsConfiguration config) {
+    public ItemRequirementResult check(Player player, User user, GuildItemSet set, ItemsSnapshot config) {
         SetRequirements req = set.requirements;
 
         boolean meetsMoney = true;

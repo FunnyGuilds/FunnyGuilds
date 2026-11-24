@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.message.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.adventure.ItemComponentHelper;
@@ -280,7 +280,7 @@ public final class ItemUtils {
         return collection.toArray(new ItemStack[0]);
     }
 
-    public static List<ItemStack> buildRequiredItems(GuildItemSet set, ItemsConfiguration config) {
+    public static List<ItemStack> buildRequiredItems(GuildItemSet set, ItemsSnapshot config) {
         List<ItemStack> items = new ArrayList<>();
         if (!set.requirements.itemsEnabled) {
             return items;

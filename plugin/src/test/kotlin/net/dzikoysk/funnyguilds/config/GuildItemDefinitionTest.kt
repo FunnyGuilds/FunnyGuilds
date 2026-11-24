@@ -6,7 +6,9 @@ import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
 import net.dzikoysk.funnyguilds.FunnyGuilds
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger
 import net.dzikoysk.funnyguilds.config.message.MessageService
+import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
@@ -20,6 +22,7 @@ import org.mockito.Mockito.verify
 import java.nio.file.Path
 import java.util.Optional
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
@@ -123,6 +126,27 @@ class GuildItemDefinitionTest {
         assertEquals(setOf("new"), latest.guildItemSets.getValue("default").items.keys)
         assertEquals("EMERALD", latest.getLibraryItem("new").orElseThrow().material)
         assertEquals("new", latest.gui.title)
+    }
+
+    @Test
+    fun `published snapshot does not expose mutable configuration settings`(@TempDir directory: Path) {
+        val file = directory.resolve("items.yml").toFile()
+        file.writeText("guild-item-library:\n  key: {material: DIAMOND}")
+        val config = create(file)
+        val snapshot = config.snapshot()
+        assertIs<ItemsSnapshot>(snapshot)
+
+        val library = snapshot.guildItemLibrary
+        assertFailsWith<UnsupportedOperationException> { library["staged"] = GuildItemDefinition("STONE") }
+        assertFailsWith<UnsupportedOperationException> { library.clear() }
+        assertFailsWith<UnsupportedOperationException> { snapshot.guildToggleLibrary.clear() }
+        assertFailsWith<UnsupportedOperationException> { snapshot.guildItemSets.clear() }
+
+        // Mutating the live configuration afterwards must not leak into a previously captured snapshot.
+        val capturedBefore = config.snapshot()
+        config.guildItemLibrary["staged"] = GuildItemDefinition("STONE")
+        assertEquals(setOf("key"), capturedBefore.guildItemLibrary.keys)
+        assertSame(capturedBefore, config.snapshot())
     }
 
     @Test

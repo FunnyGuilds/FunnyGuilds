@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import org.bukkit.entity.Player;
 
 public class GuildItemSetService {
@@ -18,7 +19,7 @@ public class GuildItemSetService {
         return getSetForPlayer(player, this.config.snapshot());
     }
 
-    public GuildItemSet getSetForPlayer(Player player, ItemsConfiguration snapshot) {
+    public GuildItemSet getSetForPlayer(Player player, ItemsSnapshot snapshot) {
         List<GuildItemSet> sorted = snapshot.getSetsSortedByPriority();
         return sorted.stream()
                 .filter(set -> set.permission == null || player.hasPermission(set.permission))
@@ -33,7 +34,7 @@ public class GuildItemSetService {
         return getNameForSet(set, this.config.snapshot());
     }
 
-    public String getNameForSet(GuildItemSet set, ItemsConfiguration snapshot) {
+    public String getNameForSet(GuildItemSet set, ItemsSnapshot snapshot) {
         return snapshot.getGuildItemSets().entrySet().stream()
                 .filter(entry -> entry.getValue() == set)
                 .map(Map.Entry::getKey)

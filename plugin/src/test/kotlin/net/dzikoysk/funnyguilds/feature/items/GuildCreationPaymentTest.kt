@@ -2,7 +2,8 @@ package net.dzikoysk.funnyguilds.feature.items
 
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
+import net.dzikoysk.funnyguilds.config.sections.items.GuiConfiguration
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.shared.bukkit.InventoryUtils
 import net.dzikoysk.funnyguilds.feature.items.GuildCreationPayment.PaymentResult
@@ -52,11 +53,8 @@ class GuildCreationPaymentTest {
         }.`when`(inventory).setItem(anyInt(), nullable(ItemStack::class.java))
     }
 
-    private fun config(vararg definitions: Pair<String, GuildItemDefinition>): ItemsConfiguration =
-        ItemsConfiguration().also {
-            it.guildItemLibrary = linkedMapOf(*definitions)
-            it.guildToggleLibrary = emptyMap()
-        }
+    private fun config(vararg definitions: Pair<String, GuildItemDefinition>): ItemsSnapshot =
+        ItemsSnapshot(linkedMapOf(*definitions), emptyMap(), emptyMap(), "funnyguilds.items.admin.bypass", GuiConfiguration())
 
     private fun set(vararg requirements: Pair<String, Int>): GuildItemSet = GuildItemSet().also {
         it.items = linkedMapOf(*requirements)
