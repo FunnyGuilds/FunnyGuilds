@@ -133,6 +133,12 @@ tasks.processResources {
 }
 
 tasks.withType<ShadowJar> {
+    // The Skript extension is not a project dependency (it compiles against the plugin
+    // classes), so its classes are merged into the shadow jar directly from its jar task.
+    val skriptExtensionJar = project(":extensions:skript").tasks.named<Jar>("jar")
+    dependsOn(skriptExtensionJar)
+    from(skriptExtensionJar.map { zipTree(it.archiveFile) })
+
     // JGit cannot resolve HEAD inside a linked git worktree, so fall back to a plain name there.
     val commitCount = try {
         grgitService.service.get().grgit.log().size

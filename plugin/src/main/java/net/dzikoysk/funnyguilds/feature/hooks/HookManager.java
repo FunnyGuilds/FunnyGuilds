@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.decentholograms.DecentHologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.dynmap.DynmapHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
+import net.dzikoysk.funnyguilds.feature.hooks.skript.SkriptHook;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEditHook;
@@ -62,6 +63,8 @@ public class HookManager {
 
         this.setupHook("dynmap", true, pluginName -> new DynmapHook(pluginName, this.plugin), true)
                 .subscribe(hook -> DYNMAP = hook);
+
+        this.setupHook("Skript", true, pluginName -> new SkriptHook(pluginName, this.plugin), false);
     }
 
     public <T extends PluginHook> Completable<Optional<T>> setupHook(String pluginName, boolean requireEnabled,

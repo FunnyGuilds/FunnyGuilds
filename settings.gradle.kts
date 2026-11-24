@@ -16,6 +16,7 @@ include(
     ":extensions:api",
     ":extensions:gui",
     ":extensions:guild-panel",
+    ":extensions:skript",
     ":nms:api",
     ":nms:v1_21",
     ":nms:v1_21_2",
