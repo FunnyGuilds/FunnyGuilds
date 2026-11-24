@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -40,6 +41,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -251,12 +254,19 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
         }
 
-        // From here on the player is charged: any failure must compensate money, items and levels
-        // and remove the partially created guild or region before the error propagates.
+        // From here on the player is charged. Any failure before the commit point below must
+        // compensate money, items and levels and remove everything this attempt created.
+        int previousLevel = player.getLevel();
+        boolean levelDeducted = false;
+        boolean heartPlaced = false;
+        boolean regionAdded = false;
+        Optional<BlockState> previousHeartState = Optional.empty();
+
         try {
             if (!adminBypass && activeSet.requirements.levelEnabled && activeSet.requiredLevel > 0) {
                 int newLevel = player.getLevel() - activeSet.requiredLevel;
                 player.setLevel(Math.max(0, newLevel));
+                levelDeducted = true;
             }
 
             if (this.config.regionsEnabled) {
@@ -287,16 +297,24 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     }
                 }
 
+                // Remember the block the heart is about to replace so a rollback can restore it
+                // instead of damaging existing terrain with the generic heart removal.
+                if (heartConfig.createEntityType == null && heartConfig.createMaterial != null && heartConfig.createMaterial != Material.AIR) {
+                    previousHeartState = guild.getRegion().flatMap(Region::getHeartBlock).map(Block::getState);
+                }
                 this.guildManager.spawnHeart(this.plugin.getGuildEntityHelper(), guild);
+                heartPlaced = true;
                 guild.teleportHome(player);
             }
 
             this.guildManager.addGuild(guild);
             user.setGuild(guild);
 
-            guild.getRegion().ifPresent(region -> this.regionManager.addRegion(region));
+            if (guild.getRegion().isPresent()) {
+                this.regionManager.addRegion(guild.getRegion().orElseThrow());
+                regionAdded = true;
+            }
 
-            this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
             this.plugin.getIndividualNameTagManager()
                     .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
                     .ifPresent(this.plugin::scheduleFunnyTasks);
@@ -316,29 +334,40 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     .all()
                     .with(formatter)
                     .send();
+        }
+        catch (RuntimeException exception) {
+            this.rollbackCreation(player, user, guild, payment, moneyWithdrawn, activeSet, previousLevel, levelDeducted,
+                    heartPlaced, regionAdded, previousHeartState);
+            throw exception;
+        }
 
-            if (!this.config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {
+        // Commit point: the guild is fully registered and announced, so no rollback can happen
+        // anymore. Persist and hand out rewards only now, so an async save can never resurrect
+        // a rolled-back guild and a reward failure can no longer undo a completed creation.
+        this.plugin.scheduleFunnyTasks(new DatabaseUpdateGuildAsyncTask(this.plugin.getDataModel(), guild));
+
+        if (!this.config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {
+            return;
+        }
+
+        this.config.firstGuildRewards.forEach(item -> {
+            if (player.getInventory().firstEmpty() == -1) {
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
                 return;
             }
 
-            this.config.firstGuildRewards.forEach(item -> {
-                if (player.getInventory().firstEmpty() == -1) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), item);
-                    return;
-                }
-
-                player.getInventory().addItem(item);
-            });
-        }
-        catch (RuntimeException exception) {
-            this.rollbackCreation(player, guild, payment, moneyWithdrawn, activeSet, adminBypass);
-            throw exception;
-        }
+            player.getInventory().addItem(item);
+        });
     }
 
-    /** Compensates a failure after payment: refunds money, items and levels, then removes guild and region state. */
-    private void rollbackCreation(Player player, Guild guild, GuildCreationPayment payment, AtomicBoolean moneyWithdrawn,
-                                  GuildItemSet set, boolean adminBypass) {
+    /**
+     * Compensates a failure after payment and before the commit point: refunds money, items and levels,
+     * then undoes the heart, region, membership and manager registrations this attempt made. Every step
+     * is guarded independently so one failure cannot skip the remaining cleanup.
+     */
+    private void rollbackCreation(Player player, User user, Guild guild, GuildCreationPayment payment, AtomicBoolean moneyWithdrawn,
+                                  GuildItemSet set, int previousLevel, boolean levelDeducted, boolean heartPlaced,
+                                  boolean regionAdded, Optional<BlockState> previousHeartState) {
         FunnyGuilds.getPluginLogger().warning("Guild creation failed after payment, rolling back the transaction");
 
         if (moneyWithdrawn.get()) {
@@ -365,11 +394,61 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
         }
 
+        if (levelDeducted) {
+            try {
+                player.setLevel(previousLevel);
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not restore the player's level", compensationFailure);
+            }
+        }
+
+        if (heartPlaced) {
+            try {
+                if (this.config.heart.createEntityType != null) {
+                    this.plugin.getGuildEntityHelper().despawnGuildEntity(guild);
+                }
+                else {
+                    // The guild was never announced as live, so the heart is the only world mutation
+                    // to undo: restore the exact block state this attempt replaced.
+                    previousHeartState.ifPresent(state -> state.update(true, false));
+                }
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not remove the spawned guild heart", compensationFailure);
+            }
+        }
+
+        if (regionAdded) {
+            try {
+                guild.getRegion().ifPresent(region -> this.regionManager.deleteRegion(this.plugin.getDataModel(), region));
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not remove the partially created region", compensationFailure);
+            }
+        }
+
         try {
-            this.guildManager.deleteGuild(this.plugin, guild);
+            user.removeGuild();
+        }
+        catch (RuntimeException compensationFailure) {
+            FunnyGuilds.getPluginLogger().error("Could not clear the player's guild membership", compensationFailure);
+        }
+
+        try {
+            this.guildManager.removeGuild(guild);
         }
         catch (RuntimeException compensationFailure) {
             FunnyGuilds.getPluginLogger().error("Could not remove the partially created guild", compensationFailure);
+        }
+
+        try {
+            this.plugin.getIndividualNameTagManager()
+                    .map(manager -> new ScoreboardGlobalUpdateUserSyncTask(manager, user))
+                    .ifPresent(this.plugin::scheduleFunnyTasks);
+        }
+        catch (RuntimeException compensationFailure) {
+            FunnyGuilds.getPluginLogger().error("Could not refresh the player's name tag", compensationFailure);
         }
     }
 
