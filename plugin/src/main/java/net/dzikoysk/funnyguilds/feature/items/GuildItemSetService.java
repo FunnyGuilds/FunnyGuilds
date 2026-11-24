@@ -15,7 +15,11 @@ public class GuildItemSetService {
     }
 
     public GuildItemSet getSetForPlayer(Player player) {
-        List<GuildItemSet> sorted = config.getSetsSortedByPriority();
+        return getSetForPlayer(player, this.config.snapshot());
+    }
+
+    public GuildItemSet getSetForPlayer(Player player, ItemsConfiguration snapshot) {
+        List<GuildItemSet> sorted = snapshot.getSetsSortedByPriority();
         return sorted.stream()
                 .filter(set -> set.permission == null || player.hasPermission(set.permission))
                 .findFirst()
@@ -26,7 +30,11 @@ public class GuildItemSetService {
     }
 
     public String getNameForSet(GuildItemSet set) {
-        return config.getGuildItemSets().entrySet().stream()
+        return getNameForSet(set, this.config.snapshot());
+    }
+
+    public String getNameForSet(GuildItemSet set, ItemsConfiguration snapshot) {
+        return snapshot.getGuildItemSets().entrySet().stream()
                 .filter(entry -> entry.getValue() == set)
                 .map(Map.Entry::getKey)
                 .findFirst()

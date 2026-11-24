@@ -781,6 +781,8 @@ public class MessageConfiguration extends OkaeriConfig implements MessageReposit
     public SendableMessage reloadWarn = ChatHolder.message("&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!");
     public SendableMessage reloadTime = ChatHolder.message("&aFunnyGuilds &7przeladowano! (&b{TIME}s&7)");
     public SendableMessage reloadReloading = ChatHolder.message("&7Przeladowywanie...");
+    @Comment("Dostępne zmienne: {ERROR}")
+    public SendableMessage reloadItemsError = ChatHolder.message("&cNie udało się przeładować items.yml. Zachowano poprzednie ustawienia przedmiotów. &7{ERROR}");
     public SendableMessage saveallSaving = ChatHolder.message("&7Zapisywanie...");
     public SendableMessage saveallSaved = ChatHolder.message("&7Zapisano (&b{TIME}s&7)!");
     public String loginNickTooShort = "&cNick jest za krotki!";

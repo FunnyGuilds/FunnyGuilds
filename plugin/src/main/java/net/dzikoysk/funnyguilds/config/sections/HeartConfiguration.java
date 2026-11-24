@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -165,7 +166,7 @@ public class HeartConfiguration extends OkaeriConfig {
     public void loadProcessedProperties() {
         this.createEntityType = EntityUtils.parseEntityType(this.createType, true, false);
         if (this.createEntityType == null) {
-            this.createMaterial = Material.matchMaterial(this.createType);
+            this.createMaterial = MaterialUtils.matchMaterial(this.createType).orElse(null);
         }
 
         if (this.pasteSchematicOnCreation) {

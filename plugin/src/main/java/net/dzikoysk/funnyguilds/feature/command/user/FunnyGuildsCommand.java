@@ -120,7 +120,11 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
         @Override
         public void execute() {
-            this.plugin.reloadConfiguration();
+            this.plugin.reloadConfiguration(error -> this.plugin.getMessageService()
+                    .getMessage(config -> config.reloadItemsError)
+                    .receiver(this.sender)
+                    .with("{ERROR}", error)
+                    .send());
             this.plugin.getDataPersistenceHandler().reloadHandler();
             this.plugin.getDynamicListenerManager().reloadAll();
             this.plugin.reloadTablistRendering();

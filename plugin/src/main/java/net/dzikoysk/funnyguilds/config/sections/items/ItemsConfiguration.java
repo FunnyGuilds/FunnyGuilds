@@ -2,12 +2,14 @@ package net.dzikoysk.funnyguilds.config.sections.items;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.Header;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.configurer.Configurer;
 import eu.okaeri.configs.exception.OkaeriException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -32,23 +34,38 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class ItemsConfiguration extends OkaeriConfig {
 
+    @Exclude
+    private volatile ItemsConfiguration loadedSnapshot;
+
+    /** Capture once per operation. Reloads replace the snapshot without modifying previous snapshots. */
+    public ItemsConfiguration snapshot() {
+        ItemsConfiguration current = this.loadedSnapshot;
+        return current != null ? current : this;
+    }
+
     @Comment("")
     @Comment("=======================================")
     @Comment(" BIBLIOTEKA PRZEDMIOTÓW")
     @Comment("=======================================")
     @Comment("Wszystkie itemy — zarówno wymagane do gildii jak i GUI — definiowane tu.")
     @Comment("Klucz = unikalna nazwa, referencjonowana w setach i patternie GUI.")
-    @Comment("UWAGA: Dla itemów wymaganych do gildii, ustawione pola (name/lore/enchants/custom-model-data)")
-    @Comment("są wymuszane przy sprawdzaniu — gracz musi mieć item z dokładnie taką metadaną.")
-    @Comment("Pozostaw pola puste, by akceptować vanilla itemy danego materiału.")
-    public Map<String, GuildItemDefinition> guildItemLibrary = defaultLibrary();
+    @Comment("Wszystkie właściwości są opcjonalne, także material. Sprawdzane są tylko ustawione pola:")
+    @Comment("material, name, lore, enchants, flags, custom-model-data, skull-owner, armor-color.")
+    @Comment("Pominięte pola, null, puste teksty i puste listy nie ograniczają dopasowania.")
+    @Comment("Ustawione właściwości muszą pasować dokładnie (w tym całe listy zaklęć i flag).")
+    @Comment("Inne dane przedmiotu są ignorowane. Bez material GUI i nadawanie używają STONE.")
+    @Comment("Przedmioty są pobierane z głównego ekwipunku i paska, bez zbroi i drugiej ręki.")
+    @Comment("Jeden przedmiot może opłacić tylko jedno wymaganie, nawet jeśli pasuje do kilku.")
+    @Comment("Definicje są sprawdzane podczas wczytywania i /funnyguilds reload.")
+    @Comment("Błędna wartość odrzuca konfigurację z nazwą pola; podczas przeładowania zachowana jest poprzednia.")
+    public volatile Map<String, GuildItemDefinition> guildItemLibrary = defaultLibrary();
 
     @Comment("")
     @Comment("=======================================")
     @Comment(" BIBLIOTEKA PRZYCISKÓW TOGGLE")
     @Comment("=======================================")
     @Comment("Itemy z dwoma stanami (all / missing-only) — używane w GUI jako przycisk toggle widoku.")
-    public Map<String, GuildItemToggleDefinition> guildToggleLibrary = defaultToggleLibrary();
+    public volatile Map<String, GuildItemToggleDefinition> guildToggleLibrary = defaultToggleLibrary();
 
     @Comment("")
     @Comment("=======================================")
@@ -56,20 +73,20 @@ public class ItemsConfiguration extends OkaeriConfig {
     @Comment("=======================================")
     @Comment("Sety sortowane malejąco po priority — pierwszy pasujący (gracz ma permisję) wygrywa.")
     @Comment("Set bez permission (null) = domyślny, dostępny dla wszystkich.")
-    public Map<String, GuildItemSet> guildItemSets = defaultSets();
+    public volatile Map<String, GuildItemSet> guildItemSets = defaultSets();
 
     @Comment("")
     @Comment("=======================================")
     @Comment(" BYPASS ADMINISTRACYJNY")
     @Comment("=======================================")
     @Comment("Gracz z tą permisją pomija WSZYSTKIE wymagania (itemy, exp, money, rank)")
-    public String adminItemsBypassPermission = "funnyguilds.items.admin.bypass";
+    public volatile String adminItemsBypassPermission = "funnyguilds.items.admin.bypass";
 
     @Comment("")
     @Comment("=======================================")
     @Comment(" GUI")
     @Comment("=======================================")
-    public GuiConfiguration gui = new GuiConfiguration();
+    public volatile GuiConfiguration gui = new GuiConfiguration();
 
     // -------------------------------------------------------
     // API
@@ -145,6 +162,71 @@ public class ItemsConfiguration extends OkaeriConfig {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public synchronized OkaeriConfig load(InputStream input) throws OkaeriException {
+        // Reload runs asynchronously. Keep unvalidated values away from command and GUI readers.
+        ItemsConfiguration candidate = new ItemsConfiguration();
+        candidate.setConfigurer(this.getConfigurer());
+        candidate.setBindFile(this.getBindFile());
+        candidate.getContext().setValidator(this.getContext().getValidator());
+        candidate.getContext().setLogger(this.getContext().getLogger());
+        candidate.getContext().setErrorComments(this.getContext().isErrorComments());
+        candidate.getContext().setRemoveOrphans(this.getContext().isRemoveOrphans());
+        candidate.loadCandidate(input);
+        publish(candidate);
+        return this;
+    }
+
+    private void loadCandidate(InputStream input) {
+        super.load(input);
+        loadProcessedProperties();
+    }
+
+    public void loadProcessedProperties() {
+        resolveLibrary(this.guildItemLibrary, "items.yml.guild-item-library");
+        if (this.guildToggleLibrary != null) {
+            this.guildToggleLibrary.forEach((key, toggle) -> {
+                if (toggle == null) {
+                    throw new IllegalArgumentException("items.yml.guild-toggle-library." + key + ": missing definition");
+                }
+                resolveDefinition(toggle.all, "items.yml.guild-toggle-library." + key + ".all");
+                resolveDefinition(toggle.missingOnly, "items.yml.guild-toggle-library." + key + ".missing-only");
+            });
+        }
+        if (this.gui != null && this.gui.perSet != null) {
+            this.gui.perSet.forEach((key, perSet) -> {
+                if (perSet != null) {
+                    resolveLibrary(perSet.libraryOverrides, "items.yml.gui.per-set." + key + ".library-overrides");
+                }
+            });
+        }
+    }
+
+    private static void resolveLibrary(Map<String, GuildItemDefinition> library, String path) {
+        if (library != null) {
+            library.forEach((key, definition) -> resolveDefinition(definition, path + "." + key));
+        }
+    }
+
+    private static void resolveDefinition(GuildItemDefinition definition, String path) {
+        if (definition == null) {
+            throw new IllegalArgumentException(path + ": missing definition");
+        }
+        definition.resolve(path);
+    }
+
+    private void publish(ItemsConfiguration candidate) {
+        // Keep the public YAML fields available for configuration access and saving.
+        this.guildItemLibrary = candidate.guildItemLibrary;
+        this.guildToggleLibrary = candidate.guildToggleLibrary;
+        this.guildItemSets = candidate.guildItemSets;
+        this.adminItemsBypassPermission = candidate.adminItemsBypassPermission;
+        this.gui = candidate.gui;
+        this.setInternalState(candidate.getInternalState());
+        this.getContext().setRawContent(candidate.getContext().getRawContent());
+        this.loadedSnapshot = candidate;
     }
 
     @Override
@@ -225,8 +307,7 @@ public class ItemsConfiguration extends OkaeriConfig {
     private static Map<String, GuildItemDefinition> defaultLibrary() {
         Map<String, GuildItemDefinition> library = new LinkedHashMap<>();
 
-        // Required-item entries: leave name/lore/enchants empty so vanilla items satisfy them.
-        // Setting any metadata here makes matching strict (player must have an item with the same metadata).
+        // Required-item entries constrain only material; all unconfigured metadata is ignored.
         library.put("diamonds", new GuildItemDefinition("DIAMOND"));
         library.put("emeralds", new GuildItemDefinition("EMERALD"));
         library.put("iron", new GuildItemDefinition("IRON_INGOT"));

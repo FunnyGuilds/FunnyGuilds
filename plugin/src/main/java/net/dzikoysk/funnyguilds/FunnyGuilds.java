@@ -6,6 +6,7 @@ import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import java.util.function.Consumer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -723,7 +724,18 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public void reloadConfiguration() throws OkaeriException {
+        this.reloadConfiguration(error -> {});
+    }
+
+    public void reloadConfiguration(Consumer<String> reportItemsError) throws OkaeriException {
         this.pluginConfiguration.load();
+        try {
+            this.itemsConfiguration.load();
+        }
+        catch (OkaeriException | IllegalArgumentException exception) {
+            getPluginLogger().warning("Keeping the previous items.yml settings. " + exception.getMessage());
+            reportItemsError.accept(exception.getMessage());
+        }
         this.tablistConfiguration.load();
         this.messageService.reload();
         this.hookManager.callConfigUpdated();

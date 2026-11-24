@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,11 +71,10 @@ public class ExplosionControlConfiguration extends OkaeriConfig {
                     return;
                 }
 
-                Material material = Material.matchMaterial(name);
-                if (material != null && material != Material.AIR) {
-                    // A negative chance is kept as an explicit "never destroy this material" marker.
-                    resolved.put(material, chance);
-                }
+                // A negative chance is kept as an explicit "never destroy this material" marker.
+                MaterialUtils.matchMaterial(name)
+                        .filter(material -> material != Material.AIR)
+                        .ifPresent(material -> resolved.put(material, chance));
             });
             this.resolvedMaterials = resolved;
         }

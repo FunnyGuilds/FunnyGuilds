@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -49,6 +50,7 @@ import net.dzikoysk.funnyguilds.shared.Optionals;
 import net.dzikoysk.funnyguilds.shared.adventure.ComponentUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -1146,7 +1148,8 @@ public class PluginConfiguration extends OkaeriConfig {
             placingBlocksBypassOnRegion = new HashSet<>(Arrays.asList(Material.values()));
         } else {
             placingBlocksBypassOnRegion = placingBlocksBypassOnRegion_.stream()
-                    .map(Material::matchMaterial)
+                    .map(MaterialUtils::matchMaterial)
+                    .flatMap(Optional::stream)
                     .collect(Collectors.toSet());
         }
 

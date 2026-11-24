@@ -5,6 +5,7 @@ import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult;
@@ -26,17 +27,18 @@ public final class ItemsCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User user) {
-        GuildItemSet set = this.guildItemSetService.getSetForPlayer(player);
-        String setName = this.guildItemSetService.getNameForSet(set);
+        ItemsConfiguration items = this.itemsConfiguration.snapshot();
+        GuildItemSet set = this.guildItemSetService.getSetForPlayer(player, items);
+        String setName = this.guildItemSetService.getNameForSet(set, items);
 
-        if (this.itemsConfiguration.gui.enabled) {
+        if (items.gui.enabled) {
             GuildItemsGui gui = GuildItemsGuiFactory.create(
                     player, user, set, setName,
-                    this.itemsConfiguration, this.messageService
+                    items, this.messageService
             );
             gui.open();
         } else {
-            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, set, this.itemsConfiguration);
+            ItemRequirementResult result = this.guildItemRequirementChecker.check(player, user, set, items);
 
             this.messageService.getMessage(config -> config.itemsCheckHeader)
                     .receiver(player)

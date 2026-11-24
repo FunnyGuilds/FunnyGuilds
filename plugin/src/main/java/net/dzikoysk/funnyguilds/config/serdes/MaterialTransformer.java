@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.config.serdes;
 import eu.okaeri.configs.schema.GenericsPair;
 import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ public class MaterialTransformer extends BidirectionalTransformer<String, Materi
 
     @Override
     public Material leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
-        return Material.matchMaterial(data);
+        return MaterialUtils.matchMaterial(data).orElse(null);
     }
 
     @Override
