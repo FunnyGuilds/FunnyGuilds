@@ -282,7 +282,7 @@ public final class ItemsSnapshot {
 
         public PerSet(@Nullable String title, Map<String, ItemDefinition> libraryOverrides) {
             this.title = title;
-            this.libraryOverrides = libraryOverrides;
+            this.libraryOverrides = Collections.unmodifiableMap(new LinkedHashMap<>(libraryOverrides));
         }
 
         private static PerSet copy(PerSetConfig perSet) {

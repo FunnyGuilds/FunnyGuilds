@@ -111,6 +111,15 @@ class ItemsSnapshotTest {
     }
 
     @Test
+    fun `per-set constructor rejects mutation including through the shared empty value`() {
+        val perSet = ItemsSnapshot.PerSet("Title", linkedMapOf("diamonds" to ItemsSnapshot.ItemDefinition(definition("PAPER"))))
+        assertFailsWith<UnsupportedOperationException> { perSet.libraryOverrides.clear() }
+
+        val empty = ItemsSnapshot.of(configuration()).gui.getPerSetConfig("nonexistent")
+        assertFailsWith<UnsupportedOperationException> { empty.libraryOverrides["extra"] = ItemsSnapshot.ItemDefinition(definition("PAPER")) }
+    }
+
+    @Test
     fun `two snapshots of the same configuration are independent`() {
         val config = configuration()
         val first = ItemsSnapshot.of(config)
