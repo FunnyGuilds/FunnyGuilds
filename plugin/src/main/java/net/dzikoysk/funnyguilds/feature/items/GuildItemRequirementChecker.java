@@ -3,10 +3,7 @@ package net.dzikoysk.funnyguilds.feature.items;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
-import net.dzikoysk.funnyguilds.config.sections.items.SetRequirements;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
 import net.dzikoysk.funnyguilds.user.User;
@@ -14,8 +11,8 @@ import org.bukkit.entity.Player;
 
 public class GuildItemRequirementChecker {
 
-    public ItemRequirementResult check(Player player, User user, GuildItemSet set, ItemsConfiguration config) {
-        SetRequirements req = set.requirements;
+    public ItemRequirementResult check(Player player, User user, ItemsSnapshot.ItemSet set, ItemsSnapshot config) {
+        ItemsSnapshot.Requirements req = set.requirements;
 
         boolean meetsMoney = true;
         if (req.moneyEnabled && set.requiredMoney > 0) {
@@ -41,7 +38,7 @@ public class GuildItemRequirementChecker {
                 String itemKey = entry.getKey();
                 int required = entry.getValue();
 
-                Optional<GuildItemDefinition> libraryItem = config.getLibraryItem(itemKey);
+                Optional<ItemsSnapshot.ItemDefinition> libraryItem = config.getLibraryItem(itemKey);
 
                 String displayName = libraryItem
                         .map(def -> def.name)

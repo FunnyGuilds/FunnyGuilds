@@ -3,8 +3,7 @@ package net.dzikoysk.funnyguilds.feature.items.gui;
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
 import net.dzikoysk.funnyguilds.config.message.MessageService;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 
@@ -12,9 +11,9 @@ public class GuildItemsGui {
 
     private final Player player;
     private final User user;
-    private final GuildItemSet set;
+    private final ItemsSnapshot.ItemSet set;
     private final String setName;
-    private final ItemsConfiguration config;
+    private final ItemsSnapshot config;
     private final MessageService messageService;
 
     private ChestGui chestGui;
@@ -25,9 +24,9 @@ public class GuildItemsGui {
     public GuildItemsGui(
             Player player,
             User user,
-            GuildItemSet set,
+            ItemsSnapshot.ItemSet set,
             String setName,
-            ItemsConfiguration config,
+            ItemsSnapshot config,
             MessageService messageService
     ) {
         this.player = player;
@@ -39,7 +38,7 @@ public class GuildItemsGui {
     }
 
     public void open() {
-        this.itemsPane = new StaticPane(9, this.config.gui.rows);
+        this.itemsPane = new StaticPane(9, this.config.getGui().rows);
         this.chestGui = GuildItemsGuiFactory.buildChestGui(this, this.itemsPane);
         this.chestGui.show(player);
     }
@@ -59,9 +58,9 @@ public class GuildItemsGui {
 
     public Player getPlayer() { return player; }
     public User getUser() { return user; }
-    public GuildItemSet getSet() { return set; }
+    public ItemsSnapshot.ItemSet getSet() { return set; }
     public String getSetName() { return setName; }
-    public ItemsConfiguration getConfig() { return config; }
+    public ItemsSnapshot getConfig() { return config; }
     public MessageService getMessageService() { return messageService; }
     public boolean isShowOnlyMissing() { return showOnlyMissing; }
     public ChestGui getChestGui() { return chestGui; }

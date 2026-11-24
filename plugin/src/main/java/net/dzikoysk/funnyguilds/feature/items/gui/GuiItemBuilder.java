@@ -2,8 +2,7 @@ package net.dzikoysk.funnyguilds.feature.items.gui;
 
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemDisplayConfig;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.feature.items.ItemRequirementResult.ItemCountResult;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.kyori.adventure.text.Component;
@@ -22,11 +21,11 @@ public final class GuiItemBuilder {
 
     private GuiItemBuilder() {}
 
-    public static ItemStack buildSimple(GuildItemDefinition def) {
+    public static ItemStack buildSimple(ItemsSnapshot.ItemDefinition def) {
         return ItemUtils.toItemStack(def, 1);
     }
 
-    public static ItemStack buildWithDisplay(GuildItemDefinition def, ItemDisplayConfig display, ItemCountResult counts) {
+    public static ItemStack buildWithDisplay(ItemsSnapshot.ItemDefinition def, ItemsSnapshot.DisplayConfig display, ItemCountResult counts) {
         if (def == null) return new ItemStack(Material.STONE);
 
         ItemStack item = ItemUtils.toItemStack(def, 1);

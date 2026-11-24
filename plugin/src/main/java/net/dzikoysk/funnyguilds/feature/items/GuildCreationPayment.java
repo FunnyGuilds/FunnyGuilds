@@ -11,8 +11,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.feature.items.ItemAllocationGraph.Edge;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemMatcher;
 import org.bukkit.inventory.Inventory;
@@ -26,7 +25,7 @@ public final class GuildCreationPayment {
     private final List<RequirementAllocation> allocations;
     private boolean consumed;
 
-    public GuildCreationPayment(Inventory inventory, GuildItemSet set, ItemsConfiguration config) {
+    public GuildCreationPayment(Inventory inventory, ItemsSnapshot.ItemSet set, ItemsSnapshot config) {
         this.inventory = inventory;
         ItemAllocationGraph graph = new ItemAllocationGraph();
         this.slots = readStorageSlots(inventory, graph);
@@ -44,7 +43,7 @@ public final class GuildCreationPayment {
                 .toList();
     }
 
-    private static List<ItemRequirement> resolveRequirements(GuildItemSet set, ItemsConfiguration config) {
+    private static List<ItemRequirement> resolveRequirements(ItemsSnapshot.ItemSet set, ItemsSnapshot config) {
         if (!set.requirements.itemsEnabled) {
             return List.of();
         }
@@ -53,7 +52,7 @@ public final class GuildCreationPayment {
                 .toList();
     }
 
-    private static ItemRequirement resolveRequirement(String key, int amount, ItemsConfiguration config) {
+    private static ItemRequirement resolveRequirement(String key, int amount, ItemsSnapshot config) {
         Predicate<ItemStack> matcher = config.getLibraryItem(key)
                 .<Predicate<ItemStack>>map(ItemMatcher::new)
                 .orElse(item -> false);

@@ -2,7 +2,8 @@ package net.dzikoysk.funnyguilds.feature.items
 
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemDefinition
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
+import net.dzikoysk.funnyguilds.config.sections.items.GuiConfiguration
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.shared.bukkit.InventoryUtils
 import net.dzikoysk.funnyguilds.feature.items.GuildCreationPayment.PaymentResult
@@ -52,18 +53,16 @@ class GuildCreationPaymentTest {
         }.`when`(inventory).setItem(anyInt(), nullable(ItemStack::class.java))
     }
 
-    private fun config(vararg definitions: Pair<String, GuildItemDefinition>): ItemsConfiguration =
-        ItemsConfiguration().also {
-            it.guildItemLibrary = linkedMapOf(*definitions)
-            it.guildToggleLibrary = emptyMap()
-        }
+    private fun config(vararg definitions: Pair<String, GuildItemDefinition>): ItemsSnapshot =
+        ItemsSnapshot(linkedMapOf(*definitions), emptyMap(), emptyMap(), "funnyguilds.items.admin.bypass", GuiConfiguration())
 
-    private fun set(vararg requirements: Pair<String, Int>): GuildItemSet = GuildItemSet().also {
-        it.items = linkedMapOf(*requirements)
-        it.requirements.moneyEnabled = false
-        it.requirements.levelEnabled = false
-        it.requirements.rankEnabled = false
-    }
+    private fun set(vararg requirements: Pair<String, Int>): ItemsSnapshot.ItemSet =
+        ItemsSnapshot.ItemSet(GuildItemSet().also {
+            it.items = linkedMapOf(*requirements)
+            it.requirements.moneyEnabled = false
+            it.requirements.levelEnabled = false
+            it.requirements.rankEnabled = false
+        })
 
     @Test
     fun `payment removes exact amount from dissimilar matching stacks and preserves leftovers`() {
@@ -167,11 +166,16 @@ class GuildCreationPaymentTest {
     fun `missing library entries fail closed and disabled requirements remove nothing`() {
         val contents = arrayOf<ItemStack?>(stack(Material.DIAMOND, 10))
         val inventory = inventory(contents)
-        val requirements = set("unknown" to 1)
+        val rawSet = GuildItemSet().also {
+            it.items = linkedMapOf("unknown" to 1)
+            it.requirements.moneyEnabled = false
+            it.requirements.levelEnabled = false
+            it.requirements.rankEnabled = false
+        }
         val definitions = config()
-        assertFalse(GuildCreationPayment(inventory, requirements, definitions).isSatisfied)
-        requirements.requirements.itemsEnabled = false
-        val disabled = GuildCreationPayment(inventory, requirements, definitions)
+        assertFalse(GuildCreationPayment(inventory, ItemsSnapshot.ItemSet(rawSet), definitions).isSatisfied)
+        rawSet.requirements.itemsEnabled = false
+        val disabled = GuildCreationPayment(inventory, ItemsSnapshot.ItemSet(rawSet), definitions)
         assertTrue(disabled.isSatisfied)
         disabled.removeItems()
         assertEquals(10, contents[0]!!.amount)

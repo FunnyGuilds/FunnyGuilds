@@ -7,8 +7,7 @@ import java.util.Map;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
-import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
-import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.items.ItemsSnapshot;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -113,9 +112,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     config -> config.createSpawn, Replacement.string("{DISTANCE}", distance));
         }
 
-        ItemsConfiguration items = this.itemsConfiguration.snapshot();
-        GuildItemSet activeSet = this.guildItemSetService.getSetForPlayer(player, items);
-        if (player.hasPermission(items.adminItemsBypassPermission)) {
+        ItemsSnapshot items = this.itemsConfiguration.snapshot();
+        ItemsSnapshot.ItemSet activeSet = this.guildItemSetService.getSetForPlayer(player, items);
+        if (player.hasPermission(items.getAdminItemsBypassPermission())) {
             this.messageService.getMessage(config -> config.itemsAdminBypass)
                     .receiver(player)
                     .send();
@@ -222,7 +221,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             return;
         }
 
-        boolean adminBypass = player.hasPermission(items.adminItemsBypassPermission);
+        boolean adminBypass = player.hasPermission(items.getAdminItemsBypassPermission());
 
         if (!adminBypass) {
             // Rebuild after GuildPreCreateEvent: listeners may have changed the inventory.
@@ -316,7 +315,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         });
     }
 
-    private boolean withdrawCreationMoney(Player player, GuildItemSet set) {
+    private boolean withdrawCreationMoney(Player player, ItemsSnapshot.ItemSet set) {
         if (!set.requirements.moneyEnabled || set.requiredMoney <= 0 || !VaultHook.isEconomyHooked()) {
             return true;
         }
