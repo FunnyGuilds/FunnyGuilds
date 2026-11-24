@@ -106,6 +106,7 @@ dependencies {
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     testImplementation("com.mojang:authlib:6.0.57")
     testImplementation("me.clip:placeholderapi:2.11.7")
+    testImplementation("net.milkbowl.vault:VaultAPI:1.7") { isTransitive = false }
 
     val testcontainers = "1.20.4"
     testImplementation("org.testcontainers:testcontainers:$testcontainers")

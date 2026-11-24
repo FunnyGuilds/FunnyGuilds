@@ -276,14 +276,18 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             if (this.config.regionsEnabled) {
                 if (heartConfig.pasteSchematicOnCreation) {
-                    HookManager.WORLD_EDIT.ifPresent(worldEdit -> {
-                        if (!worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir,
-                                schematicUndo::add)) {
-                            this.messageService.getMessage(config -> config.createGuildCouldNotPasteSchematic)
-                                    .receiver(player)
-                                    .send();
-                        }
-                    });
+                    // Abort instead of continuing: a guild without its pasted heart would leave
+                    // the player charged for an unusable creation. Throwing reaches the rollback
+                    // below and the command handler then shows the message to the player.
+                    if (HookManager.WORLD_EDIT.isEmpty()) {
+                        throw new InternalValidationException(config -> config.createGuildWorldEditMissing);
+                    }
+
+                    HookManager.WORLD_EDIT.orElseThrow().pasteSchematic(heartConfig.guildSchematicFile, guildLocation,
+                            heartConfig.pasteSchematicWithAir, schematicUndo::add);
+                    if (schematicUndo.isEmpty()) {
+                        throw new InternalValidationException(config -> config.createGuildCouldNotPasteSchematic);
+                    }
                 }
                 else if (heartConfig.createCenterSphere) {
                     // Snapshot every block this attempt is about to modify so a rollback can

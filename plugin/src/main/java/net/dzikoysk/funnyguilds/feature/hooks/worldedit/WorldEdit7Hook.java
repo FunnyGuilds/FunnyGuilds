@@ -44,21 +44,28 @@ public class WorldEdit7Hook extends WorldEditHook {
             Operations.complete(operation);
             editSession.close();
             // The change set survives close(), so the undo action can run at any later point.
-            undoRegistration.accept(() -> {
-                try {
-                    editSession.undo(editSession);
-                }
-                catch (Exception e) {
-                    FunnyGuilds.getPluginLogger().error("Could not undo schematic paste: " + schematicFile.getAbsolutePath(), e);
-                }
-            });
+            undoRegistration.accept(undoAction(schematicFile, editSession));
             return true;
         }
         catch (Exception e) {
             editSession.close();
+            // A failed paste may still have modified the world partially, so register the undo
+            // here as well; it is a no-op when nothing was applied.
+            undoRegistration.accept(undoAction(schematicFile, editSession));
             FunnyGuilds.getPluginLogger().error("Could not paste schematic: " + schematicFile.getAbsolutePath(), e);
             return false;
         }
+    }
+
+    private Runnable undoAction(File schematicFile, EditSession editSession) {
+        return () -> {
+            try {
+                editSession.undo(editSession);
+            }
+            catch (Exception e) {
+                FunnyGuilds.getPluginLogger().error("Could not undo schematic paste: " + schematicFile.getAbsolutePath(), e);
+            }
+        };
     }
 
 }
