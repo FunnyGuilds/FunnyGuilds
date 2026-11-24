@@ -6,6 +6,8 @@ Najpierw warto naprawić zapis zmian do SQL, obsługę przejść między regiona
 
 FunnyGuilds już używa Adventure i MiniMessage w głównych ścieżkach wiadomości. Najprostsze migracje Paper to typowane kryterium scoreboardu, komponenty przy logowaniu i śmierci, `Player.locale()`, metadane pluginu i nowe metadane przedmiotów. Nowy event logowania wymaga osobnej decyzji ze względu na Paper 1.21.5.
 
+**Start prac:** [PR 1 — potwierdzanie zapisu SQL](#pr-1--potwierdzanie-zapisu-sql). [Pełna roadmapa](#roadmapa-realizacji)
+
 ## Zakres i weryfikacja
 
 - Skan wszystkich 535 śledzonych plików JVM (478 Java, 57 Kotlin), w tym 478 plików produkcyjnych i 57 testowych. Zakres obejmuje `plugin`, wszystkie trzy moduły `extensions`, `nms:api` oraz wszystkie sześć adapterów NMS. Przegląd wykonania skupia się na ścieżkach wywoływanych przez eventy, zadania cykliczne, polecenia i integracje. Konfigurację Gradle, CI i dokumentację PL/EN sprawdzono pod kątem zgodności z tymi ścieżkami i zakresem wspieranych wersji.
@@ -86,10 +88,38 @@ Javac sprawdza `@Deprecated` i `forRemoval=true`. Ręczny skan obejmuje także p
 
 Poza deprecjacjami Javac zgłosił dwa `unchecked`: operację na refleksyjnie odczytanej liście w `MessageConfiguration` i generyczny cast w `AbstractScoreboardHandler.UpdateData.equals`. Pozostałe jawne wyciszenia `unchecked` są w `StaticGuildPermissionChecker`, `DeserializationUtils`, `GuildPermissionProtectionCheckEvent`, `Reflections` i `FlatGuildSerializer`. [MessageConfiguration 875](plugin/src/main/java/net/dzikoysk/funnyguilds/config/message/MessageConfiguration.java#L875) · [AbstractScoreboardHandler 127](plugin/src/main/java/net/dzikoysk/funnyguilds/feature/scoreboard/AbstractScoreboardHandler.java#L127) · [StaticGuildPermissionChecker 70](plugin/src/main/java/net/dzikoysk/funnyguilds/guild/permission/StaticGuildPermissionChecker.java#L70) · [DeserializationUtils 57](plugin/src/main/java/net/dzikoysk/funnyguilds/data/util/DeserializationUtils.java#L57) · [GuildPermissionProtectionCheckEvent 41](plugin/src/main/java/net/dzikoysk/funnyguilds/guild/permission/event/GuildPermissionProtectionCheckEvent.java#L41) · [Reflections 128](plugin/src/main/java/net/dzikoysk/funnyguilds/nms/Reflections.java#L128) · [FlatGuildSerializer 249](plugin/src/main/java/net/dzikoysk/funnyguilds/data/flat/seralizer/FlatGuildSerializer.java#L249)
 
-## Kolejność prac i pomiary porównawcze
+## Roadmapa realizacji
 
-1. Naprawić potwierdzanie zapisu, wygasanie banów i synchroniczną decyzję o przejściu przez granicę. Sprawdzić eventy używane przez pluginy zewnętrzne i przywracanie stanu po błędzie zapisu.
-2. Zrobić osobny mały PR z migracją Paper API dostępną w 1.21.5. Dodać kontrolę API minimum w kompilacji oraz uruchomienie gotowego JAR-a na 1.21.5, 1.21.11, 26.1 i 26.3. Test startu powinien sprawdzać wybór adaptera, join, tablistę, serce, GUI i logowanie. Dla dev bundle'ów `26.x.build.+` rozważyć przypięcie sprawdzonych wersji, aby odtworzyć wydanie.
-3. Zebrać profil bazowy za pomocą `/spark profiler start --timeout 600` na powtarzalnym obciążeniu. Porównać bezczynność, ruch w regionach i poza nimi, wejścia oraz wyjścia graczy, odświeżanie tablisty/scoreboardu, walkę i tworzenie gildii. Dla typowej i szczytowej liczby graczy porównać p50/p95/p99 MSPT, CPU wątku serwera i wątków async/Netty, alokacje/GC, zapis SQL, długość kolejki scoreboardu i pakiety tablisty. Powtórzyć na tym samym świecie i zestawie hooków. [Profilowanie Paper](https://docs.papermc.io/paper/profiling/)
-4. Z profilu wybrać pierwszy koszt do redukcji. Na dużym serwerze zacząć od porównania scoreboardu, tablisty i rankingu w izolowanych przebiegach. Przy aktywnych sercach dołożyć pomiar Netty. Wariant z wyłączonym konkretnym elementem pomaga oszacować jego wkład.
-5. Przy zmianach zachowania zweryfikować PL i EN w dokumentacji terytoriów, rankingów i walki, tablisty, czatu oraz konfiguracji. Ewentualna zmiana minimalnego Paper/Javy obejmie także README i stronę instalacji. Ten audyt nie zmienia zachowania pluginu ani schematów konfiguracji. [Dokumentacja PL](docs/src/content/docs/) · [Dokumentacja EN](docs/src/content/docs/en/) · [README](.github/README.md)
+### Etap 1. Zapis danych i regiony
+
+#### PR 1 — potwierdzanie zapisu SQL
+
+Zacząć tutaj. Po błędzie SQL kolejny autosave może pominąć rekord. Naprawa ma mały zakres i da się ją sprawdzić testem bez uruchamiania serwera.
+
+1. Dodać test, w którym JDBC zgłasza `SQLException` podczas zapisu zmienionego rekordu. Test ma wykazać, że rekord pozostaje zmieniony, a kolejny zapis go ponawia. Sprawdzić też brak połączenia oraz udany zapis.
+2. Wprowadzić w `SQLNamedStatement` ścieżkę przekazującą wywołującemu wynik zapisu lub wyjątek. Przełączyć na nią serializery użytkownika, gildii i regionu, aby czyściły znacznik wyłącznie po udanej operacji. Inne rekordy w tym samym cyklu mają nadal dostać szansę na zapis.
+3. Sprawdzić trzy serializery, ponowienie zapisu i aktualne testy SQL. Test jednostkowy może użyć mocków JDBC wzorowanych na `SQLUserIdentityTest`. Testy integracyjne uruchomić z Dockerem dla MySQL i MariaDB.
+
+**Kryterium odbioru w cyklu bez równoległych modyfikacji:** następny autosave ponawia nieudany zapis i pomija rekord zapisany z powodzeniem. Wyścig z równoległą modyfikacją obejmuje PR 3. [SQLNamedStatement](plugin/src/main/java/net/dzikoysk/funnyguilds/data/database/element/SQLNamedStatement.java#L37) · [SQLUserIdentityTest](plugin/src/test/kotlin/net/dzikoysk/funnyguilds/data/database/SQLUserIdentityTest.kt#L87)
+
+| Kolejność | Zakres | Gotowe, gdy |
+| --- | --- | --- |
+| **PR 2 — wygasanie banów** | Uporządkować odczyt i wygaszenie bana w `Guild` oraz `GuildValidationHandler`. To niezależna zmiana, którą można przygotować równolegle z PR 1. | Kontrola gildii bez bana i gildii z aktywnym banem nie tworzy zapisów. Wygaśnięcie zmienia stan raz, działa po restarcie i trafia do zapisu przyrostowego. |
+| **PR 3 — współbieżność zapisu** | Po PR 1 wprowadzić wersjonowany snapshot danych i porządek operacji dla autosave, usunięcia i wyłączenia pluginu. Objąć SQL i flat file. | Modyfikacja podczas I/O pozostaje do zapisania, usunięty rekord nie pojawia się ponownie, a końcowy zapis kończy się przed zamknięciem bazy. Testy wymuszają kolejność operacji w kontrolowany sposób. |
+| **PR 4 — przejścia między regionami** | Zacząć niezależnie od PR 1–3. Ustalić zgodny sposób obsługi anulowania przy obecnym kontrakcie asynchronicznych eventów gildii. Zastosować go przed zakończeniem obsługi ruchu lub teleportu. | Testy obejmują wejście, wyjście, anulowanie bez efektów kolejnego etapu, granicę Y oraz teleport między światami przy tym samym X/Z. Zachowanie eventów integracyjnych jest opisane. |
+| **PR 5 — wątki serca i integracji** | Po PR 4 przejść od callbacku Netty do zmian domenowych. Sprawdzić także zadania wygasania gildii, chat i hologramy. Rozdzielić zmiany na PR per funkcja, jeśli różnią się kontraktem. | Zmiany świata i stanu gildii zachodzą w przewidywalnej kolejności, zadania tła dostają dane potrzebne do pracy, a użycie hooków przestrzega ich kontraktów wątkowych. |
+
+### Etap 2. Aktualizacja API bez podnoszenia minimum
+
+1. **Weryfikacja zgodności.** Sprawdzić wspólne moduły względem Paper 1.21.5. Przetestować gotowy JAR na 1.21.5, 1.21.11, 26.1 i 26.3, łącznie z wyborem adaptera NMS, logowaniem, GUI, tablistą i sercem. Ten etap można przygotować podczas napraw z etapu 1.
+2. **Mała migracja Paper.** W jednym PR można zamknąć `Criteria.DUMMY`, komponentowe `Team.prefix`, `Player.locale()`, `getPluginMeta()`, wiadomość śmierci i komponentową odmowę logowania. Kryterium odbioru to zniknięcie ostrzeżeń dotyczących zmienionych wywołań i zachowanie obecnych efektów w grze na 1.21.5 oraz 26.3.
+3. **Przedmioty i MiniMessage.** Osobno migrować nazwę i model przedmiotu w odczycie, zapisie i porównywaniu. W kolejnym PR użyć komponentowych tytułów GUI i typowanych podstawień MiniMessage. Sprawdzić zapisane wcześniej przedmioty, HEX, reset, lore i literalny tekst w dynamicznych wartościach.
+4. **Migracje zależne od wersji.** Osobno rozstrzygnąć `PlayerLoginEvent`, bootstrap NMS, stare API poleceń w FunnyCommands oraz identyfikatory światów. Każdy PR powinien pokazać ścieżkę zgodności z 1.21.5 i zachowanie istniejących konfiguracji. Zmiany Okaeri poprzedzić ustaleniem przyczyny blokad plików na Windowsie i testami odczytu starych kluczy.
+
+### Etap 3. Pomiary i optymalizacja według wyników
+
+1. **Zebrać punkt odniesienia równolegle z etapem 1.** Użyć `/spark profiler start --timeout 600`. Zapisać commit, build Paper, Javę, konfigurację, hooki, liczbę graczy i gildii oraz scenariusz. W osobnych przebiegach sprawdzić bezczynność, ruch, join/quit, walkę i tworzenie gildii. Przed porównaniem zmian wydajnościowych powtórzyć przebieg na bazie zawierającej naprawy z etapu 1. [Profilowanie Paper](https://docs.papermc.io/paper/profiling/)
+2. **Wybrać jeden koszt na PR.** Dla scoreboardu mierzyć wiek najstarszego wpisu w kolejce i liczbę aktualizacji. Dla tablisty liczyć pakiety, podmiany PAPI i alokacje. Dla rankingów mierzyć czas przebiegu i czas od zmiany punktów do jej publikacji. Przy aktywnych sercach sprawdzić także koszt wyszukiwania na wątkach Netty.
+3. **Porównać przed i po.** Powtórzyć ten sam scenariusz na tym samym świecie i zestawie hooków. Odnotować p50/p95/p99 MSPT, udział CPU wątków pluginu i zmianę metryki związanej z optymalizacją. Zaakceptować zmianę po potwierdzeniu poprawy i sprawdzeniu, że koszt nie przeniósł się na inny wątek, część serwera albo opóźnienie aktualizacji widoczne dla gracza.
+
+Przy zmianach komend, konfiguracji lub zachowania w grze sprawdzić i zaktualizować odpowiednie strony PL i EN. Zmiana minimalnego Paper lub Javy obejmie również README i stronę instalacji. [Dokumentacja PL](docs/src/content/docs/) · [Dokumentacja EN](docs/src/content/docs/en/) · [README](.github/README.md)
