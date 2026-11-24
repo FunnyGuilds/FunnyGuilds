@@ -89,7 +89,9 @@ class FunnyGuildsCommandTest {
         FunnyGuildsCommand.ReloadAsyncTask(plugin, mock(CommandSender::class.java)).execute()
 
         assertEquals(listOf("reloadItemsError", "reloadItemsPartial"), sentMessageKeys(messageService, 2))
-        verify(dispatcher, times(2)).with(eq("{ERROR}"), any(Any::class.java))
+        val errorCaptor: ArgumentCaptor<Any> = ArgumentCaptor.forClass(Any::class.java)
+        verify(dispatcher, times(2)).with(eq("{ERROR}"), errorCaptor.capture())
+        assertEquals(listOf(itemsError, itemsError), errorCaptor.allValues)
         verify(dispatcher).with(eq("{TIME}"), any(Any::class.java))
     }
 
