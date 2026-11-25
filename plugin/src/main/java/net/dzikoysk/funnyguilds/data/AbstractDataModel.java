@@ -50,17 +50,17 @@ public abstract class AbstractDataModel implements DataModel {
 
     @Override
     public final synchronized void queueGuildDeletion(Guild guild) {
-        if (!this.closed) {
+        if (!this.closed && !guild.isRemoved()) {
             this.queueRemoval(guild, this.guildDeletion(guild));
         }
     }
 
     @Override
     public final synchronized void deleteRegion(Region region) {
-        if (!this.closed) {
+        if (!this.closed && !region.isRemoved()) {
             this.queueRemoval(region, this.regionDeletion(region));
-            this.flushDeletes();
         }
+        this.flushDeletes();
     }
 
     private void queueRemoval(AbstractMutableEntity entity, BooleanSupplier deletion) {

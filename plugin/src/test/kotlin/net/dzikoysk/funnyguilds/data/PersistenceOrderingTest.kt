@@ -156,6 +156,82 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
     }
 
     @Test
+    fun `shutdown writes a newer snapshot after autosave and before closing the database`() {
+        config.regionsEnabled = false
+        val connection = mock(Connection::class.java)
+        val statement = mock(PreparedStatement::class.java)
+        `when`(connection.prepareStatement(anyString())).thenReturn(statement)
+        val model = sqlModel(connection)
+        val database = funnyGuilds.database.orElseThrow()
+        val handler = DataPersistenceHandler(funnyGuilds)
+        val user = newUser("Steve")
+        val originalPoints = user.rank.points
+        val finalPoints = originalPoints + 7
+        val pointsParameter = model.usersTable.mapElementsKey.getValue("points")
+        val autosaveWriting = CountDownLatch(1)
+        val shutdownStarting = CountDownLatch(1)
+
+        `when`(statement.executeUpdate()).thenAnswer {
+            user.rank.points = finalPoints
+            autosaveWriting.countDown()
+            assertTrue(shutdownStarting.await(5, SECONDS))
+            1
+        }.thenReturn(1)
+
+        Executors.newSingleThreadExecutor().use { worker ->
+            val shutdown = worker.submit {
+                assertTrue(autosaveWriting.await(5, SECONDS))
+                mockStatic(FunnyGuilds::class.java).use { statics ->
+                    statics.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
+                    shutdownStarting.countDown()
+                    handler.shutdown()
+                }
+            }
+            model.save(true)
+            shutdown.get(5, SECONDS)
+        }
+
+        user.rank.points = finalPoints + 1
+        model.save(false)
+
+        val order = inOrder(statement, database)
+        order.verify(statement).setObject(pointsParameter, originalPoints)
+        order.verify(statement).executeUpdate()
+        order.verify(statement).setObject(pointsParameter, finalPoints)
+        order.verify(statement).executeUpdate()
+        order.verify(statement).close()
+        order.verify(database).shutdown()
+        verify(statement, times(2)).executeUpdate()
+        assertTrue(user.wasChanged())
+    }
+
+    @Test
+    fun `mutation during flat file IO is written on the next autosave`(@TempDir directory: Path) {
+        config.regionsEnabled = false
+        `when`(funnyGuilds.pluginDataFolder).thenReturn(directory.toFile())
+        val model = FlatDataModel(funnyGuilds)
+        `when`(funnyGuilds.dataModel).thenReturn(model)
+        val user = newUser("Steve")
+        val file = directory.resolve("users").resolve("${user.uuid}.yml")
+        val originalPoints = user.rank.points
+        Files.createDirectories(file.parent)
+
+        Executors.newSingleThreadExecutor().use { worker ->
+            assertTrue(model.persist(user, { user.rank.points }) { points ->
+                worker.submit { user.rank.points = originalPoints + 7 }.get(5, SECONDS)
+                Files.writeString(file, "points: $points\n")
+                true
+            })
+        }
+        assertEquals(originalPoints, YamlConfiguration.loadConfiguration(file.toFile()).getInt("points"))
+        assertTrue(user.wasChanged())
+
+        model.save(true)
+        assertEquals(originalPoints + 7, YamlConfiguration.loadConfiguration(file.toFile()).getInt("points"))
+        assertFalse(user.wasChanged())
+    }
+
+    @Test
     fun `flat file failure leaves changes pending and final save closes writes`(@TempDir directory: Path) {
         config.regionsEnabled = false
         `when`(funnyGuilds.pluginDataFolder).thenReturn(directory.toFile())
@@ -199,6 +275,9 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
         Files.delete(blocker)
         model.save(true)
         assertFalse(replacement.wasChanged())
+        assertEquals("NEW", YamlConfiguration.loadConfiguration(file.toFile()).getString("tag"))
+
+        model.deleteGuild(oldGuild)
         assertEquals("NEW", YamlConfiguration.loadConfiguration(file.toFile()).getString("tag"))
     }
 

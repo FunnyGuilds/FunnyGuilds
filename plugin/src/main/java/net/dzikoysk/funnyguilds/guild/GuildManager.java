@@ -231,7 +231,9 @@ public class GuildManager {
 
         DataModel dataModel = plugin.getDataModel();
         synchronized (dataModel) {
-            this.deleteGuild(plugin, dataModel, guild);
+            if (!guild.isRemoved()) {
+                this.deleteGuild(plugin, dataModel, guild);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.DataSaveAsyncTask;
+import net.dzikoysk.funnyguilds.data.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -37,6 +38,19 @@ public class DataPersistenceHandler {
     public void reloadHandler() {
         this.stopHandler();
         this.startHandler();
+    }
+
+    public void shutdown() {
+        this.stopHandler();
+        try {
+            this.plugin.getDataModel().saveAndClose();
+        }
+        catch (RuntimeException exception) {
+            FunnyGuilds.getPluginLogger().error("Could not complete the final data save", exception);
+        }
+        finally {
+            this.plugin.getDatabase().ifPresent(Database::shutdown);
+        }
     }
 
 }
