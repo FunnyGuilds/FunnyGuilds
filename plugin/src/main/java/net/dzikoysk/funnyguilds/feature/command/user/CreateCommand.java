@@ -15,13 +15,13 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
-import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -467,22 +467,15 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         try {
-            this.guildManager.removeGuild(guild);
+            DataModel dataModel = this.plugin.getDataModel();
+            synchronized (dataModel) {
+                this.guildManager.removeGuild(guild);
+                dataModel.queueGuildDeletion(guild);
+            }
+            this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
         }
         catch (RuntimeException compensationFailure) {
-            FunnyGuilds.getPluginLogger().error("Could not remove the partially created guild", compensationFailure);
-        }
-
-        try {
-            // A periodic save running concurrently may have snapshotted the guild between
-            // registration and this rollback, so erase anything it persisted. A save task
-            // that serializes the guild after this delete can still recreate the row; the
-            // window is a single in-flight save and the next periodic save (or load) cleans
-            // it up because the guild no longer exists in memory.
-            this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(this.plugin.getDataModel(), guild));
-        }
-        catch (RuntimeException compensationFailure) {
-            FunnyGuilds.getPluginLogger().error("Could not schedule the deletion of the rolled-back guild", compensationFailure);
+            FunnyGuilds.getPluginLogger().error("Could not remove the rolled-back guild", compensationFailure);
         }
 
         try {

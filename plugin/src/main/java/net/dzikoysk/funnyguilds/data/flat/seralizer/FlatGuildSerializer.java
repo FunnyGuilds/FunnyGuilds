@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.data.flat.seralizer;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -201,49 +200,35 @@ public final class FlatGuildSerializer {
             return false;
         }
 
-        Optional<File> fileOption = dataModel.getGuildFile(guild);
-        if (fileOption.isEmpty()) {
-            return false;
-        }
-
-        File guildFile = fileOption.orElseThrow();
-        if (guildFile.isDirectory()) {
-            return false;
-        }
-
-        YamlWrapper wrapper = new YamlWrapper(guildFile);
-        wrapper.set("uuid", guild.getUUID().toString());
-        wrapper.set("name", guild.getName());
-        wrapper.set("tag", guild.getTag());
-        wrapper.set("owner", guild.getOwner().getName());
-        wrapper.set("home", LocationUtils.toString(guild.getHome()));
-        wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
-        wrapper.set("region", RegionUtils.toString(guild.getRegion()));
-        wrapper.set("regions", null);
-        wrapper.set("allies", new ArrayList<>(Entity.names(guild.getAllies())));
-        wrapper.set("enemies", new ArrayList<>(Entity.names(guild.getEnemies())));
-        wrapper.set("born", guild.getBorn().toEpochMilli());
-        wrapper.set("validity", guild.getValidity().toEpochMilli());
-        wrapper.set("protection", guild.getProtection().toEpochMilli());
-        wrapper.set("lives", guild.getLives());
-        wrapper.set("heart-lives", guild.getHeartLives());
-        wrapper.set("wars-won", guild.getWarsWon());
-        wrapper.set("wars-lost", guild.getWarsLost());
-        wrapper.set("last-war", guild.getLastWarGuildTag().orElse(null));
-        wrapper.set("war-streak", guild.getWarStreak());
-        wrapper.set("last-life-buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElse(0L));
-        wrapper.set("ban", guild.getBan().map(Instant::toEpochMilli).orElse(0L));
-        wrapper.set("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElse(0L));
-        wrapper.set("pvp", guild.hasPvPEnabled());
-        wrapper.set("allied-pvp", guild.getAlliedPvPGuilds().stream().map(UUID::toString).sorted().toList());
-        wrapper.set("role-policy", GuildRoleSerializer.serialize(guild.getRolePolicy()));
-        wrapper.set("audit-log", GuildAuditSerializer.serialize(guild, FunnyGuilds.getInstance().getPluginConfiguration().guildAudit));
-        wrapper.set("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
-
-        wrapper.save();
-        guild.markUnchanged();
-
-        return true;
+        return dataModel.persistYaml(guild, values -> {
+            values.put("uuid", guild.getUUID().toString());
+            values.put("name", guild.getName());
+            values.put("tag", guild.getTag());
+            values.put("owner", guild.getOwner().getName());
+            values.put("home", LocationUtils.toString(guild.getHome()));
+            values.put("members", List.copyOf(Entity.names(guild.getMembers())));
+            values.put("region", RegionUtils.toString(guild.getRegion()));
+            values.put("regions", null);
+            values.put("allies", List.copyOf(Entity.names(guild.getAllies())));
+            values.put("enemies", List.copyOf(Entity.names(guild.getEnemies())));
+            values.put("born", guild.getBorn().toEpochMilli());
+            values.put("validity", guild.getValidity().toEpochMilli());
+            values.put("protection", guild.getProtection().toEpochMilli());
+            values.put("lives", guild.getLives());
+            values.put("heart-lives", guild.getHeartLives());
+            values.put("wars-won", guild.getWarsWon());
+            values.put("wars-lost", guild.getWarsLost());
+            values.put("last-war", guild.getLastWarGuildTag().orElse(null));
+            values.put("war-streak", guild.getWarStreak());
+            values.put("last-life-buy", guild.getLastLifeBuy().map(Instant::toEpochMilli).orElse(0L));
+            values.put("ban", guild.getBan().map(Instant::toEpochMilli).orElse(0L));
+            values.put("tnt-protection-bypass", guild.getTntProtectionBypass().map(Instant::toEpochMilli).orElse(0L));
+            values.put("pvp", guild.hasPvPEnabled());
+            values.put("allied-pvp", guild.getAlliedPvPGuilds().stream().map(UUID::toString).sorted().toList());
+            values.put("role-policy", GuildRoleSerializer.serialize(guild.getRolePolicy()));
+            values.put("audit-log", GuildAuditSerializer.serialize(guild, FunnyGuilds.getInstance().getPluginConfiguration().guildAudit));
+            values.put("deputy", FunnyStringUtils.join(Entity.names(guild.getDeputies()), false));
+        });
     }
 
     @SuppressWarnings("unchecked")

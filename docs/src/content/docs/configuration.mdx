@@ -153,6 +153,12 @@ FunnyGuilds nie zastępuje pluginu uwierzytelniającego ani jego zasad dotycząc
 
 Sposób bezpiecznego rozstrzygnięcia konfliktu opisuje [FAQ](/faq/#konflikt-nicku-i-uuid).
 
+## Automatyczny zapis danych
+
+Jeśli zapis zmienionego rekordu do SQL lub YAML się nie powiedzie, plugin
+ponowi go w następnym cyklu zapisu. Zmiany wprowadzone w trakcie zapisu
+również pozostają do zapisania. Błędy zapisu są zgłaszane w logu serwera.
+
 ## Regex
 
 Typ używany do walidacji Stringów — nazw, tagów itd.

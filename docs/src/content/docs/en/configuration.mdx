@@ -153,6 +153,12 @@ FunnyGuilds does not replace authentication plugins or their username policies.
 
 For safe recovery instructions, see the [FAQ](/en/faq/#username-and-uuid-conflicts).
 
+## Automatic data saves
+
+If writing a changed record to SQL or YAML fails, the plugin retries it in the
+next save cycle. Changes made during a write also remain pending. Write errors
+are reported in the server log.
+
 ## Regex
 
 A type used to validate strings — names, tags, etc.

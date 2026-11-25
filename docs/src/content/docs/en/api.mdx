@@ -115,6 +115,11 @@ Available methods for fetching a guild:
 - `GuildManager#findByUuid(UUID)`
 - `User#getGuild()`
 
+Guild member, deputy, ally, enemy, and allied PvP collections are read-only.
+Use `Guild` methods such as `addMember` and `removeAlly` to make changes that
+will be picked up by persistence. `Guild#getHome()` and
+`Region#getCenter()` return copies of their locations.
+
 Example usage:
 
 ```java

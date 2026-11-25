@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.config.message.MessageService
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask
+import net.dzikoysk.funnyguilds.data.DataModel
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager
@@ -81,6 +82,7 @@ class CreateCommandRollbackTest {
         mockedItemUtils.`when`<ItemStack?> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
         val plugin = mock(FunnyGuilds::class.java)
+        `when`(plugin.dataModel).thenReturn(mock(DataModel::class.java))
         val logger = mock(FunnyGuildsLogger::class.java)
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
         mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(plugin)

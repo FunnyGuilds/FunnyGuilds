@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -11,10 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -184,7 +179,7 @@ public class RegionManager {
         this.forEachChunkPositionInRegion(region, (chunkX, chunkZ) -> {
             long packedPos = packChunkPosition(chunkX, chunkZ);
 
-            Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> new HashSet<>());
+            Set<Region> regionsAtChunk = this.regions.computeIfAbsent(packedPos, k -> ConcurrentHashMap.newKeySet());
             regionsAtChunk.add(region);
         });
     }
@@ -231,8 +226,10 @@ public class RegionManager {
         }
 
         this.removeRegion(region);
-        region.setEnlargementLevel(level);
-        region.setSize(this.sizeAtEnlargementLevel(level));
+        synchronized (region) {
+            region.setEnlargementLevel(level);
+            region.setSize(this.sizeAtEnlargementLevel(level));
+        }
         this.addRegion(region);
     }
 
@@ -251,15 +248,10 @@ public class RegionManager {
     public void deleteRegion(DataModel dataModel, Region region) {
         Validate.notNull(region, "region can't be null!");
 
-        if (dataModel instanceof FlatDataModel) {
-            ((FlatDataModel) dataModel).getRegionFile(region).ifPresent(FunnyIOUtils::deleteFile);
+        synchronized (dataModel) {
+            this.removeRegion(region);
+            dataModel.deleteRegion(region);
         }
-
-        if (dataModel instanceof SQLDataModel) {
-            DatabaseRegionSerializer.delete(region);
-        }
-
-        this.removeRegion(region);
     }
 
     /**

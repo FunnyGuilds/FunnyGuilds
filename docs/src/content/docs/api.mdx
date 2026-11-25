@@ -115,6 +115,11 @@ Dostępne metody pobierania gildii:
 - `GuildManager#findByUuid(UUID)`
 - `User#getGuild()`
 
+Kolekcje członków, zastępców, sojuszników, wrogów i ustawień PvP sojuszy
+są dostępne do odczytu. Wprowadzaj zmiany przez metody `Guild`, takie jak
+`addMember` i `removeAlly`, aby zostały uwzględnione w zapisie.
+`Guild#getHome()` i `Region#getCenter()` zwracają kopie lokalizacji.
+
 Przykład użycia:
 
 ```java

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class User extends AbstractMutableEntity {
 
     private final UUID uuid;
-    private String name;
+    private volatile String name;
 
     private final UserCache cache;
     private final UserRank rank;
@@ -41,8 +41,9 @@ public class User extends AbstractMutableEntity {
         return this.name;
     }
 
-    void setName(String name) {
+    synchronized void setName(String name) {
         this.name = name;
+        this.markChanged();
     }
 
     @Override
@@ -90,12 +91,12 @@ public class User extends AbstractMutableEntity {
         return this.guild.isPresent();
     }
 
-    public void setGuild(@Nullable Guild guild) {
+    public synchronized void setGuild(@Nullable Guild guild) {
         this.guild = Optional.ofNullable(guild);
         this.markChanged();
     }
 
-    public void removeGuild() {
+    public synchronized void removeGuild() {
         this.guild = Optional.empty();
         this.markChanged();
     }
@@ -122,15 +123,16 @@ public class User extends AbstractMutableEntity {
                 .orElse(false);
     }
 
-    public void setBan(@Nullable UserBan ban) {
+    public synchronized void setBan(@Nullable UserBan ban) {
         this.ban = Optional.ofNullable(ban);
+        this.markChanged();
     }
 
     public String getLastIP() {
         return this.lastIP;
     }
 
-    public void setLastIP(String lastIP) {
+    public synchronized void setLastIP(String lastIP) {
         this.lastIP = lastIP;
         this.markChanged();
     }

@@ -543,8 +543,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.ifPresent(BukkitTask::cancel);
         this.rankRecalculationTask.ifPresent(BukkitTask::cancel);
 
-        this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
+        this.dataModel.saveAndClose();
 
         this.invitationPersistenceHandler.saveInvitations();
         this.invitationPersistenceHandler.stopHandler();

@@ -19,6 +19,23 @@ public interface DataModel {
 
     void save(boolean ignoreNotChanged);
 
+    default void saveAndClose() {
+        this.save(false);
+    }
+
+    void deleteGuild(Guild guild);
+
+    default void queueGuildDeletion(Guild guild) {
+        this.deleteGuild(guild);
+    }
+
+    default void flushDeletes() {
+    }
+
+    void deleteRegion(Region region);
+
+    void renameGuild(Guild guild, String name);
+
     default void validateLoadedData() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         GuildManager guildManager = plugin.getGuildManager();

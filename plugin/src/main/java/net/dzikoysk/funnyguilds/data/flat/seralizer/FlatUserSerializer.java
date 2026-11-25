@@ -58,35 +58,19 @@ public final class FlatUserSerializer {
     public static boolean serialize(User user) {
         FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
 
-        Optional<File> fileOption = dataModel.getUserFile(user);
-        if (fileOption.isEmpty()) {
-            return false;
-        }
+        return dataModel.persistYaml(user, values -> {
+            values.put("uuid", user.getUUID().toString());
+            values.put("name", user.getName());
+            values.put("points", user.getRank().getPoints());
+            values.put("kills", user.getRank().getKills());
+            values.put("deaths", user.getRank().getDeaths());
+            values.put("assists", user.getRank().getAssists());
+            values.put("logouts", user.getRank().getLogouts());
+            values.put("last_ip", user.getLastIP());
 
-        File userFile = fileOption.orElseThrow();
-        if (userFile.isDirectory()) {
-            return false;
-        }
-
-        YamlWrapper wrapper = new YamlWrapper(userFile);
-        wrapper.set("uuid", user.getUUID().toString());
-        wrapper.set("name", user.getName());
-        wrapper.set("points", user.getRank().getPoints());
-        wrapper.set("kills", user.getRank().getKills());
-        wrapper.set("deaths", user.getRank().getDeaths());
-        wrapper.set("assists", user.getRank().getAssists());
-        wrapper.set("logouts", user.getRank().getLogouts());
-        wrapper.set("last_ip", user.getLastIP());
-
-        user.getBan().ifPresent(ban -> {
-            wrapper.set("ban", ban.getTime().toEpochMilli());
-            wrapper.set("reason", ban.getReason());
+            values.put("ban", user.getBan().map(ban -> ban.getTime().toEpochMilli()).orElse(null));
+            values.put("reason", user.getBan().map(ban -> ban.getReason()).orElse(null));
         });
-
-        wrapper.save();
-        user.markUnchanged();
-
-        return true;
     }
 
 }

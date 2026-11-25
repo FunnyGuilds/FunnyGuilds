@@ -8,9 +8,10 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.AbstractDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
@@ -22,12 +23,13 @@ import net.dzikoysk.funnyguilds.data.util.UserIdentityValidator;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateSyncTask;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.FunnyValidator.NameResult;
 
-public class SQLDataModel implements DataModel {
+public class SQLDataModel extends AbstractDataModel {
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration pluginConfiguration;
@@ -218,7 +220,7 @@ public class SQLDataModel implements DataModel {
     }
 
     @Override
-    public void save(boolean ignoreNotChanged) {
+    protected void saveRecords(boolean ignoreNotChanged) {
         this.plugin.getUserManager().getUsers().stream()
                 .filter(user -> !ignoreNotChanged || user.wasChanged())
                 .forEach(DatabaseUserSerializer::serialize);
@@ -234,6 +236,25 @@ public class SQLDataModel implements DataModel {
         this.plugin.getRegionManager().getRegions().stream()
                 .filter(region -> !ignoreNotChanged || region.wasChanged())
                 .forEach(DatabaseRegionSerializer::serialize);
+    }
+
+    @Override
+    protected String guildStorageKey(Guild guild) {
+        return guild.getUUID().toString();
+    }
+
+    @Override
+    protected BooleanSupplier guildDeletion(Guild guild) {
+        var statement = SQLBasicUtils.getDelete(this.guildsTable);
+        statement.set("uuid", guild.getUUID().toString());
+        return statement.snapshotUpdate();
+    }
+
+    @Override
+    protected BooleanSupplier regionDeletion(Region region) {
+        var statement = SQLBasicUtils.getDelete(this.regionsTable);
+        statement.set("name", region.getName());
+        return statement.snapshotUpdate();
     }
 
     public SQLTable getUsersTable() {

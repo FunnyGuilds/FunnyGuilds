@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database.serializer;
 import java.sql.ResultSet;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -58,6 +59,10 @@ public final class DatabaseUserSerializer {
 
     public static void serialize(User user) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
+        dataModel.persist(user, () -> snapshot(dataModel, user), BooleanSupplier::getAsBoolean);
+    }
+
+    private static BooleanSupplier snapshot(SQLDataModel dataModel, User user) {
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getUsersTable());
 
         statement.set("uuid", user.getUUID().toString());
@@ -71,18 +76,19 @@ public final class DatabaseUserSerializer {
         statement.set("reason", user.getBan().map(UserBan::getReason).orElse(null));
         statement.set("last_ip", user.getLastIP());
 
-        statement.executeUpdate();
-        user.markUnchanged();
+        return statement.snapshotUpdate();
     }
 
     public static void updatePoints(User user) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
-        SQLTable table = dataModel.getUsersTable();
-        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
+        dataModel.update(user, () -> {
+            SQLTable table = dataModel.getUsersTable();
+            SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
 
-        statement.set("points", user.getRank().getPoints());
-        statement.set("uuid", user.getUUID().toString());
-        statement.executeUpdate();
+            statement.set("points", user.getRank().getPoints());
+            statement.set("uuid", user.getUUID().toString());
+            return statement.snapshotUpdate().getAsBoolean();
+        });
     }
 
 }

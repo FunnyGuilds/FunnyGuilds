@@ -28,14 +28,14 @@ public class Guild extends AbstractMutableEntity {
         return this.auditEntries;
     }
 
-    public void setAuditEntries(List<GuildAuditEntry> entries) {
+    public synchronized void setAuditEntries(List<GuildAuditEntry> entries) {
         this.auditEntries = List.copyOf(entries);
         this.markChanged();
     }
 
     private final UUID uuid;
 
-    private String name;
+    private volatile String name;
     private String tag;
 
     private final GuildRank rank;
@@ -99,7 +99,7 @@ public class Guild extends AbstractMutableEntity {
         return this.name;
     }
 
-    public void setName(String name) {
+    public synchronized void setName(String name) {
         this.name = name;
         this.markChanged();
     }
@@ -108,7 +108,7 @@ public class Guild extends AbstractMutableEntity {
         return this.tag;
     }
 
-    public void setTag(String tag) {
+    public synchronized void setTag(String tag) {
         this.tag = tag;
         this.markChanged();
     }
@@ -121,12 +121,12 @@ public class Guild extends AbstractMutableEntity {
         return this.lives;
     }
 
-    public void setLives(int lives) {
+    public synchronized void setLives(int lives) {
         this.lives = Math.max(0, lives);
         this.markChanged();
     }
 
-    public void updateLives(IntFunction<Integer> update) {
+    public synchronized void updateLives(IntFunction<Integer> update) {
         this.setLives(update.apply(this.lives));
     }
 
@@ -134,12 +134,12 @@ public class Guild extends AbstractMutableEntity {
         return this.heartLives;
     }
 
-    public void setHeartLives(int heartLives) {
+    public synchronized void setHeartLives(int heartLives) {
         this.heartLives = Math.max(0, heartLives);
         this.markChanged();
     }
 
-    public void updateHeartLives(IntFunction<Integer> update) {
+    public synchronized void updateHeartLives(IntFunction<Integer> update) {
         this.setHeartLives(update.apply(this.heartLives));
     }
 
@@ -154,16 +154,14 @@ public class Guild extends AbstractMutableEntity {
         return this.region.isPresent();
     }
 
-    public void setRegion(@Nullable Region region) {
+    public synchronized void setRegion(@Nullable Region region) {
         this.region = Optional.ofNullable(region);
         this.region.ifPresent(peekRegion -> peekRegion.setGuild(this));
         this.markChanged();
     }
 
     public Optional<Location> getCenter() {
-        return this.region
-                .map(Region::getCenter)
-                .map(Location::clone);
+        return this.region.map(Region::getCenter);
     }
 
     public Optional<Location> getEnderCrystal() {
@@ -174,20 +172,20 @@ public class Guild extends AbstractMutableEntity {
      * @return home location of the guild
      */
     public Optional<Location> getHome() {
-        return this.home;
+        return this.home.map(Location::clone);
     }
 
     public boolean hasHome() {
         return this.home.isPresent();
     }
 
-    public void setHome(@Nullable Location home) {
-        this.home = Optional.ofNullable(home);
+    public synchronized void setHome(@Nullable Location home) {
+        this.home = Optional.ofNullable(home).map(Location::clone);
         this.markChanged();
     }
 
     public void teleportHome(Player player) {
-        this.home.ifPresent(player::teleport);
+        this.getHome().ifPresent(player::teleport);
     }
 
     public User getOwner() {
@@ -198,7 +196,7 @@ public class Guild extends AbstractMutableEntity {
         return this.owner.equals(user);
     }
 
-    public void setOwner(User user) {
+    public synchronized void setOwner(User user) {
         if (this.owner != null && !this.owner.equals(user)) {
             this.rolePolicy = this.rolePolicy.removeMember(this.owner.getUUID()).removeMember(user.getUUID());
         }
@@ -208,7 +206,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Set<User> getMembers() {
-        return this.members;
+        return Collections.unmodifiableSet(this.members);
     }
 
     public Set<User> getOnlineMembers(boolean includeVanished) {
@@ -222,17 +220,17 @@ public class Guild extends AbstractMutableEntity {
         return this.members.contains(user);
     }
 
-    public void setMembers(Set<User> members) {
-        this.members = Collections.synchronizedSet(members);
+    public synchronized void setMembers(Set<User> members) {
+        this.members = copySet(members);
         this.markChanged();
     }
 
-    public void addMember(User user) {
+    public synchronized void addMember(User user) {
         this.members.add(user);
         this.markChanged();
     }
 
-    public void removeMember(User user) {
+    public synchronized void removeMember(User user) {
         this.members.remove(user);
         this.deputies.remove(user);
         this.rolePolicy = this.rolePolicy.removeMember(user.getUUID());
@@ -240,7 +238,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Collection<User> getDeputies() {
-        return this.deputies;
+        return Collections.unmodifiableSet(this.deputies);
     }
 
     public boolean hasDeputies() {
@@ -251,19 +249,19 @@ public class Guild extends AbstractMutableEntity {
         return this.deputies.contains(user);
     }
 
-    public void setDeputies(Set<User> users) {
-        this.deputies = users;
+    public synchronized void setDeputies(Set<User> users) {
+        this.deputies = copySet(users);
         this.markChanged();
     }
 
-    public void addDeputy(User user) {
+    public synchronized void addDeputy(User user) {
         if (this.deputies.add(user)) {
             this.rolePolicy = this.rolePolicy.removeMember(user.getUUID());
         }
         this.markChanged();
     }
 
-    public void removeDeputy(User user) {
+    public synchronized void removeDeputy(User user) {
         if (this.deputies.remove(user)) {
             this.rolePolicy = this.rolePolicy.removeMember(user.getUUID());
         }
@@ -274,13 +272,13 @@ public class Guild extends AbstractMutableEntity {
         return this.rolePolicy;
     }
 
-    public void setRolePolicy(GuildRolePolicy rolePolicy) {
+    public synchronized void setRolePolicy(GuildRolePolicy rolePolicy) {
         this.rolePolicy = rolePolicy;
         this.markChanged();
     }
 
     public Collection<Guild> getAllies() {
-        return this.allies;
+        return Collections.unmodifiableSet(this.allies);
     }
 
     public boolean hasAllies() {
@@ -294,24 +292,24 @@ public class Guild extends AbstractMutableEntity {
         return this.allies.contains(guild);
     }
 
-    public void setAllies(Set<Guild> guilds) {
-        this.allies = guilds;
+    public synchronized void setAllies(Set<Guild> guilds) {
+        this.allies = copySet(guilds);
         this.markChanged();
     }
 
-    public void addAlly(Guild guild) {
+    public synchronized void addAlly(Guild guild) {
         this.allies.add(guild);
         this.markChanged();
     }
 
-    public void removeAlly(Guild guild) {
+    public synchronized void removeAlly(Guild guild) {
         this.allies.remove(guild);
         this.alliedPvPGuilds.remove(guild.uuid);
         this.markChanged();
     }
 
     public Collection<Guild> getEnemies() {
-        return this.enemies;
+        return Collections.unmodifiableSet(this.enemies);
     }
 
     public boolean hasEnemies() {
@@ -332,17 +330,17 @@ public class Guild extends AbstractMutableEntity {
         return this.isEnemy(guild) || guild.isEnemy(this);
     }
 
-    public void setEnemies(Set<Guild> guilds) {
-        this.enemies = guilds;
+    public synchronized void setEnemies(Set<Guild> guilds) {
+        this.enemies = copySet(guilds);
         this.markChanged();
     }
 
-    public void addEnemy(Guild guild) {
+    public synchronized void addEnemy(Guild guild) {
         this.enemies.add(guild);
         this.markChanged();
     }
 
-    public void removeEnemy(Guild guild) {
+    public synchronized void removeEnemy(Guild guild) {
         this.enemies.remove(guild);
         this.markChanged();
     }
@@ -358,7 +356,7 @@ public class Guild extends AbstractMutableEntity {
         return this.born;
     }
 
-    public void setBorn(Instant time) {
+    public synchronized void setBorn(Instant time) {
         this.born = time;
         this.markChanged();
     }
@@ -371,7 +369,7 @@ public class Guild extends AbstractMutableEntity {
         return Instant.now().isBefore(this.validity);
     }
 
-    public void setValidity(Instant time) {
+    public synchronized void setValidity(Instant time) {
         if (time == null || this.born.equals(time)) {
             time = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart);
         }
@@ -388,7 +386,7 @@ public class Guild extends AbstractMutableEntity {
         return this.protection.isBefore(Instant.now());
     }
 
-    public void setProtection(Instant protection) {
+    public synchronized void setProtection(Instant protection) {
         this.protection = protection;
         this.markChanged();
     }
@@ -397,7 +395,7 @@ public class Guild extends AbstractMutableEntity {
         return this.build;
     }
 
-    public boolean canBuild() {
+    public synchronized boolean canBuild() {
         if (this.build.filter(build -> build.isAfter(Instant.now())).isPresent()) {
             return false;
         }
@@ -407,7 +405,7 @@ public class Guild extends AbstractMutableEntity {
         return true;
     }
 
-    public void setBuild(@Nullable Instant time) {
+    public synchronized void setBuild(@Nullable Instant time) {
         if (time != null && time.isBefore(Instant.now())) {
             time = null;
         }
@@ -420,7 +418,7 @@ public class Guild extends AbstractMutableEntity {
         return this.ban;
     }
 
-    public boolean isBanned() {
+    public synchronized boolean isBanned() {
         if (this.ban.filter(ban -> ban.isAfter(Instant.now())).isPresent()) {
             return true;
         }
@@ -430,7 +428,7 @@ public class Guild extends AbstractMutableEntity {
         return false;
     }
 
-    public void setBan(@Nullable Instant time) {
+    public synchronized void setBan(@Nullable Instant time) {
         if (time != null && time.isBefore(Instant.now())) {
             time = null;
         }
@@ -447,7 +445,7 @@ public class Guild extends AbstractMutableEntity {
         return this.tntProtectionBypass.filter(bypass -> bypass.isAfter(Instant.now())).isPresent();
     }
 
-    public void setTntProtectionBypass(@Nullable Instant time) {
+    public synchronized void setTntProtectionBypass(@Nullable Instant time) {
         if (time != null && time.isBefore(Instant.now())) {
             time = null;
         }
@@ -460,12 +458,12 @@ public class Guild extends AbstractMutableEntity {
         return this.pvp;
     }
 
-    public void setPvP(boolean pvp) {
+    public synchronized void setPvP(boolean pvp) {
         this.pvp = pvp;
         this.markChanged();
     }
 
-    public boolean togglePvP() {
+    public synchronized boolean togglePvP() {
         this.pvp = !this.pvp;
         this.markChanged();
         return this.pvp;
@@ -475,12 +473,12 @@ public class Guild extends AbstractMutableEntity {
         return this.warsWon;
     }
 
-    public void setWarsWon(int warsWon) {
+    public synchronized void setWarsWon(int warsWon) {
         this.warsWon = Math.max(0, warsWon);
         this.markChanged();
     }
 
-    public void updateWarsWon(IntFunction<Integer> update) {
+    public synchronized void updateWarsWon(IntFunction<Integer> update) {
         this.setWarsWon(update.apply(this.warsWon));
     }
 
@@ -488,12 +486,12 @@ public class Guild extends AbstractMutableEntity {
         return this.warsLost;
     }
 
-    public void setWarsLost(int warsLost) {
+    public synchronized void setWarsLost(int warsLost) {
         this.warsLost = Math.max(0, warsLost);
         this.markChanged();
     }
 
-    public void updateWarsLost(IntFunction<Integer> update) {
+    public synchronized void updateWarsLost(IntFunction<Integer> update) {
         this.setWarsLost(update.apply(this.warsLost));
     }
 
@@ -501,7 +499,7 @@ public class Guild extends AbstractMutableEntity {
         return this.lastWarGuildTag;
     }
 
-    public void setLastWarGuildTag(@Nullable String lastWarGuildTag) {
+    public synchronized void setLastWarGuildTag(@Nullable String lastWarGuildTag) {
         this.lastWarGuildTag = Optional.ofNullable(lastWarGuildTag);
         this.markChanged();
     }
@@ -510,12 +508,12 @@ public class Guild extends AbstractMutableEntity {
         return this.warStreak;
     }
 
-    public void setWarStreak(int warStreak) {
+    public synchronized void setWarStreak(int warStreak) {
         this.warStreak = Math.max(0, warStreak);
         this.markChanged();
     }
 
-    public void updateWarStreak(IntFunction<Integer> update) {
+    public synchronized void updateWarStreak(IntFunction<Integer> update) {
         this.setWarStreak(update.apply(this.warStreak));
     }
 
@@ -523,7 +521,7 @@ public class Guild extends AbstractMutableEntity {
         return this.lastLifeBuy;
     }
 
-    public void setLastLifeBuy(@Nullable Instant lastLifeBuy) {
+    public synchronized void setLastLifeBuy(@Nullable Instant lastLifeBuy) {
         this.lastLifeBuy = Optional.ofNullable(lastLifeBuy);
         this.markChanged();
     }
@@ -550,13 +548,13 @@ public class Guild extends AbstractMutableEntity {
         return Set.copyOf(this.alliedPvPGuilds);
     }
 
-    public void setAlliedPvPGuilds(Set<UUID> guilds) {
+    public synchronized void setAlliedPvPGuilds(Set<UUID> guilds) {
         this.alliedPvPGuilds.clear();
         this.alliedPvPGuilds.addAll(guilds);
         this.markChanged();
     }
 
-    public boolean toggleAllyPvP(Guild alliedGuild) {
+    public synchronized boolean toggleAllyPvP(Guild alliedGuild) {
         boolean enabled = false;
 
         if (!this.alliedPvPGuilds.remove(alliedGuild.uuid)) {
@@ -566,6 +564,12 @@ public class Guild extends AbstractMutableEntity {
 
         this.markChanged();
         return enabled;
+    }
+
+    private static <T> Set<T> copySet(Set<T> values) {
+        Set<T> copy = ConcurrentHashMap.newKeySet();
+        copy.addAll(values);
+        return copy;
     }
 
     @Override

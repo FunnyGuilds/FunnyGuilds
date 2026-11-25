@@ -208,7 +208,6 @@ public class UserManager {
         this.usersByName.remove(user.getName(), user);
         user.setName(newUsername);
         this.usersByName.put(newUsername, user);
-        user.markChanged();
     }
 
     /**

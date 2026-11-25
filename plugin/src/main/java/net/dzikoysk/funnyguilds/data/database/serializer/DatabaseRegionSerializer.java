@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import java.sql.ResultSet;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
@@ -53,6 +54,10 @@ public final class DatabaseRegionSerializer {
 
     public static void serialize(Region region) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
+        dataModel.persist(region, () -> snapshot(dataModel, region), BooleanSupplier::getAsBoolean);
+    }
+
+    private static BooleanSupplier snapshot(SQLDataModel dataModel, Region region) {
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getRegionsTable());
 
         statement.set("name", region.getName());
@@ -60,16 +65,11 @@ public final class DatabaseRegionSerializer {
         statement.set("size", region.getSize());
         statement.set("enlarge", region.getEnlargementLevel());
 
-        statement.executeUpdate();
-        region.markUnchanged();
+        return statement.snapshotUpdate();
     }
 
     public static void delete(Region region) {
-        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(dataModel.getRegionsTable());
-
-        statement.set("name", region.getName());
-        statement.executeUpdate();
+        FunnyGuilds.getInstance().getDataModel().deleteRegion(region);
     }
 
 }

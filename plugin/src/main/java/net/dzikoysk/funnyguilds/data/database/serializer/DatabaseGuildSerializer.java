@@ -1,13 +1,14 @@
 package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import com.google.common.collect.Sets;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
@@ -20,7 +21,6 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.GuildAuditSerializer;
 import net.dzikoysk.funnyguilds.data.util.GuildRoleSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.FunnyStringUtils;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
@@ -194,6 +194,10 @@ public final class DatabaseGuildSerializer {
 
     public static void serialize(Guild guild) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
+        dataModel.persist(guild, () -> snapshot(dataModel, guild), BooleanSupplier::getAsBoolean);
+    }
+
+    private static BooleanSupplier snapshot(SQLDataModel dataModel, Guild guild) {
         SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getGuildsTable());
 
         String members = FunnyStringUtils.join(Entity.names(guild.getMembers()));
@@ -231,26 +235,23 @@ public final class DatabaseGuildSerializer {
         statement.set("audit_log", GuildAuditSerializer.serialize(guild, FunnyGuilds.getInstance().getPluginConfiguration().guildAudit));
         statement.set("info", "");
 
-        statement.executeUpdate();
-        guild.markUnchanged();
+        return statement.snapshotUpdate();
     }
 
     public static void delete(Guild guild) {
-        SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(dataModel.getGuildsTable());
-
-        statement.set("uuid", guild.getUUID().toString());
-        statement.executeUpdate();
+        FunnyGuilds.getInstance().getDataModel().deleteGuild(guild);
     }
 
     public static void updatePoints(Guild guild) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
-        SQLTable table = dataModel.getGuildsTable();
-        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
+        dataModel.update(guild, () -> {
+            SQLTable table = dataModel.getGuildsTable();
+            SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orElse(null));
 
-        statement.set("points", guild.getRank().getAveragePoints());
-        statement.set("uuid", guild.getUUID().toString());
-        statement.executeUpdate();
+            statement.set("points", guild.getRank().getAveragePoints());
+            statement.set("uuid", guild.getUUID().toString());
+            return statement.snapshotUpdate().getAsBoolean();
+        });
     }
 
 }
