@@ -136,6 +136,8 @@ public final class DeserializationUtils {
         guild.deserializationUpdate();
 
         guild.markUnchanged();
+        // A ban that expired while the server was offline still needs to be cleared in storage.
+        guild.expireBan(Instant.now());
         return Optional.of(guild);
     }
 

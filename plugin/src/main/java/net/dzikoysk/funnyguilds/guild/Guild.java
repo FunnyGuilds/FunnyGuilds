@@ -56,7 +56,7 @@ public class Guild extends AbstractMutableEntity {
     private Instant validity;
     private Instant protection;
     private Optional<Instant> build = Optional.empty();
-    private Optional<Instant> ban = Optional.empty();
+    private volatile Optional<Instant> ban = Optional.empty();
     private Optional<Instant> tntProtectionBypass = Optional.empty();
 
     private boolean pvp;
@@ -418,23 +418,24 @@ public class Guild extends AbstractMutableEntity {
         return this.ban;
     }
 
-    public synchronized boolean isBanned() {
-        if (this.ban.filter(ban -> ban.isAfter(Instant.now())).isPresent()) {
-            return true;
-        }
-
-        this.ban = Optional.empty();
-        this.markChanged();
-        return false;
+    public boolean isBanned() {
+        Instant expiresAt = this.ban.orElse(null);
+        return expiresAt != null && expiresAt.isAfter(Instant.now());
     }
 
     public synchronized void setBan(@Nullable Instant time) {
-        if (time != null && time.isBefore(Instant.now())) {
-            time = null;
+        Optional<Instant> newBan = Optional.ofNullable(time);
+        if (!this.ban.equals(newBan)) {
+            this.ban = newBan;
+            this.markChanged();
         }
+    }
 
-        this.ban = Optional.ofNullable(time);
-        this.markChanged();
+    public synchronized void expireBan(Instant now) {
+        Instant expiresAt = this.ban.orElse(null);
+        if (expiresAt != null && !expiresAt.isAfter(now)) {
+            this.setBan(null);
+        }
     }
 
     public Optional<Instant> getTntProtectionBypass() {
