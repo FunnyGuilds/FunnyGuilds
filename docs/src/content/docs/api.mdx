@@ -176,6 +176,24 @@ Konfiguracja przedmiotów z `items.yml` jest dostępna bezpośrednio z instancji
 
 ### Nasłuchiwanie wydarzeń
 
+#### Przejścia między terenami gildii
+
+`GuildPreRegionTransitionEvent` jest synchroniczny i można go anulować przed
+zakończeniem obsługi ruchu lub teleportu. `getFromGuild()` i `getToGuild()`
+zwracają `Optional<Guild>`. Pusta wartość oznacza miejsce poza terenem gildii.
+Przejście bezpośrednio między dwiema gildiami wywołuje jeden event. Anulowanie
+blokuje całe przejście, w tym powiadomienia o wejściu i wyjściu.
+
+FunnyGuilds sprawdza docelową pozycję na priorytecie Bukkit `HIGHEST`.
+Integracje zmieniające cel powinny zrobić to na wcześniejszym priorytecie.
+Powiadomienia uwzględniają końcowy cel z etapu `MONITOR`.
+
+`GuildRegionLeaveEvent` i `GuildRegionEnterEvent` nadal są asynchroniczne.
+Przy zaakceptowanym przejściu między gildiami event wyjścia jest wywoływany
+przed eventem wejścia w tym samym zadaniu. Traktuj je jako powiadomienia.
+Integracje, które dotąd wywoływały na nich `setCancelled(true)`, powinny
+przenieść decyzję do `GuildPreRegionTransitionEvent`.
+
 Wydarzenia dotyczące:
 - zmian rankingu: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
 - gildii: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)

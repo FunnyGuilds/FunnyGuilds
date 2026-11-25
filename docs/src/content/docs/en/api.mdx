@@ -176,6 +176,24 @@ The `items.yml` configuration is available straight from the plugin instance:
 
 ### Listening for events
 
+#### Guild territory transitions
+
+`GuildPreRegionTransitionEvent` is synchronous. Listeners can cancel it before
+movement or teleport handling completes. `getFromGuild()` and `getToGuild()`
+return `Optional<Guild>`. An empty value represents a location outside guild
+territory. Moving directly between two guilds fires one event. Cancellation
+blocks the entire transition, including entry and exit notifications.
+
+FunnyGuilds checks the destination at Bukkit's `HIGHEST` priority. Integrations
+that change the destination should do so at an earlier priority. Notifications
+use the final destination observed at `MONITOR`.
+
+`GuildRegionLeaveEvent` and `GuildRegionEnterEvent` remain asynchronous.
+An accepted transition between guilds fires the leave event before the enter
+event in the same task. Treat these as notifications. Integrations that used
+`setCancelled(true)` on them should move their veto to
+`GuildPreRegionTransitionEvent`.
+
 Events related to:
 - Ranking changes: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)
 - Guilds: [net/dzikoysk/funnyguilds/event/guild](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/guild)
