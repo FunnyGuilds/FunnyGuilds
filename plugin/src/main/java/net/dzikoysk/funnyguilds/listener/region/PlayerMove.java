@@ -1,6 +1,11 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreRegionTransitionEvent;
@@ -25,6 +30,8 @@ import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 public class PlayerMove extends AbstractFunnyListener {
+
+    private final Map<UUID, Queue<Transition>> notifications = new HashMap<>();
 
     @Inject
     public GuildEntityHelper guildEntityHelper;
@@ -90,14 +97,52 @@ public class PlayerMove extends AbstractFunnyListener {
             }
         }
 
-        scheduler.runTaskAsynchronously(this.plugin, () -> {
-            if (from != null) {
-                Bukkit.getPluginManager().callEvent(new GuildRegionLeaveEvent(EventCause.USER, transition.user(), from));
+        this.enqueueNotification(scheduler, transition);
+    }
+
+    private void enqueueNotification(BukkitScheduler scheduler, Transition transition) {
+        UUID userId = transition.user().getUUID();
+        synchronized (this.notifications) {
+            Queue<Transition> queue = this.notifications.get(userId);
+            if (queue != null) {
+                queue.add(transition);
+                return;
             }
-            if (to != null) {
-                Bukkit.getPluginManager().callEvent(new GuildRegionEnterEvent(EventCause.USER, transition.user(), to));
+            queue = new ArrayDeque<>();
+            queue.add(transition);
+            this.notifications.put(userId, queue);
+            try {
+                scheduler.runTaskAsynchronously(this.plugin, () -> this.dispatchNotifications(userId));
             }
-        });
+            catch (RuntimeException exception) {
+                this.notifications.remove(userId);
+                throw exception;
+            }
+        }
+    }
+
+    private void dispatchNotifications(UUID userId) {
+        while (true) {
+            Transition transition;
+            synchronized (this.notifications) {
+                transition = this.notifications.get(userId).poll();
+                if (transition == null) {
+                    this.notifications.remove(userId);
+                    return;
+                }
+            }
+            try {
+                if (transition.from() != null) {
+                    Bukkit.getPluginManager().callEvent(new GuildRegionLeaveEvent(EventCause.USER, transition.user(), transition.from()));
+                }
+                if (transition.to() != null) {
+                    Bukkit.getPluginManager().callEvent(new GuildRegionEnterEvent(EventCause.USER, transition.user(), transition.to()));
+                }
+            }
+            catch (RuntimeException exception) {
+                this.logger.error("Could not dispatch guild region notifications for " + userId, exception);
+            }
+        }
     }
 
     private void notifyEntry(Player player, User user, Guild guild) {

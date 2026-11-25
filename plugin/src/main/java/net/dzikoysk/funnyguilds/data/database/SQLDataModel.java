@@ -239,6 +239,16 @@ public class SQLDataModel extends AbstractDataModel {
     }
 
     @Override
+    protected boolean saveGuild(Guild guild) {
+        return DatabaseGuildSerializer.save(guild);
+    }
+
+    @Override
+    protected boolean saveRegion(Region region) {
+        return DatabaseRegionSerializer.save(region);
+    }
+
+    @Override
     protected String guildStorageKey(Guild guild) {
         return guild.getUUID().toString();
     }

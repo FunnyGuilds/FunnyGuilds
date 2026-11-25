@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -114,6 +115,16 @@ public class FlatDataModel extends AbstractDataModel {
         this.saveUsers(ignoreNotChanged);
         this.saveRegions(ignoreNotChanged);
         this.saveGuilds(ignoreNotChanged);
+    }
+
+    @Override
+    protected boolean saveGuild(Guild guild) {
+        return FlatGuildSerializer.serialize(guild);
+    }
+
+    @Override
+    protected boolean saveRegion(Region region) {
+        return FlatRegionSerializer.serialize(region);
     }
 
     @Override
@@ -315,7 +326,7 @@ public class FlatDataModel extends AbstractDataModel {
         GuildManager guildManager = this.plugin.getGuildManager();
         guildManager.clearGuilds();
 
-        File[] guildFiles = this.guildsFolderFile.listFiles();
+        File[] guildFiles = this.guildsFolderFile.listFiles(FlatDataModel::isYamlFile);
         if (guildFiles == null || guildFiles.length == 0) {
             FunnyGuilds.getPluginLogger().info("No guilds to load");
             return;
@@ -325,6 +336,7 @@ public class FlatDataModel extends AbstractDataModel {
         AtomicInteger ownerlessGuilds = new AtomicInteger();
 
         Arrays.stream(guildFiles)
+                .sorted(Comparator.comparingLong(File::lastModified).reversed().thenComparing(File::getName))
                 .flatMap(guildFile -> {
                     Optional<Guild> deserialized = FlatGuildSerializer.deserialize(guildFile);
                     if (deserialized.isEmpty()) {
@@ -376,7 +388,7 @@ public class FlatDataModel extends AbstractDataModel {
         RegionManager regionManager = this.plugin.getRegionManager();
         regionManager.clearRegions();
 
-        File[] regionFiles = this.regionsFolderFile.listFiles();
+        File[] regionFiles = this.regionsFolderFile.listFiles(FlatDataModel::isYamlFile);
         if (regionFiles == null || regionFiles.length == 0) {
             FunnyGuilds.getPluginLogger().info("No regions to load");
             return;
@@ -416,6 +428,10 @@ public class FlatDataModel extends AbstractDataModel {
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Regions save errors: " + errors);
         }
+    }
+
+    private static boolean isYamlFile(File file) {
+        return file.isFile() && file.getName().endsWith(".yml");
     }
 
     private static boolean checkUser(User user, AtomicInteger errorCounter) {

@@ -190,7 +190,8 @@ Powiadomienia uwzględniają końcowy cel z etapu `MONITOR`.
 
 `GuildRegionLeaveEvent` i `GuildRegionEnterEvent` nadal są asynchroniczne.
 Przy zaakceptowanym przejściu między gildiami event wyjścia jest wywoływany
-przed eventem wejścia w tym samym zadaniu. Traktuj je jako powiadomienia.
+przed eventem wejścia w tym samym zadaniu. Kolejne powiadomienia dla danego
+gracza zachowują kolejność zaakceptowanych przejść. Traktuj je jako powiadomienia.
 Integracje, które dotąd wywoływały na nich `setCancelled(true)`, powinny
 przenieść decyzję do `GuildPreRegionTransitionEvent`.
 

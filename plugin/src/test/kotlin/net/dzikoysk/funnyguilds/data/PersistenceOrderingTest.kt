@@ -13,12 +13,17 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.SECONDS
 import net.dzikoysk.funnyguilds.FunnyGuilds
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.TestLogger
 import net.dzikoysk.funnyguilds.data.database.Database
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel
 import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel
 import net.dzikoysk.funnyguilds.guild.Guild
+import net.dzikoysk.funnyguilds.guild.Region
 import net.dzikoysk.funnyguilds.user.FakeUserProfile
+import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -133,6 +138,7 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
                     statics.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
                     deleting.countDown()
                     guildManager.deleteGuild(funnyGuilds, guild)
+                    model.flushDeletes()
                 }
             }
             `when`(upsert.executeUpdate()).thenAnswer {
@@ -279,6 +285,155 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
 
         model.deleteGuild(oldGuild)
         assertEquals("NEW", YamlConfiguration.loadConfiguration(file.toFile()).getString("tag"))
+    }
+
+    @Test
+    fun `failed flat rename leaves the old file readable until the replacement is saved`(@TempDir directory: Path) {
+        config.regionsEnabled = false
+        `when`(funnyGuilds.pluginDataFolder).thenReturn(directory.toFile())
+        val model = FlatDataModel(funnyGuilds)
+        `when`(funnyGuilds.dataModel).thenReturn(model)
+        val guild = newGuild("GuildA", "TAG")
+        model.save(true)
+        val oldFile = directory.resolve("guilds/GuildA.yml")
+        val newFile = directory.resolve("guilds/GuildB.yml")
+        Files.createDirectory(newFile)
+
+        model.renameGuild(guild, "GuildB")
+        model.save(true)
+        assertEquals("GuildA", YamlConfiguration.loadConfiguration(oldFile.toFile()).getString("name"))
+
+        Files.delete(newFile)
+        model.save(true)
+        assertEquals("GuildB", YamlConfiguration.loadConfiguration(newFile.toFile()).getString("name"))
+        assertFalse(Files.exists(oldFile))
+    }
+
+    @Test
+    fun `shutdown reports a deletion that still fails`() {
+        val connection = mock(Connection::class.java)
+        val statement = mock(PreparedStatement::class.java)
+        `when`(connection.prepareStatement(startsWith("DELETE"))).thenReturn(statement)
+        `when`(statement.executeUpdate()).thenThrow(SQLException("delete failed"))
+        val model = sqlModel(connection)
+        val guild = Guild("Guild", "TAG")
+        model.queueGuildDeletion(guild)
+
+        DataPersistenceHandler(funnyGuilds).shutdown()
+
+        val errors = (FunnyGuilds.getPluginLogger() as TestLogger).errors
+        assertTrue(errors.any { it.contains("Uncompleted storage deletions at shutdown") && it.contains(guild.uuid.toString()) })
+        verify(funnyGuilds.database.orElseThrow()).shutdown()
+    }
+
+    @Test
+    fun `failed SQL writes keep both guilds and regions pending`() {
+        config.regionsEnabled = true
+        val connection = mock(Connection::class.java)
+        val guildWrite = mock(PreparedStatement::class.java)
+        val regionWrite = mock(PreparedStatement::class.java)
+        `when`(connection.prepareStatement(startsWith("INSERT INTO `${config.mysql.guildsTableName}`"))).thenReturn(guildWrite)
+        `when`(connection.prepareStatement(startsWith("INSERT INTO `${config.mysql.regionsTableName}`"))).thenReturn(regionWrite)
+        for (statement in listOf(guildWrite, regionWrite)) {
+            `when`(statement.executeUpdate()).thenThrow(SQLException("write failed")).thenReturn(1)
+        }
+        val model = sqlModel(connection)
+        val guild = newGuild("Guild", "TAG")
+        guild.owner.markUnchanged()
+        val region = addRegion(guild)
+
+        model.save(true)
+        assertTrue(guild.wasChanged())
+        assertTrue(region.wasChanged())
+        model.save(true)
+        assertFalse(guild.wasChanged())
+        assertFalse(region.wasChanged())
+    }
+
+    @Test
+    fun `SQL rename retains the previous region until both replacement records are written`() {
+        config.regionsEnabled = true
+        val connection = mock(Connection::class.java)
+        val guildWrite = mock(PreparedStatement::class.java)
+        val regionWrite = mock(PreparedStatement::class.java)
+        val delete = mock(PreparedStatement::class.java)
+        `when`(connection.prepareStatement(startsWith("INSERT INTO `${config.mysql.guildsTableName}`"))).thenReturn(guildWrite)
+        `when`(connection.prepareStatement(startsWith("INSERT INTO `${config.mysql.regionsTableName}`"))).thenReturn(regionWrite)
+        `when`(connection.prepareStatement(startsWith("DELETE"))).thenReturn(delete)
+        `when`(guildWrite.executeUpdate()).thenThrow(SQLException("rename failed")).thenReturn(1)
+        val model = sqlModel(connection)
+        val guild = newGuild("GuildA", "TAG")
+        guild.owner.markUnchanged()
+        addRegion(guild)
+
+        model.renameGuild(guild, "GuildB")
+        model.save(true)
+        verify(delete, times(0)).executeUpdate()
+
+        model.save(true)
+        val order = inOrder(guildWrite, regionWrite, delete)
+        order.verify(regionWrite).executeUpdate()
+        order.verify(guildWrite).executeUpdate()
+        order.verify(regionWrite).executeUpdate()
+        order.verify(guildWrite).executeUpdate()
+        order.verify(delete).executeUpdate()
+    }
+
+    @Test
+    fun `region deletion is queued while autosave is still writing`() {
+        config.regionsEnabled = true
+        val connection = mock(Connection::class.java)
+        val upsert = mock(PreparedStatement::class.java)
+        val delete = mock(PreparedStatement::class.java)
+        `when`(connection.prepareStatement(startsWith("INSERT"))).thenReturn(upsert)
+        `when`(connection.prepareStatement(startsWith("DELETE"))).thenReturn(delete)
+        val model = sqlModel(connection)
+        val manager = funnyGuilds.regionManager
+        val region = addRegion(Guild("Guild", "TAG"))
+
+        Executors.newSingleThreadExecutor().use { worker ->
+            `when`(upsert.executeUpdate()).thenAnswer {
+                worker.submit { manager.deleteRegion(model, region) }.get(5, SECONDS)
+                1
+            }
+            model.save(true)
+        }
+        assertTrue(manager.getRegions().isEmpty())
+        model.flushDeletes()
+        DatabaseRegionSerializer.serialize(region)
+
+        val order = inOrder(upsert, delete)
+        order.verify(upsert).executeUpdate()
+        order.verify(delete).executeUpdate()
+        verify(upsert, times(1)).executeUpdate()
+    }
+
+    @Test
+    fun `flat loaders ignore unfinished temporary guild and region files`(@TempDir directory: Path) {
+        config.regionsEnabled = true
+        `when`(funnyGuilds.pluginDataFolder).thenReturn(directory.toFile())
+        `when`(funnyGuilds.dataFolder).thenReturn(directory.resolve("legacy").toFile())
+        val model = FlatDataModel(funnyGuilds)
+        for (folder in listOf("guilds", "regions")) {
+            Files.createDirectories(directory.resolve(folder))
+            Files.writeString(directory.resolve("$folder/.funnyguilds-interrupted.tmp"), "name: Unfinished\n")
+        }
+
+        model.load()
+
+        assertTrue(guildManager.getGuilds().isEmpty())
+        assertTrue(funnyGuilds.regionManager.getRegions().isEmpty())
+        assertTrue((FunnyGuilds.getPluginLogger() as TestLogger).errors.isEmpty())
+    }
+
+    private fun addRegion(guild: Guild): Region {
+        val world = mock(World::class.java)
+        `when`(world.name).thenReturn("world")
+        `when`(world.maxHeight).thenReturn(256)
+        val region = Region(guild, Location(world, 0.0, 64.0, 0.0), 4)
+        guild.setRegion(region)
+        funnyGuilds.regionManager.addRegion(region)
+        return region
     }
 
     private fun sqlModel(connection: Connection): SQLDataModel {

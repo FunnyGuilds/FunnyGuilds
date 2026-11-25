@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -33,20 +34,17 @@ public abstract class AbstractMutableEntity implements MutableEntity {
     }
 
     // The storage model orders writes. Only snapshot capture and acknowledgement need the entity lock.
-    final <T> boolean saveSnapshot(Supplier<T> capture, Predicate<T> write) {
-        Snapshot<T> snapshot;
-        synchronized (this) {
-            snapshot = new Snapshot<>(this.version, capture.get());
-        }
-
-        if (!write.test(snapshot.data())) {
-            return false;
-        }
-
-        synchronized (this) {
-            this.savedVersion = snapshot.version();
-        }
-        return true;
+    final synchronized <T> BooleanSupplier prepareSave(Supplier<T> capture, Predicate<T> write) {
+        Snapshot<T> snapshot = new Snapshot<>(this.version, capture.get());
+        return () -> {
+            if (!write.test(snapshot.data())) {
+                return false;
+            }
+            synchronized (this) {
+                this.savedVersion = snapshot.version();
+            }
+            return true;
+        };
     }
 
     private record Snapshot<T>(long version, T data) { }

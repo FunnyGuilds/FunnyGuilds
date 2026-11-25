@@ -105,6 +105,10 @@ public final class FlatGuildSerializer {
         UUID uuid = UUID.randomUUID();
         if (id != null && !id.isEmpty()) {
             uuid = UUID.fromString(id);
+            Optional<Guild> loaded = guildManager.findByUuid(uuid);
+            if (loaded.isPresent()) {
+                return loaded;
+            }
         }
 
         Optional<User> ownerOption = userManager.findByName(ownerName);

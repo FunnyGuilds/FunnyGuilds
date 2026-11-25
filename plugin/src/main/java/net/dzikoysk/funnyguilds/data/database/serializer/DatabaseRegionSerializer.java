@@ -53,8 +53,12 @@ public final class DatabaseRegionSerializer {
     }
 
     public static void serialize(Region region) {
+        save(region);
+    }
+
+    public static boolean save(Region region) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
-        dataModel.persist(region, () -> snapshot(dataModel, region), BooleanSupplier::getAsBoolean);
+        return dataModel.persist(region, () -> snapshot(dataModel, region), BooleanSupplier::getAsBoolean);
     }
 
     private static BooleanSupplier snapshot(SQLDataModel dataModel, Region region) {

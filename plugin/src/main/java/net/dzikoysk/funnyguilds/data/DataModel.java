@@ -34,6 +34,10 @@ public interface DataModel {
 
     void deleteRegion(Region region);
 
+    default void queueRegionDeletion(Region region) {
+        this.deleteRegion(region);
+    }
+
     void renameGuild(Guild guild, String name);
 
     default void validateLoadedData() {

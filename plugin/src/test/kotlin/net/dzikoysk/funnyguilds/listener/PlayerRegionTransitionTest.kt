@@ -182,6 +182,28 @@ class PlayerRegionTransitionTest : FunnyGuildsSpec() {
         verifyNoInteractions(scheduler, dispatcher)
     }
 
+    @Test
+    fun `rapid transitions remain ordered even when async tasks are taken in reverse order`() {
+        val otherWorld = mock(World::class.java)
+        val first = addRegion(world, "FROM")
+        val second = addRegion(otherWorld, "TO")
+        val inside = Location(world, 0.0, 64.0, 0.0)
+        val outside = Location(world, 10.0, 64.0, 0.0)
+
+        listener.onMoveAccepted(PlayerMoveEvent(player, outside, inside))
+        listener.onMoveAccepted(PlayerMoveEvent(player, inside, outside))
+        listener.onTeleportAccepted(PlayerTeleportEvent(
+            player, outside, Location(otherWorld, 0.0, 64.0, 0.0), PlayerTeleportEvent.TeleportCause.PLUGIN
+        ))
+        asyncNotifications.asReversed().forEach(Runnable::run)
+
+        assertEquals(3, events.size)
+        assertEquals(first, assertIs<GuildRegionEnterEvent>(events[0]).guild)
+        assertEquals(first, assertIs<GuildRegionLeaveEvent>(events[1]).guild)
+        assertEquals(second, assertIs<GuildRegionEnterEvent>(events[2]).guild)
+        assertEquals(1, asyncNotifications.size)
+    }
+
     private fun addRegion(regionWorld: World, tag: String = "TAG"): Guild {
         lenient().`when`(regionWorld.maxHeight).thenReturn(256)
         val guild = Guild(tag, tag)

@@ -248,10 +248,8 @@ public class RegionManager {
     public void deleteRegion(DataModel dataModel, Region region) {
         Validate.notNull(region, "region can't be null!");
 
-        synchronized (dataModel) {
-            this.removeRegion(region);
-            dataModel.deleteRegion(region);
-        }
+        dataModel.queueRegionDeletion(region);
+        this.removeRegion(region);
     }
 
     /**

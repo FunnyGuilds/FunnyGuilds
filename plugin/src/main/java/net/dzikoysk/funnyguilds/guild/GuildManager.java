@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
@@ -229,11 +230,8 @@ public class GuildManager {
             return;
         }
 
-        DataModel dataModel = plugin.getDataModel();
-        synchronized (dataModel) {
-            if (!guild.isRemoved()) {
-                this.deleteGuild(plugin, dataModel, guild);
-            }
+        if (!guild.isRemoved()) {
+            this.deleteGuild(plugin, plugin.getDataModel(), guild);
         }
     }
 
@@ -266,11 +264,12 @@ public class GuildManager {
             guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });
 
+        dataModel.queueGuildDeletion(guild);
         this.removeGuild(guild);
-        dataModel.deleteGuild(guild);
         if (this.pluginConfiguration.regionsEnabled) {
             guild.getRegion().ifPresent(region -> plugin.getRegionManager().deleteRegion(dataModel, region));
         }
+        plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
     }
 
     /**

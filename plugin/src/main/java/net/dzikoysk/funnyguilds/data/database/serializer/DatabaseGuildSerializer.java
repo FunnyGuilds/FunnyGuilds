@@ -193,8 +193,12 @@ public final class DatabaseGuildSerializer {
     }
 
     public static void serialize(Guild guild) {
+        save(guild);
+    }
+
+    public static boolean save(Guild guild) {
         SQLDataModel dataModel = (SQLDataModel) FunnyGuilds.getInstance().getDataModel();
-        dataModel.persist(guild, () -> snapshot(dataModel, guild), BooleanSupplier::getAsBoolean);
+        return dataModel.persist(guild, () -> snapshot(dataModel, guild), BooleanSupplier::getAsBoolean);
     }
 
     private static BooleanSupplier snapshot(SQLDataModel dataModel, Guild guild) {

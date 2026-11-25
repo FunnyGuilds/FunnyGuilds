@@ -190,7 +190,8 @@ use the final destination observed at `MONITOR`.
 
 `GuildRegionLeaveEvent` and `GuildRegionEnterEvent` remain asynchronous.
 An accepted transition between guilds fires the leave event before the enter
-event in the same task. Treat these as notifications. Integrations that used
+event in the same task. Successive notifications for a player follow the
+order of accepted transitions. Treat these as notifications. Integrations that used
 `setCancelled(true)` on them should move their veto to
 `GuildPreRegionTransitionEvent`.
 

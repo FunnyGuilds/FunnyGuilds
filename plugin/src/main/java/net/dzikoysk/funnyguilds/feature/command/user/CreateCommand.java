@@ -468,10 +468,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         try {
             DataModel dataModel = this.plugin.getDataModel();
-            synchronized (dataModel) {
-                this.guildManager.removeGuild(guild);
-                dataModel.queueGuildDeletion(guild);
-            }
+            dataModel.queueGuildDeletion(guild);
+            this.guildManager.removeGuild(guild);
             this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
         }
         catch (RuntimeException compensationFailure) {
