@@ -15,13 +15,13 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet;
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask;
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
-import net.dzikoysk.funnyguilds.feature.audit.GuildAuditEntry.Type;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -95,7 +95,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when(!this.config.tagRegex.matches(tag), config -> config.createOLTag);
         when(!this.config.nameRegex.matches(name), config -> config.createOLName);
 
-        when(this.guildManager.nameExists(name), config -> config.createNameExists);
+        when(this.guildManager.nameExists(name) || this.plugin.getDataModel().isGuildNameReserved(name),
+                config -> config.createNameExists);
         when(this.guildManager.tagExists(tag), config -> config.createTagExists);
 
         when(this.config.regionsEnabled && this.regionManager.isInRegion(guildLocation), config -> config.createIsNear);
@@ -260,6 +261,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         int previousLevel = player.getLevel();
         boolean levelDeducted = false;
         boolean heartPlaced = false;
+        boolean guildAdded = false;
         boolean regionAdded = false;
         List<BlockState> changedBlocks = new ArrayList<>();
         List<Runnable> schematicUndo = new ArrayList<>(1);
@@ -330,7 +332,10 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 guild.teleportHome(player);
             }
 
+            when(this.guildManager.nameExists(guild.getName()) || this.plugin.getDataModel().isGuildNameReserved(guild.getName()),
+                    config -> config.createNameExists);
             this.guildManager.addGuild(guild);
+            guildAdded = true;
             user.setGuild(guild);
 
             if (guild.getRegion().isPresent()) {
@@ -360,7 +365,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
         catch (RuntimeException exception) {
             this.rollbackCreation(player, user, guild, payment, moneyWithdrawn, activeSet, previousLevel, levelDeducted,
-                    heartPlaced, regionAdded, changedBlocks, schematicUndo, previousHeartState);
+                    heartPlaced, guildAdded, regionAdded, changedBlocks, schematicUndo, previousHeartState);
             throw exception;
         }
 
@@ -390,7 +395,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
      */
     private void rollbackCreation(Player player, User user, Guild guild, GuildCreationPayment payment, AtomicBoolean moneyWithdrawn,
                                   GuildItemSet set, int previousLevel, boolean levelDeducted, boolean heartPlaced,
-                                  boolean regionAdded, List<BlockState> changedBlocks, List<Runnable> schematicUndo,
+                                  boolean guildAdded, boolean regionAdded, List<BlockState> changedBlocks, List<Runnable> schematicUndo,
                                   Optional<BlockState> previousHeartState) {
         FunnyGuilds.getPluginLogger().warning("Guild creation failed after payment, rolling back the transaction");
 
@@ -466,23 +471,16 @@ public final class CreateCommand extends AbstractFunnyCommand {
             FunnyGuilds.getPluginLogger().error("Could not clear the player's guild membership", compensationFailure);
         }
 
-        try {
-            this.guildManager.removeGuild(guild);
-        }
-        catch (RuntimeException compensationFailure) {
-            FunnyGuilds.getPluginLogger().error("Could not remove the partially created guild", compensationFailure);
-        }
-
-        try {
-            // A periodic save running concurrently may have snapshotted the guild between
-            // registration and this rollback, so erase anything it persisted. A save task
-            // that serializes the guild after this delete can still recreate the row; the
-            // window is a single in-flight save and the next periodic save (or load) cleans
-            // it up because the guild no longer exists in memory.
-            this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(this.plugin.getDataModel(), guild));
-        }
-        catch (RuntimeException compensationFailure) {
-            FunnyGuilds.getPluginLogger().error("Could not schedule the deletion of the rolled-back guild", compensationFailure);
+        if (guildAdded) {
+            try {
+                DataModel dataModel = this.plugin.getDataModel();
+                dataModel.queueGuildDeletion(guild);
+                this.guildManager.removeGuild(guild);
+                this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not remove the rolled-back guild", compensationFailure);
+            }
         }
 
         try {

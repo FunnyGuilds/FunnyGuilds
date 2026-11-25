@@ -54,26 +54,12 @@ public final class FlatRegionSerializer {
     public static boolean serialize(Region region) {
         FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
 
-        Optional<File> fileOption = dataModel.getRegionFile(region);
-        if (fileOption.isEmpty()) {
-            return false;
-        }
-
-        File regionFile = fileOption.orElseThrow();
-        if (regionFile.isDirectory()) {
-            return false;
-        }
-
-        YamlWrapper wrapper = new YamlWrapper(regionFile);
-        wrapper.set("name", region.getName());
-        wrapper.set("center", LocationUtils.toString(region.getCenter()));
-        wrapper.set("size", region.getSize());
-        wrapper.set("enlarge", region.getEnlargementLevel());
-
-        wrapper.save();
-        region.markUnchanged();
-
-        return true;
+        return dataModel.persistYaml(region, values -> {
+            values.put("name", region.getName());
+            values.put("center", LocationUtils.toString(region.getCenter()));
+            values.put("size", region.getSize());
+            values.put("enlarge", region.getEnlargementLevel());
+        });
     }
 
 }

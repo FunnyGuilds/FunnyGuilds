@@ -115,6 +115,11 @@ Dostępne metody pobierania gildii:
 - `GuildManager#findByUuid(UUID)`
 - `User#getGuild()`
 
+Kolekcje członków, zastępców, sojuszników, wrogów i ustawień PvP sojuszy
+są dostępne do odczytu. Wprowadzaj zmiany przez metody `Guild`, takie jak
+`addMember` i `removeAlly`, aby zostały uwzględnione w zapisie.
+`Guild#getHome()` i `Region#getCenter()` zwracają kopie lokalizacji.
+
 Przykład użycia:
 
 ```java
@@ -170,6 +175,25 @@ Konfiguracja przedmiotów z `items.yml` jest dostępna bezpośrednio z instancji
 - `FunnyGuilds#getGuildItemRequirementChecker()` — sprawdzenie, czy gracz spełnia wymagania.
 
 ### Nasłuchiwanie wydarzeń
+
+#### Przejścia między terenami gildii
+
+`GuildPreRegionTransitionEvent` jest synchroniczny i można go anulować przed
+zakończeniem obsługi ruchu lub teleportu. `getFromGuild()` i `getToGuild()`
+zwracają `Optional<Guild>`. Pusta wartość oznacza miejsce poza terenem gildii.
+Przejście bezpośrednio między dwiema gildiami wywołuje jeden event. Anulowanie
+blokuje całe przejście, w tym powiadomienia o wejściu i wyjściu.
+
+FunnyGuilds sprawdza docelową pozycję na priorytecie Bukkit `HIGHEST`.
+Integracje zmieniające cel powinny zrobić to na wcześniejszym priorytecie.
+Powiadomienia uwzględniają końcowy cel z etapu `MONITOR`.
+
+`GuildRegionLeaveEvent` i `GuildRegionEnterEvent` nadal są asynchroniczne.
+Przy zaakceptowanym przejściu między gildiami event wyjścia jest wywoływany
+przed eventem wejścia w tym samym zadaniu. Kolejne powiadomienia dla danego
+gracza zachowują kolejność zaakceptowanych przejść. Traktuj je jako powiadomienia.
+Integracje, które dotąd wywoływały na nich `setCancelled(true)`, powinny
+przenieść decyzję do `GuildPreRegionTransitionEvent`.
 
 Wydarzenia dotyczące:
 - zmian rankingu: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)

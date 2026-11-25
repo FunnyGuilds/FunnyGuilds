@@ -115,6 +115,11 @@ Available methods for fetching a guild:
 - `GuildManager#findByUuid(UUID)`
 - `User#getGuild()`
 
+Guild member, deputy, ally, enemy, and allied PvP collections are read-only.
+Use `Guild` methods such as `addMember` and `removeAlly` to make changes that
+will be picked up by persistence. `Guild#getHome()` and
+`Region#getCenter()` return copies of their locations.
+
 Example usage:
 
 ```java
@@ -170,6 +175,25 @@ The `items.yml` configuration is available straight from the plugin instance:
 - `FunnyGuilds#getGuildItemRequirementChecker()` — whether a player meets the requirements.
 
 ### Listening for events
+
+#### Guild territory transitions
+
+`GuildPreRegionTransitionEvent` is synchronous. Listeners can cancel it before
+movement or teleport handling completes. `getFromGuild()` and `getToGuild()`
+return `Optional<Guild>`. An empty value represents a location outside guild
+territory. Moving directly between two guilds fires one event. Cancellation
+blocks the entire transition, including entry and exit notifications.
+
+FunnyGuilds checks the destination at Bukkit's `HIGHEST` priority. Integrations
+that change the destination should do so at an earlier priority. Notifications
+use the final destination observed at `MONITOR`.
+
+`GuildRegionLeaveEvent` and `GuildRegionEnterEvent` remain asynchronous.
+An accepted transition between guilds fires the leave event before the enter
+event in the same task. Successive notifications for a player follow the
+order of accepted transitions. Treat these as notifications. Integrations that used
+`setCancelled(true)` on them should move their veto to
+`GuildPreRegionTransitionEvent`.
 
 Events related to:
 - Ranking changes: [net/dzikoysk/funnyguilds/event/rank](https://github.com/FunnyGuilds/FunnyGuilds/tree/5.x/plugin/src/main/java/net/dzikoysk/funnyguilds/event/rank)

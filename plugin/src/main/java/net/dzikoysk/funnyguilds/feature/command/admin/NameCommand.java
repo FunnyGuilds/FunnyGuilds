@@ -1,19 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import java.util.Optional;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
-import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreRenameEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
@@ -35,7 +29,8 @@ public final class NameCommand extends AbstractFunnyCommand {
         when(args.length < 2, config -> config.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(this.guildManager.nameExists(args[1]), config -> config.createNameExists);
+        when(this.guildManager.nameExists(args[1]) || this.dataModel.isGuildNameReserved(args[1]),
+                config -> config.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -44,27 +39,8 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guild.getRegion().ifPresent(region -> {
-            if (this.dataModel instanceof FlatDataModel) {
-                FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-                dataModel.getRegionFile(region).ifPresent(FunnyIOUtils::deleteFile);
-            }
-            else if (this.dataModel instanceof SQLDataModel) {
-                DatabaseRegionSerializer.delete(region);
-            }
-
-            region.setName(args[1]);
-        });
-
-        if (this.dataModel instanceof FlatDataModel) {
-            FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-            dataModel.getGuildFile(guild).ifPresent(FunnyIOUtils::deleteFile);
-        }
-        else if (this.dataModel instanceof SQLDataModel) {
-            DatabaseGuildSerializer.delete(guild);
-        }
-
-        guild.setName(args[1]);
+        when(this.guildManager.nameExists(args[1]) || !this.dataModel.tryRenameGuild(guild, args[1]),
+                config -> config.createNameExists);
         this.messageService.getMessage(config -> config.adminNameChanged)
                 .with("{GUILD}", guild.getName())
                 .receiver(sender)

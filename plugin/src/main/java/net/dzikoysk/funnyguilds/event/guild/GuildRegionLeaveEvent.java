@@ -6,7 +6,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when a player leaves a guild region by crossing it's border or teleporting out of it
+ * Asynchronous notification of an accepted movement or teleport out of a guild region.
+ * Cancellation does not affect the movement. Use {@link GuildPreRegionTransitionEvent} to veto it.
  */
 public class GuildRegionLeaveEvent extends GuildEvent {
 

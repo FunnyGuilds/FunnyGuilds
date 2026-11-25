@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
-    private int points;
+    private volatile int points;
     private int kills;
     private int deaths;
     private int assists;
@@ -28,12 +28,16 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     public void setPoints(int points) {
-        this.points = Math.max(0, points);
-        this.entity.markChanged();
+        synchronized (this.entity) {
+            this.points = Math.max(0, points);
+            this.entity.markChanged();
+        }
     }
 
     public void updatePoints(IntFunction<Integer> update) {
-        this.setPoints(update.apply(this.points));
+        synchronized (this.entity) {
+            this.setPoints(update.apply(this.points));
+        }
     }
 
     @Override
@@ -42,12 +46,16 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     public void setKills(int kills) {
-        this.kills = Math.max(0, kills);
-        this.entity.markChanged();
+        synchronized (this.entity) {
+            this.kills = Math.max(0, kills);
+            this.entity.markChanged();
+        }
     }
 
     public void updateKills(IntFunction<Integer> update) {
-        this.setKills(update.apply(this.kills));
+        synchronized (this.entity) {
+            this.setKills(update.apply(this.kills));
+        }
     }
 
     @Override
@@ -56,12 +64,16 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     public void setDeaths(int deaths) {
-        this.deaths = Math.max(0, deaths);
-        this.entity.markChanged();
+        synchronized (this.entity) {
+            this.deaths = Math.max(0, deaths);
+            this.entity.markChanged();
+        }
     }
 
     public void updateDeaths(IntFunction<Integer> update) {
-        this.setDeaths(update.apply(this.deaths));
+        synchronized (this.entity) {
+            this.setDeaths(update.apply(this.deaths));
+        }
     }
 
     @Override
@@ -70,12 +82,16 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     public void setAssists(int assists) {
-        this.assists = Math.max(0, assists);
-        this.entity.markChanged();
+        synchronized (this.entity) {
+            this.assists = Math.max(0, assists);
+            this.entity.markChanged();
+        }
     }
 
     public void updateAssists(IntFunction<Integer> update) {
-        this.setAssists(update.apply(this.assists));
+        synchronized (this.entity) {
+            this.setAssists(update.apply(this.assists));
+        }
     }
 
     @Override
@@ -84,12 +100,16 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     }
 
     public void setLogouts(int logouts) {
-        this.logouts = Math.max(0, logouts);
-        this.entity.markChanged();
+        synchronized (this.entity) {
+            this.logouts = Math.max(0, logouts);
+            this.entity.markChanged();
+        }
     }
 
     public void updateLogouts(IntFunction<Integer> update) {
-        this.setLogouts(update.apply(this.logouts));
+        synchronized (this.entity) {
+            this.setLogouts(update.apply(this.logouts));
+        }
     }
 
     @Override

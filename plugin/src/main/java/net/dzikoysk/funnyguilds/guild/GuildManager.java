@@ -10,12 +10,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask;
 import net.dzikoysk.funnyguilds.feature.scoreboard.ScoreboardGlobalUpdateUserSyncTask;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -232,6 +230,12 @@ public class GuildManager {
             return;
         }
 
+        if (!guild.isRemoved()) {
+            this.deleteGuild(plugin, plugin.getDataModel(), guild);
+        }
+    }
+
+    private void deleteGuild(FunnyGuilds plugin, DataModel dataModel, Guild guild) {
         if (this.pluginConfiguration.regionsEnabled) {
             guild.getRegion()
                     .ifPresent(region -> {
@@ -240,7 +244,7 @@ public class GuildManager {
                         }
                         else if (this.pluginConfiguration.heart.createMaterial != null &&
                                 this.pluginConfiguration.heart.createMaterial != Material.AIR) {
-                            Location center = region.getCenter().clone();
+                            Location center = region.getCenter();
 
                             Bukkit.getScheduler().runTask(plugin, () -> {
                                 Block block = center.getBlock().getRelative(BlockFace.DOWN);
@@ -250,8 +254,6 @@ public class GuildManager {
                                 }
                             });
                         }
-
-                        plugin.getRegionManager().deleteRegion(plugin.getDataModel(), region);
                     });
         }
 
@@ -262,15 +264,12 @@ public class GuildManager {
             guild.getMembers().forEach(member -> plugin.scheduleFunnyTasks(new ScoreboardGlobalUpdateUserSyncTask(manager, member)));
         });
 
-        if (plugin.getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
-            dataModel.getGuildFile(guild).ifPresent(FunnyIOUtils::deleteFile);
-        }
-        else if (plugin.getDataModel() instanceof SQLDataModel) {
-            DatabaseGuildSerializer.delete(guild);
-        }
-
+        dataModel.queueGuildDeletion(guild);
         this.removeGuild(guild);
+        if (this.pluginConfiguration.regionsEnabled) {
+            guild.getRegion().ifPresent(region -> plugin.getRegionManager().deleteRegion(dataModel, region));
+        }
+        plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
     }
 
     /**

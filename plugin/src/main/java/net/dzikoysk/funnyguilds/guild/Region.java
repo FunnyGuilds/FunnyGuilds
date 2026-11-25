@@ -13,7 +13,7 @@ import org.bukkit.util.Vector;
 
 public class Region extends AbstractMutableEntity {
 
-    private String name;
+    private volatile String name;
     private Guild guild;
 
     private World world;
@@ -27,7 +27,7 @@ public class Region extends AbstractMutableEntity {
     public Region(String name, Location center) {
         this.name = name;
         this.world = center.getWorld();
-        this.center = center;
+        this.center = center.clone();
     }
 
     public Region(Guild guild, Location center, int defaultSize) {
@@ -96,7 +96,7 @@ public class Region extends AbstractMutableEntity {
         return this.name;
     }
 
-    public void setName(String name) {
+    public synchronized void setName(String name) {
         this.name = name;
         super.markChanged();
     }
@@ -105,7 +105,7 @@ public class Region extends AbstractMutableEntity {
         return this.guild;
     }
 
-    public void setGuild(Guild guild) {
+    public synchronized void setGuild(Guild guild) {
         this.guild = guild;
         super.markChanged();
     }
@@ -115,7 +115,7 @@ public class Region extends AbstractMutableEntity {
     }
 
     public Location getCenter() {
-        return this.center;
+        return this.center.clone();
     }
 
     public Optional<Location> getHeart() {
@@ -128,8 +128,8 @@ public class Region extends AbstractMutableEntity {
                 .map(block -> block.getRelative(BlockFace.DOWN));
     }
 
-    void setCenter(Location location) {
-        this.center = location;
+    synchronized void setCenter(Location location) {
+        this.center = location.clone();
         this.world = location.getWorld();
         this.update();
     }
@@ -138,7 +138,7 @@ public class Region extends AbstractMutableEntity {
         return this.enlargementLevel;
     }
 
-    void setEnlargementLevel(int enlargementLevel) {
+    synchronized void setEnlargementLevel(int enlargementLevel) {
         this.enlargementLevel = enlargementLevel;
         super.markChanged();
     }
@@ -147,7 +147,7 @@ public class Region extends AbstractMutableEntity {
         return this.size;
     }
 
-    void setSize(int size) {
+    synchronized void setSize(int size) {
         this.size = size;
         this.update();
     }

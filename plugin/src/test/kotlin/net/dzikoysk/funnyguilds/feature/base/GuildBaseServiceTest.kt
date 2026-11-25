@@ -62,7 +62,7 @@ class GuildBaseServiceTest {
 
         member = UserManager(config).createFake(UUID.randomUUID(), "member")
         guild = Guild("Test guild", "TEST")
-        guild.setHome(mock(Location::class.java))
+        guild.setHome(Location(null, 0.0, 64.0, 0.0))
 
         service = GuildBaseService(plugin)
     }

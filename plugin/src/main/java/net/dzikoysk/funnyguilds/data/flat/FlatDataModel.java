@@ -2,17 +2,26 @@ package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.AbstractDataModel;
+import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
 import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
@@ -31,7 +40,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import panda.std.Result;
 
-public class FlatDataModel implements DataModel {
+public class FlatDataModel extends AbstractDataModel {
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration pluginConfiguration;
@@ -102,11 +111,104 @@ public class FlatDataModel implements DataModel {
     }
 
     @Override
-    public void save(boolean ignoreNotChanged) {
+    protected void saveRecords(boolean ignoreNotChanged) {
         this.saveUsers(ignoreNotChanged);
         this.saveRegions(ignoreNotChanged);
         this.saveGuilds(ignoreNotChanged);
     }
+
+    @Override
+    protected boolean saveGuild(Guild guild) {
+        return FlatGuildSerializer.serialize(guild);
+    }
+
+    @Override
+    protected boolean saveRegion(Region region) {
+        return FlatRegionSerializer.serialize(region);
+    }
+
+    @Override
+    protected String guildStorageKey(Guild guild) {
+        return guild.getName();
+    }
+
+    @Override
+    protected BooleanSupplier guildDeletion(Guild guild) {
+        return deleteFile(this.guildsFolderFile, guild.getName());
+    }
+
+    @Override
+    protected BooleanSupplier regionDeletion(Region region) {
+        return deleteFile(this.regionsFolderFile, region.getName());
+    }
+
+    private static BooleanSupplier deleteFile(File directory, String name) {
+        Path path = directory.toPath().resolve(name + ".yml");
+        return () -> {
+            try {
+                Files.deleteIfExists(path);
+                return true;
+            }
+            catch (IOException exception) {
+                FunnyGuilds.getPluginLogger().error("Could not delete " + path, exception);
+                return false;
+            }
+        };
+    }
+
+    public boolean persistYaml(AbstractMutableEntity entity, Consumer<Map<String, Object>> capture) {
+        return this.persist(entity, () -> {
+            Path path = switch (entity) {
+                case User user -> this.usersFolderFile.toPath().resolve(user.getUUID() + ".yml");
+                case Guild guild -> this.guildsFolderFile.toPath().resolve(guild.getName() + ".yml");
+                case Region region -> this.regionsFolderFile.toPath().resolve(region.getName() + ".yml");
+                default -> throw new IllegalArgumentException("Unsupported entity: " + entity.getType());
+            };
+
+            Map<String, Object> values = new LinkedHashMap<>();
+            capture.accept(values);
+            return new YamlSnapshot(path, Collections.unmodifiableMap(new LinkedHashMap<>(values)));
+        }, FlatDataModel::writeYaml);
+    }
+
+    private static boolean writeYaml(YamlSnapshot snapshot) {
+        Path path = snapshot.path();
+        Path temporaryFile = null;
+        try {
+            YamlConfiguration yaml = new YamlConfiguration();
+            if (Files.exists(path)) {
+                yaml.load(path.toFile());
+            }
+            snapshot.values().forEach(yaml::set);
+
+            Files.createDirectories(path.getParent());
+            temporaryFile = Files.createTempFile(path.getParent(), ".funnyguilds-", ".tmp");
+            Files.writeString(temporaryFile, yaml.saveToString());
+            try {
+                Files.move(temporaryFile, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch (AtomicMoveNotSupportedException exception) {
+                Files.move(temporaryFile, path, StandardCopyOption.REPLACE_EXISTING);
+            }
+            return true;
+        }
+        catch (IOException | InvalidConfigurationException exception) {
+            FunnyGuilds.getPluginLogger().error("Could not save " + path, exception);
+            return false;
+        }
+        finally {
+            if (temporaryFile != null) {
+                try {
+                    Files.deleteIfExists(temporaryFile);
+                }
+                catch (IOException exception) {
+                    FunnyGuilds.getPluginLogger().error("Could not remove temporary file " + temporaryFile, exception);
+                }
+            }
+        }
+    }
+
+    private record YamlSnapshot(Path path, Map<String, Object> values) { }
 
     private void loadUsers() {
         UserManager userManager = this.plugin.getUserManager();
@@ -224,7 +326,7 @@ public class FlatDataModel implements DataModel {
         GuildManager guildManager = this.plugin.getGuildManager();
         guildManager.clearGuilds();
 
-        File[] guildFiles = this.guildsFolderFile.listFiles();
+        File[] guildFiles = this.guildsFolderFile.listFiles(FlatDataModel::isYamlFile);
         if (guildFiles == null || guildFiles.length == 0) {
             FunnyGuilds.getPluginLogger().info("No guilds to load");
             return;
@@ -234,6 +336,7 @@ public class FlatDataModel implements DataModel {
         AtomicInteger ownerlessGuilds = new AtomicInteger();
 
         Arrays.stream(guildFiles)
+                .sorted(Comparator.comparingLong(File::lastModified).reversed().thenComparing(File::getName))
                 .flatMap(guildFile -> {
                     Optional<Guild> deserialized = FlatGuildSerializer.deserialize(guildFile);
                     if (deserialized.isEmpty()) {
@@ -285,7 +388,7 @@ public class FlatDataModel implements DataModel {
         RegionManager regionManager = this.plugin.getRegionManager();
         regionManager.clearRegions();
 
-        File[] regionFiles = this.regionsFolderFile.listFiles();
+        File[] regionFiles = this.regionsFolderFile.listFiles(FlatDataModel::isYamlFile);
         if (regionFiles == null || regionFiles.length == 0) {
             FunnyGuilds.getPluginLogger().info("No regions to load");
             return;
@@ -325,6 +428,10 @@ public class FlatDataModel implements DataModel {
         if (errors > 0) {
             FunnyGuilds.getPluginLogger().error("Regions save errors: " + errors);
         }
+    }
+
+    private static boolean isYamlFile(File file) {
+        return file.isFile() && file.getName().endsWith(".yml");
     }
 
     private static boolean checkUser(User user, AtomicInteger errorCounter) {

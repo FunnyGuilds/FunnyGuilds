@@ -4,10 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
@@ -15,13 +17,24 @@ import panda.std.function.ThrowingConsumer;
 
 public class SQLNamedStatement {
 
-    private final Map<String, Object> placeholders = new HashMap<>();
+    private final Map<String, Object> placeholders;
     private final Map<String, Integer> keyMapIndex;
     private final String sql;
 
     public SQLNamedStatement(String sql, Map<String, Integer> keyMap) {
+        this(sql, Map.copyOf(keyMap), new HashMap<>());
+    }
+
+    private SQLNamedStatement(String sql, Map<String, Integer> keyMap, Map<String, Object> placeholders) {
         this.sql = sql;
-        this.keyMapIndex = new HashMap<>(keyMap);
+        this.keyMapIndex = keyMap;
+        this.placeholders = placeholders;
+    }
+
+    public BooleanSupplier snapshotUpdate() {
+        SQLNamedStatement snapshot = new SQLNamedStatement(this.sql, this.keyMapIndex,
+                Collections.unmodifiableMap(new HashMap<>(this.placeholders)));
+        return () -> snapshot.tryExecuteUpdate(false);
     }
 
     public void set(String key, Object value) {
@@ -39,34 +52,39 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate(Connection connection) throws SQLException {
-        try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql))) {
+        try (PreparedStatement statement = connection.prepareStatement(this.sql)) {
+            this.setPlaceholders(statement);
             statement.executeUpdate();
         }
     }
 
     public void executeUpdate(boolean ignoreFails) {
+        this.tryExecuteUpdate(ignoreFails);
+    }
+
+    private boolean tryExecuteUpdate(boolean ignoreFails) {
         Optional<Database> database = FunnyGuilds.getInstance().getDatabase();
         if (database.isEmpty()) {
             FunnyGuilds.getPluginLogger().error("Could not execute update (database is null)");
-            return;
+            return false;
         }
         try (Connection connection = database.orElseThrow().getConnection()) {
             if (connection == null) {
                 throw new SQLException("Connection is null");
             }
 
-            try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql))) {
-                statement.executeUpdate();
-            }
+            this.executeUpdate(connection);
         }
         catch (Exception exception) {
             if (ignoreFails) {
                 FunnyGuilds.getPluginLogger().debug("Could not execute update (ignoreFails)");
-                return;
             }
-
-            FunnyGuilds.getPluginLogger().error("Could not execute update", exception);
+            else {
+                FunnyGuilds.getPluginLogger().error("Could not execute update", exception);
+            }
+            return false;
         }
+        return true;
     }
 
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer) {

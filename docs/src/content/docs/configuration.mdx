@@ -153,6 +153,17 @@ FunnyGuilds nie zastępuje pluginu uwierzytelniającego ani jego zasad dotycząc
 
 Sposób bezpiecznego rozstrzygnięcia konfliktu opisuje [FAQ](/faq/#konflikt-nicku-i-uuid).
 
+## Automatyczny zapis danych
+
+Jeśli zapis zmienionego rekordu do SQL lub YAML się nie powiedzie, plugin
+ponowi go w następnym cyklu zapisu. Zmiany wprowadzone w trakcie zapisu
+również pozostają do zapisania. Błędy zapisu są zgłaszane w logu serwera.
+
+Po zmianie nazwy gildii stare rekordy zostają usunięte po udanym zapisie
+nowej nazwy i regionu. Nazwę używaną jako klucz starego rekordu można
+ponownie wykorzystać po usunięciu tego rekordu. Jeśli przy wyłączeniu serwera nadal nie udało się
+wykonać usunięcia, log wskazuje rekordy do sprawdzenia przed restartem.
+
 ## Regex
 
 Typ używany do walidacji Stringów — nazw, tagów itd.

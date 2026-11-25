@@ -1,10 +1,17 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import java.util.Optional;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildPreRegionTransitionEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionEnterEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
@@ -15,114 +22,176 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 public class PlayerMove extends AbstractFunnyListener {
 
+    private final Map<UUID, Queue<Transition>> notifications = new HashMap<>();
+
     @Inject
     public GuildEntityHelper guildEntityHelper;
 
-    @EventHandler
-    public void onTeleport(PlayerTeleportEvent event) {
-        this.onMove(event); // We have to manually call onMove when player teleports - in other case the move event won't be called
-    }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        Player player = event.getPlayer();
-        if (to == null) {
-            return;
-        }
-
-        if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
-            return;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            Optional<User> userOption = this.userManager.findByPlayer(player);
-            if (userOption.isEmpty()) {
-                return;
-            }
-
-            User user = userOption.orElseThrow();
-            UserCache cache = user.getCache();
-
-            Optional<Region> regionOptionFrom = this.regionManager.findRegionAtLocation(from);
-            Optional<Region> regionOptionTo = this.regionManager.findRegionAtLocation(to);
-
-            if (regionOptionFrom.equals(regionOptionTo)) {
-                return;
-            }
-
-            regionOptionFrom
-                    .map(Region::getGuild)
-                    .ifPresent(guild -> {
-                        this.logger.debug(String.format("Player %s left region of guild %s", player.getName(), guild.getName()));
-
-                        if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
-                            event.setCancelled(true);
-                            return;
-                        }
-
-                        FunnyFormatter formatter = new FunnyFormatter()
-                                .register("{GUILD}", guild.getName())
-                                .register("{TAG}", guild.getTag());
-
-                        this.messageService.getMessage(config -> config.notificationLeaveGuildRegion)
-                                .with(formatter)
-                                .receiver(player)
-                                .send();
-                    });
-
-            regionOptionTo
-                    .map(Region::getGuild)
-                    .ifPresent(guild -> {
-                        this.logger.debug(String.format("Player %s entered region of guild %s", player.getName(), guild.getName()));
-
-                        if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
-                            event.setCancelled(true);
-                            return;
-                        }
-
-                        if (this.config.heart.createEntityType != null) {
-                            Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.guildEntityHelper.spawnGuildEntity(guild, player), 40L);
-                        }
-
-                        FunnyFormatter formatter = new FunnyFormatter()
-                                .register("{GUILD}", guild.getName())
-                                .register("{TAG}", guild.getTag())
-                                .register("{PLAYER}", player.getName());
-
-                        this.messageService.getMessage(config -> config.notificationEnterGuildRegion)
-                                .with(formatter)
-                                .receiver(player)
-                                .send();
-
-                        if (player.hasPermission("funnyguilds.admin.notification")) {
-                            return;
-                        }
-
-                        if (cache.getNotificationTime() > 0 && System.currentTimeMillis() < cache.getNotificationTime()) {
-                            return;
-                        }
-
-                        if (!this.config.regionEnterNotificationGuildMember && user.hasGuild() &&
-                                guild.getTag().equals(user.getGuild().get().getTag())) {
-                            return;
-                        }
-
-                        this.messageService.getMessage(config -> config.notificationIntruderEnterGuildRegion)
-                                .with(formatter)
-                                .receiver(guild)
-                                .send();
-
-                        cache.setNotificationTime(System.currentTimeMillis() + 1000L * this.config.regionNotificationCooldown);
-                    });
-        });
+        this.checkTransition(event);
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        this.checkTransition(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMoveAccepted(PlayerMoveEvent event) {
+        this.notifyTransition(event);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTeleportAccepted(PlayerTeleportEvent event) {
+        this.notifyTransition(event);
+    }
+
+    private void checkTransition(PlayerMoveEvent event) {
+        Transition transition = this.findTransition(event);
+        if (transition == null) {
+            return;
+        }
+
+        if (!SimpleEventHandler.handle(new GuildPreRegionTransitionEvent(transition.user(), transition.from(), transition.to()))) {
+            event.setCancelled(true);
+        }
+    }
+
+    private void notifyTransition(PlayerMoveEvent event) {
+        // Another Bukkit listener may have cancelled the movement or changed its destination.
+        Transition transition = this.findTransition(event);
+        if (transition == null) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        Guild from = transition.from();
+        Guild to = transition.to();
+        if (from != null) {
+            this.logger.debug("Player " + player.getName() + " left region of guild " + from.getName());
+            this.messageService.getMessage(config -> config.notificationLeaveGuildRegion)
+                    .with(new FunnyFormatter().register("{GUILD}", from.getName()).register("{TAG}", from.getTag()))
+                    .receiver(player)
+                    .send();
+        }
+
+        BukkitScheduler scheduler = this.plugin.getServer().getScheduler();
+        if (to != null) {
+            this.notifyEntry(player, transition.user(), to);
+            if (this.config.heart.createEntityType != null) {
+                scheduler.runTaskLater(this.plugin, () -> {
+                    if (player.isOnline() && to.equals(this.findGuild(player.getLocation()))) {
+                        this.guildEntityHelper.spawnGuildEntity(to, player);
+                    }
+                }, 40L);
+            }
+        }
+
+        this.enqueueNotification(scheduler, transition);
+    }
+
+    private void enqueueNotification(BukkitScheduler scheduler, Transition transition) {
+        UUID userId = transition.user().getUUID();
+        synchronized (this.notifications) {
+            Queue<Transition> queue = this.notifications.get(userId);
+            if (queue != null) {
+                queue.add(transition);
+                return;
+            }
+            queue = new ArrayDeque<>();
+            queue.add(transition);
+            this.notifications.put(userId, queue);
+            try {
+                scheduler.runTaskAsynchronously(this.plugin, () -> this.dispatchNotifications(userId));
+            }
+            catch (RuntimeException exception) {
+                this.notifications.remove(userId);
+                throw exception;
+            }
+        }
+    }
+
+    private void dispatchNotifications(UUID userId) {
+        while (true) {
+            Transition transition;
+            synchronized (this.notifications) {
+                transition = this.notifications.get(userId).poll();
+                if (transition == null) {
+                    this.notifications.remove(userId);
+                    return;
+                }
+            }
+            try {
+                if (transition.from() != null) {
+                    Bukkit.getPluginManager().callEvent(new GuildRegionLeaveEvent(EventCause.USER, transition.user(), transition.from()));
+                }
+                if (transition.to() != null) {
+                    Bukkit.getPluginManager().callEvent(new GuildRegionEnterEvent(EventCause.USER, transition.user(), transition.to()));
+                }
+            }
+            catch (RuntimeException exception) {
+                this.logger.error("Could not dispatch guild region notifications for " + userId, exception);
+            }
+        }
+    }
+
+    private void notifyEntry(Player player, User user, Guild guild) {
+        this.logger.debug("Player " + player.getName() + " entered region of guild " + guild.getName());
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{PLAYER}", player.getName());
+
+        this.messageService.getMessage(config -> config.notificationEnterGuildRegion)
+                .with(formatter)
+                .receiver(player)
+                .send();
+
+        UserCache cache = user.getCache();
+        long now = System.currentTimeMillis();
+        if (player.hasPermission("funnyguilds.admin.notification") || now < cache.getNotificationTime()
+                || (!this.config.regionEnterNotificationGuildMember && user.getGuild().filter(guild::equals).isPresent())) {
+            return;
+        }
+
+        this.messageService.getMessage(config -> config.notificationIntruderEnterGuildRegion)
+                .with(formatter)
+                .receiver(guild)
+                .send();
+        cache.setNotificationTime(now + 1000L * this.config.regionNotificationCooldown);
+    }
+
+    private @Nullable Transition findTransition(PlayerMoveEvent event) {
+        Location to = event.getTo();
+        if (event.isCancelled() || to == null || !event.hasChangedBlock()) {
+            return null;
+        }
+
+        Guild fromGuild = this.findGuild(event.getFrom());
+        Guild toGuild = this.findGuild(to);
+        if (Objects.equals(fromGuild, toGuild)) {
+            return null;
+        }
+
+        return this.userManager.findByPlayer(event.getPlayer())
+                .map(user -> new Transition(user, fromGuild, toGuild))
+                .orElse(null);
+    }
+
+    private @Nullable Guild findGuild(Location location) {
+        return this.regionManager.findRegionAtLocation(location).map(Region::getGuild).orElse(null);
+    }
+
+    private record Transition(User user, @Nullable Guild from, @Nullable Guild to) { }
 
 }

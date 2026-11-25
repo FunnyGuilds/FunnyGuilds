@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.validity;
 
+import java.time.Instant;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -43,9 +44,8 @@ public class GuildValidationHandler implements Runnable {
     }
 
     private void validateGuildBans() {
-        this.guildManager.getGuilds().stream()
-                .filter(guild -> !guild.isBanned())
-                .forEach(guild -> guild.setBan(null));
+        Instant now = Instant.now();
+        this.guildManager.getGuilds().forEach(guild -> guild.expireBan(now));
 
         this.banGuildsCounter = 0;
     }
