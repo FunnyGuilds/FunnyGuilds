@@ -310,6 +310,57 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
     }
 
     @Test
+    fun `deleting an unpersisted guild with a reserved name preserves the old guild file`(@TempDir directory: Path) {
+        config.regionsEnabled = false
+        `when`(funnyGuilds.pluginDataFolder).thenReturn(directory.toFile())
+        val model = FlatDataModel(funnyGuilds)
+        `when`(funnyGuilds.dataModel).thenReturn(model)
+        val original = newGuild("OldName", "OLD")
+        model.save(true)
+        val originalFile = directory.resolve("guilds/OldName.yml")
+        val replacementFile = directory.resolve("guilds/NewName.yml")
+        assertTrue(model.tryRenameGuild(original, "NewName"))
+        assertTrue(model.isGuildNameReserved("oldname"))
+
+        // A caller may bypass command validation and add a guild directly.
+        val conflicting = newGuild("OldName", "NEW")
+        guildManager.removeGuild(conflicting)
+        model.deleteGuild(conflicting)
+        assertEquals(original.uuid.toString(), YamlConfiguration.loadConfiguration(originalFile.toFile()).getString("uuid"))
+
+        model.save(true)
+        assertFalse(Files.exists(originalFile))
+        assertEquals(original.uuid.toString(), YamlConfiguration.loadConfiguration(replacementFile.toFile()).getString("uuid"))
+        assertFalse(model.isGuildNameReserved("OldName"))
+    }
+
+    @Test
+    fun `competing renames cannot use each others reserved names and both make progress`(@TempDir directory: Path) {
+        config.regionsEnabled = false
+        `when`(funnyGuilds.pluginDataFolder).thenReturn(directory.toFile())
+        val model = FlatDataModel(funnyGuilds)
+        `when`(funnyGuilds.dataModel).thenReturn(model)
+        val first = newGuild("First", "ONE")
+        val second = newGuild("Second", "TWO")
+        model.save(true)
+
+        assertTrue(model.tryRenameGuild(first, "FirstNew"))
+        assertTrue(model.tryRenameGuild(second, "SecondNew"))
+        assertFalse(model.tryRenameGuild(first, "Second"))
+        assertFalse(model.tryRenameGuild(second, "first"))
+        assertEquals("FirstNew", first.name)
+        assertEquals("SecondNew", second.name)
+
+        model.save(true)
+        assertFalse(model.isGuildNameReserved("First"))
+        assertFalse(model.isGuildNameReserved("Second"))
+        assertTrue(model.tryRenameGuild(second, "First"))
+        model.save(true)
+        val firstFile = directory.resolve("guilds/First.yml").toFile()
+        assertEquals(second.uuid.toString(), YamlConfiguration.loadConfiguration(firstFile).getString("uuid"))
+    }
+
+    @Test
     fun `shutdown reports a deletion that still fails`() {
         val connection = mock(Connection::class.java)
         val statement = mock(PreparedStatement::class.java)
@@ -364,9 +415,11 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
         val model = sqlModel(connection)
         val guild = newGuild("GuildA", "TAG")
         guild.owner.markUnchanged()
-        addRegion(guild)
+        val region = addRegion(guild)
 
         model.renameGuild(guild, "GuildB")
+        assertTrue(model.isGuildNameReserved("guilda"))
+        model.deleteRegion(Region("GuildA", region.center))
         model.save(true)
         verify(delete, times(0)).executeUpdate()
 
@@ -377,6 +430,7 @@ class PersistenceOrderingTest : FunnyGuildsSpec() {
         order.verify(regionWrite).executeUpdate()
         order.verify(guildWrite).executeUpdate()
         order.verify(delete).executeUpdate()
+        assertFalse(model.isGuildNameReserved("GuildA"))
     }
 
     @Test

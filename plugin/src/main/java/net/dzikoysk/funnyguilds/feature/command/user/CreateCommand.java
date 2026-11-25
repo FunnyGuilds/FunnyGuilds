@@ -95,7 +95,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when(!this.config.tagRegex.matches(tag), config -> config.createOLTag);
         when(!this.config.nameRegex.matches(name), config -> config.createOLName);
 
-        when(this.guildManager.nameExists(name), config -> config.createNameExists);
+        when(this.guildManager.nameExists(name) || this.plugin.getDataModel().isGuildNameReserved(name),
+                config -> config.createNameExists);
         when(this.guildManager.tagExists(tag), config -> config.createTagExists);
 
         when(this.config.regionsEnabled && this.regionManager.isInRegion(guildLocation), config -> config.createIsNear);
@@ -330,6 +331,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 guild.teleportHome(player);
             }
 
+            when(this.guildManager.nameExists(guild.getName()) || this.plugin.getDataModel().isGuildNameReserved(guild.getName()),
+                    config -> config.createNameExists);
             this.guildManager.addGuild(guild);
             user.setGuild(guild);
 

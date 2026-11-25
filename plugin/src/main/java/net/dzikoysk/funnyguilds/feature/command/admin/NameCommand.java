@@ -29,7 +29,8 @@ public final class NameCommand extends AbstractFunnyCommand {
         when(args.length < 2, config -> config.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(this.guildManager.nameExists(args[1]), config -> config.createNameExists);
+        when(this.guildManager.nameExists(args[1]) || this.dataModel.isGuildNameReserved(args[1]),
+                config -> config.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -38,7 +39,8 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.dataModel.renameGuild(guild, args[1]);
+        when(this.guildManager.nameExists(args[1]) || !this.dataModel.tryRenameGuild(guild, args[1]),
+                config -> config.createNameExists);
         this.messageService.getMessage(config -> config.adminNameChanged)
                 .with("{GUILD}", guild.getName())
                 .receiver(sender)

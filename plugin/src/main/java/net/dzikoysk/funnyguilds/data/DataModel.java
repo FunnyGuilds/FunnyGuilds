@@ -40,6 +40,15 @@ public interface DataModel {
 
     void renameGuild(Guild guild, String name);
 
+    default boolean tryRenameGuild(Guild guild, String name) {
+        this.renameGuild(guild, name);
+        return true;
+    }
+
+    default boolean isGuildNameReserved(String name) {
+        return false;
+    }
+
     default void validateLoadedData() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         GuildManager guildManager = plugin.getGuildManager();

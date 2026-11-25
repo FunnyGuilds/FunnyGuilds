@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -101,14 +102,24 @@ public abstract class AbstractDataModel implements DataModel {
 
     private void queueRemoval(AbstractMutableEntity entity, BooleanSupplier deletion) {
         entity.markRemoved();
-        this.pendingDeletes.put(this.storageKey(entity), deletion);
+        String key = this.storageKey(entity);
+        // An entity added outside command validation may be using another guild's storage key.
+        if (!this.isRenameKeyReserved(key, entity)) {
+            this.pendingDeletes.put(key, deletion);
+        }
     }
 
     @Override
     public final void renameGuild(Guild guild, String name) {
+        this.tryRenameGuild(guild, name);
+    }
+
+    @Override
+    public final boolean tryRenameGuild(Guild guild, String name) {
         synchronized (this.stateLock) {
-            if (this.closing || guild.isRemoved() || guild.getName().equals(name)) {
-                return;
+            if (this.closing || guild.isRemoved() || guild.getName().equals(name)
+                    || this.isGuildNameReserved(name)) {
+                return false;
             }
 
             Map<String, BooleanSupplier> oldRecords = new LinkedHashMap<>();
@@ -129,7 +140,36 @@ public abstract class AbstractDataModel implements DataModel {
             oldRecords.remove(this.storageKey(guild));
 
             this.pendingRenames.put(guild, new Rename(guild, region, oldRecords));
+            return true;
         }
+    }
+
+    @Override
+    public final boolean isGuildNameReserved(String name) {
+        synchronized (this.stateLock) {
+            return this.isStorageKeyReserved(storageKey(EntityType.GUILD, name))
+                    || this.isStorageKeyReserved(storageKey(EntityType.REGION, name));
+        }
+    }
+
+    private boolean isStorageKeyReserved(String key) {
+        return this.pendingDeletes.containsKey(key) || this.isRenameKeyReserved(key, null);
+    }
+
+    private boolean isRenameKeyReserved(String key, AbstractMutableEntity requester) {
+        for (Rename rename : this.pendingRenames.values()) {
+            if (rename.oldRecords().containsKey(key)) {
+                return true;
+            }
+            if (rename.includes(requester)) {
+                continue;
+            }
+            if (key.equals(this.storageKey(rename.guild()))
+                    || (rename.region() != null && key.equals(this.storageKey(rename.region())))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void saveRenames() {
@@ -217,7 +257,7 @@ public abstract class AbstractDataModel implements DataModel {
             return false;
         }
         String key = this.storageKey(entity);
-        if (this.pendingDeletes.containsKey(key)) {
+        if (this.pendingDeletes.containsKey(key) || this.isRenameKeyReserved(key, entity)) {
             return false;
         }
         if (this.writingRename != null && this.writingRename.includes(entity)
@@ -225,8 +265,7 @@ public abstract class AbstractDataModel implements DataModel {
             return false;
         }
         for (Rename rename : this.pendingRenames.values()) {
-            if (rename.oldRecords().containsKey(key)
-                    || (rename.includes(entity) && (!fullRecord || rename != this.writingRename))) {
+            if (rename.includes(entity) && (!fullRecord || rename != this.writingRename)) {
                 return false;
             }
         }
@@ -235,12 +274,16 @@ public abstract class AbstractDataModel implements DataModel {
 
     private String storageKey(AbstractMutableEntity entity) {
         String key = entity instanceof Guild guild ? this.guildStorageKey(guild) : entity.getName();
-        return entity.getType() + ":" + key.toLowerCase(Locale.ROOT);
+        return storageKey(entity.getType(), key);
+    }
+
+    private static String storageKey(EntityType type, String key) {
+        return type + ":" + key.toLowerCase(Locale.ROOT);
     }
 
     private record Rename(Guild guild, Region region, Map<String, BooleanSupplier> oldRecords) {
         boolean includes(AbstractMutableEntity entity) {
-            return this.guild == entity || this.region == entity;
+            return entity != null && (this.guild == entity || this.region == entity);
         }
     }
 }

@@ -160,7 +160,8 @@ next save cycle. Changes made during a write also remain pending. Write errors
 are reported in the server log.
 
 After a guild rename, the plugin removes the old records once it saves the
-new name and region. If a deletion still fails during shutdown, the server
+new name and region. A name used as an old record's key can be reused
+once that record is removed. If a deletion still fails during shutdown, the server
 log lists the records to check before restarting.
 
 ## Regex
