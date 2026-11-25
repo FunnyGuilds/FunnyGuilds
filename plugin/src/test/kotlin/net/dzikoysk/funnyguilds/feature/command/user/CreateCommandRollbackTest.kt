@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user
 
+import java.nio.file.Files
+import java.nio.file.Path
 import net.dzikoysk.funnyguilds.FunnyGuilds
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger
 import net.dzikoysk.funnyguilds.config.MockPluginConfiguration
@@ -7,9 +9,11 @@ import net.dzikoysk.funnyguilds.config.message.FunnyMessageDispatcher
 import net.dzikoysk.funnyguilds.config.message.MessageService
 import net.dzikoysk.funnyguilds.config.sections.items.GuildItemSet
 import net.dzikoysk.funnyguilds.config.sections.items.ItemsConfiguration
-import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask
 import net.dzikoysk.funnyguilds.data.DataModel
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel
+import net.dzikoysk.funnyguilds.data.tasks.DatabaseDeleteGuildAsyncTask
 import net.dzikoysk.funnyguilds.data.tasks.DatabaseUpdateGuildAsyncTask
+import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent
 import net.dzikoysk.funnyguilds.feature.command.InternalValidationException
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook
@@ -27,6 +31,7 @@ import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.WorldBorder
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.inventory.ItemFactory
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.ItemStack
@@ -34,6 +39,7 @@ import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyDouble
 import org.mockito.ArgumentMatchers.anyInt
@@ -216,6 +222,35 @@ class CreateCommandRollbackTest {
     }
 
     @Test
+    fun `a name conflict before registration preserves the existing guild file`(@TempDir directory: Path) {
+        val plugin = command.plugin
+        `when`(plugin.pluginDataFolder).thenReturn(directory.toFile())
+        val model = FlatDataModel(plugin)
+        `when`(plugin.dataModel).thenReturn(model)
+        val existingGuild = Guild("name", "OLD")
+        val existingFile = directory.resolve("guilds/name.yml")
+        val existingData = "uuid: ${existingGuild.uuid}\nname: name\ntag: OLD\n"
+        Files.createDirectories(existingFile.parent)
+        val pluginManager = Bukkit.getPluginManager()
+        doAnswer {
+            if (it.getArgument<Event>(0) is GuildPreCreateEvent) {
+                guildManager.addGuild(existingGuild)
+                Files.writeString(existingFile, existingData)
+            }
+            null
+        }.`when`(pluginManager).callEvent(any(Event::class.java))
+
+        assertFailsWith<InternalValidationException> { command.execute(player, user, arrayOf("tag", "name")) }
+        scheduledTasks.filterIsInstance<DatabaseDeleteGuildAsyncTask>().forEach { it.execute() }
+        model.flushDeletes()
+
+        assertEquals(existingData, Files.readString(existingFile))
+        assertEquals(setOf(existingGuild), guildManager.getGuilds())
+        assertTrue(scheduledTasks.none { it is DatabaseDeleteGuildAsyncTask || it is DatabaseUpdateGuildAsyncTask })
+        mockedVaultHook.verify { VaultHook.depositToPlayerBank(player, 100.0) }
+    }
+
+    @Test
     fun `schematic creation without a WorldEdit hook aborts and rolls back`() {
         config.regionsEnabled = true
         config.heart.guildSchematicFileName = "guild.schem"
@@ -230,7 +265,7 @@ class CreateCommandRollbackTest {
         verify(user).removeGuild()
         assertTrue(guildManager.getGuilds().isEmpty())
         assertEquals(0, scheduledTasks.filterIsInstance<DatabaseUpdateGuildAsyncTask>().size)
-        assertEquals(1, scheduledTasks.filterIsInstance<DatabaseDeleteGuildAsyncTask>().size)
+        assertEquals(0, scheduledTasks.filterIsInstance<DatabaseDeleteGuildAsyncTask>().size)
     }
 
     @Test
@@ -250,7 +285,7 @@ class CreateCommandRollbackTest {
         verify(user).removeGuild()
         assertTrue(guildManager.getGuilds().isEmpty())
         assertEquals(0, scheduledTasks.filterIsInstance<DatabaseUpdateGuildAsyncTask>().size)
-        assertEquals(1, scheduledTasks.filterIsInstance<DatabaseDeleteGuildAsyncTask>().size)
+        assertEquals(0, scheduledTasks.filterIsInstance<DatabaseDeleteGuildAsyncTask>().size)
     }
 
     private fun addTaskTo(tasks: MutableList<FunnyTask>) = Answer<Void> { invocation: InvocationOnMock ->

@@ -261,6 +261,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         int previousLevel = player.getLevel();
         boolean levelDeducted = false;
         boolean heartPlaced = false;
+        boolean guildAdded = false;
         boolean regionAdded = false;
         List<BlockState> changedBlocks = new ArrayList<>();
         List<Runnable> schematicUndo = new ArrayList<>(1);
@@ -334,6 +335,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             when(this.guildManager.nameExists(guild.getName()) || this.plugin.getDataModel().isGuildNameReserved(guild.getName()),
                     config -> config.createNameExists);
             this.guildManager.addGuild(guild);
+            guildAdded = true;
             user.setGuild(guild);
 
             if (guild.getRegion().isPresent()) {
@@ -363,7 +365,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
         catch (RuntimeException exception) {
             this.rollbackCreation(player, user, guild, payment, moneyWithdrawn, activeSet, previousLevel, levelDeducted,
-                    heartPlaced, regionAdded, changedBlocks, schematicUndo, previousHeartState);
+                    heartPlaced, guildAdded, regionAdded, changedBlocks, schematicUndo, previousHeartState);
             throw exception;
         }
 
@@ -393,7 +395,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
      */
     private void rollbackCreation(Player player, User user, Guild guild, GuildCreationPayment payment, AtomicBoolean moneyWithdrawn,
                                   GuildItemSet set, int previousLevel, boolean levelDeducted, boolean heartPlaced,
-                                  boolean regionAdded, List<BlockState> changedBlocks, List<Runnable> schematicUndo,
+                                  boolean guildAdded, boolean regionAdded, List<BlockState> changedBlocks, List<Runnable> schematicUndo,
                                   Optional<BlockState> previousHeartState) {
         FunnyGuilds.getPluginLogger().warning("Guild creation failed after payment, rolling back the transaction");
 
@@ -469,14 +471,16 @@ public final class CreateCommand extends AbstractFunnyCommand {
             FunnyGuilds.getPluginLogger().error("Could not clear the player's guild membership", compensationFailure);
         }
 
-        try {
-            DataModel dataModel = this.plugin.getDataModel();
-            dataModel.queueGuildDeletion(guild);
-            this.guildManager.removeGuild(guild);
-            this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
-        }
-        catch (RuntimeException compensationFailure) {
-            FunnyGuilds.getPluginLogger().error("Could not remove the rolled-back guild", compensationFailure);
+        if (guildAdded) {
+            try {
+                DataModel dataModel = this.plugin.getDataModel();
+                dataModel.queueGuildDeletion(guild);
+                this.guildManager.removeGuild(guild);
+                this.plugin.scheduleFunnyTasks(new DatabaseDeleteGuildAsyncTask(dataModel));
+            }
+            catch (RuntimeException compensationFailure) {
+                FunnyGuilds.getPluginLogger().error("Could not remove the rolled-back guild", compensationFailure);
+            }
         }
 
         try {
